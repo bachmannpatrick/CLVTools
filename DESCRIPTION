@@ -1,0 +1,149 @@
+Package: CLVTools
+Title: Tools for Customer Lifetime Value estimation
+Version: 0.0.2
+Date: 2020-01-18
+Authors@R: c(
+    person(given="Patrick", family="Bachmann",    email = "patrick.bachmann@business.uzh.ch", role = c("cre","aut")),
+    person(given="Jeffrey", family="Näf",         email = "naef@stat.math.ethz.ch",role = "aut"),
+    person(given="Patrik",  family="Schilter",    email = "patrik.schilter@gmail.com",role = "aut"),
+    person(given="Markus",  family="Meierer",     email = "markus.meierer@business.uzh.ch", role = "aut"),
+    person(given="Rene",    family="Algesheimer", email = "market-research@business.uzh.ch", role = "aut"))
+Depends:
+    R (>= 3.5.0),
+Description: Package to fit probabilistic models to estimate customer lifetime value (CLV).
+    It includes fast and accurate implementations of buy-'til-you-die models in 
+    non-contractual settings (e.g., retail business). with and without time-invariant and time-varying covariates. Currently, the package includes the 
+    Pareto/NBD model, the GGompertz/NBD model for the purchase and the attrition processes as well as the Gamma/Gamma model for the spending process.
+Imports:
+    methods, 
+    utils,
+    stats,
+    data.table (>= 1.12.0),
+    gsl (>= 2.1-6),
+    lubridate (>= 1.7.3), 
+    ggplot2 (>= 3.2.0),
+    optimx (>= 2018-7.10),
+    Rcpp (>= 0.12.12),
+    RcppArmadillo (>= 0.9.500.2.0),
+    Matrix (>= 1.2-17),
+    foreach (>= 1.4.7),
+    doParallel (>= 1.0.10)
+Suggests:
+    testthat
+License: GPL-3
+URL: https://github.com/bachmannpatrick/CLVTools2
+BugReports: https://github.com/bachmannpatrick/CLVTools2/issues
+NeedsCompilation: yes
+SystemRequirements: C++11
+LinkingTo: Rcpp, RcppArmadillo
+LazyLoad: yes
+Encoding: UTF-8
+Collate: 
+    'CLVTools.R'
+    'RcppExports.R'
+    'all_generics.R'
+    'class_clv_time.R'
+    'class_clv_data_no_covariates.R'
+    'class_clv_data_static_covariates.R'
+    'class_clv_data_dynamic_covariates.R'
+    'class_clv_model_basestrategy.R'
+    'class_clv_fitted.R'
+    'class_clv_fitted_static_cov.R'
+    'class_clv_fitted_dynamic_cov.R'
+    'class_clv_model_pnbd_nocov.R'
+    'class_clv_model_pnbd_staticcov.R'
+    'class_clv_model_pnbd_dynamiccov.R'
+    'class_clv_pnbd.R'
+    'class_clv_pnbd_dynamiccov.R'
+    'class_clv_pnbd_staticcov.R'
+    'class_clv_time_date.R'
+    'class_clv_time_datetime.R'
+    'class_clv_time_days.R'
+    'class_clv_time_hours.R'
+    'class_clv_time_weeks.R'
+    'class_clv_time_years.R'
+    'clv_controlflow_dyncov_predict.R'
+    'clv_controlflow_newdata.R'
+    'clv_controlflow_nocov_estimate_checkinputs.R'
+    'clv_controlflow_nocov_estimate_generatestartparams.R'
+    'clv_controlflow_nocov_estimate_prepareoptimxargs.R'
+    'clv_controlflow_nocov_estimate_putinputs.R'
+    'clv_controlflow_nocov_estimate_putoptimx.R'
+    'clv_controlflow_nocov_plot_checkinputs.R'
+    'clv_controlflow_nocov_predict_checkinputs.R'
+    'clv_controlflow_nocov_predict_setpredictionparams.R'
+    'clv_controlflow_pnbddyncov_estimate_generatestartparams.R'
+    'clv_controlflow_staticcov_estimate_checkinputs.R'
+    'clv_controlflow_staticcov_estimate_generatestartparams.R'
+    'clv_controlflow_staticcov_estimate_prepareoptimxargs.R'
+    'clv_data_reducecovariates.R'
+    'clv_controlflow_staticcov_estimate_putinputs.R'
+    'clv_controlflow_staticcov_estimate_putoptimx.R'
+    'clv_controlflow_staticcov_predict_setpredictionparams.R'
+    'clv_data_accessors.R'
+    'clv_helpers.R'
+    'clv_data_inputchecks.R'
+    'clv_data_makedescriptives.R'
+    'clv_data_setdynamiccovariates.R'
+    'clv_data_setstaticcovariates.R'
+    'clv_generics_data_extract.R'
+    'clv_generics_data_print.R'
+    'clv_generics_dyncov_plot.R'
+    'clv_generics_nocov_coef.R'
+    'clv_generics_nocov_confint.R'
+    'clv_generics_nocov_plot.R'
+    'clv_generics_nocov_vcov.R'
+    'clv_generics_plot_data_nocovariates.R'
+    'clv_generics_print.R'
+    'clv_generics_staticcov_coef.R'
+    'clv_generics_summary_data_dynamiccovariates.R'
+    'clv_generics_summary_data_nocovariates.R'
+    'clv_generics_summary_data_staticcovariates.R'
+    'clv_generics_summary_nocov.R'
+    'clv_generics_summary_staticcovariates.R'
+    'clv_model_pnbd_dyncov_expectation.R'
+    'clv_model_pnbd_nocov_expectation.R'
+    'clv_model_pnbd_nocov_predict.R'
+    'clv_model_pnbd_staticcov_expectation.R'
+    'clv_model_pnbd_staticcov_predict.R'
+    'clv_nocov_extract.R'
+    'clv_template_controlflow_estimate.R'
+    'clv_template_controlflow_predict.R'
+    'clv_time_expectationperiods.R'
+    'clv_time_generics.R'
+    'clv_time_getpredictiontable.R'
+    'clv_time_sequenceofcovariatetimepoints.R'
+    'data.R'
+    'f_CheckUserInput.R'
+    'f_ConvertUserData.R'
+    'f_DoExpectation.R'
+    'f_clvdata.R'
+    'f_interface_pnbd.R'
+    'interlayer_callLL.R'
+    'interlayer_callnextinterlayer.R'
+    'interlayer_constraints.R'
+    'interlayer_correlation.R'
+    'interlayer_manager.R'
+    'interlayer_regularization.R'
+    'pnbd_dyncov_ABCD.R'
+    'pnbd_dyncov_BkSum.R'
+    'pnbd_dyncov_CET.R'
+    'pnbd_dyncov_DECT.R'
+    'pnbd_dyncov_LL.R'
+    'pnbd_dyncov_LL_Bi.R'
+    'pnbd_dyncov_LL_Di.R'
+    'pnbd_dyncov_LL_ind.R'
+    'pnbd_dyncov_LL_sum.R'
+    'pnbd_dyncov_createwalks.R'
+    'pnbd_dyncov_makewalks.R'
+    'pnbd_dyncov_palive.R'
+    'validity_clv_data_dynamiccovariates.R'
+    'validity_clv_data_nocovariates.R'
+    'validity_clv_data_staticcovariates.R'
+    'validity_clv_model_basestrategy.R'
+    'validity_clv_nocov.R'
+    'validity_clv_staticcov.R'
+    'validity_clv_time.R'
+    'validity_clv_timedate.R'
+    'validity_clv_timedatetime.R'
+RoxygenNote: 6.1.1

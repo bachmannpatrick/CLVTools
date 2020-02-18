@@ -1,0 +1,81 @@
+#' @title Summarizing a fitted CLV model
+#' @param object A fitted CLV model
+#' @param x an object of class \code{"summary.clv.no.covariates"}, usually, a result of a call to \code{summary.clv.no.covariates}.
+#' @param digits the number of significant digits to use when printing.
+#' @param signif.stars logical. If TRUE, ‘significance stars’ are printed for each coefficient.
+#' @param ... Ignored for \code{summary}, forwarded to \code{printCoefmat} for \code{print}.
+#' @description
+#'
+#' Summary method for fitted CLV models that provides statistics about the estimated parameters
+#' and information about the optimization process. If multiple optimization methods were used
+#' (for example if specified by the user in the argument \code{optimx.args}), all information here refers to
+#' the last method/row of the resulting \code{optimx} object.
+#'
+#' @return This function computes and returns a list of summary information of the fitted model
+#' given in \code{object}. It returns a list of class \code{summary.clv.no.covariates} that contains the
+#' following components:
+#'
+#' \item{name.model}{the name of the fitted model.}
+#' \item{call}{The call used to fit the model.}
+#' \item{tp.estimation.start}{Date or POSIXct indicating when the fitting period started.}
+#' \item{tp.estimation.end}{Date or POSIXct indicating when the fitting period ended.}
+#' \item{estimation.period.in.tu}{Length of fitting period in \code{time.unit}s.}
+#' \item{time.unit}{Time unit that defines a single period.}
+#' \item{coefficients}{a \code{px4} matrix with columns for the estimated coefficients, its standard error,
+#' the t-statistic and corresponding (two-sided) p-value.}
+#' \item{estimated.LL}{the value of the log-likelihood function at the found solution.}
+#' \item{AIC}{Akaike's An Information Criterion for the fitted model.}
+#' \item{BIC}{Schwarz's Bayesian Information Criterion for the fitted model.}
+#' \item{KKT1}{Karush-Kuhn-Tucker optimality conditions of the first order, as returned by optimx.}
+#' \item{KKT2}{Karush-Kuhn-Tucker optimality conditions of the second order, as returned by optimx.}
+#' \item{fevals}{The number of calls to the log-likelihood function during optimization.}
+#' \item{method}{The last method used to obtain the final solution.}
+#' \item{additional.options}{A list of additional options used for model fitting.
+#'        \describe{
+#'            \item{Correlation}{Whether the correlation between the purchase and the attrition process was estimated.}
+#'            \item{estimated.param.cor}{Correlation coefficient measuring the correlation between the two processes, if used.}}}
+#'
+#' For models fits with static covariates, the list additionally is of class \code{summary.clv.static.covariates}
+#' and the list in \code{additional.options} contains the following elements:
+#' \item{additional.options}{
+#'        \describe{
+#'            \item{Regularization}{Whether L2 regularization for parameters of contextual factors was used.}
+#'            \item{lambda.life}{The regularization lambda used for the parameters of the Lifetime process, if used.}
+#'            \item{lambda.trans}{The regularization lambda used for the parameters of the Transaction process, if used.}
+#'            \item{Constraint covs}{Whether any covariate parameters were forced to be the same for both processes.}
+#'            \item{Constraint params}{Name of the covariate parameters which were constraint, if used.}}}
+#'
+#' @seealso The model fitting functions \code{\link[CLVTools]{pnbd}}.
+#' @seealso Function \code{\link[CLVTools]{coef}} will extract the matrix of coefficients and
+#' summary statistics.
+#'
+#' @examples
+#' \dontrun{
+#' data("apparelTrans")
+#'
+#' # Fit pnbd standard model, no covariates
+#' pnbd.apparel <- pnbd(clvdata(apparelTrans, time.unit="w",
+#'                     estimation.split=37, date.format="ymd"))
+#'
+#' # summary about model fit
+#' summary(pnbd.apparel)
+#'
+#' # Add static covariate data
+#' data("apparelDemographics")
+#' data.apparel.cov  <-
+#'    SetStaticCovariates(clv.data.apparel,
+#'                        data.cov.life  = apparelDemographics,
+#'                        names.cov.life = "Gender",
+#'                        data.cov.trans = apparelDemographics,
+#'                        names.cov.trans = "Gender",
+#'                        name.id = "Id")
+#'
+#' # fit model with covariates and regualization
+#' pnbd.apparel.cov <- pnbd(data.apparel.cov,
+#'                          reg.lambdas = c(life=2, trans=4))
+#'
+#' # additional summary about covariate parameters
+#' #   and used regularization
+#' summary(pnbd.apparel.cov)
+#' }
+#'

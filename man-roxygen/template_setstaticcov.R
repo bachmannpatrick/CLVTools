@@ -1,0 +1,57 @@
+#' @rdname SetStaticCovariates-methods
+#' @title Add Static Covariates to a CLV data object
+#' @param clv.data CLV data object to add the covariates data to.
+#' @param data.cov.life Static covariate data as \code{data.frame} or \code{data.table} for the lifetime process.
+#' @param data.cov.trans Static covariate data as \code{data.frame} or \code{data.table} for the transaction process.
+#' @param names.cov.life Vector with names of the columns in \code{data.cov.life} that contain the covariates.
+#' @param names.cov.trans Vector with names of the columns in \code{data.cov.trans} that contain the covariates.
+#' @param name.id Name of the column to find the Id data for both, \code{data.cov.life} and \code{data.cov.trans}.
+#'
+#' @description
+#' Add static covariate data to an existing data object of class \code{clv.data}.
+#' The returned object then can be used to fit models with static covariates.
+#'
+#' No covariate data can be added to a clv data object which already has any covariate set.
+#'
+# **TODO:  What if all same values in cov? (ie all female?)
+#' At least 1 covariate is needed for both processes and no categorical covariate may be of only a single category.
+#'
+#' @details
+#'
+#' \code{data.cov.life} and \code{data.cov.trans} are \code{data.frame}s or \code{data.table}s that
+#' each contain exactly one single row of covariate data for every customer appearing in the
+#' transaction data. Covariates of class \code{character} or \code{factor} are converted
+#' to k-1 numeric dummie variables.
+#'
+#' @return
+#' An object of class \code{clv.data.static.covariates}.
+#' See the class definition \code{\link[CLVTools:clv.data.static.covariates-class]{clv.data.static.covariates}}
+#' for more details about the returned object.
+#'
+#' @examples
+#'
+#' \dontrun{
+#' data("apparelTrans")
+#' data("apparelDemographics")
+#'
+#' # Create a clv data object without covariates
+#' clv.data.apparel <- clvdata(apparelTrans, time.unit="w",
+#'                             date.format="ymd")
+#'
+#' # Add static covariate data
+#' clv.data.apparel.cov  <-
+#'    SetStaticCovariates(clv.data.apparel,
+#'                        data.cov.life  = apparelDemographics,
+#'                        names.cov.life = "Gender",
+#'                        data.cov.trans = apparelDemographics,
+#'                        names.cov.trans = "Gender",
+#'                        name.id = "Id")
+#'
+#' # more summary output
+#' summary(clv.data.apparel.cov)
+#'
+#' # fit model with static covariates
+#' pnbd(clv.data.apparel.cov)
+#' }
+#'
+

@@ -1,0 +1,99 @@
+#' Date based time-units
+#'
+#' Virtual base class for time units that need only whole day granularity.
+#' This class processes time and dates at day level ignoring the time of day
+#' and stores all timepoints using data type \code{Date}.
+#'
+#' @slot timepoint.estimation.start Single \code{Date} that stores the start of the estimation period.
+#' @slot timepoint.estimation.end Single \code{Date} that stores the end of the estimation period.
+#' @slot timepoint.holdout.start Single \code{Date} that stores the start of the holdout period.
+#' @slot timepoint.holdout.end Single \code{Date} that stores the end of the holdout period.
+#'
+#'
+#' @seealso
+#' For time unit implementations based on this class:
+#' \code{\link[CLVTools:clv.time.days]{clv.time.days}}
+#' \code{\link[CLVTools:clv.time.weeks]{clv.time.weeks}}
+#' \code{\link[CLVTools:clv.time.years]{clv.time.years}}
+#'
+#' @include class_clv_time.R all_generics.R
+#' @keywords internal
+setClass("clv.time.date", contains = c("clv.time", "VIRTUAL"),
+         slots = c(
+           timepoint.estimation.start = "Date",
+           timepoint.estimation.end   = "Date",
+           timepoint.holdout.start    = "Date",
+           timepoint.holdout.end      = "Date"))
+
+setMethod("initialize", signature = signature(.Object="clv.time.date"),
+          definition = function(.Object, time.format, name.time.unit,...){
+
+  # dont call parent constructor/initiaizer as validObject will stop it.
+  # Reason is that clv.time has slots of "ANY" (S4) while clv.time.date expects "Date".
+  # Rather assign passed args for initialization (time.format+name) directly
+  # callNextMethod()
+
+  .Object@time.format                <- time.format
+  .Object@name.time.unit             <- name.time.unit
+  .Object@timepoint.estimation.start <- as.Date(character(0))
+  .Object@timepoint.estimation.end   <- as.Date(character(0))
+  .Object@timepoint.holdout.start    <- as.Date(character(0))
+  .Object@timepoint.holdout.end      <- as.Date(character(0))
+  return(.Object)
+})
+
+
+
+# Parsing methods ------------------------------------------------------------------------
+setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.time="clv.time.date",
+                                                                            user.timepoint="Date"), definition = function(clv.time, user.timepoint){
+  # Date is Date, nothing to do
+  return(user.timepoint)
+})
+
+#' @importFrom lubridate floor_date
+setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.time="clv.time.date",
+                                                                            user.timepoint="POSIXlt"), definition = function(clv.time, user.timepoint){
+  # Check if has any time different from 00:00:00
+  # if(any(floor_date(x = user.timepoint, unit = "day") != user.timepoint))
+  message("The time of day stored in the provided POSIXlt object is ignored (cut off).")
+
+  return(as.Date.POSIXlt(user.timepoint))
+})
+
+#' @importFrom lubridate tz
+setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.time="clv.time.date",
+                                                                            user.timepoint="POSIXct"), definition = function(clv.time, user.timepoint){
+  # Check if has any time different from 00:00:00
+  # if(any(floor_date(x = user.timepoint, unit = "day") != user.timepoint))
+  message("The time of day stored in the provided data (of type POSIXct) is ignored (cut off).")
+
+  return(as.Date.POSIXct(x=user.timepoint, tz = tz(user.timepoint)))
+})
+
+
+#' @importFrom lubridate parse_date_time
+setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.time="clv.time.date",
+                                                                            user.timepoint="character"), definition = function(clv.time, user.timepoint){
+
+  dates <- as.Date.POSIXct(parse_date_time(x=user.timepoint,
+                                           orders = clv.time@time.format,
+                                           tz="UTC",
+                                           quiet = TRUE),
+                           tz = "UTC")
+  if(anyNA(dates))
+    stop("The provided date failed to parse with the previously set date.format!", call. = FALSE)
+
+  return(dates)
+})
+
+setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.time="clv.time.date",
+                                                                            user.timepoint="ANY"), definition = function(clv.time, user.timepoint){
+  # None of these cases
+  stop("The provided data is in an unknown format! Only Date, POSIXct/lt, and character are accepted!", call. = FALSE)
+})
+
+
+
+
+

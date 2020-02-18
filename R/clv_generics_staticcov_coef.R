@@ -1,0 +1,92 @@
+#' @importFrom stats coef na.omit setNames
+#' @importFrom optimx coef<-
+#' @include class_clv_fitted.R class_clv_fitted_static_cov.R all_generics.R clv_generics_nocov_coef.R
+#' @export
+coef.clv.fitted.static.cov <- function(object, complete = TRUE, ...){
+
+  # Covariates params -----------------------------------------------------------------------------------
+
+  # Is estimated check and backtransformed coefs from model only
+  original.scale.coef.model <- NextMethod()
+
+  last.row.optimx.coef <- tail(coef(object@optimx.estimation.output),n=1)
+
+  # Covariate params
+  # Do NOT duplicate constrained params because output of coef() has to match vcov!
+  if(object@estimation.used.constraints){
+    names.prefixed.covs <- union(object@names.prefixed.params.constr,
+                                 union(object@names.prefixed.params.free.life,
+                                       object@names.prefixed.params.free.trans))
+  }else{
+    names.prefixed.covs <- union(object@names.prefixed.params.free.life,
+                                 object@names.prefixed.params.free.trans)
+  }
+
+  # if for whatever reason there is still a NA leftover from previous design of constrained param names
+  names.prefixed.covs <- na.omit(names.prefixed.covs)
+
+  # let model backtransform from optimizer to original scale
+  prefixed.params.cov       <- last.row.optimx.coef[1, names.prefixed.covs, drop=TRUE]
+  prefixed.params.cov       <- setNames(prefixed.params.cov, names.prefixed.covs) # Names are lost if only 1 cov (single constraint)
+  original.scale.params.cov <- clv.model.backtransform.estimated.params.cov(clv.model = object@clv.model,
+                                                                            prefixed.params.cov = prefixed.params.cov)
+
+  # There are no display/original scale names to set for covariates. They need the prefix to stay
+  # distinguishable between processes
+  original.scale.params.cov <- setNames(original.scale.params.cov[names.prefixed.covs],
+                                        names.prefixed.covs)
+
+
+
+
+  # Put together in correct order ------------------------------------------------------------------------------------------
+  #   relevant order is as in optimx so that coef output is in the same order as vcov() / hessian
+  #   it should also be possible through input structure to optimx (ie c(model, cov)) but guarantee
+  #     by explicitely setting the same order as in optimx. This is greatly complicated by differing/prefixed names
+  #
+  #   covariates params keep prefix to stay distinguishable
+
+  # mapping for original to prefixed
+  #   content: original names for model and correlation, prefixed names for cov params
+  #   names: prefixed names
+
+  # Content + transformed names for model and cor
+  #   append correlation param, if exists and should be returned. If not included here, it is removed from nocov param vec
+  names.original.named.prefixed.all <- names(original.scale.coef.model)
+
+  # names.original.named.prefixed.all does not contain cor if complete=FALSE
+  if(object@estimation.used.correlation & complete == TRUE)
+    names(names.original.named.prefixed.all) <- c(object@clv.model@names.prefixed.params.model,
+                                                  object@name.prefixed.cor.param.m)
+  else
+    names(names.original.named.prefixed.all) <- object@clv.model@names.prefixed.params.model
+
+  # Content + prefixed names for covs
+  names.original.named.prefixed.all <- c(names.original.named.prefixed.all,
+                                         setNames(names(original.scale.params.cov),
+                                                  names(original.scale.params.cov)))
+
+  # bring into same order as in optimx
+  #   read definitive order from optimx through prefixed names
+  names.optimx.coefs <- colnames(last.row.optimx.coef)
+
+  # Do not try to select correlation if not previously selected into coefs
+  if(complete==FALSE)
+    names.optimx.coefs <- setdiff(names.optimx.coefs, object@name.prefixed.cor.param.m)
+
+  # bring original scale names into order of optimx (prefixed) names
+  names.original.named.prefixed.all <- names.original.named.prefixed.all[names.optimx.coefs]
+
+  # put together return values in original scale
+  params.all <- c(original.scale.coef.model, original.scale.params.cov)
+
+  # return in correct order
+  return(params.all[names.original.named.prefixed.all])
+}
+
+
+#' # S4 method to forward to S3 method
+#' #' @rdname coef
+#' #' @include all_generics.R class_clv_fitted_static_cov.R
+#' #' @exportMethod coef
+#' setMethod(f = "coef", signature = signature(object="clv.fitted.static.cov"), coef.clv.fitted.static.cov)
