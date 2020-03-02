@@ -6,7 +6,7 @@ setClass(Class = "clv.model.bgnbd.no.cov", contains = "clv.model",
          prototype = list(
            name.model = "BG/NBD Standard",
            names.original.params.model = c(r="r", alpha="alpha", a="a", b="b"),
-           names.prefixed.params.model = c("r", "alpha", "a", "b"),
+           names.prefixed.params.model = c("log.r", "log.alpha", "log.a", "log.b"),
            start.params.model = c(r=1, alpha = 3, a = 1, b = 3)
          ))
 
@@ -57,7 +57,7 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
 
                                  # parameter ordering for the callLL interlayer
                                  #** TODO: Hardcode from cpp interface
-                                 LL.params.names.ordered = c(r = "r",alpha =  "alpha", a = "a", b = "b")),
+                                 LL.params.names.ordered = c(log.r = "log.r",log.alpha =  "log.alpha", log.a = "log.a", log.b = "log.b")),
                             keep.null = TRUE)
   return(optimx.args)
 })
