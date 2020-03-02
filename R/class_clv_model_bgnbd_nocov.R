@@ -6,7 +6,7 @@ setClass(Class = "clv.model.bgnbd.no.cov", contains = "clv.model",
          prototype = list(
            name.model = "BG/NBD Standard",
            names.original.params.model = c(r="r", alpha="alpha", a="a", b="b"),
-           names.prefixed.params.model = c("log.r", "log.alpha", "log.a", "log.b"),
+           names.prefixed.params.model = c("r", "alpha", "a", "b"),
            start.params.model = c(r=1, alpha = 3, a = 1, b = 3)
          ))
 
@@ -42,8 +42,23 @@ setMethod("clv.model.backtransform.estimated.params.model", signature = signatur
 
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
   # Also model optimization settings should go here
-  parameters <- bgnbd.EstimateParameters(clv.fitted@cbs , clv.model@start.params.model)
+  #parameters <- bgnbd.EstimateParameters(clv.fitted@cbs , clv.model@start.params.model)
 
   # Only add LL function args, everything else is prepared already, incl. start parameters
-  return(list(parameters))
+  #return(list(parameters))
+
+  optimx.args <- modifyList(prepared.optimx.args,
+                            list(LL.function.sum = bgnbd.cbs.LL,
+                                 LL.function.ind = bgnbd.LL, # if doing correlation
+                                 obj    = clv.fitted,
+                                 vX     = clv.fitted@cbs$x,
+                                 vT_x   = clv.fitted@cbs$t.x,
+                                 vT_cal = clv.fitted@cbs$T.cal,
+
+                                 # parameter ordering for the callLL interlayer
+                                 #** TODO: Hardcode from cpp interface
+                                 LL.params.names.ordered = c(r = "r",alpha =  "alpha", a = "a", b = "b")),
+                            keep.null = TRUE)
+  return(optimx.args)
 })
+

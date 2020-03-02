@@ -2,34 +2,35 @@
 
 library(hypergeo)
 
-bgnbd.cbs.LL <- function(params, cal.cbs) {
+bgnbd.cbs.LL <- function(params, vX, vT_x, vT_cal) {
 
+  params <- exp(params)
   dc.check.model.params(c("r", "alpha", "a", "b"), params, "bgnbd.cbs.LL")
 
-  tryCatch(x <- cal.cbs[, x], error = function(e) stop("Error in bgnbd.cbs.LL: cal.cbs must have a frequency column labelled \"x\""))
-  tryCatch(t.x <- cal.cbs[, t.x], error = function(e) stop("Error in bgnbd.cbs.LL: cal.cbs must have a recency column labelled \"t.x\""))
-  tryCatch(T.cal <- cal.cbs[, T.cal], error = function(e) stop("Error in bgnbd.cbs.LL: cal.cbs must have a column for length of time observed labelled \"T.cal\""))
+  tryCatch(x <- vX, error = function(e) stop("Error in bgnbd.cbs.LL: cal.cbs must have a frequency column labelled \"x\""))
+  tryCatch(t.x <- vT_x, error = function(e) stop("Error in bgnbd.cbs.LL: cal.cbs must have a recency column labelled \"t.x\""))
+  tryCatch(T.cal <- vT_cal, error = function(e) stop("Error in bgnbd.cbs.LL: cal.cbs must have a column for length of time observed labelled \"T.cal\""))
 
-  if ("custs" %in% colnames(cal.cbs)) {
-
-    many_rows = function(vec, nreps) {
-      return(rep(1, nreps) %*% t.default(vec))
-    }
-
-    custs <- cal.cbs[, "custs"]
-    logvec = (1:length(custs)) * (custs > 1)
-    logvec = logvec[logvec > 0]
-    M = sum(logvec > 0)
-    for (i in 1:M) {
-      cal.cbs = rbind(cal.cbs, many_rows(cal.cbs[logvec[i], ], custs[logvec[i]] -
-                                           1))
-    }
-    x = cal.cbs[, "x"]
-    t.x = cal.cbs[, "t.x"]
-    T.cal = cal.cbs[, "T.cal"]
-  }
-
-  return(sum(bgnbd.LL(params, x, t.x, T.cal)))
+  # if ("custs" %in% colnames(cal.cbs)) {
+  #
+  #   many_rows = function(vec, nreps) {
+  #     return(rep(1, nreps) %*% t.default(vec))
+  #   }
+  #
+  #   custs <- cal.cbs[, "custs"]
+  #   logvec = (1:length(custs)) * (custs > 1)
+  #   logvec = logvec[logvec > 0]
+  #   M = sum(logvec > 0)
+  #   for (i in 1:M) {
+  #     cal.cbs = rbind(cal.cbs, many_rows(cal.cbs[logvec[i], ], custs[logvec[i]] -
+  #                                          1))
+  #   }
+  #   x = vX
+  #   t.x = vT_x
+  #   T.cal = vT_cal
+  # }
+  result <- sum(-bgnbd.LL(params, x, t.x, T.cal))
+  return(result)
 }
 
 bgnbd.LL <- function(params, x, t.x, T.cal) {
