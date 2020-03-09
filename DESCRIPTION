@@ -104,6 +104,8 @@ Collate:
     'clv_generics_summary_data_staticcovariates.R'
     'clv_generics_summary_nocov.R'
     'clv_generics_summary_staticcovariates.R'
+    'clv_model_bgnbd_nocov_predict.R'
+    'clv_model_bgnbd_nocov_expectation.R'
     'clv_model_pnbd_dyncov_expectation.R'
     'clv_model_pnbd_nocov_expectation.R'
     'clv_model_pnbd_nocov_predict.R'

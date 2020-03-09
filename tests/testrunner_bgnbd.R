@@ -15,5 +15,6 @@ est.bgnbd <- bgnbd(clv.data = clv.apparel, start.params.model = c(r = 1, alpha =
 summary(est.bgnbd)
 coef(est.bgnbd)
 
+
 predict(est.bgnbd, prediction.end = "2011-12-31")
 plot(est.bgnbd)
