@@ -90,18 +90,12 @@ arma::vec pnbd_LL_ind(const double r,
   //
   // There still can be problems with vX as then vPart1 gets too large (lgamma(vX))
 
-  arma::vec vPart1(n), vPart2(n), vPart3(n), vLL(n);
-
-  // calc part1: lgamma is not vectorised, hence loop
-  vPart1 = r * log(vAlpha_i) + s * log(vBeta_i);
-  for(int i = 0; i<n; i++)
-    vPart1(i) += -lgamma(r) + lgamma(r + vX(i));
-
-  vPart2 = -(r + vX) % arma::log(vAlpha_i + vT_cal) - s * arma::log(vBeta_i + vT_cal);
-  vPart3 = log(s) - arma::log(r + s + vX) + vPartF;
+  arma::vec vPart1 = r * log(vAlpha_i) + s * log(vBeta_i) - std::lgamma(r) + arma::lgamma(r + vX);
+  arma::vec vPart2 = -(r + vX) % arma::log(vAlpha_i + vT_cal) - s * arma::log(vBeta_i + vT_cal);
+  arma::vec vPart3 = log(s) - arma::log(r + s + vX) + vPartF;
 
   arma::vec vMaxPart23 = arma::max(vPart2, vPart3);
-  vLL = vPart1 + (vMaxPart23 + arma::log(arma::exp(vPart2 - vMaxPart23) +
+  arma::vec vLL = vPart1 + (vMaxPart23 + arma::log(arma::exp(vPart2 - vMaxPart23) +
     arma::exp(vPart3 - vMaxPart23)));
 
   return (vLL);
