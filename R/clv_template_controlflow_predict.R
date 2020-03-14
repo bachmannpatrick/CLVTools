@@ -117,13 +117,13 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
                       vX     = object@cbs$x,
                       vM_x   = object@cbs$Spending,
                       upper  = c(log(10000),log(10000),log(10000)),
-                      lower  = c(log(0),log(0),log(0)), 
+                      lower  = c(log(0),log(0),log(0)),
                       method = "L-BFGS-B",
                       control=list(trace = 0,
                                    # Do not perform starttests because it checks the scales with max(logpar)-min(logpar)
                                    #   but all standard start parameters are <= 0, hence there are no logpars what
                                    #   produces a warning
-                                   # starttests = FALSE,
+                                   starttests = FALSE,
                                    maxit=3000))
     p     <- exp(coef(results)[1,"p"])
     q     <- exp(coef(results)[1,"q"])
