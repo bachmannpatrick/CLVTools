@@ -175,7 +175,6 @@ arma::vec pnbd_nocov_LL_ind(const arma::vec& vLogparams,
 //'  Pareto/NBD Model and Related Expressions.", Web.
 //'  \url{http://www.brucehardie.com/notes/008/}.
 //'
-//' @importFrom Rcpp evalCpp
 // [[Rcpp::export]]
 double pnbd_nocov_LL_sum(const arma::vec& vLogparams,
                          const arma::vec& vX,
@@ -231,7 +230,6 @@ double pnbd_nocov_LL_sum(const arma::vec& vLogparams,
 //'  Pareto/NBD Model and Related Expressions.", Web.
 //'  \url{http://www.brucehardie.com/notes/008/}.
 //'
-//' @importFrom Rcpp evalCpp
 // [[Rcpp::export]]
 arma::vec pnbd_staticcov_LL_ind(const arma::vec& vParams,
                                 const arma::vec& vX,
@@ -276,7 +274,6 @@ arma::vec pnbd_staticcov_LL_ind(const arma::vec& vParams,
 
 
 //' @rdname pnbd_staticcov_LL_ind
-//' @importFrom Rcpp evalCpp
 // [[Rcpp::export]]
 double pnbd_staticcov_LL_sum(const arma::vec& vParams,
                              const arma::vec& vX,
