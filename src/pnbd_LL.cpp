@@ -1,6 +1,6 @@
 #include <RcppArmadillo.h>
 #include <math.h>
-#include "cephes_hypergeom2f1.h"
+#include "clv_vectorized.h"
 
 //Individual pnbd LL. No cov and staticcov differ by the individual vAlpha_i and vBeta_i which are different
 // for each customer depending on the covariate.
@@ -33,36 +33,31 @@ arma::vec pnbd_LL_ind(const double r,
   arma::uvec uvLLFind2 = find(vABabs == 0.0);
 
 
-  arma::vec vF1(n), vF2(n), vPartF(n);;
-  arma::uvec::const_iterator it, itEnd;
+  arma::vec vF1(n), vF2(n), vPartF(n);
+  // Rcout<<"1"<<std::endl;
 
   // Calculate Part F for case vABabs != 0 --------------------------------------------------
-  //  loop because hypergeom2F1 is not vectorised
-  itEnd = uvLLFind1.end();
-  for(it =uvLLFind1.begin(); it!=itEnd; it++)
+  try {
+    vF1(uvLLFind1) = clv::vec_hyp2F1(r + s + vX(uvLLFind1),
+        vParam2(uvLLFind1),
+        r + s + vX(uvLLFind1) + 1,
+        vABabs(uvLLFind1) / (vMaxAB(uvLLFind1) + vT_x(uvLLFind1)));
+
+    vF2(uvLLFind1) = clv::vec_hyp2F1(r + s + vX(uvLLFind1),
+        vParam2(uvLLFind1),
+        r + s + vX(uvLLFind1) + 1,
+        vABabs(uvLLFind1)/(vMaxAB(uvLLFind1) + vT_cal(uvLLFind1)));
+
+    vF2(uvLLFind1) %= clv::vec_pow((vMaxAB(uvLLFind1) + vT_x(uvLLFind1))/(vMaxAB(uvLLFind1) + vT_cal(uvLLFind1)),
+        r + s + vX(uvLLFind1));
+
+  }catch(std::exception &e)
   {
-    try {
-
-      vF1(*it) = cephes::hypergeom2F1(r + s + vX(*it),
-          vParam2(*it),
-          r + s + vX(*it) + 1,
-          vABabs(*it) / (vMaxAB(*it) + vT_x(*it)));
-
-      vF2(*it) = cephes::hypergeom2F1(r + s + vX(*it),
-          vParam2(*it),
-          r + s + vX(*it) + 1,
-          vABabs(*it)/(vMaxAB(*it) + vT_cal(*it)));
-
-      vF2(*it) *= pow((vMaxAB(*it) + vT_x(*it))/(vMaxAB(*it) + vT_cal(*it)) , r + s + vX(*it));
-
-    }catch(std::exception &e)
-    {
-      // print error location and cause. Stop and return NA to optimization
-      Rcpp::Rcout<<"Exception in pnbd_LL_ind: "<<e.what()<<std::endl;
-      arma::vec ret(1);
-      ret.fill(NA_REAL);
-      return(ret);
-    }
+    // print error location and cause. Stop and return NA to optimization
+    Rcpp::Rcout<<"Exception in pnbd_LL_ind: "<<e.what()<<std::endl;
+    arma::vec ret(1);
+    ret.fill(NA_REAL);
+    return(ret);
   }
 
   vPartF.elem(uvLLFind1) = -(r + s + vX.elem(uvLLFind1)) % arma::log(vMaxAB.elem(uvLLFind1) + vT_x.elem(uvLLFind1)) + arma::log(vF1.elem(uvLLFind1) - vF2.elem(uvLLFind1));
@@ -72,10 +67,8 @@ arma::vec pnbd_LL_ind(const double r,
   // Calculate Part F for case vABabs == 0 --------------------------------------------------
   vF1.elem(uvLLFind2) = (-1 * (r + s + vX.elem(uvLLFind2))) % arma::log(vMaxAB.elem(uvLLFind2) + vT_x.elem(uvLLFind2));
 
-  //pow is not vectorised for two vecs, hence loop
   vF2.elem(uvLLFind2) = (vMaxAB.elem(uvLLFind2) + vT_x.elem(uvLLFind2)) / (vMaxAB.elem(uvLLFind2) + vT_cal.elem(uvLLFind2));
-  for(it = uvLLFind2.begin(); it!=uvLLFind2.end(); it++)
-    vF2(*it) = pow(vF2(*it), r + s + vX(*it));
+  vF2.elem(uvLLFind2) %= clv::vec_pow(vF2(uvLLFind2), r + s + vX(uvLLFind2));
   vF2.elem(uvLLFind2) = log(1 - vF2.elem(uvLLFind2));
 
   vPartF.elem(uvLLFind2) = vF1.elem(uvLLFind2) + vF2.elem(uvLLFind2);
