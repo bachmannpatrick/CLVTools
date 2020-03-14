@@ -5,7 +5,7 @@
 #include "cephes_hypergeom2f1.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
-arma::vec pnbd_PAlive(  const arma::vec& vEstimated_model_params,
+arma::vec pnbd_PAlive( const arma::vec& vEstimated_model_params,
                         const arma::vec& vX,
                         const arma::vec& vT_x,
                         const arma::vec& vT_cal,
@@ -15,7 +15,6 @@ arma::vec pnbd_PAlive(  const arma::vec& vEstimated_model_params,
 
 
   const int n = vX.n_elem;
-
   const double r       = vEstimated_model_params(0);
   // const double alpha_0 = vEstimated_model_params(1);
   const double s       = vEstimated_model_params(2);
@@ -25,16 +24,16 @@ arma::vec pnbd_PAlive(  const arma::vec& vEstimated_model_params,
 
   double tmpF1 = 0.0, tmpF2=0.0, tmpA0 = 0.0;
   unsigned int i, end = vX.n_elem;
-  for( i=0; i<end; i++){
+  for(i=0; i<end; i++){
 
-    if( vAlpha_i(i) >= vBeta_i(i) ){
+    if(vAlpha_i(i) >= vBeta_i(i)){
 
-      tmpF1 = cephes::hypergeom2F1(  r + s + vX(i),
+      tmpF1 = cephes::hypergeom2F1( r + s + vX(i),
                                      s + 1,
                                      r + s + vX(i) + 1,
                                      (vAlpha_i(i) - vBeta_i(i))/ (vAlpha_i(i) + vT_x(i)));
 
-      tmpF2 = cephes::hypergeom2F1(  r + s + vX(i),
+      tmpF2 = cephes::hypergeom2F1( r + s + vX(i),
                                      s + 1,
                                      r + s + vX(i) + 1,
                                      (vAlpha_i(i) - vBeta_i(i)) / (vAlpha_i(i) + vT_cal(i)));
@@ -46,12 +45,12 @@ arma::vec pnbd_PAlive(  const arma::vec& vEstimated_model_params,
     }else{
       //      vAlpha_i(i) < vBeta_i(i)
 
-      tmpF1 = cephes::hypergeom2F1(  r + s + vX(i),
+      tmpF1 = cephes::hypergeom2F1( r + s + vX(i),
                                      r + vX(i),
                                      r + s + vX(i) + 1,
                                      (vBeta_i(i) - vAlpha_i(i)) / (vBeta_i(i) + vT_x(i)));
 
-      tmpF2 = cephes::hypergeom2F1(  r + s + vX(i),
+      tmpF2 = cephes::hypergeom2F1( r + s + vX(i),
                                      r + vX(i),
                                      r + s + vX(i) + 1,
                                      (vBeta_i(i) - vAlpha_i(i)) / (vBeta_i(i) + vT_cal(i)));
@@ -60,7 +59,7 @@ arma::vec pnbd_PAlive(  const arma::vec& vEstimated_model_params,
       tmpA0 -= tmpF2 / pow(vBeta_i(i) + vT_cal(i), r + s + vX(i));
     }
 
-    vPAlive(i) = 1/( 1  + ( s / (r+s+vX(i))  * pow(vAlpha_i(i) + vT_cal(i), r + vX(i))  * pow( (vBeta_i(i) + vT_cal(i)), s) * tmpA0));
+    vPAlive(i) = 1/(1  + (s / (r+s+vX(i))  * pow(vAlpha_i(i) + vT_cal(i), r + vX(i))  * pow((vBeta_i(i) + vT_cal(i)), s) * tmpA0));
   }
 
   return vPAlive;
@@ -112,7 +111,7 @@ arma::vec pnbd_nocov_PAlive(const arma::vec& vEstimated_params,
   arma::vec vAlpha_i(n), vBeta_i(n);
 
   vAlpha_i.fill(alpha_0);
-  vBeta_i.fill( beta_0);
+  vBeta_i.fill(beta_0);
 
 
   // Calculate PAlive -------------------------------------------------------------
@@ -200,7 +199,7 @@ arma::vec pnbd_staticcov_PAlive(const arma::vec& vEstimated_params,
   arma::vec vAlpha_i(n), vBeta_i(n);
 
   vAlpha_i = alpha_0 * arma::exp(((mCov_trans * (-1)) * vCovParams_trans));
-  vBeta_i  = beta_0  * arma::exp(((mCov_life     * (-1)) * vCovParams_life));
+  vBeta_i  = beta_0  * arma::exp(((mCov_life  * (-1)) * vCovParams_life));
 
   // Calculate PAlive -------------------------------------------------
   return pnbd_PAlive(vEstimated_params,

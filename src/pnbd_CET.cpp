@@ -5,13 +5,13 @@
 #include "pnbd_PAlive.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
-arma::vec pnbd_CET( const arma::vec& vEstimated_model_params,
-                    const double dPrediction_period,
-                    const arma::vec& vX,
-                    const arma::vec& vT_cal,
-                    const arma::vec& vAlpha_i,
-                    const arma::vec& vBeta_i,
-                    const arma::vec& vPAlive){
+arma::vec pnbd_CET(const arma::vec& vEstimated_model_params,
+                   const double dPrediction_period,
+                   const arma::vec& vX,
+                   const arma::vec& vT_cal,
+                   const arma::vec& vAlpha_i,
+                   const arma::vec& vBeta_i,
+                   const arma::vec& vPAlive){
 
   const double r = vEstimated_model_params(0);
   // const double alpha_0 = vEstimated_params(1);
@@ -20,8 +20,8 @@ arma::vec pnbd_CET( const arma::vec& vEstimated_model_params,
 
   arma::vec vP1, vP2, vP3;
 
-  vP1 = (r + vX) % (vBeta_i + vT_cal) / ((vAlpha_i + vT_cal) * (s-1) );
-  vP2 = (1 - arma::pow( ( vBeta_i + vT_cal) / (vBeta_i + vT_cal + dPrediction_period), (s-1)  )   );
+  vP1 = (r + vX) % (vBeta_i + vT_cal) / ((vAlpha_i + vT_cal) * (s-1));
+  vP2 = (1 - arma::pow((vBeta_i + vT_cal) / (vBeta_i + vT_cal + dPrediction_period), (s-1)));
   vP3 = vPAlive;
 
   // eval is needed as evaluation could be delayed!
@@ -77,7 +77,7 @@ arma::vec pnbd_nocov_CET(const arma::vec& vEstimated_params,
   arma::vec vAlpha_i(n), vBeta_i(n);
 
   vAlpha_i.fill(alpha_0);
-  vBeta_i.fill( beta_0);
+  vBeta_i.fill(beta_0);
 
 
   // Calculate PAlive -------------------------------------------------------------

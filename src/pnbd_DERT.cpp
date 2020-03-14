@@ -42,11 +42,11 @@ arma::vec pnbd_DERT_ind(const double r,
 
 
 // [[Rcpp::export]]
-arma::vec pnbd_nocov_DERT( const arma::vec& vEstimated_params,
-                           const double continuous_discount_factor,
-                           const arma::vec& vX,
-                           const arma::vec& vT_x,
-                           const arma::vec& vT_cal){
+arma::vec pnbd_nocov_DERT(const arma::vec& vEstimated_params,
+                          const double continuous_discount_factor,
+                          const arma::vec& vX,
+                          const arma::vec& vT_x,
+                          const arma::vec& vT_cal){
 
   const double n = vX.n_elem;
 
@@ -61,7 +61,7 @@ arma::vec pnbd_nocov_DERT( const arma::vec& vEstimated_params,
   arma::vec vAlpha_i(n), vBeta_i(n);
 
   vAlpha_i.fill(alpha_0);
-  vBeta_i.fill( beta_0);
+  vBeta_i.fill(beta_0);
 
   // Calculate DERT -------------------------------------------------
   return pnbd_DERT_ind(r, s,

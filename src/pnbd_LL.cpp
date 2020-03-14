@@ -4,57 +4,56 @@
 
 //Individual pnbd LL. No cov and staticcov differ by the individual vAlpha_i and vBeta_i which are different
 // for each customer depending on the covariate.
-arma::vec pnbd_LL_ind(  const double r,
-                        const double s,
-                        const arma::vec& vAlpha_i,
-                        const arma::vec& vBeta_i,
-                        const arma::vec& vX,
-                        const arma::vec& vT_x,
-                        const arma::vec& vT_cal)
+arma::vec pnbd_LL_ind(const double r,
+                      const double s,
+                      const arma::vec& vAlpha_i,
+                      const arma::vec& vBeta_i,
+                      const arma::vec& vX,
+                      const arma::vec& vT_x,
+                      const arma::vec& vT_cal)
 {
 
   const unsigned int n = vX.n_elem;
 
-  arma::vec vABabs = arma::abs( (vAlpha_i - vBeta_i) );
 
+  // Param2: s+1 or r+x
+  //  save indices as used again
+  arma::uvec uvAlphaBetaFindRes = find(vAlpha_i < vBeta_i);
   arma::vec vParam2(n);
   vParam2.fill((s+1));
-
-  // save indices as used often
-  arma::uvec uvAlphaBetaFindRes = find(vAlpha_i < vBeta_i);
-  vParam2.elem( uvAlphaBetaFindRes ) = ( r + vX.elem(uvAlphaBetaFindRes) );
-
+  vParam2.elem(uvAlphaBetaFindRes) = (r + vX.elem(uvAlphaBetaFindRes));
+  // MaxAB
   arma::vec vMaxAB(vAlpha_i);
   vMaxAB.elem(uvAlphaBetaFindRes) = vBeta_i.elem(uvAlphaBetaFindRes);
 
-  // Distinguish betwen case abs(alpha_i - beta_i) == 0 and != 0
-  arma::uvec uvLLFind1 = find( vABabs != 0.0) ;
-  arma::uvec uvLLFind2 = find( vABabs == 0.0);
+
+  // Distinguish between case abs(alpha_i - beta_i) == 0 and != 0
+  arma::vec vABabs = arma::abs((vAlpha_i - vBeta_i));
+  arma::uvec uvLLFind1 = find(vABabs != 0.0) ;
+  arma::uvec uvLLFind2 = find(vABabs == 0.0);
 
 
   arma::vec vF1(n), vF2(n), vPartF(n);;
   arma::uvec::const_iterator it, itEnd;
 
-  // Calculate Part F for case vABabs != 0
+  // Calculate Part F for case vABabs != 0 --------------------------------------------------
   //  loop because hypergeom2F1 is not vectorised
   itEnd = uvLLFind1.end();
   for(it =uvLLFind1.begin(); it!=itEnd; it++)
   {
     try {
 
-      vF1(*it) = cephes::hypergeom2F1( r + s + vX(*it),
+      vF1(*it) = cephes::hypergeom2F1(r + s + vX(*it),
           vParam2(*it),
           r + s + vX(*it) + 1,
-          vABabs(*it) / (vMaxAB(*it) + vT_x(*it))
-      );
+          vABabs(*it) / (vMaxAB(*it) + vT_x(*it)));
 
-      vF2(*it) = cephes::hypergeom2F1( r + s + vX(*it),
+      vF2(*it) = cephes::hypergeom2F1(r + s + vX(*it),
           vParam2(*it),
           r + s + vX(*it) + 1,
-          vABabs(*it)/(vMaxAB(*it) + vT_cal(*it))
-      );
+          vABabs(*it)/(vMaxAB(*it) + vT_cal(*it)));
 
-      vF2(*it) *= pow( (vMaxAB(*it) + vT_x(*it))/(vMaxAB(*it) + vT_cal(*it)) , r + s + vX(*it));
+      vF2(*it) *= pow((vMaxAB(*it) + vT_x(*it))/(vMaxAB(*it) + vT_cal(*it)) , r + s + vX(*it));
 
     }catch(std::exception &e)
     {
@@ -69,46 +68,43 @@ arma::vec pnbd_LL_ind(  const double r,
   vPartF.elem(uvLLFind1) = -(r + s + vX.elem(uvLLFind1)) % arma::log(vMaxAB.elem(uvLLFind1) + vT_x.elem(uvLLFind1)) + arma::log(vF1.elem(uvLLFind1) - vF2.elem(uvLLFind1));
 
 
-  // Calculate Part F for case vABabs == 0
 
-  vF1.elem(uvLLFind2) = (-1 * (r + s + vX.elem(uvLLFind2))) % arma::log( vMaxAB.elem(uvLLFind2) + vT_x.elem(uvLLFind2) );
+  // Calculate Part F for case vABabs == 0 --------------------------------------------------
+  vF1.elem(uvLLFind2) = (-1 * (r + s + vX.elem(uvLLFind2))) % arma::log(vMaxAB.elem(uvLLFind2) + vT_x.elem(uvLLFind2));
 
   //pow is not vectorised for two vecs, hence loop
   vF2.elem(uvLLFind2) = (vMaxAB.elem(uvLLFind2) + vT_x.elem(uvLLFind2)) / (vMaxAB.elem(uvLLFind2) + vT_cal.elem(uvLLFind2));
-
-  for( it = uvLLFind2.begin(); it!=uvLLFind2.end(); it++)
-    vF2(*it) = pow( vF2(*it), r + s + vX(*it) );
-
-  vF2.elem(uvLLFind2) = log( 1 - vF2.elem(uvLLFind2));
-
+  for(it = uvLLFind2.begin(); it!=uvLLFind2.end(); it++)
+    vF2(*it) = pow(vF2(*it), r + s + vX(*it));
+  vF2.elem(uvLLFind2) = log(1 - vF2.elem(uvLLFind2));
 
   vPartF.elem(uvLLFind2) = vF1.elem(uvLLFind2) + vF2.elem(uvLLFind2);
 
 
-  // Calculate LL
-  arma::vec vPart1(n), vPart2(n), vPart3(n), vLL(n);
 
-  // calc part1: lgamma is not vectorised, hence loop
-  vPart1 = r * log(vAlpha_i) + s * log(vBeta_i);
-  for( int i = 0; i<n; i++)
-    vPart1(i) += -lgamma(r) + lgamma(r + vX(i));
-
-  vPart2 = -(r + vX) % arma::log(vAlpha_i + vT_cal) - s * arma::log(vBeta_i + vT_cal);
-  vPart3 = log(s) - arma::log(r + s + vX) + vPartF;
-
+  // Calculate LL ---------------------------------------------------------------------------
   // For numerical stability rewrite
   //  log(exp(a) + exp(b))
   //            as
   //  max(a,b) + log(exp(a-max(a,b)) + exp(b-max(a,b)))
   //
   // There still can be problems with vX as then vPart1 gets too large (lgamma(vX))
-  //
+
+  arma::vec vPart1(n), vPart2(n), vPart3(n), vLL(n);
+
+  // calc part1: lgamma is not vectorised, hence loop
+  vPart1 = r * log(vAlpha_i) + s * log(vBeta_i);
+  for(int i = 0; i<n; i++)
+    vPart1(i) += -lgamma(r) + lgamma(r + vX(i));
+
+  vPart2 = -(r + vX) % arma::log(vAlpha_i + vT_cal) - s * arma::log(vBeta_i + vT_cal);
+  vPart3 = log(s) - arma::log(r + s + vX) + vPartF;
+
   arma::vec vMaxPart23 = arma::max(vPart2, vPart3);
-  vLL = vPart1 + (vMaxPart23 + arma::log( arma::exp(vPart2 - vMaxPart23) +
+  vLL = vPart1 + (vMaxPart23 + arma::log(arma::exp(vPart2 - vMaxPart23) +
     arma::exp(vPart3 - vMaxPart23)));
 
   return (vLL);
-
 }
 
 

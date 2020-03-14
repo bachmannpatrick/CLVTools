@@ -28,7 +28,7 @@ arma::vec vec_hyp2F1(const arma::vec& vA, const arma::vec& vB, const arma::vec& 
 //    a, b:     scalars
 //    X:        vector
 //
-//    hypergeom1F1( double a, double b, double x);
+//    hypergeom1F1(double a, double b, double x);
 arma::vec vec_x_hyp1F1(const double a, const double b, const arma::vec& vX){
 
   arma::vec vRes(vX);
