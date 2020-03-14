@@ -4,8 +4,16 @@
 \alias{pnbd_staticcov_PAlive}
 \title{Pareto/NBD: PAlive with static covariates}
 \usage{
-pnbd_staticcov_PAlive(vEstimated_params, vX, vT_x, vT_cal,
-  vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
+pnbd_staticcov_PAlive(
+  vEstimated_params,
+  vX,
+  vT_x,
+  vT_cal,
+  vCovParams_trans,
+  vCovParams_life,
+  mCov_trans,
+  mCov_life
+)
 }
 \arguments{
 \item{vEstimated_params}{Vector with the Pareto/NBD model parameters at original scale.}

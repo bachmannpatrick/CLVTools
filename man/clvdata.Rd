@@ -4,9 +4,15 @@
 \alias{clvdata}
 \title{Create an object for transactional data required to estimate CLV}
 \usage{
-clvdata(data.transactions, date.format, time.unit,
-  estimation.split = NULL, name.id = "Id", name.date = "Date",
-  name.price = "Price")
+clvdata(
+  data.transactions,
+  date.format,
+  time.unit,
+  estimation.split = NULL,
+  name.id = "Id",
+  name.date = "Date",
+  name.price = "Price"
+)
 }
 \arguments{
 \item{data.transactions}{Transaction data as \code{data.frame} or \code{data.table}. See details.}

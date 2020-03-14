@@ -4,9 +4,17 @@
 \alias{plot.clv.fitted}
 \title{Plot expected and actual repeat transactions}
 \usage{
-\method{plot}{clv.fitted}(x, prediction.end = NULL, newdata = NULL,
-  cumulative = FALSE, transactions = TRUE, label = NULL,
-  plot = TRUE, verbose = TRUE, ...)
+\method{plot}{clv.fitted}(
+  x,
+  prediction.end = NULL,
+  newdata = NULL,
+  cumulative = FALSE,
+  transactions = TRUE,
+  label = NULL,
+  plot = TRUE,
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{The fitted clv model to plot}

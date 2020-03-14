@@ -4,8 +4,7 @@
 \alias{fitted.clv.fitted}
 \title{Extract Unconditional Expectation}
 \usage{
-\method{fitted}{clv.fitted}(object, prediction.end = NULL,
-  verbose = FALSE, ...)
+\method{fitted}{clv.fitted}(object, prediction.end = NULL, verbose = FALSE, ...)
 }
 \arguments{
 \item{object}{A fitted clv model for which the unconditional expectation is desired.}

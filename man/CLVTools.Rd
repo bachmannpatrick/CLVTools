@@ -3,7 +3,6 @@
 \docType{package}
 \name{CLVTools}
 \alias{CLVTools}
-\alias{CLVTools-package}
 \title{Customer Lifetime Value Tools}
 \description{
 CLVTools is a toolbox for various probabilistic customer attrition models

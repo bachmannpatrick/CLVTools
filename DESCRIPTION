@@ -146,4 +146,4 @@ Collate:
     'validity_clv_time.R'
     'validity_clv_timedate.R'
     'validity_clv_timedatetime.R'
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
