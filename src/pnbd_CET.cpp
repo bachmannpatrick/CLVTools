@@ -5,13 +5,13 @@
 #include "pnbd_PAlive.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
-arma::vec pnbd_CET( const arma::vec& vEstimated_model_params,
-                    const double dPrediction_period,
-                    const arma::vec& vX,
-                    const arma::vec& vT_cal,
-                    const arma::vec& vAlpha_i,
-                    const arma::vec& vBeta_i,
-                    const arma::vec& vPAlive){
+arma::vec pnbd_CET(const arma::vec& vEstimated_model_params,
+                   const double dPrediction_period,
+                   const arma::vec& vX,
+                   const arma::vec& vT_cal,
+                   const arma::vec& vAlpha_i,
+                   const arma::vec& vBeta_i,
+                   const arma::vec& vPAlive){
 
   const double r = vEstimated_model_params(0);
   // const double alpha_0 = vEstimated_params(1);
@@ -20,16 +20,10 @@ arma::vec pnbd_CET( const arma::vec& vEstimated_model_params,
 
   arma::vec vP1, vP2, vP3;
 
-  //  P1 <- (r + data$x) * (beta_i + data$T.cal)/((alpha_i + data$T.cal) * (s - 1))
-  //  P2 <- (1 - ( (beta_i + data$T.cal) / (beta_i + data$T.cal + prediction.period) )^(s - 1))
-  //  P3 <- pnbd_PAlive(params, data, covariates, dropout.cov, transaction.cov)
+  vP1 = (r + vX) % (vBeta_i + vT_cal) / ((vAlpha_i + vT_cal) * (s-1));
+  vP2 = (1 - arma::pow((vBeta_i + vT_cal) / (vBeta_i + vT_cal + dPrediction_period), (s-1)));
+  vP3 = vPAlive;
 
-  // % is element wise muttiplication
-  vP1 = (r + vX) % (vBeta_i + vT_cal) / ((vAlpha_i + vT_cal) * (s-1) );
-  vP2 = (1 - arma::pow( ( vBeta_i + vT_cal) / (vBeta_i + vT_cal + dPrediction_period), (s-1)  )   );
-  vP3 = vPAlive; //pnbd_PAlive(vEstimated_params, vX, vT_x, vT_cal, mCovariates_transaction, mCovariates_dropout);
-
-  // % is element wise multiplication
   // eval is needed as evaluation could be delayed!
   return (vP1 % vP2 % vP3).eval();
 }
@@ -83,25 +77,16 @@ arma::vec pnbd_nocov_CET(const arma::vec& vEstimated_params,
   arma::vec vAlpha_i(n), vBeta_i(n);
 
   vAlpha_i.fill(alpha_0);
-  vBeta_i.fill( beta_0);
+  vBeta_i.fill(beta_0);
 
 
   // Calculate PAlive -------------------------------------------------------------
-  // pnbd_PAlive(vEstimated_model_params, vX,
-  //              vT_x, vT_cal,
-  //              vAlpha_i, vBeta_i);
-
   const arma::vec vPAlive = pnbd_PAlive(vEstimated_params, vX,
                                         vT_x, vT_cal,
                                         vAlpha_i, vBeta_i);
 
 
   // Calculate CET -----------------------------------------------------------------
-  // pnbd_CET(vEstimated_model_params,
-  //          dPrediction_period,
-  //          vX, vT_cal,
-  //          vAlpha_i, vBeta_i,
-  //          vPAlive)
   return(pnbd_CET(vEstimated_params,
                   dPrediction_period,
                   vX, vT_cal,
@@ -193,21 +178,12 @@ arma::vec pnbd_staticcov_CET(const arma::vec& vEstimated_params,
 
 
   // Calculate PAlive -------------------------------------------------------------
-  // pnbd_PAlive(vEstimated_model_params, vX,
-  //              vT_x, vT_cal,
-  //              vAlpha_i, vBeta_i);
-
   const arma::vec vPAlive = pnbd_PAlive(vEstimated_params, vX,
                                         vT_x, vT_cal,
                                         vAlpha_i, vBeta_i);
 
 
   // Calculate CET -----------------------------------------------------------------
-  // pnbd_CET(vEstimated_model_params,
-  //          dPrediction_period,
-  //          vX, vT_cal,
-  //          vAlpha_i, vBeta_i,
-  //          vPAlive)
   return(pnbd_CET(vEstimated_params,
                   dPrediction_period,
                   vX, vT_cal,

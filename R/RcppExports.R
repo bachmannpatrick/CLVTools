@@ -151,7 +151,6 @@ pnbd_nocov_LL_ind <- function(vLogparams, vX, vT_x, vT_cal) {
 #'  Pareto/NBD Model and Related Expressions.", Web.
 #'  \url{http://www.brucehardie.com/notes/008/}.
 #'
-#' @importFrom Rcpp evalCpp
 pnbd_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal) {
     .Call('_CLVTools_pnbd_nocov_LL_sum', PACKAGE = 'CLVTools', vLogparams, vX, vT_x, vT_cal)
 }
@@ -195,13 +194,11 @@ pnbd_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal) {
 #'  Pareto/NBD Model and Related Expressions.", Web.
 #'  \url{http://www.brucehardie.com/notes/008/}.
 #'
-#' @importFrom Rcpp evalCpp
 pnbd_staticcov_LL_ind <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans) {
     .Call('_CLVTools_pnbd_staticcov_LL_ind', PACKAGE = 'CLVTools', vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
 
 #' @rdname pnbd_staticcov_LL_ind
-#' @importFrom Rcpp evalCpp
 pnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans) {
     .Call('_CLVTools_pnbd_staticcov_LL_sum', PACKAGE = 'CLVTools', vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }

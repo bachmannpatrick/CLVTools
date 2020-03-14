@@ -2,9 +2,8 @@
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-// #include "CLVTool_math.h"
-//lbeta:=lgamma(a) + lgamma(b) - lgamma(a+b)
 
+//lbeta:=lgamma(a) + lgamma(b) - lgamma(a+b)
 double lbeta(double a, double b){
   return (lgamma(a) + lgamma(b) - lgamma(a+b));
 }
@@ -33,10 +32,9 @@ double lbeta(double a, double b){
 //' @name gg_LL
 //' @rdname gg_LL
 // [[Rcpp::export]]
-double gg_LL( const arma::vec& vLogparams,
-              const arma::vec& vX,
-              const arma::vec& vM_x
-              )
+double gg_LL(const arma::vec& vLogparams,
+             const arma::vec& vX,
+             const arma::vec& vM_x)
 {
 
   const double p = std::exp(vLogparams(0));
@@ -45,36 +43,22 @@ double gg_LL( const arma::vec& vLogparams,
 
   const unsigned int n = vX.n_elem;
 
+  // #Calculate the likelood for all != 0 values
   arma::vec vLL(n, arma::fill::zeros);
+  arma::uvec vNonZero = find((vX != 0.0) && (vM_x != 0.0));
 
-//   non.zero <- which(x > 0 & m.x > 0)
-// #Calculate the likelood for all ≠0 values
-//     LL[non.zero] <- (-lbeta(p * x[non.zero], q) + q * log(gamma) + (p * x[non.zero] - 1) * log(m.x[non.zero]) + (p * x[non.zero]) *
-//       log(x[non.zero]) - (p * x[non.zero] + q) * log(gamma + m.x[non.zero] * x[non.zero]))
+  //lbeta is not vectorized. Everything else do vectorized, loop lbeta afterwards.
 
-  arma::uvec vNonZero = find( (vX != 0.0) && (vM_x != 0.0));
-
-  //lbeta cannot be vectorized. Everything else do vectorized, loop lbeta afterwards.
-  //all the multiplications in R are elementwise
-  // % := element wise multiplication
   vLL(vNonZero) = q * log(gamma)
-              + ((p * vX(vNonZero) - 1 ) % arma::log(vM_x(vNonZero)))
-              + ((p * vX(vNonZero) ) % arma::log(vX(vNonZero)))
-              - (p * vX(vNonZero) + q) % arma::log(gamma + vM_x(vNonZero) % vX(vNonZero) );
+    + ((p * vX(vNonZero) - 1) % arma::log(vM_x(vNonZero)))
+    + ((p * vX(vNonZero)) % arma::log(vX(vNonZero)))
+    - (p * vX(vNonZero) + q) % arma::log(gamma + vM_x(vNonZero) % vX(vNonZero));
 
-  // -lbeta(p * x[non.zero], q)
-  for( arma::uvec::iterator it = vNonZero.begin(); it != vNonZero.end(); it++)
-  {
+  for(arma::uvec::iterator it = vNonZero.begin(); it != vNonZero.end(); it++){
     vLL(*it) += -lbeta(p * vX(*it), q);
   }
 
-
-// #Sum all LL-values and make them negative (we are maximizing)
-//   LL <- -(1 * sum(LL))
-  const double LL = -1 * arma::sum(vLL);
-
-  return LL;
-
+  return -1 * arma::sum(vLL);
 }
 
 
