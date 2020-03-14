@@ -54,7 +54,7 @@ expect_silent(p.dyncov@optimx.estimation.output[1, c("life.Haircolor","trans.Hai
 expect_silent(log.params <- coef(p.dyncov))
 expect_silent(log.params[c("log.r", "log.alpha", "log.s", "log.beta")] <- log(log.params[c("r", "alpha", "s", "beta")]))
 expect_silent(log.params <-log.params[c("log.r", "log.alpha", "log.s", "log.beta","trans.Haircolor", "life.Haircolor")])
-expect_silent(p.dyncov@LL.data <- CLVTools2:::pnbd_dyncov_LL(params=log.params, obj = p.dyncov))
+expect_silent(p.dyncov@LL.data <- CLVTools:::pnbd_dyncov_LL(params=log.params, obj = p.dyncov))
 
 
 # gamma=0 ------------------------------------------------------------------------------------------------

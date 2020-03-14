@@ -15,7 +15,7 @@
 #'
 #' @seealso
 #' Development for CLVTools can be followed via the GitHub repository
-#' at \url{http://github.com/bachmannpatrick/CLVTools2}.
+#' at \url{https://github.com/bachmannpatrick/CLVTools}.
 #'
 #' @examples
 #' \dontrun{

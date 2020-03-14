@@ -1,6 +1,6 @@
 library("testthat")
 library("lubridate")
 library("data.table")
-library("CLVTools2")
+library("CLVTools")
 
-test_check("CLVTools2")
+test_check("CLVTools")
