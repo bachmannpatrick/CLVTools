@@ -36,4 +36,4 @@ Install the development version from GitHub:
 
 Contributions
 -------------
-Feedback and contributions to this package are welcome! Please use [GitHub Issues](https://github.com/bachmannpatrick/CLVTools2/issues) for filing bug reports. Provide your contributions in the form of [Pull Requests](https://help.github.com/articles/about-pull-requests/). See also [these general guidelines](https://guides.github.com/activities/contributing-to-open-source/#contributing) to contribute to Open Source projects on GitHub.
+Feedback and contributions to this package are welcome! Please use [GitHub Issues](https://github.com/bachmannpatrick/CLVTools/issues) for filing bug reports. Provide your contributions in the form of [Pull Requests](https://help.github.com/articles/about-pull-requests/). See also [these general guidelines](https://guides.github.com/activities/contributing-to-open-source/#contributing) to contribute to Open Source projects on GitHub.
