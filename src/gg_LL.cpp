@@ -4,8 +4,8 @@
 
 
 // lbeta := lgamma(a) + lgamma(b) - lgamma(a+b)
-arma::vec lbeta(arma::vec a, arma::vec b){
-  return (arma::lgamma(a) + arma::lgamma(b) - arma::lgamma(a+b));
+arma::vec lbeta(const arma::vec& a, const double b){
+  return (arma::lgamma(a) + std::lgamma(b) - arma::lgamma(a+b));
 }
 
 //' @title Gamma-Gamma: Log-Likelihood Function
@@ -44,11 +44,12 @@ double gg_LL(const arma::vec& vLogparams,
   // Calculate the likelood for all != 0 values
   arma::uvec vNonZero = find((vX != 0.0) && (vM_x != 0.0));
 
-  arma::vec vLL(vNonZero) = q * log(gamma)
+  // arma::vec vLL(vX.n_elem);
+  arma::vec vLL = q * log(gamma)
     + ((p * vX(vNonZero) - 1) % arma::log(vM_x(vNonZero)))
     + ((p * vX(vNonZero)) % arma::log(vX(vNonZero)))
     - (p * vX(vNonZero) + q) % arma::log(gamma + vM_x(vNonZero) % vX(vNonZero))
-    - lbeta(p * vX(*it), q);
+    - lbeta(p * vX(vNonZero), q);
 
   return -1 * arma::sum(vLL);
 }
