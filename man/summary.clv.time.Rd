@@ -5,8 +5,12 @@
 \alias{summary.clv.time}
 \title{Summarizing a CLV time object}
 \usage{
-\method{print}{clv.time}(x, digits = max(3L, getOption("digits") - 3L),
-  signif.stars = getOption("show.signif.stars"), ...)
+\method{print}{clv.time}(
+  x,
+  digits = max(3L, getOption("digits") - 3L),
+  signif.stars = getOption("show.signif.stars"),
+  ...
+)
 
 \method{summary}{clv.time}(object, ...)
 }

@@ -4,8 +4,14 @@
 \alias{plot.clv.data}
 \title{Plot actual repeat transactions}
 \usage{
-\method{plot}{clv.data}(x, prediction.end = NULL, cumulative = FALSE,
-  plot = TRUE, verbose = TRUE, ...)
+\method{plot}{clv.data}(
+  x,
+  prediction.end = NULL,
+  cumulative = FALSE,
+  plot = TRUE,
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{The clv data object to plot}

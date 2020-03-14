@@ -7,9 +7,12 @@
 \alias{summary.clv.fitted.static.cov}
 \title{Summarizing a fitted CLV model}
 \usage{
-\method{print}{summary.clv.fitted}(x, digits = max(3L,
-  getOption("digits") - 3L),
-  signif.stars = getOption("show.signif.stars"), ...)
+\method{print}{summary.clv.fitted}(
+  x,
+  digits = max(3L, getOption("digits") - 3L),
+  signif.stars = getOption("show.signif.stars"),
+  ...
+)
 
 \method{summary}{clv.fitted}(object, ...)
 

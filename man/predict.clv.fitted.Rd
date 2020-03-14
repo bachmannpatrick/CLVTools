@@ -4,10 +4,15 @@
 \alias{predict.clv.fitted}
 \title{Predict CLV from a fitted model}
 \usage{
-\method{predict}{clv.fitted}(object, newdata = NULL,
+\method{predict}{clv.fitted}(
+  object,
+  newdata = NULL,
   prediction.end = NULL,
   predict.spending = object@clv.data@has.spending,
-  continuous.discount.factor = 0.1, verbose = TRUE, ...)
+  continuous.discount.factor = 0.1,
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{object}{A fitted clv model for which prediction is desired.}

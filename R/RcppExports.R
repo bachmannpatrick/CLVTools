@@ -62,83 +62,6 @@ pnbd_nocov_CET <- function(vEstimated_params, dPrediction_period, vX, vT_x, vT_c
     .Call('_CLVTools_pnbd_nocov_CET', PACKAGE = 'CLVTools', vEstimated_params, dPrediction_period, vX, vT_x, vT_cal)
 }
 
-pnbd_nocov_DERT <- function(vEstimated_params, continuous_discount_factor, vX, vT_x, vT_cal) {
-    .Call('_CLVTools_pnbd_nocov_DERT', PACKAGE = 'CLVTools', vEstimated_params, continuous_discount_factor, vX, vT_x, vT_cal)
-}
-
-#' @importFrom Rcpp evalCpp
-#' @rdname pnbd_nocov_LL_sum
-pnbd_nocov_LL_ind <- function(vLogparams, vX, vT_x, vT_cal) {
-    .Call('_CLVTools_pnbd_nocov_LL_ind', PACKAGE = 'CLVTools', vLogparams, vX, vT_x, vT_cal)
-}
-
-#' @title Pareto/NBD: LogLikelihood without covariates
-#'
-#' @description
-#' Pareto/NBD without Covariates:
-#'
-#' The function \code{pnbd_nocov_LL_ind} calculates the individual LogLikelihood
-#' values for each customer for the given parameters.
-#'
-#' The function \code{pnbd_nocov_LL_sum} calculates the LogLikelihood value summed
-#' across customers for the given parameters.
-#'
-#' @param vLogparams vector with the Pareto/NBD model parameters log scaled
-#' @template template_params_rcppxtxtcal
-#'
-#' @details
-#' \code{r, alpha_0, s, beta_0} are the parameters used for estimation.\cr
-#' s: shape parameter of the Gamma distribution for the lifetime process.
-#' The smaller s, the stronger the heterogeneity of customer lifetimes. \cr
-#' beta: scale parameter for the Gamma distribution for the lifetime process. \cr
-#' r: shape parameter of the Gamma distribution of the purchase process.
-#' The smaller r, the stronger the heterogeneity of the purchase process.\cr
-#' alpha: scale parameter of the Gamma distribution of the purchase process.
-#'
-#'@return
-#'  Returns the respective LogLikelihood value for the Pareto/NBD model without covariates.
-#'
-#'@references
-#'  Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
-#'  Pareto/NBD Model and Related Expressions.", Web.
-#'  \url{http://www.brucehardie.com/notes/008/}.
-#'
-#' @importFrom Rcpp evalCpp
-pnbd_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal) {
-    .Call('_CLVTools_pnbd_nocov_LL_sum', PACKAGE = 'CLVTools', vLogparams, vX, vT_x, vT_cal)
-}
-
-#' @title Pareto/NBD: PAlive without covariates
-#'
-#' @description
-#' Pareto/NBD without Covariates: Calculates the probability of a customer being alive
-#' at the end of the calibration period.
-#'
-#' @template template_params_rcppestimatedparams
-#' @template template_params_rcppxtxtcal
-#'
-#' @details
-#' \code{vEstimated_params} vector with the estimated parameters in original scale
-#' for the Pareto/NBD model, namely (r, alpha, s, beta).
-#' r and alpha: unobserved parameters that describe the NBD transaction process.
-#' s and beta: unobserved parameters that describe the pareto
-#' (exponential gamma) dropout process.
-#'
-#'
-#'@return
-#'Returns a vector with the PAlive for each customer.
-#'
-#'@references
-#'  Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
-#'  Pareto/NBD Model and Related Expressions.", Web.
-#'  \url{http://www.brucehardie.com/notes/008/}.
-#'
-#' @name pnbd_nocov_PAlive
-#' @rdname pnbd_nocov_PAlive
-pnbd_nocov_PAlive <- function(vEstimated_params, vX, vT_x, vT_cal) {
-    .Call('_CLVTools_pnbd_nocov_PAlive', PACKAGE = 'CLVTools', vEstimated_params, vX, vT_x, vT_cal)
-}
-
 #' @title Pareto/NBD: Conditional Expected Transactions with static covariates
 #'
 #' @description
@@ -184,8 +107,53 @@ pnbd_staticcov_CET <- function(vEstimated_params, dPrediction_period, vX, vT_x, 
     .Call('_CLVTools_pnbd_staticcov_CET', PACKAGE = 'CLVTools', vEstimated_params, dPrediction_period, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
 }
 
+pnbd_nocov_DERT <- function(vEstimated_params, continuous_discount_factor, vX, vT_x, vT_cal) {
+    .Call('_CLVTools_pnbd_nocov_DERT', PACKAGE = 'CLVTools', vEstimated_params, continuous_discount_factor, vX, vT_x, vT_cal)
+}
+
 pnbd_staticcov_DERT <- function(vEstimated_params, continuous_discount_factor, vX, vT_x, vT_cal, mCov_life, mCov_trans, vCovParams_life, vCovParams_trans) {
     .Call('_CLVTools_pnbd_staticcov_DERT', PACKAGE = 'CLVTools', vEstimated_params, continuous_discount_factor, vX, vT_x, vT_cal, mCov_life, mCov_trans, vCovParams_life, vCovParams_trans)
+}
+
+#' @rdname pnbd_nocov_LL_sum
+pnbd_nocov_LL_ind <- function(vLogparams, vX, vT_x, vT_cal) {
+    .Call('_CLVTools_pnbd_nocov_LL_ind', PACKAGE = 'CLVTools', vLogparams, vX, vT_x, vT_cal)
+}
+
+#' @title Pareto/NBD: LogLikelihood without covariates
+#'
+#' @description
+#' Pareto/NBD without Covariates:
+#'
+#' The function \code{pnbd_nocov_LL_ind} calculates the individual LogLikelihood
+#' values for each customer for the given parameters.
+#'
+#' The function \code{pnbd_nocov_LL_sum} calculates the LogLikelihood value summed
+#' across customers for the given parameters.
+#'
+#' @param vLogparams vector with the Pareto/NBD model parameters log scaled
+#' @template template_params_rcppxtxtcal
+#'
+#' @details
+#' \code{r, alpha_0, s, beta_0} are the parameters used for estimation.\cr
+#' s: shape parameter of the Gamma distribution for the lifetime process.
+#' The smaller s, the stronger the heterogeneity of customer lifetimes. \cr
+#' beta: scale parameter for the Gamma distribution for the lifetime process. \cr
+#' r: shape parameter of the Gamma distribution of the purchase process.
+#' The smaller r, the stronger the heterogeneity of the purchase process.\cr
+#' alpha: scale parameter of the Gamma distribution of the purchase process.
+#'
+#'@return
+#'  Returns the respective LogLikelihood value for the Pareto/NBD model without covariates.
+#'
+#'@references
+#'  Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
+#'  Pareto/NBD Model and Related Expressions.", Web.
+#'  \url{http://www.brucehardie.com/notes/008/}.
+#'
+#' @importFrom Rcpp evalCpp
+pnbd_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal) {
+    .Call('_CLVTools_pnbd_nocov_LL_sum', PACKAGE = 'CLVTools', vLogparams, vX, vT_x, vT_cal)
 }
 
 #' @title Pareto/NBD: LogLikelihood with static covariates
@@ -236,6 +204,37 @@ pnbd_staticcov_LL_ind <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_tra
 #' @importFrom Rcpp evalCpp
 pnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans) {
     .Call('_CLVTools_pnbd_staticcov_LL_sum', PACKAGE = 'CLVTools', vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
+}
+
+#' @title Pareto/NBD: PAlive without covariates
+#'
+#' @description
+#' Pareto/NBD without Covariates: Calculates the probability of a customer being alive
+#' at the end of the calibration period.
+#'
+#' @template template_params_rcppestimatedparams
+#' @template template_params_rcppxtxtcal
+#'
+#' @details
+#' \code{vEstimated_params} vector with the estimated parameters in original scale
+#' for the Pareto/NBD model, namely (r, alpha, s, beta).
+#' r and alpha: unobserved parameters that describe the NBD transaction process.
+#' s and beta: unobserved parameters that describe the pareto
+#' (exponential gamma) dropout process.
+#'
+#'
+#'@return
+#'Returns a vector with the PAlive for each customer.
+#'
+#'@references
+#'  Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
+#'  Pareto/NBD Model and Related Expressions.", Web.
+#'  \url{http://www.brucehardie.com/notes/008/}.
+#'
+#' @name pnbd_nocov_PAlive
+#' @rdname pnbd_nocov_PAlive
+pnbd_nocov_PAlive <- function(vEstimated_params, vX, vT_x, vT_cal) {
+    .Call('_CLVTools_pnbd_nocov_PAlive', PACKAGE = 'CLVTools', vEstimated_params, vX, vT_x, vT_cal)
 }
 
 #' @title Pareto/NBD: PAlive with static covariates
