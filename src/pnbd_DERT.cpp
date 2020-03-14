@@ -14,28 +14,16 @@ arma::vec pnbd_DERT_ind(const double r,
                         const double continuous_discount_factor){
 
 
-  // Calculate LL
-  //    Calculate value for every customer
-  //    arma::vec pnbd_LL_ind(r,s, vAlpha_i,vBeta_i, vX, vT_x, vT_cal)
-  // ----------------------------------------------------------------
+  // Calculate LL ----------------------------------------------------
+  //  Calculate value for every customer
   arma::vec vLL = pnbd_LL_ind(r, s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal);
 
-  // // z <- d * (data$beta_i + data$T.cal)
   arma::vec vZ = continuous_discount_factor * (vBeta_i + vT_cal);
-  //
-  // // term.part.1 = ((z)^(1 - s))/(s - 1) * hyperg_1F1(1, 2 - s, z)
-  // // term.part.2 = gamma(1 - s) * hyperg_1F1(s, s, z)
-  // // term = term.part.1 + term.part.2
-  //
+
   arma::vec vPart1 = (arma::pow(vZ, 1-s) / (s-1))  % clv::vec_x_hyp1F1(1, 2-s, vZ);
   arma::vec vPart2 = std::tgamma(1-s) * clv::vec_x_hyp1F1(s, s, vZ);
   //
   arma::vec vTerm = vPart1 + vPart2;
-
-
-  // DERT <- exp(r * log(data$alpha_i) + s * log(data$beta) + (s - 1) *
-  //   log(d) + lgamma(r + data$x + 1) + log(term) - lgamma(r) -
-  //   (r + data$x + 1) * log(data$alpha_i + data$T.cal) - log(data$LL))
 
   arma::vec vDERT = arma::exp(
     r * arma::log(vAlpha_i)
@@ -45,7 +33,7 @@ arma::vec pnbd_DERT_ind(const double r,
     + arma::log(vTerm)
     - std::lgamma(r)
     - (r + vX + 1) % arma::log(vAlpha_i + vT_cal)
-    - vLL); // dont log as not exp()ed when receiving from pnbd_LL_ind !
+    - vLL); // dont log as not exp()ed when receiving from pnbd_LL_ind!
 
     return vDERT;
 }
@@ -60,8 +48,6 @@ arma::vec pnbd_nocov_DERT( const arma::vec& vEstimated_params,
                            const arma::vec& vT_x,
                            const arma::vec& vT_cal){
 
-
-  // n = number of elements / customers
   const double n = vX.n_elem;
 
   const double r       = vEstimated_params(0);
@@ -70,20 +56,14 @@ arma::vec pnbd_nocov_DERT( const arma::vec& vEstimated_params,
   const double beta_0  = vEstimated_params(3);
 
 
-  // Build alpha and beta
+  // Build alpha and beta -------------------------------------------
   //    No covariates: Same alphas, betas for every customer
-  // ----------------------------------------------------------------
   arma::vec vAlpha_i(n), vBeta_i(n);
 
   vAlpha_i.fill(alpha_0);
   vBeta_i.fill( beta_0);
 
-  // Calculate DERT
-  // pnbd_DERT_ind( r,s,
-  //                vAlpha_i,vBeta_i,
-  //                vX,vT_x,vT_cal,
-  //                continuous_discount_factor)
-  // ----------------------------------------------------------------
+  // Calculate DERT -------------------------------------------------
   return pnbd_DERT_ind(r, s,
                        vAlpha_i, vBeta_i,
                        vX, vT_x, vT_cal,
@@ -117,11 +97,6 @@ arma::vec pnbd_staticcov_DERT(const arma::vec& vEstimated_params,
 
 
   // Calculate DERT --------------------------------------------------
-  // pnbd_DERT_ind( r,s,
-  //                vAlpha_i,vBeta_i,
-  //                vX,vT_x,vT_cal,
-  //                continuous_discount_factor)
-
   return pnbd_DERT_ind(r, s,
                        vAlpha_i, vBeta_i,
                        vX, vT_x, vT_cal,
