@@ -28,7 +28,7 @@ Rcpp::List vec_gsl_hyp2f0_e(const RcppGSL::Vector& vA, const RcppGSL::Vector& vB
     // gsl_res.err
   }
 
-  return Rcpp::List::create(Rcpp::Named("res") = Rcpp::wrap(vRes),
+  return Rcpp::List::create(Rcpp::Named("value") = Rcpp::wrap(vRes),
                             Rcpp::Named("status") = Rcpp::wrap(vStatus));
 }
 
@@ -55,7 +55,7 @@ Rcpp::List vec_gsl_hyp2f1_e(const RcppGSL::Vector& vA, const RcppGSL::Vector& vB
     // gsl_res.err
   }
 
-  return Rcpp::List::create(Rcpp::Named("res") = Rcpp::wrap(vRes),
+  return Rcpp::List::create(Rcpp::Named("value") = Rcpp::wrap(vRes),
                             Rcpp::Named("status") = Rcpp::wrap(vStatus));
 }
 

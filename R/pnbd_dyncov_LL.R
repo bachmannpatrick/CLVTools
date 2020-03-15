@@ -1,7 +1,6 @@
 #' @importFrom doParallel registerDoParallel stopImplicitCluster
 #' @importFrom parallel detectCores
 #' @importFrom foreach foreach %dopar%
-#' @importFrom gsl hyperg_2F1
 pnbd_dyncov_LL <- function(params, obj){
   # pnbd_LL_DynCovInd_gen <- function(logparams, trans.gammas, life.gammas, cbs, transactions.walks, lifetime.walks){
   Num.Walk <- AuxTrans <- Di.Max.Walk <- adj.Max.Walk <- Di.adj.Walk1 <- adj.Walk1 <- A1T <- x <- A1sum <- AuxTrans <- transaction.cov.dyn <- Id <- Bjsum <- Bksum <- AkT <- NULL
@@ -476,11 +475,11 @@ if(cbs[, any(Num.Walk > 1)])
 
     cbs.z[,log.C :=  lgamma(r+s+x+1) + lgamma(s) - lgamma(r+s+x) - lgamma(s+1) ]
 
-    l.hyp.z1 <- hyperg_2F1(r+s+cbs.z$x, s+1, r+s+cbs.z$x+1, cbs.z$z.1, give = TRUE, strict = TRUE)
-    l.hyp.z2 <- hyperg_2F1(r+s+cbs.z$x, s+1, r+s+cbs.z$x+1, cbs.z$z.2, give = TRUE, strict = TRUE)
+    l.hyp.z1 <- vec_gsl_hyp2f1_e(r+s+cbs.z$x, s+1, r+s+cbs.z$x+1, cbs.z$z.1)
+    l.hyp.z2 <- vec_gsl_hyp2f1_e(r+s+cbs.z$x, s+1, r+s+cbs.z$x+1, cbs.z$z.2)
 
-    cbs.z[, hyp.z1 := l.hyp.z1$val / (alpha_1^(r+s+x))]
-    cbs.z[, hyp.z2 := l.hyp.z2$val / (alpha_2^(r+s+x))]
+    cbs.z[, hyp.z1 := l.hyp.z1$value / (alpha_1^(r+s+x))]
+    cbs.z[, hyp.z2 := l.hyp.z2$value / (alpha_2^(r+s+x))]
 
     # GSL_EMAXITER (11) or GSL_EDOM (1, input domain error)
     if(any(l.hyp.z1$status == 11 | l.hyp.z1$status == 1)){
@@ -514,11 +513,11 @@ if(cbs[, any(Num.Walk > 1)])
 
     cbs.z[,log.C :=  lgamma(r+s+x+1) + lgamma(r+x-1) - lgamma(r+s+x) - lgamma(r+x) ]
 
-    l.hyp.z1 <- hyperg_2F1(r+s+cbs.z$x,r+cbs.z$x,r+s+cbs.z$x+1, cbs.z$z.1, give = TRUE, strict = TRUE)
-    l.hyp.z2 <- hyperg_2F1(r+s+cbs.z$x,r+cbs.z$x,r+s+cbs.z$x+1, cbs.z$z.2, give = TRUE, strict = TRUE)
+    l.hyp.z1 <- vec_gsl_hyp2f1_e(r+s+cbs.z$x,r+cbs.z$x,r+s+cbs.z$x+1, cbs.z$z.1)
+    l.hyp.z2 <- vec_gsl_hyp2f1_e(r+s+cbs.z$x,r+cbs.z$x,r+s+cbs.z$x+1, cbs.z$z.2)
 
-    cbs.z[, hyp.z1 := l.hyp.z1$val / (beta_1^(r+s+x))]
-    cbs.z[, hyp.z2 := l.hyp.z2$val / (beta_2^(r+s+x))]
+    cbs.z[, hyp.z1 := l.hyp.z1$value / (beta_1^(r+s+x))]
+    cbs.z[, hyp.z2 := l.hyp.z2$value / (beta_2^(r+s+x))]
 
     # GSL_EMAXITER (11) or GSL_EDOM (1, input domain error)
     if(any(l.hyp.z1$status == 11 | l.hyp.z1$status == 1)){

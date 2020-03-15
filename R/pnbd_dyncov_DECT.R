@@ -65,9 +65,8 @@ pnbd_dyncov_DECT <- function(clv.fitted, predict.number.of.periods, prediction.e
 
 # The confluent hypergeometric function of the second kind as defined on:
 # http://mathworld.wolfram.com/ConfluentHypergeometricFunctionoftheSecondKind.html
-#' @importFrom gsl hyperg_2F0
 .f_confhypergeo_secondkind <- function (a, b, z)
 {
   # Verified for a number of parameters to yield the same results as Wolfram's HypergeometricU[] and Matlab's kummerU().
-  return(Re(z^(-a)* gsl::hyperg_2F0(a = a, b = 1 + a - b, x = -z^(-1))))
+  return(Re(z^(-a)* vec_gsl_hyp2f0_e(vA = a, vB = 1 + a - b, vZ = -z^(-1))$value))
 }
