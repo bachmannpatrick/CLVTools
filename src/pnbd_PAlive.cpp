@@ -2,67 +2,71 @@
 #include <math.h>
 #include <vector>
 
-#include "cephes_hypergeom2f1.h"
+#include "clv_vectorized.h"
+
 
 // [[Rcpp::depends(RcppArmadillo)]]
 arma::vec pnbd_PAlive( const arma::vec& vEstimated_model_params,
-                        const arma::vec& vX,
-                        const arma::vec& vT_x,
-                        const arma::vec& vT_cal,
-                        const arma::vec& vAlpha_i,
-                        const arma::vec& vBeta_i)
+                       const arma::vec& vX,
+                       const arma::vec& vT_x,
+                       const arma::vec& vT_cal,
+                       const arma::vec& vAlpha_i,
+                       const arma::vec& vBeta_i)
 {
 
 
-  const int n = vX.n_elem;
   const double r       = vEstimated_model_params(0);
   // const double alpha_0 = vEstimated_model_params(1);
   const double s       = vEstimated_model_params(2);
   // const double beta_0  = vEstimated_model_params(3);
 
-  arma::vec  vPAlive(n);
+  arma::vec vF1(vX), vF2(vX), vA(vX);
+  arma::uvec uvAlphaGEBeta = find(vAlpha_i >= vBeta_i);
+  arma::uvec uvAlphaSBeta = find(vAlpha_i < vBeta_i);
 
-  double tmpF1 = 0.0, tmpF2=0.0, tmpA0 = 0.0;
-  unsigned int i, end = vX.n_elem;
-  for(i=0; i<end; i++){
-
-    if(vAlpha_i(i) >= vBeta_i(i)){
-
-      tmpF1 = cephes::hypergeom2F1( r + s + vX(i),
-                                     s + 1,
-                                     r + s + vX(i) + 1,
-                                     (vAlpha_i(i) - vBeta_i(i))/ (vAlpha_i(i) + vT_x(i)));
-
-      tmpF2 = cephes::hypergeom2F1( r + s + vX(i),
-                                     s + 1,
-                                     r + s + vX(i) + 1,
-                                     (vAlpha_i(i) - vBeta_i(i)) / (vAlpha_i(i) + vT_cal(i)));
-
-      tmpA0 = tmpF1 / pow(vAlpha_i(i) + vT_x(i), r + s + vX(i));
-      tmpA0 -= tmpF2 / pow(vAlpha_i(i) + vT_cal(i) , r + s + vX(i));
+  arma::vec vSplus1(vX);
+  vSplus1.fill(s + 1);
 
 
-    }else{
-      //      vAlpha_i(i) < vBeta_i(i)
 
-      tmpF1 = cephes::hypergeom2F1( r + s + vX(i),
-                                     r + vX(i),
-                                     r + s + vX(i) + 1,
-                                     (vBeta_i(i) - vAlpha_i(i)) / (vBeta_i(i) + vT_x(i)));
+  // vAlpha_i < vBeta_i
+  vF1(uvAlphaGEBeta) = clv::vec_hyp2F1(r + s + vX(uvAlphaGEBeta),
+      vSplus1(uvAlphaGEBeta),
+      r + s + vX(uvAlphaGEBeta) + 1,
+      (vAlpha_i(uvAlphaGEBeta) - vBeta_i(uvAlphaGEBeta))/
+        (vAlpha_i(uvAlphaGEBeta) + vT_x(uvAlphaGEBeta)));
 
-      tmpF2 = cephes::hypergeom2F1( r + s + vX(i),
-                                     r + vX(i),
-                                     r + s + vX(i) + 1,
-                                     (vBeta_i(i) - vAlpha_i(i)) / (vBeta_i(i) + vT_cal(i)));
+  vF2(uvAlphaGEBeta) = clv::vec_hyp2F1(r + s + vX(uvAlphaGEBeta),
+      vSplus1(uvAlphaGEBeta),
+      r + s + vX(uvAlphaGEBeta) + 1,
+      (vAlpha_i(uvAlphaGEBeta) - vBeta_i(uvAlphaGEBeta)) /
+        (vAlpha_i(uvAlphaGEBeta) + vT_cal(uvAlphaGEBeta)));
 
-      tmpA0 = tmpF1 / pow(vBeta_i(i) + vT_x(i) , r + s + vX(i));
-      tmpA0 -= tmpF2 / pow(vBeta_i(i) + vT_cal(i), r + s + vX(i));
-    }
+  vA(uvAlphaGEBeta) = (vF1(uvAlphaGEBeta) / clv::vec_pow(vAlpha_i(uvAlphaGEBeta) + vT_x(uvAlphaGEBeta), r + s + vX(uvAlphaGEBeta)))
+    - (vF2(uvAlphaGEBeta) / clv::vec_pow(vAlpha_i(uvAlphaGEBeta) + vT_cal(uvAlphaGEBeta), r + s + vX(uvAlphaGEBeta)));
 
-    vPAlive(i) = 1/(1  + (s / (r+s+vX(i))  * pow(vAlpha_i(i) + vT_cal(i), r + vX(i))  * pow((vBeta_i(i) + vT_cal(i)), s) * tmpA0));
-  }
 
-  return vPAlive;
+  // vAlpha_i < vBeta_i
+  vF1(uvAlphaSBeta) = clv::vec_hyp2F1(r + s + vX(uvAlphaSBeta),
+      r + vX(uvAlphaSBeta),
+      r + s + vX(uvAlphaSBeta) + 1,
+      (vBeta_i(uvAlphaSBeta) - vAlpha_i(uvAlphaSBeta))/
+        (vBeta_i(uvAlphaSBeta) + vT_x(uvAlphaSBeta)));
+
+  vF2(uvAlphaSBeta) = clv::vec_hyp2F1(r + s + vX(uvAlphaSBeta),
+      r + vX(uvAlphaSBeta),
+      r + s + vX(uvAlphaSBeta) + 1,
+      (vBeta_i(uvAlphaSBeta) - vAlpha_i(uvAlphaSBeta))/
+        (vBeta_i(uvAlphaSBeta) + vT_cal(uvAlphaSBeta)));
+
+  vA(uvAlphaSBeta) = (vF1(uvAlphaSBeta) / clv::vec_pow(vBeta_i(uvAlphaSBeta) + vT_x(uvAlphaSBeta), r + s + vX(uvAlphaSBeta))) -
+    (vF2(uvAlphaSBeta) / clv::vec_pow(vBeta_i(uvAlphaSBeta) + vT_cal(uvAlphaSBeta), r + s + vX(uvAlphaSBeta)));
+
+
+  return 1/(1  + (s / (r+s+vX)
+                    % clv::vec_pow(vAlpha_i + vT_cal, r + vX)
+                    % arma::pow(vBeta_i + vT_cal, s)
+                    % vA));
 }
 
 

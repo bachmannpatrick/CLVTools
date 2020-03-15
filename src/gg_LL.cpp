@@ -3,9 +3,9 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
 
-//lbeta:=lgamma(a) + lgamma(b) - lgamma(a+b)
-double lbeta(double a, double b){
-  return (lgamma(a) + lgamma(b) - lgamma(a+b));
+// lbeta := lgamma(a) + lgamma(b) - lgamma(a+b)
+arma::vec lbeta(const arma::vec& a, const double b){
+  return (arma::lgamma(a) + std::lgamma(b) - arma::lgamma(a+b));
 }
 
 //' @title Gamma-Gamma: Log-Likelihood Function
@@ -41,22 +41,15 @@ double gg_LL(const arma::vec& vLogparams,
   const double q = std::exp(vLogparams(1));
   const double gamma = std::exp(vLogparams(2));
 
-  const unsigned int n = vX.n_elem;
-
-  // #Calculate the likelood for all != 0 values
-  arma::vec vLL(n, arma::fill::zeros);
+  // Calculate the likelood for all != 0 values
   arma::uvec vNonZero = find((vX != 0.0) && (vM_x != 0.0));
 
-  //lbeta is not vectorized. Everything else do vectorized, loop lbeta afterwards.
-
-  vLL(vNonZero) = q * log(gamma)
+  // arma::vec vLL(vX.n_elem);
+  arma::vec vLL = q * log(gamma)
     + ((p * vX(vNonZero) - 1) % arma::log(vM_x(vNonZero)))
     + ((p * vX(vNonZero)) % arma::log(vX(vNonZero)))
-    - (p * vX(vNonZero) + q) % arma::log(gamma + vM_x(vNonZero) % vX(vNonZero));
-
-  for(arma::uvec::iterator it = vNonZero.begin(); it != vNonZero.end(); it++){
-    vLL(*it) += -lbeta(p * vX(*it), q);
-  }
+    - (p * vX(vNonZero) + q) % arma::log(gamma + vM_x(vNonZero) % vX(vNonZero))
+    - lbeta(p * vX(vNonZero), q);
 
   return -1 * arma::sum(vLL);
 }
