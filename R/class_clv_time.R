@@ -60,7 +60,6 @@ clv.time.possible.time.units <- function(){
 
 # set.sample.periods ------------------------------------------------------------------------
 
-
 #' @importFrom lubridate period
 setMethod("clv.time.set.sample.periods", signature = signature(clv.time="clv.time"), definition =function(clv.time, tp.first.transaction, tp.last.transaction, user.estimation.end){
 
