@@ -7,6 +7,19 @@
 
 using namespace Rcpp;
 
+// vec_gsl_hyp2f0_e
+Rcpp::List vec_gsl_hyp2f0_e(const RcppGSL::Vector& vA, const RcppGSL::Vector& vB, const RcppGSL::Vector& vZ);
+RcppExport SEXP _CLVTools_vec_gsl_hyp2f0_e(SEXP vASEXP, SEXP vBSEXP, SEXP vZSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const RcppGSL::Vector& >::type vA(vASEXP);
+    Rcpp::traits::input_parameter< const RcppGSL::Vector& >::type vB(vBSEXP);
+    Rcpp::traits::input_parameter< const RcppGSL::Vector& >::type vZ(vZSEXP);
+    rcpp_result_gen = Rcpp::wrap(vec_gsl_hyp2f0_e(vA, vB, vZ));
+    return rcpp_result_gen;
+END_RCPP
+}
 // vec_gsl_hyp2f1_e
 Rcpp::List vec_gsl_hyp2f1_e(const RcppGSL::Vector& vA, const RcppGSL::Vector& vB, const RcppGSL::Vector& vC, const RcppGSL::Vector& vZ);
 RcppExport SEXP _CLVTools_vec_gsl_hyp2f1_e(SEXP vASEXP, SEXP vBSEXP, SEXP vCSEXP, SEXP vZSEXP) {
@@ -196,6 +209,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_CLVTools_vec_gsl_hyp2f0_e", (DL_FUNC) &_CLVTools_vec_gsl_hyp2f0_e, 3},
     {"_CLVTools_vec_gsl_hyp2f1_e", (DL_FUNC) &_CLVTools_vec_gsl_hyp2f1_e, 4},
     {"_CLVTools_gg_LL", (DL_FUNC) &_CLVTools_gg_LL, 3},
     {"_CLVTools_pnbd_nocov_CET", (DL_FUNC) &_CLVTools_pnbd_nocov_CET, 5},
