@@ -21,10 +21,10 @@ arma::vec pnbd_LL_ind(const double r,
   arma::uvec uvAlphaBetaFindRes = find(vAlpha_i < vBeta_i);
   arma::vec vParam2(n);
   vParam2.fill((s+1));
-  vParam2.elem(uvAlphaBetaFindRes) = (r + vX.elem(uvAlphaBetaFindRes));
+  vParam2(uvAlphaBetaFindRes) = (r + vX(uvAlphaBetaFindRes));
   // MaxAB
   arma::vec vMaxAB(vAlpha_i);
-  vMaxAB.elem(uvAlphaBetaFindRes) = vBeta_i.elem(uvAlphaBetaFindRes);
+  vMaxAB(uvAlphaBetaFindRes) = vBeta_i(uvAlphaBetaFindRes);
 
 
   // Distinguish between case abs(alpha_i - beta_i) == 0 and != 0
@@ -60,18 +60,18 @@ arma::vec pnbd_LL_ind(const double r,
     return(ret);
   }
 
-  vPartF.elem(uvLLFind1) = -(r + s + vX.elem(uvLLFind1)) % arma::log(vMaxAB.elem(uvLLFind1) + vT_x.elem(uvLLFind1)) + arma::log(vF1.elem(uvLLFind1) - vF2.elem(uvLLFind1));
+  vPartF(uvLLFind1) = -(r + s + vX(uvLLFind1)) % arma::log(vMaxAB(uvLLFind1) + vT_x(uvLLFind1)) + arma::log(vF1(uvLLFind1) - vF2(uvLLFind1));
 
 
 
   // Calculate Part F for case vABabs == 0 --------------------------------------------------
-  vF1.elem(uvLLFind2) = (-1 * (r + s + vX.elem(uvLLFind2))) % arma::log(vMaxAB.elem(uvLLFind2) + vT_x.elem(uvLLFind2));
+  vF1(uvLLFind2) = (-1 * (r + s + vX(uvLLFind2))) % arma::log(vMaxAB(uvLLFind2) + vT_x(uvLLFind2));
 
-  vF2.elem(uvLLFind2) = (vMaxAB.elem(uvLLFind2) + vT_x.elem(uvLLFind2)) / (vMaxAB.elem(uvLLFind2) + vT_cal.elem(uvLLFind2));
-  vF2.elem(uvLLFind2) %= clv::vec_pow(vF2(uvLLFind2), r + s + vX(uvLLFind2));
-  vF2.elem(uvLLFind2) = log(1 - vF2.elem(uvLLFind2));
+  vF2(uvLLFind2) = (vMaxAB(uvLLFind2) + vT_x(uvLLFind2)) / (vMaxAB(uvLLFind2) + vT_cal(uvLLFind2));
+  vF2(uvLLFind2) %= clv::vec_pow(vF2(uvLLFind2), r + s + vX(uvLLFind2));
+  vF2(uvLLFind2) = log(1 - vF2(uvLLFind2));
 
-  vPartF.elem(uvLLFind2) = vF1.elem(uvLLFind2) + vF2.elem(uvLLFind2);
+  vPartF(uvLLFind2) = vF1(uvLLFind2) + vF2(uvLLFind2);
 
 
 
