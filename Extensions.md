@@ -6,7 +6,7 @@ This guide will show you, how to easily integrate your own models into the CLVTo
 ##  Create a model class
 First, create a new R script with a class called `clv.model.{your-model-name}` where the part in the brackets is the name of your model. In the class definition, make sure to inherit from `clv.model` in order to get the basic model functionality.
 
-   ```
+   ```R
 #' @importFrom methods setClass
 #' @include all_generics.R class_clv_model_basestrategy.R
 setClass(Class = "clv.model.bgnbd.no.cov", contains = "clv.model",
@@ -23,7 +23,7 @@ setClass(Class = "clv.model.bgnbd.no.cov", contains = "clv.model",
 In order for your model class to provide estimation data, you will need to implement the following methods on your class:
 
 **clv.model.check.input.args**: Contains validation for the input parameters of your model.
-```
+```R
 #' @include all_generics.R
 setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...){
 # Have to be > 0 as will be logged
@@ -36,7 +36,7 @@ if(length(list(...)) > 0)
 
 ```
 **clv.model.transform.start.params.model**: Usually used to apply `log()` method on the parameters.
-```
+```R
 #' @importFrom stats setNames
 setMethod("clv.model.transform.start.params.model", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, original.start.params.model){
   # Log all user given or default start params
@@ -46,7 +46,7 @@ setMethod("clv.model.transform.start.params.model", signature = signature(clv.mo
 ```
 
 **clv.model.backtransform.start.params.model**: Usually used to apply `exp()` method on the parameters. (Reverts the `log()` call of clv.model.transform.start.params.model)
-```
+```R
 #' @importFrom stats setNames
 setMethod("clv.model.backtransform.estimated.params.model", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, prefixed.params.model){
   # exp all prefixed params
@@ -55,7 +55,7 @@ setMethod("clv.model.backtransform.estimated.params.model", signature = signatur
 ```
 **clv.model.prepare.optimx.args**: This is where you initialize optimx arguments. You specifiy your log likelihood (LL) functions both on individual (`LL.function.ind`) and on aggregated levels (`LL.function.sum`). Also, you provide the CBS (Customer-By-Sufficiency) matrix. 
 **CAUTION**: Your parameters are very likely logarithmic, so you need to consider this in your LL functions or you will get incorrect values.
-```
+```R
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
   # Also model optimization settings should go here
   #parameters <- bgnbd.EstimateParameters(clv.fitted@cbs , clv.model@start.params.model)
@@ -82,7 +82,7 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
 ## Create your model container class
 Create a new R script with a class called `clv.{your-model-name}` where the part in the brackets is the name of your model. In the class definition, make sure to inherit from `clv.fitted` in order to get the basic functionality. This class will be responsible to create the CBS (Customer-By-Sufficiency) matrix, which we need for the optimization.
 
-```
+```R
 #' @importFrom methods setClass
 #' @keywords internal
 #' @include class_clv_model_bgnbd_nocov.R class_clv_data_no_covariates.R class_clv_fitted.R
@@ -100,7 +100,7 @@ setClass(Class = "clv.bgnbd", contains = "clv.fitted",
 We now need a method to generate a CBS matrix, as well as a constructor for the class. We will call the CBS generating method from the constructor and return and instance of `clv.{your-model-name}`
 
 **Constructor**
-```
+```R
 # Convenience constructor to encapsulate all steps for object creation
 #' @include class_clv_data_no_covariates.R
 clv.bgnbd <- function(cl, clv.data){
@@ -117,7 +117,7 @@ clv.bgnbd <- function(cl, clv.data){
 ```
 
 **CBS method**
-```
+```R
 bgnbd_cbs <- function(clv.data){
   # Customer-By-Sufficiency (CBS) Matrix
   #   Only for transactions in calibration period
@@ -166,7 +166,7 @@ bgnbd_cbs <- function(clv.data){
 
 ## Entrypoint for model usage
 We now have both a model and a container class, the missing piece in the puzzle is the entry point that makes use of the functionality that we implemented. We use a generic method for this purpose. Create a new R script called `f_interface_{your-model-name}.R` with the following contents:
-```
+```R
 #' @exportMethod bgnbd
 setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = FALSE, start.param.cor=c(),
                                   optimx.args=list(), verbose=TRUE, ...)
@@ -189,7 +189,7 @@ setMethod("bgnbd", signature = signature(clv.data="clv.data"), definition = func
 
 ## Example: Estimation
 If you set up your model correctly, you should be able to estimate parameters:
-```
+```R
 library("CLVTools")
 data("cdnow")
 

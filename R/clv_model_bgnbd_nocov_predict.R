@@ -31,14 +31,8 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgnbd.no.cov")
                                          x = clv.fitted@cbs[, x],
                                          t.x = clv.fitted@cbs[, t.x],
                                          T.cal = clv.fitted@cbs[, T.cal])]
-  browser()
   # Add DERT
-
-  # dt.prediction[, DERT := pnbd_nocov_DERT(vEstimated_params = estimated.params,
-  #                                         continuous_discount_factor = continuous.discount.factor,
-  #                                         vX     = clv.fitted@cbs[, x],
-  #                                         vT_x   = clv.fitted@cbs[, t.x],
-  #                                         vT_cal = clv.fitted@cbs[, T.cal])]
+  dt.prediction[, DERT := 0]
 
   return(dt.prediction)
 })

@@ -6,6 +6,20 @@
 
 using namespace Rcpp;
 
+// hypWrap
+double hypWrap(double a, double b, double c, double x);
+RcppExport SEXP _CLVTools_hypWrap(SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    Rcpp::traits::input_parameter< double >::type c(cSEXP);
+    Rcpp::traits::input_parameter< double >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(hypWrap(a, b, c, x));
+    return rcpp_result_gen;
+END_RCPP
+}
 // gg_LL
 double gg_LL(const arma::vec& vLogparams, const arma::vec& vX, const arma::vec& vM_x);
 RcppExport SEXP _CLVTools_gg_LL(SEXP vLogparamsSEXP, SEXP vXSEXP, SEXP vM_xSEXP) {
@@ -181,6 +195,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_CLVTools_hypWrap", (DL_FUNC) &_CLVTools_hypWrap, 4},
     {"_CLVTools_gg_LL", (DL_FUNC) &_CLVTools_gg_LL, 3},
     {"_CLVTools_pnbd_nocov_CET", (DL_FUNC) &_CLVTools_pnbd_nocov_CET, 5},
     {"_CLVTools_pnbd_staticcov_CET", (DL_FUNC) &_CLVTools_pnbd_staticcov_CET, 9},

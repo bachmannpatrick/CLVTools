@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="14.3.0">
-  <zoom_level>8</zoom_level>
+  <zoom_level>5</zoom_level>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>544</x>
-      <y>256</y>
-      <w>376</w>
-      <h>232</h>
+      <x>290</x>
+      <y>125</y>
+      <w>235</w>
+      <h>145</h>
     </coordinates>
     <panel_attributes>clv.model
 --
@@ -34,10 +34,10 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>336</x>
-      <y>584</y>
-      <w>312</w>
-      <h>184</h>
+      <x>160</x>
+      <y>330</y>
+      <w>195</w>
+      <h>115</h>
     </coordinates>
     <panel_attributes>clv.model.pnbd.no.cov
 --
@@ -59,10 +59,10 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>488</x>
-      <y>480</y>
-      <w>256</w>
-      <h>120</h>
+      <x>255</x>
+      <y>265</y>
+      <w>160</w>
+      <h>75</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>300.0;10.0;300.0;80.0;10.0;80.0;10.0;130.0</additional_attributes>
@@ -70,10 +70,10 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>352</x>
-      <y>832</y>
-      <w>280</w>
-      <h>112</h>
+      <x>170</x>
+      <y>485</y>
+      <w>175</w>
+      <h>70</h>
     </coordinates>
     <panel_attributes>clv.model.pnbd.static.cov
 --
@@ -89,10 +89,10 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>472</x>
-      <y>760</y>
-      <w>24</w>
-      <h>88</h>
+      <x>245</x>
+      <y>440</y>
+      <w>15</w>
+      <h>55</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
@@ -100,10 +100,10 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>376</x>
-      <y>1024</y>
-      <w>216</w>
-      <h>112</h>
+      <x>185</x>
+      <y>605</y>
+      <w>135</w>
+      <h>70</h>
     </coordinates>
     <panel_attributes>clv.model.pnbd.dynamic.cov
 --
@@ -119,10 +119,10 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>472</x>
-      <y>936</y>
-      <w>24</w>
-      <h>104</h>
+      <x>245</x>
+      <y>550</y>
+      <w>15</w>
+      <h>65</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;110.0</additional_attributes>
@@ -130,10 +130,10 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>800</x>
-      <y>584</y>
-      <w>296</w>
-      <h>128</h>
+      <x>450</x>
+      <y>330</y>
+      <w>185</w>
+      <h>80</h>
     </coordinates>
     <panel_attributes>clv.model.bgnbd.no.cov
 --
@@ -152,10 +152,10 @@ bg=green</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>720</x>
-      <y>480</y>
-      <w>256</w>
-      <h>120</h>
+      <x>400</x>
+      <y>265</y>
+      <w>160</w>
+      <h>75</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;80.0;300.0;80.0;300.0;130.0</additional_attributes>
@@ -163,10 +163,10 @@ bg=green</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>688</x>
-      <y>56</y>
-      <w>80</w>
-      <h>24</h>
+      <x>380</x>
+      <y>0</y>
+      <w>50</w>
+      <h>15</h>
     </coordinates>
     <panel_attributes>/VIRTUAL/</panel_attributes>
     <additional_attributes/>
@@ -174,10 +174,10 @@ bg=green</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>720</x>
-      <y>72</y>
-      <w>24</w>
-      <h>200</h>
+      <x>400</x>
+      <y>10</y>
+      <w>15</w>
+      <h>125</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;230.0</additional_attributes>
@@ -185,10 +185,10 @@ bg=green</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1384</x>
-      <y>256</y>
-      <w>264</w>
-      <h>152</h>
+      <x>815</x>
+      <y>125</y>
+      <w>165</w>
+      <h>95</h>
     </coordinates>
     <panel_attributes>clv.fitted
 --
@@ -208,10 +208,10 @@ bg=green</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>720</x>
-      <y>72</y>
-      <w>800</w>
-      <h>200</h>
+      <x>400</x>
+      <y>10</y>
+      <w>500</w>
+      <h>125</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;90.0;980.0;90.0;980.0;230.0</additional_attributes>
@@ -219,10 +219,10 @@ bg=green</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1480</x>
-      <y>488</y>
-      <w>168</w>
-      <h>64</h>
+      <x>875</x>
+      <y>270</y>
+      <w>105</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>clv.pnbd
 --
@@ -234,10 +234,10 @@ bg=green</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1488</x>
-      <y>400</y>
-      <w>96</w>
-      <h>104</h>
+      <x>880</x>
+      <y>215</y>
+      <w>60</w>
+      <h>65</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;60.0;100.0;60.0;100.0;110.0</additional_attributes>
@@ -245,10 +245,10 @@ bg=green</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1736</x>
-      <y>488</y>
-      <w>168</w>
-      <h>64</h>
+      <x>1035</x>
+      <y>270</y>
+      <w>105</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>clv.bgnbd
 --
@@ -261,10 +261,10 @@ bg=green</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1488</x>
-      <y>400</y>
-      <w>352</w>
-      <h>104</h>
+      <x>880</x>
+      <y>215</y>
+      <w>220</w>
+      <h>65</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;60.0;420.0;60.0;420.0;110.0</additional_attributes>
@@ -272,10 +272,10 @@ bg=green</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1480</x>
-      <y>640</y>
-      <w>168</w>
-      <h>80</h>
+      <x>875</x>
+      <y>365</y>
+      <w>105</w>
+      <h>50</h>
     </coordinates>
     <panel_attributes>f_interface_pnbd 
 &lt;&lt;static&gt;&gt;
@@ -288,10 +288,10 @@ bg=green</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1560</x>
-      <y>544</y>
-      <w>56</w>
-      <h>112</h>
+      <x>925</x>
+      <y>305</y>
+      <w>35</w>
+      <h>70</h>
     </coordinates>
     <panel_attributes>lt=&lt;..
 &lt;&lt;use&gt;&gt;</panel_attributes>
@@ -300,10 +300,10 @@ bg=green</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1736</x>
-      <y>640</y>
-      <w>168</w>
-      <h>80</h>
+      <x>1035</x>
+      <y>365</y>
+      <w>105</w>
+      <h>50</h>
     </coordinates>
     <panel_attributes>f_interface_bgnbd 
 &lt;&lt;static&gt;&gt;
@@ -317,10 +317,10 @@ bg=green</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1816</x>
-      <y>544</y>
-      <w>56</w>
-      <h>112</h>
+      <x>1085</x>
+      <y>305</y>
+      <w>35</w>
+      <h>70</h>
     </coordinates>
     <panel_attributes>lt=&lt;..
 &lt;&lt;use&gt;&gt;</panel_attributes>
@@ -329,10 +329,10 @@ bg=green</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1456</x>
-      <y>864</y>
-      <w>216</w>
-      <h>152</h>
+      <x>860</x>
+      <y>505</y>
+      <w>135</w>
+      <h>95</h>
     </coordinates>
     <panel_attributes>clv.data
 --
@@ -350,10 +350,10 @@ bg=green</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1552</x>
-      <y>712</y>
-      <w>56</w>
-      <h>168</h>
+      <x>920</x>
+      <y>410</y>
+      <w>35</w>
+      <h>105</h>
     </coordinates>
     <panel_attributes>lt=&lt;..
 &lt;&lt;use&gt;&gt;</panel_attributes>
@@ -362,10 +362,10 @@ bg=green</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1664</x>
-      <y>712</y>
-      <w>176</w>
-      <h>248</h>
+      <x>990</x>
+      <y>410</y>
+      <w>110</w>
+      <h>155</h>
     </coordinates>
     <panel_attributes>lt=&lt;..
 &lt;&lt;use&gt;&gt;</panel_attributes>
@@ -374,10 +374,10 @@ bg=green</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1464</x>
-      <y>1104</y>
-      <w>192</w>
-      <h>104</h>
+      <x>865</x>
+      <y>655</y>
+      <w>120</w>
+      <h>65</h>
     </coordinates>
     <panel_attributes>clv.data.static.covariates
 --
@@ -392,10 +392,10 @@ bg=green</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1552</x>
-      <y>1008</y>
-      <w>24</w>
-      <h>112</h>
+      <x>920</x>
+      <y>595</y>
+      <w>15</w>
+      <h>70</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;80.0;10.0;120.0</additional_attributes>
@@ -403,10 +403,10 @@ bg=green</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1480</x>
-      <y>1280</y>
-      <w>168</w>
-      <h>56</h>
+      <x>875</x>
+      <y>765</y>
+      <w>105</w>
+      <h>35</h>
     </coordinates>
     <panel_attributes>clv.data.dynamic.covariates
 --
@@ -418,10 +418,10 @@ bg=green</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1552</x>
-      <y>1200</y>
-      <w>24</w>
-      <h>96</h>
+      <x>920</x>
+      <y>715</y>
+      <w>15</w>
+      <h>60</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;100.0</additional_attributes>
@@ -429,10 +429,10 @@ bg=green</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1160</x>
-      <y>488</y>
-      <w>288</w>
-      <h>240</h>
+      <x>675</x>
+      <y>270</y>
+      <w>180</w>
+      <h>150</h>
     </coordinates>
     <panel_attributes>clv.fitted.static.cov
 --
@@ -457,10 +457,10 @@ bg=green</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1296</x>
-      <y>400</y>
-      <w>216</w>
-      <h>104</h>
+      <x>760</x>
+      <y>215</y>
+      <w>135</w>
+      <h>65</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>250.0;10.0;250.0;60.0;10.0;60.0;10.0;110.0</additional_attributes>
@@ -468,10 +468,10 @@ bg=green</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1208</x>
-      <y>784</y>
-      <w>168</w>
-      <h>64</h>
+      <x>705</x>
+      <y>455</y>
+      <w>105</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>clv.fitted.dynamic.cov
 --
@@ -483,10 +483,10 @@ bg=green</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1288</x>
-      <y>720</y>
-      <w>24</w>
-      <h>80</h>
+      <x>755</x>
+      <y>415</y>
+      <w>15</w>
+      <h>50</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;80.0</additional_attributes>

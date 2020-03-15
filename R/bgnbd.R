@@ -316,6 +316,8 @@ bgnbd.Expectation <- function(params, t) {
   term1 = (a + b - 1)/(a - 1)
   term2 = (alpha/(alpha + t))^r
   term3 = h2f1(r, b, a + b - 1, t/(alpha + t))
+  #replace with cephes hypergeo
+
   output = term1 * (1 - term2 * term3)
 
   return(output)

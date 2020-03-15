@@ -2,7 +2,7 @@
 #' @include class_clv_model_pnbd_nocov.R
 
 setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.no.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
-
+  #TODO: figure out what this calculates / how this is calculated
   r <- s <- alpha_i <- beta_i <- date.first.repeat.trans<- date.first.actual.trans <- T.cal <- t_i<- period.first.trans<-NULL
 
   params_i <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
