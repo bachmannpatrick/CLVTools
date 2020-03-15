@@ -23,23 +23,24 @@ pnbd_dyncov_DECT <- function(clv.fitted, predict.number.of.periods, prediction.e
 
 
   dt.ABCD <- pnbd_dyncov_ABCD(clv.fitted = clv.fitted, prediction.end.date = prediction.end.date)
+  dt.ABCD[, param.s := s] # add s as vector to pass to vec_hyper2f0 function that relies on vectors
   dt.ABCD[, bT_i := T.cal + d1 + (i-2)]
 
   dt.ABCD[i==1,
-          S := (                   .f_confhypergeo_secondkind(s, s, (delta*(Ci*T.cal      + Dbar_i + beta_0))/Ci)) -
-                (exp(-delta*d1) *  .f_confhypergeo_secondkind(s, s, (delta*(Ci*(T.cal+d1) + Dbar_i + beta_0))/Ci))]
+          S := (                   .f_confhypergeo_secondkind(param.s, param.s, (delta*(Ci*T.cal      + Dbar_i + beta_0))/Ci)) -
+                (exp(-delta*d1) *  .f_confhypergeo_secondkind(param.s, param.s, (delta*(Ci*(T.cal+d1) + Dbar_i + beta_0))/Ci))]
 
   dt.ABCD[i>1 & i!= max(i),
-          S := ( exp(-delta*(d1+i-2)) * .f_confhypergeo_secondkind(s,s, (delta*(Ci* bT_i   +Dbar_i+beta_0)) / Ci)) -
-                (exp(-delta*(d1+i-1)) * .f_confhypergeo_secondkind(s,s, (delta*(Ci*(bT_i+1)+Dbar_i+beta_0)) / Ci))]
+          S := ( exp(-delta*(d1+i-2)) * .f_confhypergeo_secondkind(param.s,param.s, (delta*(Ci* bT_i   +Dbar_i+beta_0)) / Ci)) -
+                (exp(-delta*(d1+i-1)) * .f_confhypergeo_secondkind(param.s,param.s, (delta*(Ci*(bT_i+1)+Dbar_i+beta_0)) / Ci))]
 
   # T  = T.cal
   # T2 = T.cal + t
   # T2-T = t
   # *** Is t == max(i) really the same. It can often then result in negative expressions ***
   dt.ABCD[i== max(i),
-          S := (exp(-delta*(d1+i-2)) * .f_confhypergeo_secondkind(s, s, (delta * (Ci*bT_i      + Dbar_i + beta_0)) / Ci)) -
-               (exp(-delta*(t))      * .f_confhypergeo_secondkind(s, s, (delta * (Ci*(T.cal+t) + Dbar_i + beta_0)) / Ci))]
+          S := (exp(-delta*(d1+i-2)) * .f_confhypergeo_secondkind(param.s, param.s, (delta * (Ci*bT_i      + Dbar_i + beta_0)) / Ci)) -
+               (exp(-delta*(t))      * .f_confhypergeo_secondkind(param.s, param.s, (delta * (Ci*(T.cal+t) + Dbar_i + beta_0)) / Ci))]
 
   dt.ABCD[, S := S * (Ai / (Ci^s))]
   dt.S <- dt.ABCD[, .(S = sum(S)), keyby="Id"]
