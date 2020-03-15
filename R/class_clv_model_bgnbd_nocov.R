@@ -48,8 +48,8 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
   #return(list(parameters))
 
   optimx.args <- modifyList(prepared.optimx.args,
-                            list(LL.function.sum = bgnbd.cbs.LL,
-                                 LL.function.ind = bgnbd.LL, # if doing correlation
+                            list(LL.function.sum = bgnbd_nocov_LL_sum,
+                                 LL.function.ind = bgnbd_nocov_LL_ind, # if doing correlation
                                  obj    = clv.fitted,
                                  vX     = clv.fitted@cbs$x,
                                  vT_x   = clv.fitted@cbs$t.x,
