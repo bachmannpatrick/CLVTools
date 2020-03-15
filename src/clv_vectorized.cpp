@@ -4,11 +4,11 @@
 #include <gsl/gsl_sf_result.h>
 
 
-
 //' @title GSL Hypergeom 2f0 for equal length vectors
 //'
 //' @description Calculate the hypergeometric 2f0 using the GSL library (gsl_sf_hyperg_2F0_e)
-//' @return List with vector of value and vector of gsl status code
+//' @return List with vector of values and vector of gsl status codes
+//' @keywords internal
 // [[Rcpp::export]]
 Rcpp::List vec_gsl_hyp2f0_e(const RcppGSL::Vector& vA, const RcppGSL::Vector& vB, const RcppGSL::Vector& vZ){
 
@@ -37,7 +37,8 @@ Rcpp::List vec_gsl_hyp2f0_e(const RcppGSL::Vector& vA, const RcppGSL::Vector& vB
 //' @title GSL Hypergeom 2f1 for equal length vectors
 //'
 //' @description Calculate the hypergeometric 2f1 using the GSL library (gsl_sf_hyperg_2F1_e)
-//' @return List with vector of value and vector of gsl status code
+//' @return List with vector of values and vector of gsl status codes
+//' @keywords internal
 // [[Rcpp::export]]
 Rcpp::List vec_gsl_hyp2f1_e(const RcppGSL::Vector& vA, const RcppGSL::Vector& vB, const RcppGSL::Vector& vC, const RcppGSL::Vector& vZ){
 
@@ -56,7 +57,6 @@ Rcpp::List vec_gsl_hyp2f1_e(const RcppGSL::Vector& vA, const RcppGSL::Vector& vB
   for(size_t i = 0; i<n; i++){
     vStatus[i] = gsl_sf_hyperg_2F1_e(vA[i], vB[i], vC[i], vZ[i], &gsl_res);
     vRes[i] = gsl_res.val;
-    // gsl_res.err
   }
 
   return Rcpp::List::create(Rcpp::Named("value") = Rcpp::wrap(vRes),
