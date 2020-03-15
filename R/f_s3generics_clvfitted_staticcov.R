@@ -1,6 +1,67 @@
+#'@export
+#' @include all_generics.R class_clv_fitted_static_cov.R
+print.clv.fitted.static.cov <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
+  # print standard parts
+  NextMethod()
+  # also print basic cov information
+  # cat("\nLifetime covariates: ",    paste(clv.data.get.names.cov.life(x@clv.data, sep=","), "\n"))
+  # cat("Transaction covariates: ", paste(clv.data.get.names.cov.trans(x@clv.data), sep=","))
+
+  # options used
+  cat("Constraints:    ", x@estimation.used.constraints,    "\n")
+  cat("Regularization: ", x@estimation.used.regularization, "\n")
+
+  invisible(x)
+}
+
+#' @include all_generics.R class_clv_fitted_static_cov.R
+#' @importFrom methods show
+#' @export
+setMethod(f = "show", signature = signature(object="clv.fitted.static.cov"), definition = function(object){
+  print(x=object)})
+
+
+#' @rdname summary.clv.fitted
+#' @include class_clv_data_static_covariates.R
+#' @export
+#' @keywords internal
+summary.clv.fitted.static.cov <- function(object, ...){
+
+  # Get basic structure from nocov
+  res <- NextMethod()
+  class(res) <- c("summary.clv.fitted.static.cov", class(res))
+
+  # Add static covariate stuff ontop
+  # res$names.cov.data.trans <- clv.data.get.names.cov.trans(object@clv.data)
+  # res$names.cov.data.life  <- clv.data.get.names.cov.life(object@clv.data)
+
+  # Further optimization options ---------------------------------------------------
+  #   Regularization
+  #     lambdas
+  #   Constraint covs
+  #     which
+  res$additional.options <- c(res$additional.options,
+                              "Regularization"=object@estimation.used.regularization)
+  if(object@estimation.used.regularization){
+    res$additional.options <- c(res$additional.options,
+                                "   lambda.life"  = object@reg.lambda.life,
+                                "   lambda.trans" = object@reg.lambda.trans)
+  }
+
+  res$additional.options <- c(res$additional.options,
+                              "Constraint covs" = object@estimation.used.constraints)
+  if(object@estimation.used.constraints){
+    res$additional.options <- c(res$additional.options,
+                                "   Constraint params" = paste(object@names.original.params.constr, collapse = ", "))
+  }
+
+  return(res)
+}
+
+
 #' @importFrom stats coef na.omit setNames
 #' @importFrom optimx coef<-
-#' @include class_clv_fitted.R class_clv_fitted_static_cov.R all_generics.R clv_generics_nocov_coef.R
+#' @include class_clv_fitted.R class_clv_fitted_static_cov.R all_generics.R f_s3generics_clvfitted.R
 #' @export
 coef.clv.fitted.static.cov <- function(object, complete = TRUE, ...){
 
@@ -90,3 +151,4 @@ coef.clv.fitted.static.cov <- function(object, complete = TRUE, ...){
 #' #' @include all_generics.R class_clv_fitted_static_cov.R
 #' #' @exportMethod coef
 #' setMethod(f = "coef", signature = signature(object="clv.fitted.static.cov"), coef.clv.fitted.static.cov)
+
