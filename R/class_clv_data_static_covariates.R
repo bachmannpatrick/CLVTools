@@ -91,3 +91,29 @@ setMethod("clv.data.reduce.covariates", signature = signature(clv.data="clv.data
             return(clv.data)
           })
 
+
+#' @importFrom stats model.frame model.matrix reformulate
+convert_userinput_covariatedata_dummies <- function(dt.cov.data, names.cov){
+
+  # Use model.frame/model.matrix to convert cov data
+  #   numeric to numeric, char/factors to k-1 dummies
+
+  # Always need intercept!
+  #   to always get k-1 dummies, as no intercept implies k dummies in the
+  #   case of only a single catgorical covariate
+  f.covs <- reformulate(termlabels = names.cov,
+                        response = NULL,
+                        intercept = TRUE)
+
+  mf <- model.frame(f.covs, data = dt.cov.data)
+  mm <- model.matrix(object = f.covs, data = dt.cov.data)
+
+  # Combine averything else (Id, maybe Cov.Date) and raw converted numeric covariate data
+  dt.cov <- cbind(dt.cov.data[, .SD, .SDcols=setdiff(colnames(dt.cov.data), names.cov)], # everything except cov data
+                  mm[, setdiff(colnames(mm), "(Intercept)"), drop=FALSE]) # everything except the Intercept
+
+  names.cov <- setdiff(colnames(dt.cov), c("Id", "Cov.Date"))
+
+  return(list(data.cov = dt.cov, names.cov=names.cov))
+}
+
