@@ -18,7 +18,7 @@
 #'
 #' @keywords internal
 #' @importFrom methods setClass
-#' @include all_generics.R class_clv_data_no_covariates.R class_clv_time.R
+#' @include all_generics.R class_clv_data.R class_clv_time.R
 setClass(Class = "clv.data.static.covariates", contains = "clv.data",
          slots = c(
            data.cov.life  = "data.table",

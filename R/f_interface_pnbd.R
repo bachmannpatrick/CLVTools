@@ -167,7 +167,7 @@ setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FA
 #'
 #' @rdname pnbd
 #' @aliases pnbd pnbd,clv.data-method
-#' @include class_clv_data_no_covariates.R class_clv_model_pnbd_nocov.R
+#' @include class_clv_data.R class_clv_model_pnbd_nocov.R
 #' @export
 setMethod("pnbd", signature = signature(clv.data="clv.data"), definition = function(clv.data,
                                                                                         start.params.model=c(),

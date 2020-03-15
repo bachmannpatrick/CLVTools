@@ -20,7 +20,7 @@ setClass(Class = "clv.pnbd.dynamic.cov", contains = "clv.fitted.dynamic.cov",
 
 
 # Convenience constructor to encapsulate all steps for object creation
-#' @include class_clv_data_no_covariates.R
+#' @include class_clv_data.R
 clv.pnbd.dynamic.cov <- function(cl, clv.data){
 
   dt.cbs.pnbd <- pnbd_dyncov_cbs(clv.data = clv.data)

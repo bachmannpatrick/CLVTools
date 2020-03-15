@@ -7,7 +7,7 @@ nobs.clv.data   <- function(object, ...){
 
 
 #' @export
-#' @include all_generics.R class_clv_data_no_covariates.R clv_helpers.R
+#' @include all_generics.R class_clv_data.R clv_helpers.R
 print.clv.data <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
 
   nsmall <- 4 # dont leave to user, hardcode
@@ -68,7 +68,7 @@ print.clv.data.dynamic.covariates <- function(x, digits = max(3L, getOption("dig
 
 
 
-#' @include all_generics.R class_clv_data_no_covariates.R
+#' @include all_generics.R class_clv_data.R
 #' @importFrom methods show
 #' @export
 setMethod(f = "show", signature = signature(object="clv.data"), definition = function(object){

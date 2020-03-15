@@ -53,7 +53,7 @@
 #' dt.plot.data <- plot(clv.data.cdnow, plot=F)
 #' }
 #' @importFrom graphics plot
-#' @include all_generics.R class_clv_data_no_covariates.R
+#' @include all_generics.R class_clv_data.R
 #' @method plot clv.data
 #' @export
 plot.clv.data <- function(x, prediction.end=NULL, cumulative=FALSE, plot=TRUE, verbose=TRUE, ...){

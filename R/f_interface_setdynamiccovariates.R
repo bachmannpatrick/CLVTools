@@ -1,4 +1,4 @@
-#' @include all_generics.R class_clv_data_no_covariates.R class_clv_data_dynamic_covariates.R
+#' @include all_generics.R class_clv_data.R class_clv_data_dynamic_covariates.R
 #' @template template_setdynamiccov
 #' @aliases SetDynamicCovariates SetDynamicCovariates,clv.data-method
 setMethod(f = "SetDynamicCovariates", signature = signature(clv.data="clv.data"), function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id", name.date="Date"){
