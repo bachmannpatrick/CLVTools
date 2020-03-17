@@ -11,31 +11,25 @@ bgnbd_nocov_LL_ind <- function(vLogparams, vX, vT_x, vT_cal) {
 #' @description
 #' Pareto/NBD without Covariates:
 #'
-#' The function \code{pnbd_nocov_LL_ind} calculates the individual LogLikelihood
+#' The function \code{bgnbd_nocov_LL_ind} calculates the individual LogLikelihood
 #' values for each customer for the given parameters.
 #'
-#' The function \code{pnbd_nocov_LL_sum} calculates the LogLikelihood value summed
+#' The function \code{bgnbd_nocov_LL_sum} calculates the LogLikelihood value summed
 #' across customers for the given parameters.
 #'
 #' @param vLogparams vector with the Pareto/NBD model parameters log scaled
 #' @template template_params_rcppxtxtcal
 #'
 #' @details
-#' \code{r, alpha_0, s, beta_0} are the parameters used for estimation.\cr
-#' s: shape parameter of the Gamma distribution for the lifetime process.
-#' The smaller s, the stronger the heterogeneity of customer lifetimes. \cr
-#' beta: scale parameter for the Gamma distribution for the lifetime process. \cr
-#' r: shape parameter of the Gamma distribution of the purchase process.
-#' The smaller r, the stronger the heterogeneity of the purchase process.\cr
-#' alpha: scale parameter of the Gamma distribution of the purchase process.
+#' \code{r, alpha, a, b} are the parameters used for estimation.\cr
+#' TODO: add description of parameters
 #'
 #'@return
-#'  Returns the respective LogLikelihood value for the Pareto/NBD model without covariates.
+#'  Returns the respective LogLikelihood value for the BG/NBD model without covariates.
 #'
 #'@references
-#'  Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
-#'  Pareto/NBD Model and Related Expressions.", Web.
-#'  \url{http://www.brucehardie.com/notes/008/}.
+#'
+#'  \url{https://github.com/cran/BTYD/}.
 #'
 bgnbd_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal) {
     .Call('_CLVTools_bgnbd_nocov_LL_sum', PACKAGE = 'CLVTools', vLogparams, vX, vT_x, vT_cal)

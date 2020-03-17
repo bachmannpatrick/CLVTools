@@ -2,77 +2,77 @@
 
 library(hypergeo)
 
-# bgnbd.cbs.LL <- function(params, vX, vT_x, vT_cal) {
-#
-#   dc.check.model.params(c("log.r", "log.alpha", "log.a", "log.b"), exp(params), "bgnbd.cbs.LL")
-#
-#   tryCatch(x <- vX, error = function(e) stop("Error in bgnbd.cbs.LL: cal.cbs must have a frequency column labelled \"x\""))
-#   tryCatch(t.x <- vT_x, error = function(e) stop("Error in bgnbd.cbs.LL: cal.cbs must have a recency column labelled \"t.x\""))
-#   tryCatch(T.cal <- vT_cal, error = function(e) stop("Error in bgnbd.cbs.LL: cal.cbs must have a column for length of time observed labelled \"T.cal\""))
-#
-#   # if ("custs" %in% colnames(cal.cbs)) {
-#   #
-#   #   many_rows = function(vec, nreps) {
-#   #     return(rep(1, nreps) %*% t.default(vec))
-#   #   }
-#   #
-#   #   custs <- cal.cbs[, "custs"]
-#   #   logvec = (1:length(custs)) * (custs > 1)
-#   #   logvec = logvec[logvec > 0]
-#   #   M = sum(logvec > 0)
-#   #   for (i in 1:M) {
-#   #     cal.cbs = rbind(cal.cbs, many_rows(cal.cbs[logvec[i], ], custs[logvec[i]] -
-#   #                                          1))
-#   #   }
-#   #   x = vX
-#   #   t.x = vT_x
-#   #   T.cal = vT_cal
-#   # }
-#   result <- sum(-bgnbd.LL(params, x, t.x, T.cal))
-#   return(result)
-# }
-#
-# bgnbd.LL <- function(params, x, t.x, T.cal) {
-#
-#   beta.ratio = function(a, b, x, y) {
-#     exp(lgamma(a) + lgamma(b) - lgamma(a + b) - lgamma(x) - lgamma(y) + lgamma(x +
-#                                                                                  y))
-#   }
-#
-#   max.length <- max(length(x), length(t.x), length(T.cal))
-#
-#   if (max.length%%length(x))
-#     warning("Maximum vector length not a multiple of the length of x")
-#   if (max.length%%length(t.x))
-#     warning("Maximum vector length not a multiple of the length of t.x")
-#   if (max.length%%length(T.cal))
-#     warning("Maximum vector length not a multiple of the length of T.cal")
-#
-#   dc.check.model.params(c("log.r", "log.alpha", "log.a", "log.b"), exp(params), "bgnbd.LL")
-#
-#   if (any(x < 0) || !is.numeric(x))
-#     stop("x must be numeric and may not contain negative numbers.")
-#   if (any(t.x < 0) || !is.numeric(t.x))
-#     stop("t.x must be numeric and may not contain negative numbers.")
-#   if (any(T.cal < 0) || !is.numeric(T.cal))
-#     stop("T.cal must be numeric and may not contain negative numbers.")
-#
-#   r = exp(params[1])
-#   alpha = exp(params[2])
-#   a = exp(params[3])
-#   b = exp(params[4])
-#
-#   x <- rep(x, length.out = max.length)
-#   t.x <- rep(t.x, length.out = max.length)
-#   T.cal <- rep(T.cal, length.out = max.length)
-#
-#   A = r * log(alpha) + lgamma(r + x) - lgamma(r) - (r + x) * log(alpha + t.x)
-#   B = beta.ratio(a, b + x, a, b) * ((alpha + t.x)/(alpha + T.cal))^(r + x) + as.numeric((x >
-#                                                                                            0)) * beta.ratio(a + 1, b + x - 1, a, b)
-#   LL = sum(A + log(B))
-#
-#   return(LL)
-# }
+bgnbd.cbs.LL <- function(params, vX, vT_x, vT_cal) {
+
+  dc.check.model.params(c("log.r", "log.alpha", "log.a", "log.b"), exp(params), "bgnbd.cbs.LL")
+
+  tryCatch(x <- vX, error = function(e) stop("Error in bgnbd.cbs.LL: cal.cbs must have a frequency column labelled \"x\""))
+  tryCatch(t.x <- vT_x, error = function(e) stop("Error in bgnbd.cbs.LL: cal.cbs must have a recency column labelled \"t.x\""))
+  tryCatch(T.cal <- vT_cal, error = function(e) stop("Error in bgnbd.cbs.LL: cal.cbs must have a column for length of time observed labelled \"T.cal\""))
+
+  # if ("custs" %in% colnames(cal.cbs)) {
+  #
+  #   many_rows = function(vec, nreps) {
+  #     return(rep(1, nreps) %*% t.default(vec))
+  #   }
+  #
+  #   custs <- cal.cbs[, "custs"]
+  #   logvec = (1:length(custs)) * (custs > 1)
+  #   logvec = logvec[logvec > 0]
+  #   M = sum(logvec > 0)
+  #   for (i in 1:M) {
+  #     cal.cbs = rbind(cal.cbs, many_rows(cal.cbs[logvec[i], ], custs[logvec[i]] -
+  #                                          1))
+  #   }
+  #   x = vX
+  #   t.x = vT_x
+  #   T.cal = vT_cal
+  # }
+  result <- sum(-bgnbd.LL(params, x, t.x, T.cal))
+  return(result)
+}
+
+bgnbd.LL <- function(params, x, t.x, T.cal) {
+
+  beta.ratio = function(a, b, x, y) {
+    exp(lgamma(a) + lgamma(b) - lgamma(a + b) - lgamma(x) - lgamma(y) + lgamma(x +
+                                                                                 y))
+  }
+
+  max.length <- max(length(x), length(t.x), length(T.cal))
+
+  if (max.length%%length(x))
+    warning("Maximum vector length not a multiple of the length of x")
+  if (max.length%%length(t.x))
+    warning("Maximum vector length not a multiple of the length of t.x")
+  if (max.length%%length(T.cal))
+    warning("Maximum vector length not a multiple of the length of T.cal")
+
+  dc.check.model.params(c("log.r", "log.alpha", "log.a", "log.b"), exp(params), "bgnbd.LL")
+
+  if (any(x < 0) || !is.numeric(x))
+    stop("x must be numeric and may not contain negative numbers.")
+  if (any(t.x < 0) || !is.numeric(t.x))
+    stop("t.x must be numeric and may not contain negative numbers.")
+  if (any(T.cal < 0) || !is.numeric(T.cal))
+    stop("T.cal must be numeric and may not contain negative numbers.")
+
+  r = exp(params[1])
+  alpha = exp(params[2])
+  a = exp(params[3])
+  b = exp(params[4])
+
+  x <- rep(x, length.out = max.length)
+  t.x <- rep(t.x, length.out = max.length)
+  T.cal <- rep(T.cal, length.out = max.length)
+
+  A = r * log(alpha) + lgamma(r + x) - lgamma(r) - (r + x) * log(alpha + t.x)
+  B = beta.ratio(a, b + x, a, b) * ((alpha + t.x)/(alpha + T.cal))^(r + x) + as.numeric((x >
+                                                                                           0)) * beta.ratio(a + 1, b + x - 1, a, b)
+  LL = sum(A + log(B))
+
+  return(LL)
+}
 
 bgnbd.compress.cbs <- function(cbs, rounding = 3) {
 

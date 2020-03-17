@@ -1,8 +1,5 @@
 #include "bgnbd_LL.h"
 
-
-
-
 //' @rdname bgnbd_nocov_LL_sum
 // [[Rcpp::export]]
 arma::vec bgnbd_nocov_LL_ind(const arma::vec& vLogparams,
@@ -15,19 +12,27 @@ arma::vec bgnbd_nocov_LL_ind(const arma::vec& vLogparams,
   const double a       = exp(vLogparams(2));
   const double b       = exp(vLogparams(3));
 
+  const unsigned int n = vX.n_elem;
+
 
   arma::uvec vX_filtered = find(vX > 0);
 
-  arma::vec vA = r * log(alpha) + arma::lgamma(r + vX) - std::lgamma(r) - (r + vX)  * arma::log(alpha + vT_x);
+  arma::vec vA(n), vB(n), vBx(n), vAlphaTxByAlphaTcal(n), vRx(n), vBxPlusB(n), vBxPlusBMinus1(n), vBetaRatio(n);
 
-  arma::vec vBX = (b+vX);
-  arma::vec vBetaRatio = beta_ratio(a, vBX, a, b);
 
-  arma::vec vAlphaTxByAlphaTcal = (alpha + vT_x)/(alpha / vT_cal);
-  arma::vec vRX = (r + vX);
-  arma::vec vBxFiltered = (b + (vX(vX_filtered)));
-  arma::vec VBxFilteredMinus1 = (vBxFiltered - 1);
-  arma::vec vB = vBetaRatio * clv::vec_pow(vAlphaTxByAlphaTcal, vRX) + vX(vX_filtered) * beta_ratio(a + 1 , VBxFilteredMinus1, a, b);
+
+
+
+  vA = r * log(alpha) + arma::lgamma(r + vX) - std::lgamma(r) - (r + vX) % arma::log(alpha + vT_x);
+
+  vBx = (b+vX);
+  vBetaRatio = beta_ratio(a, vBx, a, b);
+
+  vAlphaTxByAlphaTcal = (alpha + vT_x)/(alpha + vT_cal);
+  vRx = (r + vX);
+  vBxPlusB = (b + vX);
+  vBxPlusBMinus1 = (vBxPlusB - 1);
+  vB = vBetaRatio % clv::vec_pow(vAlphaTxByAlphaTcal, vRx) + (vec_is_numeric(vX)) % beta_ratio(a + 1 , vBxPlusBMinus1, a, b);
 
   arma::vec vLL = vA + arma::log(vB);
 
@@ -40,31 +45,25 @@ arma::vec bgnbd_nocov_LL_ind(const arma::vec& vLogparams,
 //' @description
 //' Pareto/NBD without Covariates:
 //'
-//' The function \code{pnbd_nocov_LL_ind} calculates the individual LogLikelihood
+//' The function \code{bgnbd_nocov_LL_ind} calculates the individual LogLikelihood
 //' values for each customer for the given parameters.
 //'
-//' The function \code{pnbd_nocov_LL_sum} calculates the LogLikelihood value summed
+//' The function \code{bgnbd_nocov_LL_sum} calculates the LogLikelihood value summed
 //' across customers for the given parameters.
 //'
 //' @param vLogparams vector with the Pareto/NBD model parameters log scaled
 //' @template template_params_rcppxtxtcal
 //'
 //' @details
-//' \code{r, alpha_0, s, beta_0} are the parameters used for estimation.\cr
-//' s: shape parameter of the Gamma distribution for the lifetime process.
-//' The smaller s, the stronger the heterogeneity of customer lifetimes. \cr
-//' beta: scale parameter for the Gamma distribution for the lifetime process. \cr
-//' r: shape parameter of the Gamma distribution of the purchase process.
-//' The smaller r, the stronger the heterogeneity of the purchase process.\cr
-//' alpha: scale parameter of the Gamma distribution of the purchase process.
+//' \code{r, alpha, a, b} are the parameters used for estimation.\cr
+//' TODO: add description of parameters
 //'
 //'@return
-//'  Returns the respective LogLikelihood value for the Pareto/NBD model without covariates.
+//'  Returns the respective LogLikelihood value for the BG/NBD model without covariates.
 //'
 //'@references
-//'  Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
-//'  Pareto/NBD Model and Related Expressions.", Web.
-//'  \url{http://www.brucehardie.com/notes/008/}.
+//'
+//'  \url{https://github.com/cran/BTYD/}.
 //'
 // [[Rcpp::export]]
 double bgnbd_nocov_LL_sum(const arma::vec& vLogparams,
@@ -77,12 +76,24 @@ double bgnbd_nocov_LL_sum(const arma::vec& vLogparams,
                                     vT_x,
                                     vT_cal);
 
+
   // accu sums all elements, indifferent of axis
   return(-arma::sum(vLL));
 }
 
-
 arma::vec beta_ratio(const double a, arma::vec& b, const double x, const double y){
   return(arma::exp(std::lgamma(a) + arma::lgamma(b) - arma::lgamma(a + b) - std::lgamma(x) - std::lgamma(y) + std::lgamma(x+y)));
+}
+
+arma::vec vec_is_numeric(const arma::vec& vX){
+
+  arma::vec vRes(vX);
+
+  arma::uword n = vX.n_elem;
+  for(arma::uword i = 0; i<n; i++){
+    vRes(i) = vX(i) > 0 ? 1 : 0;
+  }
+
+  return(vRes);
 }
 
