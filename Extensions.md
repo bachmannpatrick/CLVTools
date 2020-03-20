@@ -1,9 +1,28 @@
+
+
 # Extend CLVTools with your own models
 
 This guide will show you, how to easily integrate your own models into the CLVTools package. As an example, we will integrate the BG/NBD model as implemented by BTYD (https://github.com/cran/BTYD)
 
+## Overview
 
-##  Create a model class
+ - 1. [Estimation](#1-estimation)
+	 -  1.1. [Create a model class](#1-1-create-model) 
+   	 -  1.2. [Implement estimation methods on your class](#1-2-implement-estimation)
+   	 -  1.3. [Create your model container class](#1-3-create-model-container)
+   	 -  1.4. [Implement the container model](#1-4-implement-model-container)
+   	 -  1.5. [Entrypoint for model usage](#1-5-entrypoint-model-usage)
+   	 -  1.6. [Example: Estimation](#1-6-example-estimation)
+  -  2. [Expectation](#2-expectation)
+	  - 2.1 [Implement the expectation method](#2-1-implement-expectation)
+  -  3. [Prediction](#3-prediction)
+	  - 3.1 [Implement the prediction method](#3-1-implement-prediction)
+  - 4. [Example: Putting it all together](#4-example)
+
+
+## <a name="1-estimation"></a> 1. Estimation 
+
+### <a name="1-1-create-model"></a>1.1 Create a model class
 First, create a new R script with a class called `clv.model.{your-model-name}` where the part in the brackets is the name of your model. In the class definition, make sure to inherit from `clv.model` in order to get the basic model functionality.
 
    ```R
@@ -19,7 +38,7 @@ setClass(Class = "clv.model.bgnbd.no.cov", contains = "clv.model",
          ))
 ```
 
-## Implement estimation methods on your class
+### <a name="1-2-implement-estimation"></a>1.2 Implement estimation methods on your class
 In order for your model class to provide estimation data, you will need to implement the following methods on your class:
 
 **clv.model.check.input.args**: Contains validation for the input parameters of your model.
@@ -58,20 +77,18 @@ setMethod("clv.model.backtransform.estimated.params.model", signature = signatur
 ```R
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
   # Also model optimization settings should go here
-  #parameters <- bgnbd.EstimateParameters(clv.fitted@cbs , clv.model@start.params.model)
 
   # Only add LL function args, everything else is prepared already, incl. start parameters
-  #return(list(parameters))
 
   optimx.args <- modifyList(prepared.optimx.args,
-                            list(LL.function.sum = bgnbd.cbs.LL,
-                                 LL.function.ind = bgnbd.LL, # if doing correlation
+                            list(LL.function.sum = bgnbd_nocov_LL_sum,
+                                 LL.function.ind = bgnbd_nocov_LL_ind, # if doing correlation
                                  obj    = clv.fitted,
                                  vX     = clv.fitted@cbs$x,
                                  vT_x   = clv.fitted@cbs$t.x,
                                  vT_cal = clv.fitted@cbs$T.cal,
 
-                                 # parameter ordering for the call LL interlayer
+                                 # parameter ordering for the callLL interlayer
                                  #** TODO: Hardcode from cpp interface
                                  LL.params.names.ordered = c(log.r = "log.r",log.alpha =  "log.alpha", log.a = "log.a", log.b = "log.b")),
                             keep.null = TRUE)
@@ -79,7 +96,7 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
 })
 ```
 
-## Create your model container class
+### <a name="1-3-create-model-container"></a>1.3 Create your model container class
 Create a new R script with a class called `clv.{your-model-name}` where the part in the brackets is the name of your model. In the class definition, make sure to inherit from `clv.fitted` in order to get the basic functionality. This class will be responsible to create the CBS (Customer-By-Sufficiency) matrix, which we need for the optimization.
 
 ```R
@@ -96,7 +113,7 @@ setClass(Class = "clv.bgnbd", contains = "clv.fitted",
            cbs = data.table()))
 ```
 
-## Implement the container model
+### <a name="1-4-implement-model-container"></a>1.4 Implement the container model
 We now need a method to generate a CBS matrix, as well as a constructor for the class. We will call the CBS generating method from the constructor and return and instance of `clv.{your-model-name}`
 
 **Constructor**
@@ -164,7 +181,7 @@ bgnbd_cbs <- function(clv.data){
 }
 ```
 
-## Entrypoint for model usage
+### <a name="1-5-entrypoint-model-usage"></a>1.5 Entrypoint for model usage
 We now have both a model and a container class, the missing piece in the puzzle is the entry point that makes use of the functionality that we implemented. We use a generic method for this purpose. Create a new R script called `f_interface_{your-model-name}.R` with the following contents:
 ```R
 #' @exportMethod bgnbd
@@ -187,7 +204,7 @@ setMethod("bgnbd", signature = signature(clv.data="clv.data"), definition = func
 })
 ```
 
-## Example: Estimation
+### <a name="1-6-example-estimation"></a>1.6 Example: Estimation
 If you set up your model correctly, you should be able to estimate parameters:
 ```R
 library("CLVTools")
@@ -240,4 +257,110 @@ Method BFGS
 
 Used Options:                 
 Correlation FALSE
+```
+
+## <a name="2-expectation"></a> 2 Expectation
+
+### <a name="2-1-implement-expectation"></a>2.1 Implement the expectation method
+In your model class, create the method `clv.model.expectation`:
+
+```R
+#' @include all_generics.R
+setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.no.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
+  r <- alpha_i <- a_i <- b_i <- date.first.repeat.trans<- date.first.actual.trans <- T.cal <- t_i<- period.first.trans<-NULL
+
+  params_i <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
+
+  params_i[, r       := clv.fitted@prediction.params.model[["r"]]]
+  params_i[, alpha := clv.fitted@prediction.params.model[["alpha"]]]
+  params_i[, a       := clv.fitted@prediction.params.model[["a"]]]
+  params_i[, b  := clv.fitted@prediction.params.model[["b"]]]
+
+  fct.bgnbd.expectation <- function(r, alpha, a, b, t){
+    term1 = (a + b - 1)/(a - 1)
+    term2 = (alpha/(alpha + t))^r
+    term3 = hypWrap(r, b, a + b - 1, t/(alpha + t))
+
+    return(term1 * (1 - term2 * term3))
+  }
+
+
+  # To caluclate expectation at point t for customers alive in t, given in params_i.t
+  fct.expectation <- function(params_i.t) {
+
+    return(params_i.t[,.(res = fct.bgnbd.expectation(r = r, alpha = alpha, a = a, b = b, t = t_i)), by = "Id"]$res)
+  }
+
+
+  return(DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
+                       fct.expectation = fct.expectation, clv.time = clv.fitted@clv.data@clv.time))
+})
+```
+
+## <a name="3-prediction"></a> 3 Prediction
+
+### <a name="3-1-implement-prediction"></a> 3.1 Implement the prediction method
+In your model class, create the method `clv.model.predict.clv`:
+
+```R
+#' @include all_generics.R
+setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgnbd.no.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
+  #Id <- x <- t.x <- T.cal <-  PAlive <- CET <- DERT.R <- DERT.cpp <- NULL # cran silence
+
+  # To be sure they are both sorted the same when calling cpp functions
+  setkeyv(dt.prediction, "Id")
+  setkeyv(clv.fitted@cbs, "Id")
+
+  predict.number.of.periods <- dt.prediction[1, period.length]
+  # pass matrix(0) because no covariates are used
+
+
+  # Put params together in single vec
+  estimated.params <- c(r = clv.fitted@prediction.params.model[["r"]], alpha = clv.fitted@prediction.params.model[["alpha"]],
+                        a = clv.fitted@prediction.params.model[["a"]], b  = clv.fitted@prediction.params.model[["b"]])
+
+
+  # Add CET
+  dt.prediction[, CET := bgnbd_cet(vParams = estimated.params,
+                                   nPeriods = predict.number.of.periods,
+                                   vX = clv.fitted@cbs[, x],
+                                   vT_x = clv.fitted@cbs[, t.x],
+                                   vT_cal = clv.fitted@cbs[, T.cal])]
+
+
+  # Add PAlive
+  dt.prediction[, PAlive := bgnbd_palive(vParams = estimated.params,
+                                         vX = clv.fitted@cbs[, x],
+                                         vT_x = clv.fitted@cbs[, t.x],
+                                         vT_cal = clv.fitted@cbs[, T.cal])]
+  # Add DERT
+  dt.prediction[, DERT := 0]
+
+  return(dt.prediction)
+})
+```
+## <a name="4-example"></a>4. Example: Putting it all together
+If you implemented all the above mentioned classes and methods, you will be able to make use of the implemented functionality:
+
+```R
+library("CLVTools")
+data("cdnow")
+
+clv.apparel <- clvdata(cdnow,
+                       date.format="ymd",
+                       time.unit = "week",
+                       estimation.split = "1997-09-30",
+                       name.id = "Id",
+                       name.date = "Date",
+                       name.price = "Price")
+
+est.bgnbd <- bgnbd(clv.data = clv.apparel, start.params.model = c(r = 1, alpha = 3, a = 1, b= 3),
+                   optimx.args = list(control=list(trace=5) ))
+
+summary(est.bgnbd)
+coef(est.bgnbd)
+
+
+predict(est.bgnbd, prediction.end = "2011-12-31")
+plot(est.bgnbd)
 ```
