@@ -18,3 +18,4 @@ coef(est.bgnbd)
 
 predict(est.bgnbd, prediction.end = "2011-12-31")
 plot(est.bgnbd)
+

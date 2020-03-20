@@ -5,6 +5,5 @@
 #include "clv_vectorized.h"
 
 arma::vec beta_ratio(const double a, arma::vec& b, const double x, const double y);
-arma::vec vec_is_numeric(const arma::vec& vX);
 
 #endif

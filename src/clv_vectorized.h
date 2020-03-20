@@ -12,6 +12,8 @@ arma::vec vec_x_hyp1F1(double a, double b, const arma::vec& vX);
 
 arma::vec vec_pow(const arma::vec& vA, const arma::vec& vP);
 
+arma::vec vec_as_numeric(const arma::vec& vX);
+
 }
 
 #endif

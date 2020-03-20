@@ -32,7 +32,7 @@ arma::vec bgnbd_nocov_LL_ind(const arma::vec& vLogparams,
   vRx = (r + vX);
   vBxPlusB = (b + vX);
   vBxPlusBMinus1 = (vBxPlusB - 1);
-  vB = vBetaRatio % clv::vec_pow(vAlphaTxByAlphaTcal, vRx) + (vec_is_numeric(vX)) % beta_ratio(a + 1 , vBxPlusBMinus1, a, b);
+  vB = vBetaRatio % clv::vec_pow(vAlphaTxByAlphaTcal, vRx) + (clv::vec_as_numeric(vX)) % beta_ratio(a + 1 , vBxPlusBMinus1, a, b);
 
   arma::vec vLL = vA + arma::log(vB);
 
@@ -85,15 +85,4 @@ arma::vec beta_ratio(const double a, arma::vec& b, const double x, const double 
   return(arma::exp(std::lgamma(a) + arma::lgamma(b) - arma::lgamma(a + b) - std::lgamma(x) - std::lgamma(y) + std::lgamma(x+y)));
 }
 
-arma::vec vec_is_numeric(const arma::vec& vX){
-
-  arma::vec vRes(vX);
-
-  arma::uword n = vX.n_elem;
-  for(arma::uword i = 0; i<n; i++){
-    vRes(i) = vX(i) > 0 ? 1 : 0;
-  }
-
-  return(vRes);
-}
 
