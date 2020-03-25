@@ -199,6 +199,23 @@ setMethod(f = "show", signature = signature(object="clv.fitted"), definition = f
 
 
 
+# helper to convert list to printable array
+.list2array <- function(l, col.n="", row.n=names(l), nsmall=4){
+  disp           <- array(data=NA_character_, dim=list(length(l), 1))
+  disp[, 1]      <- unlist(format(l, na.encode = FALSE, digits=nsmall, nsmall=nsmall, scientific=FALSE))
+  rownames(disp) <- row.n
+  colnames(disp) <- col.n
+  return(disp)
+}
+
+
+.print.list <- function(l, col.n = "", row.n = names(l), nsmall=4){
+  disp.arr <- .list2array(l, col.n=col.n, row.n=row.n, nsmall=nsmall)
+  print(disp.arr, na.print = "",  quote = FALSE)
+}
+
+
+
 #' @rdname summary.clv.fitted
 #' @include clv_helpers.R
 #' @export
