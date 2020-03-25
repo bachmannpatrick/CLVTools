@@ -7,21 +7,25 @@ Today, customer lifetime value (CLV) is the central metric for valuing customers
 
 The R package **CLVTools** provides an efficient and easy to use implementation framework for probabilistic customer attrition models in non-contractual settings. Building up on the learnings of other implementations, the package adopts S4 classes to allow constructing rich and rather complex models that nevertheless still are easy to apply for the end user. The framework is capable to accomodate a variety of probabilistic customer attition models for non-contractual settings in continuous and discrete time.
 
-Currently, CLVTools implements the following probabilistic models:
+CLVTools implements the following probabilistic models:
 
-1.  Standard Pareto/NBD model (Schmittlein, Morrison & Colombo 1987)
+1.  Pareto/NBD model (Schmittlein, Morrison & Colombo 1987)
 
-2.  Pareto/NBD model with **time-invariant** contextual factors (Fader and Hardie 2007)
+2.  Pareto/NBD model with **time-invariant** contextual factors (Fader & Hardie 2007)
 
 3.  Pareto/NBD model with **time-varying** contextual factors (Bachmann & Meierer XX)
 
-In addtion the framework features an "interlayer system" to allow the flexible addtion of model extensions during the model fitting process. Currently these layeyers include:
+4.  BG/NBD model (Fader, Hardie, & Lee 2005) 
+
+5.  BG/BB model (Fader, Hardie, Shang 2010)
+
+In addition, **CLVTools** provides the functionality to use advanced modeling techniques (support of these options varies by model):
 
 -   Correlation of the purchase and the attrition process
 
 -   L2 regularization for parameters of contextual factors
 
--   Equality constraints between parameters of contextual for the purchase and the attrition process.
+-   Equality constraints between parameters of contextual factors for the purchase and the attrition process.
 
 Installation Instructions
 -------------------------
