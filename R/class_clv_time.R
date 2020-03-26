@@ -122,8 +122,6 @@ setMethod("clv.time.set.sample.periods", signature = signature(clv.time="clv.tim
   clv.time@holdout.period.in.tu       <- holdout.period.in.tu
   clv.time@estimation.period.in.tu    <- estimation.period.in.tu
 
-  validObject(clv.time)
-
   return(clv.time)
 })
 

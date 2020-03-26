@@ -1,6 +1,3 @@
-# Cannot inherit from data.static.covariates because validity checks are designed for static cov
-# data and will completely fail for dyncov (such as additional columns for covariate date) (maaaaybe ??)
-
 #' Transactional and dynamic covariates data to fit CLV models
 #'
 #' @description

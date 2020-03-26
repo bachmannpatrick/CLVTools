@@ -192,10 +192,6 @@ setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(
 #' @importFrom optimx coef<-
 setMethod(f = "clv.controlflow.estimate.put.optimx", signature = signature(obj="clv.fitted"), definition = function(obj, res.optimx){
 
-  # save output (is of class "optimx" and "data.frame"), all attributes will be lost!
-  #   Because for some reason S4 validity checks dont recognize res.optimx as a data.frame
-  #   although it is one, as a workaround the class names are switched which makes it recognized
-  # class(res.optimx) <- c("data.frame", "optimx")
   obj@optimx.estimation.output <- res.optimx
 
   optimx.last.row <- tail(obj@optimx.estimation.output, n=1)

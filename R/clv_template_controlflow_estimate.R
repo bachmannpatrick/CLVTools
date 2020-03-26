@@ -49,9 +49,6 @@ clv.template.controlflow.estimate <- function(obj,
 
 
   # optimize LL --------------------------------------------------------------------------------------------------
-  # **TODO: Cannot check valid object here, yet! (maybe check with names.prefixed?)
-  validObject(obj) # check for anything illegal before starting lengthy optimization
-
   #   Just call optimx. Nothing model specific or similar is done.
   if(verbose)
     message("Starting estimation...")
@@ -79,9 +76,6 @@ clv.template.controlflow.estimate <- function(obj,
   #   model-specifc storage and processing of optimx outputs
   obj <- clv.controlflow.estimate.put.optimx(obj=obj, res.optimx=res.optimx)
   obj <- clv.model.put.optimx.output(clv.model=obj@clv.model, clv.fitted=obj, res.optimx=res.optimx)
-
-  # **put back
-  # validObject(obj)
 
   return(obj)
 }

@@ -46,9 +46,6 @@ setMethod(f = "clv.controlflow.predict.set.prediction.params", signature = signa
   obj@prediction.params.life  <- prediction.params.life
   obj@prediction.params.trans <- prediction.params.trans
 
-  # ensure prediction params are set correctly / fulfill all requirements
-  # **Add again
-  # validObject(obj)
   return(obj)
 })
 

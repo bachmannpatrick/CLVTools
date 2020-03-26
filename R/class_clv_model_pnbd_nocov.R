@@ -25,14 +25,6 @@ setClass(Class = "clv.model.pnbd.no.cov", contains = "clv.model",
          ))
 
 
-# setValidity("clv.model.pnbd.no.cov", method = function(object){
-#   # At anypoint need to be exactly like the prototype. Never change the slots to anything.
-#   #   clv.model parent does checks on content
-#   print("checking clv.model.pnbd.no.cov")
-#   # print(all.equal(object, new("clv.model.pnbd.no.cov")))
-#   return(isTRUE(all.equal(object, new("clv.model.pnbd.no.cov"))))
-# })
-
 # Methods --------------------------------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
 setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...){

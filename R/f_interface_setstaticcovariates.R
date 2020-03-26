@@ -79,7 +79,6 @@ setMethod(f = "SetStaticCovariates", signature = signature(clv.data="clv.data"),
                                                 names.cov.data.life  = names.cov.data.life,
                                                 names.cov.data.trans = names.cov.data.trans)
 
-  validObject(data.static.cov)
   return(data.static.cov)
 })
 
