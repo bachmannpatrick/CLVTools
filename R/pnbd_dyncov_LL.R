@@ -14,7 +14,6 @@ pnbd_dyncov_LL_ind <- function(params, obj){
 #' @importFrom doParallel registerDoParallel stopImplicitCluster
 #' @importFrom parallel detectCores
 #' @importFrom foreach foreach %dopar%
-#' @importFrom gsl hyperg_2F1
 pnbd_dyncov_LL <- function(params, obj){
   # pnbd_LL_DynCovInd_gen <- function(logparams, trans.gammas, life.gammas, cbs, transactions.walks, lifetime.walks){
   Num.Walk <- AuxTrans <- Di.Max.Walk <- adj.Max.Walk <- Di.adj.Walk1 <- adj.Walk1 <- A1T <- x <- A1sum <- AuxTrans <- transaction.cov.dyn <- Id <- Bjsum <- Bksum <- AkT <- NULL
@@ -154,6 +153,7 @@ pnbd_dyncov_LL <- function(params, obj){
   #---------------------------------------------------
 
   #Prepare
+  cbs[, splus1 := s+1] # used to call hypergeom functions with vectors
   cbs.f2.num.e.1 <- subset(cbs, Num.Walk == 1)
   cbs.f2.num.g.1 <- subset(cbs, Num.Walk > 1)
 
@@ -168,10 +168,10 @@ pnbd_dyncov_LL <- function(params, obj){
   cbs.f2.num.e.1[, alpha_2 :=a1T + alpha_0]
   cbs.f2.num.e.1[, beta_2  := (b1T  + beta_0)*A1T/C1T]
   if(nrow(cbs.f2.num.e.1[alpha_1 >= beta_1]) > 0){
-    cbs.f2.num.e.1[alpha_1 >= beta_1, F2.1:= (A1T/C1T)^s * .hyp.alpha.ge.beta(.SD, r=r, s=s, alpha_0=alpha_0), .SDcols=c("alpha_1", "alpha_2", "beta_1", "beta_2", "x", "Bksum", "A1T", "C1T")]
+    cbs.f2.num.e.1[alpha_1 >= beta_1, F2.1:= (A1T/C1T)^s * .hyp.alpha.ge.beta(.SD, r=r, s=s, alpha_0=alpha_0)]
   }
   if(nrow(cbs.f2.num.e.1[alpha_1 < beta_1]) > 0){
-    cbs.f2.num.e.1[alpha_1 <  beta_1, F2.1:= (A1T/C1T)^s * .hyp.beta.g.alpha(.SD, r=r, s=s, alpha_0=alpha_0), .SDcols=c("alpha_1", "alpha_2", "beta_1", "beta_2", "x", "Bksum", "A1T", "C1T")]
+    cbs.f2.num.e.1[alpha_1 <  beta_1, F2.1:= (A1T/C1T)^s * .hyp.beta.g.alpha(.SD, r=r, s=s, alpha_0=alpha_0)]
   }
 
 
@@ -185,10 +185,10 @@ pnbd_dyncov_LL <- function(params, obj){
   cbs.f2.num.g.1[, beta_2:=(b1 + C1T + beta_0)*A1T/C1T]
 
   if(nrow(cbs.f2.num.g.1[alpha_1 >= beta_1]) > 0){
-    cbs.f2.num.g.1[alpha_1 >= beta_1, F2.1:= (A1T/C1T)^s * .hyp.alpha.ge.beta(cbs =.SD, r=r, s=s, alpha_0=alpha_0), .SDcols=c("alpha_1", "alpha_2", "beta_1", "beta_2", "x", "Bksum", "A1T", "C1T")]
+    cbs.f2.num.g.1[alpha_1 >= beta_1, F2.1:= (A1T/C1T)^s * .hyp.alpha.ge.beta(cbs =.SD, r=r, s=s, alpha_0=alpha_0)]
   }
   if(nrow(cbs.f2.num.g.1[alpha_1 < beta_1]) > 0){
-    cbs.f2.num.g.1[alpha_1 < beta_1,  F2.1:= (A1T/C1T)^s * .hyp.beta.g.alpha(cbs =.SD, r=r, s=s, alpha_0=alpha_0), .SDcols=c("alpha_1", "alpha_2", "beta_1", "beta_2", "x", "Bksum", "A1T", "C1T")]
+    cbs.f2.num.g.1[alpha_1 < beta_1,  F2.1:= (A1T/C1T)^s * .hyp.beta.g.alpha(cbs =.SD, r=r, s=s, alpha_0=alpha_0)]
   }
 
 
@@ -201,10 +201,10 @@ pnbd_dyncov_LL <- function(params, obj){
   cbs.f2.num.g.1[, beta_2:=  (bT + beta_0)*AkT/CkT]
 
   if(nrow(cbs.f2.num.g.1[alpha_1 >= beta_1]) > 0){
-    cbs.f2.num.g.1[alpha_1 >= beta_1, F2.2:= (AkT/CkT)^s * .hyp.alpha.ge.beta(cbs =.SD, r=r, s=s, alpha_0=alpha_0), .SDcols=c("alpha_1", "alpha_2", "beta_1", "beta_2", "x", "Bksum", "AkT", "CkT")]
+    cbs.f2.num.g.1[alpha_1 >= beta_1, F2.2:= (AkT/CkT)^s * .hyp.alpha.ge.beta(cbs =.SD, r=r, s=s, alpha_0=alpha_0)]
   }
   if(nrow(cbs.f2.num.g.1[alpha_1 < beta_1]) > 0){
-    cbs.f2.num.g.1[alpha_1 < beta_1,  F2.2:= (AkT/CkT)^s * .hyp.beta.g.alpha(cbs =.SD, r=r, s=s, alpha_0=alpha_0), .SDcols=c("alpha_1", "alpha_2", "beta_1", "beta_2", "x", "Bksum", "AkT", "CkT")]
+    cbs.f2.num.g.1[alpha_1 < beta_1,  F2.2:= (AkT/CkT)^s * .hyp.beta.g.alpha(cbs =.SD, r=r, s=s, alpha_0=alpha_0)]
   }
 
 
@@ -262,10 +262,10 @@ pnbd_dyncov_LL <- function(params, obj){
         cbs.i[, alpha_2:=ai + Ai + alpha_0]
         cbs.i[, beta_2:=(bi + Ci +beta_0)*Ai/Ci]
         if(nrow(cbs.i[alpha_1 >= beta_1]) > 0){
-          cbs.i[alpha_1 >= beta_1, F2.3:=(Ai/Ci)^(s) * .hyp.alpha.ge.beta(cbs=.SD, r=r, s=s, alpha_0=alpha_0), .SDcols=c("alpha_1", "alpha_2", "beta_1", "beta_2", "x", "Bksum", "Ai", "Ci")]
+          cbs.i[alpha_1 >= beta_1, F2.3:=(Ai/Ci)^(s) * .hyp.alpha.ge.beta(cbs=.SD, r=r, s=s, alpha_0=alpha_0)]
         }
         if(nrow(cbs.i[alpha_1 < beta_1]) > 0){
-          cbs.i[alpha_1 <  beta_1, F2.3:=(Ai/Ci)^(s) * .hyp.beta.g.alpha(cbs=.SD, r=r, s=s, alpha_0=alpha_0), .SDcols=c("alpha_1", "alpha_2", "beta_1", "beta_2", "x", "Bksum", "Ai", "Ci")]
+          cbs.i[alpha_1 <  beta_1, F2.3:=(Ai/Ci)^(s) * .hyp.beta.g.alpha(cbs=.SD, r=r, s=s, alpha_0=alpha_0)]
         }
 
         #write results to separate vector as data.table (cbs.f2.num.g.1)
@@ -489,11 +489,11 @@ if(cbs[, any(Num.Walk > 1)])
 
     cbs.z[,log.C :=  lgamma(r+s+x+1) + lgamma(s) - lgamma(r+s+x) - lgamma(s+1) ]
 
-    l.hyp.z1 <- hyperg_2F1(r+s+cbs.z$x, s+1, r+s+cbs.z$x+1, cbs.z$z.1, give = TRUE, strict = TRUE)
-    l.hyp.z2 <- hyperg_2F1(r+s+cbs.z$x, s+1, r+s+cbs.z$x+1, cbs.z$z.2, give = TRUE, strict = TRUE)
+    l.hyp.z1 <- vec_gsl_hyp2f1_e(r+s+cbs.z$x, cbs.z$splus1, r+s+cbs.z$x+1, cbs.z$z.1)
+    l.hyp.z2 <- vec_gsl_hyp2f1_e(r+s+cbs.z$x, cbs.z$splus1, r+s+cbs.z$x+1, cbs.z$z.2)
 
-    cbs.z[, hyp.z1 := l.hyp.z1$val / (alpha_1^(r+s+x))]
-    cbs.z[, hyp.z2 := l.hyp.z2$val / (alpha_2^(r+s+x))]
+    cbs.z[, hyp.z1 := l.hyp.z1$value / (alpha_1^(r+s+x))]
+    cbs.z[, hyp.z2 := l.hyp.z2$value / (alpha_2^(r+s+x))]
 
     # GSL_EMAXITER (11) or GSL_EDOM (1, input domain error)
     if(any(l.hyp.z1$status == 11 | l.hyp.z1$status == 1)){
@@ -527,11 +527,11 @@ if(cbs[, any(Num.Walk > 1)])
 
     cbs.z[,log.C :=  lgamma(r+s+x+1) + lgamma(r+x-1) - lgamma(r+s+x) - lgamma(r+x) ]
 
-    l.hyp.z1 <- hyperg_2F1(r+s+cbs.z$x,r+cbs.z$x,r+s+cbs.z$x+1, cbs.z$z.1, give = TRUE, strict = TRUE)
-    l.hyp.z2 <- hyperg_2F1(r+s+cbs.z$x,r+cbs.z$x,r+s+cbs.z$x+1, cbs.z$z.2, give = TRUE, strict = TRUE)
+    l.hyp.z1 <- vec_gsl_hyp2f1_e(r+s+cbs.z$x,r+cbs.z$x,r+s+cbs.z$x+1, cbs.z$z.1)
+    l.hyp.z2 <- vec_gsl_hyp2f1_e(r+s+cbs.z$x,r+cbs.z$x,r+s+cbs.z$x+1, cbs.z$z.2)
 
-    cbs.z[, hyp.z1 := l.hyp.z1$val / (beta_1^(r+s+x))]
-    cbs.z[, hyp.z2 := l.hyp.z2$val / (beta_2^(r+s+x))]
+    cbs.z[, hyp.z1 := l.hyp.z1$value / (beta_1^(r+s+x))]
+    cbs.z[, hyp.z2 := l.hyp.z2$value / (beta_2^(r+s+x))]
 
     # GSL_EMAXITER (11) or GSL_EDOM (1, input domain error)
     if(any(l.hyp.z1$status == 11 | l.hyp.z1$status == 1)){
