@@ -1,4 +1,4 @@
-#' @include class_clv_fitted_static_cov.R
+#' @include class_clv_fitted_staticcov.R
 setValidity(Class = "clv.fitted.static.cov", method = function(object){
   # covariates: coef named with prefix
   # do not callNext

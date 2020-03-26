@@ -1,5 +1,5 @@
 #' @importFrom methods setClass
-#' @include class_clv_model_pnbd_dynamiccov.R class_clv_data_dynamic_covariates.R class_clv_fitted_static_cov.R
+#' @include class_clv_model_pnbd_dynamiccov.R class_clv_data_dynamiccovariates.R class_clv_fitted_staticcov.R
 setClass(Class = "clv.pnbd.dynamic.cov", contains = "clv.fitted.dynamic.cov",
          slots = c(
            cbs = "data.table",

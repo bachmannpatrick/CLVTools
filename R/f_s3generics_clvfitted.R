@@ -217,7 +217,6 @@ setMethod(f = "show", signature = signature(object="clv.fitted"), definition = f
 
 
 #' @rdname summary.clv.fitted
-#' @include clv_helpers.R
 #' @export
 #' @keywords internal
 print.summary.clv.fitted <- function(x, digits=max(3L, getOption("digits")-3L),

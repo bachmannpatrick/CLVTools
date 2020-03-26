@@ -41,7 +41,6 @@ check_err_msg <- function(err.msg){
 
 
 
-#' @include clv_helpers.R
 check_userinput_datanocov_columnname <- function(name.col, data){
 
   if(is.null(name.col))

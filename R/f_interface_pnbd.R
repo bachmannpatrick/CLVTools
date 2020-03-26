@@ -182,7 +182,7 @@ setMethod("pnbd", signature = signature(clv.data="clv.data"), definition = funct
                                            start.param.cor = start.param.cor, optimx.args = optimx.args, verbose=verbose, ...))
 })
 
-#' @include class_clv_model_pnbd_staticcov.R class_clv_data_static_covariates.R
+#' @include class_clv_model_pnbd_staticcov.R class_clv_data_staticcovariates.R
 #' @aliases pnbd,clv.data.static.covariates-method
 #' @rdname pnbd
 #' @export
@@ -210,7 +210,7 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.static.covariates"), 
 
 
 
-#' @include class_clv_data_dynamic_covariates.R
+#' @include class_clv_data_dynamiccovariates.R
 #' @rdname pnbd
 #' @aliases pnbd,clv.data.dynamic.covariates-method
 #' @export

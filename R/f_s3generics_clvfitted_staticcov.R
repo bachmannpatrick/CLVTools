@@ -1,5 +1,5 @@
 #'@export
-#' @include all_generics.R class_clv_fitted_static_cov.R
+#' @include all_generics.R class_clv_fitted_staticcov.R
 print.clv.fitted.static.cov <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
   # print standard parts
   NextMethod()
@@ -14,7 +14,7 @@ print.clv.fitted.static.cov <- function(x, digits = max(3L, getOption("digits") 
   invisible(x)
 }
 
-#' @include all_generics.R class_clv_fitted_static_cov.R
+#' @include all_generics.R class_clv_fitted_staticcov.R
 #' @importFrom methods show
 #' @export
 setMethod(f = "show", signature = signature(object="clv.fitted.static.cov"), definition = function(object){
@@ -22,7 +22,7 @@ setMethod(f = "show", signature = signature(object="clv.fitted.static.cov"), def
 
 
 #' @rdname summary.clv.fitted
-#' @include class_clv_data_static_covariates.R
+#' @include class_clv_data_staticcovariates.R
 #' @export
 #' @keywords internal
 summary.clv.fitted.static.cov <- function(object, ...){
@@ -61,7 +61,7 @@ summary.clv.fitted.static.cov <- function(object, ...){
 
 #' @importFrom stats coef na.omit setNames
 #' @importFrom optimx coef<-
-#' @include class_clv_fitted.R class_clv_fitted_static_cov.R all_generics.R f_s3generics_clvfitted.R
+#' @include class_clv_fitted.R class_clv_fitted_staticcov.R all_generics.R f_s3generics_clvfitted.R
 #' @export
 coef.clv.fitted.static.cov <- function(object, complete = TRUE, ...){
 
@@ -148,7 +148,7 @@ coef.clv.fitted.static.cov <- function(object, complete = TRUE, ...){
 
 #' # S4 method to forward to S3 method
 #' #' @rdname coef
-#' #' @include all_generics.R class_clv_fitted_static_cov.R
+#' #' @include all_generics.R class_clv_fitted_staticcov.R
 #' #' @exportMethod coef
 #' setMethod(f = "coef", signature = signature(object="clv.fitted.static.cov"), coef.clv.fitted.static.cov)
 

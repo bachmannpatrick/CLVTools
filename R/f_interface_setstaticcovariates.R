@@ -1,6 +1,6 @@
 #' @template template_setstaticcov
 #' @aliases SetStaticCovariates SetStaticCovariates,clv.data-method
-#' @include all_generics.R class_clv_data.R class_clv_data_static_covariates.R
+#' @include all_generics.R class_clv_data.R class_clv_data_staticcovariates.R
 setMethod(f = "SetStaticCovariates", signature = signature(clv.data="clv.data"), function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id"){
 
   # Basic inputchecks ---------------------------------------------------------------------
@@ -83,14 +83,14 @@ setMethod(f = "SetStaticCovariates", signature = signature(clv.data="clv.data"),
   return(data.static.cov)
 })
 
-#' @include all_generics.R class_clv_data_static_covariates.R
+#' @include all_generics.R class_clv_data_staticcovariates.R
 setMethod(f = "SetStaticCovariates", signature = signature(clv.data="clv.data.static.covariates"),
           definition = function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id"){
             stop("Cannot set static covariates because this object has covariates set already!", call. = FALSE)
 })
 
 
-#' @include all_generics.R class_clv_data_static_covariates.R
+#' @include all_generics.R class_clv_data_staticcovariates.R
 setMethod(f = "SetStaticCovariates", signature = signature(clv.data="clv.data.dynamic.covariates"),
           definition = function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id"){
             stop("Cannot set static covariates because this object has covariates set already!", call. = FALSE)
