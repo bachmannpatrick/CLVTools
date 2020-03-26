@@ -227,7 +227,6 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.dynamic.covariates"),
   cl  <- sys.call(1)
   obj <- clv.pnbd.dynamic.cov(cl = cl, clv.data=clv.data)
 
-  # validObject(obj)
   return(clv.template.controlflow.estimate(obj=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor, start.param.cor = start.param.cor,
                                            optimx.args = optimx.args, verbose=verbose,
                                            names.cov.life=names.cov.life, names.cov.trans=names.cov.trans,

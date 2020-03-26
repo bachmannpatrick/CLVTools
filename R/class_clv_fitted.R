@@ -40,6 +40,8 @@ setClass(Class = "clv.fitted", # contains = "VIRTUAL",
            name.prefixed.cor.param.m    = "character",
            name.correlation.cor         = "character",
 
+           # Can save optimx result as optimx class because setOldClass (optimx) is
+           #  done before
            optimx.estimation.output = "optimx",
            optimx.hessian           = "matrix"),
 
@@ -65,7 +67,7 @@ setClass(Class = "clv.fitted", # contains = "VIRTUAL",
 #   enforce all required inputs
 #   no generic needed because always constructed in same way from transaction data and model
 clv.fitted <- function(cl, clv.model, clv.data){
-  # need to assign directly in constructor to have valid object
+
   # Deep copy of clv.data if ever modified by reference later on
   return(new("clv.fitted", call=cl, clv.model = clv.model,
              clv.data=data.table::copy(clv.data)))

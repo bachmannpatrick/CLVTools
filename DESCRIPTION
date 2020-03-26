@@ -102,13 +102,4 @@ Collate:
     'pnbd_dyncov_expectation.R'
     'pnbd_dyncov_makewalks.R'
     'pnbd_dyncov_palive.R'
-    'validity_clv_data_dynamiccovariates.R'
-    'validity_clv_data_nocovariates.R'
-    'validity_clv_data_staticcovariates.R'
-    'validity_clv_model_basestrategy.R'
-    'validity_clv_nocov.R'
-    'validity_clv_staticcov.R'
-    'validity_clv_time.R'
-    'validity_clv_timedate.R'
-    'validity_clv_timedatetime.R'
 RoxygenNote: 7.0.2

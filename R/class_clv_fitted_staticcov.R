@@ -75,21 +75,10 @@ setClass(Class = "clv.fitted.static.cov", contains = "clv.fitted", #c("clv.fitte
          ))
 
 
-# **TODO: Make cleaner validity method that checks for length() >0 first
-# Define useless initialize function that does on purpose not call the parent function
-#   because this would eventually call validObject on the object resulting from new().
-#   The prototype is however not a valid object, it often contains length()==0 slots that
-#   fail the ifs in the validity function.
-# validObject is explicitely called at relevant points
-# setMethod("initialize", signature = "clv.fitted.static.cov",definition = function(.Object,...){
-#   return(.Object)
-# })
-
 
 # Convenience constructor function
 clv.fitted.static.cov <- function(cl, clv.model, clv.data){
-  # need to assign directly in constructor to have valid object
-  #   Deep copy of clv.data if ever modified by reference later on
+  # Deep copy of clv.data if ever modified by reference later on
   return(new("clv.fitted.static.cov", call=cl, clv.model = clv.model, clv.data=data.table::copy(clv.data)))
 }
 
