@@ -1,7 +1,6 @@
 #include <RcppArmadillo.h>
 #include <math.h>
 #include "pnbd_LL_ind.h"
-#include "cephes_hypergeom1f1.h"
 #include "clv_vectorized.h"
 
 arma::vec pnbd_DERT_ind(const double r,

@@ -32,33 +32,21 @@ arma::vec pnbd_LL_ind(const double r,
   arma::uvec uvLLFind1 = find(vABabs != 0.0) ;
   arma::uvec uvLLFind2 = find(vABabs == 0.0);
 
-
   arma::vec vF1(n), vF2(n), vPartF(n);
-  // Rcout<<"1"<<std::endl;
 
   // Calculate Part F for case vABabs != 0 --------------------------------------------------
-  try {
-    vF1(uvLLFind1) = clv::vec_hyp2F1(r + s + vX(uvLLFind1),
-        vParam2(uvLLFind1),
-        r + s + vX(uvLLFind1) + 1,
-        vABabs(uvLLFind1) / (vMaxAB(uvLLFind1) + vT_x(uvLLFind1)));
+  vF1(uvLLFind1) = clv::vec_hyp2F1(r + s + vX(uvLLFind1),
+      vParam2(uvLLFind1),
+      r + s + vX(uvLLFind1) + 1,
+      vABabs(uvLLFind1) / (vMaxAB(uvLLFind1) + vT_x(uvLLFind1)));
 
-    vF2(uvLLFind1) = clv::vec_hyp2F1(r + s + vX(uvLLFind1),
-        vParam2(uvLLFind1),
-        r + s + vX(uvLLFind1) + 1,
-        vABabs(uvLLFind1)/(vMaxAB(uvLLFind1) + vT_cal(uvLLFind1)));
+  vF2(uvLLFind1) = clv::vec_hyp2F1(r + s + vX(uvLLFind1),
+      vParam2(uvLLFind1),
+      r + s + vX(uvLLFind1) + 1,
+      vABabs(uvLLFind1)/(vMaxAB(uvLLFind1) + vT_cal(uvLLFind1)));
 
-    vF2(uvLLFind1) %= clv::vec_pow((vMaxAB(uvLLFind1) + vT_x(uvLLFind1))/(vMaxAB(uvLLFind1) + vT_cal(uvLLFind1)),
-        r + s + vX(uvLLFind1));
-
-  }catch(std::exception &e)
-  {
-    // print error location and cause. Stop and return NA to optimization
-    Rcpp::Rcout<<"Exception in pnbd_LL_ind: "<<e.what()<<std::endl;
-    arma::vec ret(1);
-    ret.fill(NA_REAL);
-    return(ret);
-  }
+  vF2(uvLLFind1) %= clv::vec_pow((vMaxAB(uvLLFind1) + vT_x(uvLLFind1))/(vMaxAB(uvLLFind1) + vT_cal(uvLLFind1)),
+      r + s + vX(uvLLFind1));
 
   vPartF(uvLLFind1) = -(r + s + vX(uvLLFind1)) % arma::log(vMaxAB(uvLLFind1) + vT_x(uvLLFind1)) + arma::log(vF1(uvLLFind1) - vF2(uvLLFind1));
 

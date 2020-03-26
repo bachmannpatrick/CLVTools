@@ -48,7 +48,7 @@
   test_that("Works with discount factor", {
     skip_on_cran()
     expect_silent(dt.pred.1 <- predict(clv.fitted, continuous.discount.factor = 0,    prediction.end = 6, verbose=FALSE))
-    expect_silent(dt.pred.2 <- predict(clv.fitted, continuous.discount.factor = 0.25, prediction.end = 6, verbose=FALSE))
+    expect_silent(dt.pred.2 <- predict(clv.fitted, continuous.discount.factor = 0.06, prediction.end = 6, verbose=FALSE))
     expect_silent(dt.pred.3 <- predict(clv.fitted, continuous.discount.factor = 0.99, prediction.end = 6, verbose=FALSE))
     expect_false(isTRUE(all.equal(dt.pred.1, dt.pred.2)))
     expect_false(isTRUE(all.equal(dt.pred.2, dt.pred.3)))

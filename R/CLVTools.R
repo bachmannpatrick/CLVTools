@@ -44,7 +44,7 @@
 #'}
 #'
 #' @docType package
-#' @useDynLib CLVTools
+#' @useDynLib CLVTools, .registration=TRUE
 #' @import data.table
 #' @importFrom methods setClass
 NULL
