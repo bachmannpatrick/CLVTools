@@ -7,7 +7,7 @@
 #' process that are specific to dynamic covariates models.
 #'
 #' @importFrom methods setClass
-#' @include all_generics.R class_clv_data_dynamic_covariates.R class_clv_fitted_static_cov.R class_clv_fitted.R
+#' @include all_generics.R class_clv_data_dynamiccovariates.R class_clv_fitted_staticcov.R class_clv_fitted.R
 setClass(Class = "clv.fitted.dynamic.cov", contains = "clv.fitted.static.cov")
 
 

@@ -1,3 +1,16 @@
+pnbd_dyncov_LL_sum <- function(params, obj){
+  return(-sum(pnbd_dyncov_LL_ind(params=params, obj=obj)))
+}
+
+
+# Returns only the individual LL values per customer and no other data.
+pnbd_dyncov_LL_ind <- function(params, obj){
+  LL <- NULL
+  cbsdata_ind <- pnbd_dyncov_LL(params=params, obj=obj)
+  return(cbsdata_ind[, LL])
+}
+
+
 #' @importFrom doParallel registerDoParallel stopImplicitCluster
 #' @importFrom parallel detectCores
 #' @importFrom foreach foreach %dopar%
@@ -535,3 +548,4 @@ if(cbs[, any(Num.Walk > 1)])
     return(cbs) #return the empty data.table
 
 }
+

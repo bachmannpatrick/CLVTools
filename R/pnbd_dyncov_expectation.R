@@ -1,6 +1,5 @@
 #' @importFrom utils txtProgressBar setTxtProgressBar
-#' @include all_generics.R class_clv_model_pnbd_dynamiccov.R
-setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.dynamic.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
+pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
 
   # Create ABCD for expectation
   #   i starts at when becoming alive
@@ -123,7 +122,7 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.dynamic.c
   dt.expectation.seq[order(period.num, decreasing = FALSE), expectation := c(expectation[[1]], diff(expectation))]
 
   return(dt.expectation.seq)
-})
+}
 
 
 
@@ -185,11 +184,11 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.dynamic.c
   # term 1 = 0 (yes!), term 2 = d
   dt.ABCD.alive[i==1,
                 S:= s.fct.expectation(term = 0, A=Ai, B=Bbar_i,C=Ci,D=Dbar_i,beta_0=beta_0,s=s) -
-                      s.fct.expectation(term = d1, A=Ai, B=Bbar_i,C=Ci,D=Dbar_i,beta_0=beta_0,s=s)]
+                  s.fct.expectation(term = d1, A=Ai, B=Bbar_i,C=Ci,D=Dbar_i,beta_0=beta_0,s=s)]
 
   dt.ABCD.alive[i>1,
                 S:= s.fct.expectation(term = (d1 + i - 2), A=Ai, B=Bbar_i, C=Ci, D=Dbar_i, beta_0=beta_0, s=s) -
-                      s.fct.expectation(term = (d1 + i - 1), A=Ai, B=Bbar_i, C=Ci, D=Dbar_i, beta_0=beta_0, s=s)]
+                  s.fct.expectation(term = (d1 + i - 1), A=Ai, B=Bbar_i, C=Ci, D=Dbar_i, beta_0=beta_0, s=s)]
 
   # Last = max(i) is per customer, but only after cutting to expectation date!
   #   After cutting to expectation date, all have the same max date!
@@ -234,6 +233,7 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.dynamic.c
 
   return(dt.alive.customers[, sum(f)])
 }
+
 
 # 1-vs-1 session ------------------------------------------------------------------------------------------------------------
 

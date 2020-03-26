@@ -173,3 +173,10 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.dynamic.c
   return(dt.prediction)
 })
 
+
+#' @include all_generics.R class_clv_model_pnbd_dynamiccov.R
+setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.dynamic.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
+  return(pnbd_dyncov_expectation(clv.fitted=clv.fitted, dt.expectation.seq=dt.expectation.seq, verbose=verbose))
+})
+
+

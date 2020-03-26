@@ -1,3 +1,17 @@
+
+
+.check_user_data_single_numeric <- function(n, var.name){
+  err.msg <- c()
+  if(!is.numeric(n))
+    return(paste0(var.name, " has to be numeric!"))
+  if(length(n)!=1)
+    err.msg <- c(err.msg, paste0(var.name," has to be exactly 1 single number!"))
+  if(anyNA(n))
+    err.msg <- c(err.msg, paste0(var.name," may not be NA!"))
+  return(err.msg)
+}
+
+
 # Can be
 #     - NULL (= all in holdout)
 #     - numeric (=this many periods)
@@ -253,3 +267,6 @@ check_user_data_namesconstr <- function(obj, names.cov.constr){
 
   return(err.msg)
 }
+
+
+

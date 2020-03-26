@@ -1,6 +1,6 @@
 #' @importFrom stats predict
 #' @importFrom methods extends
-#' @include all_generics.R class_clv_fitted.R class_clv_fitted_static_cov.R clv_template_controlflow_predict.R
+#' @include all_generics.R class_clv_fitted.R class_clv_fitted_staticcov.R clv_template_controlflow_predict.R
 clv.template.controlflow.predict <- function(object, prediction.end, predict.spending, continuous.discount.factor, verbose, user.newdata){
   Id <- Date <- Price <- DERT <- DECT <- actual.spending <- actual.x <- predicted.CLV <- predicted.Spending <- NULL # cran silence
 
