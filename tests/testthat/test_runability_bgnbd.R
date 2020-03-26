@@ -1,3 +1,4 @@
+library("testthat")
 library("CLVTools")
 data("cdnow")
 
@@ -15,7 +16,8 @@ est.bgnbd <- bgnbd(clv.data = clv.apparel, start.params.model = c(r = 1, alpha =
 summary(est.bgnbd)
 coef(est.bgnbd)
 
+context("Correctness - BG/NBD")
 
-predict.bgnbd <- predict(est.bgnbd, prediction.end = "2011-12-31")
-plot(est.bgnbd)
-
+test_that("cdnow nocov correct coefs and SE", {
+   expect_equal(coef(est.bgnbd), c(r = 0.2425945, alpha = 4.4136019, a = 0.7929199, b = 2.4258881))
+})

@@ -14,25 +14,11 @@ arma::vec bgnbd_nocov_LL_ind(const arma::vec& vLogparams,
 
   const unsigned int n = vX.n_elem;
 
-
-  arma::uvec vX_filtered = find(vX > 0);
-
-  arma::vec vA(n), vB(n), vBx(n), vAlphaTxByAlphaTcal(n), vRx(n), vBxPlusB(n), vBxPlusBMinus1(n), vBetaRatio(n);
-
-
-
-
+  arma::vec vA(n), vB(n), vBetaRatio(n);
 
   vA = r * log(alpha) + arma::lgamma(r + vX) - std::lgamma(r) - (r + vX) % arma::log(alpha + vT_x);
 
-  vBx = (b+vX);
-  vBetaRatio = beta_ratio(a, vBx, a, b);
-
-  vAlphaTxByAlphaTcal = (alpha + vT_x)/(alpha + vT_cal);
-  vRx = (r + vX);
-  vBxPlusB = (b + vX);
-  vBxPlusBMinus1 = (vBxPlusB - 1);
-  vB = vBetaRatio % clv::vec_pow(vAlphaTxByAlphaTcal, vRx) + (clv::vec_as_numeric(vX)) % beta_ratio(a + 1 , vBxPlusBMinus1, a, b);
+  vB = beta_ratio(a, (b+vX), a, b) % clv::vec_pow((alpha + vT_x)/(alpha + vT_cal), (r + vX)) + ((vX > 0)) % beta_ratio(a + 1 , (b + vX - 1), a, b);
 
   arma::vec vLL = vA + arma::log(vB);
 
@@ -43,7 +29,7 @@ arma::vec bgnbd_nocov_LL_ind(const arma::vec& vLogparams,
 //' @title BG/NBD: LogLikelihood without covariates
 //'
 //' @description
-//' Pareto/NBD without Covariates:
+//' BG/NBD without Covariates:
 //'
 //' The function \code{bgnbd_nocov_LL_ind} calculates the individual LogLikelihood
 //' values for each customer for the given parameters.
@@ -81,7 +67,7 @@ double bgnbd_nocov_LL_sum(const arma::vec& vLogparams,
   return(-arma::sum(vLL));
 }
 
-arma::vec beta_ratio(const double a, arma::vec& b, const double x, const double y){
+arma::vec beta_ratio(const double a, const arma::vec& b, const double x, const double y){
   return(arma::exp(std::lgamma(a) + arma::lgamma(b) - arma::lgamma(a + b) - std::lgamma(x) - std::lgamma(y) + std::lgamma(x+y)));
 }
 

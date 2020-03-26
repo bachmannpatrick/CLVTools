@@ -58,17 +58,4 @@ arma::vec vec_pow(const arma::vec& vA, const arma::vec& vP){
   return(vRes);
 }
 
-// vec_as_numeric --------------------------------------------------------
-//     equal to as.numeric(x > 0) in R
-arma::vec vec_as_numeric(const arma::vec& vX){
-  arma::vec vRes(vX);
-
-  arma::uword n = vX.n_elem;
-  for(arma::uword i = 0; i<n; i++){
-    vRes(i) = vX(i) > 0 ? 1 : 0;
-  }
-
-  return(vRes);
-}
-
 }

@@ -19,7 +19,7 @@ arma::vec bgnbd_cet(const arma::vec& vParams,
 
   arma::vec term2 = 1 - clv::vec_pow((alpha + vT_cal)/(alpha + vT_cal + nPeriods), (r + vX)) % clv::vec_hyp2F1((r + vX), (b + vX), (a + b + vX - 1), nPeriods / (alpha + vT_cal + nPeriods));
 
-  arma::vec term3 = 1 + clv::vec_as_numeric(vX) % (a /(b + vX - 1)) % clv::vec_pow((alpha + vT_cal)/(alpha + vT_x), (r + vX));
+  arma::vec term3 = 1 + (vX > 0) % (a /(b + vX - 1)) % clv::vec_pow((alpha + vT_cal)/(alpha + vT_x), (r + vX));
 
   return term1 % term2 / term3;
 }

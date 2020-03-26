@@ -14,7 +14,7 @@ bgnbd_nocov_LL_ind <- function(vLogparams, vX, vT_x, vT_cal) {
 #' @title BG/NBD: LogLikelihood without covariates
 #'
 #' @description
-#' Pareto/NBD without Covariates:
+#' BG/NBD without Covariates:
 #'
 #' The function \code{bgnbd_nocov_LL_ind} calculates the individual LogLikelihood
 #' values for each customer for the given parameters.

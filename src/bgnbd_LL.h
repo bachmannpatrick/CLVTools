@@ -4,6 +4,6 @@
 #include <math.h>
 #include "clv_vectorized.h"
 
-arma::vec beta_ratio(const double a, arma::vec& b, const double x, const double y);
+arma::vec beta_ratio(const double a, const arma::vec& b, const double x, const double y);
 
 #endif

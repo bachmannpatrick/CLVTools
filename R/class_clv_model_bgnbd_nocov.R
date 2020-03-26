@@ -40,6 +40,13 @@ setMethod("clv.model.backtransform.estimated.params.model", signature = signatur
   return(exp(prefixed.params.model[clv.model@names.prefixed.params.model]))
 })
 
+setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, verbose){
+  # clv.data in clv.fitted is already replaced with newdata here
+  # Need to only redo cbs if given new data
+  clv.fitted@cbs <- bgnbd_cbs(clv.data = clv.fitted@clv.data)
+  return(clv.fitted)
+})
+
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
   # Also model optimization settings should go here
 
