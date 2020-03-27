@@ -46,7 +46,7 @@
 #'            \item{Constraint params}{Name of the covariate parameters which were constraint, if used.}}}
 #'
 #' @seealso The model fitting functions \code{\link[CLVTools]{pnbd}}.
-#' @seealso Function \code{\link[CLVTools]{coef}} will extract the matrix of coefficients and
+#' @seealso Function \code{\link[CLVTools:coef.summary.clv.fitted]{coef}} will extract the matrix of coefficients and
 #' summary statistics.
 #'
 #' @examples

@@ -10,10 +10,10 @@
 #'
 #' \code{clv.time} is a virtual class and sub-classes implement the actual parsing and calculations.
 #'
-#' \code{\link[CLVTools:clv.time.date]{clv.time.date}} uses data type \code{Date} for time units equal or
+#' \code{\link[CLVTools:clv.time.date-class]{clv.time.date}} uses data type \code{Date} for time units equal or
 #' greater than a single day that do not require a time of day.
 #'
-#' \code{\link[CLVTools:clv.time.datetime]{clv.time.datetime}} uses data type \code{POSIXct} for
+#' \code{\link[CLVTools:clv.time.datetime-class]{clv.time.datetime}} uses data type \code{POSIXct} for
 #' time units smaller than a single day.
 #'
 #'

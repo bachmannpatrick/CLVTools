@@ -104,6 +104,6 @@ summary(pnbd.apparel.cov)
 \seealso{
 The model fitting functions \code{\link[CLVTools]{pnbd}}.
 
-Function \code{\link[CLVTools]{coef}} will extract the matrix of coefficients and
+Function \code{\link[CLVTools:coef.summary.clv.fitted]{coef}} will extract the matrix of coefficients and
 summary statistics.
 }

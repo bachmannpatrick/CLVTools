@@ -1,7 +1,7 @@
 #' Time unit representing a single Day
 #'
-#' @seealso  \code{\link[CLVTools:clv.time]{clv.time}}
-#' @seealso  \code{\link[CLVTools:clv.time.date]{clv.time.date}}
+#' @seealso  \code{\link[CLVTools:clv.time-class]{clv.time}}
+#' @seealso  \code{\link[CLVTools:clv.time.date-class]{clv.time.date}}
 #'
 #' @include class_clv_time.R class_clv_time_date.R all_generics.R
 #' @keywords internal
