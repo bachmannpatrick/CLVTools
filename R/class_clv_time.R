@@ -50,16 +50,16 @@ setClass("clv.time",
          ),
          contains = "VIRTUAL")
 
-
+# **FUTURE: future usage:
 # custom time interval appraoch:
 # cut(hour(now()), breaks=c(0,6,12,18,24), include.lowest = TRUE, labels = FALSE)
 
 clv.time.possible.time.units <- function(){
-  return(c("hours","days", "weeks", "years")) #, "months", "14 days"))"quarters"))
+  return(c("hours","days", "weeks", "years"))
 }
 
-# set.sample.periods ------------------------------------------------------------------------
 
+# set.sample.periods ------------------------------------------------------------------------
 #' @importFrom lubridate period
 setMethod("clv.time.set.sample.periods", signature = signature(clv.time="clv.time"), definition =function(clv.time, tp.first.transaction, tp.last.transaction, user.estimation.end){
 
@@ -89,6 +89,7 @@ setMethod("clv.time.set.sample.periods", signature = signature(clv.time="clv.tim
     if(tp.estimation.end > tp.last.transaction-clv.time.number.timeunits.to.timeperiod(clv.time, 2L))
       stop("Parameter estimation.split needs to indicate a point at least 2 periods before the last transaction!", call. = FALSE)
 
+    # **TODO: Replace with minimal possible discrete time step (minimal.discrete)
     # + 1 day is the same for all because most fine-grained change that Date can do
     tp.holdout.start   <- tp.estimation.end + 1L # For dates: +1 = 1 full day. For POSIXct: +1 = 1 second
     tp.holdout.end     <- tp.last.transaction
@@ -132,15 +133,16 @@ clv.time.expectation.periods <- function(clv.time, user.tp.end){
   # Table with each row representing a period (with period number, start and end dates)
   #   required when executing plot() to calculate the unconditional expectation and to
   #     roll-join repeat transactions on
-  #
+
+
   #   First expectation period
   #     Start: estimation.start
-  #     End: end of time.unit
+  #     End:   End of time.unit
   #       => This period is often/mostly only partial
   #
   #   All other expectation periods:
   #     Start: Beginning of time.unit
-  #     End: End of time.unit
+  #     End:   End of time.unit
   #
   #   Period number: How many periods from min(Start) until end of the period in this row
 
@@ -195,21 +197,25 @@ clv.time.expectation.periods <- function(clv.time, user.tp.end){
   }
 
 
-  # Table:
+  # Table
   #   The implementation of the dyncov expectation function requires each timepoint
   #     to be the start of a covariate time unit
-  #   Because the expectation refers to the period covered by [0, date_i] and only calculates until beginning
+  #   Because the expectation refers to the period covered by [0, date_i] and only calculates until the beginning
   #     of the period (ie backwards and not until end of the period marked by date_i), the
   #     expectation.end has to be included by the last timepoint (ie last timepoint is after expectation.end)
   #   All timepoints in the table need to be exactly 1 time unit apart because the
   #     incremental values are derived from the cumulative expectation function (ie "what is gain from 1 period difference").
   #     Except the first to second period which may be apart less
-
+  #
+  # Periods
   # First:  expectation.start
   #           expectation is 0 but always include because transaction data is counted
+  #
   # Second: ceiling_tu(expectation.start)
   #   If first and second are same (ie expectation.start falls on period start), only use one
-  # All after: +1 TU of previous
+  #
+  # All afterwards: +1 TU of previous
+  #
   # Last: minimum required date
   #     minimum required date: max(expectation.end, ceiling_tu(expectation.end))
   #
@@ -256,7 +262,7 @@ clv.time.expectation.periods <- function(clv.time, user.tp.end){
 #' @importFrom lubridate interval
 clv.time.get.prediction.table <- function(clv.time, user.prediction.end){
 
-  # Interpretation of periods
+  # Explanation of "period"
   #   Transactions can happen on estimation end
   #     Start of 1 period forward hence only is 1 timepoint after estimation.end
   #     End of 1 period forward should, including the start and end itself, represent a single period
@@ -290,9 +296,10 @@ clv.time.get.prediction.table <- function(clv.time, user.prediction.end){
   #                as.numeric(as.period(interval(start = ymd("2019-06-12"), end = ymd("2019-06-28"))), "week") = 2.285
   #
 
+  # **TODO: Explain in documentation (plot, predict) how prediction period and prediction.end is defined
   # Documentation:
-  #   Example: The estimation period ends on Wed Xx-xx-xxx, then the first of the prediction period is on
-  #   Thu and the prediction period ends on which is included. the last
+  #   Example: The estimation period ends on Wed Xx-xx-xxx, then the first date of the prediction period is on
+  #   Thu and the prediction period ends on .which is included.
 
   # Prediction end given:
   #   Timepoint: Until and including this point. Length can be inferred from this.
@@ -367,7 +374,7 @@ clv.time.sequence.of.covariate.timepoints <- function(clv.time, tp.start, tp.end
   num.offsets <- clv.time.interval.in.number.tu(clv.time = clv.time,
                                                 interv = interval(start = tp.cov.start, end = tp.cov.end))
 
-  # If the num.offsets falls inbetween, but this should not happen...
+  # If the num.offsets falls inbetween, but this should not happen
   num.offsets <- ceiling(num.offsets)
 
   if(num.offsets <= 1) # Offset of 1 is 2 periods only

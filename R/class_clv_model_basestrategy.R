@@ -11,39 +11,47 @@ setClass(Class = "clv.model", contains = "VIRTUAL",
            #  if param.m is out of bounds, Inf is returned.
            optimx.defaults             = "list"))
 
-# **Separate clv.covariate.model virtual class to hard-code method arguments?
-# ** or move to clv.fitted.static.cov?
+# ** TODO: Separate clv.covariate.model virtual class to hard-code method arguments?
+# ** or move altogether to clv.fitted.static.cov?
 
 # Default / fallback methods for all models --------------------------------------------------------
+
+# . clv.model.check.input.args -----------------------------------------------------------------------------
 setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...){
   if(length(list(...)) > 0)
     warning("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
 })
 
+# . clv.model.put.estimation.input -----------------------------------------------------------------------------
 setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, verbose, ...){
   # do nothing
   return(clv.fitted)
 })
 
+# . clv.model.prepare.optimx.args -----------------------------------------------------------------------------
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
   stop("The method clv.model.prepare.optimx.args needs to be implemented for all models!")
 })
 
+# . clv.model.transform.start.params.model -----------------------------------------------------------------------------
 setMethod("clv.model.transform.start.params.model", signature = signature(clv.model="clv.model"), definition = function(clv.model, original.start.params.model){
   # return start params as given
   return(original.start.params.model)
 })
 
+# . clv.model.backtransform.estimated.params.model ---------------------------------------------------------------------
 setMethod("clv.model.backtransform.estimated.params.model", signature = signature(clv.model="clv.model"), definition = function(clv.model, prefixed.params.model){
   # return as optimized
   return(prefixed.params.model)
 })
 
+# . clv.model.put.optimx.output -----------------------------------------------------------------------------------------
 setMethod("clv.model.put.optimx.output", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, res.optimx){
   # do nothing
   return(clv.fitted)
 })
 
+# . clv.model.vcov.jacobi.diag ------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, prefixed.params){
   # No transformation needed (because also untransformed), only 1s in diag
   m.diag <- diag(x = 1, nrow = length(prefixed.params))
@@ -51,25 +59,26 @@ setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv
   return(m.diag)
 })
 
-
+# . clv.model.predict.clv ------------------------------------------------------------------------------------------
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
   stop("The method clv.model.predict.clv needs to be implemented for all models!")
 })
 
+# . clv.model.expectation ------------------------------------------------------------------------------------------
 setMethod("clv.model.expectation", signature(clv.model="clv.model"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
   stop("The method clv.model.expectation needs to be implemented for all models!")
 })
 
 # Default covariate model steps ----------------------------------------------------------------------------------------------------
+# . clv.model.transform.start.params.cov ----------------------------------------------------------------------------------------
 setMethod(f = "clv.model.transform.start.params.cov", signature = signature(clv.model="clv.model"), definition = function(clv.model, start.params.cov){
   # no transformation
   return(start.params.cov)
 })
 
+# . clv.model.backtransform.estimated.params.cov ----------------------------------------------------------------------------------------
 setMethod(f = "clv.model.backtransform.estimated.params.cov", signature = signature(clv.model="clv.model"), definition = function(clv.model, prefixed.params.cov){
   # no back transformation
   return(prefixed.params.cov)
 })
-
-
 

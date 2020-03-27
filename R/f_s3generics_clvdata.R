@@ -7,7 +7,7 @@ nobs.clv.data   <- function(object, ...){
 
 
 #' @export
-#' @include all_generics.R class_clv_data.R
+#' @include class_clv_data.R
 print.clv.data <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
 
   nsmall <- 4 # dont leave to user, hardcode
@@ -15,20 +15,20 @@ print.clv.data <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
   # Print an overview of the data
   cat(x@name, "\n")
 
-  # cat("\nCall:\n", paste(deparse(x@call), sep = "\n", collapse = "\n"), "\n", sep = "")
+  cat("\nCall:\n", paste(deparse(x@call), sep = "\n", collapse = "\n"), "\n", sep = "")
 
   # Rough data set overview of sample only  --------------------------------------------------
   .print.list(list("Total # customers"    = x@descriptives.transactions[Name == "Number of customers",  Total],
                    "Total # transactions" = x@descriptives.transactions[Name == "Total # Transactions", Total]))
   cat("\n")
   print(x@clv.time, digits = digits, ...)
-  # cat("\n") # clv.time already prints the newline
+  # clv.time already prints a newline
 
   invisible(x)
 }
 
 #' @export
-#' @include all_generics.R class_clv_data_staticcovariates.R
+#' @include class_clv_data_staticcovariates.R
 print.clv.data.static.covariates <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
   # print no cov part
   NextMethod()
@@ -67,34 +67,13 @@ print.clv.data.dynamic.covariates <- function(x, digits = max(3L, getOption("dig
 }
 
 
-
-#' @include all_generics.R class_clv_data.R
-#' @importFrom methods show
-#' @export
-setMethod(f = "show", signature = signature(object="clv.data"), definition = function(object){
-  print(x=object)})
-
-#' @importFrom methods show
-#' @include all_generics.R class_clv_data_staticcovariates.R
-#' @export
-setMethod(f = "show", signature = signature(object="clv.data.static.covariates"), definition = function(object){
-  print(x=object)})
-
-#' @importFrom methods show
-#' @include all_generics.R class_clv_data_dynamiccovariates.R
-#' @export
-setMethod(f = "show", signature = signature(object="clv.data.dynamic.covariates"), definition = function(object){
-  print(x=object)})
-
-
 #' @template template_summary_data
 #' @export
 summary.clv.data <- function(object, ...){
   res <- structure(list(), class="summary.clv.data")
+
   res$name <- object@name
-
   res$summary.clv.time <- summary(object@clv.time)
-
   res$descriptives.transactions <- object@descriptives.transactions
   return(res)
 }
@@ -115,7 +94,6 @@ print.summary.clv.data <- function(x, digits=max(3L, getOption("digits")-3L),
 
   # Actual descriptives
   disp <- array(data = NA_character_, dim = list(nrow(x$descriptives.transactions), 3))
-  # disp <- array(data = NA_character_, dim = list(length(x$descriptives.total), 3))
   disp[, 1] <- x$descriptives.transactions$Estimation
   disp[, 2] <- x$descriptives.transactions$Holdout
   disp[, 3] <- x$descriptives.transactions$Total
@@ -131,5 +109,12 @@ print.summary.clv.data <- function(x, digits=max(3L, getOption("digits")-3L),
   invisible(x)
 }
 
+
+
+#' @include class_clv_data.R
+#' @importFrom methods show
+#' @export
+setMethod(f = "show", signature = signature(object="clv.data"), definition = function(object){
+  print(x=object)})
 
 

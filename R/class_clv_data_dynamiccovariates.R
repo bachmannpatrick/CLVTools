@@ -24,7 +24,6 @@
 #' @importFrom methods setClass
 #' @include all_generics.R class_clv_data.R class_clv_data_staticcovariates.R class_clv_time.R
 setClass(Class = "clv.data.dynamic.covariates", contains = "clv.data.static.covariates")
-# l.covariates.timepoints = "list",)
 
 
 # Constructor
@@ -39,22 +38,19 @@ clv.data.dynamic.covariates <- function(no.cov.obj,
   setkeyv(data.cov.trans, cols = c("Id", "Cov.Date"))
 
   obj.cov <- new(Class = "clv.data.dynamic.covariates",
-                 # Do not copy construct from clv.data directly, go through clv.data.static.
-                 #  Pattern suggested by Martin Morgan on SO
+                 # Do not copy construct from clv.data directly, go through clv.data.static constructor
+                 #  Pattern suggested by Martin Morgan
+                 #  (https://stackoverflow.com/questions/16247583/inheritance-in-r/16248773)
                  clv.data.static.covariates(no.cov.obj = no.cov.obj,
                                             names.cov.data.life  = names.cov.data.life,
                                             names.cov.data.trans = names.cov.data.trans,
 
                                             data.cov.life  = data.cov.life,
                                             data.cov.trans = data.cov.trans),
-                 # data.table::copy(no.cov.obj), # copy construct on deep copy of no cov data
-                 # data.cov.life  = data.table::copy(data.cov.life),
-                 # data.cov.trans = data.table::copy(data.cov.trans),
 
                  names.cov.data.life  = names.cov.data.life,
                  names.cov.data.trans = names.cov.data.trans,
-                 name = "CLV Transaction Data with Dynamic Covariates"
-                 )
+                 name = "CLV Transaction Data with Dynamic Covariates")
 
   return(obj.cov)
 }

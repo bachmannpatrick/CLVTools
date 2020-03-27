@@ -54,8 +54,7 @@ setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.
 #' @importFrom lubridate floor_date
 setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.time="clv.time.date",
                                                                             user.timepoint="POSIXlt"), definition = function(clv.time, user.timepoint){
-  # Check if has any time different from 00:00:00
-  # if(any(floor_date(x = user.timepoint, unit = "day") != user.timepoint))
+
   message("The time of day stored in the provided POSIXlt object is ignored (cut off).")
 
   return(as.Date.POSIXlt(user.timepoint))
@@ -64,8 +63,6 @@ setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.
 #' @importFrom lubridate tz
 setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.time="clv.time.date",
                                                                             user.timepoint="POSIXct"), definition = function(clv.time, user.timepoint){
-  # Check if has any time different from 00:00:00
-  # if(any(floor_date(x = user.timepoint, unit = "day") != user.timepoint))
   message("The time of day stored in the provided data (of type POSIXct) is ignored (cut off).")
 
   return(as.Date.POSIXct(x=user.timepoint, tz = tz(user.timepoint)))
@@ -92,8 +89,4 @@ setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.
   # None of these cases
   stop("The provided data is in an unknown format! Only Date, POSIXct/lt, and character are accepted!", call. = FALSE)
 })
-
-
-
-
 

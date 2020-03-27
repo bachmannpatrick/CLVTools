@@ -34,8 +34,7 @@ setClass(Class = "clv.data",
 
            has.holdout    = "logical"),
 
-         # Prototype is labeled not useful anymore,
-         # but still recommended by Hadley / Bioc
+         # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
          prototype = list(
            data.transactions  = data.table(),
            data.repeat.trans  = data.table(),
@@ -58,7 +57,7 @@ clv.data <- function(call, data.transactions, data.repeat.trans, has.spending, c
 
   return(new(Class = "clv.data",
              name = "CLV Transaction Data",
-             call=call,
+             call = call,
              data.transactions = copy(data.transactions),
              data.repeat.trans = data.repeat.trans,
              has.spending = has.spending,
@@ -76,11 +75,9 @@ clv.data.make.descriptives <- function(clv.time, data.transactions, has.holdout,
   Id <- Date <- .N <- N <- Price <- interp.time<- NULL
 
 
-  # Data preparation
-  #
-  # If there is no holdout period, give the estimation period data as input to be able to calculate values
-  # Then replace them with "-" in the end before returning
-  # ------------------------------------------------------------------------------------------------
+  # Data preparation ---------------------------------------------------------------------------------
+  # If there is no holdout period, give the estimation period data as input to be able to calculate values.
+  #   Then replace them with "-" in the end before returning
 
   data.transactions.estimation <- data.transactions[Date >= clv.time@timepoint.estimation.start &
                                                       Date <= clv.time@timepoint.estimation.end]
@@ -95,12 +92,12 @@ clv.data.make.descriptives <- function(clv.time, data.transactions, has.holdout,
   no.trans.by.cust.holdout     <- data.transactions.holdout[,    .N, by="Id"]
 
 
-  # Interpurchase time, for repeaters only
+  # Interpurchase time, for repeaters only ----------------------------------------------------------
   #   Time between consecutive purchases of each customer - convert to intervals then time units
   #   If zero-repeaters (only 1 trans) set NA to ignore it in mean / sd calculations
   #
   #   Cannot use int_diff as s4 is created for every customer which is very slow - use base::diff
-  # ------------------------------------------------------------------------------------------------
+  #
   # .calc.interp.time <- function(data.trans){
   #   mean.interp.time.per.cust <- data.trans[, list(interp.time =
   #                                                  ifelse(.N > 1, mean(time_length(base::diff.POSIXt(Date), obj@clv.time@time.unit)),   NA_real_)), by="Id"]
@@ -117,8 +114,7 @@ clv.data.make.descriptives <- function(clv.time, data.transactions, has.holdout,
   #
 
 
-  # Make descriptives
-  # ------------------------------------------------------------------------------------------------
+  # Make descriptives ------------------------------------------------------------------------------
 
   list.of.list <- list(
     "Number of customers"  =

@@ -45,14 +45,8 @@ setClass(Class = "clv.fitted", # contains = "VIRTUAL",
            optimx.estimation.output = "optimx",
            optimx.hessian           = "matrix"),
 
-         # Prototype is labeled not useful anymore,
-         # but still recommended by Hadley / Bioc
+         # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
          prototype = list(
-           # Set in new()
-           # clv.model
-           # call
-           # clv.data
-
            prediction.params.model = numeric(0),
 
            estimation.used.correlation = logical(0),

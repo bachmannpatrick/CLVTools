@@ -6,6 +6,7 @@
 # No additional input checks are performed on any given parameter
 #
 # @param ... All other arguments to be given to the LL function
+#
 # LL.params needs to be the first argument as it will receive the parameters from the optimizer
 interlayer_manager <- function(LL.params, LL.function.sum,
                                use.interlayer.constr,
@@ -49,16 +50,12 @@ interlayer_manager <- function(LL.params, LL.function.sum,
 
   # Add constraint infront of all other interlayers, if needed
   if(use.interlayer.constr == TRUE){
-     # !is.null(names.prefixed.params.constr)     & !anyNA(names.prefixed.params.constr) &
-     # !is.null(names.prefixed.params.free.life)  & !anyNA(names.prefixed.params.free.life) &
-     # !is.null(names.prefixed.params.free.trans) & !anyNA(names.prefixed.params.free.trans)){
       interlayers.to.use <- c("constraints"=interlayer_constraints, interlayers.to.use)
   }
 
 
-  # Start calling the interlayers
+  # Start calling the interlayers ----------------------------------------------
   #   Use do call to integrate ... args
-  # ---------------------------------------------------------------------------
   interlayer.call.args <- list(next.interlayers = interlayers.to.use,
                                LL.function.sum = LL.function.sum,
                                LL.params   = LL.params,
@@ -67,9 +64,6 @@ interlayer_manager <- function(LL.params, LL.function.sum,
 
   interlayer.call.args <- modifyList(interlayer.call.args,
                                      all.other.args)
-# str(interlayers.to.use)
+
   return(do.call(what = interlayer_callnextinterlayer, args = interlayer.call.args))
 }
-
-
-

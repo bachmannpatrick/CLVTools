@@ -167,7 +167,7 @@ setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FA
 #'
 #' @rdname pnbd
 #' @aliases pnbd pnbd,clv.data-method
-#' @include class_clv_data.R class_clv_model_pnbd_nocov.R
+#' @include class_clv_data.R
 #' @export
 setMethod("pnbd", signature = signature(clv.data="clv.data"), definition = function(clv.data,
                                                                                         start.params.model=c(),
@@ -175,14 +175,14 @@ setMethod("pnbd", signature = signature(clv.data="clv.data"), definition = funct
                                                                                         start.param.cor=c(),
                                                                                         optimx.args=list(),
                                                                                         verbose=TRUE,...){
-  cl        <- sys.call(1)
+  cl  <- sys.call(1)
   obj <- clv.pnbd(cl=cl, clv.data=clv.data)
 
   return(clv.template.controlflow.estimate(obj=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
                                            start.param.cor = start.param.cor, optimx.args = optimx.args, verbose=verbose, ...))
 })
 
-#' @include class_clv_model_pnbd_staticcov.R class_clv_data_staticcovariates.R
+#' @include class_clv_data_staticcovariates.R
 #' @aliases pnbd,clv.data.static.covariates-method
 #' @rdname pnbd
 #' @export
@@ -196,7 +196,7 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.static.covariates"), 
                                                                                                       start.params.life=c(), start.params.trans=c(),
                                                                                                       names.cov.constr=c(),start.params.constr=c(),
                                                                                                       reg.lambdas = c(), ...){
-  cl        <- sys.call(1)
+  cl  <- sys.call(1)
   obj <- clv.pnbd.static.cov(cl=cl, clv.data=clv.data)
 
   # Do the estimate controlflow / process steps with the static cov object

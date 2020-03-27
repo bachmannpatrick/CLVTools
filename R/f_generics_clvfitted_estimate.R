@@ -1,3 +1,4 @@
+# . clv.controlflow.estimate.check.inputs ------------------------------------------------------------------------
 setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(obj="clv.fitted"), definition = function(obj,  start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...){
 
   l.args <- list(...)
@@ -51,6 +52,7 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(obj
   }
 })
 
+# . clv.controlflow.estimate.put.inputs ------------------------------------------------------------------------
 setMethod("clv.controlflow.estimate.put.inputs", signature =  signature(obj="clv.fitted"), definition = function(obj, cl, use.cor, ...){
 
   obj@call <- cl
@@ -68,7 +70,7 @@ setMethod("clv.controlflow.estimate.put.inputs", signature =  signature(obj="clv
 })
 
 
-
+# . clv.controlflow.estimate.generate.start.params ------------------------------------------------------------------------
 setMethod("clv.controlflow.estimate.generate.start.params", signature = signature(obj="clv.fitted"), definition = function(obj, start.params.model,start.param.cor,verbose,...){
 
   # Model params
@@ -107,8 +109,9 @@ setMethod("clv.controlflow.estimate.generate.start.params", signature = signatur
 })
 
 
+# . clv.controlflow.estimate.prepare.optimx.args ------------------------------------------------------------------------
 # Put together the individual parts needed to call optimx
-# Adding the variables needed to call the LL function is left to the model-specific optimizeLL functions as they are unknonwn at this point
+#   Adding the variables needed to call the LL function is left to the model-specific optimizeLL functions as they are unknonwn at this point
 setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(obj="clv.fitted"), def=function(obj, start.params.all){
 
   # Start with model defaults
@@ -188,7 +191,7 @@ setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(
 })
 
 
-
+# . clv.controlflow.estimate.put.optimx ------------------------------------------------------------------------
 #' @importFrom optimx coef<-
 setMethod(f = "clv.controlflow.estimate.put.optimx", signature = signature(obj="clv.fitted"), definition = function(obj, res.optimx){
 

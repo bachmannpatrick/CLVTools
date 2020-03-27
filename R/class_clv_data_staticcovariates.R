@@ -27,6 +27,7 @@ setClass(Class = "clv.data.static.covariates", contains = "clv.data",
            names.cov.data.life  = "character",
            names.cov.data.trans = "character"),
 
+         # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
          prototype = list(
            data.cov.life           = data.table(),
            data.cov.trans          = data.table(),
@@ -39,7 +40,6 @@ clv.data.static.covariates <- function(no.cov.obj,data.cov.life,data.cov.trans, 
 
   # all the data in the no covariate clv.data object need to be deep copied.
   #   This is only relevant for the data.tables in it (data.transactions)
-
   obj.cov <- new(Class = "clv.data.static.covariates",
                  data.table::copy(no.cov.obj), # copy construct on deep copy of no cov data
                  name = "CLV Transaction Data with Static Covariates",
@@ -52,28 +52,32 @@ clv.data.static.covariates <- function(no.cov.obj,data.cov.life,data.cov.trans, 
 
 
 
+# clv.data.get.matrix.data.cov.life ---------------------------------------------------------
 #' @include all_generics.R
 setMethod("clv.data.get.matrix.data.cov.life", signature = signature(clv.data="clv.data.static.covariates"),definition = function(clv.data){
   return(data.matrix(clv.data@data.cov.life[, .SD, .SDcols=clv.data@names.cov.data.life]))
 })
 
-
+# clv.data.get.matrix.data.cov.trans ---------------------------------------------------------
 #' @include all_generics.R
 setMethod("clv.data.get.matrix.data.cov.trans", signature = signature(clv.data="clv.data.static.covariates"),definition = function(clv.data){
   return(data.matrix(clv.data@data.cov.trans[, .SD, .SDcols=clv.data@names.cov.data.trans]))
 })
 
+# clv.data.get.names.cov.life ----------------------------------------------------------------
 #' @include all_generics.R
 setMethod("clv.data.get.names.cov.life", signature = signature(clv.data="clv.data.static.covariates"),definition = function(clv.data){
   return(clv.data@names.cov.data.life)
 })
 
+# clv.data.get.names.cov.trans ----------------------------------------------------------------
 #' @include all_generics.R
 setMethod("clv.data.get.names.cov.trans", signature = signature(clv.data="clv.data.static.covariates"),definition = function(clv.data){
   return(clv.data@names.cov.data.trans)
 })
 
 
+# clv.data.reduce.covariates ----------------------------------------------------------------
 #' @include all_generics.R
 setMethod("clv.data.reduce.covariates", signature = signature(clv.data="clv.data.static.covariates"),
           definition = function(clv.data, names.cov.life, names.cov.trans){

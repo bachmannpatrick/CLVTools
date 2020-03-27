@@ -1,3 +1,4 @@
+# . clv.controlflow.estimate.generate.start.params ------------------------------------------------------------------------------
 setMethod("clv.controlflow.estimate.generate.start.params", signature = signature(obj="clv.pnbd.dynamic.cov"),definition = function(obj,
                                                                                                                                     start.params.model,
                                                                                                                                     start.params.life,
@@ -12,6 +13,8 @@ setMethod("clv.controlflow.estimate.generate.start.params", signature = signatur
   # This has to be done here, and cannot be done in the model.prepare.optimx.args function
   #   because there the original estimation input is unknown
   #   ie it is not known if the user actually did supply start params or not
+  #   Also, doing it as part of clv.fitted.dynamic.cov is not possible because the model
+  #     to call (ie pnbd()) is unknown
 
   if(is.null(start.params.model)){
     # Generate start params from nocov model
@@ -34,12 +37,8 @@ setMethod("clv.controlflow.estimate.generate.start.params", signature = signatur
       message("Optimization of no covariate model found model start parameters ", coef.brakets)
     }
 
-      # fake the user input to be the start params obtained here
+      # fake that the user input (start.params.model) was given as the params obtained here
       start.params.model <- nocov.coefs
-
-      # Other option: write the coefs to the model
-      #   in non-logged form, as will be used in the standard start param generation process
-      # obj@clv.model@start.params.model <- nocov.coefs
   }
 
   # Continue with ordinary start parameter generation process

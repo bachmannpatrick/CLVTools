@@ -66,11 +66,6 @@ definition = function(clv.time, user.timepoint){
 
   # Treat Date as if at midnight
   #   enforce by cuting off any time with floor_date
-  #
-  # Dates have tz aswell (for example, out of ymd() tz is UTC)
-  # BUT SHOULD NOT HAVE: deparse(ymd("2019-01-01")) is just number and only class attribute
-  # if(tz(Date) != clv.time@timezone)
-    # stop(paste0("Only Date objects with timezone ", clv.time@timezone, " are accepted!"))
 
   # Convert Date to POSIXct:
   # - as.POSIXct adds time and converts to local timezone. Setting timezone with as.POSIXct
@@ -80,24 +75,12 @@ definition = function(clv.time, user.timepoint){
   # - as.POSIXlt always converts Dates to midnight UTC
   # - force_tz does not work on Dates (obviously)
   # => convert to Midnight UTC with as.lt + set tz to the desired one + convert to .ct of same tz
-  #     Might result in invalid if other timezone than UTC because it falls in a DST hole?
-  #       Naah, Midnight/beginning of day always exists
+  #     Should not result in another timezone than UTC because Midtnight / beginning of day always exists, even on DST switch
 
-  # Manual setting is slightly faster than force_tz. But it really is the base internal as.POSIXct that is slow
+  # Manual setting is slightly faster than force_tz. But it really is the internal base as.POSIXct that is slow
   tp.lt.midnight <- as.POSIXlt.Date(user.timepoint)
   attr(tp.lt.midnight, "tzone") <- clv.time@timezone
   return(as.POSIXct.POSIXlt(tp.lt.midnight, tz = clv.time@timezone))
-
-  # return(as.POSIXct.POSIXlt(force_tz(as.POSIXlt.Date(user.timepoint),
-  #                                    tz = clv.time@timezone),
-  #                           tz=clv.time@timezone))
-
-  # Or simply use parse_date_time from lubridate.... But does this work with locales..?
-  # return(parse_date_time(x = user.timepoint, orders = "ymd", tz = clv.time@timezone, quiet = TRUE))
-
-  # Or even simpler:
-  #   but does this depend on my locale....??
-  # ymd(user.timepoint, tz=clv.time@timezone)
 })
 
 
