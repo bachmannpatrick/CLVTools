@@ -133,15 +133,16 @@ clv.time.expectation.periods <- function(clv.time, user.tp.end){
   # Table with each row representing a period (with period number, start and end dates)
   #   required when executing plot() to calculate the unconditional expectation and to
   #     roll-join repeat transactions on
-  #
+
+
   #   First expectation period
   #     Start: estimation.start
-  #     End: end of time.unit
+  #     End:   End of time.unit
   #       => This period is often/mostly only partial
   #
   #   All other expectation periods:
   #     Start: Beginning of time.unit
-  #     End: End of time.unit
+  #     End:   End of time.unit
   #
   #   Period number: How many periods from min(Start) until end of the period in this row
 
@@ -196,21 +197,25 @@ clv.time.expectation.periods <- function(clv.time, user.tp.end){
   }
 
 
-  # Table:
+  # Table
   #   The implementation of the dyncov expectation function requires each timepoint
   #     to be the start of a covariate time unit
-  #   Because the expectation refers to the period covered by [0, date_i] and only calculates until beginning
+  #   Because the expectation refers to the period covered by [0, date_i] and only calculates until the beginning
   #     of the period (ie backwards and not until end of the period marked by date_i), the
   #     expectation.end has to be included by the last timepoint (ie last timepoint is after expectation.end)
   #   All timepoints in the table need to be exactly 1 time unit apart because the
   #     incremental values are derived from the cumulative expectation function (ie "what is gain from 1 period difference").
   #     Except the first to second period which may be apart less
-
+  #
+  # Periods
   # First:  expectation.start
   #           expectation is 0 but always include because transaction data is counted
+  #
   # Second: ceiling_tu(expectation.start)
   #   If first and second are same (ie expectation.start falls on period start), only use one
-  # All after: +1 TU of previous
+  #
+  # All afterwards: +1 TU of previous
+  #
   # Last: minimum required date
   #     minimum required date: max(expectation.end, ceiling_tu(expectation.end))
   #
@@ -257,7 +262,7 @@ clv.time.expectation.periods <- function(clv.time, user.tp.end){
 #' @importFrom lubridate interval
 clv.time.get.prediction.table <- function(clv.time, user.prediction.end){
 
-  # Interpretation of periods
+  # Explanation of "period"
   #   Transactions can happen on estimation end
   #     Start of 1 period forward hence only is 1 timepoint after estimation.end
   #     End of 1 period forward should, including the start and end itself, represent a single period
@@ -291,9 +296,10 @@ clv.time.get.prediction.table <- function(clv.time, user.prediction.end){
   #                as.numeric(as.period(interval(start = ymd("2019-06-12"), end = ymd("2019-06-28"))), "week") = 2.285
   #
 
+  # **TODO: Explain in documentation (plot, predict) how prediction period and prediction.end is defined
   # Documentation:
-  #   Example: The estimation period ends on Wed Xx-xx-xxx, then the first of the prediction period is on
-  #   Thu and the prediction period ends on which is included. the last
+  #   Example: The estimation period ends on Wed Xx-xx-xxx, then the first date of the prediction period is on
+  #   Thu and the prediction period ends on .which is included.
 
   # Prediction end given:
   #   Timepoint: Until and including this point. Length can be inferred from this.

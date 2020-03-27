@@ -57,7 +57,7 @@ clv.data <- function(call, data.transactions, data.repeat.trans, has.spending, c
 
   return(new(Class = "clv.data",
              name = "CLV Transaction Data",
-             call=call,
+             call = call,
              data.transactions = copy(data.transactions),
              data.repeat.trans = data.repeat.trans,
              has.spending = has.spending,

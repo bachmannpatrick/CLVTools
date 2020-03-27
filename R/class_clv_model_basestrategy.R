@@ -11,8 +11,8 @@ setClass(Class = "clv.model", contains = "VIRTUAL",
            #  if param.m is out of bounds, Inf is returned.
            optimx.defaults             = "list"))
 
-# **Separate clv.covariate.model virtual class to hard-code method arguments?
-# ** or move to clv.fitted.static.cov?
+# ** TODO: Separate clv.covariate.model virtual class to hard-code method arguments?
+# ** or move altogether to clv.fitted.static.cov?
 
 # Default / fallback methods for all models --------------------------------------------------------
 

@@ -38,8 +38,9 @@ clv.data.dynamic.covariates <- function(no.cov.obj,
   setkeyv(data.cov.trans, cols = c("Id", "Cov.Date"))
 
   obj.cov <- new(Class = "clv.data.dynamic.covariates",
-                 # Do not copy construct from clv.data directly, go through clv.data.static.
-                 #  Pattern suggested by Martin Morgan on SO (**TODO: LINK)
+                 # Do not copy construct from clv.data directly, go through clv.data.static constructor
+                 #  Pattern suggested by Martin Morgan
+                 #  (https://stackoverflow.com/questions/16247583/inheritance-in-r/16248773)
                  clv.data.static.covariates(no.cov.obj = no.cov.obj,
                                             names.cov.data.life  = names.cov.data.life,
                                             names.cov.data.trans = names.cov.data.trans,
@@ -49,8 +50,7 @@ clv.data.dynamic.covariates <- function(no.cov.obj,
 
                  names.cov.data.life  = names.cov.data.life,
                  names.cov.data.trans = names.cov.data.trans,
-                 name = "CLV Transaction Data with Dynamic Covariates"
-                 )
+                 name = "CLV Transaction Data with Dynamic Covariates")
 
   return(obj.cov)
 }
