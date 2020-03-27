@@ -131,7 +131,7 @@ setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.mo
 #' @include all_generics.R
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.dynamic.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
 
-  CET <- PAlive <- DECT <- NULL
+  CET <- i.CET <- PAlive <- i.palive <-  DECT <- i.DECT <-  NULL
 
   predict.number.of.periods <- dt.prediction[1, period.length]
   tp.period.last <- dt.prediction[1, period.last]

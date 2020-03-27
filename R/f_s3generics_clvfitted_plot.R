@@ -222,6 +222,8 @@ plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FA
 
 #' @importFrom ggplot2 ggplot aes geom_line geom_vline labs theme scale_fill_manual guide_legend element_text element_rect element_blank element_line rel
 clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
+  # cran silence
+  period.first <- value <- variable <- NULL
 
   # Melt everything except what comes from the standard expectation table
   meas.vars   <- setdiff(colnames(dt.data), c("period.num", "period.first"))

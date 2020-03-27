@@ -1,6 +1,10 @@
 # Note that for a constant prediction period, the difference between DECT and DERT increases as the discount factor decreases.
 pnbd_dyncov_DECT <- function(clv.fitted, predict.number.of.periods, prediction.end.date, continuous.discount.factor){
 
+  # cran silence
+  i.S <- bT_i <- T.cal <- d1 <- i <- param.s <- d1 <- delta <- Ci <- Dbar_i <- palive <- i.palive <- F1 <- S <- DECT <-  NULL
+  Ai <- Dbar_i <- i.DkT  <- BkSum <- i.BkSum <- x <- NULL
+
   clv.time <- clv.fitted@clv.data@clv.time
 
   # delta is the discount rate \Delta in derivations.
@@ -43,7 +47,7 @@ pnbd_dyncov_DECT <- function(clv.fitted, predict.number.of.periods, prediction.e
                (exp(-delta*(t))      * .f_confhypergeo_secondkind(param.s, param.s, (delta * (Ci*(T.cal+t) + Dbar_i + beta_0)) / Ci))]
 
   dt.ABCD[, S := S * (Ai / (Ci^s))]
-  dt.S <- dt.ABCD[, .(S = sum(S)), keyby="Id"]
+  dt.S <- dt.ABCD[, list(S = sum(S)), keyby="Id"]
 
 
   # Aggregate results ------------------------------------------------------------------------------------------------

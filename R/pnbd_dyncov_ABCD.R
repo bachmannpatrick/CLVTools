@@ -6,6 +6,9 @@
 # For life and trans together because it is much easier to pass in single clv.fitted and not all parts alone
 pnbd_dyncov_alivecovariates <- function(clv.fitted, date.upper.cov){
 
+  # cran silence
+  Cov.Date <- exp.gX.L <- exp.gX.P <- date.cov.period.coming.alive <- date.first.actual.trans <- i..date.cov.period.coming.alive <- is.alive.in.period <- NULL
+
   # For more readable code
   clv.time <- clv.fitted@clv.data@clv.time
 
@@ -69,6 +72,9 @@ pnbd_dyncov_alivecovariates <- function(clv.fitted, date.upper.cov){
 
 
 pnbd_dyncov_ABCD <- function(clv.fitted, prediction.end.date){
+  Cov.Date <- i <- exp.gX.P <- i.exp.gX.P <- Ai <- Ci <- exp.gX.L <- Bbar_i <- T.cal <- i.T.cal <- Dbar_i <- NULL
+  d_omega <- i.d_omega <- is.customers.first.cov <- num.period.alive <- NULL
+
   # For more understandable, clean code
   clv.time <- clv.fitted@clv.data@clv.time
 

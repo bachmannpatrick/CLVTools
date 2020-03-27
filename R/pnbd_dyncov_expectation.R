@@ -1,5 +1,7 @@
 #' @importFrom utils txtProgressBar setTxtProgressBar
 pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
+  # cran silence
+  expectation <- exp.gX.P <- d_omega <- i <- Ai <- Bi <- Ci <- Di <- Dbar_i <- Bbar_i <-  NULL
 
   # Create ABCD for expectation
   #   i starts at when becoming alive
@@ -126,6 +128,9 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
 # **** JEFF: t = TUs from alive until date.expectation.period.start oder date.expectation.period.end?
 # **** JEFF: cut: At date.expectation.period.start oder date.expectation.period.end?
 .pnbd_dyncov_unconditionalexpectation <- function(clv.fitted, dt.ABCD, period.first){
+
+  # cran silence
+  num.periods.alive.expectation.date <- S <- f <- A_k0t <- Bbar_k0t <- C_k0t <- Dbar_k0t <- Id <- only.alive.in.1.period <- NULL
 
   # Read out needed params
   r       <- clv.fitted@prediction.params.model[["r"]]

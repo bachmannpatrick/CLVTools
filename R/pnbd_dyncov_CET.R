@@ -1,5 +1,9 @@
 pnbd_dyncov_CET <- function(clv.fitted, predict.number.of.periods, prediction.end.date){
 
+  i <- S <- Ai <- T.cal <- Ci <- Dbar_i <- Bbar_i <- bT_i <- DkT <- i.DkT <- Bksum <- i.Bksum <- palive <- i.palive <- NULL
+  i.S <- F1 <- x <- Id <- F2 <- i.F2.noS <- CET <- NULL
+
+
   t <- predict.number.of.periods
 
   r       <- clv.fitted@prediction.params.model[["r"]]
