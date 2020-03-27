@@ -135,7 +135,7 @@ setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FA
 #' pnbd(clv.data.static.cov, reg.lambdas = c(trans = 5, life=5))
 #'
 #' # Force the same coefficient to be used for both covariates
-#' pnbd(clv.data.static.cov, names.cov.constr = "Gender"
+#' pnbd(clv.data.static.cov, names.cov.constr = "Gender".
 #'                    start.params.constr = c(Gender=0.5))
 #'
 #' # Use only the covariates named
