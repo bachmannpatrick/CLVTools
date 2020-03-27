@@ -36,7 +36,7 @@ pnbd_dyncov_CET <- function(clv.fitted, predict.number.of.periods, prediction.en
           S:= ((Ai*( bT_i    *s + 1/Ci*(Dbar_i+beta_0)) + Bbar_i*(s-1)) / ((Dbar_i+beta_0+Ci* bT_i    )^s)) -
             ((Ai*((T.cal+t)*s + 1/Ci*(Dbar_i+beta_0)) + Bbar_i*(s-1)) / ((Dbar_i+beta_0+Ci*(T.cal+t))^s))]
 
-  dt.S <- dt.ABCD[, .(S = sum(S)), keyby="Id"]
+  dt.S <- dt.ABCD[, list(S = sum(S)), keyby="Id"]
 
   # PAlive ------------------------------------------------------------------------------------------
   dt.palive <- pnbd_dyncov_palive(clv.fitted=clv.fitted)
@@ -55,7 +55,7 @@ pnbd_dyncov_CET <- function(clv.fitted, predict.number.of.periods, prediction.en
   #   Bksum has BkT correctly included
   dt.result[, F1 := ((r+x) * (beta_0+DkT)^s)   /  ((Bksum + alpha_0) * (s-1))]
   # F2
-  dt.F2.noS <- dt.ABCD[i == max(i), .(Id, F2.noS = ((Bbar_i + Ai*(T.cal+t) )*(s-1)) / (Dbar_i + Ci*(T.cal+t) + beta_0)^s)]
+  dt.F2.noS <- dt.ABCD[i == max(i), list(Id, F2.noS = ((Bbar_i + Ai*(T.cal+t) )*(s-1)) / (Dbar_i + Ci*(T.cal+t) + beta_0)^s)]
   dt.result[dt.F2.noS, F2 := i.F2.noS + S, on = "Id"]
 
   dt.result[, CET :=  palive * F1 * F2]

@@ -311,7 +311,7 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 #' predict(pnc)
 #'
 #' # Now, predict 10 periods from the end of the last transaction
-#'    (end of estimation period)
+#' #   (end of estimation period)
 #' predict(pnc, prediction.end = 10) # ends on 2016-12-17
 #'
 #'
@@ -334,4 +334,5 @@ predict.clv.fitted <- function(object, newdata=NULL, prediction.end=NULL, predic
 # S4 method to forward to S3 method
 #' @include all_generics.R class_clv_fitted.R
 #' @exportMethod predict
+#' @rdname predict.clv.fitted
 setMethod(f = "predict", signature = signature(object="clv.fitted"), predict.clv.fitted)

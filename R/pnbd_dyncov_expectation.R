@@ -132,7 +132,7 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
 
   # cran silence
   i <- Ai <- Bbar_i <- Ci <- Dbar_i <- d1 <-S <- i.S <- f <- A_k0t <- Bbar_k0t <- C_k0t <- Dbar_k0t <- Id  <- NULL
-  num.periods.alive.expectation.date <- i.num.periods.alive.expectation.date <- Cov.Date <- only.alive.in.1.period <- NULL
+  num.periods.alive.expectation.date <- i.num.periods.alive.expectation.date <- date.first.actual.trans <- Cov.Date <- only.alive.in.1.period <- NULL
 
 
   # Read out needed params
@@ -201,7 +201,7 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
 
   # S may be NA for customers alive only for <=1 period.
   #   Their f value is calculated without S then
-  dt.S <- dt.ABCD.alive[, .(S = sum(S)), keyby="Id"]
+  dt.S <- dt.ABCD.alive[, list(S = sum(S)), keyby="Id"]
 
 
   # F --------------------------------------------------------------------------------------------------------
@@ -209,7 +209,7 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
   # Add everything else needed
   #   For all customers Ak0t/Bk0t/Ck0t/Dk0t is the last ABCD value (with max(i) where max(Cov.Date))
   dt.ABCD_k0t <- dt.ABCD.alive[Cov.Date == max(Cov.Date),
-                               .(Id, A_k0t=Ai, Bbar_k0t=Bbar_i, C_k0t=Ci, Dbar_k0t=Dbar_i, i)]
+                               list(Id, A_k0t=Ai, Bbar_k0t=Bbar_i, C_k0t=Ci, Dbar_k0t=Dbar_i, i)]
   dt.alive.customers <- dt.alive.customers[dt.ABCD_k0t, on = "Id"]
   dt.alive.customers[dt.S, S := i.S, on = "Id"]
 
