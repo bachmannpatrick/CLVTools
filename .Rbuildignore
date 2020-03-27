@@ -1,2 +1,9 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^README\.md$
+^README\.rmd$
+^Walkthrough\.md$
+^Walkthrough\.rmd$
+^bibliography\.bib$
+^man-roxygen$
+^thoughts_parameterhandling\.rtf$
