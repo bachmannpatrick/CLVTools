@@ -4,13 +4,15 @@
 \name{cdnow}
 \alias{cdnow}
 \title{CDnow dataset}
-\format{A \code{data.table} with 6696 rows and 4 variables:
+\format{
+A \code{data.table} with 6696 rows and 4 variables:
 \describe{
   \item{\code{Id}}{Customer Id}
   \item{\code{Date}}{Date of purchase}
   \item{\code{CDs}}{Amount of CDs purchased}
   \item{\code{Price}}{Price of purchase}
-}}
+}
+}
 \usage{
 data("cdnow")
 }

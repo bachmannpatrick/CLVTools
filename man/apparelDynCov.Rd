@@ -4,14 +4,16 @@
 \name{apparelDynCov}
 \alias{apparelDynCov}
 \title{Dynamic Covariates for the Apparel Retailer Dataset}
-\format{A data.table with 781355 rows and 5 variables
+\format{
+A data.table with 781355 rows and 5 variables
 \describe{
   \item{Id}{Customer Id}
   \item{Cov.Date}{Date of contextual factor}
   \item{DM}{1 if customer was contacted with direct marketing in this time period}
   \item{High-Season}{1 if high season during this time period}
   \item{Gender}{0=male, 1=female}
-}}
+}
+}
 \usage{
 data("apparelDynCov")
 }
