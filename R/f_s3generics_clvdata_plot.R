@@ -58,6 +58,8 @@
 #' @export
 plot.clv.data <- function(x, prediction.end=NULL, cumulative=FALSE, plot=TRUE, verbose=TRUE, ...){
 
+  period.first <- period.num <- NULL
+
   # This is nearly the same as plot.clv
   #   However, creating a single plotting controlflow leads to all kinds of side effects and special cases.
   #   Because there are only 2 functions that would profit, it was decided to leave it in their own separate

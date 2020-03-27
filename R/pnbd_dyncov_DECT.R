@@ -3,7 +3,7 @@ pnbd_dyncov_DECT <- function(clv.fitted, predict.number.of.periods, prediction.e
 
   # cran silence
   i.S <- bT_i <- T.cal <- d1 <- i <- param.s <- d1 <- delta <- Ci <- Dbar_i <- palive <- i.palive <- F1 <- S <- DECT <-  NULL
-  Ai <- Dbar_i <- i.DkT  <- BkSum <- i.BkSum <- x <- NULL
+  Ai <- Dbar_i <- i.DkT  <- BkSum <- i.BkSum <- x <- DkT <- Bksum <- i.Bksum <- NULL
 
   clv.time <- clv.fitted@clv.data@clv.time
 

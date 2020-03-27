@@ -22,6 +22,8 @@ setMethod(f = "SetStaticCovariates", signature = signature(clv.data="clv.data.dy
 #' @include all_generics.R class_clv_data.R class_clv_data_staticcovariates.R
 setMethod(f = "SetStaticCovariates", signature = signature(clv.data="clv.data"), function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id"){
 
+  Id <- NULL
+
   # Basic inputchecks ---------------------------------------------------------------------
   #   for parameters
 

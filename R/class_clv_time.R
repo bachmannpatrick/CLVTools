@@ -362,6 +362,8 @@ clv.time.get.prediction.table <- function(clv.time, user.prediction.end){
 
 
 clv.time.sequence.of.covariate.timepoints <- function(clv.time, tp.start, tp.end){
+
+  Cov.Date <- period.offset <- NULL
   # Marks all timepoints for which covariates are required if dyncov models should work between start and end.
   # First covariate is required at floor_timeunit(tp.start), last covariate is required at
   # floor_timeunit(tp.end), because the covariate always is supposed to influence the upcoming period.

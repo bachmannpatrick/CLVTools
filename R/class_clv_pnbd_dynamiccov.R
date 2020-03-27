@@ -39,6 +39,7 @@ clv.pnbd.dynamic.cov <- function(cl, clv.data){
 
 # Dyncov cbs also has d_omega for every customer
 pnbd_dyncov_cbs <- function(clv.data){
+  d_omega <- date.first.actual.trans <- NULL
 
   dt.cbs <- pnbd_cbs(clv.data = clv.data)
 

@@ -104,6 +104,8 @@
 #' @export
 plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FALSE, transactions=TRUE, label=NULL, plot=TRUE, verbose=TRUE,...) {
 
+  period.first <- period.num <- NULL
+
   # Newdata ------------------------------------------------------------------------------------------------
   # Because many of the following steps refer to the data stored in the fitted model,
   #   it first is replaced with newdata before any other steps are done
@@ -274,6 +276,8 @@ clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
 
 # . clv.controlflow.plot.get.data ---------------------------------------------------------------
 setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.fitted"), definition = function(obj, dt.expectation.seq, cumulative, verbose){
+
+  expectation <- i.expectation <- NULL
 
   # Set prediction params from coef()
   obj <- clv.controlflow.predict.set.prediction.params(obj=obj)

@@ -7,7 +7,7 @@
 pnbd_dyncov_alivecovariates <- function(clv.fitted, date.upper.cov){
 
   # cran silence
-  Cov.Date <- exp.gX.L <- exp.gX.P <- date.cov.period.coming.alive <- date.first.actual.trans <- i..date.cov.period.coming.alive <- is.alive.in.period <- NULL
+  Cov.Date <- exp.gX.L <- exp.gX.P <- date.cov.period.coming.alive <- date.first.actual.trans <- i.date.cov.period.coming.alive <- is.alive.in.period <- NULL
 
   # For more readable code
   clv.time <- clv.fitted@clv.data@clv.time

@@ -20,6 +20,8 @@ setMethod(f = "SetDynamicCovariates", signature = signature(clv.data="clv.data.d
 #' @aliases SetDynamicCovariates SetDynamicCovariates,clv.data-method
 setMethod(f = "SetDynamicCovariates", signature = signature(clv.data="clv.data"), function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id", name.date="Date"){
 
+  Cov.Date <- Id<- NULL
+
   # Basic inputchecks ---------------------------------------------------------------------
   #   for parameters name
 

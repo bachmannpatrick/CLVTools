@@ -21,6 +21,8 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.dyna
   # Do static cov (and hence also nocov) inputchecks first for newdata
   callNextMethod()
 
+  period.last <- Cov.Date <- NULL
+
   # prediction.end needs to be ok to work with it
   check_err_msg(check_user_data_predictionend(obj=clv.fitted, prediction.end=prediction.end))
 

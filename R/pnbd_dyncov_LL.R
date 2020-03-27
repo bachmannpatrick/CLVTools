@@ -443,7 +443,7 @@ pnbd_dyncov_LL <- function(params, obj){
 #               )
 .hyp.alpha.ge.beta <- function(cbs, alpha_0, r, s)
 {
-  x <- alpha_1 <- beta_1 <- alpha_2 <- beta_2 <- NULL
+  x <- alpha_1 <- beta_1 <- alpha_2 <- beta_2 <- z.1 <- z.2 <- log.C <- hyp.z1 <- hyp.z2 <- NULL
 
   # hyp crashes with empty data.table
   if(nrow(cbs) > 0){
@@ -482,9 +482,9 @@ pnbd_dyncov_LL <- function(params, obj){
 #               )
 .hyp.beta.g.alpha <- function(cbs, r, s, alpha_0)
 {
-  x <- alpha_1 <- beta_1 <- alpha_2 <- beta_2 <- NULL
-  # hyp crashes with empty data.table
+  x <- alpha_1 <- beta_1 <- alpha_2 <- beta_2 <- z.1 <- z.2 <- log.C <- hyp.z1 <- hyp.z2 <- NULL
 
+  # hyp crashes with empty data.table
   if(nrow(cbs) > 0){
     cbs.z <- copy(cbs)
     cbs.z[,z.1 := (beta_1-alpha_1)/beta_1]

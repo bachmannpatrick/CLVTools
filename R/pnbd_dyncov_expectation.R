@@ -130,7 +130,9 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
 .pnbd_dyncov_unconditionalexpectation <- function(clv.fitted, dt.ABCD, period.first){
 
   # cran silence
-  num.periods.alive.expectation.date <- S <- f <- A_k0t <- Bbar_k0t <- C_k0t <- Dbar_k0t <- Id <- only.alive.in.1.period <- NULL
+  i <- Ai <- Bbar_i <- Ci <- Dbar_i <- d1 <-S <- i.S <- f <- A_k0t <- Bbar_k0t <- C_k0t <- Dbar_k0t <- Id  <- NULL
+  num.periods.alive.expectation.date <- i.num.periods.alive.expectation.date <- Cov.Date <- only.alive.in.1.period <- NULL
+
 
   # Read out needed params
   r       <- clv.fitted@prediction.params.model[["r"]]
