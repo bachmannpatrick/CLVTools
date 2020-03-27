@@ -1,7 +1,8 @@
 #' @importFrom utils txtProgressBar setTxtProgressBar
 pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
   # cran silence
-  expectation <- exp.gX.P <- d_omega <- i <- Ai <- Bi <- Ci <- Di <- Dbar_i <- Bbar_i <-  NULL
+  expectation <- exp.gX.P <- i.exp.gX.P <- exp.gX.L <- d_omega <- i.d_omega <- NULL
+  i <- Ai <- Bi <- Ci <- Di <- Dbar_i <- Bbar_i <- period.num <- d1 <- NULL
 
   # Create ABCD for expectation
   #   i starts at when becoming alive

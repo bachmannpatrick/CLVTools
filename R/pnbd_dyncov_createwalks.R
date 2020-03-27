@@ -204,7 +204,7 @@ pnbd_dyncov_createwalks <- function(clv.time, data.transactions, data.dyn.cov, n
 
     #set col order: Id, Date, Cov.on.trans.date, AuxTrans, Walk1:n, Max.Walk, Num.Walk, delta, tjk, d
     setcolorder(walks, c("Id", "Date", "AuxTrans", "Cov.on.trans.date", walk.names, "Max.Walk", "Num.Walk", "delta", "tjk", "d"))
-    walks[, Date := force_tz(Date, tz="UTC")]
+    walks[, Date := force_tz(Date, tzone="UTC")]
     walks[, Date := suppressMessages(clv.time.convert.user.input.to.timepoint(clv.time, Date))]
     setkeyv(walks, c("Id", "Date", "AuxTrans"))
     return(walks)

@@ -5,6 +5,9 @@ summary.clv.data.dynamic.covariates <- function(object, ...){
 
   # get part for static cov data
   res <- NextMethod()
+
+  Cov.Date <- NULL
+
   class(res) <- c("summary.clv.data.dynamic.covariates", class(res))
 
   # res$name.covariates.type <- "Dynamic Covariates" #printing

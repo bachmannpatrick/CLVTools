@@ -228,7 +228,7 @@ check_userinput_data_date <- function(dt.data, name.date, name.var){
 
 # The cov data is already cut to range when given
 check_userinput_datadyncov_datadyncovspecific <- function(dt.data.dyn.cov, dt.required.dates, clv.time, dt.required.ids, names.cov, name.of.covariate){
-  Cov.Date <- Id <- Max.Cov.Date <- is.long.enough <- Min.Cov.Date <- N <- has.req.dates <- NULL
+  Cov.Date <- Id <- Max.Cov.Date <- is.long.enough <- Min.Cov.Date <- N <- has.req.dates <- num.dates <- NULL
 
   # Better be sure
   setkeyv(dt.data.dyn.cov, cols = c("Id", "Cov.Date"))

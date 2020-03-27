@@ -45,10 +45,10 @@ time units smaller than a single day.
 \seealso{
 \code{\link[CLVTools:summary.clv.time]{summary.clv.time}} for a summary about an object of class \code{clv.time}
 
-\code{\link[CLVTools:clv.time.days]{clv.time.days}} for an implementation of time unit 'Days'
+\code{\link[CLVTools:clv.time.days-class]{clv.time.days}} for an implementation of time unit 'Days'
 
-\code{\link[CLVTools:clv.time.weeks]{clv.time.weeks}} for an implementation of time unit 'Weeks'
+\code{\link[CLVTools:clv.time.weeks-class]{clv.time.weeks}} for an implementation of time unit 'Weeks'
 
-\code{\link[CLVTools:clv.time.years]{clv.time.years}} for an implementation of time unit 'Years'
+\code{\link[CLVTools:clv.time.years-class]{clv.time.years}} for an implementation of time unit 'Years'
 }
 \keyword{internal}

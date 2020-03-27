@@ -301,4 +301,5 @@ setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.fitt
 
 #' @include class_clv_fitted.R
 #' @exportMethod plot
+#' @rdname plot.clv.fitted
 setMethod("plot", signature(x="clv.fitted"), definition = plot.clv.fitted)

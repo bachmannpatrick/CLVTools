@@ -106,7 +106,7 @@ definition = function(clv.model, clv.fitted, prefixed.params){
 # . clv.model.predict.clv -----------------------------------------------------------------------------------------------------
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.static.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor,verbose){
   # cran silence
-  CET <- x <- t.x <- T.cal <- PAlive <- DERT <- NULL
+  period.length <- CET <- x <- t.x <- T.cal <- PAlive <- DERT <- NULL
 
   # Covariates as matrix, if there is a covariate
   data.cov.mat.life  <- clv.data.get.matrix.data.cov.life(clv.fitted@clv.data)

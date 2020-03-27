@@ -1,6 +1,6 @@
 pnbd_dyncov_palive <- function (clv.fitted){
 
-  cbs.x <- rsx <- i.x <- Bksum <- DkT <- Z <- NULL
+  cbs.x <- rsx <- i.x <- Bksum <- DkT <- Z <- palive <-  NULL
 
   # Params, not logparams
   r       <- clv.fitted@prediction.params.model[["r"]]

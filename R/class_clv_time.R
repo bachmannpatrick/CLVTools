@@ -27,9 +27,9 @@
 #' @slot name.time.unit Single character vector storing the human-readable name of the time unit for output.
 #'
 #' @seealso \code{\link[CLVTools:summary.clv.time]{summary.clv.time}} for a summary about an object of class \code{clv.time}
-#' @seealso \code{\link[CLVTools:clv.time.days]{clv.time.days}} for an implementation of time unit 'Days'
-#' @seealso \code{\link[CLVTools:clv.time.weeks]{clv.time.weeks}} for an implementation of time unit 'Weeks'
-#' @seealso \code{\link[CLVTools:clv.time.years]{clv.time.years}} for an implementation of time unit 'Years'
+#' @seealso \code{\link[CLVTools:clv.time.days-class]{clv.time.days}} for an implementation of time unit 'Days'
+#' @seealso \code{\link[CLVTools:clv.time.weeks-class]{clv.time.weeks}} for an implementation of time unit 'Weeks'
+#' @seealso \code{\link[CLVTools:clv.time.years-class]{clv.time.years}} for an implementation of time unit 'Years'
 #'
 #'
 #' @include all_generics.R
@@ -129,6 +129,8 @@ setMethod("clv.time.set.sample.periods", signature = signature(clv.time="clv.tim
 
 
 clv.time.expectation.periods <- function(clv.time, user.tp.end){
+
+  period.num <- NULL
 
   # Table with each row representing a period (with period number, start and end dates)
   #   required when executing plot() to calculate the unconditional expectation and to

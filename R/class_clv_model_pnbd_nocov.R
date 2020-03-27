@@ -189,7 +189,7 @@ setMethod(f="clv.model.m.to.cor", signature = signature(clv.model="clv.model.pnb
 # .clv.model.predict.clv --------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.no.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
-  Id <- x <- t.x <- T.cal <-  PAlive <- CET <- DERT <- NULL # cran silence
+  period.length <- Id <- x <- t.x <- T.cal <-  PAlive <- CET <- DERT <- NULL # cran silence
 
   # To be sure they are both sorted the same when calling cpp functions
   setkeyv(dt.prediction, "Id")
