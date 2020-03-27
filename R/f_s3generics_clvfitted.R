@@ -271,8 +271,9 @@ print.summary.clv.fitted <- function(x, digits=max(3L, getOption("digits")-3L),
 
 #' @template template_summary
 #' @include class_clv_fitted.R
-#' @importFrom stats coef vcov AIC BIC logLik
+#' @importFrom stats coef vcov AIC BIC logLik pnorm
 #' @importFrom utils tail
+#' @importFrom methods is
 #' @export
 summary.clv.fitted <- function(object, ...){
   ## The basis structure

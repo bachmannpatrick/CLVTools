@@ -1,3 +1,4 @@
+#' @importFrom utils modifyList
 interlayer_regularization <- function(next.interlayers, LL.params, LL.function.sum,
                                       names.prefixed.params.after.constr.life, names.prefixed.params.after.constr.trans,
                                       reg.lambda.life, reg.lambda.trans, num.observations, ...){

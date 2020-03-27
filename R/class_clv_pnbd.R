@@ -13,6 +13,7 @@ setClass(Class = "clv.pnbd", contains = "clv.fitted",
 
 # Convenience constructor to encapsulate all steps for object creation
 #' @include class_clv_data.R class_clv_model_pnbd_nocov.R
+#' @importFrom methods new
 clv.pnbd <- function(cl, clv.data){
 
   dt.cbs.pnbd <- pnbd_cbs(clv.data = clv.data)

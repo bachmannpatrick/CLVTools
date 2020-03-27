@@ -1,4 +1,5 @@
 # LL.params are the unfixed parameters containing the unfixed params only once
+#' @importFrom utils modifyList
 interlayer_constraints <- function(next.interlayers, LL.params, LL.function.sum, names.original.params.constr, names.prefixed.params.constr, ...){
 
   # Catch elipsis params immediately

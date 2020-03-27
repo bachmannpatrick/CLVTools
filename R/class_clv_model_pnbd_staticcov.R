@@ -16,6 +16,7 @@ setClass(Class = "clv.model.pnbd.static.cov", contains = "clv.model.pnbd.no.cov"
 
 # .clv.model.check.input.args ------------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
+#' @importFrom methods callNextMethod
 setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.pnbd.static.cov"), definition =
             function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose,
                                 names.cov.life, names.cov.trans,
@@ -54,6 +55,7 @@ setMethod(f = "clv.model.backtransform.estimated.params.cov", signature = signat
 })
 
 # . clv.model.prepare.optimx.args -----------------------------------------------------------------------------------------------------
+#' @importFrom utils modifyList
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.pnbd.static.cov"),
   definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
 

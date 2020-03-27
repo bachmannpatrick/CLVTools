@@ -46,6 +46,7 @@ summary.clv.fitted.static.cov <- function(object, ...){
 
 #' @importFrom stats coef na.omit setNames
 #' @importFrom optimx coef<-
+#' @importFrom utils tail
 #' @include class_clv_fitted_staticcov.R
 #' @export
 coef.clv.fitted.static.cov <- function(object, complete = TRUE, ...){

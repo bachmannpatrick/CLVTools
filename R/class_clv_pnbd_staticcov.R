@@ -10,6 +10,7 @@ setClass(Class = "clv.pnbd.static.cov", contains = "clv.fitted.static.cov",
 
 
 # Convenience constructor to encapsulate all steps for object creation
+#' @importFrom methods new
 #' @include class_clv_data.R class_clv_model_pnbd_staticcov.R
 clv.pnbd.static.cov <- function(cl, clv.data){
 

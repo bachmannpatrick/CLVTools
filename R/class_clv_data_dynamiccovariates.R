@@ -27,6 +27,7 @@ setClass(Class = "clv.data.dynamic.covariates", contains = "clv.data.static.cova
 
 
 # Constructor
+#' @importFrom methods new
 clv.data.dynamic.covariates <- function(no.cov.obj,
                                         data.cov.life,
                                         data.cov.trans,

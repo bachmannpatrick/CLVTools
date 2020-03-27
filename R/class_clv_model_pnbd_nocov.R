@@ -61,6 +61,7 @@ setMethod("clv.model.backtransform.estimated.params.model", signature = signatur
 })
 
 # .clv.model.prepare.optimx.args --------------------------------------------------------------------------------------------------------
+#' @importFrom utils modifyList
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
   # Also model optimization settings should go here
 

@@ -11,6 +11,7 @@ setClass("clv.time.days", contains = "clv.time.date")
 # Constructor
 #   Cannot set estimation/holdout start/end here because for this it needs transaction dates, which first
 #     need to be converted to dates and then returned to the transaction data table
+#' @importFrom methods new
 clv.time.days <- function(time.format){
   return(new("clv.time.days",
              time.format                = time.format,
