@@ -117,12 +117,6 @@ setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv
     # eq 6
     phi_dlogm <- (sqrt(r)/(1+a)) * (a/(1+a))^r * (sqrt(s)/(1+b)) * (b/(1+b))^s
 
-    # Add new row and column
-    # m.diag <- cbind(rbind(m.diag, 0),0)
-    #   For some reasons, name are not taken in cbind/rbind
-    # rownames(m.diag) <- c(rownames(m.diag)[-nrow(m.diag)], clv.fitted@name.prefixed.cor.param.m)
-    # colnames(m.diag) <- c(colnames(m.diag)[-ncol(m.diag)], clv.fitted@name.prefixed.cor.param.m)
-
     # Add to transformation matrix on last line only! (not aswell on the last column)
     m.diag[clv.fitted@name.prefixed.cor.param.m, "log.alpha"] <- phi_dloga
     m.diag[clv.fitted@name.prefixed.cor.param.m, "log.r"]     <- phi_dlogr
@@ -137,8 +131,10 @@ setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv
 
 
 setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, verbose){
+
   # clv.data in clv.fitted is already replaced with newdata here
-  # Need to only redo cbs if given new data
+  # Only need to redo cbs if new data is given
+
   clv.fitted@cbs <- pnbd_cbs(clv.data = clv.fitted@clv.data)
   return(clv.fitted)
 })
@@ -157,7 +153,9 @@ setMethod(f="clv.model.cor.to.m", signature = signature(clv.model="clv.model.pnb
     return(fct.part(param.ab = alpha, param.rs = r) * fct.part(param.ab = beta, param.rs = s))
   }
   res.m <- param.cor / .cor.part(params=prefixed.params.model)
-  return(unname(res.m)) # return unnamed as otherwise still called "cor"
+
+  # return unnamed as otherwise still called "cor"
+  return(unname(res.m))
 })
 
 setMethod(f="clv.model.m.to.cor", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, prefixed.params.model, param.m){
@@ -173,13 +171,15 @@ setMethod(f="clv.model.m.to.cor", signature = signature(clv.model="clv.model.pnb
     return(fct.part(param.ab = alpha, param.rs = r) * fct.part(param.ab = beta, param.rs = s))
   }
   res.cor <- param.m * .cor.part(params=prefixed.params.model)
-  return(unname(res.cor)) # return unnamed as otherwise still called "m"
+
+  # return unnamed as otherwise still called "m"
+  return(unname(res.cor))
 })
 
 
 #' @include all_generics.R
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.no.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
-  Id <- x <- t.x <- T.cal <-  PAlive <- CET <- DERT.R <- DERT.cpp <- NULL # cran silence
+  Id <- x <- t.x <- T.cal <-  PAlive <- CET <- DERT <- NULL # cran silence
 
   # To be sure they are both sorted the same when calling cpp functions
   setkeyv(dt.prediction, "Id")
@@ -224,7 +224,7 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.no.cov"),
 
   params_i <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
 
-  # all params exactly the same for all customers as there are no covariates
+  # all params exactly the same for all customers because there are no covariates
   params_i[, r       := clv.fitted@prediction.params.model[["r"]]]
   params_i[, alpha_i := clv.fitted@prediction.params.model[["alpha"]]]
   params_i[, s       := clv.fitted@prediction.params.model[["s"]]]

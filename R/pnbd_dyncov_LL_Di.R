@@ -14,18 +14,18 @@
   if(max.walk == 1  || max.walk == 2)
   {
     if(i == 1)
-      #do not include DKn (Dkn=0) -> only Dk1
+      # do not include DKn (Dkn=0) -> only Dk1
       Di1 <- data.work.life.real[, sum(d*Di.adj.Walk1, na.rm=T), by=Id]
     else{
-      #include Dkn as well
+      # include Dkn as well
       Di1 <- data.work.life.real[, sum(d*Di.adj.Walk1, Di.Max.Walk, na.rm=T), by=Id]
     }
   }else{
-    #create strings of structure: "c(adj.Walk2, adj.Walk3, ..., adj..Walk(max.walk-1))"
+    # create strings of structure: "c(adj.Walk2, adj.Walk3, ..., adj..Walk(max.walk-1))"
     middle.walks <- paste0("c(", paste0("adj.Walk", 2:(max.walk-1), collapse=", "), ")")
     if(i == 1){
-      #do not include Dkn
-      #Dk2..Dk(max.walk-1)
+      # do not include Dkn
+      # Dk2..Dk(max.walk-1)
       Di1 <- data.work.life.real[, sum(d*Di.adj.Walk1, eval(parse(text=middle.walks)), na.rm=T), by=Id]
     }else{
 
@@ -60,9 +60,7 @@
 
   adj.walk_i = paste0("adj.Walk",i)
 
-  #
-  #Cki
-  #---------------------------
+  #Cki ---------------------------------------------------------------------------------
 
   # nrow(data.aux.only) = nrow(data.real.only)
   # ie nrow = number of customers for both!
@@ -76,9 +74,8 @@
 
   data.work.aux[is.na(Cki), Cki:=0]
 
-  #
-  #Di2: Cji + Cki
-  #-----------------------------
+
+  #Di2: Cji + Cki -----------------------------------------------------------------------
 
   if( i == 1 || i == 2){
     #Di2 = sum(Cj1=0,Cj2=0, Cki), hence D2 = Cki
@@ -86,10 +83,6 @@
   }else{
     #Di2 = sum(0,Cj2, Cj3, .., Cj(i-1), Cki )
     middle.walks.a.cki <- paste0("c(", paste0("adj.Walk", 2:(i-1), collapse=", "), ", Cki)" )
-
-    #print(microbenchmark(data.work.aux[, base::sum(.SD, na.rm=T), .SDcols=c("Cki", paste0("adj.Walk", 2:(i-1))), by=Id], times=10))
-    # print(microbenchmark(data.work.aux[, sum(eval(parse(text=middle.walks.a.cki)), na.rm=T), by=Id], times=10))
-
     Di2 <- data.work.aux[, sum(eval(parse(text=middle.walks.a.cki)), na.rm=T), by=Id]
   }
   return(Di2$V1)
@@ -105,7 +98,6 @@
   # Note: Not very elegant, but I am adding the Num.Walk for Auxtrans=True (kxT) as well. We need to know in this function
   # whether this is 1 or not. -> Actually I just found out that this does not make a difference at all. If we don't do this
   # then DT for Num.Walk=kxT=1 would be wrong, but in this case we only use D1 anyway which is correct...
-
 
   Di1 <- .pnbd_dyncov_LL_Di1_gen(data.work.life.real = data.work.life[AuxTrans==F], i = i, kxT = data.work.life[AuxTrans==T, Num.Walk])
 

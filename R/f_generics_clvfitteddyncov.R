@@ -1,5 +1,5 @@
 setMethod("clv.controlflow.plot.check.inputs", signature(obj="clv.fitted.dynamic.cov"), function (obj, prediction.end, cumulative, plot, label.line, verbose) {
-  # No nocov /staticcov checks
+  # No nocov /staticcov checks (no need to call super method)
   err.msg <- c()
 
   # Check that dyncov covariate is long enough for prediction end
@@ -9,7 +9,6 @@ setMethod("clv.controlflow.plot.check.inputs", signature(obj="clv.fitted.dynamic
   # only need to check one cov data, guaranteed that both are of same length
   if(dt.expectation[, max(period.first)] > obj@clv.data@data.cov.trans[, max(Cov.Date)])
     err.msg <- c(err.msg, "The dynamic covariates in the fitted model are not long enough for the given prediction.end!")
-
 
   check_err_msg(err.msg)
 })
@@ -53,7 +52,6 @@ setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(obj=
 
   # Check that dyncov covariate is long enough for prediction end
   #   Convert prediction.end already for this
-
   dt.prediction <- clv.time.get.prediction.table(clv.time = obj@clv.data@clv.time,
                                                  user.prediction.end = prediction.end)
   tp.last.required.cov.period <- clv.time.floor.date(clv.time = obj@clv.data@clv.time,

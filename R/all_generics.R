@@ -1,16 +1,3 @@
-
-# Set Covariates Generics ------------------------------------------------
-
-#' @exportMethod SetStaticCovariates
-setGeneric(name = "SetStaticCovariates",  def = function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id")
-  standardGeneric("SetStaticCovariates"))
-
-
-#' @exportMethod SetDynamicCovariates
-setGeneric(name = "SetDynamicCovariates",  def = function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id", name.date="Date")
-  standardGeneric("SetDynamicCovariates"))
-
-
 # Predict Generics -------------------------------------------------------
 # The S4 generic is defined explicitely for clarity, instead of relying on it as a side-effect of
 #    only defining the method with setMethod
@@ -25,11 +12,11 @@ setGeneric(name = "predict")
 
 # clv.data accessors -----------------------------------------------------------------------------------------
 
-# covs only
+# get matrix representation of lifetime cov data
 setGeneric("clv.data.get.matrix.data.cov.life", def=function(clv.data)
   standardGeneric("clv.data.get.matrix.data.cov.life"))
 
-# get matrix representation of specified cov data
+# get matrix representation of transaction cov data
 setGeneric("clv.data.get.matrix.data.cov.trans", def=function(clv.data)
   standardGeneric("clv.data.get.matrix.data.cov.trans"))
 
@@ -154,10 +141,6 @@ setGeneric(name="clv.model.backtransform.estimated.params.cov", def=function(clv
 
 # Function to reduce the covariates in the object to the ones named by the user when calling estimate
 # - not used, yet
-# Generic because a covariate specific version is required for dyn covs (reduce walk list as well)
-# setGeneric(name = "clv.model.reduce.covs", def = function(obj, names.cov.data.life, names.cov.data.trans)
-#   standardGeneric("clv.model.reduce.covs"))
-
 setGeneric(name="clv.model.m.to.cor", def = function(clv.model, prefixed.params.model, param.m)
   standardGeneric("clv.model.m.to.cor"))
 
@@ -168,18 +151,23 @@ setGeneric(name="clv.model.cor.to.m", def = function(clv.model, prefixed.params.
 # clv.time ----------------------------------------------------------------------------------------------------
 setGeneric("clv.time.set.sample.periods", function(clv.time, tp.first.transaction, tp.last.transaction, user.estimation.end)
   standardGeneric("clv.time.set.sample.periods"))
+
 # convert user given date/datetimes
 setGeneric("clv.time.convert.user.input.to.timepoint", function(clv.time, user.timepoint)
   standardGeneric("clv.time.convert.user.input.to.timepoint"))
 
 setGeneric("clv.time.interval.in.number.tu", def = function(clv.time, interv)
   standardGeneric("clv.time.interval.in.number.tu"))
+
 setGeneric("clv.time.number.timeunits.to.timeperiod", function(clv.time, user.number.periods)
   standardGeneric("clv.time.number.timeunits.to.timeperiod"))
+
 setGeneric("clv.time.tu.to.ly", function(clv.time)
   standardGeneric("clv.time.tu.to.ly"))
+
 setGeneric("clv.time.floor.date", function(clv.time, timepoint)
   standardGeneric("clv.time.floor.date"))
+
 # only for pnbd dyncov createwalks
 setGeneric("clv.time.ceiling.date", function(clv.time, timepoint)
   standardGeneric("clv.time.ceiling.date"))

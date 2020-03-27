@@ -47,7 +47,6 @@ setMethod(f = "clv.model.backtransform.estimated.params.cov", signature = signat
 })
 
 
-
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.pnbd.static.cov"),
   definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
 
@@ -67,7 +66,7 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
                               vX      = clv.fitted@cbs$x,
                               vT_x    = clv.fitted@cbs$t.x,
                               vT_cal  = clv.fitted@cbs$T.cal,
-                              # Covariate data as matrix!
+                              # Covariate data, as matrix!
                               mCov_life  = clv.data.get.matrix.data.cov.life(clv.fitted@clv.data),
                               mCov_trans = clv.data.get.matrix.data.cov.trans(clv.fitted@clv.data)))
   return(optimx.args)

@@ -107,4 +107,3 @@ The model fitting functions \code{\link[CLVTools]{pnbd}}.
 Function \code{\link[CLVTools]{coef}} will extract the matrix of coefficients and
 summary statistics.
 }
-\keyword{internal}

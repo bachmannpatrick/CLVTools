@@ -1,25 +1,14 @@
 interlayer_regularization <- function(next.interlayers, LL.params, LL.function.sum,
                                       names.prefixed.params.after.constr.life, names.prefixed.params.after.constr.trans,
                                       reg.lambda.life, reg.lambda.trans, num.observations, ...){
-# print("in regularization interlayer")
+
   all.other.args <- list(...)
-  # Check if called correctly from _optimizeLL
-  # if(!all( c("names.prefixed.params.all.trans", "names.prefixed.params.all.life")
-           # %in% names(all.other.args)))
-    # stop("names.prefixed.params.all.trans and names.prefixed.params.all.life both need to be passed as argument when using regularization", call. = F)
 
-  # Regularization
-  #   LL value + regularization term
-  #
-  #   regularization term := lambda.trans * t(cov.trans) * params.trans +
-  #                          lambda.life  * t(cov.life)  * params.life
-  # ---------------------------------------------------------------------------
 
-  # Calculate LL value
+  # Calculate LL value --------------------------------------------------------
   #   The LL value is calculate by the next interlayer and may pass through
   #     additional layers before actually being calculated
   #   Use do.call to integrate ... args
-  # ---------------------------------------------------------------------------
 
   next.interlayer.call.args <- list(next.interlayers = next.interlayers,
                                     LL.params        = LL.params,
@@ -32,10 +21,12 @@ interlayer_regularization <- function(next.interlayers, LL.params, LL.function.s
   if(!is.finite(LL.value))
     return(LL.value)
 
-  # Reg term
-  # --------------------------------------------------------------------------------
-  # names.prefixed.params.all.life  <- all.other.args[["names.prefixed.params.all.life"]]
-  # names.prefixed.params.all.trans <- all.other.args[["names.prefixed.params.all.trans"]]
+
+  # Regularization --------------------------------------------------------------
+  #   LL value + regularization term
+  #
+  #   regularization term := lambda.trans * t(cov.trans) * params.trans +
+  #                          lambda.life  * t(cov.life)  * params.life
 
   params.cov.life  <- LL.params[names.prefixed.params.after.constr.life]
   params.cov.trans <- LL.params[names.prefixed.params.after.constr.trans]
@@ -44,7 +35,6 @@ interlayer_regularization <- function(next.interlayers, LL.params, LL.function.s
   reg.term <- as.vector(reg.term)
 
   avg.LL.value <- LL.value / num.observations
-  # print(paste0("avg. LL value: ", avg.LL.value, " regterm: ", reg.term))
 
   # Return sum of LL and regterm
   #   Add reg term to pull negative avg LL value towards 0

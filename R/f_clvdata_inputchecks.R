@@ -4,8 +4,6 @@ check_err_msg <- function(err.msg){
     stop(c("\n",paste0(err.msg, sep="\n")),call. = FALSE)
 }
 
-
-
 .check_user_data_single_boolean <- function(b, var.name){
   err.msg <- c()
   if(!is.logical(b))
@@ -34,12 +32,9 @@ check_err_msg <- function(err.msg){
   return(err.msg)
 }
 
-
 .convert_userinput_dataid <- function(id.data){
   return(as.character(id.data))
 }
-
-
 
 check_userinput_datanocov_columnname <- function(name.col, data){
 
@@ -65,10 +60,11 @@ check_userinput_datanocov_timeunit <- function(time.unit){
                                                var.name = "time.unit")
 
 
-  # use pmatch to match the input againts the possible tus
-  # this also accounts for empty texts
-  # use tolower to allow capital/mixed spelling
-  # match.arg would throw undescriptive error if not found
+  # use pmatch to match the input againts the possible time units
+  #   this also accounts for empty texts
+  #   use tolower to allow capital/mixed spelling
+  #   match.arg would throw undescriptive error if not found
+
   if(length(err.msg) == 0) # may fail ungracefully if inproper input
     if(!(pmatch(x=tolower(time.unit), table=tolower(clv.time.possible.time.units()), nomatch = FALSE)))
       err.msg <- c(err.msg, paste0("Please choose one of the following time units: ", paste(clv.time.possible.time.units(), collapse = ", "), "!"))
@@ -120,14 +116,13 @@ check_userinput_datanocov_datatransactions <- function(data.transactions.dt, has
     return("Something went wrong. Transactions could not be converted to data.table!")
 
   if(nrow(data.transactions.dt) == 0)
-    return("data.transactions.dt may not be empty!")
+    return("Transactions may not be empty!")
 
   if(any(!c("Id", "Date") %in% colnames(data.transactions.dt)))
     return("The column names could not be set in the transaction data!")
 
   # Id can be char, number, or factor
   err.msg <- c(err.msg, check_userinput_data_id(dt.data = data.transactions.dt, name.id = "Id", name.var = "transaction data"))
-
   err.msg <- c(err.msg, check_userinput_data_date(dt.data = data.transactions.dt, name.date = "Date", name.var = "transaction data"))
 
   # Price can only be numeric
@@ -176,7 +171,6 @@ check_userinput_datanocov_namescov <- function(names.cov, data.cov.df, name.of.c
 
   return(err.msg)
 }
-
 
 
 check_userinput_datanocov_datastaticcov <- function(clv.data, dt.data.static.cov, names.cov, name.of.covariate){
@@ -232,26 +226,6 @@ check_userinput_data_date <- function(dt.data, name.date, name.var){
   return(err.msg)
 }
 
-# For Dyn Cov there are many occasions where there need to be more cov added,
-#   such as SetDynCov, predict, plot
-#
-# ConvertAndCheck_CovData is in a single function because the converting and checking is closely intertwined.
-#   -> only check data after conversion to data.table
-#   -> but also only convert to data.table after some of the checks
-#
-# Common Part between static and dyn cov
-#   is.data.frame?
-#   check col.name (id and covariate data)
-#   Convert / copy to data.table
-#
-# Dyn Cov part
-#   convert data (common part)
-#   check date column
-#   check covariate data (dyn way)
-#   convert data (dyn way)
-#
-
-
 # The cov data is already cut to range when given
 check_userinput_datadyncov_datadyncovspecific <- function(dt.data.dyn.cov, dt.required.dates, clv.time, dt.required.ids, names.cov, name.of.covariate){
   Cov.Date <- Id <- Max.Cov.Date <- is.long.enough <- Min.Cov.Date <- N <- has.req.dates <- NULL
@@ -280,6 +254,7 @@ check_userinput_datadyncov_datadyncovspecific <- function(dt.data.dyn.cov, dt.re
   # every Id needs to be in covariate Id
   if(nrow(fsetdiff(dt.required.ids, dt.data.dyn.cov[, "Id"])) > 0)
     err.msg <- c(err.msg, paste0("Every Id in the transaction data needs to be in the ",name.of.covariate," covariate data as well!"))
+
 
   # Date checks -----------------------------------------------------------------------------------
   # ??** do the cov dates have to match the time.unit dates! (ie dates have to be exactly on week start day) **??
@@ -323,47 +298,5 @@ check_userinput_datadyncov_datadyncovspecific <- function(dt.data.dyn.cov, dt.re
     err.msg <- c(err.msg, paste0("All customers in the ",name.of.covariate,
                                  " covariate data need to have the same number of Dates: ", nrow(dt.required.dates)))
 
-  # Every Date/Id combination has to be given exactly once
-  #   covered with first two tests
-  # if(dt.data.dyn.cov[, .N, by=c("Id", "Cov.Date")][, unique(N)] != 1)
-  #   err.msg <- c(err.msg, paste0("Every combination of Id and Date in the ", name.of.covariate," covariate data may only exist exactly once!"))
-
-  # Check every Customer, if it has these required dates (can still have more)
-  # if(dt.data.dyn.cov[, list(has.all.req.dates = (nrow(fsetdiff(dt.required.dates, .SD)) == 0)),.SDcols="Cov.Date", by="Id"][, any(has.all.req.dates == FALSE)])
-  #   err.msg <- c(err.msg, "The covariate data does not contain all required Dates for all Ids!")
-
-  # Dates can still be more (**is that really a problem to...??? if not these checks could be omitted)
-  #   start and end on same date
-  #   all dates exactly once for every customer
-  # if(last.cov.date.per.cust[, list(is.long.enough = (Max.Cov.Date >= tp.dyn.cov.end)), by="Id"][, any(is.long.enough==F)])
-  #   err.msg <- c(err.msg, paste("There need to be covariates until \"", tp.dyn.cov.end, "\" for every Id in the", name.of.covariate, "covariate data!"))
-
-  # Everybodys Covariate needs to start and end on the exact same date
-  # if(last.cov.date.per.cust[, length(unique(range(Max.Cov.Date))) != 1])
-  #   err.msg <- c(err.msg, "Every Id's covariate data should end on the same date!")
-
-  # if(dt.data.dyn.cov[, list("Min.Cov.Date" = min(Cov.Date)), by=Id][, length(unique(range(Min.Cov.Date)))] != 1)
-  #   err.msg <- c(err.msg, "Every Id's covariate data should start on the same date!")
-
-
   return(err.msg)
 }
-
-
-# Only checks if the dyn cov data in the obj is long enough for every user
-# needed when not setting new dyn cov but using existing obj to predict / plot
-# check_user_data_dyncovlongenough <- function(obj, date.end){
-#
-#   Cov.Date <- Id <- has.long.enough <- NULL
-#   # Check if there are actually enough cov data until the required prediction end
-#   err.msg <- c()
-#   if(obj@clv.data@data.cov.life[,  list(has.long.enough = (max(Cov.Date) >= date.end)), by=Id][, any(has.long.enough == FALSE)] )
-#     err.msg <- c(err.msg, paste0("There are not enough covariates in the Lifetime covariate data until the required end date ", as.character(date.end), "!"))
-#   if(obj@clv.data@data.cov.trans[, list(has.long.enough = (max(Cov.Date) >= date.end)), by=Id][, any(has.long.enough == FALSE)] )
-#     err.msg <- c(err.msg, paste0("There are not enough covariates in the Transaction covariate data until the required end date ",  as.character(date.end), "!"))
-#   return(err.msg)
-# }
-
-
-
-

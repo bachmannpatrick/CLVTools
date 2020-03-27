@@ -50,16 +50,16 @@ setClass("clv.time",
          ),
          contains = "VIRTUAL")
 
-
+# **FUTURE: future usage:
 # custom time interval appraoch:
 # cut(hour(now()), breaks=c(0,6,12,18,24), include.lowest = TRUE, labels = FALSE)
 
 clv.time.possible.time.units <- function(){
-  return(c("hours","days", "weeks", "years")) #, "months", "14 days"))"quarters"))
+  return(c("hours","days", "weeks", "years"))
 }
 
-# set.sample.periods ------------------------------------------------------------------------
 
+# set.sample.periods ------------------------------------------------------------------------
 #' @importFrom lubridate period
 setMethod("clv.time.set.sample.periods", signature = signature(clv.time="clv.time"), definition =function(clv.time, tp.first.transaction, tp.last.transaction, user.estimation.end){
 
@@ -89,6 +89,7 @@ setMethod("clv.time.set.sample.periods", signature = signature(clv.time="clv.tim
     if(tp.estimation.end > tp.last.transaction-clv.time.number.timeunits.to.timeperiod(clv.time, 2L))
       stop("Parameter estimation.split needs to indicate a point at least 2 periods before the last transaction!", call. = FALSE)
 
+    # **TODO: Replace with minimal possible discrete time step (minimal.discrete)
     # + 1 day is the same for all because most fine-grained change that Date can do
     tp.holdout.start   <- tp.estimation.end + 1L # For dates: +1 = 1 full day. For POSIXct: +1 = 1 second
     tp.holdout.end     <- tp.last.transaction
@@ -367,7 +368,7 @@ clv.time.sequence.of.covariate.timepoints <- function(clv.time, tp.start, tp.end
   num.offsets <- clv.time.interval.in.number.tu(clv.time = clv.time,
                                                 interv = interval(start = tp.cov.start, end = tp.cov.end))
 
-  # If the num.offsets falls inbetween, but this should not happen...
+  # If the num.offsets falls inbetween, but this should not happen
   num.offsets <- ceiling(num.offsets)
 
   if(num.offsets <= 1) # Offset of 1 is 2 periods only

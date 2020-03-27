@@ -1,4 +1,4 @@
-#' @include all_generics.R
+#' @include all_generics.R class_clv_data.R
 setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.data"), definition = function(obj, dt.expectation.seq, cumulative, verbose){
   # Add the number of repeat transactions to dt.date.seq
 

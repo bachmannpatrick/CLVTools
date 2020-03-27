@@ -52,7 +52,7 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(obj
 
 
 setMethod("clv.controlflow.estimate.put.inputs", signature = signature(obj="clv.fitted.static.cov"), definition = function(obj, cl, reg.lambdas, use.cor, names.cov.constr, names.cov.life, names.cov.trans, ...){
-  # clv.fitted put estimation
+  # clv.fitted put inputs
   obj <- callNextMethod()
 
   # Reduce to user's desired covariates only -----------------------------------------------------------
@@ -105,6 +105,7 @@ setMethod("clv.controlflow.estimate.put.inputs", signature = signature(obj="clv.
 
   }else{
     # No constraints used
+
     obj@estimation.used.constraints       <- FALSE
 
     obj@names.original.params.free.life   <- clv.data.get.names.cov.life(obj@clv.data)
@@ -117,7 +118,7 @@ setMethod("clv.controlflow.estimate.put.inputs", signature = signature(obj="clv.
   }
 
   # independent of using constraints or not. These are used in LL and Reg interlayer after the
-  #   potential constraint interlayer and therefore need to contain all names
+  #   potential constraint interlayer has doubled the parameters and therefore need to contain all names
   obj@names.prefixed.params.after.constr.life  <- paste("life",  clv.data.get.names.cov.life(obj@clv.data),  sep=".")
   obj@names.prefixed.params.after.constr.trans <- paste("trans", clv.data.get.names.cov.trans(obj@clv.data), sep=".")
 
@@ -145,45 +146,59 @@ setMethod("clv.controlflow.estimate.generate.start.params", signature = signatur
             start.params.free.trans <- c()
             start.params.constr     <- c()
 
-            if(length(obj@names.original.params.free.life) > 0){ # are there any free params?
-              if(is.null(start.params.life)){  # start params given?
-                start.params.free.life <- rep(obj@clv.model@start.param.cov, length(obj@names.original.params.free.life))
+            # any free params?
+            if(length(obj@names.original.params.free.life) > 0){
+
+              # start params given?
+              if(is.null(start.params.life)){
+                start.params.free.life        <- rep(obj@clv.model@start.param.cov, length(obj@names.original.params.free.life))
                 names(start.params.free.life) <- obj@names.original.params.free.life
               }else{
-                start.params.free.life <- start.params.life[obj@names.original.params.free.life] #ensure order
+                # correct order
+                start.params.free.life <- start.params.life[obj@names.original.params.free.life]
               }
+              # apply model transformation to start params
               start.params.free.life        <- clv.model.transform.start.params.cov(obj@clv.model, start.params.free.life)
               names(start.params.free.life) <- obj@names.prefixed.params.free.life
             }
 
-            if(length(obj@names.original.params.free.trans) > 0){ # are there any free params?
+            # any free params?
+            if(length(obj@names.original.params.free.trans) > 0){
               if(is.null(start.params.trans)){
-                start.params.free.trans <- rep(obj@clv.model@start.param.cov, length(obj@names.original.params.free.trans))
+                start.params.free.trans        <- rep(obj@clv.model@start.param.cov, length(obj@names.original.params.free.trans))
                 names(start.params.free.trans) <- obj@names.original.params.free.trans
               }else{
-                start.params.free.trans <- start.params.trans[obj@names.original.params.free.trans] #ensure order
+                # correct order
+                start.params.free.trans <- start.params.trans[obj@names.original.params.free.trans]
               }
+
+              # apply model transformation to start params
               start.params.free.trans        <- clv.model.transform.start.params.cov(obj@clv.model, start.params.free.trans)
               names(start.params.free.trans) <- obj@names.prefixed.params.free.trans
             }
 
-            if(length(obj@names.original.params.constr) > 0){ # are there any free params?
+            # any constrain params?
+            if(length(obj@names.original.params.constr) > 0){
               if(is.null(start.params.constr)){
-                start.params.constr <- rep(obj@clv.model@start.param.cov, length(obj@names.original.params.constr))
+                # none user given
+                start.params.constr        <- rep(obj@clv.model@start.param.cov, length(obj@names.original.params.constr))
                 names(start.params.constr) <- obj@names.original.params.constr
               }else{
                 start.params.constr <- start.params.constr[obj@names.original.params.constr] #ensure order
               }
+              # apply model transformation to start params
               start.params.constr        <- clv.model.transform.start.params.cov(obj@clv.model, start.params.constr)
               names(start.params.constr) <- obj@names.prefixed.params.constr
             }
 
 
-            all.cov.params <- c(start.params.free.life,start.params.free.trans, start.params.constr) # NULL if not needed
+            # NULL if not needed
+            all.cov.params <- c(start.params.free.life, start.params.free.trans, start.params.constr)
 
             return(c(transformed.start.params.model, all.cov.params))
 
           })
+
 
 setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(obj="clv.fitted.static.cov"),
           def=function(obj, start.params.all){
@@ -192,8 +207,8 @@ setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(
             prepared.nocov.optimx.args <- callNextMethod()
 
             # Add covariates interlayer parameters ---------------------------------------------------------------------
-            #   keep.null =T, needed so that if reg.lambda or names.original.params.constr params are NULL,
-            #                 they are given to optimx/interlayer_manager as well
+            #   keep.null = T, needed so that if reg.lambda or names.original.params.constr params are NULL,
+            #                  they are given to optimx/interlayer_manager as well
 
             # Everything to call the regularization layer
             optimx.args <- modifyList(prepared.nocov.optimx.args,

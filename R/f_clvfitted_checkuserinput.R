@@ -1,5 +1,3 @@
-
-
 .check_user_data_single_numeric <- function(n, var.name){
   err.msg <- c()
   if(!is.numeric(n))
@@ -46,12 +44,12 @@ check_user_data_predictionend <- function(obj, prediction.end){
   else
     clv.time <- obj@clv.time
 
-  #if its a char or Date -> see if can convert
+  # if its a char or Date -> see if can convert
   if(is.character(prediction.end))
     if(anyNA( parse_date_time(x=prediction.end, orders = clv.time@time.format)))
       return("Please provide prediction.end in a format that can be parsed with the set date.format when creating the object!")
 
-  #Whether the date itself is ok will be checked when converting!
+  # Whether the date itself is ok will be checked when converting!
   return(c())
 }
 
@@ -177,6 +175,7 @@ check_user_data_optimxargs <- function(optimx.args){
       if(!(n %in% optimx.allowed))
         err.msg <- c(err.msg, paste0("The element ",n," in optimx.args is not a valid input to optimx()!"))
 
+    # **TODO: Allowed or not??
     # only one method allowed
     # if("method" %in% names(optimx.args))
     #   if(length(optimx.args$method) > 1)
@@ -267,6 +266,3 @@ check_user_data_namesconstr <- function(obj, names.cov.constr){
 
   return(err.msg)
 }
-
-
-

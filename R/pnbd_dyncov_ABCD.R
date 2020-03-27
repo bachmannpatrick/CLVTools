@@ -1,10 +1,9 @@
-# Separate function for output of single table:
-#   Calculate exp.gX.P/L
-#   Cut to alive periods per customer
-#   Cut to maximum date
+# Covariate data of
 #     No covariate after date.upper.cov is considered. Do floor_timeunit() as required before calling
-# Do it for life and trans together because it is much easier to pass in
-#   single clv.fitted and not all parts alone
+#   - Calculate exp.gX.P/L
+#   - Cut to alive periods per customer
+#   - Cut to maximum date
+# For life and trans together because it is much easier to pass in single clv.fitted and not all parts alone
 pnbd_dyncov_alivecovariates <- function(clv.fitted, date.upper.cov){
 
   # For more readable code
@@ -41,7 +40,7 @@ pnbd_dyncov_alivecovariates <- function(clv.fitted, date.upper.cov){
 
   # Multiply data * gammas element-wise and sum row-wise
   #   actually multiplies data.table*data.table element-wise and then rowSums is like sum per c("Id","Cov.Date")
-  dt.life[,  exp.gX.L := exp(rowSums(dt.life[, .SD,  .SDcols=names.gamma.life]  * dt.life[,  .SD, .SDcols=names.cov.life]))]
+  dt.life[,  exp.gX.L := exp(rowSums(dt.life[,  .SD, .SDcols=names.gamma.life]  * dt.life[,  .SD, .SDcols=names.cov.life]))]
   dt.trans[, exp.gX.P := exp(rowSums(dt.trans[, .SD, .SDcols=names.gamma.trans] * dt.trans[, .SD, .SDcols=names.cov.trans]))]
 
   # Cut to when alive ---------------------------------------------------------------------------------
@@ -144,9 +143,9 @@ pnbd_dyncov_ABCD <- function(clv.fitted, prediction.end.date){
                                                          end = clv.time.ceiling.date(clv.time,
                                                                                      timepoint = clv.time@timepoint.estimation.end)),
                                        clv.time = clv.time)
-  dt.ABCD[, d1 := d1]
+  dt.ABCD[,     d1     := d1]
   dt.ABCD[,     Bbar_i := exp.gX.P]
-  dt.ABCD[i==1, Bbar_i := exp.gX.P*d1]
+  dt.ABCD[i==1, Bbar_i := exp.gX.P * d1]
 
   # Bbar is all cov data of lower i's (previous periods) summed up - per customer!
   #   Cannot do cumsum(exp.gX.P) because also need to include *d1 in cumsum
@@ -225,81 +224,3 @@ pnbd_dyncov_ABCD <- function(clv.fitted, prediction.end.date){
 
   return(dt.ABCD)
 }
-
-# # **TEST: that all cov date < (and <= if required) prediction end
-# # **TEST: Gamma=0:
-# # Dbar_i == 0
-# stopifnot(dt.ABCD[, all(Dbar_i < sqrt(.Machine$double.eps))])
-# # Bbar_i == -T.cal
-# #   Actually, if all covs are same: Bbar_i = exp(gXP)*(-Tcal)
-# stopifnot(dt.ABCD[, all(Bbar_i+T.cal < sqrt(.Machine$double.eps))])
-
-
-# CODE k0T+i for DBar_i -----------------------------------------------------------------------------------------
-#   # . Part based on cov before prediction ---------------------------------------------------------------------
-#   dt.Dbar.before.prediction <- dt.life[is.alive.in.period == TRUE]
-#
-#   # Sum up everything before D_i=1 (ie before prediction started)
-#   #   This is where i == NA
-#   dt.Dbar.before.prediction <- dt.Dbar.before.prediction[is.na(i)]
-#
-#
-#   # Sum all cov data (exp.gX.L) in this before-prediction-data
-#   #   except the first of every customer which has to be *d_omega
-#
-#   # All other than first Dbar are exp.gX.L
-#   dt.Dbar.before.prediction[, part.before := exp.gX.L]
-#
-#   # First cov a customer has been alive: *d_omega
-#   #   Add d_omega from cbs
-#   dt.Dbar.before.prediction[clv.fitted@cbs, d_omega := i.d_omega, on="Id"]
-#   dt.Dbar.before.prediction[, is.customers.first.cov := Cov.Date == min(Cov.Date), by="Id"]
-#   dt.Dbar.before.prediction[is.customers.first.cov == TRUE, part.before := exp.gX.L*d_omega]
-# print(dt.Dbar.before.prediction[Id=="10000094635"|Id=="1"])
-#   # Sum all by customer
-#   dt.Dbar.before.sum <- dt.Dbar.before.prediction[, .(cov.sum.before.prediction = sum(part.before)), by="Id"]
-#
-#   # Add to overall table to use for Dbar
-#   dt.ABCD[dt.Dbar.before.sum, cov.sum.before.prediction := i.cov.sum.before.prediction, on="Id"]
-#
-#   # . k0T -----------------------------------------------------------------------------------------------
-#   # k0T is needed in the prediction part
-#   # k0T: Number of covariates touched since becoming alive until estimation end
-#   #       = Number of covariates that affected customer between becoming alive and estimation end
-#   #   Should be <= because if on Cov.Date, the Cov has an effect (ie Cov.Date is when the Cov is active the first time, when it starts)
-#
-#   # Cannot use dt.Dbar.before.prediction because it is strictly withouth prediction period.
-#   #   But cov of estimation end is always also part of prediction period (as i=1) and
-#   #     hence not in dt.Dbar.before.prediction. Therefore, use dt.life.
-#   #   dt.life has already marked covs when alive
-#   #   Count these covariates until estimation.end for every customer
-#   dt.k0T <- dt.life[is.alive.in.period == TRUE &
-#                       Cov.Date <= clv.time@timepoint.estimation.end, .(k0T =.N), by="Id"]
-#
-#   print(dt.life[is.alive.in.period == TRUE &
-#                   Cov.Date <= clv.time@timepoint.estimation.end][Id == "10000094635"|Id=="1"])
-#
-#   dt.ABCD[dt.k0T, k0T := i.k0T, on="Id"]
-#   # **TEST correctness: For count of k0T
-#
-#   # . Prediction part of Dbar --------------------------------------------------------------------------
-#
-#   # Make every Dbar_i the sum of
-#   #   - all previous covs in the prediction period
-#   #   and
-#   #   - all cov data before prediction period
-#   setorderv(x = dt.ABCD, cols = "Cov.Date", order = 1)
-#   dt.ABCD[, Dbar_alluntilandincludingthis := cumsum(exp.gX.L) + cov.sum.before.prediction, by="Id"]
-#
-#
-#   # Every i is a "last" that needs to be adapted
-#   #   Current covdata at i is already wrongly in Dbar_i through cumsum()
-#   #     therefore subtract it from Dbar_i
-#   #   k0T+i > 2 : * (-d.omega - (k0T+j-3))
-#   #   k0T+i <= 2: * (-d.omega)
-#   # ***Check vs BTYD with estimation.end at different points that k0T+i actually happens
-#   dt.ABCD[k0T+i > 2,  Dbar_i := (Dbar_alluntilandincludingthis-exp.gX.L) + exp.gX.L*(-d_omega-(k0T + i - 3))]
-#   dt.ABCD[k0T+i <= 2, Dbar_i := (Dbar_alluntilandincludingthis-exp.gX.L) + exp.gX.L*(-d_omega)]
-
-
-

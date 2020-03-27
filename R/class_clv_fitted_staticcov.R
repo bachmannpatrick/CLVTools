@@ -49,8 +49,7 @@ setClass(Class = "clv.fitted.static.cov", contains = "clv.fitted", #c("clv.fitte
 
                    # Params from constraint and unconstraint coefs
                    prediction.params.life  = "numeric",
-                   prediction.params.trans = "numeric"
-                   ),
+                   prediction.params.trans = "numeric"),
 
          prototype = list(
            estimation.used.constraints      = logical(),

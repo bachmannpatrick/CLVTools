@@ -37,14 +37,13 @@ pnbd_dyncov_DECT <- function(clv.fitted, predict.number.of.periods, prediction.e
   # T  = T.cal
   # T2 = T.cal + t
   # T2-T = t
-  # *** Is t == max(i) really the same. It can often then result in negative expressions ***
+  # ***TODO: Is t == max(i) really the same. It can often then result in negative expressions ***
   dt.ABCD[i== max(i),
           S := (exp(-delta*(d1+i-2)) * .f_confhypergeo_secondkind(param.s, param.s, (delta * (Ci*bT_i      + Dbar_i + beta_0)) / Ci)) -
                (exp(-delta*(t))      * .f_confhypergeo_secondkind(param.s, param.s, (delta * (Ci*(T.cal+t) + Dbar_i + beta_0)) / Ci))]
 
   dt.ABCD[, S := S * (Ai / (Ci^s))]
   dt.S <- dt.ABCD[, .(S = sum(S)), keyby="Id"]
-  # dt.S.m <- data.table(S = S, Id = names(S), key="Id")
 
 
   # Aggregate results ------------------------------------------------------------------------------------------------
@@ -55,9 +54,9 @@ pnbd_dyncov_DECT <- function(clv.fitted, predict.number.of.periods, prediction.e
   dt.palive <- pnbd_dyncov_palive(clv.fitted = clv.fitted)
   dt.result[dt.palive, palive := i.palive, on = "Id"]
 
-
   dt.result[, F1 := delta^(s-1) * ((r+x)*  (beta_0+DkT)^s)   /  (Bksum + alpha_0)]
   dt.result[dt.S, S := i.S, on = "Id"]
+
   dt.result[, DECT := palive * F1 * S]
   setkeyv(dt.result, "Id")
 

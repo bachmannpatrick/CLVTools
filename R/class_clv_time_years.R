@@ -22,7 +22,6 @@ setMethod("clv.time.number.timeunits.to.timeperiod", signature = signature(clv.t
 })
 
 
-
 #' @importFrom lubridate time_length
 setMethod("clv.time.interval.in.number.tu", signature = signature(clv.time="clv.time.years"), function(clv.time, interv){
   return(time_length(interv, unit = "years"))
@@ -31,7 +30,6 @@ setMethod("clv.time.interval.in.number.tu", signature = signature(clv.time="clv.
 setMethod("clv.time.tu.to.ly", signature = signature(clv.time="clv.time.years"), function(clv.time){
   return("Yearly")
 })
-
 
 
 #' @importFrom lubridate floor_date

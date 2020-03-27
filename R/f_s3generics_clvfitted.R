@@ -1,5 +1,7 @@
 #' @include class_clv_fitted.R
-#' @importFrom stats logLik
+#' @importFrom stats logLik nobs coef
+#' @importFrom utils tail
+#' @importFrom optimx coef<-
 #' @export
 logLik.clv.fitted <- function(object, ...){
   last.row.optimx <- tail(object@optimx.estimation.output, n = 1)
@@ -22,10 +24,10 @@ nobs.clv.fitted   <- function(object, ...){
 
 
 
-# Do not overwrite for model classes!
+#' @include class_clv_fitted.R
 #' @importFrom stats coef
 #' @importFrom optimx coef<-
-#' @include class_clv_model_basestrategy.R class_clv_fitted.R all_generics.R
+#' @importFrom utils tail
 #' @export
 coef.clv.fitted <- function(object, complete=TRUE, ...){
 
@@ -54,8 +56,9 @@ coef.clv.fitted <- function(object, complete=TRUE, ...){
   return(original.scale.params)
 }
 
-
-
+#' @include class_clv_fitted.R
+#' @importFrom stats vcov
+#' @importFrom utils tail
 #' @export
 vcov.clv.fitted <- function(object, complete = TRUE, ...){
 
@@ -124,12 +127,12 @@ vcov.clv.fitted <- function(object, complete = TRUE, ...){
   return(m.vcov)
 }
 
-
+#' @importFrom stats qnorm vcov coef
 #' @export
 confint.clv.fitted <- function(object, parm, level = 0.95, ...){
-  # This largely follows stats:::confint.lm to exhibit the exact same behavior
+  # This largely follows stats:::confint.lm to exhibit the same behavior
 
-  # # Get SE
+  # Get SE
   # SE <- sqrt(diag(vcov(object)))
   #
   # CI.low  <- params - qnorm(1-alpha/2) * SE
@@ -154,7 +157,7 @@ confint.clv.fitted <- function(object, parm, level = 0.95, ...){
     ci <- estim.coefs[parm] + sqrt(diag(vcov(object)))[parm] %o% zs
 
     # Return ----------------------------------------------------------------------------------------
-    # from stats:::format.perc - cannot call with ::: as gives CRAN note
+    # from stats:::format.perc - cannot call with ::: because gives CRAN note
     names.perc <- paste(format(100 * req.a, trim = TRUE, scientific = FALSE, digits = 3), "%")
     res <- array(data = NA, dim = c(length(parm), 2L), dimnames = list(parm, names.perc))
     res[] <- ci
@@ -165,7 +168,9 @@ confint.clv.fitted <- function(object, parm, level = 0.95, ...){
 
 
 #' @export
-#' @include all_generics.R class_clv_fitted.R
+#' @importFrom utils tail
+#' @importFrom stats coef
+#' @include class_clv_fitted.R
 print.clv.fitted <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
   # Short print similar to lm
   # Only print the main model coefs
@@ -217,8 +222,8 @@ setMethod(f = "show", signature = signature(object="clv.fitted"), definition = f
 
 
 #' @rdname summary.clv.fitted
+#' @importFrom stats printCoefmat
 #' @export
-#' @keywords internal
 print.summary.clv.fitted <- function(x, digits=max(3L, getOption("digits")-3L),
                                      signif.stars = getOption("show.signif.stars"), ...){
   Total <- Name <- Estimation <- Holdout <- Total <- NULL
@@ -266,6 +271,8 @@ print.summary.clv.fitted <- function(x, digits=max(3L, getOption("digits")-3L),
 
 #' @template template_summary
 #' @include class_clv_fitted.R
+#' @importFrom stats coef vcov AIC BIC logLik
+#' @importFrom utils tail
 #' @export
 summary.clv.fitted <- function(object, ...){
   ## The basis structure
@@ -307,6 +314,7 @@ summary.clv.fitted <- function(object, ...){
       warning("For some parameters the standard error could not be calculated.", call. = FALSE)
   }
 
+  # **TODO: ASK Jeff for correct naming
   # t.val <- (all.est.params-0)/se
   z.val <- (all.est.params-0)/se
   # p.val <- 2*pt(q=-abs(t.val), df=nobs(object)-1)
@@ -333,10 +341,6 @@ summary.clv.fitted <- function(object, ...){
 
   # Additional options: Correlation ------------------------------------------------
   res$additional.options <- list("Correlation"=object@estimation.used.correlation)
-  # if(object@estimation.used.correlation)
-  #   res$additional.options <- c(res$additional.options,
-  #                               #unname. cannot store w/o name as is estimated param
-  #                               paste0("   ",unname(object@estimated.param.cor)))
 
   return(res)
 }
@@ -348,6 +352,10 @@ coef.summary.clv.fitted <- function(object, ...){
 }
 
 
+#' @export
+vcov.summary.clv.fitted <- function(object, ...){
+  return(object$vcov)
+}
 
 
 
@@ -367,6 +375,8 @@ coef.summary.clv.fitted <- function(object, ...){
 #' If \code{prediction.end} is the number of periods, the end of the fitting period serves as the reference point from which periods are counted. Only full periods may be specified.
 #' If \code{prediction.end} is omitted or NULL, it defaults to the end of the holdout period.
 #'
+#' @include class_clv_fitted.R
+#' @importFrom stats fitted
 #' @export
 fitted.clv.fitted <- function(object, prediction.end=NULL, verbose=FALSE, ...){
 

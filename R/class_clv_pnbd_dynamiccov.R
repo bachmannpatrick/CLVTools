@@ -27,7 +27,8 @@ clv.pnbd.dynamic.cov <- function(cl, clv.data){
 
   clv.model <- new("clv.model.pnbd.dynamic.cov")
 
-  # Do walks only after inputchecks. (in clv.model.put.estimation.input)
+  # Create walks only after inputchecks
+  #   (do walks in clv.model.put.estimation.input)
 
   # Reuse clv.fitted constructor to ensure proper object creation
   #   a recommended pattern by Martin Morgan on SO
@@ -38,9 +39,10 @@ clv.pnbd.dynamic.cov <- function(cl, clv.data){
 
 # Dyncov cbs also has d_omega for every customer
 pnbd_dyncov_cbs <- function(clv.data){
+
   dt.cbs <- pnbd_cbs(clv.data = clv.data)
 
-  # The CBS for pnbd dyncov also contains d_omega for every customer
+  # The CBS for pnbd dyncov additinoally contains d_omega for every customer
   # d_omega: "= Time difference between the very first purchase (start of the observation period)
   #   and the end of the interval the first purchase is contained in."
   dt.cbs[, d_omega := clv.time.interval.in.number.tu(clv.time=clv.data@clv.time,

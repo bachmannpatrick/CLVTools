@@ -100,7 +100,7 @@
 #'
 #' @export
 clvdata <- function(data.transactions, date.format, time.unit, estimation.split=NULL, name.id="Id", name.date="Date", name.price="Price"){
-  #to silence CRAN notes
+  # silence CRAN notes
   Date <- Price <- Id <- date.first.actual.trans <- date.last.transaction <- x <- previous <- NULL
 
   cl <- match.call()
@@ -163,7 +163,7 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
 
   # clv time -----------------------------------------------------------------------
 
-  # a match should be garantueed as was checked in check_user_data
+  # a match should be garantueed as allowed input was checked in check_user_data
   clv.t <- switch(EXPR   = match.arg(arg = tolower(time.unit),
                                      choices = tolower(clv.time.possible.time.units())),
                   "hours" = clv.time.hours(time.format=date.format),
@@ -175,8 +175,9 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
   # with clv time, can convert transaction data to correct type -------------------------------
   dt.trans[, Id    := .convert_userinput_dataid(id.data = Id)]
   dt.trans[, Date  := clv.time.convert.user.input.to.timepoint(clv.t, user.timepoint = Date)]
+
   if(has.spending){
-    dt.trans[, Price := as.numeric(Price)] # checked already that is numeric
+    dt.trans[, Price := as.numeric(Price)] # already checked that is numeric
     if(dt.trans[Price<0, .N] > 0)
       warning("Some Prices are negative! Some models might not work with this.", call. = FALSE)
   }
@@ -200,10 +201,10 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
   tp.first.transaction <- dt.trans[, min(Date)]
   tp.last.transaction  <- dt.trans[, max(Date)]
 
-  clv.t <- clv.time.set.sample.periods(clv.time=clv.t,
-                                       tp.first.transaction=tp.first.transaction,
-                                       tp.last.transaction=tp.last.transaction,
-                                       user.estimation.end=estimation.split)
+  clv.t <- clv.time.set.sample.periods(clv.time = clv.t,
+                                       tp.first.transaction = tp.first.transaction,
+                                       tp.last.transaction  = tp.last.transaction,
+                                       user.estimation.end  = estimation.split)
 
   if(clv.t@timepoint.estimation.end > dt.trans[, max(Date)])
     stop("Parameter estimation.split needs to indicate a point in the data!", call. = FALSE)
@@ -239,6 +240,7 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
   dt.repeat.trans            <- dt.repeat.trans[!is.na(previous)]
   dt.repeat.trans[, previous := NULL]
 
+  # **TODO: Cross-check with what is done for clv.time aggregation of transactions
   # Works only because all on same Date were aggregated. Otherwise, there could be more than one removed
   # dt.repeat.trans[, is.first.trans := (Date == min(Date), by="Id"]
   # dt.repeat.trans <- dt.trans[is.first.trans == F, c("Id","Date", "Price")]

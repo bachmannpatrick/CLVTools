@@ -5,15 +5,14 @@ setClass(Class = "clv.pnbd", contains = "clv.fitted",
          slots = c(
            cbs = "data.table"),
 
-         # Prototype is labeled not useful anymore,
-         # but still recommended by Hadley / Bioc
+         # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
          prototype = list(
            cbs = data.table()))
 
 
 
 # Convenience constructor to encapsulate all steps for object creation
-#' @include class_clv_data.R
+#' @include class_clv_data.R class_clv_model_pnbd_nocov.R
 clv.pnbd <- function(cl, clv.data){
 
   dt.cbs.pnbd <- pnbd_cbs(clv.data = clv.data)

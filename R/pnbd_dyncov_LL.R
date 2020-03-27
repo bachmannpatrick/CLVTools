@@ -15,7 +15,7 @@ pnbd_dyncov_LL_ind <- function(params, obj){
 #' @importFrom parallel detectCores
 #' @importFrom foreach foreach %dopar%
 pnbd_dyncov_LL <- function(params, obj){
-  # pnbd_LL_DynCovInd_gen <- function(logparams, trans.gammas, life.gammas, cbs, transactions.walks, lifetime.walks){
+  # cran silence
   Num.Walk <- AuxTrans <- Di.Max.Walk <- adj.Max.Walk <- Di.adj.Walk1 <- adj.Walk1 <- A1T <- x <- A1sum <- AuxTrans <- transaction.cov.dyn <- Id <- Bjsum <- Bksum <- AkT <- NULL
   adj.transaction.cov.dyn <- dT <- d <- B1 <- t.x <- BT <- a1 <- akt <- aT <- T.cal <- C1T <- CkT <- adj.lifetime.cov.dyn <- D1 <- DT <- DkT <- b1 <- bkT <- bT <- a1T <- NULL
   b1T <- alpha_1 <- beta_1 <- alpha_2 <- beta_2 <- F2.1 <- F2.2 <- F2.3 <- i <- Ai <- Bi <- ai <- Ci <- Id <- Di <- bi <- log.F0 <- F1 <- F2 <- F3 <- LL <- NULL
@@ -30,11 +30,6 @@ pnbd_dyncov_LL <- function(params, obj){
   s         <- exp(model.params[["log.s"]])
   beta_0    <- exp(model.params[["log.beta"]])
 
-  # lifetime.walks     <- copy(obj@data.walks.life)
-  # transactions.walks <- copy(obj@data.walks.trans)
-
-  # transactions.walks <- lapply(transactions.walks,  setkeyv, c("Id", "Date"))
-  # lifetime.walks     <- lapply(lifetime.walks, setkeyv, c("Id", "Date"))
   for(i in seq_along(obj@data.walks.life))
     setkeyv(obj@data.walks.life[[i]], c("Id", "Date"))
   for(i in seq_along(obj@data.walks.trans))
@@ -43,17 +38,12 @@ pnbd_dyncov_LL <- function(params, obj){
   # Make copy of obj's cbs as will be extensively modified / ie all data saved in
   cbs <- copy(obj@cbs)
 
-#   cbsdata<-data.table(Id=cbs$Id,LL=10000, Akprod=9.999, Bksum=123, DkT=432, Z=4.66)
-# return(cbsdata)
-  ################################################################ COPIED CODE ################################################################
-
   #add num walk to cbs
   cbs[, Num.Walk := obj@data.walks.trans[[1]][AuxTrans==TRUE, Num.Walk]]
   setkeyv(cbs, c("Id", "Num.Walk"))
 
-  # create a single, large data.table
+  # create a single, large data.table ---------------------------------------------------
   #   containing all the data needed for calculation
-  #---------------------------------------------------
 
   # for future: USE SET TO COPY FASTER
 
@@ -100,13 +90,12 @@ pnbd_dyncov_LL <- function(params, obj){
   data.work.life[Num.Walk==1 & AuxTrans==FALSE, Di.Max.Walk:=as.double(NA)]
   data.work.life[Num.Walk==1 & AuxTrans==TRUE, Di.adj.Walk1:=as.double(NA)]
 
-  # Transaction or Purchase Process
-  #---------------------------------------------------
+  # Transaction or Purchase Process ---------------------------------------------------
   cbs[, A1T:= data.work.trans[AuxTrans==T, adj.Walk1]]
 
   cbs[x==0, A1sum:= 0]
-  #calc g1*sum(trans.cov.dyn)[1] + g1*sum(trans.cov.dyn)[2] + g1*sum(trans.cov.dyn)[3]
-  #exp() missing, ie no adj. function
+  # calc g1*sum(trans.cov.dyn)[1] + g1*sum(trans.cov.dyn)[2] + g1*sum(trans.cov.dyn)[3]
+  # exp() missing, ie not adj. function
   cbs[x!=0, A1sum:= rowSums(mapply(function(w,g){w[AuxTrans==F, g* sum(transaction.cov.dyn),by=Id ]$V1}, w=obj@data.walks.trans, g=trans.params ) )]
 
   cbs[, Bjsum:=.pnbd_dyncov_LL_BkSum(data.work.trans = data.work.trans, BkT = F)$Bjsum]
@@ -124,13 +113,11 @@ pnbd_dyncov_LL <- function(params, obj){
   cbs[, akt:= Bjsum + BT + AkT * (t.x + dT + data.work.trans[AuxTrans==TRUE, Num.Walk] - 2)]
 
   cbs[, aT:= Bjsum + BT + (T.cal * AkT)]
-  #--------------------------------------------------- Transaction or Purchase Process
 
 
 
-  # Lifetime Process
-  #---------------------------------------------------
-  # Num.walk in cbs is kxT!
+  # Lifetime Process ---------------------------------------------------
+  #   Num.walk in cbs is kxT!
   cbs[, C1T:= data.work.life[AuxTrans==T, adj.Walk1]]
 
   cbs[, CkT:= data.work.life[AuxTrans==T, adj.lifetime.cov.dyn]]
@@ -144,21 +131,18 @@ pnbd_dyncov_LL <- function(params, obj){
   cbs[, bkT:=DT + CkT*(t.x+dT + Num.Walk - 2)]
 
   cbs[, bT:= DT + T.cal*CkT]
-  #--------------------------------------------------- Lifetime process
 
 
-  # F2
+  # F2 ------------------------------------------------------------------
   #   For Num.Walk == 1: F2 = F2.1
   #   For Num.Walk >  1: F2 = F2.1, F2.2, F2.3
-  #---------------------------------------------------
 
   #Prepare
   cbs[, splus1 := s+1] # used to call hypergeom functions with vectors
   cbs.f2.num.e.1 <- subset(cbs, Num.Walk == 1)
   cbs.f2.num.g.1 <- subset(cbs, Num.Walk > 1)
 
-  # F2 for Num.Walk == 1
-  #---------------------------------------------------
+  # F2 for Num.Walk == 1 ---------------------------------------------------
   cbs.f2.num.e.1[, a1T     :=Bjsum + B1 + T.cal*A1T]
   cbs.f2.num.e.1[, b1T     :=D1+T.cal*C1T]
 
@@ -176,8 +160,7 @@ pnbd_dyncov_LL <- function(params, obj){
 
 
 
-  # F2.1 (only for Num.Walk > 1)
-  #---------------------------------------------------
+  # F2.1 (only for Num.Walk > 1) ---------------------------------------------------
   cbs.f2.num.g.1[, alpha_1:=a1 + (1-dT)*A1T + alpha_0]
   cbs.f2.num.g.1[, beta_1:= (b1 + (1-dT)*C1T + beta_0) * A1T/C1T]
 
@@ -192,8 +175,7 @@ pnbd_dyncov_LL <- function(params, obj){
   }
 
 
-  # F2.2 (only for Num.Walk > 1)
-  #---------------------------------------------------
+  # F2.2 (only for Num.Walk > 1) ---------------------------------------------------
   cbs.f2.num.g.1[, alpha_1:= akt + alpha_0]
   cbs.f2.num.g.1[, beta_1:=  (bkT + beta_0)*AkT/CkT]
 
@@ -208,9 +190,8 @@ pnbd_dyncov_LL <- function(params, obj){
   }
 
 
-  # F2.3 (only for Num.Walk > 1)
-  #---------------------------------------------------
-  #to init for loop and default 0 for all
+  # F2.3 (only for Num.Walk > 1) ---------------------------------------------------
+  # to init for loop and default 0 for all
   cbs.f2.num.g.1[, F2.3:=0]
 
   max.walk <- data.work.life[,max(Num.Walk)]
@@ -221,7 +202,6 @@ pnbd_dyncov_LL <- function(params, obj){
     no.cores <- max(detectCores()-1, 1)
     registerDoParallel(no.cores)
 
-    # for( i in 2:max(cbs.f2.num.g.1$Num.Walk-1)){
     F2.3.vecs <-
       # sapply(2:max(cbs.f2.num.g.1$Num.Walk-1), function(i){
       foreach(i = 2:max(cbs.f2.num.g.1$Num.Walk-1))%dopar%{
@@ -230,16 +210,15 @@ pnbd_dyncov_LL <- function(params, obj){
         work.life.i  <- data.work.life[AuxTrans==T & ((Num.Walk-1) >= i)]
         cbs.i        <- cbs.f2.num.g.1[Num.Walk-1 >= i]
 
-        # Transaction Process
-        #---------------------
+        # Transaction Process ------------------------------------------
         cbs.i[, Ai:= work.trans.i[, get(paste0("adj.Walk", i))]]
         cbs.i[is.na(Ai), Ai:=0]
         cbs.i[, Bi:= .pnbd_dyncov_LL_Bi( data.work.trans.aux = work.trans.i, cbs.t.x = t.x, i = i)]
         cbs.i[, ai:=Bjsum + Bi + Ai*(t.x + dT + (i-2))]
 
 
-        # Lifetime Process
-        #---------------------
+        # Lifetime Process ------------------------------------------
+
         cbs.i[, Ci:=work.life.i[, get(paste0("adj.Walk", i))]]
         cbs.i[is.na(Ci), Ci:=0]
 
@@ -254,8 +233,7 @@ pnbd_dyncov_LL <- function(params, obj){
         cbs.i[, Di:=.pnbd_dyncov_LL_Di(data.work.life = tmp.data.life, i = i)]
         cbs.i[, bi:=Di + Ci*(t.x + dT + (i-2))]
 
-        # Alpha & Beta
-        #---------------------
+        # Alpha & Beta ------------------------------------------------
 
         cbs.i[, alpha_1:=ai + alpha_0]
         cbs.i[, beta_1:=(bi + beta_0)*Ai/Ci]
@@ -268,8 +246,8 @@ pnbd_dyncov_LL <- function(params, obj){
           cbs.i[alpha_1 <  beta_1, F2.3:=(Ai/Ci)^(s) * .hyp.beta.g.alpha(cbs=.SD, r=r, s=s, alpha_0=alpha_0)]
         }
 
-        #write results to separate vector as data.table (cbs.f2.num.g.1)
-        #is manipulated by ref across threads! (ie shared memory)
+        #write results to separate vector because data.table (cbs.f2.num.g.1)
+        # is manipulated by reference across threads! (ie shared memory) what may abort session
 
         res <- rep_len(0, nrow(cbs.f2.num.g.1))
         res[cbs.f2.num.g.1[, .I[Num.Walk-1 >= i]]] <- cbs.i$F2.3 #write at right position
@@ -281,24 +259,23 @@ pnbd_dyncov_LL <- function(params, obj){
 
 
 
-  #we need to put together the results from the multiple cores again:
+  # put together the results from the multiple cores again:
   cbs.f2.num.g.1$F2.3 <- Reduce("+", F2.3.vecs)
 
   #Put F2 results together
-# if(nrow(cbs[Num.Walk == 1])>0)
-if(cbs[, any(Num.Walk == 1)])
-  cbs[Num.Walk==1, `:=`(F2.1=cbs.f2.num.e.1$F2.1,
-                        F2.2=as.numeric(0),
-                        F2.3=as.numeric(0))]
+  if(cbs[, any(Num.Walk == 1)])
+    cbs[Num.Walk==1, `:=`(F2.1=cbs.f2.num.e.1$F2.1,
+                          F2.2=as.numeric(0),
+                          F2.3=as.numeric(0))]
 
-# if(nrow(cbs[Num.Walk > 1])>0)
-if(cbs[, any(Num.Walk > 1)])
-  cbs[Num.Walk >1, `:=`(F2.1=cbs.f2.num.g.1$F2.1,
-                        F2.2=cbs.f2.num.g.1$F2.2,
-                        F2.3=cbs.f2.num.g.1$F2.3)]
+  # if(nrow(cbs[Num.Walk > 1])>0)
+  if(cbs[, any(Num.Walk > 1)])
+    cbs[Num.Walk >1, `:=`(F2.1=cbs.f2.num.g.1$F2.1,
+                          F2.2=cbs.f2.num.g.1$F2.2,
+                          F2.3=cbs.f2.num.g.1$F2.3)]
 
-  # LL
-  #---------------------------------------------------------------------------------------------------------------------
+  # LL -----------------------------------------------------------------------------------------------------
+  #
   #         LL = log(F0)+log((F1 * F2) + F3)
   #
   # We rely on various tricks to improve numerical stability
@@ -394,9 +371,8 @@ if(cbs[, any(Num.Walk > 1)])
   cbs[F2 >  0,  LL     := log.F0 + max.AB  + log(exp(log.F1+log(F2)-max.AB) + exp(log.F3 - max.AB))]
 
 
-  # and then using the Log-Sum-of-Exp (LSE) trick:
-  # Try cheating for stabilty: (very crude code)
-  #-----------------------------------------------------
+  # Try cheating for stabilty: -----------------------------------------------------
+  #   (very crude code)
   if (any(is.infinite(cbs$LL))){ # Checks whether cbs$LL is - or + infinity!
 
     warning(paste('There are', round(sum(is.infinite(cbs$LL))/length(cbs$LL), digits=5)*100,'percent +/- infinity values'))
@@ -410,25 +386,10 @@ if(cbs[, any(Num.Walk > 1)])
       cbs[is.infinite(LL) & sign(LL)==-1 , LL:= - abs(cbs$LL[index])]
       # ...if +infinity set it to largest positive value.
       cbs[is.infinite(LL) & sign(LL)==1, LL:= abs(cbs$LL[index])]
-
     }}
 
-  # if (any(is.na(cbs$LL))){ # Checks whether cbs$LL contains NA
-  #
-  #   warning(paste('There are', round(sum(is.na(cbs$LL))/length(cbs$LL), digits=5)*100,'percent +/- infinity values'))
-  #
-  #   # If we have less than 5 % missing values impute them with the max value we have on the likelihood
-  #   if (sum(is.na(cbs$LL))/length(cbs$LL)<=0.10){
-  #
-  #   #Replace NA with mean LL value
-  #     cbs[is.na(LL), LL:= mean(cbs$LL, na.rm = TRUE)]
-  #
-  #   }}
-  #--------------------------------
-  #----------------------------------------------------- end stability check
 
-  #cbsdata <- cbs[, .("Id", "LL", Akprod=exp(A1sum), "Bksum", "DkT", Zrsx = F1 * F2)]
-  cbsdata<-data.table(Id=cbs$Id,LL=cbs$LL,Akprod=exp(cbs$A1sum), Bksum=cbs$Bksum, DkT=cbs$DkT, Z=cbs$F2)
+  cbsdata <- data.table(Id=cbs$Id,LL=cbs$LL, Akprod=exp(cbs$A1sum), Bksum=cbs$Bksum, DkT=cbs$DkT, Z=cbs$F2)
   setkey(cbsdata,"Id")
 
   return(cbsdata)
@@ -463,6 +424,7 @@ if(cbs[, any(Num.Walk > 1)])
 
   return(adjusted.data)
 }
+
 .calc.adjusted.walks <- function(walks, gammas){
 
   num.walk <- max(walks[[1]]$Num.Walk)
@@ -481,8 +443,10 @@ if(cbs[, any(Num.Walk > 1)])
 .hyp.alpha.ge.beta <- function(cbs, alpha_0, r, s)
 {
   x <- alpha_1 <- beta_1 <- alpha_2 <- beta_2 <- NULL
-  #hyp crashes with empty data.table
+
+  # hyp crashes with empty data.table
   if(nrow(cbs) > 0){
+
     cbs.z <- copy(cbs)
     cbs.z[,z.1 := (alpha_1-beta_1)/alpha_1]
     cbs.z[,z.2 := (alpha_2-beta_2)/alpha_2]
@@ -517,9 +481,9 @@ if(cbs[, any(Num.Walk > 1)])
 #               )
 .hyp.beta.g.alpha <- function(cbs, r, s, alpha_0)
 {
-
   x <- alpha_1 <- beta_1 <- alpha_2 <- beta_2 <- NULL
-  #hyp crashes with empty data.table
+  # hyp crashes with empty data.table
+
   if(nrow(cbs) > 0){
     cbs.z <- copy(cbs)
     cbs.z[,z.1 := (beta_1-alpha_1)/beta_1]

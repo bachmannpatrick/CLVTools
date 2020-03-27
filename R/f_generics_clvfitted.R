@@ -65,4 +65,3 @@ setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(obj=
             check_err_msg(err.msg)
             # nothing to return
           })
-

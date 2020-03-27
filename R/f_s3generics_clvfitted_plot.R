@@ -99,7 +99,7 @@
 #'                  color="blue")
 #' }
 #' @importFrom graphics plot
-#' @include all_generics.R class_clv_fitted.R
+#' @include class_clv_fitted.R
 #' @method plot clv.fitted
 #' @export
 plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FALSE, transactions=TRUE, label=NULL, plot=TRUE, verbose=TRUE,...) {
@@ -244,9 +244,10 @@ setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.fitt
 
 
 
-#' @include all_generics.R class_clv_fitted.R
+#' @include class_clv_fitted.R
 #' @exportMethod plot
 setMethod("plot", signature(x="clv.fitted"), plot.clv.fitted)
+
 
 #' @importFrom ggplot2 ggplot aes geom_line geom_vline labs theme scale_fill_manual guide_legend element_text element_rect element_blank element_line rel
 clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
@@ -263,7 +264,6 @@ clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
   if(clv.data@has.holdout){
     p <- p + geom_vline(xintercept = as.numeric(clv.data@clv.time@timepoint.holdout.start),
                         linetype="dashed", show.legend = FALSE)
-    # p <- p + annotate("text", label="Holdout",  x=obj@date.holdout.start, y=0, hjust=1, vjust=0)
   }
 
   # Variable color and name
@@ -275,10 +275,7 @@ clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
   p <- p + labs(x = "Date", y= "Number of Repeat Transactions", title= paste0(clv.time.tu.to.ly(clv.time=clv.data@clv.time), " tracking plot"),
                 subtitle = paste0("Estimation end: ",  clv.data@clv.time@timepoint.estimation.end))
 
-  # p <- p + geom_text(aes(x=obj@date.estimation.end, y=0.9*data.melted[, max(value)]),
-  #                    label=paste0("Holdout End: ",obj@date.estimation.end), show.legend=F, check_overlap = TRUE)
-
-  p <- p + theme( #legend.position = c(0.8, 0.8),
+  p <- p + theme(
     plot.title = element_text(face = "bold", size = rel(1.5)),
     text = element_text(),
     panel.background = element_blank(),

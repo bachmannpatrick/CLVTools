@@ -1,11 +1,8 @@
-#'@export
-#' @include all_generics.R class_clv_fitted_staticcov.R
+#' @export
+#' @include class_clv_fitted_staticcov.R
 print.clv.fitted.static.cov <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
   # print standard parts
   NextMethod()
-  # also print basic cov information
-  # cat("\nLifetime covariates: ",    paste(clv.data.get.names.cov.life(x@clv.data, sep=","), "\n"))
-  # cat("Transaction covariates: ", paste(clv.data.get.names.cov.trans(x@clv.data), sep=","))
 
   # options used
   cat("Constraints:    ", x@estimation.used.constraints,    "\n")
@@ -24,18 +21,13 @@ setMethod(f = "show", signature = signature(object="clv.fitted.static.cov"), def
 #' @rdname summary.clv.fitted
 #' @include class_clv_data_staticcovariates.R
 #' @export
-#' @keywords internal
 summary.clv.fitted.static.cov <- function(object, ...){
 
   # Get basic structure from nocov
   res <- NextMethod()
   class(res) <- c("summary.clv.fitted.static.cov", class(res))
 
-  # Add static covariate stuff ontop
-  # res$names.cov.data.trans <- clv.data.get.names.cov.trans(object@clv.data)
-  # res$names.cov.data.life  <- clv.data.get.names.cov.life(object@clv.data)
-
-  # Further optimization options ---------------------------------------------------
+  # Add further optimization options -----------------------------------------------
   #   Regularization
   #     lambdas
   #   Constraint covs
@@ -61,7 +53,7 @@ summary.clv.fitted.static.cov <- function(object, ...){
 
 #' @importFrom stats coef na.omit setNames
 #' @importFrom optimx coef<-
-#' @include class_clv_fitted.R class_clv_fitted_staticcov.R all_generics.R f_s3generics_clvfitted.R
+#' @include class_clv_fitted_staticcov.R
 #' @export
 coef.clv.fitted.static.cov <- function(object, complete = TRUE, ...){
 
@@ -99,7 +91,6 @@ coef.clv.fitted.static.cov <- function(object, complete = TRUE, ...){
 
 
 
-
   # Put together in correct order ------------------------------------------------------------------------------------------
   #   relevant order is as in optimx so that coef output is in the same order as vcov() / hessian
   #   it should also be possible through input structure to optimx (ie c(model, cov)) but guarantee
@@ -109,7 +100,7 @@ coef.clv.fitted.static.cov <- function(object, complete = TRUE, ...){
 
   # mapping for original to prefixed
   #   content: original names for model and correlation, prefixed names for cov params
-  #   names: prefixed names
+  #   names:   prefixed names
 
   # Content + transformed names for model and cor
   #   append correlation param, if exists and should be returned. If not included here, it is removed from nocov param vec
@@ -144,11 +135,3 @@ coef.clv.fitted.static.cov <- function(object, complete = TRUE, ...){
   # return in correct order
   return(params.all[names.original.named.prefixed.all])
 }
-
-
-#' # S4 method to forward to S3 method
-#' #' @rdname coef
-#' #' @include all_generics.R class_clv_fitted_staticcov.R
-#' #' @exportMethod coef
-#' setMethod(f = "coef", signature = signature(object="clv.fitted.static.cov"), coef.clv.fitted.static.cov)
-

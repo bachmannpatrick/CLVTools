@@ -25,17 +25,16 @@ pnbd_dyncov_makewalks <-function(clv.data){
   #do not restrain covariates to estimation period here - needed longer for interval building
 
 
-  # Include AuxTrans for all customers
+  # Include AuxTrans for all customers -------------------------------
   #   Add AuxTrans on Estimation end date, 1 for every customer
   #   Needs to be done before removing the first transactions
   # ** This may lead to 2 transaction on the same date when last trans is on estimation.end !!?? **
-  # ------------------------------------------------------------------
 
   # Add column for all real transactions first
   trans.dt[, AuxTrans:=FALSE]
 
-  #Add artificial aux transactions
-  # NEW IN cleanup-dyncov --------------------------------------------
+  #Add artificial aux transactions ------------------------------------
+  # NEW IN cleanup-dyncov
   # CONVERT DATES TO POSIXCT!
   if(is(clv.data@clv.time, "clv.time.date")){
     dt.aux.transactions <- data.table( Id   = trans.dt[,unique(Id)],
@@ -46,16 +45,16 @@ pnbd_dyncov_makewalks <-function(clv.data){
                                        Date = clv.data@clv.time@timepoint.estimation.end,
                                        AuxTrans=TRUE)
   }
+
   #Append dt.aux.transactions to ordinary transactions
   trans.dt          <- rbindlist(list(trans.dt, dt.aux.transactions), use.names = TRUE)
 
 
-  # Temporary unique transaction Id
+  # Temporary unique transaction Id ----------------------------------------
   #   - Is needed to subset by
   #   - Will be written to every covariate
   #     between transactions to identicate
   #       which covs belongs to which trans!
-  # ------------------------------------------------------------------
 
   #add unique transaction id
   trans.dt[, Mapping.Transaction.Id:=seq.int(from=1, to=nrow(trans.dt))]
@@ -67,9 +66,8 @@ pnbd_dyncov_makewalks <-function(clv.data){
 
 
 
-  # Create Walks for transaction covariate
+  # Create Walks for transaction covariate --------------------------------
   #   Only if there are trans covs
-  # ------------------------------------------------------------------
 
   if(!is.null(names.cov.trans)){
     # create actual walks
@@ -82,13 +80,12 @@ pnbd_dyncov_makewalks <-function(clv.data){
 
 
 
-  # Create Walks for lifetime covariate
+  # Create Walks for lifetime covariate -----------------------------------
   #   Only if there are life covs
-  # ------------------------------------------------------------------
 
   if(!is.null(names.cov.life)){
 
-    # Only 2 Transactions per customer are relevant
+    # Only 2 Transactions per customer are relevant -----------------------
     #
     #   But transaction table needs these trans:
     #     - (1) AuxTrans
@@ -99,15 +96,15 @@ pnbd_dyncov_makewalks <-function(clv.data){
     #   (3) will be removed in CreateWalk - only 2 Trans left
     #   As (2) and (3) can be the same, but (2) may not be removed in
     #      CreateWalks, set its "is.first.trans" = FALSE (=will not remove)
-    # ------------------------------------------------------------------
 
-    #Date=max(Date) only correct if Date<=date.estimation.end (!)
+    # Date=max(Date) only correct if Date<=date.estimation.end (!)
     if(is(clv.data@clv.time, "clv.time.date")){
       before.aux <- trans.dt[AuxTrans == FALSE & Date <= floor_date(force_tz(as.POSIXct.Date(clv.data@clv.time@timepoint.estimation.end), tzone = "UTC"), unit="day"), .SD[Date == max(Date)], by=Id]
     }else{
       before.aux <- trans.dt[AuxTrans == FALSE & Date <= clv.data@clv.time@timepoint.estimation.end, .SD[Date == max(Date)], by=Id]
     }
-    #do not remove in CreateWalks, in case it is the same as the very first trans (1)
+
+    # do not remove in CreateWalks, in case it is the same as the very first trans (1)
     before.aux[, is.first.trans := FALSE]
 
     life.cov.trans <- rbindlist(list( trans.dt[is.first.trans == TRUE],  #(3)

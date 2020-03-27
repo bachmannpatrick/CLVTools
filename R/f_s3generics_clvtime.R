@@ -1,6 +1,7 @@
-#' @export
 #' @rdname summary.clv.time
+#' @include class_clv_time.R
 #' @keywords internal
+#' @export
 print.clv.time <- function(x, digits=max(3L, getOption("digits")-3L),
                            signif.stars = getOption("show.signif.stars"), ...){
 
@@ -16,15 +17,15 @@ print.clv.time <- function(x, digits=max(3L, getOption("digits")-3L),
                    "  " ="",
                    "Holdout start"     = ifelse(has.holdout, as.character(x@timepoint.holdout.start), "-"),
                    "Holdout end"       = ifelse(has.holdout, as.character(x@timepoint.holdout.end), "-"),
-                   "Holdout length"    = ifelse(has.holdout, paste0(format(x@holdout.period.in.tu, nsmall=nsmall), " ", x@name.time.unit), "-")
-  ), nsmall=nsmall)
+                   "Holdout length"    = ifelse(has.holdout, paste0(format(x@holdout.period.in.tu, nsmall=nsmall), " ", x@name.time.unit), "-")),
+              nsmall=nsmall)
 
   cat("\n")
 
   invisible(x)
 }
 
-#' @include all_generics.R
+#' @include class_clv_time.R
 #' @importFrom methods show
 #' @export
 setMethod(f = "show", signature = signature(object="clv.time"), definition = function(object){

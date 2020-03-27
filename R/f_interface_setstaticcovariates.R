@@ -1,3 +1,9 @@
+#' @exportMethod SetStaticCovariates
+setGeneric(name = "SetStaticCovariates",  def = function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id")
+  standardGeneric("SetStaticCovariates"))
+
+
+
 #' @template template_setstaticcov
 #' @aliases SetStaticCovariates SetStaticCovariates,clv.data-method
 #' @include all_generics.R class_clv_data.R class_clv_data_staticcovariates.R
