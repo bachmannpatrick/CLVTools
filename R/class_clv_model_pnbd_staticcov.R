@@ -11,6 +11,7 @@ setClass(Class = "clv.model.pnbd.static.cov", contains = "clv.model.pnbd.no.cov"
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
 
+# .clv.model.check.input.args ------------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
 setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.pnbd.static.cov"), definition =
             function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose,
@@ -31,22 +32,25 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
   # Nothing to return
 })
 
+# . clv.model.put.estimation.input ------------------------------------------------------------------------------------------------------------
 #   Use pnbd.no.cov methods, dont need to overwrite
 # setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model.pnbd.static.cov"), definition = function(clv.model, clv.fitted, ...){
 #   return(callNextMethod())
 # })
 
+# . clv.model.transform.start.params.cov ------------------------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.transform.start.params.cov", signature = signature(clv.model="clv.model.pnbd.static.cov"), definition = function(clv.model, start.params.cov){
   # no transformation needed
   return(start.params.cov)
 })
 
+# . clv.model.backtransform.estimated.params.cov -----------------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.backtransform.estimated.params.cov", signature = signature(clv.model="clv.model.pnbd.static.cov"), definition = function(clv.model, prefixed.params.cov){
   # no transformation needed
   return(prefixed.params.cov)
 })
 
-
+# . clv.model.prepare.optimx.args -----------------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.pnbd.static.cov"),
   definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
 
@@ -72,8 +76,7 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
   return(optimx.args)
 })
 
-
-
+# . clv.model.vcov.jacobi.diag -----------------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv.model.pnbd.static.cov"),
 definition = function(clv.model, clv.fitted, prefixed.params){
   # Get corrections from nocov model
@@ -95,9 +98,9 @@ definition = function(clv.model, clv.fitted, prefixed.params){
   return(m.diag.model)
 })
 
-
+# . clv.model.predict.clv -----------------------------------------------------------------------------------------------------
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.static.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor,verbose){
-
+  # cran silence
   CET <- x <- t.x <- T.cal <- PAlive <- DERT <- NULL
 
   # Covariates as matrix, if there is a covariate
@@ -153,7 +156,7 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.static.co
   return(dt.prediction)
 })
 
-
+# . clv.model.expectation -----------------------------------------------------------------------------------------------------
 setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.static.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
 
   r<-s<-alpha_i<-beta_i <- T.cal <- t_i<- period.first.trans <- NULL

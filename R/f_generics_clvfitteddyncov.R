@@ -1,3 +1,4 @@
+# . clv.controlflow.plot.check.inputs ------------------------------------------------------------------------
 setMethod("clv.controlflow.plot.check.inputs", signature(obj="clv.fitted.dynamic.cov"), function (obj, prediction.end, cumulative, plot, label.line, verbose) {
   # No nocov /staticcov checks (no need to call super method)
   err.msg <- c()
@@ -14,7 +15,7 @@ setMethod("clv.controlflow.plot.check.inputs", signature(obj="clv.fitted.dynamic
 })
 
 
-
+# . clv.controlflow.check.newdata ------------------------------------------------------------------------
 setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.dynamic.cov"), definition = function(clv.fitted, user.newdata, prediction.end){
   # Do static cov (and hence also nocov) inputchecks first for newdata
   callNextMethod()
@@ -42,7 +43,7 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.dyna
 })
 
 
-
+# . clv.controlflow.predict.check.inputs ------------------------------------------------------------------------
 setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(obj="clv.fitted.dynamic.cov"), function(obj, prediction.end, continuous.discount.factor, predict.spending, verbose){
   # Do static cov (and hence also nocov) inputchecks first
   #   After this, newdata is basically ok

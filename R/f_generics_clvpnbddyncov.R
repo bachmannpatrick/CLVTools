@@ -1,3 +1,4 @@
+# . clv.controlflow.estimate.generate.start.params ------------------------------------------------------------------------------
 setMethod("clv.controlflow.estimate.generate.start.params", signature = signature(obj="clv.pnbd.dynamic.cov"),definition = function(obj,
                                                                                                                                     start.params.model,
                                                                                                                                     start.params.life,

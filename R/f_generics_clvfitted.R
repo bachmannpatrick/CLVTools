@@ -1,9 +1,11 @@
+# . clv.controlflow.plot.check.inputs ------------------------------------------------------------------------
 setMethod("clv.controlflow.plot.check.inputs", signature(obj="clv.fitted"), function(obj, prediction.end, cumulative, plot, label.line, verbose){
   # Empty fallback method.
   #   clv.controlflow.plot.check.inputs is needed for fitted.dyncov models only to check dyncov length
 })
 
 
+# . clv.controlflow.check.newdata ------------------------------------------------------------------------
 setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted"), definition = function(clv.fitted, user.newdata, prediction.end){
   err.msg <- c()
 
@@ -32,12 +34,13 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted"), d
 })
 
 
+# . clv.controlflow.predict.set.prediction.params ------------------------------------------------------------------------
 setMethod(f = "clv.controlflow.predict.set.prediction.params", signature = signature(obj="clv.fitted"), definition = function(obj){
   obj@prediction.params.model <- coef(obj)[obj@clv.model@names.original.params.model]
   return(obj)
 })
 
-
+# . clv.controlflow.predict.check.inputs ------------------------------------------------------------------------
 setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(obj="clv.fitted"),
           definition = function(obj, prediction.end, continuous.discount.factor,predict.spending, verbose){
             err.msg <- c()

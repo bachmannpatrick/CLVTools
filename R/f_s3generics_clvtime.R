@@ -1,3 +1,9 @@
+#' @include class_clv_time.R
+#' @importFrom methods show
+#' @export
+setMethod(f = "show", signature = signature(object="clv.time"), definition = function(object){
+  print(x=object)})
+
 #' @rdname summary.clv.time
 #' @include class_clv_time.R
 #' @keywords internal
@@ -24,12 +30,6 @@ print.clv.time <- function(x, digits=max(3L, getOption("digits")-3L),
 
   invisible(x)
 }
-
-#' @include class_clv_time.R
-#' @importFrom methods show
-#' @export
-setMethod(f = "show", signature = signature(object="clv.time"), definition = function(object){
-  print(x=object)})
 
 
 #' @template template_summary_clvtime

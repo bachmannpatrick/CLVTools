@@ -1,3 +1,4 @@
+# . clv.controlflow.estimate.check.inputs ------------------------------------------------------------------------------
 setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(obj="clv.fitted.static.cov"), definition = function(obj,  start.params.model, use.cor, start.param.cor, optimx.args, # clv.fitted input args
                                                                                                                                  verbose,
                                                                                                                                  names.cov.life, names.cov.trans,
@@ -50,7 +51,7 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(obj
   #   without ... in clv.fitted.static.cov estimate not possible
 })
 
-
+# . clv.controlflow.estimate.put.inputs ------------------------------------------------------------------------------
 setMethod("clv.controlflow.estimate.put.inputs", signature = signature(obj="clv.fitted.static.cov"), definition = function(obj, cl, reg.lambdas, use.cor, names.cov.constr, names.cov.life, names.cov.trans, ...){
   # clv.fitted put inputs
   obj <- callNextMethod()
@@ -126,7 +127,7 @@ setMethod("clv.controlflow.estimate.put.inputs", signature = signature(obj="clv.
 })
 
 
-
+# . clv.controlflow.estimate.generate.start.params ------------------------------------------------------------------------------
 setMethod("clv.controlflow.estimate.generate.start.params", signature = signature(obj="clv.fitted.static.cov"),
           # original signature: obj, start.params.model,start.param.cor,
           definition = function(obj,
@@ -200,6 +201,7 @@ setMethod("clv.controlflow.estimate.generate.start.params", signature = signatur
           })
 
 
+# . clv.controlflow.estimate.prepare.optimx.args ------------------------------------------------------------------------------
 setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(obj="clv.fitted.static.cov"),
           def=function(obj, start.params.all){
 

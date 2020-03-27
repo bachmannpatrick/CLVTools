@@ -11,13 +11,6 @@ print.clv.fitted.static.cov <- function(x, digits = max(3L, getOption("digits") 
   invisible(x)
 }
 
-#' @include all_generics.R class_clv_fitted_staticcov.R
-#' @importFrom methods show
-#' @export
-setMethod(f = "show", signature = signature(object="clv.fitted.static.cov"), definition = function(object){
-  print(x=object)})
-
-
 #' @rdname summary.clv.fitted
 #' @include class_clv_data_staticcovariates.R
 #' @export
@@ -135,3 +128,10 @@ coef.clv.fitted.static.cov <- function(object, complete = TRUE, ...){
   # return in correct order
   return(params.all[names.original.named.prefixed.all])
 }
+
+
+#' @include all_generics.R class_clv_fitted_staticcov.R
+#' @importFrom methods show
+#' @export
+setMethod(f = "show", signature = signature(object="clv.fitted.static.cov"), definition = function(object){
+  print(x=object)})

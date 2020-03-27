@@ -2,6 +2,19 @@
 setGeneric(name = "SetDynamicCovariates",  def = function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id", name.date="Date")
   standardGeneric("SetDynamicCovariates"))
 
+
+#' @include class_clv_data_staticcovariates.R
+setMethod(f = "SetDynamicCovariates", signature = signature(clv.data="clv.data.static.covariates"), function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id", name.date="Date"){
+  stop("Cannot set dynamic covariates because this object has covariates set already!", call. = FALSE)
+})
+
+#' @include class_clv_data_dynamiccovariates.R
+setMethod(f = "SetDynamicCovariates", signature = signature(clv.data="clv.data.dynamic.covariates"), function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id", name.date="Date"){
+  stop("Cannot set dynamic covariates because this object has covariates set already!", call. = FALSE)
+})
+
+
+
 #' @include class_clv_data.R
 #' @template template_setdynamiccov
 #' @aliases SetDynamicCovariates SetDynamicCovariates,clv.data-method
@@ -167,16 +180,4 @@ setMethod(f = "SetDynamicCovariates", signature = signature(clv.data="clv.data")
                                      data.cov.trans = data.cov.trans,
                                      names.cov.data.life = names.cov.life,
                                      names.cov.data.trans = names.cov.trans))
-})
-
-
-
-#' @include class_clv_data_staticcovariates.R
-setMethod(f = "SetDynamicCovariates", signature = signature(clv.data="clv.data.static.covariates"), function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id", name.date="Date"){
-  stop("Cannot set dynamic covariates because this object has covariates set already!", call. = FALSE)
-})
-
-#' @include class_clv_data_dynamiccovariates.R
-setMethod(f = "SetDynamicCovariates", signature = signature(clv.data="clv.data.dynamic.covariates"), function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id", name.date="Date"){
-  stop("Cannot set dynamic covariates because this object has covariates set already!", call. = FALSE)
 })

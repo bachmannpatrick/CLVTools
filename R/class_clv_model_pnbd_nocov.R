@@ -21,11 +21,12 @@ setClass(Class = "clv.model.pnbd.no.cov", contains = "clv.model",
                                     # Do not perform starttests because it checks the scales with max(logpar)-min(logpar)
                                     #   but all standard start parameters are <= 0, hence there are no logpars what
                                     #   produces a warning
-                                    starttests = FALSE))
-         ))
+                                    starttests = FALSE))))
 
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
+
+# .clv.model.check.input.args -----------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
 setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...){
   # Have to be > 0 as will be logged
@@ -37,11 +38,13 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
 })
 
 
+# .clv.model.put.estimation.input --------------------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, verbose, ...){
   # nothing to put specifically for this model
   return(clv.fitted)
 })
 
+# .clv.model.transform.start.params.model --------------------------------------------------------------------------------------------------------
 #' @importFrom stats setNames
 setMethod("clv.model.transform.start.params.model", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, original.start.params.model){
   # Log all user given or default start params
@@ -49,12 +52,14 @@ setMethod("clv.model.transform.start.params.model", signature = signature(clv.mo
                   clv.model@names.prefixed.params.model))
 })
 
+# .clv.model.backtransform.estimated.params.model --------------------------------------------------------------------------------------------------------
 #' @importFrom stats setNames
 setMethod("clv.model.backtransform.estimated.params.model", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, prefixed.params.model){
   # exp all prefixed params
   return(exp(prefixed.params.model[clv.model@names.prefixed.params.model]))
 })
 
+# .clv.model.prepare.optimx.args --------------------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
   # Also model optimization settings should go here
 
@@ -75,6 +80,7 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
   return(optimx.args)
 })
 
+# .clv.model.vcov.jacobi.diag --------------------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, prefixed.params){
 
   # Jeff:
@@ -129,7 +135,7 @@ setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv
   return(m.diag)
 })
 
-
+# .clv.model.put.newdata --------------------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, verbose){
 
   # clv.data in clv.fitted is already replaced with newdata here
@@ -139,6 +145,7 @@ setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.mo
   return(clv.fitted)
 })
 
+# .clv.model.cor.to.m --------------------------------------------------------------------------------------------------------
 setMethod(f="clv.model.cor.to.m", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, prefixed.params.model, param.cor){
 
   .cor.part <- function(params){
@@ -177,6 +184,7 @@ setMethod(f="clv.model.m.to.cor", signature = signature(clv.model="clv.model.pnb
 })
 
 
+# .clv.model.predict.clv --------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.no.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
   Id <- x <- t.x <- T.cal <-  PAlive <- CET <- DERT <- NULL # cran silence
@@ -217,7 +225,7 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.no.cov"),
   return(dt.prediction)
 })
 
-
+# . clv.model.expectation --------------------------------------------------------------------------------------------------------
 setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.no.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
 
   r <- s <- alpha_i <- beta_i <- date.first.repeat.trans<- date.first.actual.trans <- T.cal <- t_i<- period.first.trans<-NULL

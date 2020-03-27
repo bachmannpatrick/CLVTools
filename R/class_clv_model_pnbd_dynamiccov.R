@@ -10,7 +10,7 @@ setClass(Class = "clv.model.pnbd.dynamic.cov", contains = "clv.model.pnbd.static
 
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
-
+# . clv.model.put.estimation.input ------------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, verbose, ...){
   # Create walks - they are specific to the pnbd dyncov model
 
@@ -30,6 +30,7 @@ setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model=
 
 
 # Override static cov implementation
+# . clv.model.prepare.optimx.args ------------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.pnbd.dynamic.cov"),
           definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
 
@@ -50,6 +51,7 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
           })
 
 
+# . clv.model.put.optimx.output ------------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.put.optimx.output", signature = signature(clv.model="clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, res.optimx){
   # Estimate again at found values to get LL.data (of last method used)
   #   ** or is this part of plot/predict only??
@@ -81,6 +83,7 @@ setMethod(f = "clv.model.put.optimx.output", signature = signature(clv.model="cl
 })
 
 
+# . clv.model.put.newdata ------------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, verbose){
   # do nocov preparations (new cbs only)
   clv.fitted <- callNextMethod()
@@ -118,6 +121,7 @@ setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.mo
 })
 
 
+# . clv.model.predict.clv ------------------------------------------------------------------------------------------------
 #' @include all_generics.R
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.dynamic.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
 
@@ -159,6 +163,7 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.dynamic.c
 })
 
 
+# . clv.model.expectation ------------------------------------------------------------------------------------------------
 #' @include all_generics.R class_clv_model_pnbd_dynamiccov.R
 setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.dynamic.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
   return(pnbd_dyncov_expectation(clv.fitted=clv.fitted, dt.expectation.seq=dt.expectation.seq, verbose=verbose))

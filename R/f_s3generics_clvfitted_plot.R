@@ -220,35 +220,6 @@ plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FA
   return(clv.controlflow.plot.make.plot(dt.data = dt.plot, clv.data = x@clv.data, line.colors = line.colors))
 }
 
-
-setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.fitted"), definition = function(obj, dt.expectation.seq, cumulative, verbose){
-
-  # Set prediction params from coef()
-  obj <- clv.controlflow.predict.set.prediction.params(obj=obj)
-
-  #   Pass copy of expectation table file becase will be modified and contain column named expecation
-  dt.model.expectation <- clv.model.expectation(clv.model=obj@clv.model, clv.fitted=obj, dt.expectation.seq=copy(dt.expectation.seq),
-                                                verbose = verbose)
-
-  # include all from y to exend if predicting beyond actual transaction
-  dt.model.expectation <- dt.model.expectation[, c("period.first", "expectation")] # Only the expectation data
-
-  if(cumulative)
-    dt.model.expectation[, expectation := cumsum(expectation)]
-
-  # add expectation to plot data
-  #   name columns by model
-  dt.expectation.seq[dt.model.expectation, expectation := i.expectation,on = "period.first"]
-  return(dt.expectation.seq)
-})
-
-
-
-#' @include class_clv_fitted.R
-#' @exportMethod plot
-setMethod("plot", signature(x="clv.fitted"), plot.clv.fitted)
-
-
 #' @importFrom ggplot2 ggplot aes geom_line geom_vline labs theme scale_fill_manual guide_legend element_text element_rect element_blank element_line rel
 clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
 
@@ -299,3 +270,29 @@ clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
   return(p)
 }
 
+# . clv.controlflow.plot.get.data ---------------------------------------------------------------
+setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.fitted"), definition = function(obj, dt.expectation.seq, cumulative, verbose){
+
+  # Set prediction params from coef()
+  obj <- clv.controlflow.predict.set.prediction.params(obj=obj)
+
+  #   Pass copy of expectation table file becase will be modified and contain column named expecation
+  dt.model.expectation <- clv.model.expectation(clv.model=obj@clv.model, clv.fitted=obj, dt.expectation.seq=copy(dt.expectation.seq),
+                                                verbose = verbose)
+
+  # include all from y to exend if predicting beyond actual transaction
+  dt.model.expectation <- dt.model.expectation[, c("period.first", "expectation")] # Only the expectation data
+
+  if(cumulative)
+    dt.model.expectation[, expectation := cumsum(expectation)]
+
+  # add expectation to plot data
+  #   name columns by model
+  dt.expectation.seq[dt.model.expectation, expectation := i.expectation,on = "period.first"]
+  return(dt.expectation.seq)
+})
+
+
+#' @include class_clv_fitted.R
+#' @exportMethod plot
+setMethod("plot", signature(x="clv.fitted"), definition = plot.clv.fitted)

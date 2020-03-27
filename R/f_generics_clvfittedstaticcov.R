@@ -1,3 +1,4 @@
+# . clv.controlflow.predict.set.prediction.params ------------------------------------------------------------------------
 setMethod(f = "clv.controlflow.predict.set.prediction.params", signature = signature(obj="clv.fitted.static.cov"), definition = function(obj){
   # Get no cov model params
   obj <- callNextMethod()
@@ -50,7 +51,7 @@ setMethod(f = "clv.controlflow.predict.set.prediction.params", signature = signa
 })
 
 
-
+# . clv.controlflow.check.newdata ------------------------------------------------------------------------------
 setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.static.cov"), definition = function(clv.fitted, user.newdata, prediction.end){
   # Do nocov newdata checks first
   #   newdata fulfills all basic properties after this
@@ -68,9 +69,3 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.stat
 
   check_err_msg(err.msg)
 })
-
-
-
-
-
-

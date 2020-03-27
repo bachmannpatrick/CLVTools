@@ -33,3 +33,10 @@ print.summary.clv.data.static.covariates <- function(x, digits=max(3L, getOption
 
   invisible(x)
 }
+
+
+#' @importFrom methods show
+#' @include class_clv_data_staticcovariates.R
+#' @export
+setMethod(f = "show", signature = signature(object="clv.data.static.covariates"), definition = function(object){
+  print(x=object)})

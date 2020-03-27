@@ -67,26 +67,6 @@ print.clv.data.dynamic.covariates <- function(x, digits = max(3L, getOption("dig
 }
 
 
-
-#' @include class_clv_data.R
-#' @importFrom methods show
-#' @export
-setMethod(f = "show", signature = signature(object="clv.data"), definition = function(object){
-  print(x=object)})
-
-#' @importFrom methods show
-#' @include class_clv_data_staticcovariates.R
-#' @export
-setMethod(f = "show", signature = signature(object="clv.data.static.covariates"), definition = function(object){
-  print(x=object)})
-
-#' @importFrom methods show
-#' @include class_clv_data_dynamiccovariates.R
-#' @export
-setMethod(f = "show", signature = signature(object="clv.data.dynamic.covariates"), definition = function(object){
-  print(x=object)})
-
-
 #' @template template_summary_data
 #' @export
 summary.clv.data <- function(object, ...){
@@ -129,5 +109,12 @@ print.summary.clv.data <- function(x, digits=max(3L, getOption("digits")-3L),
   invisible(x)
 }
 
+
+
+#' @include class_clv_data.R
+#' @importFrom methods show
+#' @export
+setMethod(f = "show", signature = signature(object="clv.data"), definition = function(object){
+  print(x=object)})
 
 
