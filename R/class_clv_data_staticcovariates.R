@@ -27,6 +27,7 @@ setClass(Class = "clv.data.static.covariates", contains = "clv.data",
            names.cov.data.life  = "character",
            names.cov.data.trans = "character"),
 
+         # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
          prototype = list(
            data.cov.life           = data.table(),
            data.cov.trans          = data.table(),

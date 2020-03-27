@@ -2,6 +2,9 @@
 #' @include class_clv_model_basestrategy.R class_clv_model_pnbd_nocov.R class_clv_model_pnbd_staticcov.R
 setClass(Class = "clv.model.pnbd.dynamic.cov", contains = "clv.model.pnbd.static.cov",
          slots = list(start.param.cov = "numeric"),
+
+         # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
+         #  init with model defaults
          prototype = list(start.param.cov = 1,
                           # New model defaults
                           optimx.defaults  = list(method = "Nelder-Mead",

@@ -9,8 +9,7 @@ setClass(Class = "clv.pnbd.dynamic.cov", contains = "clv.fitted.dynamic.cov",
 
            LL.data          = "data.table"),
 
-         # Prototype is labeled not useful anymore,
-         # but still recommended by Hadley / Bioc
+         # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
          prototype = list(
            cbs = data.table(),
            data.walks.life  = list(),

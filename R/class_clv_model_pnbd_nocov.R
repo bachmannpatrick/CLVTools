@@ -4,7 +4,8 @@
 setClass(Class = "clv.model.pnbd.no.cov", contains = "clv.model",
          # no additional slots for pnbd base model
          slots = list(),
-         # init with model defaults
+         # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
+         #  init with model defaults
          prototype = list(
            name.model                  = "Pareto NBD Standard",
            names.original.params.model = c(r="r", alpha="alpha", s="s", beta="beta"),

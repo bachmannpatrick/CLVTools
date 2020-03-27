@@ -51,6 +51,7 @@ setClass(Class = "clv.fitted.static.cov", contains = "clv.fitted", #c("clv.fitte
                    prediction.params.life  = "numeric",
                    prediction.params.trans = "numeric"),
 
+         # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
          prototype = list(
            estimation.used.constraints      = logical(),
 

@@ -34,8 +34,7 @@ setClass(Class = "clv.data",
 
            has.holdout    = "logical"),
 
-         # Prototype is labeled not useful anymore,
-         # but still recommended by Hadley / Bioc
+         # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
          prototype = list(
            data.transactions  = data.table(),
            data.repeat.trans  = data.table(),
