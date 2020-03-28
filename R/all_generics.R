@@ -104,6 +104,12 @@ setGeneric(name="clv.model.backtransform.estimated.params.model", def=function(c
 setGeneric(name="clv.model.put.optimx.output", def=function(clv.model, clv.fitted, res.optimx)
   standardGeneric("clv.model.put.optimx.output"))
 
+setGeneric(name="clv.model.m.to.cor", def = function(clv.model, prefixed.params.model, param.m)
+  standardGeneric("clv.model.m.to.cor"))
+
+setGeneric(name="clv.model.cor.to.m", def = function(clv.model, prefixed.params.model, param.cor)
+  standardGeneric("clv.model.cor.to.m"))
+
 # .. Predict ----------------------------------------------------------------------------------------------------------------------
 # Predict clv per model
 
@@ -120,7 +126,6 @@ setGeneric(name="clv.model.vcov.jacobi.diag", def=function(clv.model, clv.fitted
 
 # .. Newdata ---------------------------------------------------------------------------------------------------------------
 # Do the steps necessary to integrate user newdata in the fitted model (ie do cbs etc)
-# **TODO: Add default model strategy for this method
 setGeneric(name="clv.model.put.newdata", def=function(clv.model, clv.fitted, user.newdata, verbose)
   standardGeneric("clv.model.put.newdata"))
 
@@ -136,16 +141,6 @@ setGeneric("clv.model.transform.start.params.cov", def = function(clv.model, sta
 # Transform prefixed params to original scale
 setGeneric(name="clv.model.backtransform.estimated.params.cov", def=function(clv.model, prefixed.params.cov)
   standardGeneric("clv.model.backtransform.estimated.params.cov"))
-
-
-
-# Function to reduce the covariates in the object to the ones named by the user when calling estimate
-# - not used, yet
-setGeneric(name="clv.model.m.to.cor", def = function(clv.model, prefixed.params.model, param.m)
-  standardGeneric("clv.model.m.to.cor"))
-
-setGeneric(name="clv.model.cor.to.m", def = function(clv.model, prefixed.params.model, param.cor)
-  standardGeneric("clv.model.cor.to.m"))
 
 
 # clv.time ----------------------------------------------------------------------------------------------------

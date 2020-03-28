@@ -18,67 +18,105 @@ setClass(Class = "clv.model", contains = "VIRTUAL",
 
 # . clv.model.check.input.args -----------------------------------------------------------------------------
 setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...){
-  if(length(list(...)) > 0)
-    warning("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
+  # Example:
+  # if(length(list(...)) > 0)
+  #   warning("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
+  stop("The method clv.model.check.input.args has not been implemented by this model!")
 })
 
 # . clv.model.put.estimation.input -----------------------------------------------------------------------------
 setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, verbose, ...){
-  # do nothing
-  return(clv.fitted)
-})
-
-# . clv.model.prepare.optimx.args -----------------------------------------------------------------------------
-setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
-  stop("The method clv.model.prepare.optimx.args needs to be implemented for all models!")
+  # Example: do nothing
+  # return(clv.fitted)
+  stop("The method clv.model.put.estimation.input has not been implemented by this model!")
 })
 
 # . clv.model.transform.start.params.model -----------------------------------------------------------------------------
 setMethod("clv.model.transform.start.params.model", signature = signature(clv.model="clv.model"), definition = function(clv.model, original.start.params.model){
-  # return start params as given
-  return(original.start.params.model)
+  # Example: return start params as given
+  # return(original.start.params.model)
+  stop("The method clv.model.transform.start.params.model has not been implemented by this model!")
 })
+
 
 # . clv.model.backtransform.estimated.params.model ---------------------------------------------------------------------
 setMethod("clv.model.backtransform.estimated.params.model", signature = signature(clv.model="clv.model"), definition = function(clv.model, prefixed.params.model){
-  # return as optimized
-  return(prefixed.params.model)
+  # Example: return as optimized
+  # return(prefixed.params.model)
+  stop("The method clv.model.backtransform.estimated.params.model has not been implemented by this model!")
 })
+
+# . clv.model.prepare.optimx.args -----------------------------------------------------------------------------
+setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
+  stop("The method clv.model.prepare.optimx.args has not been implemented by this model!")
+})
+
 
 # . clv.model.put.optimx.output -----------------------------------------------------------------------------------------
 setMethod("clv.model.put.optimx.output", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, res.optimx){
-  # do nothing
-  return(clv.fitted)
+  # Example: do nothing
+  # No additional step needed (ie store model specific stuff, extra process)
+  # return(clv.fitted)
+  stop("The method clv.model.put.optimx.output has not been implemented by this model!")
+})
+
+# . clv.model.cor.to.m ----------------------------------------------------------------------------------------
+setMethod(f="clv.model.cor.to.m", signature = signature(clv.model="clv.model"), definition = function(clv.model, prefixed.params.model, param.cor){
+  # Example:
+  # res.m <- param.cor / .XXX
+  # return unnamed as otherwise still called "cor"
+  # return(unname(res.m))
+  stop("The method clv.model.cor.to.m has not been implemented by this model!")
+})
+
+# . clv.model.m.to.cor ----------------------------------------------------------------------------------------
+setMethod(f="clv.model.m.to.cor", signature = signature(clv.model="clv.model"), definition = function(clv.model, prefixed.params.model, param.m){
+  # Example:
+  # res.cor <- param.m * XXX
+  # return unnamed as otherwise still called "m"
+  # return(unname(res.cor))
+  stop("The method clv.model.m.to.cor has not been implemented by this model!")
 })
 
 # . clv.model.vcov.jacobi.diag ------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, prefixed.params){
-  # No transformation needed (because also untransformed), only 1s in diag
-  m.diag <- diag(x = 1, nrow = length(prefixed.params))
-  rownames(m.diag) <- colnames(m.diag) <- names(prefixed.params)
-  return(m.diag)
+  # Example: No transformation needed (because also untransformed), only 1s in diag
+  # m.diag <- diag(x = 1, nrow = length(prefixed.params))
+  # rownames(m.diag) <- colnames(m.diag) <- names(prefixed.params)
+  # return(m.diag)
+  stop("The method clv.model.vcov.jacobi.diag has not been implemented by this model!")
 })
 
 # . clv.model.predict.clv ------------------------------------------------------------------------------------------
-setMethod("clv.model.predict.clv", signature(clv.model="clv.model"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
-  stop("The method clv.model.predict.clv needs to be implemented for all models!")
+setMethod("clv.model.predict.clv", signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
+  stop("The method clv.model.predict.clv has not been implemented by this model!")
 })
 
 # . clv.model.expectation ------------------------------------------------------------------------------------------
-setMethod("clv.model.expectation", signature(clv.model="clv.model"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
-  stop("The method clv.model.expectation needs to be implemented for all models!")
+setMethod("clv.model.expectation", signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, dt.expectation.seq, verbose){
+  stop("The method clv.model.expectation has not been implemented by this model!")
 })
 
+# . clv.model.put.newdata ------------------------------------------------------------------------------------------
+setMethod("clv.model.put.newdata", signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, user.newdata, verbose){
+  stop("The method clv.model.put.newdata has not been implemented by this model!")
+})
+
+
 # Default covariate model steps ----------------------------------------------------------------------------------------------------
-# . clv.model.transform.start.params.cov ----------------------------------------------------------------------------------------
+# . clv.model.transform.start.params.cov -------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.transform.start.params.cov", signature = signature(clv.model="clv.model"), definition = function(clv.model, start.params.cov){
-  # no transformation
-  return(start.params.cov)
+  # Example: no transformation
+  # return(start.params.cov)
+  stop("The method clv.model.transform.start.params.cov has not been implemented by this model!")
 })
 
 # . clv.model.backtransform.estimated.params.cov ----------------------------------------------------------------------------------------
 setMethod(f = "clv.model.backtransform.estimated.params.cov", signature = signature(clv.model="clv.model"), definition = function(clv.model, prefixed.params.cov){
-  # no back transformation
-  return(prefixed.params.cov)
+  # Example: no back transformation
+  # return(prefixed.params.cov)
+  stop("The method clv.model.backtransform.estimated.params.cov has not been implemented by this model!")
 })
+
+
 
