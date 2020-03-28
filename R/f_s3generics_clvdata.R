@@ -119,6 +119,7 @@ print.summary.clv.data <- function(x, digits=max(3L, getOption("digits")-3L),
 #' @include class_clv_data.R
 #' @importFrom methods show
 #' @export
+#' @rdname clv.data-class
 setMethod(f = "show", signature = signature(object="clv.data"), definition = function(object){
   print(x=object)})
 

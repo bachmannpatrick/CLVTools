@@ -199,6 +199,7 @@ print.clv.fitted <- function(x, digits = max(3L, getOption("digits") - 3L), ...)
 #' @include all_generics.R class_clv_fitted.R
 #' @importFrom methods show
 #' @export
+#' @rdname clv.fitted-class
 setMethod(f = "show", signature = signature(object="clv.fitted"), definition = function(object){
   print(x=object)})
 

@@ -134,5 +134,6 @@ coef.clv.fitted.static.cov <- function(object, complete = TRUE, ...){
 #' @include all_generics.R class_clv_fitted_staticcov.R
 #' @importFrom methods show
 #' @export
+#' @rdname clv.fitted.static.cov-class
 setMethod(f = "show", signature = signature(object="clv.fitted.static.cov"), definition = function(object){
   print(x=object)})

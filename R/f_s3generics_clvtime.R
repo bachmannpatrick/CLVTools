@@ -1,6 +1,7 @@
 #' @include class_clv_time.R
 #' @importFrom methods show
 #' @export
+#' @rdname clv.time-class
 setMethod(f = "show", signature = signature(object="clv.time"), definition = function(object){
   print(x=object)})
 

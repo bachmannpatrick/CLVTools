@@ -44,5 +44,6 @@ print.summary.clv.data.dynamic.covariates <- function(x, digits=max(3L, getOptio
 #' @importFrom methods show
 #' @include class_clv_data_dynamiccovariates.R
 #' @export
+#' @rdname clv.data.dynamic.covariates-class
 setMethod(f = "show", signature = signature(object="clv.data.dynamic.covariates"), definition = function(object){
   print(x=object)})
