@@ -6,13 +6,17 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = F
 
 
 
-#' @name pnbd
+#' @name bgnbd
 #' @title BG/NBD models
 #'
 #' @template template_params_estimate
 #' @template template_params_estimate_cov
 #' @template template_param_verbose
 #' @template template_param_dots
+#'
+#' @references
+#' BG/NBD model according to
+#' \url{https://github.com/cran/BTYD}
 #'
 #' @description
 #' Fits BG/NBD models on transactional data without covariates.
@@ -27,7 +31,6 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = F
 #'
 #' If no start parameters are given, r = 1, alpha = 3, a = 1, b = 3 is used.
 #' The model start parameters are required to be > 0.
-
 #'
 #' \subsection{The BG/NBD model}{
 #' tbd
@@ -46,16 +49,16 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = F
 #' @seealso \code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation as predicted by the fitted model
 #' @seealso The generic functions \code{\link[CLVTools:summary.clv.fitted]{summary}} and \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
 #'
-#' @template template_bgnbd_reference
+
 #'
 #' @examples
 #' \donttest{
-#' data("apparelTrans")
-#' clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
+#' data("cdnow")
+#' clv.data.cdnow <- clvdata(cdnow, date.format = "ymd",
 #'                             time.unit = "w", estimation.split = 37)
 #'
-#' # Fit standard PNBD model
-#' bgnbd(clv.data.apparel)
+#' # Fit standard BG/NBD model
+#' bgnbd(clv.data.cdnow)
 #'
 #' # Give initial guesses for the Model parameters
 #' bgnbd(clv.data.apparel,
@@ -65,20 +68,24 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = F
 #' # pass additional parameters to the optimizer (optimx)
 #' #    Use Nelder-Mead as optimization method and print
 #' #    detailed information about the optimization process
-#' apparel.bgnbd <- bgnbd(clv.data.apparel,
+#' estimation.bgnbd <- bgnbd(clv.data.cdnow,
 #'                      optimx.args = list(method="Nelder-Mead",
 #'                                         control=list(trace=6)))
 #'
 #' # estimated coefs
-#' coef(apparel.bgnbd)
+#' coef(estimation.bgnbd)
 #'
 #' # summary of the fitted model
-#' summary(apparel.bgnbd)
+#' summary(estimation.bgnbd)
+#'
+#' predict.bgnbd <- predict(estimation.bgnbd, prediction.end = "2011-12-31")
+#'
+#' plot(estimation.bgnbd)
 #' }
 #'
 #' @rdname bgnbd
 #' @aliases bgnbd bgnbd,clv.data-method
-#' @include class_clv_data_no_covariates.R class_clv_model_bgnbd_nocov.R
+#' @include class_clv_model_bgnbd_nocov.R
 #' @export
 setMethod("bgnbd", signature = signature(clv.data="clv.data"), definition = function(clv.data,
                                                                                     start.params.model=c(),

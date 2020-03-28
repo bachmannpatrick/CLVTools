@@ -2,7 +2,30 @@
 #include <math.h>
 #include "clv_vectorized.h"
 
-//' @rdname bgnbd_cet
+//' @title BG/NBD: Conditional Expected Transactions without covariates
+//'
+//' @description
+//' Calculates the expected number of transactions in a given time period based
+//' on a customer's past transaction behavior and the BG/NBD model parameters.
+//'
+//' @template template_params_rcppestimatedparams
+//' @param dPrediction_period time prediction time frame
+//' @template template_params_rcppxtxtcal
+//'
+//'
+//' @details
+//' \code{vParams} vector with the estimated parameters in original scale
+//' for the BG/NBD model, namely (r, alpha, a, b).
+//' r and alpha: TODO: description.
+//' a and b: TODO: description
+//'
+//'
+//'@return
+//' Returns a vector containing the conditional expected transactions for the existing
+//' customers in the BG/NBD model.
+//'
+//' @name bgnbd_CET
+//' @rdname bgnbd_CET
 // [[Rcpp::export]]
 arma::vec bgnbd_cet(const arma::vec& vParams,
                     const double nPeriods,
