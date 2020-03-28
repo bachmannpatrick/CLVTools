@@ -1,47 +1,23 @@
-# Run this workflow whenever there is a push or pull request to the repository
-on: [push, pull_request]
+# Run this workflow whenever there is a pull request to the repo
+on: pull_request #default to types [opened, synchronize, reopened]
 
 # Name of the workflow
-name: R-CMD-check
+name: check-and-test-pull-request
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "R-CMD-check"
-  R-CMD-check:
-    # The type of runner that the job will run on
-    #runs-on: macos-latest
-    #runs-on: windows-latest
-    runs-on: ubuntu-latest
-
-    #runs-on: ${{ matrix.config.os }}
-
-    #strategy:
-    #  fail-fast: false
-    #  matrix:
-    #    config:
-    #      - {os: windows-latest, r: '3.6'}
-    #      - {os: macOS-latest, r: '3.6'}
-    #      - {os: ubuntu-16.04, r: '3.6', rspm: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"}
-
+  # job for test on ubunutu only
+  tests-and-coverage-ubuntu-16-04-R-3-6:
+    runs-on: ubuntu-16.04
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      # to install binaries on linux
+      # to install binaries on ubuntu
       RSPM: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-
-
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
-      # Check-out r-lib's github action repository
       - uses: r-lib/actions/setup-r@master
-        #with:
-        #  r-version: ${{ matrix.config.r}}
-
+        with:
+          r-version: 3.6
       - name: Install system dependencies
-        if: runner.os == 'Linux'
         env:
           RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
         run: |
@@ -49,22 +25,92 @@ jobs:
           Rscript -e "remotes::install_github('r-hub/sysreqs')"
           sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
           sudo -s eval "$sysreqs"
-
       - name: Install package dependencies
-      # RcppGSL and stringi seem currently to be broken on RSPM xenial, therefore install from cran
+        # RcppGSL and stringi can currently not load or link when installed from RSPM,
+        #   therefore install from cran (source)
         run: |
-          remotes::install_deps(dependencies = TRUE)
-          install.packages(c("RcppGSL", "stringi"), repos = "https://cran.rstudio.com")
+          remotes::install_deps(dependencies = TRUE) # installs binaries
+          # remotes::install_cran(c("RcppGSL", "stringi"), repos = "https://cran.rstudio.com")
+          # Install testing stuff
+          remotes::install_cran("testthat", repos = "https://cran.rstudio.com/")
+          remotes::install_cran("devtools", repos = "https://cran.rstudio.com/")
+          remotes::install_cran("covr", repos = "https://cran.rstudio.com/")
         shell: Rscript {0}
 
-      - name: Check RcppGSL flags
+      - name: Run tests
         run: |
-          library(RcppGSL)
-          print(RcppGSL::CFlags())
-          print(RcppGSL::LdFlags())
-          library(stringi)
+          library(testthat)
+          library(devtools)
+          devtools::test(reporter=RstudioReporter)
         shell: Rscript {0}
 
-      - name: Run R-CMD checks
-        run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
+      - name: Test coverage, if tests succeeded
+        if: success()
+        # run: covr::codecov() # uploads to codecov.io
+        run: covr::package_coverage(type = "tests", quiet = FALSE)
         shell: Rscript {0}
+
+
+  # job for R CMD checks on win, mac, ubuntu
+  R-CMD-check:
+    runs-on: ${{ matrix.config.os }}
+    name: R-CMD-check-${{ matrix.config.os }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: windows-latest, r: '3.6.2'}
+          - {os: macOS-latest,  r: '3.6.2'}
+          - {os: ubuntu-16.04, r: '3.6.2', rspm: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"}
+    env:
+        R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+        RSPM: ${{ matrix.config.rspm }}
+
+    steps:
+        - uses: actions/checkout@v2
+        - uses: r-lib/actions/setup-r@master
+          with:
+            r-version: ${{ matrix.config.r }}
+        - name: Query dependencies
+          run: |
+            install.packages('remotes')
+            saveRDS(remotes::dev_package_deps(dependencies = TRUE), "depends.Rds", version = 2)
+          shell: Rscript {0}
+
+        - name: Cache R packages
+          if: runner.os != 'Windows'
+          uses: actions/cache@v1
+          with:
+            path: ${{ env.R_LIBS_USER }}
+            key: ${{ runner.os }}-r-${{ matrix.config.r }}-${{ hashFiles('depends.Rds') }}
+            restore-keys: ${{ runner.os }}-r-${{ matrix.config.r }}-
+
+        - name: Install system dependencies
+          if: runner.os == 'Linux'
+          env:
+            RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
+          run: |
+            Rscript -e "remotes::install_github('r-hub/sysreqs')"
+            sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
+            sudo -s eval "$sysreqs"
+            sudo apt-get install -y qpdf # qpdf needed on ubuntu
+        - name: Install dependencies, some from cran incl RcppGSL and stringi
+          run: |
+            remotes::install_deps(dependencies = TRUE)
+            # remotes::install_cran(c("RcppGSL", "stringi"), repos = "https://cran.rstudio.com")
+            remotes::install_cran("rcmdcheck", repos = "https://cran.rstudio.com")
+            # remove because leads to NOTE. Does not exist on windows
+            if(file.exists('depends.Rds')) {file.remove('depends.Rds')}
+          shell: Rscript {0}
+
+        - name: Check
+          run: rcmdcheck::rcmdcheck(args = c("--no-tests", "--as-cran", "--no-manual"), error_on = "warning", check_dir = "check")
+          shell: Rscript {0}
+
+        - name: Upload check results, if failed
+          if: failure()
+          uses: actions/upload-artifact@master
+          with:
+            name: R-CMD-check-results-${{ runner.os }}-r${{ matrix.config.r }}
+            path: check
