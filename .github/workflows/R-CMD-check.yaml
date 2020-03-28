@@ -33,11 +33,9 @@ jobs:
 
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Get repo
       - uses: actions/checkout@v2
 
       # Check-out r-lib's github action repository
-      - name: Setup R
       - uses: r-lib/actions/setup-r@master
         #with:
         #  r-version: ${{ matrix.config.r}}
