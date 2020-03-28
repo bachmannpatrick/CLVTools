@@ -120,7 +120,6 @@ setGeneric(name="clv.model.vcov.jacobi.diag", def=function(clv.model, clv.fitted
 
 # .. Newdata ---------------------------------------------------------------------------------------------------------------
 # Do the steps necessary to integrate user newdata in the fitted model (ie do cbs etc)
-# **TODO: Add default model strategy for this method
 setGeneric(name="clv.model.put.newdata", def=function(clv.model, clv.fitted, user.newdata, verbose)
   standardGeneric("clv.model.put.newdata"))
 
@@ -140,7 +139,6 @@ setGeneric(name="clv.model.backtransform.estimated.params.cov", def=function(clv
 
 
 # Function to reduce the covariates in the object to the ones named by the user when calling estimate
-# - not used, yet
 setGeneric(name="clv.model.m.to.cor", def = function(clv.model, prefixed.params.model, param.m)
   standardGeneric("clv.model.m.to.cor"))
 
