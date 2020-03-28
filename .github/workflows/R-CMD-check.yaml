@@ -9,8 +9,10 @@ jobs:
   # This workflow contains a single job called "R-CMD-check"
   R-CMD-check:
     # The type of runner that the job will run on
-    #runs-on: macOS-latest
-    runs-on: ubuntu-16.04
+    #runs-on: macos-latest
+    #runs-on: windows-latest
+    runs-on: ubuntu-latest
+
     #runs-on: ${{ matrix.config.os }}
 
     #strategy:
@@ -21,10 +23,23 @@ jobs:
     #      - {os: macOS-latest, r: '3.6'}
     #      - {os: ubuntu-16.04, r: '3.6', rspm: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"}
 
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      RSPM: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"
+
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+
+      - name: Install system dependencies
+        if: runner.os == 'Linux'
+        env:
+          RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
+        run: |
+          Rscript -e "remotes::install_github('r-hub/sysreqs')"
+          sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
+          sudo -s eval "$sysreqs"
 
       # Check-out r-lib's github action repository
       #- uses: r-lib/actions/setup-r@master
