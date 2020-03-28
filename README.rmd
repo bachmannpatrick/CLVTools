@@ -4,6 +4,8 @@ output:
     pandoc_args: --webtex
 ---
 
+[![R build status](https://github.com/bachmannpatrick/CLVTools/workflows/R-CMD-check/badge.svg)](https://github.com/bachmannpatrick/CLVTools/actions)
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r setup, include = FALSE}
