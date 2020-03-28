@@ -53,7 +53,9 @@ jobs:
 
       - name: Install package dependencies
         run: |
+          print(getOption("repos"))
           remotes::install_deps(dependencies = TRUE)
+          install.packages("RcppGSL")
         shell: Rscript {0}
 
       - name: Check RcppGSL flags
