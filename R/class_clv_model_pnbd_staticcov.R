@@ -102,7 +102,7 @@ definition = function(clv.model, clv.fitted, prefixed.params){
 })
 
 # . clv.model.predict.clv -----------------------------------------------------------------------------------------------------
-setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.static.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor,verbose){
+setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.static.cov"), definition = function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor,verbose){
   # cran silence
   CET <- x <- t.x <- T.cal <- PAlive <- DERT <- NULL
 

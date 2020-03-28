@@ -104,6 +104,12 @@ setGeneric(name="clv.model.backtransform.estimated.params.model", def=function(c
 setGeneric(name="clv.model.put.optimx.output", def=function(clv.model, clv.fitted, res.optimx)
   standardGeneric("clv.model.put.optimx.output"))
 
+setGeneric(name="clv.model.m.to.cor", def = function(clv.model, prefixed.params.model, param.m)
+  standardGeneric("clv.model.m.to.cor"))
+
+setGeneric(name="clv.model.cor.to.m", def = function(clv.model, prefixed.params.model, param.cor)
+  standardGeneric("clv.model.cor.to.m"))
+
 # .. Predict ----------------------------------------------------------------------------------------------------------------------
 # Predict clv per model
 
@@ -135,15 +141,6 @@ setGeneric("clv.model.transform.start.params.cov", def = function(clv.model, sta
 # Transform prefixed params to original scale
 setGeneric(name="clv.model.backtransform.estimated.params.cov", def=function(clv.model, prefixed.params.cov)
   standardGeneric("clv.model.backtransform.estimated.params.cov"))
-
-
-
-# Function to reduce the covariates in the object to the ones named by the user when calling estimate
-setGeneric(name="clv.model.m.to.cor", def = function(clv.model, prefixed.params.model, param.m)
-  standardGeneric("clv.model.m.to.cor"))
-
-setGeneric(name="clv.model.cor.to.m", def = function(clv.model, prefixed.params.model, param.cor)
-  standardGeneric("clv.model.cor.to.m"))
 
 
 # clv.time ----------------------------------------------------------------------------------------------------

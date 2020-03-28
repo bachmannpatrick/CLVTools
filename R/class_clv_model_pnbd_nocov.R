@@ -81,6 +81,52 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
   return(optimx.args)
 })
 
+# . clv.model.put.optimx.output -----------------------------------------------------------------------------------------
+setMethod("clv.model.put.optimx.output", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, res.optimx){
+  # No additional step needed (ie store model specific stuff, extra process)
+  return(clv.fitted)
+})
+
+
+# .clv.model.cor.to.m --------------------------------------------------------------------------------------------------------
+setMethod(f="clv.model.cor.to.m", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, prefixed.params.model, param.cor){
+
+  .cor.part <- function(params){
+    r     <- exp(params[["log.r"]])
+    alpha <- exp(params[["log.alpha"]])
+    s     <- exp(params[["log.s"]])
+    beta  <- exp(params[["log.beta"]])
+
+    fct.part <- function(param.ab, param.rs){
+      return( (sqrt(param.rs) / (1+param.ab)) * ((param.ab / (1+param.ab))^param.rs))
+    }
+    return(fct.part(param.ab = alpha, param.rs = r) * fct.part(param.ab = beta, param.rs = s))
+  }
+  res.m <- param.cor / .cor.part(params=prefixed.params.model)
+
+  # return unnamed as otherwise still called "cor"
+  return(unname(res.m))
+})
+
+setMethod(f="clv.model.m.to.cor", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, prefixed.params.model, param.m){
+  .cor.part <- function(params){
+    r     <- exp(params[["log.r"]])
+    alpha <- exp(params[["log.alpha"]])
+    s     <- exp(params[["log.s"]])
+    beta  <- exp(params[["log.beta"]])
+
+    fct.part <- function(param.ab, param.rs){
+      return( (sqrt(param.rs) / (1+param.ab)) * ((param.ab / (1+param.ab))^param.rs) )
+    }
+    return(fct.part(param.ab = alpha, param.rs = r) * fct.part(param.ab = beta, param.rs = s))
+  }
+  res.cor <- param.m * .cor.part(params=prefixed.params.model)
+
+  # return unnamed as otherwise still called "m"
+  return(unname(res.cor))
+})
+
+
 # .clv.model.vcov.jacobi.diag --------------------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, prefixed.params){
 
@@ -146,48 +192,10 @@ setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.mo
   return(clv.fitted)
 })
 
-# .clv.model.cor.to.m --------------------------------------------------------------------------------------------------------
-setMethod(f="clv.model.cor.to.m", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, prefixed.params.model, param.cor){
-
-  .cor.part <- function(params){
-    r     <- exp(params[["log.r"]])
-    alpha <- exp(params[["log.alpha"]])
-    s     <- exp(params[["log.s"]])
-    beta  <- exp(params[["log.beta"]])
-
-    fct.part <- function(param.ab, param.rs){
-      return( (sqrt(param.rs) / (1+param.ab)) * ((param.ab / (1+param.ab))^param.rs))
-    }
-    return(fct.part(param.ab = alpha, param.rs = r) * fct.part(param.ab = beta, param.rs = s))
-  }
-  res.m <- param.cor / .cor.part(params=prefixed.params.model)
-
-  # return unnamed as otherwise still called "cor"
-  return(unname(res.m))
-})
-
-setMethod(f="clv.model.m.to.cor", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, prefixed.params.model, param.m){
-  .cor.part <- function(params){
-    r     <- exp(params[["log.r"]])
-    alpha <- exp(params[["log.alpha"]])
-    s     <- exp(params[["log.s"]])
-    beta  <- exp(params[["log.beta"]])
-
-    fct.part <- function(param.ab, param.rs){
-      return( (sqrt(param.rs) / (1+param.ab)) * ((param.ab / (1+param.ab))^param.rs) )
-    }
-    return(fct.part(param.ab = alpha, param.rs = r) * fct.part(param.ab = beta, param.rs = s))
-  }
-  res.cor <- param.m * .cor.part(params=prefixed.params.model)
-
-  # return unnamed as otherwise still called "m"
-  return(unname(res.cor))
-})
-
 
 # .clv.model.predict.clv --------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
-setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.no.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
+setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
   Id <- x <- t.x <- T.cal <-  PAlive <- CET <- DERT <- NULL # cran silence
 
   # To be sure they are both sorted the same when calling cpp functions

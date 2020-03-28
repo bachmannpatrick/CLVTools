@@ -31,17 +31,13 @@ setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model=
   stop("The method clv.model.put.estimation.input has not been implemented by this model!")
 })
 
-# . clv.model.prepare.optimx.args -----------------------------------------------------------------------------
-setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
-  stop("The method clv.model.prepare.optimx.args has not been implemented by this model!")
-})
-
 # . clv.model.transform.start.params.model -----------------------------------------------------------------------------
 setMethod("clv.model.transform.start.params.model", signature = signature(clv.model="clv.model"), definition = function(clv.model, original.start.params.model){
   # Example: return start params as given
   # return(original.start.params.model)
   stop("The method clv.model.transform.start.params.model has not been implemented by this model!")
 })
+
 
 # . clv.model.backtransform.estimated.params.model ---------------------------------------------------------------------
 setMethod("clv.model.backtransform.estimated.params.model", signature = signature(clv.model="clv.model"), definition = function(clv.model, prefixed.params.model){
@@ -50,11 +46,36 @@ setMethod("clv.model.backtransform.estimated.params.model", signature = signatur
   stop("The method clv.model.backtransform.estimated.params.model has not been implemented by this model!")
 })
 
+# . clv.model.prepare.optimx.args -----------------------------------------------------------------------------
+setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
+  stop("The method clv.model.prepare.optimx.args has not been implemented by this model!")
+})
+
+
 # . clv.model.put.optimx.output -----------------------------------------------------------------------------------------
 setMethod("clv.model.put.optimx.output", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, res.optimx){
   # Example: do nothing
+  # No additional step needed (ie store model specific stuff, extra process)
   # return(clv.fitted)
   stop("The method clv.model.put.optimx.output has not been implemented by this model!")
+})
+
+# . clv.model.cor.to.m ----------------------------------------------------------------------------------------
+setMethod(f="clv.model.cor.to.m", signature = signature(clv.model="clv.model"), definition = function(clv.model, prefixed.params.model, param.cor){
+  # Example:
+  # res.m <- param.cor / .XXX
+  # return unnamed as otherwise still called "cor"
+  # return(unname(res.m))
+  stop("The method clv.model.cor.to.m has not been implemented by this model!")
+})
+
+# . clv.model.m.to.cor ----------------------------------------------------------------------------------------
+setMethod(f="clv.model.m.to.cor", signature = signature(clv.model="clv.model"), definition = function(clv.model, prefixed.params.model, param.m){
+  # Example:
+  # res.cor <- param.m * XXX
+  # return unnamed as otherwise still called "m"
+  # return(unname(res.cor))
+  stop("The method clv.model.m.to.cor has not been implemented by this model!")
 })
 
 # . clv.model.vcov.jacobi.diag ------------------------------------------------------------------------------------------
@@ -97,22 +118,5 @@ setMethod(f = "clv.model.backtransform.estimated.params.cov", signature = signat
   stop("The method clv.model.backtransform.estimated.params.cov has not been implemented by this model!")
 })
 
-# . clv.model.cor.to.m ----------------------------------------------------------------------------------------
-setMethod(f="clv.model.cor.to.m", signature = signature(clv.model="clv.model"), definition = function(clv.model, prefixed.params.model, param.cor){
-  # Example:
-  # res.m <- param.cor / .XXX
-  # return unnamed as otherwise still called "cor"
-  # return(unname(res.m))
-  stop("The method clv.model.cor.to.m has not been implemented by this model!")
-})
-
-# . clv.model.m.to.cor ----------------------------------------------------------------------------------------
-setMethod(f="clv.model.m.to.cor", signature = signature(clv.model="clv.model"), definition = function(clv.model, prefixed.params.model, param.m){
-  # Example:
-  # res.cor <- param.m * XXX
-  # return unnamed as otherwise still called "m"
-  # return(unname(res.cor))
-  stop("The method clv.model.m.to.cor has not been implemented by this model!")
-})
 
 
