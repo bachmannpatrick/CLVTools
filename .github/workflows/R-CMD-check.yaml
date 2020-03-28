@@ -29,6 +29,8 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+
+
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
@@ -37,19 +39,20 @@ jobs:
         #with:
         #  r-version: ${{ matrix.config.r}}
 
+      # Runs a set of commands using the runners shell to install the required system and package dependencies
+
       - name: Install system dependencies
         if: runner.os == 'Linux'
         env:
           RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
         run: |
+          Rscript -e "install.packages(c("remotes", "rcmdcheck"))"
           Rscript -e "remotes::install_github('r-hub/sysreqs')"
           sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
           sudo -s eval "$sysreqs"
 
-      # Runs a set of commands using the runners shell to install the required dependencies
-      - name: Install dependencies
+      - name: Install package dependencies
         run: |
-          install.packages(c("remotes", "rcmdcheck"))
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
 
