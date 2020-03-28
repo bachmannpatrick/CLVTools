@@ -2,9 +2,22 @@
 % Please edit documentation in R/f_s3generics_clvfitted_plot.R
 \name{plot.clv.fitted}
 \alias{plot.clv.fitted}
+\alias{plot,clv.fitted-method}
 \title{Plot expected and actual repeat transactions}
 \usage{
 \method{plot}{clv.fitted}(
+  x,
+  prediction.end = NULL,
+  newdata = NULL,
+  cumulative = FALSE,
+  transactions = TRUE,
+  label = NULL,
+  plot = TRUE,
+  verbose = TRUE,
+  ...
+)
+
+\S4method{plot}{clv.fitted}(
   x,
   prediction.end = NULL,
   newdata = NULL,

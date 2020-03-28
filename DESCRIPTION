@@ -1,7 +1,7 @@
 Package: CLVTools
-Title: Tools for Customer Lifetime Value estimation
-Version: 0.0.2
-Date: 2020-01-18
+Title: Tools for Customer Lifetime Value Estimation
+Version: 0.5.0
+Date: 2020-03-27
 Authors@R: c(
     person(given="Patrick", family="Bachmann",    email = "patrick.bachmann@business.uzh.ch", role = c("cre","aut")),
     person(given="Jeffrey", family="Näf",         email = "naef@stat.math.ethz.ch",role = "aut"),
@@ -63,9 +63,9 @@ Collate:
     'clv_template_controlflow_estimate.R'
     'clv_template_controlflow_predict.R'
     'data.R'
+    'f_DoExpectation.R'
     'f_clvdata_inputchecks.R'
     'f_clvfitted_checkuserinput.R'
-    'f_doexpectation.R'
     'f_generics_clvdata.R'
     'f_generics_clvfitted.R'
     'f_generics_clvfitted_estimate.R'
@@ -102,4 +102,4 @@ Collate:
     'pnbd_dyncov_expectation.R'
     'pnbd_dyncov_makewalks.R'
     'pnbd_dyncov_palive.R'
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0

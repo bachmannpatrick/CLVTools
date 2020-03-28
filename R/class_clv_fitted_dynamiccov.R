@@ -12,6 +12,7 @@ setClass(Class = "clv.fitted.dynamic.cov", contains = "clv.fitted.static.cov")
 
 
 # Constructor. Creates object through fitted.static.cov.
+#' @importFrom methods new
 clv.fitted.dynamic.cov <- function(cl, clv.model, clv.data){
   # **TODO: Is this the same pattern as referenced by Martin Morgan in clv.data.static.cov?
   return(

@@ -19,6 +19,7 @@ pnbd_dyncov_LL <- function(params, obj){
   Num.Walk <- AuxTrans <- Di.Max.Walk <- adj.Max.Walk <- Di.adj.Walk1 <- adj.Walk1 <- A1T <- x <- A1sum <- AuxTrans <- transaction.cov.dyn <- Id <- Bjsum <- Bksum <- AkT <- NULL
   adj.transaction.cov.dyn <- dT <- d <- B1 <- t.x <- BT <- a1 <- akt <- aT <- T.cal <- C1T <- CkT <- adj.lifetime.cov.dyn <- D1 <- DT <- DkT <- b1 <- bkT <- bT <- a1T <- NULL
   b1T <- alpha_1 <- beta_1 <- alpha_2 <- beta_2 <- F2.1 <- F2.2 <- F2.3 <- i <- Ai <- Bi <- ai <- Ci <- Id <- Di <- bi <- log.F0 <- F1 <- F2 <- F3 <- LL <- NULL
+  splus1 <- log.F1 <- log.F3 <- max.AB <- NULL
 
   model.params <- params[obj@clv.model@names.prefixed.params.model]
   # The param names after duplication in the constraint interlayer
@@ -442,7 +443,7 @@ pnbd_dyncov_LL <- function(params, obj){
 #               )
 .hyp.alpha.ge.beta <- function(cbs, alpha_0, r, s)
 {
-  x <- alpha_1 <- beta_1 <- alpha_2 <- beta_2 <- NULL
+  x <- alpha_1 <- beta_1 <- alpha_2 <- beta_2 <- z.1 <- z.2 <- log.C <- hyp.z1 <- hyp.z2 <- NULL
 
   # hyp crashes with empty data.table
   if(nrow(cbs) > 0){
@@ -481,9 +482,9 @@ pnbd_dyncov_LL <- function(params, obj){
 #               )
 .hyp.beta.g.alpha <- function(cbs, r, s, alpha_0)
 {
-  x <- alpha_1 <- beta_1 <- alpha_2 <- beta_2 <- NULL
-  # hyp crashes with empty data.table
+  x <- alpha_1 <- beta_1 <- alpha_2 <- beta_2 <- z.1 <- z.2 <- log.C <- hyp.z1 <- hyp.z2 <- NULL
 
+  # hyp crashes with empty data.table
   if(nrow(cbs) > 0){
     cbs.z <- copy(cbs)
     cbs.z[,z.1 := (beta_1-alpha_1)/beta_1]

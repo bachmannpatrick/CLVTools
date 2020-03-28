@@ -1,5 +1,7 @@
 # . clv.controlflow.plot.check.inputs ------------------------------------------------------------------------
 setMethod("clv.controlflow.plot.check.inputs", signature(obj="clv.fitted.dynamic.cov"), function (obj, prediction.end, cumulative, plot, label.line, verbose) {
+  period.first <- Cov.Date <- NULL
+
   # No nocov /staticcov checks (no need to call super method)
   err.msg <- c()
 
@@ -16,9 +18,12 @@ setMethod("clv.controlflow.plot.check.inputs", signature(obj="clv.fitted.dynamic
 
 
 # . clv.controlflow.check.newdata ------------------------------------------------------------------------
+#' @importFrom methods callNextMethod
 setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.dynamic.cov"), definition = function(clv.fitted, user.newdata, prediction.end){
   # Do static cov (and hence also nocov) inputchecks first for newdata
   callNextMethod()
+
+  period.last <- Cov.Date <- NULL
 
   # prediction.end needs to be ok to work with it
   check_err_msg(check_user_data_predictionend(obj=clv.fitted, prediction.end=prediction.end))
@@ -44,10 +49,13 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.dyna
 
 
 # . clv.controlflow.predict.check.inputs ------------------------------------------------------------------------
+#' @importFrom methods callNextMethod
 setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(obj="clv.fitted.dynamic.cov"), function(obj, prediction.end, continuous.discount.factor, predict.spending, verbose){
   # Do static cov (and hence also nocov) inputchecks first
   #   After this, newdata is basically ok
   callNextMethod()
+
+  period.last <- Cov.Date <- NULL
 
   err.msg <- c()
 

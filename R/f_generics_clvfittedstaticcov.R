@@ -1,4 +1,5 @@
 # . clv.controlflow.predict.set.prediction.params ------------------------------------------------------------------------
+#' @importFrom methods callNextMethod
 setMethod(f = "clv.controlflow.predict.set.prediction.params", signature = signature(obj="clv.fitted.static.cov"), definition = function(obj){
   # Get no cov model params
   obj <- callNextMethod()

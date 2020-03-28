@@ -60,6 +60,7 @@ setClass(Class = "clv.fitted", # contains = "VIRTUAL",
 # Convenience constructor to encapsulate all steps for object creation and
 #   enforce all required inputs
 #   no generic needed because always constructed in same way from transaction data and model
+#' @importFrom methods new
 clv.fitted <- function(cl, clv.model, clv.data){
 
   # Deep copy of clv.data if ever modified by reference later on

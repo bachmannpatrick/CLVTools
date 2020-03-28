@@ -1,14 +1,17 @@
 #' @importFrom stats nobs
 #' @export
 nobs.clv.data   <- function(object, ...){
+  Name <- NULL # cran silence
   # Observations are number of customers
-  return(as.integer(object@descriptives.transactions[Name=="Number of customers"]$Total))
+  return(as.integer(object@descriptives.transactions[Name == "Number of customers"]$Total))
 }
 
 
 #' @export
 #' @include class_clv_data.R
 print.clv.data <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
+
+  Name <- Total  <- NULL
 
   nsmall <- 4 # dont leave to user, hardcode
 
@@ -49,6 +52,8 @@ print.clv.data.static.covariates <- function(x, digits = max(3L, getOption("digi
 print.clv.data.dynamic.covariates <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
   # print static cov part
   NextMethod()
+
+  Cov.Date <- NULL
 
   # Cannot store in object because of datatype issues.
   #   Would need to subclass clv.time or hide in a list in object
@@ -114,6 +119,7 @@ print.summary.clv.data <- function(x, digits=max(3L, getOption("digits")-3L),
 #' @include class_clv_data.R
 #' @importFrom methods show
 #' @export
+#' @rdname clv.data-class
 setMethod(f = "show", signature = signature(object="clv.data"), definition = function(object){
   print(x=object)})
 

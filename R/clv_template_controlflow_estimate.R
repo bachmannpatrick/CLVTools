@@ -1,5 +1,6 @@
 #' @include class_clv_fitted.R all_generics.R
 #' @importFrom optimx optimx coef<-
+#' @importFrom utils modifyList
 #' @include all_generics.R
 clv.template.controlflow.estimate <- function(obj,
                                               cl,

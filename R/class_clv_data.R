@@ -45,6 +45,7 @@ setClass(Class = "clv.data",
            has.holdout        = logical(0)))
 
 
+#' @importFrom methods new
 clv.data <- function(call, data.transactions, data.repeat.trans, has.spending, clv.time){
 
   has.holdout <- (clv.time@holdout.period.in.tu > 0)

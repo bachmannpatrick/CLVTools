@@ -16,6 +16,7 @@
 #     - char (convertable!)
 #     - Date (posixt, Date)
 #' @importFrom lubridate is.Date is.POSIXt
+#' @importFrom methods is
 check_user_data_predictionend <- function(obj, prediction.end){
   # NULL is valid input to prediction end
   if(is.null(prediction.end))

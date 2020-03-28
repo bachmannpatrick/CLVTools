@@ -52,6 +52,7 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(obj
 })
 
 # . clv.controlflow.estimate.put.inputs ------------------------------------------------------------------------------
+#' @importFrom methods callNextMethod
 setMethod("clv.controlflow.estimate.put.inputs", signature = signature(obj="clv.fitted.static.cov"), definition = function(obj, cl, reg.lambdas, use.cor, names.cov.constr, names.cov.life, names.cov.trans, ...){
   # clv.fitted put inputs
   obj <- callNextMethod()
@@ -202,6 +203,7 @@ setMethod("clv.controlflow.estimate.generate.start.params", signature = signatur
 
 
 # . clv.controlflow.estimate.prepare.optimx.args ------------------------------------------------------------------------------
+#' @importFrom utils modifyList
 setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(obj="clv.fitted.static.cov"),
           def=function(obj, start.params.all){
 

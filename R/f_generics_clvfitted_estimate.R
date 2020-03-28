@@ -112,6 +112,7 @@ setMethod("clv.controlflow.estimate.generate.start.params", signature = signatur
 # . clv.controlflow.estimate.prepare.optimx.args ------------------------------------------------------------------------
 # Put together the individual parts needed to call optimx
 #   Adding the variables needed to call the LL function is left to the model-specific optimizeLL functions as they are unknonwn at this point
+#' @importFrom utils modifyList
 setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(obj="clv.fitted"), def=function(obj, start.params.all){
 
   # Start with model defaults
@@ -193,6 +194,7 @@ setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(
 
 # . clv.controlflow.estimate.put.optimx ------------------------------------------------------------------------
 #' @importFrom optimx coef<-
+#' @importFrom utils tail
 setMethod(f = "clv.controlflow.estimate.put.optimx", signature = signature(obj="clv.fitted"), definition = function(obj, res.optimx){
 
   obj@optimx.estimation.output <- res.optimx

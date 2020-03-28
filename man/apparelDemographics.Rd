@@ -4,12 +4,14 @@
 \name{apparelDemographics}
 \alias{apparelDemographics}
 \title{Customer Demographics for the Apparel Retailer Dataset}
-\format{A \code{data.table} with 2201 rows and 2 variables:
+\format{
+A \code{data.table} with 2201 rows and 2 variables:
 
 \describe{
   \item{Id}{Customer Id}
   \item{Gender}{0=male, 1=female}
-}}
+}
+}
 \usage{
 data("apparelDemographics")
 }

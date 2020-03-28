@@ -104,6 +104,8 @@
 #' @export
 plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FALSE, transactions=TRUE, label=NULL, plot=TRUE, verbose=TRUE,...) {
 
+  period.first <- period.num <- NULL
+
   # Newdata ------------------------------------------------------------------------------------------------
   # Because many of the following steps refer to the data stored in the fitted model,
   #   it first is replaced with newdata before any other steps are done
@@ -222,6 +224,8 @@ plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FA
 
 #' @importFrom ggplot2 ggplot aes geom_line geom_vline labs theme scale_fill_manual guide_legend element_text element_rect element_blank element_line rel
 clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
+  # cran silence
+  period.first <- value <- variable <- NULL
 
   # Melt everything except what comes from the standard expectation table
   meas.vars   <- setdiff(colnames(dt.data), c("period.num", "period.first"))
@@ -273,6 +277,8 @@ clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
 # . clv.controlflow.plot.get.data ---------------------------------------------------------------
 setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.fitted"), definition = function(obj, dt.expectation.seq, cumulative, verbose){
 
+  expectation <- i.expectation <- NULL
+
   # Set prediction params from coef()
   obj <- clv.controlflow.predict.set.prediction.params(obj=obj)
 
@@ -295,4 +301,5 @@ setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.fitt
 
 #' @include class_clv_fitted.R
 #' @exportMethod plot
+#' @rdname plot.clv.fitted
 setMethod("plot", signature(x="clv.fitted"), definition = plot.clv.fitted)

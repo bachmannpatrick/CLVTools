@@ -1,4 +1,4 @@
-#' @rdname SetStaticCovariates-methods
+#' @name SetStaticCovariates
 #' @title Add Static Covariates to a CLV data object
 #' @param clv.data CLV data object to add the covariates data to.
 #' @param data.cov.life Static covariate data as \code{data.frame} or \code{data.table} for the lifetime process.

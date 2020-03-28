@@ -3,6 +3,7 @@
 #' @include all_generics.R
 clv.template.controlflow.predict <- function(object, prediction.end, predict.spending, continuous.discount.factor, verbose, user.newdata){
   Id <- Date <- Price <- DERT <- DECT <- actual.spending <- actual.x <- predicted.CLV <- predicted.Spending <- NULL # cran silence
+  period.first <- period.last <- period.length <- cbs.x <- i.x <- cbs.Spending <- i.Spending <- NULL
 
   # Set prediction params -----------------------------------------------------------------------------------
   #   need to be set before adding the newdata as the model might need them (to re-estimate or similar)
@@ -310,7 +311,7 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 #' predict(pnc)
 #'
 #' # Now, predict 10 periods from the end of the last transaction
-#'    (end of estimation period)
+#' #   (end of estimation period)
 #' predict(pnc, prediction.end = 10) # ends on 2016-12-17
 #'
 #'
@@ -333,4 +334,5 @@ predict.clv.fitted <- function(object, newdata=NULL, prediction.end=NULL, predic
 # S4 method to forward to S3 method
 #' @include all_generics.R class_clv_fitted.R
 #' @exportMethod predict
+#' @rdname predict.clv.fitted
 setMethod(f = "predict", signature = signature(object="clv.fitted"), predict.clv.fitted)

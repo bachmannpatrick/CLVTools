@@ -6,6 +6,7 @@ setMethod("clv.controlflow.plot.check.inputs", signature(obj="clv.fitted"), func
 
 
 # . clv.controlflow.check.newdata ------------------------------------------------------------------------
+#' @importFrom methods is
 setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted"), definition = function(clv.fitted, user.newdata, prediction.end){
   err.msg <- c()
 
