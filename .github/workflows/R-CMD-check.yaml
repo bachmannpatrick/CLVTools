@@ -58,6 +58,7 @@ jobs:
 
       - name: Check RcppGSL flags
         run: |
+          library(RcppGSL)
           print(RcppGSL::CFlags())
           print(RcppGSL::LdFlags())
         shell: Rscript {0}
