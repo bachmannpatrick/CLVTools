@@ -36,3 +36,4 @@ Definition of the parent class \code{\link[CLVTools:clv.data.static.covariates-c
 
 For fitting dynamic covariate models: \code{\link[CLVTools:pnbd]{pnbd}}
 }
+\keyword{internal}

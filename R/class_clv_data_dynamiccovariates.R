@@ -21,6 +21,7 @@
 #'
 # Corresponds to the column names of the \code{data.table} in slot data.cov.trans
 #'
+#' @keywords internal
 #' @importFrom methods setClass
 #' @include all_generics.R class_clv_data.R class_clv_data_staticcovariates.R class_clv_time.R
 setClass(Class = "clv.data.dynamic.covariates", contains = "clv.data.static.covariates")

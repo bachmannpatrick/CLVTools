@@ -1,5 +1,4 @@
 #' @exportMethod SetStaticCovariates
-#' @rdname SetStaticCovariates
 setGeneric(name = "SetStaticCovariates",  def = function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id")
   standardGeneric("SetStaticCovariates"))
 
@@ -12,7 +11,7 @@ setMethod(f = "SetStaticCovariates", signature = signature(clv.data="clv.data.st
           })
 
 
-#' @include all_generics.R class_clv_data_staticcovariates.R
+#' @include all_generics.R class_clv_data_dynamiccovariates.R
 #' @rdname SetStaticCovariates
 setMethod(f = "SetStaticCovariates", signature = signature(clv.data="clv.data.dynamic.covariates"),
           definition = function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id"){

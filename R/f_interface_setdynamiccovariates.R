@@ -1,5 +1,4 @@
 #' @exportMethod SetDynamicCovariates
-#' @rdname SetDynamicCovariates
 setGeneric(name = "SetDynamicCovariates",  def = function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id", name.date="Date")
   standardGeneric("SetDynamicCovariates"))
 
