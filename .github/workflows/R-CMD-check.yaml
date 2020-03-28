@@ -25,7 +25,8 @@ jobs:
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      RSPM: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"
+      #RSPM: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"
+      RSPM: "https://cran.rstudio.com/"
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
