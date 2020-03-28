@@ -4,11 +4,14 @@ setGeneric(name = "SetDynamicCovariates",  def = function(clv.data, data.cov.lif
 
 
 #' @include class_clv_data_staticcovariates.R
+#' @rdname SetDynamicCovariates
 setMethod(f = "SetDynamicCovariates", signature = signature(clv.data="clv.data.static.covariates"), function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id", name.date="Date"){
   stop("Cannot set dynamic covariates because this object has covariates set already!", call. = FALSE)
 })
 
+
 #' @include class_clv_data_dynamiccovariates.R
+#' @rdname SetDynamicCovariates
 setMethod(f = "SetDynamicCovariates", signature = signature(clv.data="clv.data.dynamic.covariates"), function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id", name.date="Date"){
   stop("Cannot set dynamic covariates because this object has covariates set already!", call. = FALSE)
 })
@@ -19,6 +22,8 @@ setMethod(f = "SetDynamicCovariates", signature = signature(clv.data="clv.data.d
 #' @template template_setdynamiccov
 #' @aliases SetDynamicCovariates SetDynamicCovariates,clv.data-method
 setMethod(f = "SetDynamicCovariates", signature = signature(clv.data="clv.data"), function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id", name.date="Date"){
+
+  Cov.Date <- Id<- NULL
 
   # Basic inputchecks ---------------------------------------------------------------------
   #   for parameters name

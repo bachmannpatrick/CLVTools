@@ -14,6 +14,7 @@ setClass(Class = "clv.model.pnbd.dynamic.cov", contains = "clv.model.pnbd.static
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
 # . clv.model.put.estimation.input ------------------------------------------------------------------------------------------------
+#' @importFrom methods callNextMethod
 setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, verbose, ...){
   # Create walks - they are specific to the pnbd dyncov model
 
@@ -34,6 +35,7 @@ setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model=
 
 # Override static cov implementation
 # . clv.model.prepare.optimx.args ------------------------------------------------------------------------------------------------
+#' @importFrom utils modifyList
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.pnbd.dynamic.cov"),
           definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
 
@@ -87,6 +89,7 @@ setMethod(f = "clv.model.put.optimx.output", signature = signature(clv.model="cl
 
 
 # . clv.model.put.newdata ------------------------------------------------------------------------------------------------
+#' @importFrom methods callNextMethod
 setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, verbose){
   # do nocov preparations (new cbs only)
   clv.fitted <- callNextMethod()
@@ -128,7 +131,7 @@ setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.mo
 #' @include all_generics.R
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.dynamic.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
 
-  CET <- PAlive <- DECT <- NULL
+  period.length <- period.last <- CET <- i.CET <- PAlive <- i.palive <-  DECT <- i.DECT <-  NULL
 
   predict.number.of.periods <- dt.prediction[1, period.length]
   tp.period.last <- dt.prediction[1, period.last]

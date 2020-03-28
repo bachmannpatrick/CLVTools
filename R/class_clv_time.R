@@ -10,10 +10,10 @@
 #'
 #' \code{clv.time} is a virtual class and sub-classes implement the actual parsing and calculations.
 #'
-#' \code{\link[CLVTools:clv.time.date]{clv.time.date}} uses data type \code{Date} for time units equal or
+#' \code{\link[CLVTools:clv.time.date-class]{clv.time.date}} uses data type \code{Date} for time units equal or
 #' greater than a single day that do not require a time of day.
 #'
-#' \code{\link[CLVTools:clv.time.datetime]{clv.time.datetime}} uses data type \code{POSIXct} for
+#' \code{\link[CLVTools:clv.time.datetime-class]{clv.time.datetime}} uses data type \code{POSIXct} for
 #' time units smaller than a single day.
 #'
 #'
@@ -27,9 +27,9 @@
 #' @slot name.time.unit Single character vector storing the human-readable name of the time unit for output.
 #'
 #' @seealso \code{\link[CLVTools:summary.clv.time]{summary.clv.time}} for a summary about an object of class \code{clv.time}
-#' @seealso \code{\link[CLVTools:clv.time.days]{clv.time.days}} for an implementation of time unit 'Days'
-#' @seealso \code{\link[CLVTools:clv.time.weeks]{clv.time.weeks}} for an implementation of time unit 'Weeks'
-#' @seealso \code{\link[CLVTools:clv.time.years]{clv.time.years}} for an implementation of time unit 'Years'
+#' @seealso \code{\link[CLVTools:clv.time.days-class]{clv.time.days}} for an implementation of time unit 'Days'
+#' @seealso \code{\link[CLVTools:clv.time.weeks-class]{clv.time.weeks}} for an implementation of time unit 'Weeks'
+#' @seealso \code{\link[CLVTools:clv.time.years-class]{clv.time.years}} for an implementation of time unit 'Years'
 #'
 #'
 #' @include all_generics.R
@@ -129,6 +129,8 @@ setMethod("clv.time.set.sample.periods", signature = signature(clv.time="clv.tim
 
 
 clv.time.expectation.periods <- function(clv.time, user.tp.end){
+
+  period.num <- NULL
 
   # Table with each row representing a period (with period number, start and end dates)
   #   required when executing plot() to calculate the unconditional expectation and to
@@ -362,6 +364,8 @@ clv.time.get.prediction.table <- function(clv.time, user.prediction.end){
 
 
 clv.time.sequence.of.covariate.timepoints <- function(clv.time, tp.start, tp.end){
+
+  Cov.Date <- period.offset <- NULL
   # Marks all timepoints for which covariates are required if dyncov models should work between start and end.
   # First covariate is required at floor_timeunit(tp.start), last covariate is required at
   # floor_timeunit(tp.end), because the covariate always is supposed to influence the upcoming period.

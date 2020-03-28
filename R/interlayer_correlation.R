@@ -1,3 +1,4 @@
+#' @importFrom utils modifyList
 interlayer_correlation <- function(next.interlayers, LL.params, LL.function.sum, LL.function.ind, name.prefixed.cor.param.m, check.param.m.bounds, ...){
   # Catch all other args in elipsis
   all.other.args <- list(...)

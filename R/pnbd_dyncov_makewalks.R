@@ -1,5 +1,6 @@
 # Creates all walks for
 #' @importFrom lubridate force_tz
+#' @importFrom methods is
 pnbd_dyncov_makewalks <-function(clv.data){
 
   Id <- Date <- Cov.Date <- Price <- AuxTrans <- Mapping.Transaction.Id <- is.first.trans <- NULL

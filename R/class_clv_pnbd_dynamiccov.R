@@ -20,6 +20,7 @@ setClass(Class = "clv.pnbd.dynamic.cov", contains = "clv.fitted.dynamic.cov",
 
 # Convenience constructor to encapsulate all steps for object creation
 #' @include class_clv_data.R
+#' @importFrom methods new
 clv.pnbd.dynamic.cov <- function(cl, clv.data){
 
   dt.cbs.pnbd <- pnbd_dyncov_cbs(clv.data = clv.data)
@@ -38,6 +39,7 @@ clv.pnbd.dynamic.cov <- function(cl, clv.data){
 
 # Dyncov cbs also has d_omega for every customer
 pnbd_dyncov_cbs <- function(clv.data){
+  d_omega <- date.first.actual.trans <- NULL
 
   dt.cbs <- pnbd_cbs(clv.data = clv.data)
 

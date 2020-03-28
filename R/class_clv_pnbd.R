@@ -13,6 +13,7 @@ setClass(Class = "clv.pnbd", contains = "clv.fitted",
 
 # Convenience constructor to encapsulate all steps for object creation
 #' @include class_clv_data.R class_clv_model_pnbd_nocov.R
+#' @importFrom methods new
 clv.pnbd <- function(cl, clv.data){
 
   dt.cbs.pnbd <- pnbd_cbs(clv.data = clv.data)
@@ -27,6 +28,7 @@ clv.pnbd <- function(cl, clv.data){
 
 
 pnbd_cbs <- function(clv.data){
+  Date <- Price <- x <- date.first.actual.trans <- date.last.transaction <- NULL
   # Customer-By-Sufficiency (CBS) Matrix
   #   Only for transactions in calibration period
   #   Only repeat transactions are relevant

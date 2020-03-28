@@ -12,7 +12,7 @@
 #' Defaults to UTC, but may be overwritten by a subclass to enforce a different timezone than UTC.
 #' @seealso
 #' For time unit implementations based on this class:
-#' \code{\link[CLVTools:clv.time.hours]{clv.time.hours}}
+#' \code{\link[CLVTools:clv.time.hours-class]{clv.time.hours}}
 #'
 #'
 #' @include class_clv_time.R all_generics.R

@@ -36,6 +36,7 @@ setClass(Class = "clv.data.static.covariates", contains = "clv.data",
            names.cov.data.trans    = character(0)))
 
 # Constructor
+#' @importFrom methods new
 clv.data.static.covariates <- function(no.cov.obj,data.cov.life,data.cov.trans, names.cov.data.life,names.cov.data.trans){
 
   # all the data in the no covariate clv.data object need to be deep copied.

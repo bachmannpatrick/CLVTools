@@ -8,6 +8,7 @@
 # @param ... All other arguments to be given to the LL function
 #
 # LL.params needs to be the first argument as it will receive the parameters from the optimizer
+#' @importFrom utils modifyList
 interlayer_manager <- function(LL.params, LL.function.sum,
                                use.interlayer.constr,
                                use.interlayer.reg, reg.lambda.trans, reg.lambda.life,

@@ -2,6 +2,8 @@
 setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.data"), definition = function(obj, dt.expectation.seq, cumulative, verbose){
   # Add the number of repeat transactions to dt.date.seq
 
+  num.repeat.trans <- i.num.repeat.trans <- Date <- period.first <- NULL
+
   # Add period at every repeat transaction (and therefore copy)
   dt.repeat.trans  <- copy(obj@data.repeat.trans)
 
