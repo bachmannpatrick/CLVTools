@@ -8,7 +8,7 @@
   else
     data.work <- data.work.trans
 
-  #num.walk same for data.working.1 and .2
+  # num.walk same for data.working.1 and .2
   max.walk <- data.work[, max(Num.Walk)]
 
   if( max.walk == 1 || max.walk == 2)
@@ -19,7 +19,7 @@
                             na.rm=T), by=Id]
   }else{
 
-    #create strings of structure: "c(adj.Walk2, adj.Walk3, ..., adj.Walk(max.walk-1))"
+    # create strings of structure: "c(adj.Walk2, adj.Walk3, ..., adj.Walk(max.walk-1))"
     middle.walks <- paste0("c(", paste0("adj.Walk", 2:(max.walk-1), collapse=", "), ")")
     #Sum B1, B2, .., Bn
     Bsum <- data.work[, sum( adj.Walk1 * d, #B1
@@ -40,7 +40,6 @@
     }
   }
 
-
   #rename accordingly
   if(BkT == T)
     setnames(Bsum, "V1", "Bksum")
@@ -48,5 +47,4 @@
     setnames(Bsum, "V1", "Bjsum")
 
   return(Bsum)
-
 }

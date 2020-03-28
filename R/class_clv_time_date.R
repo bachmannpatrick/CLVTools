@@ -12,9 +12,9 @@
 #'
 #' @seealso
 #' For time unit implementations based on this class:
-#' \code{\link[CLVTools:clv.time.days]{clv.time.days}}
-#' \code{\link[CLVTools:clv.time.weeks]{clv.time.weeks}}
-#' \code{\link[CLVTools:clv.time.years]{clv.time.years}}
+#' \code{\link[CLVTools:clv.time.days-class]{clv.time.days}}
+#' \code{\link[CLVTools:clv.time.weeks-class]{clv.time.weeks}}
+#' \code{\link[CLVTools:clv.time.years-class]{clv.time.years}}
 #'
 #' @include class_clv_time.R all_generics.R
 #' @keywords internal
@@ -54,8 +54,7 @@ setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.
 #' @importFrom lubridate floor_date
 setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.time="clv.time.date",
                                                                             user.timepoint="POSIXlt"), definition = function(clv.time, user.timepoint){
-  # Check if has any time different from 00:00:00
-  # if(any(floor_date(x = user.timepoint, unit = "day") != user.timepoint))
+
   message("The time of day stored in the provided POSIXlt object is ignored (cut off).")
 
   return(as.Date.POSIXlt(user.timepoint))
@@ -64,8 +63,6 @@ setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.
 #' @importFrom lubridate tz
 setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.time="clv.time.date",
                                                                             user.timepoint="POSIXct"), definition = function(clv.time, user.timepoint){
-  # Check if has any time different from 00:00:00
-  # if(any(floor_date(x = user.timepoint, unit = "day") != user.timepoint))
   message("The time of day stored in the provided data (of type POSIXct) is ignored (cut off).")
 
   return(as.Date.POSIXct(x=user.timepoint, tz = tz(user.timepoint)))
@@ -92,8 +89,4 @@ setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.
   # None of these cases
   stop("The provided data is in an unknown format! Only Date, POSIXct/lt, and character are accepted!", call. = FALSE)
 })
-
-
-
-
 

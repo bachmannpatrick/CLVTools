@@ -81,7 +81,7 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.no.cov")
   fct.bgnbd.expectation <- function(r, alpha, a, b, t){
     term1 = (a + b - 1)/(a - 1)
     term2 = (alpha/(alpha + t))^r
-    term3 = hypWrap(r, b, a + b - 1, t/(alpha + t))
+    term3 = gsl_hyp_2F1(r, b, a + b - 1, t/(alpha + t))
 
     return(term1 * (1 - term2 * term3))
   }

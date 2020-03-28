@@ -156,8 +156,8 @@ arma::vec pnbd_staticcov_CET(const arma::vec& vEstimated_params,
   if(vCovParams_life.n_elem != mCov_life.n_cols)
     throw std::out_of_range("Vector of lifetime parameters need to have same length as number of columns in lifetime covariates!");
 
-  if(vX.n_elem != mCov_trans.n_rows |
-     vX.n_elem != mCov_life.n_rows)
+  if((vX.n_elem != mCov_trans.n_rows) ||
+     (vX.n_elem != mCov_life.n_rows))
     throw std::out_of_range("There need to be as many covariate rows as customers!");
 
 

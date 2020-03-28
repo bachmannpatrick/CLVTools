@@ -3,7 +3,7 @@ data("apparelDynCov")
 data("apparelTrans")
 
 # DO NOT RUN ANYTHING DYNCOV ON CRAN (runtime ca 1min..?)
-# skip_on_cran()
+skip_on_cran()
 
 
 # Basic runability ---------------------------------------------------------------------------------
@@ -103,7 +103,6 @@ test_that("Predict works", {
 })
 
 test_that("Predict newdata works by predicting on another sample", {
-  # skip_on_cran()
 # Full fails for whatever reason
 
   # expect_output(dt.pred.mini <- predict(fitted.dyncov))
@@ -189,7 +188,6 @@ context("Runability - PNBD dynamiccov - Overlong data")
 
 # Cannot do without holdout because takes too long to estimate
 test_that("Can predict/plot beyond holdout if there is more covs in the data than used for holdout",{
-  skip_on_cran()
   skip_on_covr()
   skip_on_ci()
 

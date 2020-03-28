@@ -3,12 +3,12 @@
 
 #' @rdname bgnbd_cet
 bgnbd_cet <- function(vParams, nPeriods, vX, vT_x, vT_cal) {
-    .Call('_CLVTools_bgnbd_cet', PACKAGE = 'CLVTools', vParams, nPeriods, vX, vT_x, vT_cal)
+    .Call(`_CLVTools_bgnbd_cet`, vParams, nPeriods, vX, vT_x, vT_cal)
 }
 
 #' @rdname bgnbd_nocov_LL_sum
 bgnbd_nocov_LL_ind <- function(vLogparams, vX, vT_x, vT_cal) {
-    .Call('_CLVTools_bgnbd_nocov_LL_ind', PACKAGE = 'CLVTools', vLogparams, vX, vT_x, vT_cal)
+    .Call(`_CLVTools_bgnbd_nocov_LL_ind`, vLogparams, vX, vT_x, vT_cal)
 }
 
 #' @title BG/NBD: LogLikelihood without covariates
@@ -37,16 +37,35 @@ bgnbd_nocov_LL_ind <- function(vLogparams, vX, vT_x, vT_cal) {
 #'  \url{https://github.com/cran/BTYD/}.
 #'
 bgnbd_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal) {
-    .Call('_CLVTools_bgnbd_nocov_LL_sum', PACKAGE = 'CLVTools', vLogparams, vX, vT_x, vT_cal)
+    .Call(`_CLVTools_bgnbd_nocov_LL_sum`, vLogparams, vX, vT_x, vT_cal)
 }
 
 #' @rdname bgnbd_palive
 bgnbd_palive <- function(vParams, vX, vT_x, vT_cal) {
-    .Call('_CLVTools_bgnbd_palive', PACKAGE = 'CLVTools', vParams, vX, vT_x, vT_cal)
+    .Call(`_CLVTools_bgnbd_palive`, vParams, vX, vT_x, vT_cal)
 }
 
-hypWrap <- function(a, b, c, x) {
-    .Call('_CLVTools_hypWrap', PACKAGE = 'CLVTools', a, b, c, x)
+#' @rdname gsl_hyp_2F1
+gsl_hyp_2F1 <- function(a, b, c, x) {
+    .Call(`_CLVTools_gsl_hyp_2F1`, a, b, c, x)
+}
+
+#' @title GSL Hypergeom 2f0 for equal length vectors
+#'
+#' @description Calculate the hypergeometric 2f0 using the GSL library (gsl_sf_hyperg_2F0_e)
+#' @return List with vector of values and vector of gsl status codes
+#' @keywords internal
+vec_gsl_hyp2f0_e <- function(vA, vB, vZ) {
+    .Call(`_CLVTools_vec_gsl_hyp2f0_e`, vA, vB, vZ)
+}
+
+#' @title GSL Hypergeom 2f1 for equal length vectors
+#'
+#' @description Calculate the hypergeometric 2f1 using the GSL library (gsl_sf_hyperg_2F1_e)
+#' @return List with vector of values and vector of gsl status codes
+#' @keywords internal
+vec_gsl_hyp2f1_e <- function(vA, vB, vC, vZ) {
+    .Call(`_CLVTools_vec_gsl_hyp2f1_e`, vA, vB, vC, vZ)
 }
 
 #' @title Gamma-Gamma: Log-Likelihood Function
@@ -73,7 +92,7 @@ hypWrap <- function(a, b, c, x) {
 #' @name gg_LL
 #' @rdname gg_LL
 gg_LL <- function(vLogparams, vX, vM_x) {
-    .Call('_CLVTools_gg_LL', PACKAGE = 'CLVTools', vLogparams, vX, vM_x)
+    .Call(`_CLVTools_gg_LL`, vLogparams, vX, vM_x)
 }
 
 #' @title Pareto/NBD: Conditional Expected Transactions without covariates
@@ -107,7 +126,7 @@ gg_LL <- function(vLogparams, vX, vM_x) {
 #' @name pnbd_nocov_CET
 #' @rdname pnbd_nocov_CET
 pnbd_nocov_CET <- function(vEstimated_params, dPrediction_period, vX, vT_x, vT_cal) {
-    .Call('_CLVTools_pnbd_nocov_CET', PACKAGE = 'CLVTools', vEstimated_params, dPrediction_period, vX, vT_x, vT_cal)
+    .Call(`_CLVTools_pnbd_nocov_CET`, vEstimated_params, dPrediction_period, vX, vT_x, vT_cal)
 }
 
 #' @title Pareto/NBD: Conditional Expected Transactions with static covariates
@@ -152,20 +171,20 @@ pnbd_nocov_CET <- function(vEstimated_params, dPrediction_period, vX, vT_x, vT_c
 #' @name pnbd_staticcov_CET
 #' @rdname pnbd_staticcov_CET
 pnbd_staticcov_CET <- function(vEstimated_params, dPrediction_period, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life) {
-    .Call('_CLVTools_pnbd_staticcov_CET', PACKAGE = 'CLVTools', vEstimated_params, dPrediction_period, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
+    .Call(`_CLVTools_pnbd_staticcov_CET`, vEstimated_params, dPrediction_period, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
 }
 
 pnbd_nocov_DERT <- function(vEstimated_params, continuous_discount_factor, vX, vT_x, vT_cal) {
-    .Call('_CLVTools_pnbd_nocov_DERT', PACKAGE = 'CLVTools', vEstimated_params, continuous_discount_factor, vX, vT_x, vT_cal)
+    .Call(`_CLVTools_pnbd_nocov_DERT`, vEstimated_params, continuous_discount_factor, vX, vT_x, vT_cal)
 }
 
 pnbd_staticcov_DERT <- function(vEstimated_params, continuous_discount_factor, vX, vT_x, vT_cal, mCov_life, mCov_trans, vCovParams_life, vCovParams_trans) {
-    .Call('_CLVTools_pnbd_staticcov_DERT', PACKAGE = 'CLVTools', vEstimated_params, continuous_discount_factor, vX, vT_x, vT_cal, mCov_life, mCov_trans, vCovParams_life, vCovParams_trans)
+    .Call(`_CLVTools_pnbd_staticcov_DERT`, vEstimated_params, continuous_discount_factor, vX, vT_x, vT_cal, mCov_life, mCov_trans, vCovParams_life, vCovParams_trans)
 }
 
 #' @rdname pnbd_nocov_LL_sum
 pnbd_nocov_LL_ind <- function(vLogparams, vX, vT_x, vT_cal) {
-    .Call('_CLVTools_pnbd_nocov_LL_ind', PACKAGE = 'CLVTools', vLogparams, vX, vT_x, vT_cal)
+    .Call(`_CLVTools_pnbd_nocov_LL_ind`, vLogparams, vX, vT_x, vT_cal)
 }
 
 #' @title Pareto/NBD: LogLikelihood without covariates
@@ -200,7 +219,7 @@ pnbd_nocov_LL_ind <- function(vLogparams, vX, vT_x, vT_cal) {
 #'  \url{http://www.brucehardie.com/notes/008/}.
 #'
 pnbd_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal) {
-    .Call('_CLVTools_pnbd_nocov_LL_sum', PACKAGE = 'CLVTools', vLogparams, vX, vT_x, vT_cal)
+    .Call(`_CLVTools_pnbd_nocov_LL_sum`, vLogparams, vX, vT_x, vT_cal)
 }
 
 #' @title Pareto/NBD: LogLikelihood with static covariates
@@ -243,12 +262,12 @@ pnbd_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal) {
 #'  \url{http://www.brucehardie.com/notes/008/}.
 #'
 pnbd_staticcov_LL_ind <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans) {
-    .Call('_CLVTools_pnbd_staticcov_LL_ind', PACKAGE = 'CLVTools', vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
+    .Call(`_CLVTools_pnbd_staticcov_LL_ind`, vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
 
 #' @rdname pnbd_staticcov_LL_ind
 pnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans) {
-    .Call('_CLVTools_pnbd_staticcov_LL_sum', PACKAGE = 'CLVTools', vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
+    .Call(`_CLVTools_pnbd_staticcov_LL_sum`, vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
 
 #' @title Pareto/NBD: PAlive without covariates
@@ -279,7 +298,7 @@ pnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_tra
 #' @name pnbd_nocov_PAlive
 #' @rdname pnbd_nocov_PAlive
 pnbd_nocov_PAlive <- function(vEstimated_params, vX, vT_x, vT_cal) {
-    .Call('_CLVTools_pnbd_nocov_PAlive', PACKAGE = 'CLVTools', vEstimated_params, vX, vT_x, vT_cal)
+    .Call(`_CLVTools_pnbd_nocov_PAlive`, vEstimated_params, vX, vT_x, vT_cal)
 }
 
 #' @title Pareto/NBD: PAlive with static covariates
@@ -322,6 +341,6 @@ pnbd_nocov_PAlive <- function(vEstimated_params, vX, vT_x, vT_cal) {
 #' @rdname pnbd_staticcov_PAlive
 #'
 pnbd_staticcov_PAlive <- function(vEstimated_params, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life) {
-    .Call('_CLVTools_pnbd_staticcov_PAlive', PACKAGE = 'CLVTools', vEstimated_params, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
+    .Call(`_CLVTools_pnbd_staticcov_PAlive`, vEstimated_params, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
 }
 

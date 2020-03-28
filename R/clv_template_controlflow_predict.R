@@ -1,18 +1,19 @@
 #' @importFrom stats predict
 #' @importFrom methods extends
-#' @include all_generics.R class_clv_fitted.R class_clv_fitted_static_cov.R clv_template_controlflow_predict.R
+#' @include all_generics.R
 clv.template.controlflow.predict <- function(object, prediction.end, predict.spending, continuous.discount.factor, verbose, user.newdata){
   Id <- Date <- Price <- DERT <- DECT <- actual.spending <- actual.x <- predicted.CLV <- predicted.Spending <- NULL # cran silence
+  period.first <- period.last <- period.length <- cbs.x <- i.x <- cbs.Spending <- i.Spending <- NULL
 
-  # prediction params -----------------------------------------------------------------------------------
-  # need to be set before adding the newdata as the model might need them (to re-estimate or similar)
+  # Set prediction params -----------------------------------------------------------------------------------
+  #   need to be set before adding the newdata as the model might need them (to re-estimate or similar)
 
   # Set prediction params from coef()
   object <- clv.controlflow.predict.set.prediction.params(obj=object)
 
 
-  # Newdata ------------------------------------------------------------------------------------------------
-  # Because many of the following steps refer to the data stored in the fitted model,
+  # Process Newdata ----------------------------------------------------------------------------------------------
+  # Because many of the following steps refer to the data stored in the fitted model (object),
   #   it first is replaced with newdata before any other steps are done
   if(!is.null(user.newdata)){
     # check newdata
@@ -28,6 +29,7 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 
 
   # Input checks ----------------------------------------------------------------------------------------
+  #   Only after newdata replaced clv.data stored in object because inputchecks use object@clv.data
   clv.controlflow.predict.check.inputs(obj=object, prediction.end=prediction.end, predict.spending=predict.spending,
                                        continuous.discount.factor=continuous.discount.factor,
                                        verbose=verbose)
@@ -48,6 +50,7 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
                                                  user.prediction.end = prediction.end)
   # Add Ids
   #   Cannot plonk in new column because of different length
+  #   **TODO: Well, then how can cbind work??
   dt.prediction <- cbind(unique(object@cbs[,"Id"]), dt.prediction)
 
   timepoint.prediction.first <- dt.prediction[1, period.first]
@@ -107,7 +110,7 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 
   # Predict spending ---------------------------------------------------------------------------
   #   Estimate a GG model for this
-  #   CLV: CETransactions * Spending
+  #   CLV: DERT * Spending
   #  Input checks already checked whether there is spending data in clv.data
   if(predict.spending){
 
@@ -308,7 +311,7 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 #' predict(pnc)
 #'
 #' # Now, predict 10 periods from the end of the last transaction
-#'    (end of estimation period)
+#' #   (end of estimation period)
 #' predict(pnc, prediction.end = 10) # ends on 2016-12-17
 #'
 #'
@@ -317,8 +320,6 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 #' @export
 predict.clv.fitted <- function(object, newdata=NULL, prediction.end=NULL, predict.spending=object@clv.data@has.spending,
                                continuous.discount.factor=0.1, verbose=TRUE, ...){
-# S3 method, also dispatched from S4
-
   # warn if unnecessary input
   if(length(list(...))>0)
     warning("The additional parameters given in '...' are ignored because they are unneded!",
@@ -333,4 +334,5 @@ predict.clv.fitted <- function(object, newdata=NULL, prediction.end=NULL, predic
 # S4 method to forward to S3 method
 #' @include all_generics.R class_clv_fitted.R
 #' @exportMethod predict
+#' @rdname predict.clv.fitted
 setMethod(f = "predict", signature = signature(object="clv.fitted"), predict.clv.fitted)

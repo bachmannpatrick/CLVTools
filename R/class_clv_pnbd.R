@@ -1,19 +1,19 @@
 #' @importFrom methods setClass
 #' @keywords internal
-#' @include class_clv_model_pnbd_nocov.R class_clv_data_no_covariates.R class_clv_fitted.R
+#' @include class_clv_model_pnbd_nocov.R class_clv_data.R class_clv_fitted.R
 setClass(Class = "clv.pnbd", contains = "clv.fitted",
          slots = c(
            cbs = "data.table"),
 
-         # Prototype is labeled not useful anymore,
-         # but still recommended by Hadley / Bioc
+         # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
          prototype = list(
            cbs = data.table()))
 
 
 
 # Convenience constructor to encapsulate all steps for object creation
-#' @include class_clv_data_no_covariates.R
+#' @include class_clv_data.R class_clv_model_pnbd_nocov.R
+#' @importFrom methods new
 clv.pnbd <- function(cl, clv.data){
 
   dt.cbs.pnbd <- pnbd_cbs(clv.data = clv.data)
@@ -28,6 +28,7 @@ clv.pnbd <- function(cl, clv.data){
 
 
 pnbd_cbs <- function(clv.data){
+  Date <- Price <- x <- date.first.actual.trans <- date.last.transaction <- NULL
   # Customer-By-Sufficiency (CBS) Matrix
   #   Only for transactions in calibration period
   #   Only repeat transactions are relevant

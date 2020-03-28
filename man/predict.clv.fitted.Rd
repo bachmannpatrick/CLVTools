@@ -2,9 +2,20 @@
 % Please edit documentation in R/clv_template_controlflow_predict.R
 \name{predict.clv.fitted}
 \alias{predict.clv.fitted}
+\alias{predict,clv.fitted-method}
 \title{Predict CLV from a fitted model}
 \usage{
 \method{predict}{clv.fitted}(
+  object,
+  newdata = NULL,
+  prediction.end = NULL,
+  predict.spending = object@clv.data@has.spending,
+  continuous.discount.factor = 0.1,
+  verbose = TRUE,
+  ...
+)
+
+\S4method{predict}{clv.fitted}(
   object,
   newdata = NULL,
   prediction.end = NULL,
@@ -127,7 +138,7 @@ pnc <- pnbd(clvdata(apparelTrans, time.unit="w", date.format="ymd"))
 predict(pnc)
 
 # Now, predict 10 periods from the end of the last transaction
-   (end of estimation period)
+#   (end of estimation period)
 predict(pnc, prediction.end = 10) # ends on 2016-12-17
 
 

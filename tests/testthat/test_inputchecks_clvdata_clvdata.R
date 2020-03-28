@@ -4,7 +4,7 @@ data("apparelTrans")
 data("cdnow")
 
 # Parameter data.transactions ------------------------------------------------------------------------------------
-context("Checkinput - clvdata - Parameter data.transactions")
+context("Inputchecks - clvdata - Parameter data.transactions")
 
 test_that("Fails if missing / NA / NULL", {
   expect_error(clvdata(data.transactions = , time.unit = "w",date.format = "ymd"))
@@ -80,7 +80,7 @@ test_that("Has no default argument", {
 
 
 # Parameter date.format ------------------------------------------------------------------------------------
-context("Checkinput - clvdata - Parameter date.format")
+context("Inputchecks - clvdata - Parameter date.format")
 
 test_that("Fails if missing/NULL/NA", {
   expect_error(clvdata(data.transactions = cdnow, time.unit = "w"),
@@ -123,7 +123,7 @@ test_that("Has no default argument", {
 
 # Parameter time.unit --------------------------------------------------------------------------------
 
-context("Checkinput - clvdata - Parameter time.unit")
+context("Inputchecks - clvdata - Parameter time.unit")
 
 test_that("Fails if missing/NULL/NA", {
   expect_error(clvdata(data.transactions = cdnow, date.format="ymd"),
@@ -172,7 +172,7 @@ test_that("Has no default argument", {
 
 
 # Parameter estimation.split ---------------------------------------------------------------------------
-context("Checkinput - clvdata - Parameter estimation.split")
+context("Inputchecks - clvdata - Parameter estimation.split")
 
 test_that("Fails if NA",{
   expect_error(clvdata(estimation.split = NA_real_,time.unit = "w", data.transactions = cdnow, date.format="ymd"),
@@ -239,7 +239,7 @@ test_that("Has default argument NULL",{
 
 
 # Parameter name.id ------------------------------------------------------------------------------------
-context("Checkinput - clvdata - Parameter name.id")
+context("Inputchecks - clvdata - Parameter name.id")
 
 test_that("Fails if NA/NULL", {
   expect_error(clvdata(name.id = NULL, time.unit = "w", data.transactions = cdnow, date.format="ymd"),
@@ -286,7 +286,7 @@ test_that("Has default argument Id",{
 
 
 # Parameter name.date ------------------------------------------------------------------------------------
-context("Checkinput - clvdata - Parameter name.date")
+context("Inputchecks - clvdata - Parameter name.date")
 
 test_that("Fails if NA/NULL", {
   expect_error(clvdata(name.date = NULL, time.unit = "w", data.transactions = cdnow, date.format="ymd"),
@@ -337,7 +337,7 @@ test_that("Has default argument Date",{
 
 
 # Parameter name.price ------------------------------------------------------------------------------------
-context("Checkinput - clvdata - Parameter name.price")
+context("Inputchecks - clvdata - Parameter name.price")
 
 test_that("Fails if NA/empty", {
   # Null is allowed to express no spending data

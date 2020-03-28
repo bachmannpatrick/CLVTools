@@ -8,8 +8,8 @@
 Time unit representing a single Day
 }
 \seealso{
-\code{\link[CLVTools:clv.time]{clv.time}}
+\code{\link[CLVTools:clv.time-class]{clv.time}}
 
-\code{\link[CLVTools:clv.time.date]{clv.time.date}}
+\code{\link[CLVTools:clv.time.date-class]{clv.time.date}}
 }
 \keyword{internal}

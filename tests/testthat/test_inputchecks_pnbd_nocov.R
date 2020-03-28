@@ -12,7 +12,7 @@ l.std.args.withholdout <- list(clv.data=clv.data.cdnow.with.holdout)
 fct.helper.inputchecks.check.all.no.cov.model(fct.model = pnbd, l.std.args = l.std.args.noholdout,   name.model="pnbd nocov")
 fct.helper.inputchecks.check.all.no.cov.model(fct.model = pnbd, l.std.args = l.std.args.withholdout, name.model="pnbd nocov")
 
-context("Checkinputs - pnbd nocov - Model specific")
+context("Inputchecks - pnbd nocov - Model specific")
 test_that("Fails for start params <= 0", {
   expect_error(pnbd(clv.data.cdnow.no.holdout, start.params.model = c(alpha=0, beta=1, r=1, s=1)),
                regexp = "greater")

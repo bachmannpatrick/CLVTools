@@ -19,7 +19,7 @@ l.std.args.withholdout <- list(clv.data=clv.data.apparel.with.holdout)
 fct.helper.inputchecks.check.all.static.cov.model(fct.model = pnbd, l.std.args = l.std.args.noholdout, name.model = "pnbd staticcov")
 fct.helper.inputchecks.check.all.static.cov.model(fct.model = pnbd, l.std.args = l.std.args.withholdout, name.model = "pnbd staticcov")
 
-context("Checkinputs - pnbd staticcov - Model specific")
+context("Inputchecks - pnbd staticcov - Model specific")
 test_that("Fails for start params <= 0", {
   expect_error(pnbd(clv.data.apparel.no.holdout, start.params.model = c(alpha=0, beta=1, r=1, s=1)),
                regexp = "greater")

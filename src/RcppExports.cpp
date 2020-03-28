@@ -2,6 +2,7 @@
 // Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #include <RcppArmadillo.h>
+#include <RcppGSL.h>
 #include <Rcpp.h>
 
 using namespace Rcpp;
@@ -63,17 +64,44 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// hypWrap
-double hypWrap(double a, double b, double c, double x);
-RcppExport SEXP _CLVTools_hypWrap(SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP xSEXP) {
+// gsl_hyp_2F1
+double gsl_hyp_2F1(const double a, const double b, const double c, const double x);
+RcppExport SEXP _CLVTools_gsl_hyp_2F1(SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type a(aSEXP);
-    Rcpp::traits::input_parameter< double >::type b(bSEXP);
-    Rcpp::traits::input_parameter< double >::type c(cSEXP);
-    Rcpp::traits::input_parameter< double >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(hypWrap(a, b, c, x));
+    Rcpp::traits::input_parameter< const double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< const double >::type b(bSEXP);
+    Rcpp::traits::input_parameter< const double >::type c(cSEXP);
+    Rcpp::traits::input_parameter< const double >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(gsl_hyp_2F1(a, b, c, x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vec_gsl_hyp2f0_e
+Rcpp::List vec_gsl_hyp2f0_e(const RcppGSL::Vector& vA, const RcppGSL::Vector& vB, const RcppGSL::Vector& vZ);
+RcppExport SEXP _CLVTools_vec_gsl_hyp2f0_e(SEXP vASEXP, SEXP vBSEXP, SEXP vZSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const RcppGSL::Vector& >::type vA(vASEXP);
+    Rcpp::traits::input_parameter< const RcppGSL::Vector& >::type vB(vBSEXP);
+    Rcpp::traits::input_parameter< const RcppGSL::Vector& >::type vZ(vZSEXP);
+    rcpp_result_gen = Rcpp::wrap(vec_gsl_hyp2f0_e(vA, vB, vZ));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vec_gsl_hyp2f1_e
+Rcpp::List vec_gsl_hyp2f1_e(const RcppGSL::Vector& vA, const RcppGSL::Vector& vB, const RcppGSL::Vector& vC, const RcppGSL::Vector& vZ);
+RcppExport SEXP _CLVTools_vec_gsl_hyp2f1_e(SEXP vASEXP, SEXP vBSEXP, SEXP vCSEXP, SEXP vZSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const RcppGSL::Vector& >::type vA(vASEXP);
+    Rcpp::traits::input_parameter< const RcppGSL::Vector& >::type vB(vBSEXP);
+    Rcpp::traits::input_parameter< const RcppGSL::Vector& >::type vC(vCSEXP);
+    Rcpp::traits::input_parameter< const RcppGSL::Vector& >::type vZ(vZSEXP);
+    rcpp_result_gen = Rcpp::wrap(vec_gsl_hyp2f1_e(vA, vB, vC, vZ));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -256,7 +284,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CLVTools_bgnbd_nocov_LL_ind", (DL_FUNC) &_CLVTools_bgnbd_nocov_LL_ind, 4},
     {"_CLVTools_bgnbd_nocov_LL_sum", (DL_FUNC) &_CLVTools_bgnbd_nocov_LL_sum, 4},
     {"_CLVTools_bgnbd_palive", (DL_FUNC) &_CLVTools_bgnbd_palive, 4},
-    {"_CLVTools_hypWrap", (DL_FUNC) &_CLVTools_hypWrap, 4},
+    {"_CLVTools_gsl_hyp_2F1", (DL_FUNC) &_CLVTools_gsl_hyp_2F1, 4},
+    {"_CLVTools_vec_gsl_hyp2f0_e", (DL_FUNC) &_CLVTools_vec_gsl_hyp2f0_e, 3},
+    {"_CLVTools_vec_gsl_hyp2f1_e", (DL_FUNC) &_CLVTools_vec_gsl_hyp2f1_e, 4},
     {"_CLVTools_gg_LL", (DL_FUNC) &_CLVTools_gg_LL, 3},
     {"_CLVTools_pnbd_nocov_CET", (DL_FUNC) &_CLVTools_pnbd_nocov_CET, 5},
     {"_CLVTools_pnbd_staticcov_CET", (DL_FUNC) &_CLVTools_pnbd_staticcov_CET, 9},

@@ -1,3 +1,4 @@
+#' @importFrom utils modifyList
 interlayer_correlation <- function(next.interlayers, LL.params, LL.function.sum, LL.function.ind, name.prefixed.cor.param.m, check.param.m.bounds, ...){
   # Catch all other args in elipsis
   all.other.args <- list(...)
@@ -9,7 +10,6 @@ interlayer_correlation <- function(next.interlayers, LL.params, LL.function.sum,
   s       <- exp(LL.params[["log.s"]])
 
   param.m <- LL.params[[name.prefixed.cor.param.m]]
-  # message("param.m ",param.m)
 
   # Laplace transformations
   LA <- (alpha_0 / (1 + alpha_0))^r
@@ -21,10 +21,7 @@ interlayer_correlation <- function(next.interlayers, LL.params, LL.function.sum,
     upperbound <-  1 / max(  LA*(1- LB), (1-LA)*LB )
     lowerbound <- -1 / max(  LA*LB     , (1-LA)*(1-LB))
 
-    if( param.m > upperbound || param.m < lowerbound)
-    {
-      # message("param.m ",param.m)
-      # message("param m out out bounds. upperbound: ",upperbound, " lowerbound:", lowerbound)
+    if( param.m > upperbound || param.m < lowerbound){
       return(NA_real_)
     }
   }
@@ -62,7 +59,6 @@ interlayer_correlation <- function(next.interlayers, LL.params, LL.function.sum,
 
   # Catch errors before they crash the addition below due to unqual extent
   if(any(!is.finite(LL.00), !is.finite(LL.01), !is.finite(LL.10), !is.finite(LL.11))){
-    # print("one of LLs nonfinite")
     return(NA_real_)
   }
 
@@ -70,7 +66,5 @@ interlayer_correlation <- function(next.interlayers, LL.params, LL.function.sum,
   vLL <- exp(LL.00) + param.m*LA*LB * (exp(LL.00) + exp(LL.11) - exp(LL.10) - exp(LL.01))
   vLL <- log(vLL)
 
-  # str(vLL)
-  # print(paste0("Correlation sum: ", -sum(vLL)))
   return(-sum(vLL))
 }

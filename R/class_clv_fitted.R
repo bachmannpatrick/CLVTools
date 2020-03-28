@@ -27,7 +27,7 @@ setOldClass("optimx")
 #' @importFrom methods setClass
 #'
 #' @keywords internal
-#' @include class_clv_model_basestrategy.R class_clv_data_no_covariates.R
+#' @include class_clv_model_basestrategy.R class_clv_data.R
 setClass(Class = "clv.fitted", # contains = "VIRTUAL",
          slots = c(
            call      = "language",
@@ -40,17 +40,13 @@ setClass(Class = "clv.fitted", # contains = "VIRTUAL",
            name.prefixed.cor.param.m    = "character",
            name.correlation.cor         = "character",
 
+           # Can save optimx result as optimx class because setOldClass (optimx) is
+           #  done before
            optimx.estimation.output = "optimx",
            optimx.hessian           = "matrix"),
 
-         # Prototype is labeled not useful anymore,
-         # but still recommended by Hadley / Bioc
+         # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
          prototype = list(
-           # Set in new()
-           # clv.model
-           # call
-           # clv.data
-
            prediction.params.model = numeric(0),
 
            estimation.used.correlation = logical(0),
@@ -64,8 +60,9 @@ setClass(Class = "clv.fitted", # contains = "VIRTUAL",
 # Convenience constructor to encapsulate all steps for object creation and
 #   enforce all required inputs
 #   no generic needed because always constructed in same way from transaction data and model
+#' @importFrom methods new
 clv.fitted <- function(cl, clv.model, clv.data){
-  # need to assign directly in constructor to have valid object
+
   # Deep copy of clv.data if ever modified by reference later on
   return(new("clv.fitted", call=cl, clv.model = clv.model,
              clv.data=data.table::copy(clv.data)))

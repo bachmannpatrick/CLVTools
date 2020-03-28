@@ -14,8 +14,6 @@ arma::vec bgnbd_palive(const arma::vec& vParams,
   const double a       = vParams(2);
   const double b       = vParams(3);
 
-  const unsigned int n = vX.n_elem;
-
   arma::vec n_term1 = (a/(b + vX - 1)) % clv::vec_pow((alpha + vT_cal)/(alpha + vT_x), (r+vX));
 
   return (1 / (1 + (vX > 0) % n_term1));

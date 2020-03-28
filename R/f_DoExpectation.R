@@ -3,7 +3,7 @@
 # fct.expectation: function to calculate expectation value at point t
 DoExpectation <- function(dt.expectation.seq, params_i, fct.expectation, clv.time){
 
-  period.no <- date.first.actual.trans <- expectation <- expectation_i <- date.period <- number.of.tu <- t_i <- period.first.trans <- NULL
+  period.num <- date.first.actual.trans <- expectation <- expectation_i <- date.period <- number.of.tu <- t_i <- period.first.trans <- NULL
 
   # Table with expectation periods
   #   period.first: Here we stand, only customers already alive here

@@ -4,12 +4,14 @@
 \name{apparelTrans}
 \alias{apparelTrans}
 \title{Apparel Retailer Dataset}
-\format{A \code{data.table} with 19573 rows and 3 variables:
+\format{
+A \code{data.table} with 19573 rows and 3 variables:
 \describe{
   \item{\code{Id}}{Customer Id}
   \item{\code{Date}}{Date of purchase}
   \item{\code{Price}}{Price of purchase}
-}}
+}
+}
 \usage{
 data("apparelTrans")
 }
