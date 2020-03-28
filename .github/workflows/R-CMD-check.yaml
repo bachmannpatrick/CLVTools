@@ -32,6 +32,11 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      # Check-out r-lib's github action repository
+      - uses: r-lib/actions/setup-r@master
+        #with:
+        #  r-version: ${{ matrix.config.r}}
+
       - name: Install system dependencies
         if: runner.os == 'Linux'
         env:
@@ -40,11 +45,6 @@ jobs:
           Rscript -e "remotes::install_github('r-hub/sysreqs')"
           sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
           sudo -s eval "$sysreqs"
-
-      # Check-out r-lib's github action repository
-      #- uses: r-lib/actions/setup-r@master
-      #  with:
-      #    r-version: ${{ matrix.config.r }}
 
       # Runs a set of commands using the runners shell to install the required dependencies
       - name: Install dependencies
