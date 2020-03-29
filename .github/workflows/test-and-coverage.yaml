@@ -67,7 +67,7 @@ jobs:
           # Install testing stuff (testthat and covr are part of package's Suggests and installed as package dependency.
           # remotes::install_cran("testthat", repos = "https://cran.rstudio.com/")
           # remotes::install_cran("covr", repos = "https://cran.rstudio.com/")
-          remotes::install_cran("devtools")
+          # remotes::install_cran("devtools")
         shell: Rscript {0}
 
       - name: Test coverage
