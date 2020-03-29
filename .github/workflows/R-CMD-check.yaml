@@ -32,9 +32,9 @@ jobs:
           remotes::install_deps(dependencies = TRUE) # installs binaries
           # remotes::install_cran(c("RcppGSL", "stringi"), repos = "https://cran.rstudio.com")
           # Install testing stuff
-          remotes::install_cran("testthat", repos = "https://cran.rstudio.com/")
-          remotes::install_cran("devtools", repos = "https://cran.rstudio.com/")
-          remotes::install_cran("covr", repos = "https://cran.rstudio.com/")
+          # remotes::install_cran("testthat", repos = "https://cran.rstudio.com/")
+          # remotes::install_cran("covr", repos = "https://cran.rstudio.com/")
+          remotes::install_cran("devtools")
         shell: Rscript {0}
 
       - name: Run tests
