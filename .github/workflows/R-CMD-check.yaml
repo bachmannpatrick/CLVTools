@@ -112,8 +112,12 @@ jobs:
             if(file.exists('depends.Rds')) {file.remove('depends.Rds')}
           shell: Rscript {0}
 
-        - name: Check
+        - name: Check on Mac / ubuntu
           run: rcmdcheck::rcmdcheck(args = c("--no-tests", "--as-cran", "--no-manual"), error_on = "warning", check_dir = "check")
+          shell: Rscript {0}
+
+        - name: Check on Windows (no install)
+          run: rcmdcheck::rcmdcheck(args = c("--no-tests", "--as-cran", "--no-manual", "--no-install"), error_on = "warning", check_dir = "check")
           shell: Rscript {0}
 
         - name: Upload check results, if failed
