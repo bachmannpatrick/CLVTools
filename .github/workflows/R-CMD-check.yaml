@@ -60,7 +60,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: windows-latest, r: '3.6.2'}
+          #- {os: windows-latest, r: '3.6.2'}
           - {os: macOS-latest,  r: '3.6.2'}
           - {os: ubuntu-16.04, r: '3.6.2', rspm: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"}
     env:
@@ -95,11 +95,19 @@ jobs:
             sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
             sudo -s eval "$sysreqs"
             sudo apt-get install -y qpdf # qpdf needed on ubuntu
-        - name: Install dependencies, some from cran incl RcppGSL and stringi
+
+        - name: Install gsl for mac
+          if: runner.os == 'macOS'
+          run: |
+            brew install gsl
+
+        - name: Install package dependencies
           run: |
             remotes::install_deps(dependencies = TRUE)
             # remotes::install_cran(c("RcppGSL", "stringi"), repos = "https://cran.rstudio.com")
             remotes::install_cran("rcmdcheck", repos = "https://cran.rstudio.com")
+            print(RcppGSL::LdFlags())
+            print(RcppGSL::CFlags())
             # remove because leads to NOTE. Does not exist on windows
             if(file.exists('depends.Rds')) {file.remove('depends.Rds')}
           shell: Rscript {0}
