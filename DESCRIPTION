@@ -27,7 +27,8 @@ Imports:
     foreach (>= 1.4.7),
     doParallel (>= 1.0.10)
 Suggests:
-    testthat
+    testthat,
+    covr
 License: GPL-3
 URL: https://github.com/bachmannpatrick/CLVTools
 BugReports: https://github.com/bachmannpatrick/CLVTools/issues
