@@ -1,8 +1,8 @@
 
 [![R CMD
-checks](https://github.com/bachmannpatrick/CLVTools/workflows/R-CMD-check/badge.svg)](https://github.com/bachmannpatrick/CLVTools/actions)
+checks](https://github.com/bachmannpatrick/CLVTools/workflows/R-CMD-check/badge.svg?branch=development)](https://github.com/bachmannpatrick/CLVTools/actions)
 
-[![Tests](https://github.com/bachmannpatrick/CLVTools/workflows/Tests/badge.svg)](https://github.com/bachmannpatrick/CLVTools/actions)
+[![Tests](https://github.com/bachmannpatrick/CLVTools/workflows/Tests/badge.svg?branch=development)](https://github.com/bachmannpatrick/CLVTools/actions)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
