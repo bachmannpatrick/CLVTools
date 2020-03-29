@@ -196,6 +196,7 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.static.covariates"), 
                                                                                                       start.params.life=c(), start.params.trans=c(),
                                                                                                       names.cov.constr=c(),start.params.constr=c(),
                                                                                                       reg.lambdas = c(), ...){
+
   cl  <- sys.call(1)
   obj <- clv.pnbd.static.cov(cl=cl, clv.data=clv.data)
 

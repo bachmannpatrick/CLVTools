@@ -10,27 +10,6 @@
 #   exportMethods(fun)
 setGeneric(name = "predict")
 
-# clv.data accessors -----------------------------------------------------------------------------------------
-
-# get matrix representation of lifetime cov data
-setGeneric("clv.data.get.matrix.data.cov.life", def=function(clv.data)
-  standardGeneric("clv.data.get.matrix.data.cov.life"))
-
-# get matrix representation of transaction cov data
-setGeneric("clv.data.get.matrix.data.cov.trans", def=function(clv.data)
-  standardGeneric("clv.data.get.matrix.data.cov.trans"))
-
-setGeneric("clv.data.get.names.cov.life", def=function(clv.data)
-  standardGeneric("clv.data.get.names.cov.life"))
-
-setGeneric("clv.data.get.names.cov.trans", def=function(clv.data)
-  standardGeneric("clv.data.get.names.cov.trans"))
-
-# reduce covariates to the ones given in names.x
-setGeneric("clv.data.reduce.covariates", def=function(clv.data, names.cov.life, names.cov.trans)
-  standardGeneric("clv.data.reduce.covariates"))
-
-
 
 # Controlflows -------------------------------------------------------------------------------------------------
 # Steps performed by all models but different between base (no cov) and covariate models
@@ -144,9 +123,6 @@ setGeneric(name="clv.model.backtransform.estimated.params.cov", def=function(clv
 
 
 # clv.time ----------------------------------------------------------------------------------------------------
-setGeneric("clv.time.set.sample.periods", function(clv.time, tp.first.transaction, tp.last.transaction, user.estimation.end)
-  standardGeneric("clv.time.set.sample.periods"))
-
 # convert user given date/datetimes
 setGeneric("clv.time.convert.user.input.to.timepoint", function(clv.time, user.timepoint)
   standardGeneric("clv.time.convert.user.input.to.timepoint"))
