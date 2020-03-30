@@ -21,8 +21,6 @@ bgnbd_palive(r, alpha, a, b, vX, vT_x, vT_cal)
 \item{vT_x}{Recency vector of length n.}
 
 \item{vT_cal}{Vector of length n indicating the total number of periods of observation.}
-
-\item{nPeriods}{time prediction time frame}
 }
 \value{
 Returns a vector with the PAlive for each customer.

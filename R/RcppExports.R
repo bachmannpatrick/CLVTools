@@ -75,8 +75,6 @@ bgnbd_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal) {
 #' @param alpha TODO: describe
 #' @param a TODO: describe
 #' @param b TODO: describe
-#' @param nPeriods time prediction time frame
-#' @template template_params_rcppxtxtcal
 #' @template template_params_rcppxtxtcal
 #'
 #' @details
