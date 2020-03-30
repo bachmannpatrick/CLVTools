@@ -31,5 +31,7 @@ jobs:
         run: |
           library(testthat)
           library(devtools)
-          devtools::test(reporter=RstudioReporter)
+          # devtools::test(reporter=RstudioReporter, stop_on_warning=TRUE, stop_on_failure = TRUE)
+          reporter <- RstudioReporter$new() # has to be defined outside capture.output to still print
+          capture.output(devtools::test(stop_on_failure =T, filter = "dummy", reporter = reporter, stop_on_warning=T))
         shell: Rscript {0}
