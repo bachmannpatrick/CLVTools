@@ -12,8 +12,6 @@
 //' @param alpha TODO: describe
 //' @param a TODO: describe
 //' @param b TODO: describe
-//' @param nPeriods time prediction time frame
-//' @template template_params_rcppxtxtcal
 //' @template template_params_rcppxtxtcal
 //'
 //' @details
