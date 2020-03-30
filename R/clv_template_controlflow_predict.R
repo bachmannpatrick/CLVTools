@@ -99,10 +99,11 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
                                                        list(actual.x        = .N,
                                                             actual.spending = sum(Price)),
                                                        by="Id"]
-    # **TODO: Cleanup merge join
-    # add actuals to prediction
     setkeyv(actuals.dt, "Id")
-    dt.prediction <- merge(x=dt.prediction, y=actuals.dt, by="Id", all.x=TRUE, sort=TRUE)
+
+    # add actuals to prediction
+    dt.prediction[dt.prediction,          actual.x        := i.actual.x,        on="Id"]
+    dt.prediction[dt.prediction,          actual.spending := i.actual.spending, on="Id"]
     dt.prediction[is.na(actual.x),        actual.x        := 0]
     dt.prediction[is.na(actual.spending), actual.spending := 0]
   }
