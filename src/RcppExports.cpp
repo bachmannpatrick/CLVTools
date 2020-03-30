@@ -8,17 +8,20 @@
 using namespace Rcpp;
 
 // bgnbd_cet
-arma::vec bgnbd_cet(const arma::vec& vParams, const double nPeriods, const arma::vec& vX, const arma::vec& vT_x, const arma::vec& vT_cal);
-RcppExport SEXP _CLVTools_bgnbd_cet(SEXP vParamsSEXP, SEXP nPeriodsSEXP, SEXP vXSEXP, SEXP vT_xSEXP, SEXP vT_calSEXP) {
+arma::vec bgnbd_cet(const double r, const double alpha, const double a, const double b, const double nPeriods, const arma::vec& vX, const arma::vec& vT_x, const arma::vec& vT_cal);
+RcppExport SEXP _CLVTools_bgnbd_cet(SEXP rSEXP, SEXP alphaSEXP, SEXP aSEXP, SEXP bSEXP, SEXP nPeriodsSEXP, SEXP vXSEXP, SEXP vT_xSEXP, SEXP vT_calSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type vParams(vParamsSEXP);
+    Rcpp::traits::input_parameter< const double >::type r(rSEXP);
+    Rcpp::traits::input_parameter< const double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< const double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< const double >::type b(bSEXP);
     Rcpp::traits::input_parameter< const double >::type nPeriods(nPeriodsSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vX(vXSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vT_x(vT_xSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vT_cal(vT_calSEXP);
-    rcpp_result_gen = Rcpp::wrap(bgnbd_cet(vParams, nPeriods, vX, vT_x, vT_cal));
+    rcpp_result_gen = Rcpp::wrap(bgnbd_cet(r, alpha, a, b, nPeriods, vX, vT_x, vT_cal));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -51,16 +54,19 @@ BEGIN_RCPP
 END_RCPP
 }
 // bgnbd_palive
-arma::vec bgnbd_palive(const arma::vec& vParams, const arma::vec& vX, const arma::vec& vT_x, const arma::vec& vT_cal);
-RcppExport SEXP _CLVTools_bgnbd_palive(SEXP vParamsSEXP, SEXP vXSEXP, SEXP vT_xSEXP, SEXP vT_calSEXP) {
+arma::vec bgnbd_palive(const double r, const double alpha, const double a, const double b, const arma::vec& vX, const arma::vec& vT_x, const arma::vec& vT_cal);
+RcppExport SEXP _CLVTools_bgnbd_palive(SEXP rSEXP, SEXP alphaSEXP, SEXP aSEXP, SEXP bSEXP, SEXP vXSEXP, SEXP vT_xSEXP, SEXP vT_calSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type vParams(vParamsSEXP);
+    Rcpp::traits::input_parameter< const double >::type r(rSEXP);
+    Rcpp::traits::input_parameter< const double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< const double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< const double >::type b(bSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vX(vXSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vT_x(vT_xSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vT_cal(vT_calSEXP);
-    rcpp_result_gen = Rcpp::wrap(bgnbd_palive(vParams, vX, vT_x, vT_cal));
+    rcpp_result_gen = Rcpp::wrap(bgnbd_palive(r, alpha, a, b, vX, vT_x, vT_cal));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -280,10 +286,10 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_CLVTools_bgnbd_cet", (DL_FUNC) &_CLVTools_bgnbd_cet, 5},
+    {"_CLVTools_bgnbd_cet", (DL_FUNC) &_CLVTools_bgnbd_cet, 8},
     {"_CLVTools_bgnbd_nocov_LL_ind", (DL_FUNC) &_CLVTools_bgnbd_nocov_LL_ind, 4},
     {"_CLVTools_bgnbd_nocov_LL_sum", (DL_FUNC) &_CLVTools_bgnbd_nocov_LL_sum, 4},
-    {"_CLVTools_bgnbd_palive", (DL_FUNC) &_CLVTools_bgnbd_palive, 4},
+    {"_CLVTools_bgnbd_palive", (DL_FUNC) &_CLVTools_bgnbd_palive, 7},
     {"_CLVTools_gsl_hyp_2F1", (DL_FUNC) &_CLVTools_gsl_hyp_2F1, 4},
     {"_CLVTools_vec_gsl_hyp2f0_e", (DL_FUNC) &_CLVTools_vec_gsl_hyp2f0_e, 3},
     {"_CLVTools_vec_gsl_hyp2f1_e", (DL_FUNC) &_CLVTools_vec_gsl_hyp2f1_e, 4},

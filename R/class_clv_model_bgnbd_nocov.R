@@ -81,11 +81,10 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.no.cov")
   fct.bgnbd.expectation <- function(r, alpha, a, b, t){
     term1 = (a + b - 1)/(a - 1)
     term2 = (alpha/(alpha + t))^r
-    term3 = gsl_hyp_2F1(r, b, a + b - 1, t/(alpha + t))
+    term3 = vec_gsl_hyp2f1_e(r, b, a + b - 1, t/(alpha + t))$value
 
     return(term1 * (1 - term2 * term3))
   }
-
 
   # To caluclate expectation at point t for customers alive in t, given in params_i.t
   fct.expectation <- function(params_i.t) {
@@ -116,7 +115,10 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgnbd.no.cov")
 
 
   # Add CET
-  dt.prediction[, CET := bgnbd_cet(vParams = estimated.params,
+  dt.prediction[, CET := bgnbd_cet(r = estimated.params[["r"]],
+                                   alpha = estimated.params[["alpha"]],
+                                   a = estimated.params[["a"]],
+                                   b = estimated.params[["b"]],
                                    nPeriods = predict.number.of.periods,
                                    vX = clv.fitted@cbs[, x],
                                    vT_x = clv.fitted@cbs[, t.x],
@@ -124,7 +126,10 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgnbd.no.cov")
 
 
   # Add PAlive
-  dt.prediction[, PAlive := bgnbd_palive(vParams = estimated.params,
+  dt.prediction[, PAlive := bgnbd_palive(r = estimated.params[["r"]],
+                                         alpha = estimated.params[["alpha"]],
+                                         a = estimated.params[["a"]],
+                                         b = estimated.params[["b"]],
                                          vX = clv.fitted@cbs[, x],
                                          vT_x = clv.fitted@cbs[, t.x],
                                          vT_cal = clv.fitted@cbs[, T.cal])]

@@ -27,6 +27,7 @@ clv.bgnbd <- function(cl, clv.data){
 
 
 bgnbd_cbs <- function(clv.data){
+  Date <- Price <- x <- date.first.actual.trans <- date.last.transaction <- NULL
   # Customer-By-Sufficiency (CBS) Matrix
   #   Only for transactions in calibration period
   #   Only repeat transactions are relevant

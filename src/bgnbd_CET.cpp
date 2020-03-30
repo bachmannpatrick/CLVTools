@@ -8,13 +8,15 @@
 //' Calculates the expected number of transactions in a given time period based
 //' on a customer's past transaction behavior and the BG/NBD model parameters.
 //'
-//' @template template_params_rcppestimatedparams
-//' @param dPrediction_period time prediction time frame
+//' @param r TODO: describe
+//' @param alpha TODO: describe
+//' @param a TODO: describe
+//' @param b TODO: describe
+//' @param nPeriods time prediction time frame
 //' @template template_params_rcppxtxtcal
 //'
-//'
 //' @details
-//' \code{vParams} vector with the estimated parameters in original scale
+//' \code{r} \code{alpha} \code{a} \code{b} estimated parameters in original scale
 //' for the BG/NBD model, namely (r, alpha, a, b).
 //' r and alpha: TODO: description.
 //' a and b: TODO: description
@@ -27,16 +29,14 @@
 //' @name bgnbd_CET
 //' @rdname bgnbd_CET
 // [[Rcpp::export]]
-arma::vec bgnbd_cet(const arma::vec& vParams,
+arma::vec bgnbd_cet(const double r,
+                    const double alpha,
+                    const double a,
+                    const double b,
                     const double nPeriods,
                     const arma::vec& vX,
                     const arma::vec& vT_x,
                     const arma::vec& vT_cal){
-
-  const double r       = vParams(0);
-  const double alpha   = vParams(1);
-  const double a       = vParams(2);
-  const double b       = vParams(3);
 
   arma::vec term1 = ((a + b + vX - 1) / (a - 1));
 

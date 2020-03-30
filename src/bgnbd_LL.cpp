@@ -1,4 +1,9 @@
-#include "bgnbd_LL.h"
+#include <RcppArmadillo.h>
+#include <math.h>
+#include "clv_vectorized.h"
+
+arma::vec beta_ratio(const double a, const arma::vec& b, const double x, const double y);
+
 
 //' @rdname bgnbd_nocov_LL_sum
 // [[Rcpp::export]]

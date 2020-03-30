@@ -5,18 +5,24 @@
 \alias{bgnbd_cet}
 \title{BG/NBD: Conditional Expected Transactions without covariates}
 \usage{
-bgnbd_cet(vParams, nPeriods, vX, vT_x, vT_cal)
+bgnbd_cet(r, alpha, a, b, nPeriods, vX, vT_x, vT_cal)
 }
 \arguments{
+\item{r}{TODO: describe}
+
+\item{alpha}{TODO: describe}
+
+\item{a}{TODO: describe}
+
+\item{b}{TODO: describe}
+
+\item{nPeriods}{time prediction time frame}
+
 \item{vX}{Frequency vector of length n counting the numbers of purchases.}
 
 \item{vT_x}{Recency vector of length n.}
 
 \item{vT_cal}{Vector of length n indicating the total number of periods of observation.}
-
-\item{vEstimated_params}{Vector with the Pareto/NBD model parameters at original scale.}
-
-\item{dPrediction_period}{time prediction time frame}
 }
 \value{
 Returns a vector containing the conditional expected transactions for the existing
@@ -27,7 +33,7 @@ Calculates the expected number of transactions in a given time period based
 on a customer's past transaction behavior and the BG/NBD model parameters.
 }
 \details{
-\code{vParams} vector with the estimated parameters in original scale
+\code{r} \code{alpha} \code{a} \code{b} estimated parameters in original scale
 for the BG/NBD model, namely (r, alpha, a, b).
 r and alpha: TODO: description.
 a and b: TODO: description

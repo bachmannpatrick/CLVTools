@@ -8,3 +8,6 @@
 ^man-roxygen$
 ^thoughts_parameterhandling\.rtf$
 ^\.github$
+^Extensions\.md$
+^docs$
+

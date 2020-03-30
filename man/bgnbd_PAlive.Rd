@@ -5,16 +5,24 @@
 \alias{bgnbd_palive}
 \title{BG/NBD: PAlive without covariates}
 \usage{
-bgnbd_palive(vParams, vX, vT_x, vT_cal)
+bgnbd_palive(r, alpha, a, b, vX, vT_x, vT_cal)
 }
 \arguments{
+\item{r}{TODO: describe}
+
+\item{alpha}{TODO: describe}
+
+\item{a}{TODO: describe}
+
+\item{b}{TODO: describe}
+
 \item{vX}{Frequency vector of length n counting the numbers of purchases.}
 
 \item{vT_x}{Recency vector of length n.}
 
 \item{vT_cal}{Vector of length n indicating the total number of periods of observation.}
 
-\item{vEstimated_params}{Vector with the Pareto/NBD model parameters at original scale.}
+\item{nPeriods}{time prediction time frame}
 }
 \value{
 Returns a vector with the PAlive for each customer.
@@ -24,7 +32,7 @@ BG/NBD without Covariates: Calculates the probability of a customer being alive
 at the end of the calibration period.
 }
 \details{
-\code{vParams} vector with the estimated parameters in original scale
+\code{r} \code{alpha} \code{a} \code{b} estimated parameters in original scale
 for the BG/NBD model, namely (r, alpha, a, b).
 r and alpha: TODO: description.
 a and b: TODO: description

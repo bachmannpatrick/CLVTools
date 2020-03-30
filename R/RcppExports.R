@@ -7,13 +7,15 @@
 #' Calculates the expected number of transactions in a given time period based
 #' on a customer's past transaction behavior and the BG/NBD model parameters.
 #'
-#' @template template_params_rcppestimatedparams
-#' @param dPrediction_period time prediction time frame
+#' @param r TODO: describe
+#' @param alpha TODO: describe
+#' @param a TODO: describe
+#' @param b TODO: describe
+#' @param nPeriods time prediction time frame
 #' @template template_params_rcppxtxtcal
 #'
-#'
 #' @details
-#' \code{vParams} vector with the estimated parameters in original scale
+#' \code{r} \code{alpha} \code{a} \code{b} estimated parameters in original scale
 #' for the BG/NBD model, namely (r, alpha, a, b).
 #' r and alpha: TODO: description.
 #' a and b: TODO: description
@@ -25,8 +27,8 @@
 #'
 #' @name bgnbd_CET
 #' @rdname bgnbd_CET
-bgnbd_cet <- function(vParams, nPeriods, vX, vT_x, vT_cal) {
-    .Call(`_CLVTools_bgnbd_cet`, vParams, nPeriods, vX, vT_x, vT_cal)
+bgnbd_cet <- function(r, alpha, a, b, nPeriods, vX, vT_x, vT_cal) {
+    .Call(`_CLVTools_bgnbd_cet`, r, alpha, a, b, nPeriods, vX, vT_x, vT_cal)
 }
 
 #' @rdname bgnbd_nocov_LL_sum
@@ -69,11 +71,16 @@ bgnbd_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal) {
 #' BG/NBD without Covariates: Calculates the probability of a customer being alive
 #' at the end of the calibration period.
 #'
-#' @template template_params_rcppestimatedparams
+#' @param r TODO: describe
+#' @param alpha TODO: describe
+#' @param a TODO: describe
+#' @param b TODO: describe
+#' @param nPeriods time prediction time frame
+#' @template template_params_rcppxtxtcal
 #' @template template_params_rcppxtxtcal
 #'
 #' @details
-#' \code{vParams} vector with the estimated parameters in original scale
+#' \code{r} \code{alpha} \code{a} \code{b} estimated parameters in original scale
 #' for the BG/NBD model, namely (r, alpha, a, b).
 #' r and alpha: TODO: description.
 #' a and b: TODO: description
@@ -84,8 +91,8 @@ bgnbd_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal) {
 #'
 #' @name bgnbd_PAlive
 #' @rdname bgnbd_PAlive
-bgnbd_palive <- function(vParams, vX, vT_x, vT_cal) {
-    .Call(`_CLVTools_bgnbd_palive`, vParams, vX, vT_x, vT_cal)
+bgnbd_palive <- function(r, alpha, a, b, vX, vT_x, vT_cal) {
+    .Call(`_CLVTools_bgnbd_palive`, r, alpha, a, b, vX, vT_x, vT_cal)
 }
 
 #' @title GSL Hypergeom 2f1

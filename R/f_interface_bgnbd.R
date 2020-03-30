@@ -10,7 +10,6 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = F
 #' @title BG/NBD models
 #'
 #' @template template_params_estimate
-#' @template template_params_estimate_cov
 #' @template template_param_verbose
 #' @template template_param_dots
 #'
