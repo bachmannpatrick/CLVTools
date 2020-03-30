@@ -139,3 +139,8 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgnbd.no.cov")
   return(dt.prediction)
 })
 
+# .clv.model.vcov.jacobi.diag --------------------------------------------------------------------------------------------------------
+setMethod("clv.model.vcov.jacobi.diag", signature(clv.model="clv.model.bgnbd.no.cov")) {
+  return(NULL)
+}
+
