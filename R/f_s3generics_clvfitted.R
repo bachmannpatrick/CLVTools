@@ -294,10 +294,6 @@ summary.clv.fitted <- function(object, ...){
   # Coefficient table --------------------------------------------------------------
   # Return the full coefficient table. The subset is to relevant rows is done in the
   #   printing
-  # Jeff:
-  # SE <- sqrt(diag(Hinvcov))
-  # tval    <- (params-0) / SE
-  # pval    <- 2*(1-pnorm(abs(tval)))
   all.est.params  <- coef(object)
 
   # return NA_ placeholder if cannot calculate vcov
@@ -316,10 +312,8 @@ summary.clv.fitted <- function(object, ...){
       warning("For some parameters the standard error could not be calculated.", call. = FALSE)
   }
 
-  # **TODO: ASK Jeff for correct naming
-  # t.val <- (all.est.params-0)/se
+  # Jeff: z.val - norm
   z.val <- (all.est.params-0)/se
-  # p.val <- 2*pt(q=-abs(t.val), df=nobs(object)-1)
   p.val <- 2*(1-pnorm(abs(z.val)))
 
   res$coefficients <- cbind(all.est.params,
