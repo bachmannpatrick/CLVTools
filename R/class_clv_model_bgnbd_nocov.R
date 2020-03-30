@@ -140,6 +140,8 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgnbd.no.cov")
 })
 
 # .clv.model.vcov.jacobi.diag --------------------------------------------------------------------------------------------------------
+
 setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, prefixed.params){
   return(NULL)
 })
+
