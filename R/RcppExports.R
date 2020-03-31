@@ -105,10 +105,59 @@ pnbd_staticcov_CET <- function(vEstimated_params, dPrediction_period, vX, vT_x, 
     .Call(`_CLVTools_pnbd_staticcov_CET`, vEstimated_params, dPrediction_period, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
 }
 
+#' @name pnbd_DERT
+#'
+#' @title Pareto/NBD: Discounted Expected Residual Transactions
+#'
+#' @description
+#' Calculates the discounted expected residual transactions.
+#'
+#' \itemize{
+#' \item{\code{pnbd_nocov_DERT}}{ DERT for the Pareto/NBD model without covariates}
+#' \item{\code{pnbd_staticcov_DERT}}{ DERT for the Pareto/NBD model with static covariates}
+#' }
+#'
+#' @template template_params_rcppestimatedparams
+#' @template template_params_rcppxtxtcal
+#' @template template_params_rcppcovmatrix
+#' @template template_params_rcppvcovparams
+#' @param continuous_discount_factor continuous discount factor to use
+#'
+#' @details
+#'
+#' \code{vEstimated_params} vector with the estimated parameters in original scale
+#' for the Pareto/NBD model, namely (r, alpha, s, beta). \cr
+#' r and alpha: unobserved parameters that describe the NBD transaction process. \cr
+#' s and beta: unobserved parameters that describe the pareto
+#' (exponential gamma) lifetime process.
+#'
+#' \code{mCov_trans} is a matrix containing the covariates data of
+#' the time-invariant covariates that affect the transaction process.
+#' Each column represents a different covariate. For every column a gamma parameter
+#' needs to added to \code{vCovParams_trans} at the respective position.
+#'
+#' \code{mCov_life} is a matrix containing the covariates data of
+#' the time-invariant covariates that affect the lifetime process.
+#' Each column represents a different covariate. For every column a gamma parameter
+#' needs to added to \code{vCovParams_life} at the respective position.
+#'
+#' @return
+#' Returns a vector with the DERT for each customer.
+#'
+#' @references
+#' Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
+#' Pareto/NBD Model and Related Expressions.", Web.
+#' \url{http://www.brucehardie.com/notes/008/}.
+#'
+#'
+NULL
+
+#' @rdname pnbd_DERT
 pnbd_nocov_DERT <- function(vEstimated_params, continuous_discount_factor, vX, vT_x, vT_cal) {
     .Call(`_CLVTools_pnbd_nocov_DERT`, vEstimated_params, continuous_discount_factor, vX, vT_x, vT_cal)
 }
 
+#' @rdname pnbd_DERT
 pnbd_staticcov_DERT <- function(vEstimated_params, continuous_discount_factor, vX, vT_x, vT_cal, mCov_life, mCov_trans, vCovParams_life, vCovParams_trans) {
     .Call(`_CLVTools_pnbd_staticcov_DERT`, vEstimated_params, continuous_discount_factor, vX, vT_x, vT_cal, mCov_life, mCov_trans, vCovParams_life, vCovParams_trans)
 }
@@ -211,8 +260,8 @@ pnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_tra
 #'
 #' @details
 #' \code{vEstimated_params} vector with the estimated parameters in original scale
-#' for the Pareto/NBD model, namely (r, alpha, s, beta).
-#' r and alpha: unobserved parameters that describe the NBD transaction process.
+#' for the Pareto/NBD model, namely (r, alpha, s, beta). \cr
+#' r and alpha: unobserved parameters that describe the NBD transaction process. \cr
 #' s and beta: unobserved parameters that describe the pareto
 #' (exponential gamma) lifetime process.
 #'
