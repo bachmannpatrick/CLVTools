@@ -38,8 +38,8 @@ test_that("Works out-of-the box, without additional params", {
 
 test_that("Works with custom model.start.params", {
   skip_on_cran()
-  expect_silent(bgnbd(clv.data=clv.data.cdnow.noholdout,   start.params.model = c(r=1, alpha = 3, a = 1, b = 1), verbose=FALSE))
-  expect_silent(bgnbd(clv.data=clv.data.cdnow.withholdout, start.params.model = c(r=1, alpha = 3, b = 1, b = 1), verbose=FALSE))
+  expect_silent(bgnbd(clv.data=clv.data.cdnow.noholdout,   start.params.model = c(r=1, alpha = 3, a = 1, b = 3), verbose=FALSE))
+  expect_silent(bgnbd(clv.data=clv.data.cdnow.withholdout, start.params.model = c(r=1, alpha = 3, a = 1, b = 3), verbose=FALSE))
 })
 
 # optimx.args
