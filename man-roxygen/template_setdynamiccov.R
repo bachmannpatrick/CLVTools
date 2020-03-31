@@ -1,5 +1,7 @@
 #' @name SetDynamicCovariates
+#'
 #' @title Add Dynamic Covariates to a CLV data object
+#'
 #' @param clv.data CLV data object to add the covariates data to.
 #' @param data.cov.life Dynamic covariate data as \code{data.frame} or \code{data.table} for the lifetime process.
 #' @param data.cov.trans Dynamic covariate data as \code{data.frame} or \code{data.table} for the transaction process.

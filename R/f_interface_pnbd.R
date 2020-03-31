@@ -1,3 +1,5 @@
+#' @name pnbd
+#'
 #' @title Pareto/NBD models
 #'
 #' @template template_params_estimate
@@ -159,7 +161,9 @@
 #' }
 #' }
 #'
-#'
+NULL
+
+
 #' @exportMethod pnbd
 setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FALSE, start.param.cor=c(),
                                   optimx.args=list(), verbose=TRUE, ...)
@@ -168,9 +172,7 @@ setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FA
 
 
 #' @include class_clv_data.R
-#' @aliases pnbd,clv.data-method
 #' @rdname pnbd
-#' @export
 setMethod("pnbd", signature = signature(clv.data="clv.data"), definition = function(clv.data,
                                                                                         start.params.model=c(),
                                                                                         use.cor = FALSE,
@@ -185,9 +187,7 @@ setMethod("pnbd", signature = signature(clv.data="clv.data"), definition = funct
 })
 
 #' @include class_clv_data_staticcovariates.R
-#' @aliases pnbd,clv.data.static.covariates-method
 #' @rdname pnbd
-#' @export
 setMethod("pnbd", signature = signature(clv.data="clv.data.static.covariates"), definition = function(clv.data,
                                                                                                       start.params.model=c(),
                                                                                                       use.cor = FALSE,
@@ -215,8 +215,6 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.static.covariates"), 
 
 #' @include class_clv_data_dynamiccovariates.R
 #' @rdname pnbd
-#' @aliases pnbd,clv.data.dynamic.covariates-method
-#' @export
 setMethod("pnbd", signature = signature(clv.data="clv.data.dynamic.covariates"), definition = function(clv.data,
                                                                                                         start.params.model=c(),
                                                                                                         use.cor = FALSE,

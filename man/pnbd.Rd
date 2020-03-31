@@ -7,16 +7,6 @@
 \alias{pnbd,clv.data.dynamic.covariates-method}
 \title{Pareto/NBD models}
 \usage{
-pnbd(
-  clv.data,
-  start.params.model = c(),
-  use.cor = FALSE,
-  start.param.cor = c(),
-  optimx.args = list(),
-  verbose = TRUE,
-  ...
-)
-
 \S4method{pnbd}{clv.data}(
   clv.data,
   start.params.model = c(),
@@ -232,7 +222,6 @@ pnbd(clv.data.dyn.cov, reg.lambdas = c(trans=10, life=2))
 
 }
 }
-
 
 }
 \references{
