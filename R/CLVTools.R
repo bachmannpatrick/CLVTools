@@ -1,4 +1,3 @@
-#' @name CLVTools
 #' @title Customer Lifetime Value Tools
 #' @description
 #' CLVTools is a toolbox for various probabilistic customer attrition models
@@ -47,6 +46,6 @@
 #' @useDynLib CLVTools, .registration=TRUE
 #' @import data.table
 #' @importFrom methods setClass
-NULL
+"_PACKAGE"
 
 
