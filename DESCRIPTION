@@ -22,7 +22,6 @@ Imports:
     lubridate (>= 1.7.3), 
     ggplot2 (>= 3.2.0),
     optimx (>= 2018-7.10),
-    Rcpp (>= 0.12.12),
     Matrix (>= 1.2-17),
     foreach (>= 1.4.7),
     doParallel (>= 1.0.10)
