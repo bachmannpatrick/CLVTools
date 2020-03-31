@@ -1,4 +1,4 @@
-#' @name plot.clv.fitted
+
 #' @title Plot expected and actual repeat transactions
 #' @param x The fitted clv model to plot
 #' @param newdata A cldata object for which the plotting should be made with the fitted model. If none or NULL is given, the plot is made for the data on which the model was fit.

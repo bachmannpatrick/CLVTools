@@ -29,8 +29,6 @@ arma::vec lbeta(const arma::vec& a, const double b){
 //' @template template_rcpp_gg_reference
 //'
 //'
-//' @name gg_LL
-//' @rdname gg_LL
 // [[Rcpp::export]]
 double gg_LL(const arma::vec& vLogparams,
              const arma::vec& vX,

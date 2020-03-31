@@ -40,8 +40,6 @@ vec_gsl_hyp2f1_e <- function(vA, vB, vC, vZ) {
 #' @template template_rcpp_gg_reference
 #'
 #'
-#' @name gg_LL
-#' @rdname gg_LL
 gg_LL <- function(vLogparams, vX, vM_x) {
     .Call(`_CLVTools_gg_LL`, vLogparams, vX, vM_x)
 }
@@ -74,8 +72,6 @@ gg_LL <- function(vLogparams, vX, vM_x) {
 #'  Pareto/NBD Model and Related Expressions.", Web.
 #'  \url{http://www.brucehardie.com/notes/008/}.
 #'
-#' @name pnbd_nocov_CET
-#' @rdname pnbd_nocov_CET
 pnbd_nocov_CET <- function(vEstimated_params, dPrediction_period, vX, vT_x, vT_cal) {
     .Call(`_CLVTools_pnbd_nocov_CET`, vEstimated_params, dPrediction_period, vX, vT_x, vT_cal)
 }
@@ -119,8 +115,6 @@ pnbd_nocov_CET <- function(vEstimated_params, dPrediction_period, vX, vT_x, vT_c
 #'  Pareto/NBD Model and Related Expressions.", Web.
 #'  \url{http://www.brucehardie.com/notes/008/}.
 #'
-#' @name pnbd_staticcov_CET
-#' @rdname pnbd_staticcov_CET
 pnbd_staticcov_CET <- function(vEstimated_params, dPrediction_period, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life) {
     .Call(`_CLVTools_pnbd_staticcov_CET`, vEstimated_params, dPrediction_period, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
 }
@@ -246,8 +240,6 @@ pnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_tra
 #'  Pareto/NBD Model and Related Expressions.", Web.
 #'  \url{http://www.brucehardie.com/notes/008/}.
 #'
-#' @name pnbd_nocov_PAlive
-#' @rdname pnbd_nocov_PAlive
 pnbd_nocov_PAlive <- function(vEstimated_params, vX, vT_x, vT_cal) {
     .Call(`_CLVTools_pnbd_nocov_PAlive`, vEstimated_params, vX, vT_x, vT_cal)
 }
@@ -288,8 +280,6 @@ pnbd_nocov_PAlive <- function(vEstimated_params, vX, vT_x, vT_cal) {
 #'  Pareto/NBD Model and Related Expressions.", Web.
 #'  \url{http://www.brucehardie.com/notes/008/}.
 #'
-#' @name pnbd_staticcov_PAlive
-#' @rdname pnbd_staticcov_PAlive
 #'
 pnbd_staticcov_PAlive <- function(vEstimated_params, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life) {
     .Call(`_CLVTools_pnbd_staticcov_PAlive`, vEstimated_params, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)

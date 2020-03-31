@@ -57,8 +57,6 @@ arma::vec pnbd_CET(const arma::vec& vEstimated_model_params,
 //'  Pareto/NBD Model and Related Expressions.", Web.
 //'  \url{http://www.brucehardie.com/notes/008/}.
 //'
-//' @name pnbd_nocov_CET
-//' @rdname pnbd_nocov_CET
 // [[Rcpp::export]]
 arma::vec pnbd_nocov_CET(const arma::vec& vEstimated_params,
                          const double dPrediction_period,
@@ -136,8 +134,6 @@ arma::vec pnbd_nocov_CET(const arma::vec& vEstimated_params,
 //'  Pareto/NBD Model and Related Expressions.", Web.
 //'  \url{http://www.brucehardie.com/notes/008/}.
 //'
-//' @name pnbd_staticcov_CET
-//' @rdname pnbd_staticcov_CET
 // [[Rcpp::export]]
 arma::vec pnbd_staticcov_CET(const arma::vec& vEstimated_params,
                              const double dPrediction_period,

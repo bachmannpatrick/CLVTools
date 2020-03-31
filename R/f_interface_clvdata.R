@@ -1,5 +1,5 @@
 
-#' @name clvdata
+
 #' @title Create an object for transactional data required to estimate CLV
 #'
 #' @param data.transactions Transaction data as \code{data.frame} or \code{data.table}. See details.

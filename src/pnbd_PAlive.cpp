@@ -95,8 +95,6 @@ arma::vec pnbd_PAlive( const arma::vec& vEstimated_model_params,
 //'  Pareto/NBD Model and Related Expressions.", Web.
 //'  \url{http://www.brucehardie.com/notes/008/}.
 //'
-//' @name pnbd_nocov_PAlive
-//' @rdname pnbd_nocov_PAlive
 // [[Rcpp::export]]
 arma::vec pnbd_nocov_PAlive(const arma::vec& vEstimated_params,
                             const arma::vec& vX,
@@ -165,8 +163,6 @@ arma::vec pnbd_nocov_PAlive(const arma::vec& vEstimated_params,
 //'  Pareto/NBD Model and Related Expressions.", Web.
 //'  \url{http://www.brucehardie.com/notes/008/}.
 //'
-//' @name pnbd_staticcov_PAlive
-//' @rdname pnbd_staticcov_PAlive
 //'
 // [[Rcpp::export]]
 arma::vec pnbd_staticcov_PAlive(const arma::vec& vEstimated_params,
