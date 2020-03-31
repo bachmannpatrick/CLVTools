@@ -4,6 +4,55 @@
 
 #include "pnbd_PAlive.h"
 
+//' @name pnbd_CET
+//' @keywords internal
+//'
+//' @title Pareto/NBD: Conditional Expected Transactions
+//'
+//' @description
+//' Calculates the expected number of transactions in a given time period based
+//' on a customer's past transaction behavior and the Pareto/NBD model parameters.
+//'
+//' \itemize{
+//' \item{\code{pnbd_nocov_CET}}{ Conditional Expected Transactions without covariates}
+//' \item{\code{pnbd_staticcov_CET}}{ Conditional Expected Transactions with static covariates}
+//' }
+//'
+//'
+//' @template template_params_rcppestimatedparams
+//' @param dPrediction_period time prediction time frame
+//' @template template_params_rcppxtxtcal
+//' @template template_params_rcppcovmatrix
+//' @template template_params_rcppvcovparams
+//'
+//'
+//' @details
+//' \code{vEstimated_params} vector with the estimated parameters in original scale
+//' for the Pareto/NBD model, namely (r, alpha, s, beta).
+//' r and alpha: unobserved parameters that describe the NBD transaction process.
+//' s and beta: unobserved parameters that describe the pareto
+//' (exponential gamma) dropout process.
+//'
+//' \code{mCov_trans} is a matrix containing the covariates data of
+//' the time-invariant covariates that affect the transaction process.
+//' Each column represents a different covariate. For every column a gamma parameter
+//' needs to added to \code{vCovParams_trans} at the respective position.
+//'
+//' \code{mCov_life} is a matrix containing the covariates data of
+//' the time-invariant covariates that affect the lifetime process.
+//' Each column represents a different covariate. For every column a gamma parameter
+//' needs to added to \code{vCovParams_life} at the respective position.
+//'
+//'
+//'@return
+//' Returns a vector containing the conditional expected transactions for the existing
+//' customers in the Pareto/NBD model.
+//'
+//'@references
+//'  Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
+//'  Pareto/NBD Model and Related Expressions.", Web.
+//'  \url{http://www.brucehardie.com/notes/008/}.
+//'
 arma::vec pnbd_CET(const arma::vec& vEstimated_model_params,
                    const double dPrediction_period,
                    const arma::vec& vX,
@@ -28,34 +77,8 @@ arma::vec pnbd_CET(const arma::vec& vEstimated_model_params,
 }
 
 
-//' @title Pareto/NBD: Conditional Expected Transactions without covariates
-//'
-//' @description
-//' Calculates the expected number of transactions in a given time period based
-//' on a customer's past transaction behavior and the Pareto/NBD model parameters.
-//'
-//' @template template_params_rcppestimatedparams
-//' @param dPrediction_period time prediction time frame
-//' @template template_params_rcppxtxtcal
-//'
-//'
-//' @details
-//' \code{vEstimated_params} vector with the estimated parameters in original scale
-//' for the Pareto/NBD model, namely (r, alpha, s, beta).
-//' r and alpha: unobserved parameters that describe the NBD transaction process.
-//' s and beta: unobserved parameters that describe the Pareto
-//' (exponential gamma) dropout process.
-//'
-//'
-//'@return
-//' Returns a vector containing the conditional expected transactions for the existing
-//' customers in the Pareto/NBD model.
-//'
-//'@references
-//'  Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
-//'  Pareto/NBD Model and Related Expressions.", Web.
-//'  \url{http://www.brucehardie.com/notes/008/}.
-//'
+
+//' @rdname pnbd_CET
 // [[Rcpp::export]]
 arma::vec pnbd_nocov_CET(const arma::vec& vEstimated_params,
                          const double dPrediction_period,
@@ -94,45 +117,8 @@ arma::vec pnbd_nocov_CET(const arma::vec& vEstimated_params,
 
 
 
-//' @title Pareto/NBD: Conditional Expected Transactions with static covariates
-//'
-//' @description
-//' Calculates the expected number of transactions in a given time period based
-//' on a customer's past transaction behavior and the Pareto/NBD model parameters.
-//'
-//' @template template_params_rcppestimatedparams
-//' @param dPrediction_period time prediction time frame
-//' @template template_params_rcppxtxtcal
-//' @template template_params_rcppcovmatrix
-//' @template template_params_rcppvcovparams
-//'
-//' @details
-//' \code{vEstimated_params} vector with the estimated parameters in original scale
-//' for the Pareto/NBD model, namely (r, alpha, s, beta).
-//' r and alpha: unobserved parameters that describe the NBD transaction process.
-//' s and beta: unobserved parameters that describe the pareto
-//' (exponential gamma) dropout process.
-//'
-//' \code{mCov_trans} is a matrix containing the covariates data of
-//' the time-invariant covariates that affect the transaction process.
-//' Each column represents a different covariate. For every column a gamma parameter
-//' needs to added to \code{vCovParams_trans} at the respective position.
-//'
-//' \code{mCov_life} is a matrix containing the covariates data of
-//' the time-invariant covariates that affect the lifetime process.
-//' Each column represents a different covariate. For every column a gamma parameter
-//' needs to added to \code{vCovParams_life} at the respective position.
-//'
-//'
-//'@return
-//' Returns a vector with the conditional expected transactions for the existing
-//' customers in the Pareto/NBD model.
-//'
-//'@references
-//'  Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
-//'  Pareto/NBD Model and Related Expressions.", Web.
-//'  \url{http://www.brucehardie.com/notes/008/}.
-//'
+
+//' @rdname pnbd_CET
 // [[Rcpp::export]]
 arma::vec pnbd_staticcov_CET(const arma::vec& vEstimated_params,
                              const double dPrediction_period,
