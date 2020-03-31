@@ -70,20 +70,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// gsl_hyp_2F1
-double gsl_hyp_2F1(const double a, const double b, const double c, const double x);
-RcppExport SEXP _CLVTools_gsl_hyp_2F1(SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const double >::type a(aSEXP);
-    Rcpp::traits::input_parameter< const double >::type b(bSEXP);
-    Rcpp::traits::input_parameter< const double >::type c(cSEXP);
-    Rcpp::traits::input_parameter< const double >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(gsl_hyp_2F1(a, b, c, x));
-    return rcpp_result_gen;
-END_RCPP
-}
 // vec_gsl_hyp2f0_e
 Rcpp::List vec_gsl_hyp2f0_e(const RcppGSL::Vector& vA, const RcppGSL::Vector& vB, const RcppGSL::Vector& vZ);
 RcppExport SEXP _CLVTools_vec_gsl_hyp2f0_e(SEXP vASEXP, SEXP vBSEXP, SEXP vZSEXP) {
@@ -290,7 +276,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CLVTools_bgnbd_nocov_LL_ind", (DL_FUNC) &_CLVTools_bgnbd_nocov_LL_ind, 4},
     {"_CLVTools_bgnbd_nocov_LL_sum", (DL_FUNC) &_CLVTools_bgnbd_nocov_LL_sum, 4},
     {"_CLVTools_bgnbd_palive", (DL_FUNC) &_CLVTools_bgnbd_palive, 7},
-    {"_CLVTools_gsl_hyp_2F1", (DL_FUNC) &_CLVTools_gsl_hyp_2F1, 4},
     {"_CLVTools_vec_gsl_hyp2f0_e", (DL_FUNC) &_CLVTools_vec_gsl_hyp2f0_e, 3},
     {"_CLVTools_vec_gsl_hyp2f1_e", (DL_FUNC) &_CLVTools_vec_gsl_hyp2f1_e, 4},
     {"_CLVTools_gg_LL", (DL_FUNC) &_CLVTools_gg_LL, 3},

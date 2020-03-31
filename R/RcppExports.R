@@ -93,15 +93,6 @@ bgnbd_palive <- function(r, alpha, a, b, vX, vT_x, vT_cal) {
     .Call(`_CLVTools_bgnbd_palive`, r, alpha, a, b, vX, vT_x, vT_cal)
 }
 
-#' @title GSL Hypergeom 2f1
-#'
-#' @description Calculate the hypergeometric 2f1 using the GSL library (gsl_sf_hyperg_2F1_e)
-#' @return Returns the value of the gsl_sf_hyperg_2F1 call.
-#' @keywords internal
-gsl_hyp_2F1 <- function(a, b, c, x) {
-    .Call(`_CLVTools_gsl_hyp_2F1`, a, b, c, x)
-}
-
 #' @title GSL Hypergeom 2f0 for equal length vectors
 #'
 #' @description Calculate the hypergeometric 2f0 using the GSL library (gsl_sf_hyperg_2F0_e)
