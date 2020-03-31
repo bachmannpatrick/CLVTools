@@ -1,11 +1,3 @@
-#' @exportMethod pnbd
-setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FALSE, start.param.cor=c(),
-                                  optimx.args=list(), verbose=TRUE, ...)
-  standardGeneric("pnbd"))
-
-
-
-#' @name pnbd
 #' @title Pareto/NBD models
 #'
 #' @template template_params_estimate
@@ -168,9 +160,16 @@ setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FA
 #' }
 #'
 #'
-#' @rdname pnbd
-#' @aliases pnbd pnbd,clv.data-method
+#' @exportMethod pnbd
+setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FALSE, start.param.cor=c(),
+                                  optimx.args=list(), verbose=TRUE, ...)
+  standardGeneric("pnbd"))
+
+
+
 #' @include class_clv_data.R
+#' @aliases pnbd,clv.data-method
+#' @rdname pnbd
 #' @export
 setMethod("pnbd", signature = signature(clv.data="clv.data"), definition = function(clv.data,
                                                                                         start.params.model=c(),
