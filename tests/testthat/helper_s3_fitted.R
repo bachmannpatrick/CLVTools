@@ -215,7 +215,8 @@
   })
 }
 
-fct.helper.fitted.all.s3 <- function(clv.fitted, clv.newdata, full.names, clv.newdata.nohold, clv.newdata.withhold){ #, name.model){
+fct.helper.fitted.all.s3 <- function(clv.fitted, clv.newdata, full.names, clv.newdata.nohold, clv.newdata.withhold,
+                                     DERT.not.implemented){ #, name.model){
 
   .fct.helper.s3.fitted.coef(clv.fitted = clv.fitted, full.names = full.names)
 
@@ -235,7 +236,7 @@ fct.helper.fitted.all.s3 <- function(clv.fitted, clv.newdata, full.names, clv.ne
                              clv.newdata.withhold=clv.newdata.withhold)
 
   .fct.helper.s3.fitted.predict(clv.fitted = clv.fitted, clv.newdata.nohold=clv.newdata.nohold,
-                                clv.newdata.withhold=clv.newdata.withhold)
+                                clv.newdata.withhold=clv.newdata.withhold, DERT.not.implemented=DERT.not.implemented)
 
 }
 

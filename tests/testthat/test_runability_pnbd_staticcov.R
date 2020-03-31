@@ -55,9 +55,9 @@ test_that("Works out-of-the box, without additional params", {
   expect_silent(p.hold    <- pnbd(clv.data.cov.holdout, verbose=FALSE))
   expect_silent(p.no.hold <- pnbd(clv.data.cov.no.holdout, verbose=FALSE))
   fct.helper.fitted.all.s3(p.hold,   full.names = c("r", "alpha", "s","beta", "life.Gender", "trans.Gender"),
-                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
+                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = FALSE)
   fct.helper.fitted.all.s3(p.no.hold, full.names = c("r", "alpha", "s","beta", "life.Gender", "trans.Gender"),
-                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
+                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = FALSE)
 })
 
 test_that("Works with custom model start parameters", {
@@ -108,7 +108,7 @@ test_that("Works with use.cor=T", {
   # Holdout does
   expect_silent(pscc <- pnbd(clv.data.cov.holdout, use.cor=TRUE, verbose=FALSE))
   fct.helper.fitted.all.s3(pscc, full.names = c("r", "alpha", "s", "beta", pscc@name.correlation.cor, "life.Gender", "trans.Gender"),
-                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
+                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = FALSE)
   # .fct.helper.s3.fitted.coef(clv.fitted = pscc, full.names = c("r", "alpha", "s", "beta", "life.Gender", "trans.Gender", pscc@name.correlation.cor))
   # expect_warning(summary(pscc), regexp = "For some parameters the standard error could not be calculated.")
   # .fct.helper.s3.fitted.print(clv.fitted = pscc)
@@ -150,9 +150,9 @@ test_that("Works with single constraints", {
   expect_silent(p.hold    <- pnbd(clv.data.cov.holdout,    names.cov.constr = "Gender",verbose=FALSE))
   expect_silent(p.no.hold <- pnbd(clv.data.cov.no.holdout, names.cov.constr = "Gender",verbose=FALSE))
   fct.helper.fitted.all.s3(p.hold,    full.names = c("r", "alpha", "s","beta", "constr.Gender"),
-                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
+                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = FALSE)
   fct.helper.fitted.all.s3(p.no.hold, full.names = c("r", "alpha", "s","beta", "constr.Gender"),
-                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
+                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = FALSE)
 
   # With start param
   expect_silent(pnbd(clv.data.cov.holdout,    names.cov.constr = "Gender", start.params.constr = c(Gender=1),verbose=FALSE))
@@ -179,9 +179,9 @@ test_that("Works with regularization", {
   expect_silent(p.hold    <- pnbd(clv.data.cov.holdout,    reg.lambdas = c(trans=10, life=10),verbose=FALSE))
   expect_silent(p.no.hold <- pnbd(clv.data.cov.no.holdout, reg.lambdas = c(trans=10, life=10),verbose=FALSE))
   fct.helper.fitted.all.s3(p.hold,    full.names = c("r", "alpha", "s","beta", "life.Gender", "trans.Gender"),
-                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
+                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = FALSE)
   fct.helper.fitted.all.s3(p.no.hold, full.names = c("r", "alpha", "s","beta", "life.Gender", "trans.Gender"),
-                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
+                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = FALSE)
 })
 
 test_that("Works with 0 regularization lambdas", {
@@ -191,9 +191,9 @@ test_that("Works with 0 regularization lambdas", {
   expect_silent(p.hold    <- pnbd(clv.data.cov.holdout,   reg.lambdas = c(trans=0, life=0),verbose=FALSE))
   expect_silent(p.no.hold <- pnbd(clv.data.cov.no.holdout,reg.lambdas = c(trans=0, life=0),verbose=FALSE))
   fct.helper.fitted.all.s3(p.hold,   full.names = c("r", "alpha", "s","beta", "life.Gender", "trans.Gender"),
-                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
+                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = FALSE)
   fct.helper.fitted.all.s3(p.no.hold, full.names = c("r", "alpha", "s","beta", "life.Gender", "trans.Gender"),
-                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
+                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = FALSE)
 })
 
 
@@ -225,9 +225,9 @@ test_that("Works with combined interlayers", {
   expect_silent(p.no.hold <- pnbd(clv.data.cov.no.holdout,
                                names.cov.constr = "Gender",reg.lambdas = c(trans=10, life=10),verbose=FALSE))
   fct.helper.fitted.all.s3(p.hold,    full.names = c("r", "alpha", "s","beta", "constr.Gender"),
-                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
+                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = FALSE)
   fct.helper.fitted.all.s3(p.no.hold, full.names = c("r", "alpha", "s","beta", "constr.Gender"),
-                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
+                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = FALSE)
 
   # **TODO:Correlation
   # expect_warning(p.hold    <- pnbd(clv.data.cov.holdout,
