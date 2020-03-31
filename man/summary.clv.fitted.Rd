@@ -71,12 +71,14 @@ and information about the optimization process. If multiple optimization methods
 the last method/row of the resulting \code{optimx} object.
 }
 \examples{
-\dontrun{
+\donttest{
+
 data("apparelTrans")
 
 # Fit pnbd standard model, no covariates
-pnbd.apparel <- pnbd(clvdata(apparelTrans, time.unit="w",
-                    estimation.split=37, date.format="ymd"))
+clv.data.apparel <- clvdata(apparelTrans, time.unit="w",
+                                estimation.split=37, date.format="ymd")
+pnbd.apparel <- pnbd(clv.data.apparel)
 
 # summary about model fit
 summary(pnbd.apparel)
@@ -99,6 +101,7 @@ pnbd.apparel.cov <- pnbd(data.apparel.cov,
 #   and used regularization
 summary(pnbd.apparel.cov)
 }
+
 
 }
 \seealso{

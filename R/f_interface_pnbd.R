@@ -86,6 +86,7 @@ setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FA
 #'
 #' @examples
 #' \donttest{
+#'
 #' data("apparelTrans")
 #' clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
 #'                             time.unit = "w", estimation.split = 37)
@@ -147,7 +148,7 @@ setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FA
 #  # To estimate the PNBD model with dynamic covariates,
 #' #   add dynamic covariates to the data
 #' data("apparelDynCov")
-#'
+#' \dontrun{
 #' clv.data.dyn.cov <-
 #'   SetDynamicCovariates(clv.data = clv.data.apparel,
 #'                        data.cov.life = apparelDynCov,
@@ -164,6 +165,8 @@ setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FA
 #' pnbd(clv.data.dyn.cov, reg.lambdas = c(trans=10, life=2))
 #'
 #' }
+#' }
+#'
 #'
 #' @rdname pnbd
 #' @aliases pnbd pnbd,clv.data-method

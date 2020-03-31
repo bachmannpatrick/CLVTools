@@ -284,7 +284,9 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 #'
 #'
 #' @examples
+#'
 #' \donttest{
+#'
 #' data("apparelTrans")
 #' # Fit pnbd standard model on data, WITH holdout
 #' pnc <- pnbd(clvdata(apparelTrans, time.unit="w",
@@ -308,14 +310,16 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 #' pnc <- pnbd(clvdata(apparelTrans, time.unit="w", date.format="ymd"))
 #'
 #' # This fails, because without holdout, a prediction.end is required
+#' \dontrun{
 #' predict(pnc)
+#' }
 #'
 #' # Now, predict 10 periods from the end of the last transaction
 #' #   (end of estimation period)
 #' predict(pnc, prediction.end = 10) # ends on 2016-12-17
 #'
-#'
 #' }
+#'
 #' @method predict clv.fitted
 #' @export
 predict.clv.fitted <- function(object, newdata=NULL, prediction.end=NULL, predict.spending=object@clv.data@has.spending,

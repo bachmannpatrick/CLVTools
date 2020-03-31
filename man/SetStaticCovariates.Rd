@@ -68,7 +68,6 @@ to k-1 numeric dummie variables.
 }
 \examples{
 
-\dontrun{
 data("apparelTrans")
 data("apparelDemographics")
 
@@ -90,6 +89,6 @@ summary(clv.data.apparel.cov)
 
 # fit model with static covariates
 pnbd(clv.data.apparel.cov)
-}
+
 
 }

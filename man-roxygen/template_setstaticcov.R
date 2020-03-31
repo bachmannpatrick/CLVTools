@@ -30,7 +30,6 @@
 #'
 #' @examples
 #'
-#' \dontrun{
 #' data("apparelTrans")
 #' data("apparelDemographics")
 #'
@@ -52,6 +51,6 @@
 #'
 #' # fit model with static covariates
 #' pnbd(clv.data.apparel.cov)
-#' }
+#'
 #'
 

@@ -143,6 +143,7 @@ the paper by Bachmann, Meierer and Näf (2019).
 }
 \examples{
 \donttest{
+
 data("apparelTrans")
 clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
                             time.unit = "w", estimation.split = 37)
@@ -203,7 +204,7 @@ pnbd(clv.data.static.cov, names.cov.constr = "Gender",
 # Add dynamic covariates data to the data object
 #   add dynamic covariates to the data
 data("apparelDynCov")
-
+\dontrun{
 clv.data.dyn.cov <-
   SetDynamicCovariates(clv.data = clv.data.apparel,
                        data.cov.life = apparelDynCov,
@@ -220,6 +221,8 @@ pnbd(clv.data.dyn.cov)
 pnbd(clv.data.dyn.cov, reg.lambdas = c(trans=10, life=2))
 
 }
+}
+
 
 }
 \references{

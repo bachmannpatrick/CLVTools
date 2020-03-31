@@ -30,7 +30,7 @@
 #' @seealso \code{\link[CLVTools:SetDynamicCovariates]{SetDynamicCovariates}} for how to add dynamic covariates
 #'
 #' @examples
-#' \dontrun{
+#'
 #' data("apparelTrans")
 #' clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
 #'                             time.unit = "w",
@@ -50,5 +50,5 @@
 #'
 #' # additional info about the covariates
 #' summary(clv.data.apparel.cov)
-#' }
+#'
 #'

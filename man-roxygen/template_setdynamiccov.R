@@ -40,7 +40,7 @@
 #'
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' data("apparelTrans")
 #' data("apparelDynCov")
 #'

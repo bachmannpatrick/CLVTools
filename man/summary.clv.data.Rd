@@ -68,7 +68,7 @@ Summary method for CLV data objects that provides information about the estimati
 possible holdout sample, and descriptive statistics of the transaction data.
 }
 \examples{
-\dontrun{
+
 data("apparelTrans")
 clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
                             time.unit = "w",
@@ -88,7 +88,7 @@ clv.data.apparel.cov <-
 
 # additional info about the covariates
 summary(clv.data.apparel.cov)
-}
+
 
 }
 \seealso{

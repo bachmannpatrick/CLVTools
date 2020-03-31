@@ -80,7 +80,7 @@ If the Date column in the covariate data is of type \code{character}, the \code{
 creating the the \code{clv.data} object is used for parsing.
 }
 \examples{
-\donttest{
+\dontrun{
 data("apparelTrans")
 data("apparelDynCov")
 

@@ -56,7 +56,8 @@
 #' \item{"Name of Model" or "label"}{The value of the unconditional expectation until \code{period.first} as per the given model.}
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#'
 #' data("cdnow")
 #'
 #' # Fit ParetoNBD model on the CDnow data
@@ -69,7 +70,7 @@
 #' plot(pnbd.cdnow)
 #'
 #' # Plot cumulative expected transactions of only the model
-#' plot(pnbd.cdnow, cumulative=T, transactions=F)
+#' plot(pnbd.cdnow, cumulative=TRUE, transactions=FALSE)
 #'
 #' # Plot forecast until 2001-10-21
 #' plot(pnbd.cdnow, prediction.end = "2001-10-21")
@@ -90,14 +91,16 @@
 #' gg.pnbd.cdnow <- plot(pnbd.cdnow)
 #' gg.pnbd.cdnow + ggtitle("PNBD on CDnow")
 #'
-#' # Compose plot from separate model plots
-#' # no cov model
-#' p.m1 <- plot(pnbd.cdnow, transactions = T)
-#' # static cov model
-#' p.m2 <- plot(pnbd.cdnow.cov, transactions = F)
-#' p.m1 + geom_line(mapping=p.m2$mapping, data=p.m2$data,
-#'                  color="blue")
 #' }
+#'
+# # Compose plot from separate model plots
+# # pnbd vs bgnbd
+# p.m1 <- plot(pnbd.cdnow, transactions = TRUE)
+#
+# # static cov model
+# p.m2 <- plot(pnbd.cdnow.cov, transactions = FALSE)
+# p.m1 + geom_line(mapping=p.m2$mapping, data=p.m2$data,
+#                  color="blue")
 #' @importFrom graphics plot
 #' @include class_clv_fitted.R
 #' @method plot clv.fitted

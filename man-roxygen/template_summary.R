@@ -51,12 +51,14 @@
 #' function \code{vcov} will extract the \code{vcov} from the returned summary object.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#'
 #' data("apparelTrans")
 #'
 #' # Fit pnbd standard model, no covariates
-#' pnbd.apparel <- pnbd(clvdata(apparelTrans, time.unit="w",
-#'                     estimation.split=37, date.format="ymd"))
+#' clv.data.apparel <- clvdata(apparelTrans, time.unit="w",
+#'                                 estimation.split=37, date.format="ymd")
+#' pnbd.apparel <- pnbd(clv.data.apparel)
 #'
 #' # summary about model fit
 #' summary(pnbd.apparel)
@@ -79,4 +81,5 @@
 #' #   and used regularization
 #' summary(pnbd.apparel.cov)
 #' }
+#'
 #'
