@@ -11,6 +11,7 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = F
 #'
 #' @template template_params_estimate
 #' @template template_param_verbose
+#' @template template_params_estimate_cov
 #' @template template_param_dots
 #'
 #' @references
@@ -100,6 +101,8 @@ setMethod("bgnbd", signature = signature(clv.data="clv.data"), definition = func
 })
 
 #' @rdname bgnbd
+#' @include class_clv_data_staticcovariates.R
+#' @aliases bgnbd,clv.data.static.covariates-method
 #' @export
 setMethod("bgnbd", signature = signature(clv.data="clv.data.static.covariates"), definition = function(clv.data,
                                                                                                       start.params.model=c(),
@@ -118,6 +121,8 @@ setMethod("bgnbd", signature = signature(clv.data="clv.data.static.covariates"),
 
 
 #' @rdname bgnbd
+#' @include class_clv_data_dynamiccovariates.R
+#' @aliases bgnbd,clv.data.dynamic.covariates-method
 #' @export
 setMethod("bgnbd", signature = signature(clv.data="clv.data.dynamic.covariates"), definition = function(clv.data,
                                                                                                        start.params.model=c(),
