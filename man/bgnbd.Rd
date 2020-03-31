@@ -3,6 +3,8 @@
 \name{bgnbd}
 \alias{bgnbd}
 \alias{bgnbd,clv.data-method}
+\alias{bgnbd,clv.data.static.covariates-method}
+\alias{bgnbd,clv.data.dynamic.covariates-method}
 \title{BG/NBD models}
 \usage{
 \S4method{bgnbd}{clv.data}(
@@ -12,6 +14,40 @@
   start.param.cor = c(),
   optimx.args = list(),
   verbose = TRUE,
+  ...
+)
+
+\S4method{bgnbd}{clv.data.static.covariates}(
+  clv.data,
+  start.params.model = c(),
+  use.cor = FALSE,
+  start.param.cor = c(),
+  optimx.args = list(),
+  verbose = TRUE,
+  names.cov.life = c(),
+  names.cov.trans = c(),
+  start.params.life = c(),
+  start.params.trans = c(),
+  names.cov.constr = c(),
+  start.params.constr = c(),
+  reg.lambdas = c(),
+  ...
+)
+
+\S4method{bgnbd}{clv.data.dynamic.covariates}(
+  clv.data,
+  start.params.model = c(),
+  use.cor = FALSE,
+  start.param.cor = c(),
+  optimx.args = list(),
+  verbose = TRUE,
+  names.cov.life = c(),
+  names.cov.trans = c(),
+  start.params.life = c(),
+  start.params.trans = c(),
+  names.cov.constr = c(),
+  start.params.constr = c(),
+  reg.lambdas = c(),
   ...
 )
 }

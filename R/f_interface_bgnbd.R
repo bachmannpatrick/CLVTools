@@ -99,3 +99,35 @@ setMethod("bgnbd", signature = signature(clv.data="clv.data"), definition = func
                                            start.param.cor = start.param.cor, optimx.args = optimx.args, verbose=verbose, ...))
 })
 
+#' @rdname bgnbd
+#' @export
+setMethod("bgnbd", signature = signature(clv.data="clv.data.static.covariates"), definition = function(clv.data,
+                                                                                                      start.params.model=c(),
+                                                                                                      use.cor = FALSE,
+                                                                                                      start.param.cor=c(),
+                                                                                                      optimx.args=list(),
+                                                                                                      verbose=TRUE,
+                                                                                                      names.cov.life=c(), names.cov.trans=c(),
+                                                                                                      start.params.life=c(), start.params.trans=c(),
+                                                                                                      names.cov.constr=c(),start.params.constr=c(),
+                                                                                                      reg.lambdas = c(), ...){
+
+  stop("This model has not been implemented for this type of data.")
+})
+
+
+
+#' @rdname bgnbd
+#' @export
+setMethod("bgnbd", signature = signature(clv.data="clv.data.dynamic.covariates"), definition = function(clv.data,
+                                                                                                       start.params.model=c(),
+                                                                                                       use.cor = FALSE,
+                                                                                                       start.param.cor=c(),
+                                                                                                       optimx.args=list(),
+                                                                                                       verbose=TRUE,
+                                                                                                       names.cov.life=c(), names.cov.trans=c(),
+                                                                                                       start.params.life=c(), start.params.trans=c(),
+                                                                                                       names.cov.constr=c(),start.params.constr=c(),
+                                                                                                       reg.lambdas = c(), ...){
+  stop("This model has not been implemented for this type of data.")
+})

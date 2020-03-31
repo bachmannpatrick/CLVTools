@@ -18,6 +18,10 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
 if(any(start.params.model <= 0))
   check_err_msg(err.msg = "Please provide only model start parameters greater than 0 as they will be log()-ed for the optimization!")
 
+if(use.cor){
+  stop("Correlation is not supported for the BG/NBD model")
+}
+
 if(length(list(...)) > 0)
   warning("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
 })
