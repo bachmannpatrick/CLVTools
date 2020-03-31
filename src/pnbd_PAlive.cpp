@@ -5,7 +5,7 @@
 #include "clv_vectorized.h"
 
 
-// [[Rcpp::depends(RcppArmadillo)]]
+
 arma::vec pnbd_PAlive( const arma::vec& vEstimated_model_params,
                        const arma::vec& vX,
                        const arma::vec& vT_x,

@@ -4,7 +4,6 @@
 
 #include "pnbd_PAlive.h"
 
-// [[Rcpp::depends(RcppArmadillo)]]
 arma::vec pnbd_CET(const arma::vec& vEstimated_model_params,
                    const double dPrediction_period,
                    const arma::vec& vX,

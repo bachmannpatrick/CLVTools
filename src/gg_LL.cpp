@@ -1,7 +1,5 @@
 #include <RcppArmadillo.h>
 
-// [[Rcpp::depends(RcppArmadillo)]]
-
 
 // lbeta := lgamma(a) + lgamma(b) - lgamma(a+b)
 arma::vec lbeta(const arma::vec& a, const double b){
