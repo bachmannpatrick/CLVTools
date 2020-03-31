@@ -49,8 +49,8 @@ Calculates the probability of a customer being alive at the end of the calibrati
 }
 \details{
 \code{vEstimated_params} vector with the estimated parameters in original scale
-for the Pareto/NBD model, namely (r, alpha, s, beta).
-r and alpha: unobserved parameters that describe the NBD transaction process.
+for the Pareto/NBD model, namely (r, alpha, s, beta). \cr
+r and alpha: unobserved parameters that describe the NBD transaction process. \cr
 s and beta: unobserved parameters that describe the pareto
 (exponential gamma) lifetime process.
 
