@@ -142,6 +142,16 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgnbd.no.cov")
 # .clv.model.vcov.jacobi.diag --------------------------------------------------------------------------------------------------------
 
 setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, prefixed.params){
-  return(NULL)
+  # Create matrix with the full required size
+  m.diag <- diag(x = 0, ncol = length(prefixed.params), nrow=length(prefixed.params))
+  rownames(m.diag) <- colnames(m.diag) <- names(prefixed.params)
+
+  # Add the transformations for the model to the matrix
+  #   All model params need to be exp()
+  m.diag[clv.model@names.prefixed.params.model,
+         clv.model@names.prefixed.params.model] <- diag(x = exp(prefixed.params[clv.model@names.prefixed.params.model]),
+                                                        nrow = length(clv.model@names.prefixed.params.model),
+                                                        ncol = length(clv.model@names.prefixed.params.model))
+  return(m.diag)
 })
 
