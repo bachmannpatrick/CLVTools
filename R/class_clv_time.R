@@ -54,6 +54,8 @@ setClass("clv.time",
 # custom time interval appraoch:
 # cut(hour(now()), breaks=c(0,6,12,18,24), include.lowest = TRUE, labels = FALSE)
 
+
+
 clv.time.possible.time.units <- function(){
   return(c("hours","days", "weeks", "years"))
 }
@@ -89,9 +91,8 @@ clv.time.set.sample.periods <- function(clv.time, tp.first.transaction, tp.last.
     if(tp.estimation.end > tp.last.transaction-clv.time.number.timeunits.to.timeperiod(clv.time, 2L))
       stop("Parameter estimation.split needs to indicate a point at least 2 periods before the last transaction!", call. = FALSE)
 
-    # **TODO: Replace with minimal possible discrete time step (minimal.discrete)
     # + 1 day is the same for all because most fine-grained change that Date can do
-    tp.holdout.start   <- tp.estimation.end + 1L # For dates: +1 = 1 full day. For POSIXct: +1 = 1 second
+    tp.holdout.start   <- tp.estimation.end + clv.time.epsilon(clv.time=clv.time)
     tp.holdout.end     <- tp.last.transaction
     holdout.period.in.tu <- clv.time.interval.in.number.tu(clv.time,
                                                            interv=interval(start = tp.holdout.start,
@@ -172,7 +173,7 @@ clv.time.expectation.periods <- function(clv.time, user.tp.end){
       # NOT including tp of next period, because expectation is done including tp.expectation.end
       tp.expectation.end <- clv.time@timepoint.holdout.start +
         clv.time.number.timeunits.to.timeperiod(clv.time = clv.time,
-                                                user.number.periods = user.tp.end) - 1L
+                                                user.number.periods = user.tp.end) - clv.time.epsilon(clv.time=clv.time)
     }else{
       # datey
       tp.expectation.end <- clv.time.convert.user.input.to.timepoint(clv.time = clv.time,
@@ -399,4 +400,38 @@ clv.time.sequence.of.covariate.timepoints <- function(clv.time, tp.start, tp.end
 
   return(dt.cov.seq)
 }
+
+
+# Stubs to catch un-inplemented methods ---------------------------------------------------------
+#   ie "abstract" methods
+
+setMethod("clv.time.epsilon", signature = "clv.time", function(clv.time){
+  stop("This method needs to be implemented by a subclass.")
+})
+
+# convert user given date/datetimes
+setMethod("clv.time.convert.user.input.to.timepoint", signature = "clv.time", function(clv.time, user.timepoint){
+  stop("This method needs to be implemented by a subclass.")
+})
+
+setMethod("clv.time.interval.in.number.tu", signature = "clv.time", def = function(clv.time, interv){
+  stop("This method needs to be implemented by a subclass.")
+})
+
+setMethod("clv.time.number.timeunits.to.timeperiod", signature = "clv.time", function(clv.time, user.number.periods){
+  stop("This method needs to be implemented by a subclass.")
+})
+
+setMethod("clv.time.tu.to.ly", signature = "clv.time", function(clv.time){
+  stop("This method needs to be implemented by a subclass.")
+})
+
+setMethod("clv.time.floor.date", signature = "clv.time", function(clv.time, timepoint){
+  stop("This method needs to be implemented by a subclass.")
+})
+
+# only for pnbd dyncov createwalks
+setMethod("clv.time.ceiling.date", signature = "clv.time", function(clv.time, timepoint){
+  stop("This method needs to be implemented by a subclass.")
+})
 

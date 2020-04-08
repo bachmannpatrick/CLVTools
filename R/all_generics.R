@@ -123,6 +123,10 @@ setGeneric(name="clv.model.backtransform.estimated.params.cov", def=function(clv
 
 
 # clv.time ----------------------------------------------------------------------------------------------------
+
+setGeneric("clv.time.epsilon", function(clv.time)
+  standardGeneric("clv.time.epsilon"))
+
 # convert user given date/datetimes
 setGeneric("clv.time.convert.user.input.to.timepoint", function(clv.time, user.timepoint)
   standardGeneric("clv.time.convert.user.input.to.timepoint"))
