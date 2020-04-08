@@ -168,7 +168,7 @@ clv.time.expectation.periods <- function(clv.time, user.tp.end){
         user.tp.end <- as.integer(user.tp.end)
       }
 
-      # holdout.start + periods - 1L
+      # holdout.start + periods - epsilon
       # or: estimation.end + periods
       # NOT including tp of next period, because expectation is done including tp.expectation.end
       tp.expectation.end <- clv.time@timepoint.holdout.start +
