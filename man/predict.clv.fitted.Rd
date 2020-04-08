@@ -50,7 +50,7 @@ An object of class \code{data.table} with each columns containing the prediction
 \item{CET}{The Conditional Expected Transactions}
 \item{DERT or DECT}{Discounted Expected Residual Transactions or Discounted Expected Conditional Transactions for dynamic covariates models}
 \item{actual.x}{Actual number of transactions until prediction.end. Only if there is a holdout period and the prediction ends in it.}
-\item{actual.Spending}{Actual spending until prediction.end. Only if there is a holdout period and the prediction ends in it.}
+\item{actual.Spending}{Actual spending until prediction.end. Only if there is a holdout period and the prediction ends in it, 0 otherwise.}
 \item{predicted.Spending}{The spending as predicted by the Gamma-Gamma model.}
 \item{predicted.CLV}{Customer Lifetime Value based on DERT and predicted spending.}
 }

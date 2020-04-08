@@ -89,21 +89,33 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
   has.actuals <- object@clv.data@has.holdout & (timepoint.prediction.last <= object@clv.data@clv.time@timepoint.holdout.end)
   if(has.actuals)
   {
-    # **TODO: What if no Price??
     # only what is in prediction period!
-    dt.actuals    <- object@clv.data@data.transactions[between(x = Date,
-                                                               lower = timepoint.prediction.first,
-                                                               upper = timepoint.prediction.last,
-                                                               incbounds = TRUE),
-                                                       list(actual.x        = .N,
-                                                            actual.spending = sum(Price)),
-                                                       by="Id"]
-    setkeyv(dt.actuals, "Id")
+
+    if(clv.data.has.spending(object@clv.data)){
+      dt.actuals    <- object@clv.data@data.transactions[between(x = Date,
+                                                                 lower = timepoint.prediction.first,
+                                                                 upper = timepoint.prediction.last,
+                                                                 incbounds = TRUE),
+                                                         list(actual.x        = .N,
+                                                              actual.spending = sum(Price)),
+                                                         by="Id"]
+    }else{
+      # No Spending
+      dt.actuals    <- object@clv.data@data.transactions[between(x = Date,
+                                                                 lower = timepoint.prediction.first,
+                                                                 upper = timepoint.prediction.last,
+                                                                 incbounds = TRUE),
+                                                         list(actual.x        = .N,
+                                                              actual.spending = 0),
+                                                         by="Id"]
+    }
+
 
     # add actuals to prediction
-    dt.prediction[dt.actuals,             actual.x        := i.actual.x,        on="Id"]
+    setkeyv(dt.actuals, "Id")
+    dt.prediction[dt.actuals,             actual.x  := i.actual.x,  on="Id"]
+    dt.prediction[is.na(actual.x),        actual.x  := 0]
     dt.prediction[dt.actuals,             actual.spending := i.actual.spending, on="Id"]
-    dt.prediction[is.na(actual.x),        actual.x        := 0]
     dt.prediction[is.na(actual.spending), actual.spending := 0]
   }
 
@@ -278,7 +290,7 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 #' \item{CET}{The Conditional Expected Transactions}
 #' \item{DERT or DECT}{Discounted Expected Residual Transactions or Discounted Expected Conditional Transactions for dynamic covariates models}
 #' \item{actual.x}{Actual number of transactions until prediction.end. Only if there is a holdout period and the prediction ends in it.}
-#' \item{actual.Spending}{Actual spending until prediction.end. Only if there is a holdout period and the prediction ends in it.}
+#' \item{actual.Spending}{Actual spending until prediction.end. Only if there is a holdout period and the prediction ends in it, 0 otherwise.}
 #' \item{predicted.Spending}{The spending as predicted by the Gamma-Gamma model.}
 #' \item{predicted.CLV}{Customer Lifetime Value based on DERT and predicted spending.}
 #'
