@@ -92,7 +92,7 @@ clv.time.set.sample.periods <- function(clv.time, tp.first.transaction, tp.last.
       stop("Parameter estimation.split needs to indicate a point at least 2 periods before the last transaction!", call. = FALSE)
 
     # + 1 day is the same for all because most fine-grained change that Date can do
-    tp.holdout.start   <- tp.estimation.end + clv.time.epsilon(clv.time=clv.time)
+    tp.holdout.start   <- tp.estimation.end + 1L# clv.time.epsilon(clv.time=clv.time)
     tp.holdout.end     <- tp.last.transaction
     holdout.period.in.tu <- clv.time.interval.in.number.tu(clv.time,
                                                            interv=interval(start = tp.holdout.start,
@@ -173,7 +173,7 @@ clv.time.expectation.periods <- function(clv.time, user.tp.end){
       # NOT including tp of next period, because expectation is done including tp.expectation.end
       tp.expectation.end <- clv.time@timepoint.holdout.start +
         clv.time.number.timeunits.to.timeperiod(clv.time = clv.time,
-                                                user.number.periods = user.tp.end) - clv.time.epsilon(clv.time=clv.time)
+                                                user.number.periods = user.tp.end) - 1L #clv.time.epsilon(clv.time=clv.time)
     }else{
       # datey
       tp.expectation.end <- clv.time.convert.user.input.to.timepoint(clv.time = clv.time,
