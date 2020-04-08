@@ -230,21 +230,9 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
 
 
   # Repeat Transactions ------------------------------------------------------------
-  #   Save because used at many places (ie plotting, first.repeat.trans, ...)
+  #   Save because used when plotting
   #   Remove the first transaction per customer
-
-  dt.repeat.trans <- copy(dt.trans)
-  setkeyv(dt.repeat.trans, c("Id", "Date"))
-
-  dt.repeat.trans[, previous := shift(x=Date, n = 1, type = "lag"), by="Id"]
-  dt.repeat.trans            <- dt.repeat.trans[!is.na(previous)]
-  dt.repeat.trans[, previous := NULL]
-
-  # **TODO: Cross-check with what is done for clv.time aggregation of transactions
-  # Works only because all on same Date were aggregated. Otherwise, there could be more than one removed
-  # dt.repeat.trans[, is.first.trans := (Date == min(Date), by="Id"]
-  # dt.repeat.trans <- dt.trans[is.first.trans == F, c("Id","Date", "Price")]
-  # setkeyv(dt.repeat.trans, c("Id", "Date"))
+  dt.repeat.trans <- clv.data.make.repeat.transactions(dt.transactions = dt.trans)
 
 
   # Create clvdata object ----------------------------------------------------------

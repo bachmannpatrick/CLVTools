@@ -67,10 +67,32 @@ clv.data <- function(call, data.transactions, data.repeat.trans, has.spending, c
              descriptives.transactions=descriptives.transactions))
 }
 
+
+
 clv.data.has.spending <- function(clv.data){
   return(clv.data@has.spending)
 }
 
+
+clv.data.make.repeat.transactions <- function(dt.transactions){
+
+  # Copy because alters table
+  dt.repeat.transactions <- copy(dt.transactions)
+
+  dt.repeat.transactions[order(Date), previous := shift(x=Date, n = 1L, type = "lag"), by="Id"]
+  # Remove first transaction: Have no previous (ie is NA)
+  dt.repeat.transactions <- dt.repeat.transactions[!is.na(previous)]
+  dt.repeat.transactions[, previous := NULL]
+
+  # **TODO: Cross-check with what is done for clv.time aggregation of transactions
+
+  # Alternative:
+  #   Works only because all on same Date were aggregated. Otherwise, there could be more than one removed
+  # dt.repeat.transactions[, is.first.trans := (Date == min(Date), by="Id"]
+  # dt.repeat.transactions <- dt.trans[is.first.trans == FALSE]
+
+  return(dt.repeat.transactions)
+}
 
 
 #' @importFrom stats sd

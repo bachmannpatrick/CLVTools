@@ -51,16 +51,16 @@ test_that("Different estimation.split formats result in same split - data in POS
   #                                         time.unit = "hours")
 
   fct.helper.correctness.estimationsplit(data = cdnow.posix, estimation.number = 37*7, estimation.char = "1997-09-17",
-                                          time.unit = "days", warn=TRUE)
+                                         time.unit = "days", warn=TRUE)
 
   fct.helper.correctness.estimationsplit(data = cdnow.posix, estimation.number = 37,
                                          estimation.char = as.character(cdnow[, min(Date)]+lubridate::period(37, "weeks")),
                                          # estimation.char = "1997-09-17",
-                                          time.unit = "weeks", warn=TRUE)
+                                         time.unit = "weeks", warn=TRUE)
 
   fct.helper.correctness.estimationsplit(data = apparelTrans.posix, estimation.number = 1,
                                          estimation.char = as.character(apparelTrans.posix[, min(Date)]+lubridate::period(1, "year")),
-                                          time.unit = "years", warn=TRUE)
+                                         time.unit = "years", warn=TRUE)
 
 })
 
@@ -76,15 +76,15 @@ test_that("Different estimation.split formats result in same split - data in POS
   #                                         time.unit = "hours")
 
   fct.helper.correctness.estimationsplit(data = cdnow.posix, estimation.number = 37*7, estimation.char = "1997-09-17",
-                                          time.unit = "days", warn=TRUE)
+                                         time.unit = "days", warn=TRUE)
 
   fct.helper.correctness.estimationsplit(data = cdnow.posix, estimation.number = 37,
                                          estimation.char = as.character(cdnow[, min(Date)]+lubridate::period(37, "weeks")),
-                                          time.unit = "weeks", warn=TRUE)
+                                         time.unit = "weeks", warn=TRUE)
 
   fct.helper.correctness.estimationsplit(data = apparelTrans.posix, estimation.number = 1,
                                          estimation.char = as.character(apparelTrans.posix[, min(Date)]+lubridate::period(1, "year")),
-                                          time.unit = "years", warn=TRUE)
+                                         time.unit = "years", warn=TRUE)
 
 })
 
@@ -102,7 +102,7 @@ test_that("Different estimation.split formats result in same split - data in cha
 
   fct.helper.correctness.estimationsplit(data = cdnow.char, estimation.number = 37*7,
                                          estimation.char = "1997-09-17",
-                                          time.unit = "days")
+                                         time.unit = "days")
 
   fct.helper.correctness.estimationsplit(data = cdnow.char, estimation.number = 37,
                                          # estimation.char = "1997-09-17",
@@ -215,5 +215,74 @@ test_that("Transaction data was properly copied", {
   expect_false(isTRUE(all.equal(data.table::address(clv.data.cdnow@data.transactions),
                                 data.table::address(cdnow))))
 })
+
+
+
+# repeat.transactions ----------------------------------------------------------------------------
+context("Correctness - clvdata - repeat.transactions")
+
+test_that("Removes correct transaction",{
+  # Correctly remove first transaction, regardless of sorting
+  expect_silent(dt.trans <- data.table(Date = c(lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-02"), lubridate::ymd("2019-01-03"),
+                                                lubridate::ymd("2019-06-01"), lubridate::ymd("2019-06-02")),
+                                       Id =   c("1", "1", "1", "2", "2")))
+  expect_silent(dt.trans.correct <- data.table(Date = c(lubridate::ymd("2019-01-02"), lubridate::ymd("2019-01-03"),
+                                                        lubridate::ymd("2019-06-02")),
+                                               Id =   c( "1", "1", "2")))
+
+  # Ordered by Date
+  # Order one way
+  expect_silent(dt.repeat.trans <- clv.data.make.repeat.transactions(dt.trans[order(Date)]))
+  expect_true(fsetequal(dt.repeat.trans, dt.trans.correct))
+  # Order other way
+  expect_silent(dt.repeat.trans <- clv.data.make.repeat.transactions(dt.trans[order(-Date)]))
+  expect_true(fsetequal(dt.repeat.trans, dt.trans.correct))
+
+  # Ordered by Id
+  # One way
+  setorderv(dt.trans, cols = "Id", order = 1)
+  expect_silent(dt.repeat.trans <- clv.data.make.repeat.transactions(dt.trans))
+  expect_true(fsetequal(dt.repeat.trans, dt.trans.correct))
+  # Other way
+  setorderv(dt.trans, cols = "Id", order = -1)
+  expect_silent(dt.repeat.trans <- clv.data.make.repeat.transactions(dt.trans))
+  expect_true(fsetequal(dt.repeat.trans, dt.trans.correct))
+})
+
+test_that("2 at the same timepoint (Date)", {
+  # 2 on same date, remove only 1
+  expect_silent(dt.trans <- data.table(Date = c(lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-02"),
+                                                lubridate::ymd("2019-06-01"), lubridate::ymd("2019-06-01")),
+                                       Id =   c("1", "1", "1", "2", "2")))
+  expect_silent(dt.trans.correct <- data.table(Date = c(lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-02"),
+                                                        lubridate::ymd("2019-06-01")),
+                                               Id =   c( "1", "1", "2")))
+
+  expect_silent(dt.repeat.trans <- clv.data.make.repeat.transactions(dt.trans))
+  expect_true(fsetequal(dt.repeat.trans, dt.trans.correct))
+})
+
+test_that("2 at the same timepoint (POSIXct)", {
+  # 2 on same date, remove only 1
+  expect_silent(dt.trans <- data.table(Date = c(lubridate::ymd_hms("2019-01-01 00:00:01"), lubridate::ymd_hms("2019-01-01 00:00:01"), lubridate::ymd_hms("2019-01-02 00:00:01"),
+                                                lubridate::ymd_hms("2019-06-01 00:00:01"), lubridate::ymd_hms("2019-06-01 00:00:01")),
+                                       Id =   c("1", "1", "1", "2", "2")))
+  expect_silent(dt.trans.correct <- data.table(Date = c(lubridate::ymd_hms("2019-01-01 00:00:01"), lubridate::ymd_hms("2019-01-02 00:00:01"),
+                                                        lubridate::ymd_hms("2019-06-01 00:00:01")),
+                                               Id =   c( "1", "1", "2")))
+
+  expect_silent(dt.repeat.trans <- clv.data.make.repeat.transactions(dt.trans))
+  expect_true(fsetequal(dt.repeat.trans, dt.trans.correct))
+})
+
+test_that("Zero-repeaters are removed", {
+  expect_silent(dt.trans <- data.table(Date = c(lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-02"), lubridate::ymd("2019-01-01")),
+                                       Id =   c("1", "1", "2")))
+  expect_silent(dt.repeat.trans <- clv.data.make.repeat.transactions(dt.trans))
+  expect_false("2" %in% dt.repeat.trans$Id)
+  expect_true("1" %in% dt.repeat.trans$Id)
+})
+
+
 
 
