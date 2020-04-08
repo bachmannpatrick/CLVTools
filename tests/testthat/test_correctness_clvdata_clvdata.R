@@ -217,6 +217,67 @@ test_that("Transaction data was properly copied", {
 })
 
 
+# aggregate.transactions ----------------------------------------------------------------------------
+context("Correctness - clvdata - aggregate.transactions")
+
+test_that("Only one transaction per timepoint and Id exits (date)", {
+  expect_silent(dt.trans <- data.table(Id =   c("1", "1", "1", "2", "2", "2"),
+                                       Date = c(lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-01"),
+                                                lubridate::ymd("2019-06-01"), lubridate::ymd("2019-06-01"), lubridate::ymd("2019-06-02"))))
+  expect_silent(dt.trans.correct <- data.table(Id =   c( "1", "2","2"),
+                                               Date = c(lubridate::ymd("2019-01-01"),
+                                                        lubridate::ymd("2019-06-01"), lubridate::ymd("2019-06-02"))))
+  expect_silent(dt.trans.agg <- clv.data.aggregate.transactions(dt.transactions = dt.trans, has.spending = FALSE))
+  expect_true(fsetequal(dt.trans.agg, dt.trans.correct))
+})
+
+test_that("Only one transaction per timepoint and Id exits (posix)", {
+  expect_silent(dt.trans <- data.table(Id =   c("1", "1", "1", "2", "2", "2"),
+                                       Date = c(lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-01"),
+                                                lubridate::ymd("2019-06-01"), lubridate::ymd("2019-06-01"), lubridate::ymd("2019-06-02"))))
+  expect_silent(dt.trans.correct <- data.table(Id =   c( "1", "2","2"),
+                                               Date = c(lubridate::ymd("2019-01-01"),
+                                                        lubridate::ymd("2019-06-01"), lubridate::ymd("2019-06-02"))))
+  expect_silent(dt.trans[, Date := as.POSIXct(Date)])
+  expect_silent(dt.trans.correct[, Date := as.POSIXct(Date)])
+
+  expect_silent(dt.trans.agg <- clv.data.aggregate.transactions(dt.transactions = dt.trans, has.spending = FALSE))
+  expect_true(fsetequal(dt.trans.agg, dt.trans.correct))
+
+})
+
+test_that("Same timepoint transactions are summed (date)", {
+  expect_silent(dt.trans <- data.table(Id =   c("1", "1", "1", "2", "2", "2"),
+                                       Date = c(lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-01"),
+                                                lubridate::ymd("2019-06-01"), lubridate::ymd("2019-06-01"), lubridate::ymd("2019-06-02")),
+                                       Price = c(1, 2, 3,
+                                                 4, 5, 6)))
+  expect_silent(dt.trans.correct <- data.table(Id =   c( "1", "2","2"),
+                                               Date = c(lubridate::ymd("2019-01-01"),
+                                                        lubridate::ymd("2019-06-01"), lubridate::ymd("2019-06-02")),
+                                               Price = c(1+2+3,
+                                                         4+5,6)))
+  expect_silent(dt.trans.agg <- clv.data.aggregate.transactions(dt.transactions = dt.trans, has.spending = TRUE))
+  expect_true(fsetequal(dt.trans.agg, dt.trans.correct))
+})
+
+test_that("Same timepoint transactions are summed (posix)", {
+  expect_silent(dt.trans <- data.table(Id =   c("1", "1", "1", "2", "2", "2"),
+                                       Date = c(lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-01"),
+                                                lubridate::ymd("2019-06-01"), lubridate::ymd("2019-06-01"), lubridate::ymd("2019-06-02")),
+                                       Price = c(1, 2, 3,
+                                                 4, 5, 6)))
+  expect_silent(dt.trans.correct <- data.table(Id =   c( "1", "2","2"),
+                                               Date = c(lubridate::ymd("2019-01-01"),
+                                                        lubridate::ymd("2019-06-01"), lubridate::ymd("2019-06-02")),
+                                               Price = c(1+2+3,
+                                                         4+5,6)))
+  expect_silent(dt.trans[, Date := as.POSIXct(Date)])
+  expect_silent(dt.trans.correct[, Date := as.POSIXct(Date)])
+
+  expect_silent(dt.trans.agg <- clv.data.aggregate.transactions(dt.transactions = dt.trans, has.spending = TRUE))
+  expect_true(fsetequal(dt.trans.agg, dt.trans.correct))
+})
 
 # repeat.transactions ----------------------------------------------------------------------------
 context("Correctness - clvdata - repeat.transactions")
@@ -262,7 +323,7 @@ test_that("2 at the same timepoint (Date)", {
   expect_true(fsetequal(dt.repeat.trans, dt.trans.correct))
 })
 
-test_that("2 at the same timepoint (POSIXct)", {
+test_that("2 at the same timepoint (posix)", {
   # 2 on same date, remove only 1
   expect_silent(dt.trans <- data.table(Date = c(lubridate::ymd_hms("2019-01-01 00:00:01"), lubridate::ymd_hms("2019-01-01 00:00:01"), lubridate::ymd_hms("2019-01-02 00:00:01"),
                                                 lubridate::ymd_hms("2019-06-01 00:00:01"), lubridate::ymd_hms("2019-06-01 00:00:01")),
@@ -282,7 +343,6 @@ test_that("Zero-repeaters are removed", {
   expect_false("2" %in% dt.repeat.trans$Id)
   expect_true("1" %in% dt.repeat.trans$Id)
 })
-
 
 
 

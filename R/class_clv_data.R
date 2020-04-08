@@ -94,6 +94,25 @@ clv.data.make.repeat.transactions <- function(dt.transactions){
   return(dt.repeat.transactions)
 }
 
+# Aggregate what is on same smallest scale representable by time
+#   Spending is summed, if present
+#   aggregating what is in same time.unit does not not make sense
+#   Date: on same day
+#   posix: on same second
+clv.data.aggregate.transactions <- function(dt.transactions, has.spending){
+
+  if(has.spending){
+    dt.aggregated.transactions <- dt.transactions[, list("Price" = sum(Price)), by=c("Id", "Date")]
+  }else{
+    # Only keep one observation, does not matter which
+    # head(.SD) does not work because Id and Date both in by=
+    # unique() has the same effect because there are only 2 columns
+    dt.aggregated.transactions <- unique(dt.transactions, by=c("Id", "Date"))
+  }
+
+  return(dt.aggregated.transactions)
+}
+
 
 #' @importFrom stats sd
 #' @importFrom lubridate time_length

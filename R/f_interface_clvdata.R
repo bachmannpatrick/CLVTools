@@ -183,19 +183,14 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
   }
   setkeyv(dt.trans, cols = c("Id", "Date"))
 
-  # Aggregate what is on same smallest scale representable by class
-  # in same time.unit does not not make sense
+
+  # Aggregate transactions at the same timepoint ------------------------------------------------
+  # Aggregate what is on same smallest scale representable by time
+  # aggregating what is in same time.unit does not not make sense
   #   Date: on same day
   #   posix: on same second
+  dt.trans <- clv.data.aggregate.transactions(dt.transactions = dt.trans, has.spending = has.spending)
 
-  if(has.spending){
-    dt.trans <- dt.trans[, list("Price" = sum(Price)), by=c("Id", "Date")]
-  }else{
-    # Only keep one observation, does not matter which
-    # head(.SD) does not work because Id and Date both in by=
-    # unique() has the same effect because there are only 2 columns
-    dt.trans <- unique(dt.trans, by=c("Id", "Date"))
-  }
 
   # Set estimation and holdout periods ---------------------------------------------------------
   tp.first.transaction <- dt.trans[, min(Date)]
