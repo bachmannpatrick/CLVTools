@@ -51,6 +51,13 @@ setMethod("initialize", signature = signature(.Object="clv.time.datetime"),
           })
 
 
+#' @importFrom lubridate seconds
+setMethod("clv.time.epsilon", signature = "clv.time.date", function(clv.time){
+  # Alternative: return 1L
+  return(seconds(x = 1L))
+})
+
+
 
 # Parsing methods ------------------------------------------------------------------------
 # Only allow one timezone set in clv.time@timezone: UTC, because it does not switch DST
