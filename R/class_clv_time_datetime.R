@@ -52,7 +52,7 @@ setMethod("initialize", signature = signature(.Object="clv.time.datetime"),
 
 
 #' @importFrom lubridate seconds
-setMethod("clv.time.epsilon", signature = "clv.time.date", function(clv.time){
+setMethod("clv.time.epsilon", signature = signature(clv.time="clv.time.datetime"), function(clv.time){
   # Alternative: return 1L
   return(seconds(x = 1L))
 })

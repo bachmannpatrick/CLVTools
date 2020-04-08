@@ -44,7 +44,7 @@ setMethod("initialize", signature = signature(.Object="clv.time.date"),
 
 
 #' @importFrom lubridate days
-setMethod("clv.time.epsilon", signature = "clv.time.date", function(clv.time){
+setMethod("clv.time.epsilon", signature =  signature(clv.time="clv.time.date"), function(clv.time){
   # Alternative: return 1L
   return(days(x = 1L))
 })
