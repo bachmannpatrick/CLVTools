@@ -318,7 +318,7 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 #' }
 #' @method predict clv.fitted
 #' @export
-predict.clv.fitted <- function(object, newdata=NULL, prediction.end=NULL, predict.spending=object@clv.data@has.spending,
+predict.clv.fitted <- function(object, newdata=NULL, prediction.end=NULL, predict.spending=clv.data.has.spending(object@clv.data),
                                continuous.discount.factor=0.1, verbose=TRUE, ...){
   # warn if unnecessary input
   if(length(list(...))>0)

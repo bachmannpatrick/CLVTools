@@ -9,7 +9,7 @@
   object,
   newdata = NULL,
   prediction.end = NULL,
-  predict.spending = object@clv.data@has.spending,
+  predict.spending = clv.data.has.spending(object@clv.data),
   continuous.discount.factor = 0.1,
   verbose = TRUE,
   ...
@@ -19,7 +19,7 @@
   object,
   newdata = NULL,
   prediction.end = NULL,
-  predict.spending = object@clv.data@has.spending,
+  predict.spending = clv.data.has.spending(object@clv.data),
   continuous.discount.factor = 0.1,
   verbose = TRUE,
   ...

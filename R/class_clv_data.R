@@ -67,6 +67,10 @@ clv.data <- function(call, data.transactions, data.repeat.trans, has.spending, c
              descriptives.transactions=descriptives.transactions))
 }
 
+clv.data.has.spending <- function(clv.data){
+  return(clv.data@has.spending)
+}
+
 
 
 #' @importFrom stats sd
