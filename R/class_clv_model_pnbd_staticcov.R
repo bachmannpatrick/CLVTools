@@ -117,46 +117,52 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.static.co
   # Read out from table
   predict.number.of.periods <- dt.prediction[1, period.length]
 
-  # To be sure they are both sorted the same when calling cpp functions
-  setkeyv(dt.prediction, "Id")
-  setkeyv(clv.fitted@cbs, "Id")
-
   # Put params together in single vec
   estimated.params <- c(r = clv.fitted@prediction.params.model[["r"]], alpha = clv.fitted@prediction.params.model[["alpha"]],
                         s = clv.fitted@prediction.params.model[["s"]], beta  = clv.fitted@prediction.params.model[["beta"]])
 
 
+  # To ensure sorting, do everything in a single table
+  dt.result <- copy(clv.fitted@cbs[, c("Id", "x", "t.x", "T.cal")])
+
+
   # Add CET
-  dt.prediction[, CET :=  pnbd_staticcov_CET(vEstimated_params  = estimated.params,
+  dt.result[, CET :=  pnbd_staticcov_CET(vEstimated_params  = estimated.params,
                                              dPrediction_period = predict.number.of.periods,
-                                             vX     = clv.fitted@cbs$x,
-                                             vT_x   = clv.fitted@cbs$t.x,
-                                             vT_cal = clv.fitted@cbs$T.cal,
+                                             vX     = x,
+                                             vT_x   = t.x,
+                                             vT_cal = T.cal,
                                              vCovParams_trans = clv.fitted@prediction.params.trans,
                                              vCovParams_life  = clv.fitted@prediction.params.life,
                                              mCov_trans  = data.cov.mat.trans,
                                              mCov_life   = data.cov.mat.life)]
 
   # Add PAlive
-  dt.prediction[, PAlive := pnbd_staticcov_PAlive(vEstimated_params = estimated.params,
-                                                  vX     = clv.fitted@cbs$x,
-                                                  vT_x   = clv.fitted@cbs$t.x,
-                                                  vT_cal = clv.fitted@cbs$T.cal,
+  dt.result[, PAlive := pnbd_staticcov_PAlive(vEstimated_params = estimated.params,
+                                                  vX     = x,
+                                                  vT_x   = t.x,
+                                                  vT_cal = T.cal,
                                                   vCovParams_trans = clv.fitted@prediction.params.trans,
                                                   vCovParams_life  = clv.fitted@prediction.params.life,
                                                   mCov_trans = data.cov.mat.trans,
                                                   mCov_life  = data.cov.mat.life)]
 
   # Add DERT
-  dt.prediction[, DERT := pnbd_staticcov_DERT(vEstimated_params = estimated.params,
+  dt.result[, DERT := pnbd_staticcov_DERT(vEstimated_params = estimated.params,
                                               continuous_discount_factor = continuous.discount.factor,
-                                              vX     = clv.fitted@cbs$x,
-                                              vT_x   = clv.fitted@cbs$t.x,
-                                              vT_cal = clv.fitted@cbs$T.cal,
+                                              vX     = x,
+                                              vT_x   = t.x,
+                                              vT_cal = T.cal,
                                               mCov_life     = data.cov.mat.life,
                                               mCov_trans    = data.cov.mat.trans,
                                               vCovParams_life  = clv.fitted@prediction.params.life,
                                               vCovParams_trans = clv.fitted@prediction.params.trans)]
+
+
+  # Add results to prediction table, by matching Id
+  dt.prediction[dt.result, CET    := i.CET,    on = "Id"]
+  dt.prediction[dt.result, PAlive := i.PAlive, on = "Id"]
+  dt.prediction[dt.result, DERT   := i.DERT,   on = "Id"]
 
   return(dt.prediction)
 })
