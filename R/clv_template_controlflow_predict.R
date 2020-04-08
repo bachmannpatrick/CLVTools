@@ -91,18 +91,18 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
   {
     # **TODO: What if no Price??
     # only what is in prediction period!
-    actuals.dt    <- object@clv.data@data.transactions[between(x = Date,
+    dt.actuals    <- object@clv.data@data.transactions[between(x = Date,
                                                                lower = timepoint.prediction.first,
                                                                upper = timepoint.prediction.last,
                                                                incbounds = TRUE),
                                                        list(actual.x        = .N,
                                                             actual.spending = sum(Price)),
                                                        by="Id"]
-    setkeyv(actuals.dt, "Id")
+    setkeyv(dt.actuals, "Id")
 
     # add actuals to prediction
-    dt.prediction[dt.prediction,          actual.x        := i.actual.x,        on="Id"]
-    dt.prediction[dt.prediction,          actual.spending := i.actual.spending, on="Id"]
+    dt.prediction[dt.actuals,             actual.x        := i.actual.x,        on="Id"]
+    dt.prediction[dt.actuals,             actual.spending := i.actual.spending, on="Id"]
     dt.prediction[is.na(actual.x),        actual.x        := 0]
     dt.prediction[is.na(actual.spending), actual.spending := 0]
   }
