@@ -70,8 +70,5 @@ pnbd_cbs <- function(clv.data){
   else
     setcolorder(cbs, c("Id","x","t.x","T.cal", "date.first.actual.trans", "date.last.transaction"))
 
-  # add date of first repeat transaction to cbs as often needed
-  # ??** TODO: Zero repeaters will be NA..?!
-  # cbs[obj@data.repeat.trans, date.first.repeat.trans := Date, mult="first", on="Id"]
   return(cbs)
 }
