@@ -13,14 +13,19 @@ test_that("All date classes have epsilon of 1 day", {
   expect_equal(as.numeric(clv.time.epsilon(clv.t.years), units="days"), 1)
 
   # Operations correct
+  # Plus
   expect_equal(ymd("2020-01-01") + clv.time.epsilon(clv.t.days),  ymd("2020-01-02"))
   expect_equal(ymd("2020-01-01") + clv.time.epsilon(clv.t.weeks), ymd("2020-01-02"))
   expect_equal(ymd("2020-01-01") + clv.time.epsilon(clv.t.years), ymd("2020-01-02"))
-
-
+  # Minus
   expect_equal(ymd("2020-01-01") - clv.time.epsilon(clv.t.days),  ymd("2019-12-31"))
   expect_equal(ymd("2020-01-01") - clv.time.epsilon(clv.t.weeks), ymd("2019-12-31"))
   expect_equal(ymd("2020-01-01") - clv.time.epsilon(clv.t.years), ymd("2019-12-31"))
+
+  # same as 1L
+  expect_equal(ymd("2020-01-01") + clv.time.epsilon(clv.t.days)  - 1L, ymd("2020-01-01"))
+  expect_equal(ymd("2020-01-01") + clv.time.epsilon(clv.t.weeks) - 1L, ymd("2020-01-01"))
+  expect_equal(ymd("2020-01-01") + clv.time.epsilon(clv.t.years) - 1L, ymd("2020-01-01"))
 })
 
 test_that("All datetime classes have epsilon of 1 second", {
@@ -33,6 +38,10 @@ test_that("All datetime classes have epsilon of 1 second", {
 
   expect_equal(ymd_hms("2020-01-01 00:00:01", tz="UTC") - clv.time.epsilon(clv.t.hours),
                ymd_hms("2020-01-01 00:00:00", tz="UTC"))
+
+  # same as +1L
+  expect_equal(ymd_hms("2020-01-01 00:00:01", tz="UTC") + clv.time.epsilon(clv.t.hours) - 1L,
+               ymd_hms("2020-01-01 00:00:01", tz="UTC"))
 })
 
 
