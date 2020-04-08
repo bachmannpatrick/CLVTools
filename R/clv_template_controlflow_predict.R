@@ -36,34 +36,33 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 
 
 
-  # Prediction end timepoint and number of time units to predict ------------------------------------------
+  # Prediction result table ------------------------------------------------------------------------------
+  dt.prediction <- copy(object@cbs[, "Id"])
 
-  # Table with:
+  # Add information about range of prediction period
   #   tp.prediction.start: Start of prediction, including this timepoint
   #   tp.prediction.end: End of prediction period which includes this timepoint
   #   prediction.length: Length of period for which predictions should be made, in number of periods
-  #   Id: All customers for which predictions are needed
 
   # Could be viewed as part of input checks
   #   but the end of the prediction period cannot be determined until after newdata is set
-  dt.prediction <- clv.time.get.prediction.table(clv.time = object@clv.data@clv.time,
-                                                 user.prediction.end = prediction.end)
-  # Add Ids
-  #   Cannot plonk in new column because of different length
-  #   **TODO: Well, then how can cbind work??
-  dt.prediction <- cbind(unique(object@cbs[,"Id"]), dt.prediction)
+  dt.prediction.time.table <- clv.time.get.prediction.table(clv.time = object@clv.data@clv.time,
+                                                            user.prediction.end = prediction.end)
+  # Add information to prediction table
+  dt.prediction <- cbind(dt.prediction, dt.prediction.time.table)
 
   timepoint.prediction.first <- dt.prediction[1, period.first]
   timepoint.prediction.last  <- dt.prediction[1, period.last]
+  prediction.period.length   <- dt.prediction[1, period.length]
 
   if(verbose)
     message("Predicting from ", timepoint.prediction.first, " until (incl.) ",
-            timepoint.prediction.last, " (", format(dt.prediction[1, period.length], digits = 4, nsmall=2)," ",
+            timepoint.prediction.last, " (", format(prediction.period.length, digits = 4, nsmall=2)," ",
             object@clv.data@clv.time@name.time.unit,").")
 
 
   # Need at least > 2 time units to predict
-  if(dt.prediction[1, period.length] <= 2)
+  if(prediction.period.length <= 2)
     stop("The end of the prediction needs to be at least 3 periods after the end of the estimation period!", call. = FALSE)
 
 
