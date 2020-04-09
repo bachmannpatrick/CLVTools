@@ -115,7 +115,7 @@ test_that("estimation split Date results in estimation end = on this date", {
   expect_silent(t.hours <- clv.time.set.sample.periods(clv.t.hours, user.estimation.end = tp.split, tp.first.transaction = tp.first.posix,
                                                       tp.last.transaction = tp.last.posix))
   expect_equal(t.hours@timepoint.estimation.end, tp.split.posix) # Split same Date but as posix
-  expect_equal(t.hours@estimation.period.in.tu, time_length(tp.split.posix-tp.first.posix, "hours"))
+  expect_equal(t.hours@estimation.period.in.tu, time_length(interval(start = tp.first.posix, end = tp.split.posix), "hours"))
   expect_equal(t.hours@timepoint.holdout.start, t.hours@timepoint.estimation.end+1L)
   expect_equal(t.hours@timepoint.holdout.end, tp.last.posix)
 
@@ -123,21 +123,21 @@ test_that("estimation split Date results in estimation end = on this date", {
   expect_silent(t.days <- clv.time.set.sample.periods(clv.t.days, user.estimation.end = tp.split, tp.first.transaction =tp.first,
                                                       tp.last.transaction = tp.last))
   expect_equal(t.days@timepoint.estimation.end, tp.split)
-  expect_equal(t.days@estimation.period.in.tu, time_length(tp.split-tp.first, "days"))
+  expect_equal(t.days@estimation.period.in.tu, time_length(interval(start = tp.first, end = tp.split), "days"))
   expect_equal(t.days@timepoint.holdout.start, t.days@timepoint.estimation.end+1L)
   expect_equal(t.days@timepoint.holdout.end, tp.last)
 
   expect_silent(t.weeks <- clv.time.set.sample.periods(clv.t.weeks, user.estimation.end = tp.split, tp.first.transaction =tp.first,
                                                       tp.last.transaction = tp.last))
   expect_equal(t.weeks@timepoint.estimation.end, tp.split)
-  expect_equal(t.weeks@estimation.period.in.tu, time_length(tp.split-tp.first, "weeks"))
+  expect_equal(t.weeks@estimation.period.in.tu, time_length(interval(start = tp.first, end = tp.split), "weeks"))
   expect_equal(t.weeks@timepoint.holdout.start, t.weeks@timepoint.estimation.end+1L)
   expect_equal(t.weeks@timepoint.holdout.end, tp.last)
 
   expect_silent(t.years <- clv.time.set.sample.periods(clv.t.years, user.estimation.end = tp.split, tp.first.transaction =tp.first,
                                                        tp.last.transaction = tp.last))
   expect_equal(t.years@timepoint.estimation.end, tp.split)
-  expect_equal(t.years@estimation.period.in.tu, time_length(tp.split-tp.first, "years"))
+  expect_equal(t.years@estimation.period.in.tu, time_length(interval(start = tp.first, end = tp.split), "years"))
   expect_equal(t.years@timepoint.holdout.start, t.years@timepoint.estimation.end+1L)
   expect_equal(t.years@timepoint.holdout.end, tp.last)
 })
@@ -152,7 +152,7 @@ test_that("estimation split POSIXct results in estimation end = on this date", {
   expect_silent(t.hours <- clv.time.set.sample.periods(clv.t.hours, user.estimation.end = lubridate::ymd_hms("2018-05-01 00:00:00"),
                                                        tp.first.transaction = tp.first.posix, tp.last.transaction = tp.last.posix))
   expect_equal(t.hours@timepoint.estimation.end, lubridate::ymd("2018-05-01", tz="UTC"))
-  expect_equal(t.hours@estimation.period.in.tu, time_length(lubridate::ymd("2018-05-01", tz="UTC")-tp.first.posix, "hours"))
+  expect_equal(t.hours@estimation.period.in.tu, time_length(interval(start = tp.first.posix, end = lubridate::ymd("2018-05-01", tz="UTC")), "hours"))
   expect_equal(t.hours@timepoint.holdout.start, t.hours@timepoint.estimation.end+1L)
   expect_equal(t.hours@timepoint.holdout.end, tp.last.posix)
 
@@ -160,7 +160,7 @@ test_that("estimation split POSIXct results in estimation end = on this date", {
   expect_silent(t.hours <- clv.time.set.sample.periods(clv.t.hours, user.estimation.end = lubridate::ymd_hms("2018-05-01 14:00:00"),
                                                        tp.first.transaction = tp.first.posix, tp.last.transaction = tp.last.posix))
   expect_equal(t.hours@timepoint.estimation.end, lubridate::ymd_hms("2018-05-01 14:00:00"))
-  expect_equal(t.hours@estimation.period.in.tu, time_length(lubridate::ymd_hms("2018-05-01 14:00:00")-tp.first.posix, "hours"))
+  expect_equal(t.hours@estimation.period.in.tu, time_length(interval(start = tp.first.posix, end = lubridate::ymd_hms("2018-05-01 14:00:00")), "hours"))
   expect_equal(t.hours@timepoint.holdout.start, t.hours@timepoint.estimation.end+1L)
   expect_equal(t.hours@timepoint.holdout.end, tp.last.posix)
 
@@ -168,7 +168,7 @@ test_that("estimation split POSIXct results in estimation end = on this date", {
   expect_silent(t.hours <- clv.time.set.sample.periods(clv.t.hours, user.estimation.end = lubridate::ymd_hms("2018-05-01 14:35:43"),
                                                        tp.first.transaction = tp.first.posix, tp.last.transaction = tp.last.posix))
   expect_equal(t.hours@timepoint.estimation.end, lubridate::ymd_hms("2018-05-01 14:35:43"))
-  expect_equal(t.hours@estimation.period.in.tu, time_length(lubridate::ymd_hms("2018-05-01 14:35:43")-tp.first.posix, "hours"))
+  expect_equal(t.hours@estimation.period.in.tu, time_length(interval(start = tp.first.posix, end = lubridate::ymd_hms("2018-05-01 14:35:43")), "hours"))
   expect_equal(t.hours@timepoint.holdout.start, t.hours@timepoint.estimation.end+1L)
   expect_equal(t.hours@timepoint.holdout.end, tp.last.posix)
 
