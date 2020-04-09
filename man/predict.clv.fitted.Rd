@@ -73,33 +73,20 @@ to predict spending and calculate the predicted CLV. In this case, the predictio
 }
 }
 \details{
-The \code{newdata} argument has to be a clv data object of the exact same class as the data object
-on which the model was fit. In case the model was fit with covariates, \code{newdata} needs to contain identically
-named covariate data.
-The use case for \code{newdata} is mainly two-fold: First, to estimate model parameters only on a
-sample of the data and then use the fitted model object to predict for the full data set provided through \code{newdata}.
-Second, for models with dynamic covariates, to provide a clv data object with longer covariates than contained in the data
-on which the model was estimated what allows to predict further. When providing \code{newdata}, some models
-might require additional steps that can significantly increase runtime.
-
-
 \code{prediction.end} is either a point in time (of class \code{Date}, \code{POSIXct}, or \code{character}) or the number of periods
-that indicates until when to predict.
+that indicates until when to predict or plot.
 If \code{prediction.end} is of class character, the date/time format set when creating the data object is used for parsing.
 If \code{prediction.end} is the number of periods, the end of the fitting period serves as the reference point from which periods are counted.
 Only full periods may be specified.
-If \code{prediction.end} is omitted or NULL, it defaults to the end of the holdout period.
-
+If \code{prediction.end} is omitted or NULL, it defaults to the end of the holdout period if present and to the
+end of the estimation period otherwise.
 
 \code{predict.spending} uses a Gamma/Gamma model to predict customer spending. This option is only available
 if customer spending information was provided when the data object was created.
 
-
 \code{continuous.discount.factor} allows to adjust the discount rate used to estimated the discounted expected
 transactions (\code{DERT}).
 The default value is \code{0.1} (=10\%). Note that a continuous rate needs to be provided.
-
-
 
 
 \subsection{The Gamma-Gamma model to Predict Spending}{

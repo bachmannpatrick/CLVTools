@@ -218,35 +218,16 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 #'
 #'
 #'
-#' @details
-#'
-#' The \code{newdata} argument has to be a clv data object of the exact same class as the data object
-#' on which the model was fit. In case the model was fit with covariates, \code{newdata} needs to contain identically
-#' named covariate data.
-#' The use case for \code{newdata} is mainly two-fold: First, to estimate model parameters only on a
-#' sample of the data and then use the fitted model object to predict for the full data set provided through \code{newdata}.
-#' Second, for models with dynamic covariates, to provide a clv data object with longer covariates than contained in the data
-#' on which the model was estimated what allows to predict further. When providing \code{newdata}, some models
-#' might require additional steps that can significantly increase runtime.
 #'
 #'
-#' \code{prediction.end} is either a point in time (of class \code{Date}, \code{POSIXct}, or \code{character}) or the number of periods
-#' that indicates until when to predict.
-#' If \code{prediction.end} is of class character, the date/time format set when creating the data object is used for parsing.
-#' If \code{prediction.end} is the number of periods, the end of the fitting period serves as the reference point from which periods are counted.
-#' Only full periods may be specified.
-#' If \code{prediction.end} is omitted or NULL, it defaults to the end of the holdout period.
+#' @template template_details_predictionend
 #'
-#'
-#' \code{predict.spending} uses a Gamma/Gamma model to predict customer spending. This option is only available
+#' @details \code{predict.spending} uses a Gamma/Gamma model to predict customer spending. This option is only available
 #' if customer spending information was provided when the data object was created.
 #'
-#'
-#' \code{continuous.discount.factor} allows to adjust the discount rate used to estimated the discounted expected
+#' @details \code{continuous.discount.factor} allows to adjust the discount rate used to estimated the discounted expected
 #' transactions (\code{DERT}).
 #' The default value is \code{0.1} (=10\%). Note that a continuous rate needs to be provided.
-#'
-#'
 #'
 #'
 #' \subsection{The Gamma-Gamma model to Predict Spending}{
@@ -256,6 +237,7 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 #' also has to be considered. To model customer spending the Gamma/Gamma is a
 #' popular choice.
 #' }
+#'
 #'
 #' @references
 #' Schmittlein DC, Morrison DG, Colombo R (1987). “Counting Your Customers:
@@ -279,7 +261,6 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 #' URL \url{http://www.brucehardie.com/notes/025/gamma_gamma.pdf}.
 #'
 #'
-#'
 #' @return
 #' An object of class \code{data.table} with each columns containing the predictions:
 #' \item{Id}{The respective customer identifier}
@@ -293,7 +274,6 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 #' \item{actual.Spending}{Actual spending until prediction.end. Only if there is a holdout period and the prediction ends in it, 0 otherwise.}
 #' \item{predicted.Spending}{The spending as predicted by the Gamma-Gamma model.}
 #' \item{predicted.CLV}{Customer Lifetime Value based on DERT and predicted spending.}
-#'
 #'
 #' @examples
 #' \donttest{

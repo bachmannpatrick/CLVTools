@@ -9,14 +9,9 @@
 #' @description
 #' Plots the actual repeat transactions for the given CLV data object.
 #'
-#' @details
-#' \code{prediction.end} is either a point in time (of class \code{Date}, \code{POSIXct}, or \code{character}) or the number of periods
-#' that indicates until when to plot the repeat transactions.
-#' If \code{prediction.end} is of class character, the date/time format set when creating the data object is used for parsing.
-#' If \code{prediction.end} is the number of periods, the end of the fitting period serves as the reference point from which periods are counted. Only full periods may be specified.
-#' If \code{prediction.end} is omitted or NULL, it defaults to the end of the holdout period.
+#' @template template_details_predictionend
 #'
-#' If there are no repeat transactions until \code{prediction.end}, only the time for which there is data
+#' @details If there are no repeat transactions until \code{prediction.end}, only the time for which there is data
 #' is plotted. If the data is returned (ie with argument \code{plot=FALSE}), the respective rows
 #' contain \code{NA} in column \code{Number of Repeat Transactions}.
 #'

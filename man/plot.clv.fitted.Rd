@@ -62,22 +62,23 @@ Plot the actual repeat transactions and overlay it with the repeat transaction a
 }
 \details{
 \code{prediction.end} is either a point in time (of class \code{Date}, \code{POSIXct}, or \code{character}) or the number of periods
-that indicates until when to plot the expected transactions.
+that indicates until when to predict or plot.
 If \code{prediction.end} is of class character, the date/time format set when creating the data object is used for parsing.
-If \code{prediction.end} is the number of periods, the end of the fitting period serves as the reference point from which periods are counted. Only full periods may be specified.
-If \code{prediction.end} is omitted or NULL, it defaults to the end of the holdout period.
+If \code{prediction.end} is the number of periods, the end of the fitting period serves as the reference point from which periods are counted.
+Only full periods may be specified.
+If \code{prediction.end} is omitted or NULL, it defaults to the end of the holdout period if present and to the
+end of the estimation period otherwise.
 
 Note that only whole periods can be plotted and that the prediction end might not exactly match \code{prediction.end}.
 See the Note section for more details.
-
 
 The \code{newdata} argument has to be a clv data object of the exact same class as the data object
 on which the model was fit. In case the model was fit with covariates, \code{newdata} needs to contain identically
 named covariate data.
 The use case for \code{newdata} is mainly two-fold: First, to estimate model parameters only on a
-sample of the data and then use the fitted model object to plot for the full data set provided through \code{newdata}.
+sample of the data and then use the fitted model object to predict or plot for the full data set provided through \code{newdata}.
 Second, for models with dynamic covariates, to provide a clv data object with longer covariates than contained in the data
-on which the model was estimated what allows to plot further. When providing \code{newdata}, some models
+on which the model was estimated what allows to predict or plot further. When providing \code{newdata}, some models
 might require additional steps that can significantly increase runtime.
 }
 \note{
