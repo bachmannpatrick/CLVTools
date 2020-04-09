@@ -137,7 +137,7 @@ test_that("estimation split Date results in estimation end = on this date", {
   expect_silent(t.years <- clv.time.set.sample.periods(clv.t.years, user.estimation.end = tp.split, tp.first.transaction =tp.first,
                                                        tp.last.transaction = tp.last))
   expect_equal(t.years@timepoint.estimation.end, tp.split)
-  expect_equal(t.years@estimation.period.in.tu, time_length(tp.split-tp.first, "years"))
+  expect_equal(t.years@estimation.period.in.tu, time_length(tp.split-tp.first, "days")/365)
   expect_equal(t.years@timepoint.holdout.start, t.years@timepoint.estimation.end+1L)
   expect_equal(t.years@timepoint.holdout.end, tp.last)
 })
