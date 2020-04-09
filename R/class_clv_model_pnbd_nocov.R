@@ -82,8 +82,8 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
   return(optimx.args)
 })
 
-# . clv.model.put.optimx.output -----------------------------------------------------------------------------------------
-setMethod("clv.model.put.optimx.output", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, res.optimx){
+# . clv.model.process.post.estimation -----------------------------------------------------------------------------------------
+setMethod("clv.model.process.post.estimation", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, res.optimx){
   # No additional step needed (ie store model specific stuff, extra process)
   return(clv.fitted)
 })

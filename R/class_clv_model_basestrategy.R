@@ -52,12 +52,12 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
 })
 
 
-# . clv.model.put.optimx.output -----------------------------------------------------------------------------------------
-setMethod("clv.model.put.optimx.output", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, res.optimx){
+# . clv.model.process.post.estimation -----------------------------------------------------------------------------------------
+setMethod("clv.model.process.post.estimation", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, res.optimx){
   # Example: do nothing
   # No additional step needed (ie store model specific stuff, extra process)
   # return(clv.fitted)
-  stop("The method clv.model.put.optimx.output has not been implemented by this model!")
+  stop("The method clv.model.process.post.estimation has not been implemented by this model!")
 })
 
 # . clv.model.cor.to.m ----------------------------------------------------------------------------------------
