@@ -1,5 +1,6 @@
-
 #' @name clvdata
+#' @md
+#'
 #' @title Create an object for transactional data required to estimate CLV
 #'
 #' @param data.transactions Transaction data as \code{data.frame} or \code{data.table}. See details.
@@ -16,7 +17,6 @@
 #' model fitting. The transaction data may be split in an estimation and holdout sample if desired.
 #' The model then will only be fit on the estimation sample.
 #'
-#'
 #' If covariates should be used when fitting a model, covariate data can be added
 #' to an object returned from this function.
 #'
@@ -26,7 +26,8 @@
 #' Optionally, the price of the transaction may be included to also allow for prediction
 #' of future customer spending.
 #'
-#' \code{time.unit} Time unit that defines a single period. Currently available are \code{"hours"}, \code{"days"}, \code{"weeks"}, and \code{"years"}.
+#' \code{time.unit} The definition of a single period. Currently available are \code{"hours"}, \code{"days"}, \code{"weeks"}, and \code{"years"}.
+#' May be abbreviated.
 #'
 #' \code{date.format} A single format to use when parsing any date that is given as character input. This includes
 #' the dates given in \code{data.transaction}, \code{estimation.split}, or as an input to any other function at
@@ -40,6 +41,15 @@
 #' (either as character, Date, or POSIXct) at which the estimation period ends. The indicated timepoint itself will be part of the estimation sample.
 #' If no value is provided or set to \code{NULL}, the whole dataset will used for fitting the model (no holdout sample).
 #'
+#' @details ## Aggregation of Transactions
+#'
+#' Multiple transactions by the same customer that occur on the minimally representable temporal resolution are aggregated to a
+#' single transaction with their spending summed. For time units \code{days} and any other coarser \code{Date}-based
+#' time units (i.e. \code{weeks}, \code{years}), this means that transactions on the same day are combined.
+#' When using finer time units such as \code{hours} which are based on \code{POSIXct}, transactions on the same second are aggregated.
+#'
+#' For the definition of repeat-purchases, combined transactions are viewed as a single transaction. Hence, repeat-transactions
+#' are determined from the aggregated transactions.
 #'
 #' @return
 #' An object of class \code{clv.data}.
@@ -186,7 +196,7 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
 
   # Aggregate transactions at the same timepoint ------------------------------------------------
   # Aggregate what is on same smallest scale representable by time
-  # aggregating what is in same time.unit does not not make sense
+  # aggregating in the same time.unit does not make sense
   #   Date: on same day
   #   posix: on same second
   dt.trans <- clv.data.aggregate.transactions(dt.transactions = dt.trans, has.spending = has.spending)
@@ -232,7 +242,7 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
 
   # Create clvdata object ----------------------------------------------------------
   obj <- clv.data(call=cl,
-                  data.transactions=dt.trans,
+                  data.transactions = dt.trans,
                   data.repeat.trans = dt.repeat.trans,
                   has.spending = has.spending,
                   clv.time=clv.t)

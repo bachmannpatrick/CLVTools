@@ -86,8 +86,6 @@ clv.data.make.repeat.transactions <- function(dt.transactions){
   dt.repeat.transactions <- dt.repeat.transactions[!is.na(previous)]
   dt.repeat.transactions[, previous := NULL]
 
-  # **TODO: Cross-check with what is done for clv.time aggregation of transactions
-
   # Alternative:
   #   Works only because all on same Date were aggregated. Otherwise, there could be more than one removed
   # dt.repeat.transactions[, is.first.trans := (Date == min(Date), by="Id"]

@@ -346,3 +346,22 @@ test_that("Zero-repeaters are removed", {
 
 
 
+
+test_that("Aggregating first and removing after removes all first transactions", {
+  expect_silent(dt.trans <- data.table(Id =   c("1", "1", "1", "2", "2", "2"),
+                                       Date = c(lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-02"),
+                                                lubridate::ymd("2019-06-01"), lubridate::ymd("2019-06-01"), lubridate::ymd("2019-06-02")),
+                                       Price = c(1, 2, 3,
+                                                 4, 5, 6)))
+  expect_silent(dt.trans.correct <- data.table(Id =   c( "1", "2"),
+                                               Date = c(lubridate::ymd("2019-01-02"),
+                                                        lubridate::ymd("2019-06-02")),
+                                               Price = c(3,
+                                                         6)))
+
+  expect_silent(dt.agg.repeat.trans <- clv.data.make.repeat.transactions(clv.data.aggregate.transactions(dt.trans, has.spending = TRUE)))
+  expect_true(fsetequal(dt.agg.repeat.trans, dt.trans.correct))
+
+  expect_silent(clv.d <- clvdata(dt.trans, date.format = "ymd", time.unit = "w", estimation.split = NULL))
+  expect_true(fsetequal(clv.d@data.repeat.trans, dt.trans.correct))
+})

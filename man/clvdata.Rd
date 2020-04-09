@@ -42,7 +42,6 @@ Creates a data object that contains the prepared transaction data and that is us
 model fitting. The transaction data may be split in an estimation and holdout sample if desired.
 The model then will only be fit on the estimation sample.
 
-
 If covariates should be used when fitting a model, covariate data can be added
 to an object returned from this function.
 }
@@ -52,7 +51,8 @@ Every transaction record consists of a purchase date and a customer id.
 Optionally, the price of the transaction may be included to also allow for prediction
 of future customer spending.
 
-\code{time.unit} Time unit that defines a single period. Currently available are \code{"hours"}, \code{"days"}, \code{"weeks"}, and \code{"years"}.
+\code{time.unit} The definition of a single period. Currently available are \code{"hours"}, \code{"days"}, \code{"weeks"}, and \code{"years"}.
+May be abbreviated.
 
 \code{date.format} A single format to use when parsing any date that is given as character input. This includes
 the dates given in \code{data.transaction}, \code{estimation.split}, or as an input to any other function at
@@ -65,6 +65,17 @@ and hence all formats it accepts in argument \code{orders} can be used. For exam
 \code{estimation.split} May be specified as either the number of periods since the first transaction or the timepoint
 (either as character, Date, or POSIXct) at which the estimation period ends. The indicated timepoint itself will be part of the estimation sample.
 If no value is provided or set to \code{NULL}, the whole dataset will used for fitting the model (no holdout sample).
+
+\subsection{Aggregation of Transactions}{
+
+Multiple transactions by the same customer that occur on the minimally representable temporal resolution are aggregated to a
+single transaction with their spending summed. For time units \code{days} and any other coarser \code{Date}-based
+time units (i.e. \code{weeks}, \code{years}), this means that transactions on the same day are combined.
+When using finer time units such as \code{hours} which are based on \code{POSIXct}, transactions on the same second are aggregated.
+
+For the definition of repeat-purchases, combined transactions are viewed as a single transaction. Hence, repeat-transactions
+are determined from the aggregated transactions.
+}
 }
 \examples{
 data("cdnow")
