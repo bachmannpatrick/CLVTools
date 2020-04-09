@@ -48,7 +48,7 @@ setClass(Class = "clv.data",
 #' @importFrom methods new
 clv.data <- function(call, data.transactions, data.repeat.trans, has.spending, clv.time){
 
-  has.holdout <- (clv.time@holdout.period.in.tu > 0)
+  has.holdout <- clv.time.has.holdout(clv.time)
 
   descriptives.transactions <- clv.data.make.descriptives(clv.time=clv.time, data.transactions = data.transactions,
                                                           has.holdout = has.holdout, has.spending = has.spending)
@@ -67,7 +67,9 @@ clv.data <- function(call, data.transactions, data.repeat.trans, has.spending, c
              descriptives.transactions=descriptives.transactions))
 }
 
-
+clv.data.has.holdout <- function(clv.data){
+  return(clv.data@has.holdout)
+}
 
 clv.data.has.spending <- function(clv.data){
   return(clv.data@has.spending)

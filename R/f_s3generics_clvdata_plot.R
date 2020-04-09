@@ -92,7 +92,7 @@ plot.clv.data <- function(x, prediction.end=NULL, cumulative=FALSE, plot=TRUE, v
   if(verbose)
     message("Plotting from ", tp.data.start, " until ", tp.data.end, ".")
 
-  if(x@has.holdout){
+  if(clv.data.has.holdout(x)){
     if(tp.data.end < x@clv.time@timepoint.holdout.end){
       warning("Not plotting full holdout period.", call. = FALSE, immediate. = TRUE)
     }

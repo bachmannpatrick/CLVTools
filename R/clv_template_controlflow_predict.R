@@ -86,7 +86,7 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
   #     actual.x:         number of transactions
   #     actual.spending:  $
 
-  has.actuals <- object@clv.data@has.holdout & (timepoint.prediction.last <= object@clv.data@clv.time@timepoint.holdout.end)
+  has.actuals <- clv.data.has.holdout(object@clv.data) & (timepoint.prediction.last <= object@clv.data@clv.time@timepoint.holdout.end)
   if(has.actuals)
   {
     # only what is in prediction period!

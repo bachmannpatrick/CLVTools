@@ -58,6 +58,10 @@ clv.time.possible.time.units <- function(){
   return(c("hours","days", "weeks", "years"))
 }
 
+clv.time.has.holdout <- function(clv.time){
+  return(clv.time@holdout.period.in.tu > 0)
+}
+
 
 # set.sample.periods ------------------------------------------------------------------------
 #' @importFrom lubridate period

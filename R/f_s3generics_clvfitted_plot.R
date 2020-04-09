@@ -158,7 +158,7 @@ plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FA
     message("Plotting from ", tp.data.start, " until ", tp.data.end, ".")
 
 
-  if(x@clv.data@has.holdout){
+  if(clv.data.has.holdout(x@clv.data)){
     if(tp.data.end < x@clv.data@clv.time@timepoint.holdout.end){
       warning("Not plotting full holdout period.", call. = FALSE, immediate. = TRUE)
     }
@@ -236,7 +236,7 @@ clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
   p <- ggplot(data = data.melted, aes(x=period.first, y=value, colour=variable)) + geom_line()
 
   # Add holdout line if there is a holdout period
-  if(clv.data@has.holdout){
+  if(clv.data.has.holdout(clv.data)){
     p <- p + geom_vline(xintercept = as.numeric(clv.data@clv.time@timepoint.holdout.start),
                         linetype="dashed", show.legend = FALSE)
   }
