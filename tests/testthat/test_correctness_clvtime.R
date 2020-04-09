@@ -1,10 +1,52 @@
-# set.sample.periods --------------------------------------------------------------------------------
-context("Correctness - clv.time - set.sample.periods")
-
+# clv.time.epsilon --------------------------------------------------------------------------------
+context("Correctness - clv.time - epsilon")
 expect_silent(clv.t.hours <- clv.time.hours(time.format="ymd HMS"))
 expect_silent(clv.t.days  <- clv.time.days( time.format="ymd"))
 expect_silent(clv.t.weeks <- clv.time.weeks(time.format="ymd"))
 expect_silent(clv.t.years <- clv.time.years(time.format="ymd"))
+
+test_that("All date classes have epsilon of 1 day", {
+  # returns correct
+  expect_equal(as.numeric(days(1L), "days"), 1)
+  expect_equal(as.numeric(clv.time.epsilon(clv.t.days),  units="days"), 1)
+  expect_equal(as.numeric(clv.time.epsilon(clv.t.weeks), units="days"), 1)
+  expect_equal(as.numeric(clv.time.epsilon(clv.t.years), units="days"), 1)
+
+  # Operations correct
+  # Plus
+  expect_equal(lubridate::ymd("2020-01-01") + clv.time.epsilon(clv.t.days),  lubridate::ymd("2020-01-02"))
+  expect_equal(lubridate::ymd("2020-01-01") + clv.time.epsilon(clv.t.weeks), lubridate::ymd("2020-01-02"))
+  expect_equal(lubridate::ymd("2020-01-01") + clv.time.epsilon(clv.t.years), lubridate::ymd("2020-01-02"))
+  # Minus
+  expect_equal(lubridate::ymd("2020-01-01") - clv.time.epsilon(clv.t.days),  lubridate::ymd("2019-12-31"))
+  expect_equal(lubridate::ymd("2020-01-01") - clv.time.epsilon(clv.t.weeks), lubridate::ymd("2019-12-31"))
+  expect_equal(lubridate::ymd("2020-01-01") - clv.time.epsilon(clv.t.years), lubridate::ymd("2019-12-31"))
+
+  # same as 1L
+  expect_equal(lubridate::ymd("2020-01-01") + clv.time.epsilon(clv.t.days)  - 1L, lubridate::ymd("2020-01-01"))
+  expect_equal(lubridate::ymd("2020-01-01") + clv.time.epsilon(clv.t.weeks) - 1L, lubridate::ymd("2020-01-01"))
+  expect_equal(lubridate::ymd("2020-01-01") + clv.time.epsilon(clv.t.years) - 1L, lubridate::ymd("2020-01-01"))
+})
+
+test_that("All datetime classes have epsilon of 1 second", {
+  # returns correct
+  expect_equal(as.numeric(clv.time.epsilon(clv.t.hours),  units="seconds"), 1)
+
+  # Operations correct
+  expect_equal(lubridate::ymd_hms("2020-01-01 00:00:00", tz="UTC") + clv.time.epsilon(clv.t.hours),
+               lubridate::ymd_hms("2020-01-01 00:00:01", tz="UTC"))
+
+  expect_equal(lubridate::ymd_hms("2020-01-01 00:00:01", tz="UTC") - clv.time.epsilon(clv.t.hours),
+               lubridate::ymd_hms("2020-01-01 00:00:00", tz="UTC"))
+
+  # same as +1L
+  expect_equal(lubridate::ymd_hms("2020-01-01 00:00:01", tz="UTC") + clv.time.epsilon(clv.t.hours) - 1L,
+               lubridate::ymd_hms("2020-01-01 00:00:01", tz="UTC"))
+})
+
+
+# set.sample.periods --------------------------------------------------------------------------------
+context("Correctness - clv.time - set.sample.periods")
 
 # **last transaction or time period where last transaction is inside?
 test_that("No (NULL) estimation split results in last transaction = estimation end & no holdout", {
