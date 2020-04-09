@@ -39,7 +39,6 @@ print.clv.data.static.covariates <- function(x, digits = max(3L, getOption("digi
   cat("Covariates")
 
   # Print rough covariates overview if it is a covariates model -----------------------------
-  #**TODO: maybe put onto separate lines instead of long text
   .print.list(list( "Trans. Covariates   " = paste(x@names.cov.data.trans, collapse=", "),
                     "       # covs"        = length(x@names.cov.data.trans),
                     "Life.  Covariates   " = paste(x@names.cov.data.life,  collapse=", "),
