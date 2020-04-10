@@ -50,6 +50,12 @@ test_that("Works with custom optimx.args", {
   expect_message(pnbd(clv.data=clv.data.cdnow.withholdout, optimx.args = list(itnmax=40000)))
 })
 
+test_that("Works with all optimx optimization methods", {
+  skip_on_cran()
+  expect_warning(pnbd(clv.data=clv.data.cdnow.noholdout, optimx.args = list(control=list(all.methods=TRUE)), verbose=FALSE),
+                 regexp = "replaced by maximum positive value|Gradient not computable after method nlm|unused control arguments ignored", all=TRUE)
+})
+
 test_that("Works without spending data",{
   skip_on_cran()
   expect_silent(clv.pnbd.nospending <- pnbd(clvdata(cdnow, name.price = NULL, date.format = "ymd", time.unit = "w", estimation.split = 37),

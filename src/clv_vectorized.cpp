@@ -71,6 +71,9 @@ namespace clv{
 
 arma::vec vec_hyp2F1(const arma::vec& vA, const arma::vec& vB, const arma::vec& vC, const arma::vec& vX){
 
+  // Do not abort in case of error
+  gsl_set_error_handler_off();
+
   arma::vec vRes(vA);
   arma::uword n = vA.n_elem;
 
@@ -88,6 +91,9 @@ arma::vec vec_hyp2F1(const arma::vec& vA, const arma::vec& vB, const arma::vec& 
 //
 //    hypergeom1F1(double a, double b, double x);
 arma::vec vec_x_hyp1F1(const double a, const double b, const arma::vec& vX){
+
+  // Do not abort in case of error
+  gsl_set_error_handler_off();
 
   arma::vec vRes(vX);
 
