@@ -1,6 +1,6 @@
 # Class --------------------------------------------------------------------------------------------------------------------------------
 #' @importFrom methods setClass
-#' @include all_generics.R class_clv_model_basestrategy.R
+#' @include all_generics.R class_clv_model.R
 setClass(Class = "clv.model.pnbd.no.cov", contains = "clv.model",
          # no additional slots for pnbd base model
          slots = list(),

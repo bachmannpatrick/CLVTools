@@ -1,5 +1,5 @@
 # Class --------------------------------------------------------------------------------------------------------------------------------
-#' @include class_clv_model_basestrategy.R class_clv_model_pnbd_nocov.R
+#' @include class_clv_model.R class_clv_model_pnbd_nocov.R
 setClass(Class = "clv.model.pnbd.static.cov", contains = "clv.model.pnbd.no.cov",
          slots = list(start.param.cov = "numeric"),
 

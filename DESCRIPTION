@@ -44,7 +44,7 @@ Collate:
     'class_clv_data.R'
     'class_clv_data_staticcovariates.R'
     'class_clv_data_dynamiccovariates.R'
-    'class_clv_model_basestrategy.R'
+    'class_clv_model.R'
     'class_clv_fitted.R'
     'class_clv_fitted_staticcov.R'
     'class_clv_fitted_dynamiccov.R'
