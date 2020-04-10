@@ -53,7 +53,7 @@ test_that("Works with custom optimx.args", {
 test_that("Works with all optimx optimization methods", {
   skip_on_cran()
   expect_warning(pnbd(clv.data=clv.data.cdnow.noholdout, optimx.args = list(control=list(all.methods=TRUE)), verbose=FALSE),
-                 regexp = "replaced by maximum positive value|Gradient not computable after method nlm|unused control arguments ignored", all=TRUE)
+                 regexp = "replaced by maximum positive value|Gradient not computable after method nlm|unused control arguments ignored|Estimation failed with NA coefs|Hessian could not be derived", all=TRUE)
 })
 
 test_that("Works without spending data",{
