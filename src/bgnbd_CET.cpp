@@ -74,8 +74,11 @@ arma::vec bgnbd_nocov_CET(const double r,
 //' Calculates the expected number of transactions in a given time period based
 //' on a customer's past transaction behavior and the BG/NBD model parameters.
 //'
-//' @template template_params_rcppestimatedparams
-//' @param dPrediction_period time prediction time frame
+//' @param r TODO: describe
+//' @param alpha TODO: describe
+//' @param a TODO: describe
+//' @param b TODO: describe
+//' @param nPeriods time prediction time frame
 //' @template template_params_rcppxtxtcal
 //' @template template_params_rcppcovmatrix
 //' @template template_params_rcppvcovparams

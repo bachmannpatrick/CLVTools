@@ -36,8 +36,11 @@ bgnbd_nocov_CET <- function(r, alpha, a, b, nPeriods, vX, vT_x, vT_cal) {
 #' Calculates the expected number of transactions in a given time period based
 #' on a customer's past transaction behavior and the BG/NBD model parameters.
 #'
-#' @template template_params_rcppestimatedparams
-#' @param dPrediction_period time prediction time frame
+#' @param r TODO: describe
+#' @param alpha TODO: describe
+#' @param a TODO: describe
+#' @param b TODO: describe
+#' @param nPeriods time prediction time frame
 #' @template template_params_rcppxtxtcal
 #' @template template_params_rcppcovmatrix
 #' @template template_params_rcppvcovparams
@@ -75,7 +78,7 @@ bgnbd_staticcov_CET <- function(r, alpha, a, b, nPeriods, vX, vT_x, vT_cal, vCov
     .Call(`_CLVTools_bgnbd_staticcov_CET`, r, alpha, a, b, nPeriods, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
 }
 
-#' @rdname bgpnbd_nocov_LL_sum
+#' @rdname bgnbd_nocov_LL_sum
 bgnbd_nocov_LL_ind <- function(vLogparams, vX, vT_x, vT_cal) {
     .Call(`_CLVTools_bgnbd_nocov_LL_ind`, vLogparams, vX, vT_x, vT_cal)
 }
@@ -109,13 +112,50 @@ bgnbd_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal) {
     .Call(`_CLVTools_bgnbd_nocov_LL_sum`, vLogparams, vX, vT_x, vT_cal)
 }
 
+#' @title BG/NBD: LogLikelihood with static covariates
+#'
+#' @description
+#' BG/NBD with Static Covariates:
+#'
+#' The function \code{bgnbd_staticcov_LL_ind} calculates the individual LogLikelihood
+#' values for each customer for the given parameters and covariates.
+#'
+#' The function \code{bgnbd_staticcov_LL_sum} calculates the individual LogLikelihood values summed
+#' across customers.
+#'
+#' @param vLogparams vector with the parameters for the BG/NBD model and the static covariates. See Details.
+#' @template template_params_rcppxtxtcal
+#' @template template_params_rcppcovmatrix
+#'
+#' @details
+#' \code{vLogparams} is vector with the BG/NBD model parameters at log scale,
+#' followed by the parameters for the lifetime covariate at original scale and then
+#' followed by the parameters for the transaction covariate at original scale
+#'
+#' \code{mCov_life} is a matrix containing the covariates data of
+#' the time-invariant covariates that affect the lifetime process.
+#' Each column represents a different covariate. For every column, a gamma parameter
+#' needs to added to \code{vParams} at the respective position.
+#'
+#' \code{mCov_trans} is a matrix containing the covariates data of
+#' the time-invariant covariates that affect the transaction process.
+#' Each column represents a different covariate. For every column, a gamma parameter
+#' needs to added to \code{vParams} at the respective position.
+#'
+#'
+#'@return
+#'  Returns the respective LogLikelihood value for the BG/NBD model with static covariates.
+#'
+#'@references
+#' TODO
+#'
 bgnbd_staticcov_LL_ind <- function(vLogparams, vX, vT_x, vT_cal, mCov_life, mCov_trans) {
     .Call(`_CLVTools_bgnbd_staticcov_LL_ind`, vLogparams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
 
 #' @rdname bgnbd_staticcov_LL_ind
-bgnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans) {
-    .Call(`_CLVTools_bgnbd_staticcov_LL_sum`, vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
+bgnbd_staticcov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal, mCov_life, mCov_trans) {
+    .Call(`_CLVTools_bgnbd_staticcov_LL_sum`, vLogparams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
 
 #' @title BG/NBD: PAlive without covariates
@@ -151,7 +191,10 @@ bgnbd_nocov_PAlive <- function(r, alpha, a, b, vX, vT_x, vT_cal) {
 #' BG/NBD with Static Covariates: Calculates the probability of a customer
 #' being alive (PAlive) at the end of the calibration period.
 #'
-#' @template template_params_rcppestimatedparams
+#' @param r TODO: describe
+#' @param alpha TODO: describe
+#' @param a TODO: describe
+#' @param b TODO: describe
 #' @template template_params_rcppxtxtcal
 #' @template template_params_rcppcovmatrix
 #' @template template_params_rcppvcovparams

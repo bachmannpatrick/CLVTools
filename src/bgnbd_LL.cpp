@@ -26,7 +26,7 @@ arma::vec bgnbd_LL_ind(const double r,
   return(vLL);
 }
 
-//' @rdname bgpnbd_nocov_LL_sum
+//' @rdname bgnbd_nocov_LL_sum
 // [[Rcpp::export]]
 arma::vec bgnbd_nocov_LL_ind(const arma::vec& vLogparams,
                             const arma::vec& vX,
@@ -91,6 +91,43 @@ double bgnbd_nocov_LL_sum(const arma::vec& vLogparams,
   return(-arma::sum(vLL));
 }
 
+//' @title BG/NBD: LogLikelihood with static covariates
+//'
+//' @description
+//' BG/NBD with Static Covariates:
+//'
+//' The function \code{bgnbd_staticcov_LL_ind} calculates the individual LogLikelihood
+//' values for each customer for the given parameters and covariates.
+//'
+//' The function \code{bgnbd_staticcov_LL_sum} calculates the individual LogLikelihood values summed
+//' across customers.
+//'
+//' @param vLogparams vector with the parameters for the BG/NBD model and the static covariates. See Details.
+//' @template template_params_rcppxtxtcal
+//' @template template_params_rcppcovmatrix
+//'
+//' @details
+//' \code{vLogparams} is vector with the BG/NBD model parameters at log scale,
+//' followed by the parameters for the lifetime covariate at original scale and then
+//' followed by the parameters for the transaction covariate at original scale
+//'
+//' \code{mCov_life} is a matrix containing the covariates data of
+//' the time-invariant covariates that affect the lifetime process.
+//' Each column represents a different covariate. For every column, a gamma parameter
+//' needs to added to \code{vParams} at the respective position.
+//'
+//' \code{mCov_trans} is a matrix containing the covariates data of
+//' the time-invariant covariates that affect the transaction process.
+//' Each column represents a different covariate. For every column, a gamma parameter
+//' needs to added to \code{vParams} at the respective position.
+//'
+//'
+//'@return
+//'  Returns the respective LogLikelihood value for the BG/NBD model with static covariates.
+//'
+//'@references
+//' TODO
+//'
 // [[Rcpp::export]]
 arma::vec bgnbd_staticcov_LL_ind(const arma::vec& vLogparams,
                                  const arma::vec& vX,
@@ -135,13 +172,13 @@ arma::vec bgnbd_staticcov_LL_ind(const arma::vec& vLogparams,
 
 //' @rdname bgnbd_staticcov_LL_ind
 // [[Rcpp::export]]
-double bgnbd_staticcov_LL_sum(const arma::vec& vParams,
+double bgnbd_staticcov_LL_sum(const arma::vec& vLogparams,
                               const arma::vec& vX,
                               const arma::vec& vT_x,
                               const arma::vec& vT_cal,
                               const arma::mat& mCov_life,
                               const arma::mat& mCov_trans){
-  arma::vec vLL = bgnbd_staticcov_LL_ind(vParams,
+  arma::vec vLL = bgnbd_staticcov_LL_ind(vLogparams,
                                          vX,
                                          vT_x,
                                          vT_cal,

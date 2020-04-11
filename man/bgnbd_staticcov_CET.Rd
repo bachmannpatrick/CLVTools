@@ -20,6 +20,16 @@ bgnbd_staticcov_CET(
 )
 }
 \arguments{
+\item{r}{TODO: describe}
+
+\item{alpha}{TODO: describe}
+
+\item{a}{TODO: describe}
+
+\item{b}{TODO: describe}
+
+\item{nPeriods}{time prediction time frame}
+
 \item{vX}{Frequency vector of length n counting the numbers of purchases.}
 
 \item{vT_x}{Recency vector of length n.}
@@ -33,10 +43,6 @@ bgnbd_staticcov_CET(
 \item{mCov_trans}{Matrix containing the covariates data affecting the transaction process. One column for each covariate.}
 
 \item{mCov_life}{Matrix containing the covariates data affecting the lifetime process. One column for each covariate.}
-
-\item{vEstimated_params}{Vector with the Pareto/NBD model parameters at original scale.}
-
-\item{dPrediction_period}{time prediction time frame}
 }
 \value{
 Returns a vector with the conditional expected transactions for the existing

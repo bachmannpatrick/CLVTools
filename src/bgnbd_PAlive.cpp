@@ -72,7 +72,10 @@ arma::vec bgnbd_nocov_PAlive(const double r,
 //' BG/NBD with Static Covariates: Calculates the probability of a customer
 //' being alive (PAlive) at the end of the calibration period.
 //'
-//' @template template_params_rcppestimatedparams
+//' @param r TODO: describe
+//' @param alpha TODO: describe
+//' @param a TODO: describe
+//' @param b TODO: describe
 //' @template template_params_rcppxtxtcal
 //' @template template_params_rcppcovmatrix
 //' @template template_params_rcppvcovparams
