@@ -2,8 +2,13 @@
 data("cdnow")
 
 context("Correctness - BGNBD nocov - Recover parameters")
-expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "W",
-                                   estimation.split = 38))
+expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow,
+                                   date.format = "ymd",
+                                   time.unit = "Week",
+                                   estimation.split = "1997-09-30",
+                                   name.id = "Id",
+                                   name.date = "Date",
+                                   name.price = "Price"))
 
 test_that("cdnow nocov correct coefs and SE", {
   expect_silent(e.bgnbd.cdnow.nocov<-bgnbd(clv.data=clv.cdnow, start.params.model = c(r=1, alpha = 3, a = 1, b = 3), verbose=FALSE))
