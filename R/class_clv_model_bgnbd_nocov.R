@@ -123,7 +123,7 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgnbd.no.cov")
 
 
   # Add PAlive
-  dt.prediction[, PAlive := bgnbd_palive(r = clv.fitted@prediction.params.model[["r"]],
+  dt.prediction[, PAlive := bgnbd_nocov_PAlive(r = clv.fitted@prediction.params.model[["r"]],
                                          alpha = clv.fitted@prediction.params.model[["alpha"]],
                                          a = clv.fitted@prediction.params.model[["a"]],
                                          b = clv.fitted@prediction.params.model[["b"]],
