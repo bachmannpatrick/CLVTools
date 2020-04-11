@@ -25,7 +25,6 @@
 //'Returns a vector with the PAlive for each customer.
 //'
 //' @name bgnbd_PAlive
-//' @rdname bgnbd_PAlive
 // [[Rcpp::export]]
 arma::vec bgnbd_palive(const double r,
                        const double alpha,

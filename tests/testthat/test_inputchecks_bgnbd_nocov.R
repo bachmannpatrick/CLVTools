@@ -8,7 +8,7 @@ l.std.args.noholdout <- list(clv.data=clv.data.cdnow.no.holdout)
 l.std.args.withholdout <- list(clv.data=clv.data.cdnow.with.holdout)
 
 
-context("Checkinputs - bgnbd nocov - Model specific")
+context("Checkinputs - BGNBD nocov - Model specific")
 test_that("Fails for start params <= 0", {
   expect_error(bgnbd(clv.data.cdnow.no.holdout, start.params.model = c(r=0, alpha=1, a=1, b=1)),
                regexp = "greater")

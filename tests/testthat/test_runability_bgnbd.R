@@ -1,7 +1,7 @@
 # Setup ------------------------------------------------------------------------------------------------------------------
 data("cdnow")
 
-context("Runability - BG/NBD nocov - Basic runability")
+context("Runability - BGNBD nocov - Basic runability")
 
 
 expect_silent(clv.data.cdnow.noholdout <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "W"))

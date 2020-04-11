@@ -24,16 +24,16 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = F
 #'
 #' @details
 #' Model parameters for the BG/NBD model are \code{r, alpha, a, and b}. \cr
-#' \code{r}: tbd \cr
-#' \code{alpha}: tbd \cr
-#' \code{a}: tbd \cr
-#' \code{b}: tbd
+#' \code{r}: TODO \cr
+#' \code{alpha}: TODO \cr
+#' \code{a}: TODO \cr
+#' \code{b}: TODO
 #'
 #' If no start parameters are given, r = 1, alpha = 3, a = 1, b = 3 is used.
 #' The model start parameters are required to be > 0.
 #'
 #' \subsection{The BG/NBD model}{
-#' tbd
+#' TODO
 #' }
 #'
 #' @return
@@ -82,10 +82,8 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = F
 #'
 #' plot(estimation.bgnbd)
 #' }
-#'
-#' @rdname bgnbd
 #' @aliases bgnbd bgnbd,clv.data-method
-#' @include class_clv_model_bgnbd_nocov.R
+#' @include class_clv_data.R class_clv_model_bgnbd_nocov.R
 #' @export
 setMethod("bgnbd", signature = signature(clv.data="clv.data"), definition = function(clv.data,
                                                                                     start.params.model=c(),

@@ -67,8 +67,6 @@ double bgnbd_nocov_LL_sum(const arma::vec& vLogparams,
                                     vT_x,
                                     vT_cal);
 
-
-  // accu sums all elements, indifferent of axis
   return(-arma::sum(vLL));
 }
 

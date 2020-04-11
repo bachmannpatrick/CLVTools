@@ -93,16 +93,16 @@ Fits BG/NBD models on transactional data without covariates.
 }
 \details{
 Model parameters for the BG/NBD model are \code{r, alpha, a, and b}. \cr
-\code{r}: tbd \cr
-\code{alpha}: tbd \cr
-\code{a}: tbd \cr
-\code{b}: tbd
+\code{r}: TODO \cr
+\code{alpha}: TODO \cr
+\code{a}: TODO \cr
+\code{b}: TODO
 
 If no start parameters are given, r = 1, alpha = 3, a = 1, b = 3 is used.
 The model start parameters are required to be > 0.
 
 \subsection{The BG/NBD model}{
-tbd
+TODO
 }
 }
 \examples{
@@ -136,7 +136,6 @@ predict.bgnbd <- predict(estimation.bgnbd, prediction.end = "2011-12-31")
 
 plot(estimation.bgnbd)
 }
-
 }
 \references{
 BG/NBD model according to

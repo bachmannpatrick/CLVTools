@@ -14,16 +14,25 @@ setClass(Class = "clv.model.bgnbd.no.cov", contains = "clv.model",
 # Methods --------------------------------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
 setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...){
-# Have to be > 0 as will be logged
-if(any(start.params.model <= 0))
-  check_err_msg(err.msg = "Please provide only model start parameters greater than 0 as they will be log()-ed for the optimization!")
 
-if(use.cor){
-  stop("Correlation is not supported for the BG/NBD model")
+err.msg <- c()
+
+# Have to be > 0 as will be logged
+if(any(start.params.model <= 0)){
+  err.msg <- c(err.msg, "Please provide only model start parameters greater than 0 as they will be log()-ed for the optimization!")
 }
 
-if(length(list(...)) > 0)
+
+if(use.cor){
+  err.msg <- c(err.msg, "Correlation is not supported for the BG/NBD model")
+}
+
+if(length(list(...)) > 0){
   warning("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
+}
+
+check_err_msg(err.msg)
+
 })
 
 setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, verbose, ...){
@@ -77,52 +86,36 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.no.cov")
 
   params_i <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
 
-  params_i[, r       := clv.fitted@prediction.params.model[["r"]]]
+  params_i[, r := clv.fitted@prediction.params.model[["r"]]]
   params_i[, alpha := clv.fitted@prediction.params.model[["alpha"]]]
-  params_i[, a       := clv.fitted@prediction.params.model[["a"]]]
-  params_i[, b  := clv.fitted@prediction.params.model[["b"]]]
+  params_i[, a := clv.fitted@prediction.params.model[["a"]]]
+  params_i[, b := clv.fitted@prediction.params.model[["b"]]]
 
-  fct.bgnbd.expectation <- function(r, alpha, a, b, t){
-    term1 = (a + b - 1)/(a - 1)
-    term2 = (alpha/(alpha + t))^r
-    term3 = vec_gsl_hyp2f1_e(r, b, a + b - 1, t/(alpha + t))$value
+  fct.bgnbd.expectation <- function(params_i.t){
+    term1 <- params_i.t[,(a + b - 1)/(a - 1)]
+    term2 <- params_i.t[,(alpha/(alpha + t_i))^r]
+    term3 <- params_i.t[, vec_gsl_hyp2f1_e(r, b, a+b-1, t_i/(alpha+t_i) )$value]
 
     return(term1 * (1 - term2 * term3))
   }
 
-  # To caluclate expectation at point t for customers alive in t, given in params_i.t
-  fct.expectation <- function(params_i.t) {
-
-    return(params_i.t[,.(res = fct.bgnbd.expectation(r = r, alpha = alpha, a = a, b = b, t = t_i)), by = "Id"]$res)
-  }
-
-
   return(DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
-                       fct.expectation = fct.expectation, clv.time = clv.fitted@clv.data@clv.time))
+                       fct.expectation = fct.bgnbd.expectation, clv.time = clv.fitted@clv.data@clv.time))
 })
 
 #' @include all_generics.R
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgnbd.no.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
-  #Id <- x <- t.x <- T.cal <-  PAlive <- CET <- DERT.R <- DERT.cpp <- NULL # cran silence
-
   # To be sure they are both sorted the same when calling cpp functions
   setkeyv(dt.prediction, "Id")
   setkeyv(clv.fitted@cbs, "Id")
 
   predict.number.of.periods <- dt.prediction[1, period.length]
-  # pass matrix(0) because no covariates are used
-
-
-  # Put params together in single vec
-  estimated.params <- c(r = clv.fitted@prediction.params.model[["r"]], alpha = clv.fitted@prediction.params.model[["alpha"]],
-                        a = clv.fitted@prediction.params.model[["a"]], b  = clv.fitted@prediction.params.model[["b"]])
-
 
   # Add CET
-  dt.prediction[, CET := bgnbd_cet(r = estimated.params[["r"]],
-                                   alpha = estimated.params[["alpha"]],
-                                   a = estimated.params[["a"]],
-                                   b = estimated.params[["b"]],
+  dt.prediction[, CET := bgnbd_nocov_CET(r = clv.fitted@prediction.params.model[["r"]],
+                                   alpha = clv.fitted@prediction.params.model[["alpha"]],
+                                   a = clv.fitted@prediction.params.model[["a"]],
+                                   b = clv.fitted@prediction.params.model[["b"]],
                                    nPeriods = predict.number.of.periods,
                                    vX = clv.fitted@cbs[, x],
                                    vT_x = clv.fitted@cbs[, t.x],
@@ -130,10 +123,10 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgnbd.no.cov")
 
 
   # Add PAlive
-  dt.prediction[, PAlive := bgnbd_palive(r = estimated.params[["r"]],
-                                         alpha = estimated.params[["alpha"]],
-                                         a = estimated.params[["a"]],
-                                         b = estimated.params[["b"]],
+  dt.prediction[, PAlive := bgnbd_palive(r = clv.fitted@prediction.params.model[["r"]],
+                                         alpha = clv.fitted@prediction.params.model[["alpha"]],
+                                         a = clv.fitted@prediction.params.model[["a"]],
+                                         b = clv.fitted@prediction.params.model[["b"]],
                                          vX = clv.fitted@cbs[, x],
                                          vT_x = clv.fitted@cbs[, t.x],
                                          vT_cal = clv.fitted@cbs[, T.cal])]

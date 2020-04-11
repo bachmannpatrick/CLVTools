@@ -2,10 +2,10 @@
 % Please edit documentation in R/RcppExports.R
 \name{bgnbd_CET}
 \alias{bgnbd_CET}
-\alias{bgnbd_cet}
+\alias{bgnbd_nocov_CET}
 \title{BG/NBD: Conditional Expected Transactions without covariates}
 \usage{
-bgnbd_cet(r, alpha, a, b, nPeriods, vX, vT_x, vT_cal)
+bgnbd_nocov_CET(r, alpha, a, b, nPeriods, vX, vT_x, vT_cal)
 }
 \arguments{
 \item{r}{TODO: describe}

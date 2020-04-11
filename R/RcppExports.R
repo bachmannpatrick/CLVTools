@@ -26,9 +26,8 @@
 #' customers in the BG/NBD model.
 #'
 #' @name bgnbd_CET
-#' @rdname bgnbd_CET
-bgnbd_cet <- function(r, alpha, a, b, nPeriods, vX, vT_x, vT_cal) {
-    .Call(`_CLVTools_bgnbd_cet`, r, alpha, a, b, nPeriods, vX, vT_x, vT_cal)
+bgnbd_nocov_CET <- function(r, alpha, a, b, nPeriods, vX, vT_x, vT_cal) {
+    .Call(`_CLVTools_bgnbd_nocov_CET`, r, alpha, a, b, nPeriods, vX, vT_x, vT_cal)
 }
 
 #' @rdname bgnbd_nocov_LL_sum
@@ -88,7 +87,6 @@ bgnbd_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal) {
 #'Returns a vector with the PAlive for each customer.
 #'
 #' @name bgnbd_PAlive
-#' @rdname bgnbd_PAlive
 bgnbd_palive <- function(r, alpha, a, b, vX, vT_x, vT_cal) {
     .Call(`_CLVTools_bgnbd_palive`, r, alpha, a, b, vX, vT_x, vT_cal)
 }

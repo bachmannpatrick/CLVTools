@@ -27,9 +27,8 @@
 //' customers in the BG/NBD model.
 //'
 //' @name bgnbd_CET
-//' @rdname bgnbd_CET
 // [[Rcpp::export]]
-arma::vec bgnbd_cet(const double r,
+arma::vec bgnbd_nocov_CET(const double r,
                     const double alpha,
                     const double a,
                     const double b,
