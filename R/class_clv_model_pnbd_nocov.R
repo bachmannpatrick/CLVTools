@@ -75,7 +75,6 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
                                  vT_cal = clv.fitted@cbs$T.cal,
 
                                  # parameter ordering for the callLL interlayer
-                                 #** TODO: Hardcode from cpp interface
                                  LL.params.names.ordered = c(log.r="log.r", log.alpha="log.alpha",
                                                              log.s="log.s", log.beta="log.beta")),
                             keep.null = TRUE)
