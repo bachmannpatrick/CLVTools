@@ -101,6 +101,7 @@ clv.data.make.descriptives <- function(clv.time, data.transactions, has.holdout,
   #
   # .calc.interp.time <- function(data.trans){
   #   mean.interp.time.per.cust <- data.trans[, list(interp.time =
+  #   *** TODO: Should likely use interval() inside time_length!?
   #                                                  ifelse(.N > 1, mean(time_length(base::diff.POSIXt(Date), obj@clv.time@time.unit)),   NA_real_)), by="Id"]
   #   return(mean.interp.time.per.cust)
   # }
