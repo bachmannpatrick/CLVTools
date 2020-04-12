@@ -8,6 +8,7 @@
 #'
 #' @importFrom methods setClass
 #' @include all_generics.R class_clv_data_dynamiccovariates.R class_clv_fitted_staticcov.R class_clv_fitted.R
+#' @keywords internal
 setClass(Class = "clv.fitted.dynamic.cov", contains = "clv.fitted.static.cov")
 
 
