@@ -74,5 +74,5 @@ jobs:
 
         - name: Check on Windows, without install and vignette
           if: runner.os == 'Windows'
-          run: rcmdcheck::rcmdcheck(args = c("--no-install", "--no-build-vignettes","--no-tests", "--as-cran", "--no-manual"), error_on = "warning", check_dir = "check")
+          run: rcmdcheck::rcmdcheck(args = c("--no-install", "--no-build-vignettes","--no-tests", "--as-cran", "--no-manual"), build_args = c("--no-build-vignettes"), error_on = "warning", check_dir = "check")
           shell: Rscript {0}
