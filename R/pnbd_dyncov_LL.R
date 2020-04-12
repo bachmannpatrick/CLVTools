@@ -372,22 +372,28 @@ pnbd_dyncov_LL <- function(params, obj){
   cbs[F2 >  0,  LL     := log.F0 + max.AB  + log(exp(log.F1+log(F2)-max.AB) + exp(log.F3 - max.AB))]
 
 
-  # Try cheating for stabilty: -----------------------------------------------------
-  #   (very crude code)
-  if (any(is.infinite(cbs$LL))){ # Checks whether cbs$LL is - or + infinity!
+  # Try cheating for stabilty -----------------------------------------------------
+  # Replace infinite LL values with the most extreme (finite) LL value
+  perc.infinite <- cbs[, mean(is.infinite(LL))]
 
-    warning(paste('There are', round(sum(is.infinite(cbs$LL))/length(cbs$LL), digits=5)*100,'percent +/- infinity values'))
+  if(perc.infinite > 0){
 
-    # If we have less than 5 % missing values impute them with the max value we have on the likelihood
-    if (sum(is.infinite(cbs$LL))/length(cbs$LL)<=0.05){
+    warning(paste0("There are ", round(perc.infinite*100, digits=5)," percent +/- infinity values"),
+            immediate. = FALSE)
 
-      # Get index of the most extreme value in the likelihood (of course without the -/+ infinity values)
-      index<-which(abs(cbs$LL)==max(abs(cbs$LL[!is.infinite(cbs$LL)])))
+    # If we have less than 5 % infinite values impute them with the max value we have in the likelihood
+    if(perc.infinite <= 0.05){
+
+      # most extreme value in the likelihood (without the infinity values)
+      most.extreme.LL <- cbs[is.finite(LL), max(abs(LL))]
+
       # If the value we have is -infinity set the value to the largest negative value...
-      cbs[is.infinite(LL) & sign(LL)==-1 , LL:= - abs(cbs$LL[index])]
+      cbs[is.infinite(LL) & sign(LL) == -1, LL := -abs(most.extreme.LL)]
       # ...if +infinity set it to largest positive value.
-      cbs[is.infinite(LL) & sign(LL)==1, LL:= abs(cbs$LL[index])]
-    }}
+      cbs[is.infinite(LL) & sign(LL) == 1,  LL :=  abs(most.extreme.LL)]
+    }
+    # Else, if > 5%, let it propagate
+  }
 
 
   cbsdata <- data.table(Id=cbs$Id,LL=cbs$LL, Akprod=exp(cbs$A1sum), Bksum=cbs$Bksum, DkT=cbs$DkT, Z=cbs$F2)
