@@ -50,10 +50,12 @@ test_that("Works with custom optimx.args", {
   expect_message(pnbd(clv.data=clv.data.cdnow.withholdout, optimx.args = list(itnmax=40000)))
 })
 
-test_that("Works with multiple optimization methods",{
+
+test_that("Works with all optimx optimization methods", {
   skip_on_cran()
-  expect_message(p.no.hold <- pnbd(clv.data=clv.data.cdnow.noholdout, optimx.args = list(method = c("Nelder-Mead", "L-BFGS-B"),
-                                                                                         control=list(follow.on=TRUE))))
+  expect_warning(p.no.hold <- pnbd(clv.data=clv.data.cdnow.noholdout, optimx.args = list(control=list(all.methods=TRUE)), verbose=FALSE),
+                 regexp = "replaced by maximum positive value|Gradient not computable after method nlm|unused control arguments ignored|Estimation failed with NA coefs|Hessian could not be derived", all=TRUE)
+
   fct.helper.fitted.all.s3(clv.fitted = p.no.hold,  full.names = names(p.no.hold@clv.model@names.original.params.model),
                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
 })
