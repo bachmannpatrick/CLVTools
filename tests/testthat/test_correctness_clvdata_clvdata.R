@@ -190,6 +190,19 @@ test_that("Same results for different Price formats", {
   expect_equal(data.numeric, data.integer)
 })
 
+
+test_that("Same result for differently sorted transactions", {
+  cdnow.shuffle   <- data.table::copy(cdnow)[sample.int(n = nrow(cdnow)), ]
+
+  expect_silent(data.normal  <- clvdata(cdnow,         date.format = "ymd", time.unit = "w"))
+  expect_silent(data.shuffle <- clvdata(cdnow.shuffle, date.format = "ymd", time.unit = "w"))
+
+  data.normal@call  <- data.shuffle@call <- as.symbol("abc")
+
+  expect_equal(data.normal, data.shuffle)
+})
+
+
 test_that("No price data gives correct object", {
   expect_silent(clv.cdnow <- clvdata(cdnow, date.format = "ymd", time.unit = "w", estimation.split = 37, name.price = NULL))
   expect_false(clv.cdnow@has.spending)
@@ -207,6 +220,9 @@ test_that("Price data gives correct object", {
   # also Spending info in descriptives
   expect_true(nrow(clv.cdnow@descriptives.transactions[like(pattern = "Spending", vector = Name)]) > 0)
 })
+
+
+
 
 # test_that: same results for different Date formats is already checked very often in estimation.split
 

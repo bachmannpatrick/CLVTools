@@ -92,6 +92,30 @@ test_that("Apparel static cov correct coefs and SE", {
 })
 
 
+context("Correctness - PNBD static cov - Data sorting")
+
+test_that("Same result for differently sorted covariates", {
+  skip_on_cran()
+
+  # Standard cov data
+  expect_silent(pnbd.apparel.staticcov <- SetStaticCovariates(pnbd.apparel.obj,
+                                                              names.cov.life = "Gender", names.cov.trans = "Gender",name.id = "Id",
+                                                              data.cov.life = apparelDemographics, data.cov.trans = apparelDemographics))
+  expect_silent(e.pnbd.apparel.staticcov <- pnbd(clv.data=pnbd.apparel.staticcov, verbose=FALSE))
+  # shuffle
+  expect_silent(apparelDemographics.shuffle <- apparelDemographics[sample.int(n = nrow(apparelDemographics), replace = FALSE), ])
+  expect_silent(pnbd.apparel.staticcov.shuffle <- SetStaticCovariates(pnbd.apparel.obj,
+                                                              names.cov.life = "Gender", names.cov.trans = "Gender",name.id = "Id",
+                                                              data.cov.life = apparelDemographics.shuffle, data.cov.trans = apparelDemographics.shuffle))
+  expect_silent(e.pnbd.apparel.staticcov.shuffle <- pnbd(clv.data=pnbd.apparel.staticcov.shuffle, verbose=FALSE))
+
+  # All should be exactly the same, except the call and optimx time
+  #   replace these
+  expect_silent(e.pnbd.apparel.staticcov.shuffle@call                           <- e.pnbd.apparel.staticcov@call)
+  expect_silent(e.pnbd.apparel.staticcov.shuffle@optimx.estimation.output$xtime <- e.pnbd.apparel.staticcov@optimx.estimation.output$xtime)
+  expect_true(isTRUE(all.equal(e.pnbd.apparel.staticcov.shuffle, e.pnbd.apparel.staticcov)))
+})
+
 context("Correctness - PNBD static cov - predict")
 
 test_that("Same when predicting as with fitting data", {
