@@ -46,6 +46,10 @@ jobs:
             sudo -s eval "$sysreqs"
             sudo apt-get install -y qpdf # qpdf needed on ubuntu
 
+        - name: Install tinytex for linux (to build vignettes)
+          if: runner.os == 'Linux'
+          run: |
+            install.packages('tinytex')
             tinytex::install_tinytex()
           shell: Rscript {0}
 
