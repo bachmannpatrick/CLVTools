@@ -65,5 +65,5 @@ clv.fitted <- function(cl, clv.model, clv.data){
 
   # Deep copy of clv.data if ever modified by reference later on
   return(new("clv.fitted", call=cl, clv.model = clv.model,
-             clv.data=data.table::copy(clv.data)))
+             clv.data = copy(clv.data)))
 }

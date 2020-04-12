@@ -232,9 +232,9 @@ clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
 
   # Melt everything except what comes from the standard expectation table
   meas.vars   <- setdiff(colnames(dt.data), c("period.num", "period.first"))
-  data.melted <- data.table::melt(data=dt.data, id.vars = c("period.first"),
-                                  variable.factor = FALSE, na.rm = TRUE,
-                                  measure.vars = meas.vars)
+  data.melted <- melt(data=dt.data, id.vars = c("period.first"),
+                      variable.factor = FALSE, na.rm = TRUE,
+                      measure.vars = meas.vars)
 
   p <- ggplot(data = data.melted, aes(x=period.first, y=value, colour=variable)) + geom_line()
 

@@ -59,7 +59,7 @@ clv.template.controlflow.estimate <- function(obj,
   if(verbose)
     message("Starting estimation...")
 
-  res.optimx <- do.call(what = optimx::optimx, args = prepared.optimx.args)
+  res.optimx <- do.call(what = optimx, args = prepared.optimx.args)
 
   if(verbose)
     message("Estimation finished!")

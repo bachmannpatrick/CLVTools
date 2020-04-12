@@ -59,6 +59,7 @@ coef.clv.fitted <- function(object, complete=TRUE, ...){
 #' @include class_clv_fitted.R
 #' @importFrom stats vcov
 #' @importFrom utils tail
+#' @importFrom Matrix nearPD
 #' @export
 vcov.clv.fitted <- function(object, complete = TRUE, ...){
 
@@ -79,7 +80,7 @@ vcov.clv.fitted <- function(object, complete = TRUE, ...){
   hessian.inv <- tryCatch(solve(object@optimx.hessian), error = function(e) return(e))
   if(inherits(hessian.inv, 'error')){
     warning("Failed to invert hessian, making it positive-definite first.")
-    hessian.inv <<- solve(Matrix::nearPD(object@optimx.hessian)$mat)
+    hessian.inv <<- solve(nearPD(object@optimx.hessian)$mat)
   }
 
   # Apply Jeff's delta method to account for the transformations of the parameters

@@ -80,7 +80,10 @@ setClass(Class = "clv.fitted.static.cov", contains = "clv.fitted", #c("clv.fitte
 #' @importFrom methods new
 clv.fitted.static.cov <- function(cl, clv.model, clv.data){
   # Deep copy of clv.data if ever modified by reference later on
-  return(new("clv.fitted.static.cov", call=cl, clv.model = clv.model, clv.data=data.table::copy(clv.data)))
+  return(new("clv.fitted.static.cov",
+             call=cl,
+             clv.model = clv.model,
+             clv.data = copy(clv.data)))
 }
 
 
