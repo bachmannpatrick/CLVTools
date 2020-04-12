@@ -1,17 +1,19 @@
 ---
-output: 
-  github_document:
-    pandoc_args: --webtex
-bibliography: bibliography.bib
+title: "The CLVTools Package"
+output: pdf_document
+vignette: >
+  %\VignetteIndexEntry{The CLVTools Package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+#bibliography: bibliography.bib #** is faulty atm (crashes knitr, some special characters or so) **
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "man/figures/WALKTHROUGH-",
+  #fig.path = "figures/WALKTHROUGH-",
   out.width = "100%"
 )
 ```

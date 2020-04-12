@@ -46,6 +46,13 @@ jobs:
             sudo -s eval "$sysreqs"
             sudo apt-get install -y qpdf # qpdf needed on ubuntu
 
+        - name: Install tinytex for linux (to build vignettes)
+          if: runner.os == 'Linux'
+          run: |
+            install.packages('tinytex')
+            tinytex::install_tinytex()
+          shell: Rscript {0}
+
         - name: Install gsl for mac
           if: runner.os == 'macOS'
           run: |
@@ -65,7 +72,7 @@ jobs:
           run: rcmdcheck::rcmdcheck(args = c("--no-tests", "--as-cran", "--no-manual"), error_on = "warning", check_dir = "check")
           shell: Rscript {0}
 
-        - name: Check on Windows, without install
+        - name: Check on Windows, without install and vignette
           if: runner.os == 'Windows'
-          run: rcmdcheck::rcmdcheck(args = c("--no-tests", "--as-cran", "--no-manual", "--no-install"), error_on = "warning", check_dir = "check")
+          run: rcmdcheck::rcmdcheck(args = c("--no-install", "--no-build-vignettes","--no-vignettes","--ignore-vignettes","--no-tests", "--as-cran", "--no-manual"), build_args = c("--no-build-vignettes","--ignore-vignettes"), error_on = "warning", check_dir = "check")
           shell: Rscript {0}
