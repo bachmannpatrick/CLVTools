@@ -13,11 +13,16 @@ setClass(Class = "clv.model.bgnbd.static.cov", contains = "clv.model.bgnbd.no.co
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
-setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.bgnbd.static.cov"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...){
+setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.bgnbd.static.cov"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose,
+                                                                                                                                 names.cov.life, names.cov.trans,
+                                                                                                                                 start.params.life, start.params.trans,
+                                                                                                                                 names.cov.constr,start.params.constr,
+                                                                                                                                 reg.lambdas, ...){
 
-  # Check start.params.model in pnbd.no.cov function
+  # Check start.params.model in bgnbd.no.cov function
   #   but with no cov specific inputs only
-  callNextMethod(clv.model=clv.model, clv.fitted=clv.fitted, start.params.model=start.params.model, optimx.args=optimx.args, verbose=verbose, use.cor = use.cor)
+  callNextMethod(clv.model=clv.model, clv.fitted=clv.fitted, start.params.model=start.params.model, use.cor=use.cor,
+                 start.param.cor=start.param.cor, optimx.args=optimx.args, verbose=verbose)
 
   if(length(list(...)) > 0)
     warning("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
