@@ -7,7 +7,7 @@
 #' @importFrom methods setClass
 #' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.pnbd.static.cov-class}, \link{clv.model.pnbd.dynamic.cov-class}
 #' @seealso Classes using its instance: \link{clv.fitted-class}
-#' @include all_generics.R class_clv_model_basestrategy.R
+#' @include all_generics.R class_clv_model.R
 setClass(Class = "clv.model.pnbd.no.cov", contains = "clv.model",
          # no additional slots for pnbd base model
          slots = list(),

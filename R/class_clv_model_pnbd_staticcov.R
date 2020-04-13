@@ -7,7 +7,7 @@
 #' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.pnbd.no.cov-class}, \link{clv.model.pnbd.dynamic.cov-class}
 #' @seealso Classes using its instance: \link{clv.fitted.static.cov-class},
 #'
-#' @include all_generics.R class_clv_model_basestrategy.R class_clv_model_pnbd_nocov.R
+#' @include all_generics.R class_clv_model.R class_clv_model_pnbd_nocov.R
 setClass(Class = "clv.model.pnbd.static.cov", contains = "clv.model.pnbd.no.cov",
          slots = list(start.param.cov = "numeric"),
 
