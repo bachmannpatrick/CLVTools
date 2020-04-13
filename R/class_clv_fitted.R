@@ -5,14 +5,12 @@ setOldClass("optimx")
 
 #' Fitted CLV Model without covariates
 #'
-#'
+#' @description
 #' The class stores the transaction data and various optimization outputs and options.
 #' It is created already when model fitting is initiated and is then used to perform no covariate specific steps
 #' during the estimation process.
-#' Created from an existing clv.data and clv.model object (or subclasses thereof).
 #'
-#' Extends the c to perform steps in the estimation that are specific to static covariates models.
-#' Contains additional slots to accommodate the various further optimization options that can be used for covariates models.
+#' Created from an existing clv.data and clv.model object (or subclasses thereof).
 #'
 #' @slot call Single language of the call used to create the object
 #' @slot clv.model Single object of (sub-) class \code{clv.model} that determines model-specific behavior.

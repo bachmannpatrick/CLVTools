@@ -1,6 +1,5 @@
 #' Fitted CLV Model with Static covariates
 #'
-#'
 #' Extends the class \code{clv.fitted} with slots to accommodate the various additional
 #' optimization options that can be used for covariates models.
 #' Also used to perform steps during the estimation process that are specific to static covariates models.
