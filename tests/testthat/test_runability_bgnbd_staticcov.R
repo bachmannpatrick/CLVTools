@@ -99,18 +99,6 @@ test_that("Reduces to relevant covariates only for estimation", {
   expect_false("fake" %in% colnames(e.bgnbd.fake.cov@clv.data@data.cov.trans))
 })
 
-# Correlation ---------------------------------------------------------------------------------------------
-context("Runability - BGNBD static cov - w/ Correlation")
-
-test_that("Works with use.cor=T", {
-  skip_on_cran()
-
-  # Holdout does
-  expect_silent(pscc <- bgnbd(clv.data.cov.holdout, use.cor=TRUE, verbose=FALSE))
-  fct.helper.fitted.all.s3(pscc, full.names = c("r", "alpha", "a", "b", pscc@name.correlation.cor, "life.Gender", "trans.Gender"),
-                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = TRUE)
-})
-
 # Interlayers ----------------------------------------------------------------------------------------------------------------------------------
 context("Runability - BGNBD static cov - w/ Constraint")
 test_that("Works with single constraints", {
