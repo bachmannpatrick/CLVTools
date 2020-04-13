@@ -19,8 +19,8 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
   #   but with no cov specific inputs only
   callNextMethod(clv.model=clv.model, clv.fitted=clv.fitted, start.params.model=start.params.model, optimx.args=optimx.args, verbose=verbose, use.cor = use.cor)
 
-  # Nothing model-specific to check about all other user inputs
-  # Nothing to return
+  if(length(list(...)) > 0)
+    warning("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
 })
 
 # . clv.model.put.estimation.input ------------------------------------------------------------------------------------------------------------
