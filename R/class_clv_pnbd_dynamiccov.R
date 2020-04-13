@@ -11,7 +11,7 @@
 #'
 #' @template template_slot_pnbdcbs
 #'
-#' @seealso \link{clv.fitted.dynamic.cov-class}, \link{clv.model.pnbd.dynamic.cov-class}, \link{clv.pnbd.no.cov-class}, \link{clv.pnbd.static.cov-class}
+#' @seealso \link{clv.fitted.dynamic.cov-class}, \link{clv.model.pnbd.dynamic.cov-class}, \link{clv.pnbd-class}, \link{clv.pnbd.static.cov-class}
 #'
 #' @keywords internal
 #' @importFrom methods setClass
