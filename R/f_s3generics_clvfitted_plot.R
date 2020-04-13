@@ -1,4 +1,4 @@
-#' @name plot.clv.fitted
+
 #' @title Plot expected and actual repeat transactions
 #' @param x The fitted clv model to plot
 #' @param newdata A cldata object for which the plotting should be made with the fitted model. If none or NULL is given, the plot is made for the data on which the model was fit.
@@ -56,7 +56,8 @@
 #' \item{"Name of Model" or "label"}{The value of the unconditional expectation until \code{period.first} as per the given model.}
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#'
 #' data("cdnow")
 #'
 #' # Fit ParetoNBD model on the CDnow data
@@ -69,7 +70,7 @@
 #' plot(pnbd.cdnow)
 #'
 #' # Plot cumulative expected transactions of only the model
-#' plot(pnbd.cdnow, cumulative=T, transactions=F)
+#' plot(pnbd.cdnow, cumulative=TRUE, transactions=FALSE)
 #'
 #' # Plot forecast until 2001-10-21
 #' plot(pnbd.cdnow, prediction.end = "2001-10-21")
@@ -90,14 +91,16 @@
 #' gg.pnbd.cdnow <- plot(pnbd.cdnow)
 #' gg.pnbd.cdnow + ggtitle("PNBD on CDnow")
 #'
-#' # Compose plot from separate model plots
-#' # no cov model
-#' p.m1 <- plot(pnbd.cdnow, transactions = T)
-#' # static cov model
-#' p.m2 <- plot(pnbd.cdnow.cov, transactions = F)
-#' p.m1 + geom_line(mapping=p.m2$mapping, data=p.m2$data,
-#'                  color="blue")
 #' }
+#'
+# # Compose plot from separate model plots
+# # pnbd vs bgnbd
+# p.m1 <- plot(pnbd.cdnow, transactions = TRUE)
+#
+# # static cov model
+# p.m2 <- plot(pnbd.cdnow.cov, transactions = FALSE)
+# p.m1 + geom_line(mapping=p.m2$mapping, data=p.m2$data,
+#                  color="blue")
 #' @importFrom graphics plot
 #' @include class_clv_fitted.R
 #' @method plot clv.fitted
@@ -229,9 +232,9 @@ clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
 
   # Melt everything except what comes from the standard expectation table
   meas.vars   <- setdiff(colnames(dt.data), c("period.num", "period.first"))
-  data.melted <- data.table::melt(data=dt.data, id.vars = c("period.first"),
-                                  variable.factor = FALSE, na.rm = TRUE,
-                                  measure.vars = meas.vars)
+  data.melted <- melt(data=dt.data, id.vars = c("period.first"),
+                      variable.factor = FALSE, na.rm = TRUE,
+                      measure.vars = meas.vars)
 
   p <- ggplot(data = data.melted, aes(x=period.first, y=value, colour=variable)) + geom_line()
 

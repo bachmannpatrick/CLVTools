@@ -9,3 +9,7 @@ Extends the class \code{\link[CLVTools:clv.fitted.static.cov-class]{clv.fitted.s
 additional slots to it. The purpose of this class rather is to perform steps during the fitting
 process that are specific to dynamic covariates models.
 }
+\seealso{
+\code{\link[CLVTools:clv.fitted-class]{clv.fitted}}, \code{\link[CLVTools:clv.fitted.static.cov-class]{clv.fitted.static.cov}}
+}
+\keyword{internal}

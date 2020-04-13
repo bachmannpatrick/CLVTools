@@ -1,11 +1,5 @@
-#' @exportMethod pnbd
-setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FALSE, start.param.cor=c(),
-                                  optimx.args=list(), verbose=TRUE, ...)
-  standardGeneric("pnbd"))
-
-
-
 #' @name pnbd
+#'
 #' @title Pareto/NBD models
 #'
 #' @template template_params_estimate
@@ -82,7 +76,7 @@ setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FA
 #'
 #' @return
 #' Depending on the data object on which the model was fit, \code{pnbd} returns either an object of
-#' class \code{clv.pnbd}, \code{clv.pnbd.static.cov}, or \code{clv.pnbd.dynamic.cov}.
+#' class \link[CLVTools:clv.pnbd-class]{clv.pnbd}, \link[CLVTools:clv.pnbd.static.cov-class]{clv.pnbd.static.cov}, or \link[CLVTools:clv.pnbd.dynamic.cov-class]{clv.pnbd.dynamic.cov}.
 #'
 #' The function \code{\link[CLVTools:summary.clv.fitted]{summary}} can be used to obtain and print a summary of the results.
 #' The generic accessor functions \code{coefficients}, \code{fitted},
@@ -99,6 +93,7 @@ setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FA
 #'
 #' @examples
 #' \donttest{
+#'
 #' data("apparelTrans")
 #' clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
 #'                             time.unit = "w", estimation.split = 37)
@@ -160,7 +155,7 @@ setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FA
 #  # To estimate the PNBD model with dynamic covariates,
 #' #   add dynamic covariates to the data
 #' data("apparelDynCov")
-#'
+#' \dontrun{
 #' clv.data.dyn.cov <-
 #'   SetDynamicCovariates(clv.data = clv.data.apparel,
 #'                        data.cov.life = apparelDynCov,
@@ -186,11 +181,20 @@ setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FA
 #' pnbd(clv.data.dyn.cov, reg.lambdas = c(trans=10, life=2))
 #'
 #' }
+#' }
 #'
-#' @rdname pnbd
-#' @aliases pnbd pnbd,clv.data-method
+NULL
+
+
+#' @exportMethod pnbd
+setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FALSE, start.param.cor=c(),
+                                  optimx.args=list(), verbose=TRUE, ...)
+  standardGeneric("pnbd"))
+
+
+
 #' @include class_clv_data.R
-#' @export
+#' @rdname pnbd
 setMethod("pnbd", signature = signature(clv.data="clv.data"), definition = function(clv.data,
                                                                                         start.params.model=c(),
                                                                                         use.cor = FALSE,
@@ -205,9 +209,7 @@ setMethod("pnbd", signature = signature(clv.data="clv.data"), definition = funct
 })
 
 #' @include class_clv_data_staticcovariates.R
-#' @aliases pnbd,clv.data.static.covariates-method
 #' @rdname pnbd
-#' @export
 setMethod("pnbd", signature = signature(clv.data="clv.data.static.covariates"), definition = function(clv.data,
                                                                                                       start.params.model=c(),
                                                                                                       use.cor = FALSE,
@@ -235,8 +237,6 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.static.covariates"), 
 
 #' @include class_clv_data_dynamiccovariates.R
 #' @rdname pnbd
-#' @aliases pnbd,clv.data.dynamic.covariates-method
-#' @export
 setMethod("pnbd", signature = signature(clv.data="clv.data.dynamic.covariates"), definition = function(clv.data,
                                                                                                         start.params.model=c(),
                                                                                                         use.cor = FALSE,

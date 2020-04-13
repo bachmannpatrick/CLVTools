@@ -5,7 +5,49 @@
 #include "clv_vectorized.h"
 
 
-// [[Rcpp::depends(RcppArmadillo)]]
+//' @name pnbd_PAlive
+//'
+//' @title Pareto/NBD: Probability of Being Alive
+//'
+//' @description
+//' Calculates the probability of a customer being alive at the end of the calibration period.
+//'
+//' \itemize{
+//' \item{\code{pnbd_nocov_PAlive}}{ P(alive) for the Pareto/NBD model without covariates}
+//' \item{\code{pnbd_staticcov_PAlive}}{ P(alive) for the Pareto/NBD model with static covariates}
+//' }
+//'
+//' @template template_params_rcppestimatedparams
+//' @template template_params_rcppxtxtcal
+//' @template template_params_rcppcovmatrix
+//' @template template_params_rcppvcovparams
+//'
+//' @details
+//' \code{vEstimated_params} vector with the estimated parameters in original scale
+//' for the Pareto/NBD model, namely (r, alpha, s, beta). \cr
+//' r and alpha: unobserved parameters that describe the NBD transaction process. \cr
+//' s and beta: unobserved parameters that describe the pareto
+//' (exponential gamma) lifetime process.
+//'
+//' \code{mCov_trans} is a matrix containing the covariates data of
+//' the time-invariant covariates that affect the transaction process.
+//' Each column represents a different covariate. For every column a gamma parameter
+//' needs to added to \code{vCovParams_trans} at the respective position.
+//'
+//' \code{mCov_life} is a matrix containing the covariates data of
+//' the time-invariant covariates that affect the lifetime process.
+//' Each column represents a different covariate. For every column a gamma parameter
+//' needs to added to \code{vCovParams_life} at the respective position.
+//'
+//'
+//'@return
+//'Returns a vector with the PAlive for each customer.
+//'
+//'@references
+//'  Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
+//'  Pareto/NBD Model and Related Expressions.", Web.
+//'  \url{http://www.brucehardie.com/notes/008/}.
+//'
 arma::vec pnbd_PAlive( const arma::vec& vEstimated_model_params,
                        const arma::vec& vX,
                        const arma::vec& vT_x,
@@ -70,33 +112,8 @@ arma::vec pnbd_PAlive( const arma::vec& vEstimated_model_params,
 }
 
 
-//' @title Pareto/NBD: PAlive without covariates
-//'
-//' @description
-//' Pareto/NBD without Covariates: Calculates the probability of a customer being alive
-//' at the end of the calibration period.
-//'
-//' @template template_params_rcppestimatedparams
-//' @template template_params_rcppxtxtcal
-//'
-//' @details
-//' \code{vEstimated_params} vector with the estimated parameters in original scale
-//' for the Pareto/NBD model, namely (r, alpha, s, beta).
-//' r and alpha: unobserved parameters that describe the NBD transaction process.
-//' s and beta: unobserved parameters that describe the pareto
-//' (exponential gamma) dropout process.
-//'
-//'
-//'@return
-//'Returns a vector with the PAlive for each customer.
-//'
-//'@references
-//'  Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
-//'  Pareto/NBD Model and Related Expressions.", Web.
-//'  \url{http://www.brucehardie.com/notes/008/}.
-//'
-//' @name pnbd_nocov_PAlive
-//' @rdname pnbd_nocov_PAlive
+
+//' @rdname pnbd_PAlive
 // [[Rcpp::export]]
 arma::vec pnbd_nocov_PAlive(const arma::vec& vEstimated_params,
                             const arma::vec& vX,
@@ -129,45 +146,7 @@ arma::vec pnbd_nocov_PAlive(const arma::vec& vEstimated_params,
 
 
 
-//' @title Pareto/NBD: PAlive with static covariates
-//'
-//' @description
-//' Pareto/NBD with Static Covariates: Calculates the probability of a customer
-//' being alive (PAlive) at the end of the calibration period.
-//'
-//' @template template_params_rcppestimatedparams
-//' @template template_params_rcppxtxtcal
-//' @template template_params_rcppcovmatrix
-//' @template template_params_rcppvcovparams
-//'
-//' @details
-//' \code{vEstimated_params} vector with the estimated parameters in original scale
-//' for the Pareto/NBD model, namely (r, alpha, s, beta).
-//' r and alpha: unobserved parameters that describe the NBD transaction process.
-//' s and beta: unobserved parameters that describe the pareto
-//' (exponential gamma) lifetime process.
-//'
-//' \code{mCov_trans} is a matrix containing the covariates data of
-//' the time-invariant covariates that affect the transaction process.
-//' Each column represents a different covariate. For every column a gamma parameter
-//' needs to added to \code{vCovParams_trans} at the respective position.
-//'
-//' \code{mCov_life} is a matrix containing the covariates data of
-//' the time-invariant covariates that affect the lifetime process.
-//' Each column represents a different covariate. For every column a gamma parameter
-//' needs to added to \code{vCovParams_life} at the respective position.
-//'
-//'@return
-//'Returns a vector containing the PAlive for each customer.
-//'
-//'@references
-//'  Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
-//'  Pareto/NBD Model and Related Expressions.", Web.
-//'  \url{http://www.brucehardie.com/notes/008/}.
-//'
-//' @name pnbd_staticcov_PAlive
-//' @rdname pnbd_staticcov_PAlive
-//'
+//' @rdname pnbd_PAlive
 // [[Rcpp::export]]
 arma::vec pnbd_staticcov_PAlive(const arma::vec& vEstimated_params,
                                 const arma::vec& vX,

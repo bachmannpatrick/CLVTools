@@ -1,5 +1,13 @@
-# Class --------------------------------------------------------------------------------------------------------------------------------
-#' @include class_clv_model_basestrategy.R class_clv_model_pnbd_nocov.R
+#' CLV Model functionality for PNBD with static covariates
+#'
+#' This class implements the functionalities and model-specific steps which are required
+#' to fit the Pareto/NBD model with static covariates.
+#'
+#' @keywords internal
+#' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.pnbd.no.cov-class}, \link{clv.model.pnbd.dynamic.cov-class}
+#' @seealso Classes using its instance: \link{clv.fitted.static.cov-class},
+#'
+#' @include all_generics.R class_clv_model_basestrategy.R class_clv_model_pnbd_nocov.R
 setClass(Class = "clv.model.pnbd.static.cov", contains = "clv.model.pnbd.no.cov",
          slots = list(start.param.cov = "numeric"),
 
@@ -15,7 +23,6 @@ setClass(Class = "clv.model.pnbd.static.cov", contains = "clv.model.pnbd.no.cov"
 # Methods --------------------------------------------------------------------------------------------------------------------------------
 
 # .clv.model.check.input.args ------------------------------------------------------------------------------------------------------------
-#' @include all_generics.R
 #' @importFrom methods callNextMethod
 setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.pnbd.static.cov"), definition =
             function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose,

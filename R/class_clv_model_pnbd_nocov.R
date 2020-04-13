@@ -1,5 +1,12 @@
-# Class --------------------------------------------------------------------------------------------------------------------------------
+#' CLV Model functionality for PNBD without covariates
+#'
+#' This class implements the functionalities and model-specific steps which are required
+#' to fit the Pareto/NBD model without covariates.
+#'
+#' @keywords internal
 #' @importFrom methods setClass
+#' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.pnbd.static.cov-class}, \link{clv.model.pnbd.dynamic.cov-class}
+#' @seealso Classes using its instance: \link{clv.fitted-class}
 #' @include all_generics.R class_clv_model_basestrategy.R
 setClass(Class = "clv.model.pnbd.no.cov", contains = "clv.model",
          # no additional slots for pnbd base model
@@ -28,7 +35,6 @@ setClass(Class = "clv.model.pnbd.no.cov", contains = "clv.model",
 # Methods --------------------------------------------------------------------------------------------------------------------------------
 
 # .clv.model.check.input.args -----------------------------------------------------------------------------------------------------------
-#' @include all_generics.R
 setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...){
   # Have to be > 0 as will be logged
   if(any(start.params.model <= 0))
@@ -195,7 +201,6 @@ setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.mo
 
 
 # .clv.model.predict.clv --------------------------------------------------------------------------------------------------------
-#' @include all_generics.R
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
   period.length <- Id <- x <- t.x <- T.cal <-  PAlive <- CET <- DERT <- NULL # cran silence
 
