@@ -113,8 +113,8 @@ pnbd_staticcov_CET <- function(vEstimated_params, dPrediction_period, vX, vT_x, 
 #' Calculates the discounted expected residual transactions.
 #'
 #' \itemize{
-#' \item{\code{pnbd_nocov_DERT}}{ DERT for the Pareto/NBD model without covariates}
-#' \item{\code{pnbd_staticcov_DERT}}{ DERT for the Pareto/NBD model with static covariates}
+#' \item{\code{pnbd_nocov_DERT}}{ Discounted expected residual transactions for the Pareto/NBD model without covariates}
+#' \item{\code{pnbd_staticcov_DERT}}{ Discounted expected residual transactions for the Pareto/NBD model with static covariates}
 #' }
 #'
 #' @template template_params_rcppestimatedparams
