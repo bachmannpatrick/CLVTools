@@ -16,20 +16,22 @@ Description: Package to fit probabilistic models to estimate customer lifetime v
     non-contractual settings (e.g., retail business). with and without time-invariant and time-varying covariates. Currently, the package includes the 
     Pareto/NBD model, the GGompertz/NBD model for the purchase and the attrition processes as well as the Gamma/Gamma model for the spending process.
 Imports:
-    utils,
-    stats,
     data.table (>= 1.12.0),
-    lubridate (>= 1.7.3), 
+    foreach (>= 1.5.0),
     ggplot2 (>= 3.2.0),
+    lubridate (>= 1.7.3), 
+    Matrix (>= 1.2-17), 
     optimx (>= 2019-12.02),
-    Matrix (>= 1.2-17),
-    foreach (>= 1.4.7),
-    doParallel (>= 1.0.10)
+    Rcpp (>= 0.12.12),
+    stats,
+    utils
 Suggests:
-    testthat,
     covr,
+    doFuture, 
+    doParallel,
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 License: GPL-3
 URL: https://github.com/bachmannpatrick/CLVTools
 BugReports: https://github.com/bachmannpatrick/CLVTools/issues
