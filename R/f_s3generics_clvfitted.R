@@ -56,12 +56,36 @@ coef.clv.fitted <- function(object, complete=TRUE, ...){
   return(original.scale.params)
 }
 
-#' @include class_clv_fitted.R
+
+
+#' @title Calculate Variance-Covariance Matrix for CLV Models fitted with Maximum Likelihood Estimation
+#' @param object a fitted clv model object
+#' @param ... ignored, for consistency with the generic function.
+#'
+#'
+#' @description
+#' Returns the variance-covariance matrix of the parameters of the fitted model object.
+#' The variance-covariance matrix is derived from the hessian that results from the optimization procedure.
+#' If multiple estimation methods were used, the hessian of the last method is used.
+#'
+#' Because some parameters may be transformed for the purpose of restricting their value during
+#' the log-likelihood estimation it requires that the vcov estimates are adapted as well to have
+#' be comparable to the reported coefficient estimates. See the references for how this is done.
+#'
+#'
+#' @return
+#' A matrix of the estimated covariances between the parameter estimates of the model.
+#' The row and column names correspond to the parameter names given by the \code{coef} method.
+#'
+#' @references
+#' Jeff's "Note on p-values"
+#'
 #' @importFrom stats vcov
 #' @importFrom utils tail
 #' @importFrom Matrix nearPD
+#' @include class_clv_fitted.R
 #' @export
-vcov.clv.fitted <- function(object, complete = TRUE, ...){
+vcov.clv.fitted <- function(object, ...){
 
   if(any(!is.finite(object@optimx.hessian)))
     stop("The vcov matrix cannot be calulated because the hessian contains non-finite values!", call. = FALSE)
