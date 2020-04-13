@@ -10,9 +10,6 @@ pnbd_dyncov_LL_ind <- function(params, obj){
   return(cbsdata_ind[, LL])
 }
 
-
-#' @importFrom doParallel registerDoParallel stopImplicitCluster
-#' @importFrom parallel detectCores
 #' @importFrom foreach foreach %dopar%
 pnbd_dyncov_LL <- function(params, obj){
   # cran silence
@@ -200,11 +197,8 @@ pnbd_dyncov_LL <- function(params, obj){
 
   if(nrow(cbs.f2.num.g.1) != 0){
 
-    no.cores <- max(detectCores()-1, 1)
-    registerDoParallel(no.cores)
-
     F2.3.vecs <-
-      # sapply(2:max(cbs.f2.num.g.1$Num.Walk-1), function(i){
+      # %dopar% also applies sequentially with a warning if no parallel backend registered
       foreach(i = 2:max(cbs.f2.num.g.1$Num.Walk-1))%dopar%{
 
         work.trans.i <- data.work.trans[AuxTrans==T & ((Num.Walk-1) >= i)]

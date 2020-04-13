@@ -23,14 +23,15 @@ Imports:
     ggplot2 (>= 3.2.0),
     optimx (>= 2018-7.10),
     Rcpp (>= 0.12.12),
-    Matrix (>= 1.2-17),
-    foreach (>= 1.4.7),
-    doParallel (>= 1.0.10)
+    Matrix (>= 1.2-17), 
+    foreach (>= 1.5.0)
 Suggests:
     testthat,
     covr,
     knitr,
-    rmarkdown
+    rmarkdown,
+    doFuture, 
+    doParallel
 License: GPL-3
 URL: https://github.com/bachmannpatrick/CLVTools
 BugReports: https://github.com/bachmannpatrick/CLVTools/issues
