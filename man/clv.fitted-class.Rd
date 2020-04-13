@@ -24,8 +24,6 @@ Created from an existing clv.data and clv.model object (or subclasses thereof).
 
 \item{\code{clv.data}}{Single object of (sub-) class \code{clv.data} that contains the data and temporal information to fit the model to.}
 
-\item{\code{cbs}}{Single \code{data.table} that is the Customer-By-Sufficiency matrix with information about each customers' recency, frequency, and total time observed.}
-
 \item{\code{prediction.params.model}}{Numeric vector of the model parameters, set and used solely when predicting. Named after model parameters in original scale and derived from \code{coef()}.}
 
 \item{\code{estimation.used.correlation}}{Single boolean whether the correlation was estimated.}

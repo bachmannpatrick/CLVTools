@@ -1,5 +1,21 @@
+#' Result of fitting the Pareto/NBD model with dynamic covariates
+#'
+#' @description
+#' Output from fitting the Pareto/NBD model on data with dynamic covariates. It constitutes the
+#' estimation result and is returned to the user to use it as input to other methods such as
+#' to make predictions or plot the unconditional expectation.
+#'
+#' Inherits from \code{clv.fitted.dynamic.cov} in order to execute all steps required for fitting a model
+#' with dynamic covariates and it contains an instance of class \code{clv.model.pnbd.dynamic.cov} which
+#' provides the required Pareto/NBD (dynamic covariates) specific functionalities.
+#'
+#' @template template_slot_pnbdcbs
+#'
+#' @seealso \link{clv.fitted.dynamic.cov-class}, \link{clv.model.pnbd.dynamic.cov-class}, \link{clv.pnbd.no.cov-class}, \link{clv.pnbd.static.cov-class}
+#'
+#' @keywords internal
 #' @importFrom methods setClass
-#' @include class_clv_model_pnbd_dynamiccov.R class_clv_data_dynamiccovariates.R class_clv_fitted_staticcov.R
+#' @include class_clv_model_pnbd_dynamiccov.R class_clv_data_dynamiccovariates.R
 setClass(Class = "clv.pnbd.dynamic.cov", contains = "clv.fitted.dynamic.cov",
          slots = c(
            cbs = "data.table",

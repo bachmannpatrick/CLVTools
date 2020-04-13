@@ -15,7 +15,6 @@ setOldClass("optimx")
 #' @slot call Single language of the call used to create the object
 #' @slot clv.model Single object of (sub-) class \code{clv.model} that determines model-specific behavior.
 #' @slot clv.data Single object of (sub-) class \code{clv.data} that contains the data and temporal information to fit the model to.
-#' @slot cbs Single \code{data.table} that is the Customer-By-Sufficiency matrix with information about each customers' recency, frequency, and total time observed.
 #' @slot prediction.params.model Numeric vector of the model parameters, set and used solely when predicting. Named after model parameters in original scale and derived from \code{coef()}.
 #' @slot estimation.used.correlation Single boolean whether the correlation was estimated.
 #' @slot name.prefixed.cor.param.m Single character vector of the internal name used for the correlation parameter during optimization.
