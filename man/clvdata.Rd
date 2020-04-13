@@ -78,6 +78,7 @@ are determined from the aggregated transactions.
 }
 }
 \examples{
+
 data("cdnow")
 
 # create clv data object with weekly periods
@@ -109,6 +110,7 @@ plot(clv.data.cdnow)
 # create data with the weekly periods defined to
 #   start on Mondays
 
+\dontrun{
 # set start of week to Monday
 options("lubridate.week.start"=1)
 
@@ -118,6 +120,7 @@ clv.data.cdnow <- clvdata(data.transactions = cdnow,
                           time.unit = "weeks")
 
 # Dynamic covariates now have to be supplied for every Monday
+}
 
 
 }

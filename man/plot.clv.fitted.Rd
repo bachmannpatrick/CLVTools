@@ -98,7 +98,8 @@ for which the expectation is calculated therefore is not \code{prediction.end} b
 first time unit after \code{prediction.end}.
 }
 \examples{
-\dontrun{
+\donttest{
+
 data("cdnow")
 
 # Fit ParetoNBD model on the CDnow data
@@ -111,7 +112,7 @@ pnbd.cdnow <- pnbd(clvdata(cdnow, time.unit="w",
 plot(pnbd.cdnow)
 
 # Plot cumulative expected transactions of only the model
-plot(pnbd.cdnow, cumulative=T, transactions=F)
+plot(pnbd.cdnow, cumulative=TRUE, transactions=FALSE)
 
 # Plot forecast until 2001-10-21
 plot(pnbd.cdnow, prediction.end = "2001-10-21")
@@ -132,12 +133,6 @@ library("ggplot2")
 gg.pnbd.cdnow <- plot(pnbd.cdnow)
 gg.pnbd.cdnow + ggtitle("PNBD on CDnow")
 
-# Compose plot from separate model plots
-# no cov model
-p.m1 <- plot(pnbd.cdnow, transactions = T)
-# static cov model
-p.m2 <- plot(pnbd.cdnow.cov, transactions = F)
-p.m1 + geom_line(mapping=p.m2$mapping, data=p.m2$data,
-                 color="blue")
 }
+
 }

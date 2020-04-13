@@ -11,7 +11,7 @@
 #'   \item{\code{CDs}}{Amount of CDs purchased}
 #'   \item{\code{Price}}{Price of purchase}
 #' }
-#' @name cdnow
+#'
 #' @usage data("cdnow")
 #' @docType data
 #' @keywords datasets
@@ -21,7 +21,7 @@
 "cdnow"
 
 
-#' @name apparelTrans
+
 #' @title Apparel Retailer Dataset
 #'
 #' @description
@@ -42,7 +42,7 @@
 "apparelTrans"
 
 
-#' @name apparelDemographics
+
 #' @title Customer Demographics for the Apparel Retailer Dataset
 #' @description
 #' This data contains additional demographic information on the customers in the
@@ -60,7 +60,7 @@
 #' @usage data("apparelDemographics")
 "apparelDemographics"
 
-#' @name apparelDynCov
+
 #' @title Dynamic Covariates for the Apparel Retailer Dataset
 #' @description
 #' This data contains direct marketing and seasonality information on customers in the "apparelTrans" dataset.

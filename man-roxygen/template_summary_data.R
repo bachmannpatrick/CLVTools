@@ -1,14 +1,13 @@
 #' @title Summarizing a CLV data object
+#'
 #' @param object A CLV data object containing transactional data and potentially also contextual factors.
-# These are parameters for the print functions whose documentation link to the summary docu
-#' @param x An object of class \code{"summary.clv.data"}, usually, a result of a call to \code{summary.clv.data}.
-#' @param digits The number of significant digits to use when printing.
-#' @param signif.stars Logical. If TRUE, ‘significance stars’ are printed for each coefficient.
 #' @param ... Ignored.
+#'
 #' @description
 #'
-#' Summary method for CLV data objects that provides information about the estimation and
+#' Summary method for objects of class \code{clv.data} that provides information about the estimation and
 #' possible holdout sample, and descriptive statistics of the transaction data.
+#'
 #'
 #' @return This function computes and returns summary statistics of the
 #' transactional and covariates data given in \code{object}. This is a list of
@@ -30,7 +29,7 @@
 #' @seealso \code{\link[CLVTools:SetDynamicCovariates]{SetDynamicCovariates}} for how to add dynamic covariates
 #'
 #' @examples
-#' \dontrun{
+#'
 #' data("apparelTrans")
 #' clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
 #'                             time.unit = "w",
@@ -50,5 +49,5 @@
 #'
 #' # additional info about the covariates
 #' summary(clv.data.apparel.cov)
-#' }
+#'
 #'

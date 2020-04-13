@@ -82,6 +82,10 @@ summary.clv.data <- function(object, ...){
   return(res)
 }
 
+#' @param x An object of class \code{"summary.clv.data"}, usually, a result of a call to \code{summary.clv.data}.
+#' @param digits The number of significant digits to use when printing.
+#' @param signif.stars Logical. If TRUE, ‘significance stars’ are printed for each coefficient.
+#'
 #' @export
 #' @rdname summary.clv.data
 #' @keywords internal

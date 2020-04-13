@@ -1,4 +1,3 @@
-#' @name CLVTools
 #' @title Customer Lifetime Value Tools
 #' @description
 #' CLVTools is a toolbox for various probabilistic customer attrition models
@@ -18,7 +17,6 @@
 #' at \url{https://github.com/bachmannpatrick/CLVTools}.
 #'
 #' @examples
-#' \dontrun{
 #'
 #' data("cdnow")
 #'
@@ -36,17 +34,16 @@
 #' summary(pnbd.cdnow)
 #'
 #' # Predict 10 periods (weeks) ahead from estimation end
-#'      and compare to actuals in this period
+#' #   and compare to actuals in this period
 #' pred.out <- predict(pnbd.cdnow, prediction.end = 10)
 #'
 #' # Plot the fitted model to the actual repeat transactions
 #' plot(pnbd.cdnow)
-#'}
 #'
 #' @docType package
 #' @useDynLib CLVTools, .registration=TRUE
 #' @import data.table
 #' @importFrom methods setClass
-NULL
+"_PACKAGE"
 
 

@@ -66,6 +66,7 @@
 #' @seealso \code{\link[CLVTools:pnbd]{pnbd}} to fit Pareto/NBD models on a \code{clv.data} object
 #'
 #' @examples
+#'
 #' data("cdnow")
 #'
 #' # create clv data object with weekly periods
@@ -97,6 +98,7 @@
 #' # create data with the weekly periods defined to
 #' #   start on Mondays
 #'
+#' \dontrun{
 #' # set start of week to Monday
 #' options("lubridate.week.start"=1)
 #'
@@ -106,6 +108,7 @@
 #'                           time.unit = "weeks")
 #'
 #' # Dynamic covariates now have to be supplied for every Monday
+#' }
 #'
 #'
 #' @export

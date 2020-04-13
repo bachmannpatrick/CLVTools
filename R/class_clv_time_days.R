@@ -1,5 +1,7 @@
 #' Time unit representing a single Day
 #'
+#' @template template_clvdate_description
+#'
 #' @seealso  \code{\link[CLVTools:clv.time-class]{clv.time}}
 #' @seealso  \code{\link[CLVTools:clv.time.date-class]{clv.time.date}}
 #'

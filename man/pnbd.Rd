@@ -83,7 +83,7 @@ If multiple optimization methods are specified, only the result of the last meth
 }
 \value{
 Depending on the data object on which the model was fit, \code{pnbd} returns either an object of
-class \code{clv.pnbd}, \code{clv.pnbd.static.cov}, or \code{clv.pnbd.dynamic.cov}.
+class \link[CLVTools:clv.pnbd-class]{clv.pnbd}, \link[CLVTools:clv.pnbd.static.cov-class]{clv.pnbd.static.cov}, or \link[CLVTools:clv.pnbd.dynamic.cov-class]{clv.pnbd.dynamic.cov}.
 
 The function \code{\link[CLVTools:summary.clv.fitted]{summary}} can be used to obtain and print a summary of the results.
 The generic accessor functions \code{coefficients}, \code{fitted},
@@ -157,6 +157,7 @@ and \code{\link[future:plan]{plan}} for information on how to do this.
 }
 \examples{
 \donttest{
+
 data("apparelTrans")
 clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
                             time.unit = "w", estimation.split = 37)
@@ -217,7 +218,7 @@ pnbd(clv.data.static.cov, names.cov.constr = "Gender",
 # Add dynamic covariates data to the data object
 #   add dynamic covariates to the data
 data("apparelDynCov")
-
+\dontrun{
 clv.data.dyn.cov <-
   SetDynamicCovariates(clv.data = clv.data.apparel,
                        data.cov.life = apparelDynCov,
@@ -242,6 +243,7 @@ pnbd(clv.data.dyn.cov)
 #  static covariate are available
 pnbd(clv.data.dyn.cov, reg.lambdas = c(trans=10, life=2))
 
+}
 }
 
 }

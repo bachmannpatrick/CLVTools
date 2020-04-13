@@ -3,6 +3,51 @@
 #include "pnbd_LL_ind.h"
 #include "clv_vectorized.h"
 
+//' @name pnbd_DERT
+//'
+//' @title Pareto/NBD: Discounted Expected Residual Transactions
+//'
+//' @description
+//' Calculates the discounted expected residual transactions.
+//'
+//' \itemize{
+//' \item{\code{pnbd_nocov_DERT}}{ Discounted expected residual transactions for the Pareto/NBD model without covariates}
+//' \item{\code{pnbd_staticcov_DERT}}{ Discounted expected residual transactions for the Pareto/NBD model with static covariates}
+//' }
+//'
+//' @template template_params_rcppestimatedparams
+//' @template template_params_rcppxtxtcal
+//' @template template_params_rcppcovmatrix
+//' @template template_params_rcppvcovparams
+//' @param continuous_discount_factor continuous discount factor to use
+//'
+//' @details
+//'
+//' \code{vEstimated_params} vector with the estimated parameters in original scale
+//' for the Pareto/NBD model, namely (r, alpha, s, beta). \cr
+//' r and alpha: unobserved parameters that describe the NBD transaction process. \cr
+//' s and beta: unobserved parameters that describe the pareto
+//' (exponential gamma) lifetime process.
+//'
+//' \code{mCov_trans} is a matrix containing the covariates data of
+//' the time-invariant covariates that affect the transaction process.
+//' Each column represents a different covariate. For every column a gamma parameter
+//' needs to added to \code{vCovParams_trans} at the respective position.
+//'
+//' \code{mCov_life} is a matrix containing the covariates data of
+//' the time-invariant covariates that affect the lifetime process.
+//' Each column represents a different covariate. For every column a gamma parameter
+//' needs to added to \code{vCovParams_life} at the respective position.
+//'
+//' @return
+//' Returns a vector with the DERT for each customer.
+//'
+//' @references
+//' Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
+//' Pareto/NBD Model and Related Expressions.", Web.
+//' \url{http://www.brucehardie.com/notes/008/}.
+//'
+//'
 arma::vec pnbd_DERT_ind(const double r,
                         const double s,
                         const arma::vec& vAlpha_i,
@@ -39,7 +84,7 @@ arma::vec pnbd_DERT_ind(const double r,
 
 
 
-
+//' @rdname pnbd_DERT
 // [[Rcpp::export]]
 arma::vec pnbd_nocov_DERT(const arma::vec& vEstimated_params,
                           const double continuous_discount_factor,
@@ -71,7 +116,7 @@ arma::vec pnbd_nocov_DERT(const arma::vec& vEstimated_params,
 
 
 
-
+//' @rdname pnbd_DERT
 // [[Rcpp::export]]
 arma::vec pnbd_staticcov_DERT(const arma::vec& vEstimated_params,
                               const double continuous_discount_factor,
@@ -101,7 +146,4 @@ arma::vec pnbd_staticcov_DERT(const arma::vec& vEstimated_params,
                        vX, vT_x, vT_cal,
                        continuous_discount_factor);
 }
-
-
-
 
