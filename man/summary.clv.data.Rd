@@ -64,7 +64,7 @@ and further contains the elements:
 \item{names.cov.data.life}{Names of the covariates for the Lifetime process.}
 }
 \description{
-Summary method for CLV data objects that provides information about the estimation and
+Summary method for objects of class \code{clv.data} that provides information about the estimation and
 possible holdout sample, and descriptive statistics of the transaction data.
 }
 \examples{

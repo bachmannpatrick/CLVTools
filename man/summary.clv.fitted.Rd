@@ -67,7 +67,7 @@ and the list in \code{additional.options} contains the following elements:
 \description{
 Summary method for fitted CLV models that provides statistics about the estimated parameters
 and information about the optimization process. If multiple optimization methods were used
-(for example if specified by the user in the argument \code{optimx.args}), all information here refers to
+(for example if specified in parameter \code{optimx.args}), all information here refers to
 the last method/row of the resulting \code{optimx} object.
 }
 \examples{

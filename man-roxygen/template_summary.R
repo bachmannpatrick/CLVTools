@@ -1,4 +1,6 @@
+#' @name summary.clv.fitted
 #' @title Summarizing a fitted CLV model
+#'
 #' @param object A fitted CLV model
 #' @param x an object of class \code{"summary.clv.no.covariates"}, usually, a result of a call to \code{summary.clv.no.covariates}.
 #' @param digits the number of significant digits to use when printing.
@@ -8,7 +10,7 @@
 #'
 #' Summary method for fitted CLV models that provides statistics about the estimated parameters
 #' and information about the optimization process. If multiple optimization methods were used
-#' (for example if specified by the user in the argument \code{optimx.args}), all information here refers to
+#' (for example if specified in parameter \code{optimx.args}), all information here refers to
 #' the last method/row of the resulting \code{optimx} object.
 #'
 #' @return This function computes and returns a list of summary information of the fitted model
