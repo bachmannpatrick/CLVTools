@@ -81,7 +81,7 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
 
 #' @include all_generics.R
 setMethod("clv.model.expectation", signature(clv.model="clv.model.bgbb.no.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
-  r <- alpha_i <- a_i <- b_i <- date.first.repeat.trans<- date.first.actual.trans <- T.cal <- n.cal <- t_i<- period.first.trans<-NULL
+  alpha <- beta <- gamma <- delta <- date.first.repeat.trans<- date.first.actual.trans <- T.cal <- n.cal <- period.first.trans<-NULL
 
   params_i <- clv.fitted@cbs[, c("Id", "T.cal", "n.cal", "date.first.actual.trans")]
 
@@ -118,7 +118,7 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgbb.no.cov"),
                                          vX = clv.fitted@cbs[, x],
                                          vT_x = clv.fitted@cbs[, t.x],
                                          vT_cal = clv.fitted@cbs[, T.cal],
-                                         vN = clv.fitted@cbs[, n])]
+                                         vN_cal = clv.fitted@cbs[, n.cal])]
 
 
   # Add PAlive
@@ -129,7 +129,7 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgbb.no.cov"),
                                                vX = clv.fitted@cbs[, x],
                                                vT_x = clv.fitted@cbs[, t.x],
                                                vT_cal = clv.fitted@cbs[, T.cal],
-                                               vN = clv.fitted@cbs[, n])]
+                                               vN_cal = clv.fitted@cbs[, n.cal])]
   # Add DERT
   dt.prediction[, DERT := bgbb_nocov_DERT(alpha = clv.fitted@prediction.params.model[["alpha"]],
                                           beta = clv.fitted@prediction.params.model[["beta"]],
@@ -139,7 +139,7 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgbb.no.cov"),
                                           vX     = clv.fitted@cbs[, x],
                                           vT_x   = clv.fitted@cbs[, t.x],
                                           vT_cal = clv.fitted@cbs[, T.cal],
-                                          vN = clv.fitted@cbs[, n])]
+                                          vN_cal = clv.fitted@cbs[, n.cal])]
 
   return(dt.prediction)
 })
