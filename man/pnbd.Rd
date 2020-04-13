@@ -82,7 +82,7 @@
 }
 \value{
 Depending on the data object on which the model was fit, \code{pnbd} returns either an object of
-class \code{clv.pnbd}, \code{clv.pnbd.static.cov}, or \code{clv.pnbd.dynamic.cov}.
+class \link[CLVTools:clv.pnbd-class]{clv.pnbd}, \link[CLVTools:clv.pnbd.static.cov-class]{clv.pnbd.static.cov}, or \link[CLVTools:clv.pnbd.dynamic.cov-class]{clv.pnbd.dynamic.cov}.
 
 The function \code{\link[CLVTools:summary.clv.fitted]{summary}} can be used to obtain and print a summary of the results.
 The generic accessor functions \code{coefficients}, \code{fitted},

@@ -18,11 +18,13 @@
 #' @slot reg.lambda.trans Single numeric with the lambda used for regularizing the transaction covariate parameters. Length zero if regularization is not used.
 #' @slot prediction.params.life Numeric vector of the lifetime covariate parameters, set and used solely when predicting. Named after lifetime covariates and derived from \code{coef()}.
 #' @slot prediction.params.trans Numeric vector of the transaction covariate parameters, set and used solely when predicting. Named after transaction covariates and derived from \code{coef()}.
-#' @importFrom methods setClass
 #'
+#' @seealso \code{\link[CLVTools:clv.fitted-class]{clv.fitted}}, \code{\link[CLVTools:clv.fitted.dynamic.cov-class]{clv.fitted.dynamic.cov}}
+#'
+#' @importFrom methods setClass
 #' @keywords internal
 #' @include class_clv_fitted.R
-setClass(Class = "clv.fitted.static.cov", contains = "clv.fitted", #c("clv.fitted", "VIRTUAL"),
+setClass(Class = "clv.fitted.static.cov", contains = "clv.fitted",
          slots = c(
                    estimation.used.constraints = "logical",
 

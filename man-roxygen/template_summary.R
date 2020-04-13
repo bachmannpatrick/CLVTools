@@ -1,4 +1,5 @@
 #' @name summary.clv.fitted
+#'
 #' @title Summarizing a fitted CLV model
 #'
 #' @param object A fitted CLV model

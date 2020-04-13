@@ -37,4 +37,7 @@ Created from an existing clv.data and clv.model object (or subclasses thereof).
 \item{\code{optimx.hessian}}{Single matrix that is the hessian extracted from the last row of the optimization output stored in the slot \code{optimx.estimation.output}.}
 }}
 
+\seealso{
+\code{\link[CLVTools:clv.fitted.static.cov-class]{clv.fitted.static.cov}}, \code{\link[CLVTools:clv.fitted.dynamic.cov-class]{clv.fitted.dynamic.cov}}
+}
 \keyword{internal}

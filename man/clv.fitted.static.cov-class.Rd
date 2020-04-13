@@ -46,4 +46,7 @@ Also used to perform steps during the estimation process that are specific to st
 \item{\code{prediction.params.trans}}{Numeric vector of the transaction covariate parameters, set and used solely when predicting. Named after transaction covariates and derived from \code{coef()}.}
 }}
 
+\seealso{
+\code{\link[CLVTools:clv.fitted-class]{clv.fitted}}, \code{\link[CLVTools:clv.fitted.dynamic.cov-class]{clv.fitted.dynamic.cov}}
+}
 \keyword{internal}

@@ -248,6 +248,7 @@ setMethod(f = "show", signature = signature(object="clv.fitted"), definition = f
 
 
 #' @rdname summary.clv.fitted
+#' @order 3
 #' @importFrom stats printCoefmat
 #' @export
 print.summary.clv.fitted <- function(x, digits=max(3L, getOption("digits")-3L),
@@ -295,8 +296,9 @@ print.summary.clv.fitted <- function(x, digits=max(3L, getOption("digits")-3L),
 }
 
 
+
 #' @template template_summary
-#' @include class_clv_fitted.R
+#' @order 1
 #' @importFrom stats coef vcov AIC BIC logLik pnorm
 #' @importFrom utils tail
 #' @importFrom methods is
