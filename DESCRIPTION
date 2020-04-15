@@ -1,7 +1,7 @@
 Package: CLVTools
 Title: Tools for Customer Lifetime Value Estimation
 Version: 0.5.0
-Date: 2020-03-27
+Date: 2020-03-31
 Authors@R: c(
     person(given="Patrick", family="Bachmann",    email = "patrick.bachmann@business.uzh.ch", role = c("cre","aut")),
     person(given="Jeffrey", family="Näf",         email = "naef@stat.math.ethz.ch",role = "aut"),
@@ -23,14 +23,15 @@ Imports:
     ggplot2 (>= 3.2.0),
     optimx (>= 2018-7.10),
     Rcpp (>= 0.12.12),
-    Matrix (>= 1.2-17),
-    foreach (>= 1.4.7),
-    doParallel (>= 1.0.10)
+    Matrix (>= 1.2-17), 
+    foreach (>= 1.5.0)
 Suggests:
     testthat,
     covr,
     knitr,
-    rmarkdown
+    rmarkdown,
+    doFuture, 
+    doParallel
 License: GPL-3
 URL: https://github.com/bachmannpatrick/CLVTools
 BugReports: https://github.com/bachmannpatrick/CLVTools/issues

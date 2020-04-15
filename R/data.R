@@ -11,7 +11,7 @@
 #'   \item{\code{CDs}}{Amount of CDs purchased}
 #'   \item{\code{Price}}{Price of purchase}
 #' }
-#' @name cdnow
+#'
 #' @usage data("cdnow")
 #' @docType data
 #' @keywords datasets
@@ -21,7 +21,7 @@
 "cdnow"
 
 
-#' @name apparelTrans
+
 #' @title Apparel Retailer Dataset
 #'
 #' @description
@@ -42,8 +42,10 @@
 "apparelTrans"
 
 
+
 #' @name apparelStaticCov
-#' @title Time-invariant Covariates Apparel Retailer Dataset
+#' @title Time-invariant Covariates for the Apparel Retailer Dataset
+t
 #' @description
 #' This simulated data contains additional demographic information on all 250 customers in the
 #' "apparelTrans" dataset. This information can be used as time-invariant covariates.
@@ -61,8 +63,10 @@
 #' @usage data("apparelStaticCov")
 "apparelStaticCov"
 
+
 #' @name apparelDynCov
 #' @title Time-varying Covariates for the Apparel Retailer Dataset
+
 #' @description
 #' This simulated data contains direct marketing information on all 250 customers in the "apparelTrans" dataset.
 #' This information can be used as time-varying covariates.

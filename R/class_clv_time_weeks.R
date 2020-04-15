@@ -1,5 +1,7 @@
 #' Time unit representing a single Week
 #'
+#' @template template_clvdate_description
+#'
 #' @include class_clv_time.R class_clv_time_date.R all_generics.R
 #' @keywords internal
 setClass("clv.time.weeks", contains = "clv.time.date")

@@ -67,6 +67,7 @@ and hence all formats it accepts in argument \code{orders} can be used. For exam
 If no value is provided or set to \code{NULL}, the whole dataset will used for fitting the model (no holdout sample).
 }
 \examples{
+
 data("cdnow")
 
 # create clv data object with weekly periods
@@ -98,6 +99,7 @@ plot(clv.data.cdnow)
 # create data with the weekly periods defined to
 #   start on Mondays
 
+\dontrun{
 # set start of week to Monday
 options("lubridate.week.start"=1)
 
@@ -107,6 +109,7 @@ clv.data.cdnow <- clvdata(data.transactions = cdnow,
                           time.unit = "weeks")
 
 # Dynamic covariates now have to be supplied for every Monday
+}
 
 
 }

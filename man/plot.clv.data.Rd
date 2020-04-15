@@ -49,7 +49,6 @@ is plotted. If the data is returned (ie with argument \code{plot=FALSE}), the re
 contain \code{NA} in column \code{Number of Repeat Transactions}.
 }
 \examples{
-\dontrun{
 
 data("cdnow")
 clv.data.cdnow <- clvdata(cdnow, time.unit="w",
@@ -60,15 +59,18 @@ clv.data.cdnow <- clvdata(cdnow, time.unit="w",
 plot(clv.data.cdnow)
 
 # plot cumulative repeat transactions
-plot(clv.data.cdnow, cumulative=T)
+plot(clv.data.cdnow, cumulative=TRUE)
 
 # Dont automatically plot but tweak further
 gg.cdnow <- plot(clv.data.cdnow)
+
 # change Title
+library(ggplot2)
 gg.cdnow + ggtitle("CDnow repeat transactions")
 
 # Dont return a plot but only the data from
 #   which it would have been created
-dt.plot.data <- plot(clv.data.cdnow, plot=F)
-}
+dt.plot.data <- plot(clv.data.cdnow, plot=FALSE)
+
+
 }

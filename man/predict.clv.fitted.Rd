@@ -111,7 +111,9 @@ popular choice.
 }
 }
 \examples{
+
 \donttest{
+
 data("apparelTrans")
 # Fit pnbd standard model on data, WITH holdout
 pnc <- pnbd(clvdata(apparelTrans, time.unit="w",
@@ -135,14 +137,16 @@ predict(pnc, prediction.end = lubridate::ymd("2016-12-31"))
 pnc <- pnbd(clvdata(apparelTrans, time.unit="w", date.format="ymd"))
 
 # This fails, because without holdout, a prediction.end is required
+\dontrun{
 predict(pnc)
+}
 
 # Now, predict 10 periods from the end of the last transaction
 #   (end of estimation period)
 predict(pnc, prediction.end = 10) # ends on 2016-12-17
 
-
 }
+
 }
 \references{
 Schmittlein DC, Morrison DG, Colombo R (1987). “Counting Your Customers:

@@ -12,11 +12,8 @@
 The class stores the transaction data and various optimization outputs and options.
 It is created already when model fitting is initiated and is then used to perform no covariate specific steps
 during the estimation process.
+
 Created from an existing clv.data and clv.model object (or subclasses thereof).
-}
-\details{
-Extends the c to perform steps in the estimation that are specific to static covariates models.
-Contains additional slots to accommodate the various further optimization options that can be used for covariates models.
 }
 \section{Slots}{
 
@@ -26,8 +23,6 @@ Contains additional slots to accommodate the various further optimization option
 \item{\code{clv.model}}{Single object of (sub-) class \code{clv.model} that determines model-specific behavior.}
 
 \item{\code{clv.data}}{Single object of (sub-) class \code{clv.data} that contains the data and temporal information to fit the model to.}
-
-\item{\code{cbs}}{Single \code{data.table} that is the Customer-By-Sufficiency matrix with information about each customers' recency, frequency, and total time observed.}
 
 \item{\code{prediction.params.model}}{Numeric vector of the model parameters, set and used solely when predicting. Named after model parameters in original scale and derived from \code{coef()}.}
 
@@ -42,4 +37,7 @@ Contains additional slots to accommodate the various further optimization option
 \item{\code{optimx.hessian}}{Single matrix that is the hessian extracted from the last row of the optimization output stored in the slot \code{optimx.estimation.output}.}
 }}
 
+\seealso{
+\code{\link[CLVTools:clv.fitted.static.cov-class]{clv.fitted.static.cov}}, \code{\link[CLVTools:clv.fitted.dynamic.cov-class]{clv.fitted.dynamic.cov}}
+}
 \keyword{internal}

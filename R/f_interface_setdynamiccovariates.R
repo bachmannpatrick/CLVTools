@@ -1,3 +1,6 @@
+#' @template template_setdynamiccov
+NULL
+
 #' @exportMethod SetDynamicCovariates
 setGeneric(name = "SetDynamicCovariates",  def = function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id", name.date="Date")
   standardGeneric("SetDynamicCovariates"))
@@ -19,8 +22,7 @@ setMethod(f = "SetDynamicCovariates", signature = signature(clv.data="clv.data.d
 
 
 #' @include class_clv_data.R
-#' @template template_setdynamiccov
-#' @aliases SetDynamicCovariates SetDynamicCovariates,clv.data-method
+#' @rdname SetDynamicCovariates
 setMethod(f = "SetDynamicCovariates", signature = signature(clv.data="clv.data"), function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id", name.date="Date"){
 
   Cov.Date <- Id<- NULL

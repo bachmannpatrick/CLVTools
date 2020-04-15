@@ -1,5 +1,20 @@
-#' @importFrom methods setClass
+#' Result of fitting the Pareto/NBD model without covariates
+#'
+#' @description
+#' Output from fitting the Pareto/NBD model on data without covariates. It constitutes the estimation
+#' result and is returned to the user to use it as input to other methods such as to make
+#' predictions or plot the unconditional expectation.
+#'
+#' Inherits from \code{clv.fitted} in order to execute all steps required for fitting a model
+#' without covariates and it contains an instance of class \code{clv.model.pnbd.no.cov} which
+#' provides the required Pareto/NBD (no covariates) specific functionalities.
+#'
+#' @template template_slot_pnbdcbs
+#'
+#' @seealso \link{clv.fitted-class}, \link{clv.model.pnbd.no.cov-class}, \link{clv.pnbd.static.cov-class}, \link{clv.pnbd.dynamic.cov-class}
+#'
 #' @keywords internal
+#' @importFrom methods setClass
 #' @include class_clv_model_pnbd_nocov.R class_clv_data.R class_clv_fitted.R
 setClass(Class = "clv.pnbd", contains = "clv.fitted",
          slots = c(
@@ -12,7 +27,7 @@ setClass(Class = "clv.pnbd", contains = "clv.fitted",
 
 
 # Convenience constructor to encapsulate all steps for object creation
-#' @include class_clv_data.R class_clv_model_pnbd_nocov.R
+#' @include class_clv_model_pnbd_nocov.R
 #' @importFrom methods new
 clv.pnbd <- function(cl, clv.data){
 

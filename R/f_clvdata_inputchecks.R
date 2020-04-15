@@ -195,7 +195,7 @@ check_userinput_datanocov_datastaticcov <- function(clv.data, dt.data.static.cov
     err.msg <- c(err.msg, paste0("Every Id has to appear exactly once in the ", name.of.covariate ," covariate data!"))
 
   # every Id in cbs needs to be in covariate Id
-  #   use data.table::setdiff which returns a data.table
+  #   use data.table::fsetdiff which returns a data.table
   if(nrow(fsetdiff(dt.uniq.id, dt.data.static.cov[, "Id"])) > 0)
     err.msg <- c(err.msg, paste("Every Id in the transaction data needs to be in the ",name.of.covariate," covariate data as well!"))
 

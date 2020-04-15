@@ -82,7 +82,7 @@
 }
 \value{
 Depending on the data object on which the model was fit, \code{pnbd} returns either an object of
-class \code{clv.pnbd}, \code{clv.pnbd.static.cov}, or \code{clv.pnbd.dynamic.cov}.
+class \link[CLVTools:clv.pnbd-class]{clv.pnbd}, \link[CLVTools:clv.pnbd.static.cov-class]{clv.pnbd.static.cov}, or \link[CLVTools:clv.pnbd.dynamic.cov-class]{clv.pnbd.dynamic.cov}.
 
 The function \code{\link[CLVTools:summary.clv.fitted]{summary}} can be used to obtain and print a summary of the results.
 The generic accessor functions \code{coefficients}, \code{fitted},
@@ -141,8 +141,22 @@ covariate is only relevant for a particular customer. For technical details we r
 the paper by Bachmann, Meierer and Näf (2019).
 }
 }
+\note{
+Fitting the Pareto/NBD model with dynamic covariates is for the most part implemented using \code{data.table} and to a smaller part further
+parallelized with the \code{foreach} package. Registering a
+parallel backend with \code{\link[doFuture:doFuture]{doFuture}} or \code{\link[doParallel:doParallel]{doParallel}} before fitting the
+models allows to take advantage of this. If no parallel backend is set up, the \code{foreach} package gives a friendly reminder that
+it is executed sequentially. In case this is desired but no warning should be given, a parallel backend in sequential mode
+can be set up, for example package \code{doFuture} with \code{\link[future:plan]{plan("sequential")}}.
+
+The part executed with \code{foreach} also heavily relies on \code{data.table} which is natively parallelized already. When setting up
+the parallel backend, great care should be taken to reduce the overhead from this nested parallelism as otherwise it can \emph{increase} runtime.
+See \code{\link[data.table:setDTthreads]{setDTthreads}}, \code{\link[data.table:getDTthreads]{getDTthreads}},
+and \code{\link[future:plan]{plan}} for information on how to do this.
+}
 \examples{
 \donttest{
+
 data("apparelTrans")
 clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
                             time.unit = "w", estimation.split = 37)
@@ -203,7 +217,7 @@ pnbd(clv.data.static.cov, names.cov.constr = "Gender",
 # Add dynamic covariates data to the data object
 #   add dynamic covariates to the data
 data("apparelDynCov")
-
+\dontrun{
 clv.data.dyn.cov <-
   SetDynamicCovariates(clv.data = clv.data.apparel,
                        data.cov.life = apparelDynCov,
@@ -211,6 +225,15 @@ clv.data.dyn.cov <-
                        names.cov.life = c("DM", "High.Season", "Gender"),
                        names.cov.trans = c("DM", "High.Season", "Gender"),
                        name.date = "Cov.Date")
+\dontrun{
+# Enable parallel execution of some parts of the dyncov LL
+library(doFuture)
+registerDoFuture()
+# avoid overhead from nested parallelism by setting up
+# appropriate to _your_ system
+setDTthreads(threads=8)
+plan("multisession", workers=2)
+}
 
 # Fit PNBD with dynamic covariates
 pnbd(clv.data.dyn.cov)
@@ -219,6 +242,7 @@ pnbd(clv.data.dyn.cov)
 #  static covariate are available
 pnbd(clv.data.dyn.cov, reg.lambdas = c(trans=10, life=2))
 
+}
 }
 
 }
@@ -244,4 +268,6 @@ URL http://www.brucehardie.com/notes/019/time_invariant_ covariates.pdf.
 \code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation as predicted by the fitted model
 
 The generic functions \code{\link[CLVTools:summary.clv.fitted]{summary}} and \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
+
+\code{\link[data.table]{setDTthreads}}, \code{\link[data.table]{getDTthreads}},\code{\link[doParallel]{registerDoParallel}},\code{\link[doFuture]{registerDoFuture}} for setting up paralle exectution.
 }

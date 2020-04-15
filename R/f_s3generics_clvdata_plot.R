@@ -30,7 +30,6 @@
 #'
 #'
 #' @examples
-#' \dontrun{
 #'
 #' data("cdnow")
 #' clv.data.cdnow <- clvdata(cdnow, time.unit="w",
@@ -41,17 +40,20 @@
 #' plot(clv.data.cdnow)
 #'
 #' # plot cumulative repeat transactions
-#' plot(clv.data.cdnow, cumulative=T)
+#' plot(clv.data.cdnow, cumulative=TRUE)
 #'
 #' # Dont automatically plot but tweak further
 #' gg.cdnow <- plot(clv.data.cdnow)
+#'
 #' # change Title
+#' library(ggplot2)
 #' gg.cdnow + ggtitle("CDnow repeat transactions")
 #'
 #' # Dont return a plot but only the data from
 #' #   which it would have been created
-#' dt.plot.data <- plot(clv.data.cdnow, plot=F)
-#' }
+#' dt.plot.data <- plot(clv.data.cdnow, plot=FALSE)
+#'
+#'
 #' @importFrom graphics plot
 #' @include all_generics.R class_clv_data.R
 #' @method plot clv.data
