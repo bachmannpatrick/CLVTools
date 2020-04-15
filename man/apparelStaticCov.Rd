@@ -3,7 +3,7 @@
 \docType{data}
 \name{apparelStaticCov}
 \alias{apparelStaticCov}
-\title{Time-invariant Covariates Apparel Retailer Dataset}
+\title{Time-invariant Covariates for the Apparel Retailer Dataset}
 \format{
 A \code{data.table} with 250 rows and 3 variables:
 

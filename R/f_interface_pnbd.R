@@ -96,7 +96,7 @@
 #'
 #' data("apparelTrans")
 #' clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
-#'                             time.unit = "w", estimation.split = 37)
+#'                             time.unit = "w", estimation.split = 40)
 #'
 #' # Fit standard PNBD model
 #' pnbd(clv.data.apparel)
@@ -124,20 +124,20 @@
 #'
 #' # To estimate the PNBD model with static covariates,
 #' #   add static covariates to the data
-#' data("apparelDemographics")
+#' data("apparelStaticCov")
 #' clv.data.static.cov <-
 #'  SetStaticCovariates(clv.data.apparel,
-#'                      data.cov.life = apparelDemographics,
-#'                      names.cov.life = "Gender",
-#'                      data.cov.trans = apparelDemographics,
-#'                      names.cov.trans = "Gender")
+#'                      data.cov.life = apparelStaticCov,
+#'                      names.cov.life = ("Gender", "Channel"),
+#'                      data.cov.trans = apparelStaticCov,
+#'                      names.cov.trans = c("Gender", "Channel"))
 #'
 #' # Fit PNBD with static covariates
 #' pnbd(clv.data.static.cov)
 #'
 #' # Give initial guesses for both covariate parameters
-#' pnbd(clv.data.static.cov, start.params.trans = c(Gender=0.75),
-#'                    start.params.life  = c(Gender=0.5))
+#' pnbd(clv.data.static.cov, start.params.trans = c(Gender=0.75, Channel=0.7),
+#'                    start.params.life  = c(Gender=0.5, Channel=0.5))
 #'
 #' # Use regularization
 #' pnbd(clv.data.static.cov, reg.lambdas = c(trans = 5, life=5))
@@ -160,8 +160,8 @@
 #'   SetDynamicCovariates(clv.data = clv.data.apparel,
 #'                        data.cov.life = apparelDynCov,
 #'                        data.cov.trans = apparelDynCov,
-#'                        names.cov.life = c("DM", "High.Season", "Gender"),
-#'                        names.cov.trans = c("DM", "High.Season", "Gender"),
+#'                        names.cov.life = c("Marketing", "Gender", "Channel"),
+#'                        names.cov.trans = c("Marketing", "Gender", "Channel"),
 #'                        name.date = "Cov.Date")
 #' \dontrun{
 #' # Enable parallel execution of some parts of the dyncov LL

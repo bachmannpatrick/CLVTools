@@ -1,13 +1,13 @@
 Package: CLVTools
 Title: Tools for Customer Lifetime Value Estimation
 Version: 0.5.0
-Date: 2020-03-31
+Date: 2020-04-15
 Authors@R: c(
     person(given="Patrick", family="Bachmann",    email = "patrick.bachmann@business.uzh.ch", role = c("cre","aut")),
     person(given="Jeffrey", family="Näf",         email = "naef@stat.math.ethz.ch",role = "aut"),
     person(given="Patrik",  family="Schilter",    email = "patrik.schilter@gmail.com",role = "aut"),
     person(given="Markus",  family="Meierer",     email = "markus.meierer@business.uzh.ch", role = "aut"),
-    person(given="Rene",    family="Algesheimer", email = "market-research@business.uzh.ch", role = "aut"))
+    person(given="Niels",    family="Kübler", email = "niels.kuebler@uzh.ch", role = "aut"))
 Depends:
     R (>= 3.5.0),
 Description: Package to fit probabilistic models to estimate customer lifetime value (CLV).
