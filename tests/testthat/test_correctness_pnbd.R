@@ -1,7 +1,7 @@
 # Load required data ---------------------------------------------------------------------------------
 data("cdnow")
 data("apparelTrans")
-data("apparelDemographics")
+data("apparelStaticCov")
 
 apparel.nocov.coef <- c(r= 0.705, alpha = 14.402, s = 0.182, beta = 2.901)
 apparel.nocov.se <- c(r= 0.064, alpha = 1.087, s = 0.026, beta = 2.901)
@@ -14,8 +14,8 @@ cdnow.nocov.se <- c(r =0.0469, alpha = 0.8281, s = 0.2511, beta = 8.1587)
 
 
 context("Correctness - PNBD nocov - Recover parameters")
-expect_message(pnbd.apparel.obj <- clvdata(data.transactions = apparelTrans, date.format = "ymd", time.unit = "W",
-                                          estimation.split = 52), regexp = "ignored")
+expect_silent(pnbd.apparel.obj <- clvdata(data.transactions = apparelTrans, date.format = "ymd", time.unit = "W",
+                                          estimation.split = 52))
 expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "W",
                                                   estimation.split = 38))
 
@@ -81,7 +81,7 @@ context("Correctness - PNBD static cov - Recover parameters")
 test_that("Apparel static cov correct coefs and SE", {
   expect_silent(pnbd.apparel.staticcov <- SetStaticCovariates(pnbd.apparel.obj,
                                                               names.cov.life = "Gender", names.cov.trans = "Gender",name.id = "Id",
-                                                              data.cov.life = apparelDemographics, data.cov.trans = apparelDemographics))
+                                                              data.cov.life = apparelStaticCov, data.cov.trans = apparelStaticCov))
   expect_silent(e.pnbd.apparel.staticcov<-pnbd(clv.data=pnbd.apparel.staticcov, start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
                                                start.params.life = c(Gender=1), start.params.trans = c(Gender=1),
                                                verbose=FALSE))
