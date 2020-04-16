@@ -29,7 +29,7 @@
 #' apparel retailer on January 3rd 2005. In total the dataset contains 250 customers who made
 #' 3648 transactions between January 2005 and mid July 2006.
 #'
-#' @format A \code{data.table} with 3648 rows and 3 variables:
+#' @format A \code{data.table} with 1443 rows and 3 variables:
 #' \describe{
 #'   \item{\code{Id}}{Customer Id}
 #'   \item{\code{Date}}{Date of purchase}
