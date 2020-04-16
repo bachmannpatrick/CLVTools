@@ -104,6 +104,21 @@ clv.data.aggregate.transactions <- function(dt.transactions, has.spending){
   return(dt.aggregated.transactions)
 }
 
+#' Interpurchase time, for repeaters only
+#'   Time between consecutive purchases of each customer - convert to intervals then time units
+#'   If zero-repeaters (only 1 trans) set NA to ignore it in mean / sd calculations
+#' @importFrom lubridate int_diff
+clv.data.mean.interpurchase.times <- function(clv.data, dt.transactions){
+  num.transactions <- dt.transactions[, .(num.trans = .N), by="Id"]
+  return(rbindlist(list(
+    # 1 Transaction = NA
+    dt.transactions[Id %in% num.transactions[num.trans == 1,Id], .(interp.time = NA_real_, Id)],
+    dt.transactions[Id %in% num.transactions[num.trans >  1,Id],
+                    .(interp.time = mean(clv.time.interval.in.number.tu(clv.time = clv.data@clv.time,
+                                                                        interv = int_diff(Date)))),
+                    by="Id"]
+  ), use.names = TRUE))
+}
 
 #' @importFrom stats sd
 #' @importFrom lubridate time_length
@@ -119,10 +134,10 @@ clv.data.make.descriptives <- function(clv.data){
   data.transactions.total      <- clv.data@data.transactions
 
   data.transactions.estimation <- data.transactions.total[Date >= clv.data@clv.time@timepoint.estimation.start &
-                                                      Date <= clv.data@clv.time@timepoint.estimation.end]
+                                                            Date <= clv.data@clv.time@timepoint.estimation.end]
   if(clv.data.has.holdout(clv.data=clv.data))
     data.transactions.holdout  <- data.transactions.total[Date >= clv.data@clv.time@timepoint.holdout.start &
-                                                      Date <= clv.data@clv.time@timepoint.holdout.end]
+                                                            Date <= clv.data@clv.time@timepoint.holdout.end]
   else
     data.transactions.holdout  <- data.transactions.estimation
 
@@ -131,27 +146,9 @@ clv.data.make.descriptives <- function(clv.data){
   no.trans.by.cust.holdout     <- data.transactions.holdout[,    .N, by="Id"]
 
 
-  # Interpurchase time, for repeaters only ----------------------------------------------------------
-  #   Time between consecutive purchases of each customer - convert to intervals then time units
-  #   If zero-repeaters (only 1 trans) set NA to ignore it in mean / sd calculations
-  #
-  #   Cannot use int_diff as s4 is created for every customer which is very slow - use base::diff
-  #
-  # .calc.interp.time <- function(data.trans){
-  #   mean.interp.time.per.cust <- data.trans[, list(interp.time =
-  #   *** TODO: Should likely use interval() inside time_length!?
-  #                                                  ifelse(.N > 1, mean(time_length(base::diff.POSIXt(Date), obj@clv.time@time.unit)),   NA_real_)), by="Id"]
-  #   return(mean.interp.time.per.cust)
-  # }
-  # interp.est   <- .calc.interp.time(data.trans = data.transactions.estimation)
-  # interp.hold  <- .calc.interp.time(data.trans = data.transactions.holdout)
-  # interp.total <- .calc.interp.time(data.trans = data.transactions)
-
-
-  # select non-zero repeaters (N>1)
-  # order by Date
-  # by Id
-  #
+  interp.est   <- clv.data.mean.interpurchase.times(clv.data=clv.data, dt.transactions = data.transactions.estimation)
+  interp.hold  <- clv.data.mean.interpurchase.times(clv.data=clv.data, dt.transactions = data.transactions.holdout)
+  interp.total <- clv.data.mean.interpurchase.times(clv.data=clv.data, dt.transactions = data.transactions.total)
 
 
   # Make descriptives ------------------------------------------------------------------------------
@@ -207,20 +204,20 @@ clv.data.make.descriptives <- function(clv.data){
              Holdout    = nrow(fsetdiff(no.trans.by.cust.total[, "Id"], no.trans.by.cust.holdout[, "Id"])),
              Total      = nrow(no.trans.by.cust.total[     N == 1])),
     "Percentage # zero repeaters"        =
-      list( Estimation = nrow(no.trans.by.cust.estimation[N == 1])                                               / nrow(no.trans.by.cust.total),
-            Holdout    = nrow(fsetdiff(no.trans.by.cust.total[, "Id"], no.trans.by.cust.holdout[, "Id"]))        / nrow(no.trans.by.cust.total),
-            Total      = nrow(no.trans.by.cust.total[     N == 1])                                               / nrow(no.trans.by.cust.total))))
-  # # Interpurchase time
-  # # Remove NAs indicating zero-repeaters!
-  # "Mean Interpurchase time"       =
-  #                           list( Estimation = interp.est[,   mean(interp.time, na.rm=T)],
-  #                                 Holdout    = interp.hold[,  mean(interp.time, na.rm=T)],
-  #                                 Total      = interp.total[, mean(interp.time, na.rm=T)]),
-  #
-  # "(SD)   "       =
-  #                           list( Estimation = interp.est[,   sd(interp.time, na.rm=T)],
-  #                                 Holdout    = interp.hold[,  sd(interp.time, na.rm=T)],
-  #                                 Total      = interp.total[, sd(interp.time, na.rm=T)]))
+      list( Estimation = nrow(no.trans.by.cust.estimation[N == 1])                                        / nrow(no.trans.by.cust.total),
+            Holdout    = nrow(fsetdiff(no.trans.by.cust.total[, "Id"], no.trans.by.cust.holdout[, "Id"])) / nrow(no.trans.by.cust.total),
+            Total      = nrow(no.trans.by.cust.total[     N == 1])                                        / nrow(no.trans.by.cust.total)),
+    # Interpurchase time
+    # Remove NAs indicating zero-repeaters!
+    "Mean Interpurchase time"       =
+      list( Estimation = interp.est[,   mean(interp.time, na.rm=TRUE)],
+            Holdout    = interp.hold[,  mean(interp.time, na.rm=TRUE)],
+            Total      = interp.total[, mean(interp.time, na.rm=TRUE)]),
+
+    "(SD)   "       =
+      list( Estimation = interp.est[,   sd(interp.time, na.rm=TRUE)],
+            Holdout    = interp.hold[,  sd(interp.time, na.rm=TRUE)],
+            Total      = interp.total[, sd(interp.time, na.rm=TRUE)])))
 
 
 
