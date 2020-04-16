@@ -2,30 +2,9 @@
 % Please edit documentation in R/f_interface_setstaticcovariates.R
 \name{SetStaticCovariates}
 \alias{SetStaticCovariates}
-\alias{SetStaticCovariates,clv.data.static.covariates-method}
-\alias{SetStaticCovariates,clv.data.dynamic.covariates-method}
-\alias{SetStaticCovariates,clv.data-method}
 \title{Add Static Covariates to a CLV data object}
 \usage{
-\S4method{SetStaticCovariates}{clv.data.static.covariates}(
-  clv.data,
-  data.cov.life,
-  data.cov.trans,
-  names.cov.life,
-  names.cov.trans,
-  name.id = "Id"
-)
-
-\S4method{SetStaticCovariates}{clv.data.dynamic.covariates}(
-  clv.data,
-  data.cov.life,
-  data.cov.trans,
-  names.cov.life,
-  names.cov.trans,
-  name.id = "Id"
-)
-
-\S4method{SetStaticCovariates}{clv.data}(
+SetStaticCovariates(
   clv.data,
   data.cov.life,
   data.cov.trans,

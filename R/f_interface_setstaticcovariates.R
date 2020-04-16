@@ -1,31 +1,16 @@
 #' @template template_setstaticcov
-NULL
-
-#' @exportMethod SetStaticCovariates
-setGeneric(name = "SetStaticCovariates",  def = function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id")
-  standardGeneric("SetStaticCovariates"))
-
-#' @include class_clv_data_staticcovariates.R
-#' @rdname SetStaticCovariates
-setMethod(f = "SetStaticCovariates", signature = signature(clv.data="clv.data.static.covariates"),
-          definition = function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id"){
-            stop("Cannot set static covariates because this object has covariates set already!", call. = FALSE)
-          })
-
-
-#' @include class_clv_data_dynamiccovariates.R
-#' @rdname SetStaticCovariates
-setMethod(f = "SetStaticCovariates", signature = signature(clv.data="clv.data.dynamic.covariates"),
-          definition = function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id"){
-            stop("Cannot set static covariates because this object has covariates set already!", call. = FALSE)
-          })
-
-
-#' @include class_clv_data.R class_clv_data_staticcovariates.R
-#' @rdname SetStaticCovariates
-setMethod(f = "SetStaticCovariates", signature = signature(clv.data="clv.data"), function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id"){
+#' @export
+SetStaticCovariates <- function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id"){
 
   Id <- NULL
+
+  # Do not use S4 generics to catch other classes because it creates confusing documentation entries
+  #   suggesting that there are legitimate methods for these
+  if(!is(clv.data, "clv.data"))
+    stop("Covariate data can only be added to objects of class clv.data!")
+  if(is(clv.data, "clv.data.static.covariates") | is(clv.data, "clv.data.dynamic.covariates"))
+    stop("Cannot set dynamic covariates because this object has covariates set already!", call. = FALSE)
+
 
   # Basic inputchecks ---------------------------------------------------------------------
   #   for parameters
@@ -104,4 +89,4 @@ setMethod(f = "SetStaticCovariates", signature = signature(clv.data="clv.data"),
                                                 names.cov.data.trans = names.cov.data.trans)
 
   return(data.static.cov)
-})
+}
