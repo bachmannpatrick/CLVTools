@@ -69,7 +69,7 @@ Collate:
     'data.R'
     'f_DoExpectation.R'
     'f_clvdata_inputchecks.R'
-    'f_clvfitted_checkuserinput.R'
+    'f_clvfitted_inputchecks.R'
     'f_generics_clvdata.R'
     'f_generics_clvfitted.R'
     'f_generics_clvfitted_estimate.R'
