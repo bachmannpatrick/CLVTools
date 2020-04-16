@@ -6,6 +6,11 @@
 \usage{
 \method{nobs}{clv.data}(object, ...)
 }
+\arguments{
+\item{object}{An object of class clv.data.}
+
+\item{...}{Ignored}
+}
 \description{
 The number of observations is defined as the number of unique customers in the transaction data.
 }

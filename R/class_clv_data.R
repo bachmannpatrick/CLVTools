@@ -104,9 +104,9 @@ clv.data.aggregate.transactions <- function(dt.transactions, has.spending){
   return(dt.aggregated.transactions)
 }
 
-#' Interpurchase time, for repeaters only
-#'   Time between consecutive purchases of each customer - convert to intervals then time units
-#'   If zero-repeaters (only 1 trans) set NA to ignore it in mean / sd calculations
+# Interpurchase time, for repeaters only
+#   Time between consecutive purchases of each customer - convert to intervals then time units
+#   If zero-repeaters (only 1 trans) set NA to ignore it in mean / sd calculations
 #' @importFrom lubridate int_diff
 clv.data.mean.interpurchase.times <- function(clv.data, dt.transactions){
   num.transactions <- dt.transactions[, .(num.trans = .N), by="Id"]
