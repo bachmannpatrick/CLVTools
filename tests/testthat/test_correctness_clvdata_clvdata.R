@@ -32,9 +32,10 @@ test_that("Different estimation.split formats result in same split - data in Dat
                                          estimation.char = as.character(cdnow[, min(Date)]+lubridate::period(37, "weeks")),
                                          time.unit = "weeks")
 
-  fct.helper.correctness.estimationsplit(data = apparelTrans.date, estimation.number = 1,
-                                         estimation.char = as.character(apparelTrans.date[, min(Date)]+lubridate::period(1, "year")),
-                                         time.unit = "years")
+  #Not feasible with the current sample data (too short).
+  #fct.helper.correctness.estimationsplit(data = apparelTrans.date, estimation.number = 1,
+  #                                       estimation.char = as.character(apparelTrans.date[, min(Date)]+lubridate::period(1, "year")),
+  #                                       time.unit = "years")
 })
 
 
@@ -57,10 +58,10 @@ test_that("Different estimation.split formats result in same split - data in POS
                                          estimation.char = as.character(cdnow[, min(Date)]+lubridate::period(37, "weeks")),
                                          # estimation.char = "1997-09-17",
                                           time.unit = "weeks", warn=TRUE)
-
-  fct.helper.correctness.estimationsplit(data = apparelTrans.posix, estimation.number = 1,
-                                         estimation.char = as.character(apparelTrans.posix[, min(Date)]+lubridate::period(1, "year")),
-                                          time.unit = "years", warn=TRUE)
+  #Not feasible with the current sample data (too short).
+  #fct.helper.correctness.estimationsplit(data = apparelTrans.posix, estimation.number = 1,
+  #                                       estimation.char = as.character(apparelTrans.posix[, min(Date)]+lubridate::period(1, "year")),
+  #                                        time.unit = "years", warn=TRUE)
 
 })
 
@@ -82,9 +83,10 @@ test_that("Different estimation.split formats result in same split - data in POS
                                          estimation.char = as.character(cdnow[, min(Date)]+lubridate::period(37, "weeks")),
                                           time.unit = "weeks", warn=TRUE)
 
-  fct.helper.correctness.estimationsplit(data = apparelTrans.posix, estimation.number = 1,
-                                         estimation.char = as.character(apparelTrans.posix[, min(Date)]+lubridate::period(1, "year")),
-                                          time.unit = "years", warn=TRUE)
+  #Not feasible with the current sample data (too short).
+  #fct.helper.correctness.estimationsplit(data = apparelTrans.posix, estimation.number = 1,
+  #                                       estimation.char = as.character(apparelTrans.posix[, min(Date)]+lubridate::period(1, "year")),
+  #                                        time.unit = "years", warn=TRUE)
 
 })
 
@@ -108,10 +110,10 @@ test_that("Different estimation.split formats result in same split - data in cha
                                          # estimation.char = "1997-09-17",
                                          estimation.char = as.character(cdnow[, min(Date)]+lubridate::period(37, "weeks")),
                                          time.unit = "weeks")
-
-  fct.helper.correctness.estimationsplit(data = apparelTrans.char, estimation.number = 1,
-                                         estimation.char = as.character(apparelTrans[, min(Date)]+lubridate::period(1, "years")),
-                                         time.unit = "years")
+  #Not feasible with the current sample data (too short).
+  #fct.helper.correctness.estimationsplit(data = apparelTrans.char, estimation.number = 1,
+  #                                       estimation.char = as.character(apparelTrans[, min(Date)]+lubridate::period(1, "years")),
+  #                                       time.unit = "years")
 
 })
 

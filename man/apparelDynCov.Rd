@@ -3,22 +3,22 @@
 \docType{data}
 \name{apparelDynCov}
 \alias{apparelDynCov}
-\title{Dynamic Covariates for the Apparel Retailer Dataset}
+\title{Time-varying Covariates for the Apparel Retailer Dataset}
 \format{
-A data.table with 781355 rows and 5 variables
+A data.table with 20500 rows and 5 variables
 \describe{
   \item{Id}{Customer Id}
   \item{Cov.Date}{Date of contextual factor}
-  \item{DM}{1 if customer was contacted with direct marketing in this time period}
-  \item{High-Season}{1 if high season during this time period}
+  \item{Marketing}{Direct marketing variable: 1 if customer was contacted with direct marketing in this time period}
   \item{Gender}{0=male, 1=female}
+  \item{Channel}{Acquisition channel: 0=online, 1=offline}
 }
 }
 \usage{
 data("apparelDynCov")
 }
 \description{
-This data contains direct marketing and seasonality information on customers in the "apparelTrans" dataset.
+This simulated data contains direct marketing information on all 250 customers in the "apparelTrans" dataset.
 This information can be used as time-varying covariates.
 }
 \keyword{datasets}

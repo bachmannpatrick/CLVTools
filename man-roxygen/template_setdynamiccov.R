@@ -54,9 +54,9 @@
 #' clv.data.dyn.cov  <-
 #'    SetDynamicCovariates(clv.data.apparel,
 #'                        data.cov.life  = apparelDynCov,
-#'                        names.cov.life = c("DM", "High.Season", "Gender"),
+#'                        names.cov.life = c("Marketing", "Gender", "Channel"),
 #'                        data.cov.trans = apparelDynCov,
-#'                        names.cov.trans = c("DM", "High.Season", "Gender"),
+#'                        names.cov.trans = c("Marekting", "Gender", "Channel"),
 #'                        name.id = "Id",
 #'                        name.date = "Cov.Date")
 #'
