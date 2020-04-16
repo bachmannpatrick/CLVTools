@@ -1,16 +1,16 @@
 # Setup -----------------------------------------------------------------------------------------------------------------------------------------
 data("apparelTrans")
-data("apparelDemographics")
+data("apparelStaticCov")
 
 context("Runability - PNBD static cov - Basic runability")
 
-expect_message(clv.data.apparel        <- clvdata(data.transactions = apparelTrans, date.format = "ymd", time.unit = "W",
-                                                 estimation.split = 52), regexp = "ignored")
-expect_message(clv.data.apparel.no.holdout <- clvdata(data.transactions = apparelTrans, date.format = "ymd", time.unit = "W"), regexp = "ignored")
+expect_silent(clv.data.apparel        <- clvdata(data.transactions = apparelTrans, date.format = "ymd", time.unit = "W",
+                                                 estimation.split = 40))
+expect_silent(clv.data.apparel.no.holdout <- clvdata(data.transactions = apparelTrans, date.format = "ymd", time.unit = "W"))
 
-expect_silent(clv.data.cov.holdout    <- SetStaticCovariates(clv.data.apparel, data.cov.life = apparelDemographics, data.cov.trans = apparelDemographics,
+expect_silent(clv.data.cov.holdout    <- SetStaticCovariates(clv.data.apparel, data.cov.life = apparelStaticCov, data.cov.trans = apparelStaticCov,
                                                                  names.cov.life = "Gender", names.cov.trans = "Gender"))
-expect_silent(clv.data.cov.no.holdout <- SetStaticCovariates(clv.data.apparel.no.holdout, data.cov.life = apparelDemographics, data.cov.trans = apparelDemographics,
+expect_silent(clv.data.cov.no.holdout <- SetStaticCovariates(clv.data.apparel.no.holdout, data.cov.life = apparelStaticCov, data.cov.trans = apparelStaticCov,
                                                                  names.cov.life = "Gender", names.cov.trans = "Gender"))
 
 # Newdata clv data object to test plot/predict
@@ -40,7 +40,7 @@ expect_silent(clv.newdata.nohold <- SetStaticCovariates(
 
 expect_silent(clv.newdata.withhold <- SetStaticCovariates(
   clv.data = clvdata(data.transactions = dt.newdata, date.format = "ydm", time.unit = "w",
-                     estimation.split = 52, name.id = "cust.id", name.date = "trans.date",
+                     estimation.split = 40, name.id = "cust.id", name.date = "trans.date",
                      name.price = NULL),
   data.cov.life = dt.covs, data.cov.trans = dt.covs,
   names.cov.life = "Gender", names.cov.trans = "Gender",
@@ -81,7 +81,7 @@ test_that("Reduces to relevant covariates only for estimation", {
   # skip_on_cran()
 
   # Create fantasy covariate to immediately remove again
-  dt.fake <- data.table::copy(apparelDemographics)[, fake:= c(0,rep(c(1,0), 2200/2))]
+  dt.fake <- data.table::copy(apparelStaticCov)[, fake:= c(rep(c(1,0), 250/2))]
   expect_silent(clv.data.fake.cov <- SetStaticCovariates(clv.data.apparel, data.cov.life = dt.fake, data.cov.trans = dt.fake,
                                                      names.cov.life = "Gender", names.cov.trans = c("fake","Gender")))
   expect_silent(e.pnbd.fake.cov <-pnbd(clv.data.fake.cov, names.cov.trans = "Gender",verbose=FALSE)) # only keep Gender
@@ -90,7 +90,7 @@ test_that("Reduces to relevant covariates only for estimation", {
   expect_false("fake" %in% colnames(e.pnbd.fake.cov@clv.data@data.cov.trans))
 
   # Same but with lifetime process
-  dt.fake <- data.table::copy(apparelDemographics)[, fake:= c(0,rep(c(1,0), 2200/2))]
+  dt.fake <- data.table::copy(apparelStaticCov)[, fake:= c(rep(c(1,0), 250/2))]
   expect_silent(clv.data.fake.cov <- SetStaticCovariates(clv.data.apparel, data.cov.life = dt.fake, data.cov.trans = dt.fake,
                                                      names.cov.life = c("fake","Gender"), names.cov.trans = "Gender"))
   expect_silent(e.pnbd.fake.cov <-pnbd(clv.data.fake.cov, names.cov.life = "Gender",verbose=FALSE)) # only keep Gender

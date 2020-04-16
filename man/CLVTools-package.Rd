@@ -52,10 +52,10 @@ at \url{https://github.com/bachmannpatrick/CLVTools}.
 
 Authors:
 \itemize{
-  \item Jeffrey Näf \email{naef@stat.math.ethz.ch}
+  \item Jeffrey Naef \email{naef@stat.math.ethz.ch}
   \item Patrik Schilter \email{patrik.schilter@gmail.com}
   \item Markus Meierer \email{markus.meierer@business.uzh.ch}
-  \item Rene Algesheimer \email{market-research@business.uzh.ch}
+  \item Niels Kuebler \email{niels.kuebler@uzh.ch}
 }
 
 }

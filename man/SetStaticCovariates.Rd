@@ -69,7 +69,7 @@ to k-1 numeric dummie variables.
 \examples{
 
 data("apparelTrans")
-data("apparelDemographics")
+data("apparelStaticCov")
 
 # Create a clv data object without covariates
 clv.data.apparel <- clvdata(apparelTrans, time.unit="w",
@@ -78,9 +78,9 @@ clv.data.apparel <- clvdata(apparelTrans, time.unit="w",
 # Add static covariate data
 clv.data.apparel.cov  <-
    SetStaticCovariates(clv.data.apparel,
-                       data.cov.life  = apparelDemographics,
+                       data.cov.life  = apparelStaticCov,
                        names.cov.life = "Gender",
-                       data.cov.trans = apparelDemographics,
+                       data.cov.trans = apparelStaticCov,
                        names.cov.trans = "Gender",
                        name.id = "Id")
 

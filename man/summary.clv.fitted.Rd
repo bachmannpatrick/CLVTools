@@ -77,19 +77,19 @@ data("apparelTrans")
 
 # Fit pnbd standard model, no covariates
 clv.data.apparel <- clvdata(apparelTrans, time.unit="w",
-                                estimation.split=37, date.format="ymd")
+                                estimation.split=40, date.format="ymd")
 pnbd.apparel <- pnbd(clv.data.apparel)
 
 # summary about model fit
 summary(pnbd.apparel)
 
 # Add static covariate data
-data("apparelDemographics")
+data("apparelStaticCov")
 data.apparel.cov  <-
    SetStaticCovariates(clv.data.apparel,
-                       data.cov.life  = apparelDemographics,
+                       data.cov.life  = apparelStaticCov,
                        names.cov.life = "Gender",
-                       data.cov.trans = apparelDemographics,
+                       data.cov.trans = apparelStaticCov,
                        names.cov.trans = "Gender",
                        name.id = "Id")
 
