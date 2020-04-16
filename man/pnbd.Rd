@@ -191,7 +191,7 @@ data("apparelStaticCov")
 clv.data.static.cov <-
  SetStaticCovariates(clv.data.apparel,
                      data.cov.life = apparelStaticCov,
-                     names.cov.life = ("Gender", "Channel"),
+                     names.cov.life = c("Gender", "Channel"),
                      data.cov.trans = apparelStaticCov,
                      names.cov.trans = c("Gender", "Channel"))
 

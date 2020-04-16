@@ -5,7 +5,7 @@
 \alias{apparelTrans}
 \title{Apparel Retailer Dataset}
 \format{
-A \code{data.table} with 1443 rows and 3 variables:
+A \code{data.table} with 2353 rows and 3 variables:
 \describe{
   \item{\code{Id}}{Customer Id}
   \item{\code{Date}}{Date of purchase}
