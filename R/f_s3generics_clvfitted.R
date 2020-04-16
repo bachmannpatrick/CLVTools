@@ -127,7 +127,7 @@ vcov.clv.fitted <- function(object, ...){
   #                                  any cov:     leave prefixed
   #             Change the names of model+cor to display name because vcov now is in original scale as well
 
-  # Set all names of vcov to these of hessian
+  # Set all names of vcov to these of hessian (prefixed)
   rownames(m.vcov) <- colnames(m.vcov) <- colnames(object@optimx.hessian)
 
   # prefixed names to replace with original names
@@ -143,6 +143,9 @@ vcov.clv.fitted <- function(object, ...){
   # replace with original names
   rownames(m.vcov)[pos.prefixed.names] <- names.original.all
   colnames(m.vcov)[pos.prefixed.names] <- names.original.all
+
+  # Ensure same sorting as coef()
+  # **TODO: Add complete to be comparable to coef()!
 
   # **TODO: cannot easily sort to same order as coef because
   #   optimx hessian is named after optimx names but report original display names
