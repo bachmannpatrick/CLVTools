@@ -211,7 +211,7 @@ test_that("No price data gives correct object", {
   expect_false("Price" %in% colnames(clv.cdnow@data.transactions))
   expect_false("Price" %in% colnames(clv.cdnow@data.repeat.trans))
   # also nothing in descriptives
-  expect_true(nrow(clv.cdnow@descriptives.transactions[like(pattern = "Spending", vector = Name)])==0)
+  expect_true(nrow(summary(clv.cdnow)$descriptives.transactions[like(pattern = "Spending", vector = Name)])==0)
 })
 
 test_that("Price data gives correct object", {
@@ -220,7 +220,7 @@ test_that("Price data gives correct object", {
   expect_true("Price" %in% colnames(clv.cdnow@data.transactions))
   expect_true("Price" %in% colnames(clv.cdnow@data.repeat.trans))
   # also Spending info in descriptives
-  expect_true(nrow(clv.cdnow@descriptives.transactions[like(pattern = "Spending", vector = Name)]) > 0)
+  expect_true(nrow(summary(clv.cdnow)$descriptives.transactions[like(pattern = "Spending", vector = Name)]) > 0)
 })
 
 

@@ -1,9 +1,12 @@
+#' Number of observations
+#'
+#' The number of observations is defined as the number of unique customers in the transaction data.
+#'
 #' @importFrom stats nobs
 #' @export
 nobs.clv.data   <- function(object, ...){
-  Name <- NULL # cran silence
   # Observations are number of customers
-  return(as.integer(object@descriptives.transactions[Name == "Number of customers"]$Total))
+  return(as.integer(object@data.transactions[, uniqueN(Id)]))
 }
 
 
@@ -21,8 +24,8 @@ print.clv.data <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
   cat("\nCall:\n", paste(deparse(x@call), sep = "\n", collapse = "\n"), "\n", sep = "")
 
   # Rough data set overview of sample only  --------------------------------------------------
-  .print.list(list("Total # customers"    = x@descriptives.transactions[Name == "Number of customers",  Total],
-                   "Total # transactions" = x@descriptives.transactions[Name == "Total # Transactions", Total]))
+  .print.list(list("Total # customers"    = nobs(x),
+                   "Total # transactions" = nrow(x@data.transactions)))
   cat("\n")
   print(x@clv.time, digits = digits, ...)
   # clv.time already prints a newline
@@ -78,7 +81,8 @@ summary.clv.data <- function(object, ...){
 
   res$name <- object@name
   res$summary.clv.time <- summary(object@clv.time)
-  res$descriptives.transactions <- object@descriptives.transactions
+
+  res$descriptives.transactions <- clv.data.make.descriptives(clv.data=object)
   return(res)
 }
 
