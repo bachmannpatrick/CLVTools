@@ -210,8 +210,9 @@ pnbd(clv.data.static.cov, reg.lambdas = c(trans = 5, life=5))
 pnbd(clv.data.static.cov, names.cov.constr = "Gender",
                    start.params.constr = c(Gender=0.5))
 
-# Use only the covariates named
-# **TODO: Need data with > 1 cov
+# Fit model only with the Channel covariate for life but
+# keep all trans covariates as is
+pnbd(clv.data.static.cov, names.cov.life = c("Channel"))
 
 
 
