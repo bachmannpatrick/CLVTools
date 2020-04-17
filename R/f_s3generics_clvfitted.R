@@ -104,7 +104,7 @@ vcov.clv.fitted <- function(object, ...){
   #   Jeff:
   #   negative hessian or hessian?!
   #     -> Depends on optimization! If we have the loglikelihood we need the negative Hessian.
-  #   However we have the negative (!) Log likelihood, so I guess we need to take the Hessian directly
+  #   However we have the negative (!) Log likelihood, so we need to take the Hessian directly
 
   # Moore-Penrose inverse of Hessian
   #   Results in the regular inverse if invertible
@@ -134,7 +134,8 @@ vcov.clv.fitted <- function(object, ...){
   #   Sorting:  Correct because directly from optimx hessian and for delta.diag from coef(optimx)
   #   Naming:   Has to match coef(). model + cor: original
   #                                  any cov:     leave prefixed
-  #             Change the names of model+cor to display name because vcov now is in original scale as well
+  #             Change the names of model+cor to display name because
+  #               the reported vcov is in original scale as well
 
   # Set all names of vcov to these of hessian (prefixed)
   rownames(m.vcov) <- colnames(m.vcov) <- colnames(object@optimx.hessian)
@@ -153,13 +154,11 @@ vcov.clv.fitted <- function(object, ...){
   rownames(m.vcov)[pos.prefixed.names] <- names.original.all
   colnames(m.vcov)[pos.prefixed.names] <- names.original.all
 
-  # Ensure same sorting as coef()
-  # **TODO: Add complete to be comparable to coef()!
+  # Of utmost importance: Ensure same sorting as coef()
+  names.coef <- names(coef(object = object))
+  m.vcov     <- m.vcov[names.coef, names.coef]
 
-  # **TODO: cannot easily sort to same order as coef because
-  #   optimx hessian is named after optimx names but report original display names
-  # dimnames(m.hessian.inv) <- dimnames(object@optimx.hessian)
-  # rownames(m.vcov) <- colnames(m.vcov) <- names(all.coefs)
+  # **TODO: Add argument "complete" to be comparable to coef()!
 
   return(m.vcov)
 }
