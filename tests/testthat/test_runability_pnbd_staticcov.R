@@ -75,6 +75,23 @@ test_that("Works with custom model and covariate start parameters", {
 })
 
 
+test_that("Works for all optimx optimization methods", {
+  skip_on_cran()
+  expect_warning(pnbd(clv.data=clv.data.cov.holdout, optimx.args = list(control=list(all.methods=TRUE)), verbose=FALSE),
+                 regexp = "replaced by maximum positive value|Gradient not computable after method nlm|unused control arguments ignored|Estimation failed with NA coefs|Hessian could not be derived", all=TRUE)
+})
+
+
+test_that("Works fully with multiple optimization methods", {
+  skip_on_cran()
+  expect_silent(p.no.hold <- pnbd(clv.data=clv.data.cov.holdout, optimx.args = list(method = c("BFGS", "L-BFGS-B", "Nelder-Mead")), verbose=FALSE))
+  fct.helper.fitted.all.s3(clv.fitted = p.no.hold,  full.names = names(p.no.hold@clv.model@names.original.params.model),
+                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
+})
+
+
+
+
 
 # Reduces to covariates ------------------------------------------------------------------------------------------------------------------------
 test_that("Reduces to relevant covariates only for estimation", {
