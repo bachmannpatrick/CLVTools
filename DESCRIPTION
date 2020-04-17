@@ -27,6 +27,7 @@ Imports:
     stats,
     utils
 Suggests:
+    BTYD,
     covr,
     doFuture, 
     doParallel,
