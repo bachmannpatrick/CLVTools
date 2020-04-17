@@ -77,15 +77,16 @@ test_that("Works with custom model and covariate start parameters", {
 
 test_that("Works for all optimx optimization methods", {
   skip_on_cran()
+  skip_on_covr()
   expect_warning(pnbd(clv.data=clv.data.cov.holdout, optimx.args = list(control=list(all.methods=TRUE)), verbose=FALSE),
-                 regexp = "replaced by maximum positive value|Gradient not computable after method nlm|unused control arguments ignored|Estimation failed with NA coefs|Hessian could not be derived", all=TRUE)
+                 regexp = "replaced by maximum positive value|Gradient not computable after method nlm|Rcgmin|unused control arguments ignored|Gradient not computable|Estimation failed with NA coefs|Hessian could not be derived", all=TRUE)
 })
 
 
 test_that("Works fully with multiple optimization methods", {
   skip_on_cran()
-  expect_silent(p.no.hold <- pnbd(clv.data=clv.data.cov.holdout, optimx.args = list(method = c("BFGS", "L-BFGS-B", "Nelder-Mead")), verbose=FALSE))
-  fct.helper.fitted.all.s3(clv.fitted = p.no.hold,  full.names = names(p.no.hold@clv.model@names.original.params.model),
+  expect_silent(p.hold <- pnbd(clv.data=clv.data.cov.holdout, optimx.args = list(method = c("BFGS", "L-BFGS-B", "Nelder-Mead")), verbose=FALSE))
+  fct.helper.fitted.all.s3(clv.fitted = p.hold,  full.names = c("r", "alpha", "s","beta", p.hold@names.prefixed.params.free.life, p.hold@names.prefixed.params.free.trans),
                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
 })
 
