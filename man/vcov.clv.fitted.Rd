@@ -17,13 +17,20 @@ The row and column names correspond to the parameter names given by the \code{co
 }
 \description{
 Returns the variance-covariance matrix of the parameters of the fitted model object.
-The variance-covariance matrix is derived from the hessian that results from the optimization procedure.
-If multiple estimation methods were used, the hessian of the last method is used.
+The variance-covariance matrix is derived from the Hessian that results from the optimization procedure.
+First, the Moore–Penrose generalized inverse of the Hessian is used to obtain an estimate of the
+variance-covariance matrix. If the result is not positive definite, \link[Matrix:nearPD]{nearPD} is used
+with standard settings to find the nearest positive definite matrix.
 
 Because some parameters may be transformed for the purpose of restricting their value during
-the log-likelihood estimation it requires that the vcov estimates are adapted as well to have
-be comparable to the reported coefficient estimates. See the references for how this is done.
+the log-likelihood estimation, it requires that the variance estimates are adapted as well to
+be comparable to the reported coefficient estimates. See the references for more details on how this is done.
+
+If multiple estimation methods were used, the Hessian of the last method is used.
 }
 \references{
 Jeff's "Note on p-values"
+}
+\seealso{
+\link[MASS]{ginv}, \link[Matrix]{nearPD}
 }
