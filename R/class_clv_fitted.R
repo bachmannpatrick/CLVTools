@@ -26,7 +26,7 @@ setOldClass("optimx")
 #'
 #' @importFrom methods setClass
 #' @keywords internal
-#' @include class_clv_model_basestrategy.R class_clv_data.R
+#' @include class_clv_model.R class_clv_data.R
 setClass(Class = "clv.fitted", # contains = "VIRTUAL",
          slots = c(
            call      = "language",

@@ -13,32 +13,14 @@
 #' @description
 #' Plot the actual repeat transactions and overlay it with the repeat transaction as predicted by the fitted model.
 #'
+#' @template template_details_predictionend
 #'
-#' @details
-#'
-#' \code{prediction.end} is either a point in time (of class \code{Date}, \code{POSIXct}, or \code{character}) or the number of periods
-#' that indicates until when to plot the expected transactions.
-#' If \code{prediction.end} is of class character, the date/time format set when creating the data object is used for parsing.
-#' If \code{prediction.end} is the number of periods, the end of the fitting period serves as the reference point from which periods are counted. Only full periods may be specified.
-#' If \code{prediction.end} is omitted or NULL, it defaults to the end of the holdout period.
-#'
-#' Note that only whole periods can be plotted and that the prediction end might not exactly match \code{prediction.end}.
+#' @details Note that only whole periods can be plotted and that the prediction end might not exactly match \code{prediction.end}.
 #' See the Note section for more details.
 #'
+#' @template template_details_newdata
 #'
-#' The \code{newdata} argument has to be a clv data object of the exact same class as the data object
-#' on which the model was fit. In case the model was fit with covariates, \code{newdata} needs to contain identically
-#' named covariate data.
-#' The use case for \code{newdata} is mainly two-fold: First, to estimate model parameters only on a
-#' sample of the data and then use the fitted model object to plot for the full data set provided through \code{newdata}.
-#' Second, for models with dynamic covariates, to provide a clv data object with longer covariates than contained in the data
-#' on which the model was estimated what allows to plot further. When providing \code{newdata}, some models
-#' might require additional steps that can significantly increase runtime.
-#'
-#'
-#' @note
-#'
-#' Because the expectation value is an incremental value derived from the cumulative expectation function,
+#' @note Because the expectation value is an incremental value derived from the cumulative expectation function,
 #' all timepoints for which the expectation is calcuated need to be spaced exactly 1 time unit apart.
 #' Each \code{period.first} marks the beginning of a time unit (ie 1st of January in case of yearly
 #' time units) and the expectation values are calculated up until and including \code{period.first}.
@@ -161,7 +143,7 @@ plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FA
     message("Plotting from ", tp.data.start, " until ", tp.data.end, ".")
 
 
-  if(x@clv.data@has.holdout){
+  if(clv.data.has.holdout(x@clv.data)){
     if(tp.data.end < x@clv.data@clv.time@timepoint.holdout.end){
       warning("Not plotting full holdout period.", call. = FALSE, immediate. = TRUE)
     }
@@ -239,7 +221,7 @@ clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
   p <- ggplot(data = data.melted, aes(x=period.first, y=value, colour=variable)) + geom_line()
 
   # Add holdout line if there is a holdout period
-  if(clv.data@has.holdout){
+  if(clv.data.has.holdout(clv.data)){
     p <- p + geom_vline(xintercept = as.numeric(clv.data@clv.time@timepoint.holdout.start),
                         linetype="dashed", show.legend = FALSE)
   }

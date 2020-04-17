@@ -1,9 +1,15 @@
+#' Number of observations
+#'
+#' The number of observations is defined as the number of unique customers in the transaction data.
+#'
+#' @template template_param_dots
+#' @param object An object of class clv.data.
+#'
 #' @importFrom stats nobs
 #' @export
 nobs.clv.data   <- function(object, ...){
-  Name <- NULL # cran silence
   # Observations are number of customers
-  return(as.integer(object@descriptives.transactions[Name == "Number of customers"]$Total))
+  return(as.integer(object@data.transactions[, uniqueN(Id)]))
 }
 
 
@@ -21,8 +27,8 @@ print.clv.data <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
   cat("\nCall:\n", paste(deparse(x@call), sep = "\n", collapse = "\n"), "\n", sep = "")
 
   # Rough data set overview of sample only  --------------------------------------------------
-  .print.list(list("Total # customers"    = x@descriptives.transactions[Name == "Number of customers",  Total],
-                   "Total # transactions" = x@descriptives.transactions[Name == "Total # Transactions", Total]))
+  .print.list(list("Total # customers"    = nobs(x),
+                   "Total # transactions" = nrow(x@data.transactions)))
   cat("\n")
   print(x@clv.time, digits = digits, ...)
   # clv.time already prints a newline
@@ -39,7 +45,6 @@ print.clv.data.static.covariates <- function(x, digits = max(3L, getOption("digi
   cat("Covariates")
 
   # Print rough covariates overview if it is a covariates model -----------------------------
-  #**TODO: maybe put onto separate lines instead of long text
   .print.list(list( "Trans. Covariates   " = paste(x@names.cov.data.trans, collapse=", "),
                     "       # covs"        = length(x@names.cov.data.trans),
                     "Life.  Covariates   " = paste(x@names.cov.data.life,  collapse=", "),
@@ -79,7 +84,8 @@ summary.clv.data <- function(object, ...){
 
   res$name <- object@name
   res$summary.clv.time <- summary(object@clv.time)
-  res$descriptives.transactions <- object@descriptives.transactions
+
+  res$descriptives.transactions <- clv.data.make.descriptives(clv.data=object)
   return(res)
 }
 

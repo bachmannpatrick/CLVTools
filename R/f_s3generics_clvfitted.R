@@ -127,7 +127,7 @@ vcov.clv.fitted <- function(object, ...){
   #                                  any cov:     leave prefixed
   #             Change the names of model+cor to display name because vcov now is in original scale as well
 
-  # Set all names of vcov to these of hessian
+  # Set all names of vcov to these of hessian (prefixed)
   rownames(m.vcov) <- colnames(m.vcov) <- colnames(object@optimx.hessian)
 
   # prefixed names to replace with original names
@@ -143,6 +143,9 @@ vcov.clv.fitted <- function(object, ...){
   # replace with original names
   rownames(m.vcov)[pos.prefixed.names] <- names.original.all
   colnames(m.vcov)[pos.prefixed.names] <- names.original.all
+
+  # Ensure same sorting as coef()
+  # **TODO: Add complete to be comparable to coef()!
 
   # **TODO: cannot easily sort to same order as coef because
   #   optimx hessian is named after optimx names but report original display names
@@ -321,10 +324,6 @@ summary.clv.fitted <- function(object, ...){
   # Coefficient table --------------------------------------------------------------
   # Return the full coefficient table. The subset is to relevant rows is done in the
   #   printing
-  # Jeff:
-  # SE <- sqrt(diag(Hinvcov))
-  # tval    <- (params-0) / SE
-  # pval    <- 2*(1-pnorm(abs(tval)))
   all.est.params  <- coef(object)
 
   # return NA_ placeholder if cannot calculate vcov
@@ -343,10 +342,8 @@ summary.clv.fitted <- function(object, ...){
       warning("For some parameters the standard error could not be calculated.", call. = FALSE)
   }
 
-  # **TODO: ASK Jeff for correct naming
-  # t.val <- (all.est.params-0)/se
+  # Jeff: z.val - norm
   z.val <- (all.est.params-0)/se
-  # p.val <- 2*pt(q=-abs(t.val), df=nobs(object)-1)
   p.val <- 2*(1-pnorm(abs(z.val)))
 
   res$coefficients <- cbind(all.est.params,
@@ -397,12 +394,7 @@ vcov.summary.clv.fitted <- function(object, ...){
 #' @description
 #' Extract the unconditional expectation (future transactions unconditional on beein "alive") from a fitted clv model.
 #'
-#' @details
-#' \code{prediction.end} is either a point in time (of class \code{Date}, \code{POSIXct}, or \code{character}) or the number of periods
-#' that indicates until when to calculate the unconditional expectation.
-#' If \code{prediction.end} is of class character, the date/time format set when creating the data object is used for parsing.
-#' If \code{prediction.end} is the number of periods, the end of the fitting period serves as the reference point from which periods are counted. Only full periods may be specified.
-#' If \code{prediction.end} is omitted or NULL, it defaults to the end of the holdout period.
+#' @template template_details_predictionend
 #'
 #' @include class_clv_fitted.R
 #' @importFrom stats fitted

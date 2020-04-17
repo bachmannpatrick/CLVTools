@@ -36,34 +36,33 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 
 
 
-  # Prediction end timepoint and number of time units to predict ------------------------------------------
+  # Prediction result table ------------------------------------------------------------------------------
+  dt.prediction <- copy(object@cbs[, "Id"])
 
-  # Table with:
+  # Add information about range of prediction period
   #   tp.prediction.start: Start of prediction, including this timepoint
   #   tp.prediction.end: End of prediction period which includes this timepoint
   #   prediction.length: Length of period for which predictions should be made, in number of periods
-  #   Id: All customers for which predictions are needed
 
   # Could be viewed as part of input checks
   #   but the end of the prediction period cannot be determined until after newdata is set
-  dt.prediction <- clv.time.get.prediction.table(clv.time = object@clv.data@clv.time,
-                                                 user.prediction.end = prediction.end)
-  # Add Ids
-  #   Cannot plonk in new column because of different length
-  #   **TODO: Well, then how can cbind work??
-  dt.prediction <- cbind(unique(object@cbs[,"Id"]), dt.prediction)
+  dt.prediction.time.table <- clv.time.get.prediction.table(clv.time = object@clv.data@clv.time,
+                                                            user.prediction.end = prediction.end)
+  # Add information to prediction table
+  dt.prediction <- cbind(dt.prediction, dt.prediction.time.table)
 
   timepoint.prediction.first <- dt.prediction[1, period.first]
   timepoint.prediction.last  <- dt.prediction[1, period.last]
+  prediction.period.length   <- dt.prediction[1, period.length]
 
   if(verbose)
     message("Predicting from ", timepoint.prediction.first, " until (incl.) ",
-            timepoint.prediction.last, " (", format(dt.prediction[1, period.length], digits = 4, nsmall=2)," ",
+            timepoint.prediction.last, " (", format(prediction.period.length, digits = 4, nsmall=2)," ",
             object@clv.data@clv.time@name.time.unit,").")
 
 
   # Need at least > 2 time units to predict
-  if(dt.prediction[1, period.length] <= 2)
+  if(prediction.period.length <= 2)
     stop("The end of the prediction needs to be at least 3 periods after the end of the estimation period!", call. = FALSE)
 
 
@@ -87,23 +86,36 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
   #     actual.x:         number of transactions
   #     actual.spending:  $
 
-  has.actuals <- object@clv.data@has.holdout & (timepoint.prediction.last <= object@clv.data@clv.time@timepoint.holdout.end)
+  has.actuals <- clv.data.has.holdout(object@clv.data) & (timepoint.prediction.last <= object@clv.data@clv.time@timepoint.holdout.end)
   if(has.actuals)
   {
-    # **TODO: What if no Price??
     # only what is in prediction period!
-    actuals.dt    <- object@clv.data@data.transactions[between(x = Date,
-                                                               lower = timepoint.prediction.first,
-                                                               upper = timepoint.prediction.last,
-                                                               incbounds = TRUE),
-                                                       list(actual.x        = .N,
-                                                            actual.spending = sum(Price)),
-                                                       by="Id"]
-    # **TODO: Cleanup merge join
+
+    if(clv.data.has.spending(object@clv.data)){
+      dt.actuals    <- object@clv.data@data.transactions[between(x = Date,
+                                                                 lower = timepoint.prediction.first,
+                                                                 upper = timepoint.prediction.last,
+                                                                 incbounds = TRUE),
+                                                         list(actual.x        = .N,
+                                                              actual.spending = sum(Price)),
+                                                         by="Id"]
+    }else{
+      # No Spending
+      dt.actuals    <- object@clv.data@data.transactions[between(x = Date,
+                                                                 lower = timepoint.prediction.first,
+                                                                 upper = timepoint.prediction.last,
+                                                                 incbounds = TRUE),
+                                                         list(actual.x        = .N,
+                                                              actual.spending = 0),
+                                                         by="Id"]
+    }
+
+
     # add actuals to prediction
-    setkeyv(actuals.dt, "Id")
-    dt.prediction <- merge(x=dt.prediction, y=actuals.dt, by="Id", all.x=TRUE, sort=TRUE)
-    dt.prediction[is.na(actual.x),        actual.x        := 0]
+    setkeyv(dt.actuals, "Id")
+    dt.prediction[dt.actuals,             actual.x  := i.actual.x,  on="Id"]
+    dt.prediction[is.na(actual.x),        actual.x  := 0]
+    dt.prediction[dt.actuals,             actual.spending := i.actual.spending, on="Id"]
     dt.prediction[is.na(actual.spending), actual.spending := 0]
   }
 
@@ -206,35 +218,16 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 #'
 #'
 #'
-#' @details
-#'
-#' The \code{newdata} argument has to be a clv data object of the exact same class as the data object
-#' on which the model was fit. In case the model was fit with covariates, \code{newdata} needs to contain identically
-#' named covariate data.
-#' The use case for \code{newdata} is mainly two-fold: First, to estimate model parameters only on a
-#' sample of the data and then use the fitted model object to predict for the full data set provided through \code{newdata}.
-#' Second, for models with dynamic covariates, to provide a clv data object with longer covariates than contained in the data
-#' on which the model was estimated what allows to predict further. When providing \code{newdata}, some models
-#' might require additional steps that can significantly increase runtime.
 #'
 #'
-#' \code{prediction.end} is either a point in time (of class \code{Date}, \code{POSIXct}, or \code{character}) or the number of periods
-#' that indicates until when to predict.
-#' If \code{prediction.end} is of class character, the date/time format set when creating the data object is used for parsing.
-#' If \code{prediction.end} is the number of periods, the end of the fitting period serves as the reference point from which periods are counted.
-#' Only full periods may be specified.
-#' If \code{prediction.end} is omitted or NULL, it defaults to the end of the holdout period.
+#' @template template_details_predictionend
 #'
-#'
-#' \code{predict.spending} uses a Gamma/Gamma model to predict customer spending. This option is only available
+#' @details \code{predict.spending} uses a Gamma/Gamma model to predict customer spending. This option is only available
 #' if customer spending information was provided when the data object was created.
 #'
-#'
-#' \code{continuous.discount.factor} allows to adjust the discount rate used to estimated the discounted expected
+#' @details \code{continuous.discount.factor} allows to adjust the discount rate used to estimated the discounted expected
 #' transactions (\code{DERT}).
 #' The default value is \code{0.1} (=10\%). Note that a continuous rate needs to be provided.
-#'
-#'
 #'
 #'
 #' \subsection{The Gamma-Gamma model to Predict Spending}{
@@ -244,6 +237,7 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 #' also has to be considered. To model customer spending the Gamma/Gamma is a
 #' popular choice.
 #' }
+#'
 #'
 #' @references
 #' Schmittlein DC, Morrison DG, Colombo R (1987). “Counting Your Customers:
@@ -267,7 +261,6 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 #' URL \url{http://www.brucehardie.com/notes/025/gamma_gamma.pdf}.
 #'
 #'
-#'
 #' @return
 #' An object of class \code{data.table} with each columns containing the predictions:
 #' \item{Id}{The respective customer identifier}
@@ -278,10 +271,9 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 #' \item{CET}{The Conditional Expected Transactions}
 #' \item{DERT or DECT}{Discounted Expected Residual Transactions or Discounted Expected Conditional Transactions for dynamic covariates models}
 #' \item{actual.x}{Actual number of transactions until prediction.end. Only if there is a holdout period and the prediction ends in it.}
-#' \item{actual.Spending}{Actual spending until prediction.end. Only if there is a holdout period and the prediction ends in it.}
+#' \item{actual.Spending}{Actual spending until prediction.end. Only if there is a holdout period and the prediction ends in it, 0 otherwise.}
 #' \item{predicted.Spending}{The spending as predicted by the Gamma-Gamma model.}
 #' \item{predicted.CLV}{Customer Lifetime Value based on DERT and predicted spending.}
-#'
 #'
 #' @examples
 #'
@@ -322,7 +314,7 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 #'
 #' @method predict clv.fitted
 #' @export
-predict.clv.fitted <- function(object, newdata=NULL, prediction.end=NULL, predict.spending=object@clv.data@has.spending,
+predict.clv.fitted <- function(object, newdata=NULL, prediction.end=NULL, predict.spending=clv.data.has.spending(object@clv.data),
                                continuous.discount.factor=0.1, verbose=TRUE, ...){
   # warn if unnecessary input
   if(length(list(...))>0)

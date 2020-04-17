@@ -60,6 +60,10 @@ clv.time.possible.time.units <- function(){
   return(c("hours","days", "weeks", "years"))
 }
 
+clv.time.has.holdout <- function(clv.time){
+  return(clv.time@holdout.period.in.tu > 0)
+}
+
 
 # set.sample.periods ------------------------------------------------------------------------
 #' @importFrom lubridate period
@@ -298,11 +302,6 @@ clv.time.get.prediction.table <- function(clv.time, user.prediction.end){
   #             Length = 16d = 2+2/7 week
   #                as.numeric(as.period(interval(start = ymd("2019-06-12"), end = ymd("2019-06-28"))), "week") = 2.285
   #
-
-  # **TODO: Explain in documentation (plot, predict) how prediction period and prediction.end is defined
-  # Documentation:
-  #   Example: The estimation period ends on Wed Xx-xx-xxx, then the first date of the prediction period is on
-  #   Thu and the prediction period ends on .which is included.
 
   # Prediction end given:
   #   Timepoint: Until and including this point. Length can be inferred from this.

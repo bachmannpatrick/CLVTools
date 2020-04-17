@@ -10,28 +10,28 @@ Authors@R: c(
     person(given="Niels",    family="Kuebler", email = "niels.kuebler@uzh.ch", role = "aut"))
 Depends:
     R (>= 3.5.0),
+    methods
 Description: Package to fit probabilistic models to estimate customer lifetime value (CLV).
     It includes fast and accurate implementations of buy-'til-you-die models in 
     non-contractual settings (e.g., retail business). with and without time-invariant and time-varying covariates. Currently, the package includes the 
     Pareto/NBD model, the GGompertz/NBD model for the purchase and the attrition processes as well as the Gamma/Gamma model for the spending process.
 Imports:
-    methods, 
-    utils,
-    stats,
     data.table (>= 1.12.0),
-    lubridate (>= 1.7.3), 
+    foreach (>= 1.5.0),
     ggplot2 (>= 3.2.0),
-    optimx (>= 2018-7.10),
-    Rcpp (>= 0.12.12),
+    lubridate (>= 1.7.3), 
     Matrix (>= 1.2-17), 
-    foreach (>= 1.5.0)
+    optimx (>= 2019-12.02),
+    Rcpp (>= 0.12.12),
+    stats,
+    utils
 Suggests:
-    testthat,
     covr,
+    doFuture, 
+    doParallel,
     knitr,
     rmarkdown,
-    doFuture, 
-    doParallel
+    testthat
 License: GPL-3
 URL: https://github.com/bachmannpatrick/CLVTools
 BugReports: https://github.com/bachmannpatrick/CLVTools/issues
@@ -48,7 +48,7 @@ Collate:
     'class_clv_data.R'
     'class_clv_data_staticcovariates.R'
     'class_clv_data_dynamiccovariates.R'
-    'class_clv_model_basestrategy.R'
+    'class_clv_model.R'
     'class_clv_fitted.R'
     'class_clv_fitted_staticcov.R'
     'class_clv_fitted_dynamiccov.R'
@@ -69,7 +69,7 @@ Collate:
     'data.R'
     'f_DoExpectation.R'
     'f_clvdata_inputchecks.R'
-    'f_clvfitted_checkuserinput.R'
+    'f_clvfitted_inputchecks.R'
     'f_generics_clvdata.R'
     'f_generics_clvfitted.R'
     'f_generics_clvfitted_estimate.R'

@@ -2,32 +2,9 @@
 % Please edit documentation in R/f_interface_setdynamiccovariates.R
 \name{SetDynamicCovariates}
 \alias{SetDynamicCovariates}
-\alias{SetDynamicCovariates,clv.data.static.covariates-method}
-\alias{SetDynamicCovariates,clv.data.dynamic.covariates-method}
-\alias{SetDynamicCovariates,clv.data-method}
 \title{Add Dynamic Covariates to a CLV data object}
 \usage{
-\S4method{SetDynamicCovariates}{clv.data.static.covariates}(
-  clv.data,
-  data.cov.life,
-  data.cov.trans,
-  names.cov.life,
-  names.cov.trans,
-  name.id = "Id",
-  name.date = "Date"
-)
-
-\S4method{SetDynamicCovariates}{clv.data.dynamic.covariates}(
-  clv.data,
-  data.cov.life,
-  data.cov.trans,
-  names.cov.life,
-  names.cov.trans,
-  name.id = "Id",
-  name.date = "Date"
-)
-
-\S4method{SetDynamicCovariates}{clv.data}(
+SetDynamicCovariates(
   clv.data,
   data.cov.life,
   data.cov.trans,
@@ -94,7 +71,7 @@ clv.data.dyn.cov  <-
                        data.cov.life  = apparelDynCov,
                        names.cov.life = c("Marketing", "Gender", "Channel"),
                        data.cov.trans = apparelDynCov,
-                       names.cov.trans = c("Marekting", "Gender", "Channel"),
+                       names.cov.trans = c("Marketing", "Gender", "Channel"),
                        name.id = "Id",
                        name.date = "Cov.Date")
 

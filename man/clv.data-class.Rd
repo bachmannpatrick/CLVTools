@@ -29,8 +29,6 @@ A \code{clv.data} object serves as input into the various model fitting function
 
 \item{\code{has.spending}}{Single logical whether the data contains information about the amount spent per transaction}
 
-\item{\code{descriptives.transactions}}{Single \code{data.table} with descriptive statistics about the given transaction data}
-
 \item{\code{has.holdout}}{Single logical whether the data is split in a holdout and estimation period}
 }}
 

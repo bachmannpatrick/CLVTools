@@ -7,7 +7,7 @@
 #' @importFrom methods setClass
 #' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.pnbd.static.cov-class}, \link{clv.model.pnbd.dynamic.cov-class}
 #' @seealso Classes using its instance: \link{clv.fitted-class}
-#' @include all_generics.R class_clv_model_basestrategy.R
+#' @include all_generics.R class_clv_model.R
 setClass(Class = "clv.model.pnbd.no.cov", contains = "clv.model",
          # no additional slots for pnbd base model
          slots = list(),
@@ -81,15 +81,14 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
                                  vT_cal = clv.fitted@cbs$T.cal,
 
                                  # parameter ordering for the callLL interlayer
-                                 #** TODO: Hardcode from cpp interface
                                  LL.params.names.ordered = c(log.r="log.r", log.alpha="log.alpha",
                                                              log.s="log.s", log.beta="log.beta")),
                             keep.null = TRUE)
   return(optimx.args)
 })
 
-# . clv.model.put.optimx.output -----------------------------------------------------------------------------------------
-setMethod("clv.model.put.optimx.output", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, res.optimx){
+# . clv.model.process.post.estimation -----------------------------------------------------------------------------------------
+setMethod("clv.model.process.post.estimation", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, res.optimx){
   # No additional step needed (ie store model specific stuff, extra process)
   return(clv.fitted)
 })
@@ -204,38 +203,41 @@ setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.mo
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
   period.length <- Id <- x <- t.x <- T.cal <-  PAlive <- CET <- DERT <- NULL # cran silence
 
-  # To be sure they are both sorted the same when calling cpp functions
-  setkeyv(dt.prediction, "Id")
-  setkeyv(clv.fitted@cbs, "Id")
-
   predict.number.of.periods <- dt.prediction[1, period.length]
-
-  # pass matrix(0) because no covariates are used
-
 
   # Put params together in single vec
   estimated.params <- c(r = clv.fitted@prediction.params.model[["r"]], alpha = clv.fitted@prediction.params.model[["alpha"]],
                         s = clv.fitted@prediction.params.model[["s"]], beta  = clv.fitted@prediction.params.model[["beta"]])
 
+
+  # To ensure sorting, do everything in a single table
+  dt.result <- copy(clv.fitted@cbs[, c("Id", "x", "t.x", "T.cal")])
+
+
   # Add CET
-  dt.prediction[, CET :=  pnbd_nocov_CET(vEstimated_params = estimated.params,
-                                         dPrediction_period = predict.number.of.periods,
-                                         vX     = clv.fitted@cbs[, x],
-                                         vT_x   = clv.fitted@cbs[, t.x],
-                                         vT_cal = clv.fitted@cbs[, T.cal])]
+  dt.result[, CET :=  pnbd_nocov_CET(vEstimated_params = estimated.params,
+                                     dPrediction_period = predict.number.of.periods,
+                                     vX     = x,
+                                     vT_x   = t.x,
+                                     vT_cal = T.cal)]
 
   # Add PAlive
-  dt.prediction[, PAlive := pnbd_nocov_PAlive(vEstimated_params = estimated.params,
-                                              vX     = clv.fitted@cbs[, x],
-                                              vT_x   = clv.fitted@cbs[, t.x],
-                                              vT_cal = clv.fitted@cbs[, T.cal])]
+  dt.result[, PAlive := pnbd_nocov_PAlive(vEstimated_params = estimated.params,
+                                          vX     = x,
+                                          vT_x   = t.x,
+                                          vT_cal = T.cal)]
 
   # Add DERT
-  dt.prediction[, DERT := pnbd_nocov_DERT(vEstimated_params = estimated.params,
-                                          continuous_discount_factor = continuous.discount.factor,
-                                          vX     = clv.fitted@cbs[, x],
-                                          vT_x   = clv.fitted@cbs[, t.x],
-                                          vT_cal = clv.fitted@cbs[, T.cal])]
+  dt.result[, DERT := pnbd_nocov_DERT(vEstimated_params = estimated.params,
+                                      continuous_discount_factor = continuous.discount.factor,
+                                      vX     = x,
+                                      vT_x   = t.x,
+                                      vT_cal = T.cal)]
+
+  # Add results to prediction table, by matching Id
+  dt.prediction[dt.result, CET    := i.CET,    on = "Id"]
+  dt.prediction[dt.result, PAlive := i.PAlive, on = "Id"]
+  dt.prediction[dt.result, DERT   := i.DERT,   on = "Id"]
 
   return(dt.prediction)
 })
@@ -243,7 +245,7 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.no.cov"),
 # . clv.model.expectation --------------------------------------------------------------------------------------------------------
 setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.no.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
 
-  r <- s <- alpha_i <- beta_i <- date.first.repeat.trans<- date.first.actual.trans <- T.cal <- t_i<- period.first.trans<-NULL
+  r <- s <- alpha_i <- beta_i <- date.first.actual.trans <- T.cal <- t_i<- period.first.trans<-NULL
 
   params_i <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
 

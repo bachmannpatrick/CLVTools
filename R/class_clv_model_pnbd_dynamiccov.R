@@ -6,7 +6,7 @@
 #' @keywords internal
 #' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.pnbd.no.cov-class}, \link{clv.model.pnbd.static.cov-class}
 #' @seealso Classes using its instance: \link{clv.fitted.dynamic.cov-class},
-#' @include all_generics.R class_clv_model_basestrategy.R class_clv_model_pnbd_nocov.R class_clv_model_pnbd_staticcov.R
+#' @include all_generics.R class_clv_model.R class_clv_model_pnbd_nocov.R class_clv_model_pnbd_staticcov.R
 setClass(Class = "clv.model.pnbd.dynamic.cov", contains = "clv.model.pnbd.static.cov",
          slots = list(start.param.cov = "numeric"),
 
@@ -63,8 +63,8 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
           })
 
 
-# . clv.model.put.optimx.output ------------------------------------------------------------------------------------------------
-setMethod(f = "clv.model.put.optimx.output", signature = signature(clv.model="clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, res.optimx){
+# . clv.model.process.post.estimation ------------------------------------------------------------------------------------------------
+setMethod(f = "clv.model.process.post.estimation", signature = signature(clv.model="clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, res.optimx){
   # Estimate again at found values to get LL.data (of last method used)
   #   ** or is this part of plot/predict only??
   optimal.coefs <- drop(tail(coef(res.optimx), n=1))

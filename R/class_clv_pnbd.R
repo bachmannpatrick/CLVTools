@@ -59,7 +59,7 @@ pnbd_cbs <- function(clv.data){
   trans.dt <- clv.data@data.transactions[Date <= clv.data@clv.time@timepoint.estimation.end]
 
   #Initial cbs, for every Id a row
-  if(clv.data@has.spending){
+  if(clv.data.has.spending(clv.data)){
     cbs <- trans.dt[ , list(x                        =.N,
                             date.first.actual.trans  = min(Date),
                             date.last.transaction    = max(Date),
@@ -80,13 +80,10 @@ pnbd_cbs <- function(clv.data){
              T.cal    = clv.time.interval.in.number.tu(clv.time=clv.data@clv.time, interv=interval(start = date.first.actual.trans, end = clv.data@clv.time@timepoint.estimation.end)))]
 
   setkeyv(cbs, c("Id", "date.first.actual.trans"))
-  if(clv.data@has.spending)
+  if(clv.data.has.spending(clv.data))
     setcolorder(cbs, c("Id","x","t.x","T.cal","Spending","date.first.actual.trans", "date.last.transaction"))
   else
     setcolorder(cbs, c("Id","x","t.x","T.cal", "date.first.actual.trans", "date.last.transaction"))
 
-  # add date of first repeat transaction to cbs as often needed
-  # ??** TODO: Zero repeaters will be NA..?!
-  # cbs[obj@data.repeat.trans, date.first.repeat.trans := Date, mult="first", on="Id"]
   return(cbs)
 }

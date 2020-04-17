@@ -12,7 +12,6 @@
 #' @slot data.transactions Single \code{data.table} containing the original transaction data, with columns renamed to 'Id', 'Date', 'Price'
 #' @slot data.repeat.trans Single \code{data.table} containing only the repeat transactions
 #' @slot has.spending Single logical whether the data contains information about the amount spent per transaction
-#' @slot descriptives.transactions Single \code{data.table} with descriptive statistics about the given transaction data
 #' @slot has.holdout Single logical whether the data is split in a holdout and estimation period
 #'
 #' @seealso \code{\link[CLVTools:clv.time-class]{clv.time}}
@@ -30,16 +29,12 @@ setClass(Class = "clv.data",
            data.repeat.trans = "data.table",
            has.spending = "logical",
 
-           descriptives.transactions = "data.table",
-
            has.holdout    = "logical"),
 
          # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
          prototype = list(
            data.transactions  = data.table(),
            data.repeat.trans  = data.table(),
-
-           descriptives.transactions = data.table(),
 
            has.spending       = logical(0),
            has.holdout        = logical(0)))
@@ -48,10 +43,7 @@ setClass(Class = "clv.data",
 #' @importFrom methods new
 clv.data <- function(call, data.transactions, data.repeat.trans, has.spending, clv.time){
 
-  has.holdout <- (clv.time@holdout.period.in.tu > 0)
-
-  descriptives.transactions <- clv.data.make.descriptives(clv.time=clv.time, data.transactions = data.transactions,
-                                                          has.holdout = has.holdout, has.spending = has.spending)
+  has.holdout <- clv.time.has.holdout(clv.time)
 
   setkeyv(data.transactions, c("Id", "Date"))
   setkeyv(data.repeat.trans, c("Id", "Date"))
@@ -63,15 +55,74 @@ clv.data <- function(call, data.transactions, data.repeat.trans, has.spending, c
              data.repeat.trans = data.repeat.trans,
              has.spending = has.spending,
              clv.time = clv.time,
-             has.holdout = has.holdout,
-             descriptives.transactions=descriptives.transactions))
+             has.holdout = has.holdout))
+}
+
+clv.data.has.holdout <- function(clv.data){
+  return(clv.data@has.holdout)
+}
+
+clv.data.has.spending <- function(clv.data){
+  return(clv.data@has.spending)
 }
 
 
+clv.data.make.repeat.transactions <- function(dt.transactions){
+
+  # Copy because alters table
+  dt.repeat.transactions <- copy(dt.transactions)
+
+  dt.repeat.transactions[order(Date), previous := shift(x=Date, n = 1L, type = "lag"), by="Id"]
+  # Remove first transaction: Have no previous (ie is NA)
+  dt.repeat.transactions <- dt.repeat.transactions[!is.na(previous)]
+  dt.repeat.transactions[, previous := NULL]
+
+  # Alternative:
+  #   Works only because all on same Date were aggregated. Otherwise, there could be more than one removed
+  # dt.repeat.transactions[, is.first.trans := (Date == min(Date), by="Id"]
+  # dt.repeat.transactions <- dt.trans[is.first.trans == FALSE]
+
+  return(dt.repeat.transactions)
+}
+
+# Aggregate what is on same smallest scale representable by time
+#   Spending is summed, if present
+#   aggregating what is in same time.unit does not not make sense
+#   Date: on same day
+#   posix: on same second
+clv.data.aggregate.transactions <- function(dt.transactions, has.spending){
+
+  if(has.spending){
+    dt.aggregated.transactions <- dt.transactions[, list("Price" = sum(Price)), by=c("Id", "Date")]
+  }else{
+    # Only keep one observation, does not matter which
+    # head(.SD) does not work because Id and Date both in by=
+    # unique() has the same effect because there are only 2 columns
+    dt.aggregated.transactions <- unique(dt.transactions, by=c("Id", "Date"))
+  }
+
+  return(dt.aggregated.transactions)
+}
+
+# Interpurchase time, for repeaters only
+#   Time between consecutive purchases of each customer - convert to intervals then time units
+#   If zero-repeaters (only 1 trans) set NA to ignore it in mean / sd calculations
+#' @importFrom lubridate int_diff
+clv.data.mean.interpurchase.times <- function(clv.data, dt.transactions){
+  num.transactions <- dt.transactions[, .(num.trans = .N), by="Id"]
+  return(rbindlist(list(
+    # 1 Transaction = NA
+    dt.transactions[Id %in% num.transactions[num.trans == 1,Id], .(interp.time = NA_real_, Id)],
+    dt.transactions[Id %in% num.transactions[num.trans >  1,Id],
+                    .(interp.time = mean(clv.time.interval.in.number.tu(clv.time = clv.data@clv.time,
+                                                                        interv = int_diff(Date)))),
+                    by="Id"]
+  ), use.names = TRUE))
+}
 
 #' @importFrom stats sd
 #' @importFrom lubridate time_length
-clv.data.make.descriptives <- function(clv.time, data.transactions, has.holdout, has.spending){
+clv.data.make.descriptives <- function(clv.data){
 
   Id <- Date <- .N <- N <- Price <- interp.time<- NULL
 
@@ -80,40 +131,24 @@ clv.data.make.descriptives <- function(clv.time, data.transactions, has.holdout,
   # If there is no holdout period, give the estimation period data as input to be able to calculate values.
   #   Then replace them with "-" in the end before returning
 
-  data.transactions.estimation <- data.transactions[Date >= clv.time@timepoint.estimation.start &
-                                                      Date <= clv.time@timepoint.estimation.end]
-  if(has.holdout)
-    data.transactions.holdout  <- data.transactions[Date >= clv.time@timepoint.holdout.start &
-                                                      Date <= clv.time@timepoint.holdout.end]
+  data.transactions.total      <- clv.data@data.transactions
+
+  data.transactions.estimation <- data.transactions.total[Date >= clv.data@clv.time@timepoint.estimation.start &
+                                                            Date <= clv.data@clv.time@timepoint.estimation.end]
+  if(clv.data.has.holdout(clv.data=clv.data))
+    data.transactions.holdout  <- data.transactions.total[Date >= clv.data@clv.time@timepoint.holdout.start &
+                                                            Date <= clv.data@clv.time@timepoint.holdout.end]
   else
     data.transactions.holdout  <- data.transactions.estimation
 
-  no.trans.by.cust.total       <- data.transactions[,            .N, by="Id"]
+  no.trans.by.cust.total       <- data.transactions.total[,      .N, by="Id"]
   no.trans.by.cust.estimation  <- data.transactions.estimation[, .N, by="Id"]
   no.trans.by.cust.holdout     <- data.transactions.holdout[,    .N, by="Id"]
 
 
-  # Interpurchase time, for repeaters only ----------------------------------------------------------
-  #   Time between consecutive purchases of each customer - convert to intervals then time units
-  #   If zero-repeaters (only 1 trans) set NA to ignore it in mean / sd calculations
-  #
-  #   Cannot use int_diff as s4 is created for every customer which is very slow - use base::diff
-  #
-  # .calc.interp.time <- function(data.trans){
-  #   mean.interp.time.per.cust <- data.trans[, list(interp.time =
-  #   *** TODO: Should likely use interval() inside time_length!?
-  #                                                  ifelse(.N > 1, mean(time_length(base::diff.POSIXt(Date), obj@clv.time@time.unit)),   NA_real_)), by="Id"]
-  #   return(mean.interp.time.per.cust)
-  # }
-  # interp.est   <- .calc.interp.time(data.trans = data.transactions.estimation)
-  # interp.hold  <- .calc.interp.time(data.trans = data.transactions.holdout)
-  # interp.total <- .calc.interp.time(data.trans = data.transactions)
-
-
-  # select non-zero repeaters (N>1)
-  # order by Date
-  # by Id
-  #
+  interp.est   <- clv.data.mean.interpurchase.times(clv.data=clv.data, dt.transactions = data.transactions.estimation)
+  interp.hold  <- clv.data.mean.interpurchase.times(clv.data=clv.data, dt.transactions = data.transactions.holdout)
+  interp.total <- clv.data.mean.interpurchase.times(clv.data=clv.data, dt.transactions = data.transactions.total)
 
 
   # Make descriptives ------------------------------------------------------------------------------
@@ -125,17 +160,17 @@ clv.data.make.descriptives <- function(clv.time, data.transactions, has.holdout,
            Total      = nrow(no.trans.by.cust.total)),
     "First Transaction in period"   =
       list(Estimation= as.character(data.transactions.estimation[, min(Date)]),
-           Holdout    = as.character(data.transactions.holdout[,    min(Date)]),
-           Total      = as.character(data.transactions[,            min(Date)])),
+           Holdout    = as.character(data.transactions.holdout[,   min(Date)]),
+           Total      = as.character(data.transactions.total[,     min(Date)])),
 
     "Last Transaction in period"    =
       list(Estimation = as.character(data.transactions.estimation[, max(Date)]),
            Holdout    = as.character(data.transactions.holdout[,    max(Date)]),
-           Total      = as.character(data.transactions[,            max(Date)])),
+           Total      = as.character(data.transactions.total[,      max(Date)])),
     "Total # Transactions"          =
       list(Estimation = nrow(data.transactions.estimation),
            Holdout    = nrow(data.transactions.holdout),
-           Total      = nrow(data.transactions)),
+           Total      = nrow(data.transactions.total)),
     "Mean # Transactions per cust"  =
       list(Estimation = no.trans.by.cust.estimation[, mean(N)],
            Holdout    = no.trans.by.cust.holdout[,    mean(N)],
@@ -145,20 +180,20 @@ clv.data.make.descriptives <- function(clv.time, data.transactions, has.holdout,
            Holdout    = no.trans.by.cust.holdout[,    sd(N)],
            Total      = no.trans.by.cust.total[,      sd(N)]))
 
-  if(has.spending)
+  if(clv.data.has.spending(clv.data))
     list.of.list <- c(list.of.list, list(
       "Mean Spending per Transaction"    =
         list(Estimation = data.transactions.estimation[, mean(Price)],
              Holdout    = data.transactions.holdout[,    mean(Price)],
-             Total      = data.transactions[,            mean(Price)]),
+             Total      = data.transactions.total[,      mean(Price)]),
       "(SD) " =
         list(Estimation  = data.transactions.estimation[, sd(Price)],
-             Holdout    = data.transactions.holdout[,    sd(Price)],
-             Total      = data.transactions[,            sd(Price)]),
+             Holdout    = data.transactions.holdout[,     sd(Price)],
+             Total      = data.transactions.total[,        sd(Price)]),
       "Total Spending"                =
         list(Estimation  = data.transactions.estimation[, sum(Price)],
-             Holdout    = data.transactions.holdout[,    sum(Price)],
-             Total      = data.transactions[,            sum(Price)])))
+             Holdout    = data.transactions.holdout[,     sum(Price)],
+             Total      = data.transactions.total[,       sum(Price)])))
 
   #   Total:      buy exactly once, ever
   #   Estimation: buy exactly once, in estimation period
@@ -169,20 +204,20 @@ clv.data.make.descriptives <- function(clv.time, data.transactions, has.holdout,
              Holdout    = nrow(fsetdiff(no.trans.by.cust.total[, "Id"], no.trans.by.cust.holdout[, "Id"])),
              Total      = nrow(no.trans.by.cust.total[     N == 1])),
     "Percentage # zero repeaters"        =
-      list( Estimation = nrow(no.trans.by.cust.estimation[N == 1])                                               / nrow(no.trans.by.cust.total),
-            Holdout    = nrow(fsetdiff(no.trans.by.cust.total[, "Id"], no.trans.by.cust.holdout[, "Id"]))        / nrow(no.trans.by.cust.total),
-            Total      = nrow(no.trans.by.cust.total[     N == 1])                                               / nrow(no.trans.by.cust.total))))
-  # # Interpurchase time
-  # # Remove NAs indicating zero-repeaters!
-  # "Mean Interpurchase time"       =
-  #                           list( Estimation = interp.est[,   mean(interp.time, na.rm=T)],
-  #                                 Holdout    = interp.hold[,  mean(interp.time, na.rm=T)],
-  #                                 Total      = interp.total[, mean(interp.time, na.rm=T)]),
-  #
-  # "(SD)   "       =
-  #                           list( Estimation = interp.est[,   sd(interp.time, na.rm=T)],
-  #                                 Holdout    = interp.hold[,  sd(interp.time, na.rm=T)],
-  #                                 Total      = interp.total[, sd(interp.time, na.rm=T)]))
+      list( Estimation = nrow(no.trans.by.cust.estimation[N == 1])                                        / nrow(no.trans.by.cust.total),
+            Holdout    = nrow(fsetdiff(no.trans.by.cust.total[, "Id"], no.trans.by.cust.holdout[, "Id"])) / nrow(no.trans.by.cust.total),
+            Total      = nrow(no.trans.by.cust.total[     N == 1])                                        / nrow(no.trans.by.cust.total)),
+    # Interpurchase time
+    # Remove NAs indicating zero-repeaters!
+    "Mean Interpurchase time"       =
+      list( Estimation = interp.est[,   mean(interp.time, na.rm=TRUE)],
+            Holdout    = interp.hold[,  mean(interp.time, na.rm=TRUE)],
+            Total      = interp.total[, mean(interp.time, na.rm=TRUE)]),
+
+    "(SD)   "       =
+      list( Estimation = interp.est[,   sd(interp.time, na.rm=TRUE)],
+            Holdout    = interp.hold[,  sd(interp.time, na.rm=TRUE)],
+            Total      = interp.total[, sd(interp.time, na.rm=TRUE)])))
 
 
 
@@ -193,23 +228,23 @@ clv.data.make.descriptives <- function(clv.time, data.transactions, has.holdout,
   list.of.list <-   lapply(list.of.list, function(x)format(x, digits=3, nsmall=3))
 
   # Make data.table
-  summary.dt <- as.data.table(list.of.list)
-  summary.dt <- transpose(summary.dt)
+  dt.summary <- as.data.table(list.of.list)
+  dt.summary <- transpose(dt.summary)
 
-  colnames(summary.dt) <- c("Estimation", "Holdout", "Total")
+  colnames(dt.summary) <- c("Estimation", "Holdout", "Total")
   # Rownames are discouraged in data.table
   #   instead insert a column
-  summary.dt[, "Name" := names(list.of.list)]
+  dt.summary[, "Name" := names(list.of.list)]
 
-  setcolorder(summary.dt, c("Name", "Estimation", "Holdout", "Total"))
+  setcolorder(dt.summary, c("Name", "Estimation", "Holdout", "Total"))
 
 
   # No Holdout ------------------------------------------------------------------------------------
   #   Remove values in holdout if there is no holdout
   #   In this case, the estimation data was used
-  if(!has.holdout)
-    summary.dt[, "Holdout" := "-"]
+  if(!clv.data.has.holdout(clv.data))
+    dt.summary[, "Holdout" := "-"]
 
-  return(summary.dt)
+  return(dt.summary)
 
 }
