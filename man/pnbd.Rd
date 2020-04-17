@@ -269,7 +269,7 @@ URL http://www.brucehardie.com/notes/019/time_invariant_ covariates.pdf.
 
 \code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation as predicted by the fitted model
 
-The generic functions \code{\link[CLVTools:summary.clv.fitted]{summary}} and \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
+The generic functions \code{\link[CLVTools:summary.clv.fitted]{summary}}, \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
 
 \code{\link[data.table]{setDTthreads}}, \code{\link[data.table]{getDTthreads}},\code{\link[doParallel]{registerDoParallel}},\code{\link[doFuture]{registerDoFuture}} for setting up paralle exectution.
 }

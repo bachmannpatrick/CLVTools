@@ -86,7 +86,7 @@
 #' @seealso \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}} and \code{\link[CLVTools:SetDynamicCovariates]{SetDynamicCovariates}} to add static or dynamic covariates to an existing clv data object on which then the \code{pnbd} method can be fit
 #' @seealso \code{\link[CLVTools:predict.clv.fitted]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
 #' @seealso \code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation as predicted by the fitted model
-#' @seealso The generic functions \code{\link[CLVTools:summary.clv.fitted]{summary}} and \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
+#' @seealso The generic functions \code{\link[CLVTools:summary.clv.fitted]{summary}}, \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
 #' @seealso \code{\link[data.table]{setDTthreads}}, \code{\link[data.table]{getDTthreads}},\code{\link[doParallel]{registerDoParallel}},\code{\link[doFuture]{registerDoFuture}} for setting up paralle exectution.
 #'
 #' @template template_pnbd_reference

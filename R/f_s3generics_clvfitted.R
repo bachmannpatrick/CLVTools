@@ -59,19 +59,23 @@ coef.clv.fitted <- function(object, complete=TRUE, ...){
 
 
 #' @title Calculate Variance-Covariance Matrix for CLV Models fitted with Maximum Likelihood Estimation
+#'
 #' @param object a fitted clv model object
 #' @param ... ignored, for consistency with the generic function.
 #'
 #'
 #' @description
 #' Returns the variance-covariance matrix of the parameters of the fitted model object.
-#' The variance-covariance matrix is derived from the hessian that results from the optimization procedure.
-#' If multiple estimation methods were used, the hessian of the last method is used.
+#' The variance-covariance matrix is derived from the Hessian that results from the optimization procedure.
+#' First, the Moore–Penrose generalized inverse of the Hessian is used to obtain an estimate of the
+#' variance-covariance matrix. If the result is not positive definite, \link[Matrix:nearPD]{nearPD} is used
+#' with standard settings to find the nearest positive definite matrix.
 #'
 #' Because some parameters may be transformed for the purpose of restricting their value during
-#' the log-likelihood estimation it requires that the vcov estimates are adapted as well to have
-#' be comparable to the reported coefficient estimates. See the references for how this is done.
+#' the log-likelihood estimation, it requires that the variance estimates are adapted as well to
+#' be comparable to the reported coefficient estimates. See the references for more details on how this is done.
 #'
+#' If multiple estimation methods were used, the Hessian of the last method is used.
 #'
 #' @return
 #' A matrix of the estimated covariances between the parameter estimates of the model.
@@ -80,10 +84,14 @@ coef.clv.fitted <- function(object, complete=TRUE, ...){
 #' @references
 #' Jeff's "Note on p-values"
 #'
+#' @seealso \link[MASS]{ginv}, \link[Matrix]{nearPD}
+#'
+#'
 #' @importFrom stats vcov
 #' @importFrom utils tail
 #' @importFrom Matrix nearPD
-#' @include class_clv_fitted.R
+#' @importFrom MASS ginv
+#'
 #' @export
 vcov.clv.fitted <- function(object, ...){
 
@@ -96,16 +104,17 @@ vcov.clv.fitted <- function(object, ...){
   #   Jeff:
   #   negative hessian or hessian?!
   #     -> Depends on optimization! If we have the loglikelihood we need the negative Hessian.
-  #   However we have the negative (!) Log likelihood, so I guess we need to take the Hessian directly
+  #   However we have the negative (!) Log likelihood, so we need to take the Hessian directly
 
-  # Inverse of hessian
-  #   try regular inverse first and only if fails use nearPD
-  #   Do not use sechol() of package accuracy because not available on cran
-  hessian.inv <- tryCatch(solve(object@optimx.hessian), error = function(e) return(e))
-  if(inherits(hessian.inv, 'error')){
-    warning("Failed to invert hessian, making it positive-definite first.")
-    hessian.inv <<- solve(nearPD(object@optimx.hessian)$mat)
-  }
+  # Moore-Penrose inverse of Hessian
+  #   Results in the regular inverse if invertible
+  m.hessian.inv <- ginv(object@optimx.hessian)
+
+
+  # Make positive definite if it is not already
+  #   Returns unchanged if the matrix is PD already
+  m.hessian.inv <- as.matrix(nearPD(m.hessian.inv)$mat)
+
 
   # Apply Jeff's delta method to account for the transformations of the parameters
   #   See Jeff's Note on how to derive p-values
@@ -117,15 +126,16 @@ vcov.clv.fitted <- function(object, ...){
   m.delta.diag     <- clv.model.vcov.jacobi.diag(clv.model=object@clv.model, clv.fitted=object,
                                                  prefixed.params=prefixed.params)
 
-  stopifnot(all(colnames(hessian.inv) == colnames(m.delta.diag)))
-  stopifnot(all(rownames(hessian.inv) == rownames(m.delta.diag)))
-  m.vcov <- m.delta.diag %*% hessian.inv %*% m.delta.diag
+  stopifnot(all(colnames(m.hessian.inv) == colnames(m.delta.diag)))
+  stopifnot(all(rownames(m.hessian.inv) == rownames(m.delta.diag)))
+  m.vcov <- m.delta.diag %*% m.hessian.inv %*% m.delta.diag
 
   # Naming and sorting
   #   Sorting:  Correct because directly from optimx hessian and for delta.diag from coef(optimx)
   #   Naming:   Has to match coef(). model + cor: original
   #                                  any cov:     leave prefixed
-  #             Change the names of model+cor to display name because vcov now is in original scale as well
+  #             Change the names of model+cor to display name because
+  #               the reported vcov is in original scale as well
 
   # Set all names of vcov to these of hessian (prefixed)
   rownames(m.vcov) <- colnames(m.vcov) <- colnames(object@optimx.hessian)
@@ -144,13 +154,11 @@ vcov.clv.fitted <- function(object, ...){
   rownames(m.vcov)[pos.prefixed.names] <- names.original.all
   colnames(m.vcov)[pos.prefixed.names] <- names.original.all
 
-  # Ensure same sorting as coef()
-  # **TODO: Add complete to be comparable to coef()!
+  # Of utmost importance: Ensure same sorting as coef()
+  names.coef <- names(coef(object = object))
+  m.vcov     <- m.vcov[names.coef, names.coef]
 
-  # **TODO: cannot easily sort to same order as coef because
-  #   optimx hessian is named after optimx names but report original display names
-  # dimnames(hessian.inv) <- dimnames(object@optimx.hessian)
-  # rownames(m.vcov) <- colnames(m.vcov) <- names(all.coefs)
+  # **TODO: Add argument "complete" to be comparable to coef()!
 
   return(m.vcov)
 }
