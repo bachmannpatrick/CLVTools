@@ -42,13 +42,30 @@ test_that("Works with custom model.start.params", {
   expect_silent(pnbd(clv.data=clv.data.cdnow.withholdout, start.params.model = c(r=1, alpha = 2, s = 1, beta = 2), verbose=FALSE))
 })
 
-# optimx.args
+
 test_that("Works with custom optimx.args", {
   skip_on_cran()
   # dont do trace, spams the output
   expect_message(pnbd(clv.data=clv.data.cdnow.noholdout, optimx.args = list(itnmax=40000)))
   expect_message(pnbd(clv.data=clv.data.cdnow.withholdout, optimx.args = list(itnmax=40000)))
 })
+
+
+test_that("Works for all optimx optimization methods", {
+  skip_on_cran()
+  expect_warning(pnbd(clv.data=clv.data.cdnow.noholdout, optimx.args = list(control=list(all.methods=TRUE)), verbose=FALSE),
+                 regexp = "replaced by maximum positive value|Gradient not computable after method nlm|unused control arguments ignored|Estimation failed with NA coefs|Hessian could not be derived", all=TRUE)
+})
+
+
+test_that("Works fully with multiple optimization methods", {
+  skip_on_cran()
+  expect_silent(p.no.hold <- pnbd(clv.data=clv.data.cdnow.noholdout, optimx.args = list(method = c("BFGS", "L-BFGS-B", "Nelder-Mead")), verbose=FALSE))
+  fct.helper.fitted.all.s3(clv.fitted = p.no.hold,  full.names = names(p.no.hold@clv.model@names.original.params.model),
+                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
+})
+
+
 
 test_that("Works without spending data",{
   skip_on_cran()

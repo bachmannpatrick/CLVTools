@@ -27,7 +27,7 @@ First, create a new R script with a class called `clv.model.{your-model-name}` w
 
    ```R
 #' @importFrom methods setClass
-#' @include all_generics.R class_clv_model_basestrategy.R
+#' @include all_generics.R class_clv_model.R
 setClass(Class = "clv.model.bgnbd.no.cov", contains = "clv.model",
          slots = list(),
          prototype = list(

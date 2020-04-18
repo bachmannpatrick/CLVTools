@@ -1,7 +1,5 @@
 #include <RcppArmadillo.h>
 
-// [[Rcpp::depends(RcppArmadillo)]]
-
 
 // lbeta := lgamma(a) + lgamma(b) - lgamma(a+b)
 arma::vec lbeta(const arma::vec& a, const double b){
@@ -29,8 +27,6 @@ arma::vec lbeta(const arma::vec& a, const double b){
 //' @template template_rcpp_gg_reference
 //'
 //'
-//' @name gg_LL
-//' @rdname gg_LL
 // [[Rcpp::export]]
 double gg_LL(const arma::vec& vLogparams,
              const arma::vec& vX,

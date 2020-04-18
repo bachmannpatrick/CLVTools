@@ -11,7 +11,7 @@
 #'   \item{\code{CDs}}{Amount of CDs purchased}
 #'   \item{\code{Price}}{Price of purchase}
 #' }
-#' @name cdnow
+#'
 #' @usage data("cdnow")
 #' @docType data
 #' @keywords datasets
@@ -21,15 +21,15 @@
 "cdnow"
 
 
-#' @name apparelTrans
+
 #' @title Apparel Retailer Dataset
 #'
 #' @description
-#' A dataset containing the entire purchase history of customers made their first purchase at an
-#' apparel retailer during January to May 2010. In total the dataset contains 2201 customers who made
-#' 19573 transactions between January 2010 and October 2016.
+#' This is a simulated dataset containing the entire purchase history of customers made their first purchase at an
+#' apparel retailer on January 3rd 2005. In total the dataset contains 250 customers who made
+#' 3648 transactions between January 2005 and mid July 2006.
 #'
-#' @format A \code{data.table} with 19573 rows and 3 variables:
+#' @format A \code{data.table} with 2353 rows and 3 variables:
 #' \describe{
 #'   \item{\code{Id}}{Customer Id}
 #'   \item{\code{Date}}{Date of purchase}
@@ -42,38 +42,42 @@
 "apparelTrans"
 
 
-#' @name apparelDemographics
-#' @title Customer Demographics for the Apparel Retailer Dataset
+
+#' @name apparelStaticCov
+#' @title Time-invariant Covariates for the Apparel Retailer Dataset
+t
 #' @description
-#' This data contains additional demographic information on the customers in the
+#' This simulated data contains additional demographic information on all 250 customers in the
 #' "apparelTrans" dataset. This information can be used as time-invariant covariates.
 #'
-#' @format A \code{data.table} with 2201 rows and 2 variables:
+#' @format A \code{data.table} with 250 rows and 3 variables:
 #'
 #' \describe{
 #'   \item{Id}{Customer Id}
 #'   \item{Gender}{0=male, 1=female}
+#'   \item{Channel}{Acquisition channel: 0=online, 1=offline}
 #' }
 #'
 #' @docType data
 #' @keywords datasets
-#' @usage data("apparelDemographics")
-"apparelDemographics"
+#' @usage data("apparelStaticCov")
+"apparelStaticCov"
+
 
 #' @name apparelDynCov
-#' @title Dynamic Covariates for the Apparel Retailer Dataset
+#' @title Time-varying Covariates for the Apparel Retailer Dataset
+
 #' @description
-#' This data contains direct marketing and seasonality information on customers in the "apparelTrans" dataset.
+#' This simulated data contains direct marketing information on all 250 customers in the "apparelTrans" dataset.
 #' This information can be used as time-varying covariates.
 #'
-#'
-#' @format A data.table with 781355 rows and 5 variables
+#' @format A data.table with 20500 rows and 5 variables
 #' \describe{
 #'   \item{Id}{Customer Id}
 #'   \item{Cov.Date}{Date of contextual factor}
-#'   \item{DM}{1 if customer was contacted with direct marketing in this time period}
-#'   \item{High-Season}{1 if high season during this time period}
+#'   \item{Marketing}{Direct marketing variable: 1 if customer was contacted with direct marketing in this time period}
 #'   \item{Gender}{0=male, 1=female}
+#'   \item{Channel}{Acquisition channel: 0=online, 1=offline}
 #' }
 #'
 #' @keywords datasets

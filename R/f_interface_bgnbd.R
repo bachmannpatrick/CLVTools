@@ -1,4 +1,3 @@
-#
 #' @exportMethod bgnbd
 setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = FALSE, start.param.cor=c(),
                                   optimx.args=list(), verbose=TRUE, ...)
@@ -126,19 +125,15 @@ setMethod("bgnbd", signature = signature(clv.data="clv.data.static.covariates"),
 
 
 
-#' @rdname bgnbd
 #' @include class_clv_data_dynamiccovariates.R
-#' @aliases bgnbd,clv.data.dynamic.covariates-method
-#' @export
+#' @rdname bgnbd
 setMethod("bgnbd", signature = signature(clv.data="clv.data.dynamic.covariates"), definition = function(clv.data,
-                                                                                                       start.params.model=c(),
-                                                                                                       use.cor = FALSE,
-                                                                                                       start.param.cor=c(),
-                                                                                                       optimx.args=list(),
-                                                                                                       verbose=TRUE,
-                                                                                                       names.cov.life=c(), names.cov.trans=c(),
-                                                                                                       start.params.life=c(), start.params.trans=c(),
-                                                                                                       names.cov.constr=c(),start.params.constr=c(),
-                                                                                                       reg.lambdas = c(), ...){
-  stop("This model has not been implemented for this type of data.")
+                                                                                                        start.params.model=c(),
+                                                                                                        optimx.args=list(),
+                                                                                                        verbose=TRUE,
+                                                                                                        names.cov.life=c(), names.cov.trans=c(),
+                                                                                                        start.params.life=c(), start.params.trans=c(),
+                                                                                                        names.cov.constr=c(),start.params.constr=c(),
+                                                                                                        reg.lambdas = c(), ...){
+  stop("This model cannot be fitted on this type of data!")
 })

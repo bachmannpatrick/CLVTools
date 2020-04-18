@@ -1,6 +1,6 @@
 # Class --------------------------------------------------------------------------------------------------------------------------------
 #' @importFrom methods setClass
-#' @include all_generics.R class_clv_model_basestrategy.R
+#' @include all_generics.R class_clv_model.R
 setClass(Class = "clv.model.bgnbd.static.cov", contains = "clv.model.bgnbd.no.cov",
          slots = list(start.param.cov = "numeric"),
          prototype = list(

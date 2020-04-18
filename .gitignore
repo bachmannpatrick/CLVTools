@@ -7,3 +7,5 @@ src/*.so
 src/*.dll
 src/*.gcda
 src/*.gcno
+src/*.o.tmp
+inst/doc

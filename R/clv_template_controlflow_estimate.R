@@ -59,7 +59,7 @@ clv.template.controlflow.estimate <- function(obj,
   if(verbose)
     message("Starting estimation...")
 
-  res.optimx <- do.call(what = optimx::optimx, args = prepared.optimx.args)
+  res.optimx <- do.call(what = optimx, args = prepared.optimx.args)
 
   if(verbose)
     message("Estimation finished!")
@@ -80,8 +80,8 @@ clv.template.controlflow.estimate <- function(obj,
 
   # Store results ------------------------------------------------------------------------------------------------
   #   also model-specifc storage and processing of optimx outputs
-  obj <- clv.controlflow.estimate.put.optimx(obj=obj, res.optimx=res.optimx)
-  obj <- clv.model.put.optimx.output(clv.model=obj@clv.model, clv.fitted=obj, res.optimx=res.optimx)
+  obj <- clv.controlflow.estimate.process.post.estimation(obj=obj, res.optimx=res.optimx)
+  obj <- clv.model.process.post.estimation(clv.model=obj@clv.model, clv.fitted=obj, res.optimx=res.optimx)
 
   return(obj)
 }

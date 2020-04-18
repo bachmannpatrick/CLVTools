@@ -1,17 +1,14 @@
-#' @exportMethod pnbd
-setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FALSE, start.param.cor=c(),
-                                  optimx.args=list(), verbose=TRUE, ...)
-  standardGeneric("pnbd"))
-
-
-
 #' @name pnbd
+#'
 #' @title Pareto/NBD models
 #'
 #' @template template_params_estimate
 #' @template template_params_estimate_cov
 #' @template template_param_verbose
 #' @template template_param_dots
+#'
+#' @param use.cor Whether the correlation between the transaction and lifetime process should be estimated.
+#' @param start.param.cor Start parameter for the optimization of the correlation.
 #'
 #' @description
 #' Fits Pareto/NBD models on transactional data with and without covariates.
@@ -33,7 +30,6 @@ setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FA
 #'
 #' If no start parameters are given, 1.0 is used for all model parameters and 0.1 for covariate parameters.
 #' The model start parameters are required to be > 0.
-
 #'
 #' \subsection{The Pareto/NBD model}{
 #' The Pareto/NBD was the first model addressing the issue of modeling customer purchases and
@@ -68,9 +64,22 @@ setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FA
 #' the paper by Bachmann, Meierer and Näf (2019).
 #' }
 #'
+#' @note
+#' Fitting the Pareto/NBD model with dynamic covariates is for the most part implemented using \code{data.table} and to a smaller part further
+#' parallelized with the \code{foreach} package. Registering a
+#' parallel backend with \code{\link[doFuture:doFuture]{doFuture}} or \code{\link[doParallel:doParallel]{doParallel}} before fitting the
+#' models allows to take advantage of this. If no parallel backend is set up, the \code{foreach} package gives a friendly reminder that
+#' it is executed sequentially. In case this is desired but no warning should be given, a parallel backend in sequential mode
+#' can be set up, for example package \code{doFuture} with \code{\link[future:plan]{plan("sequential")}}.
+#'
+#' The part executed with \code{foreach} also heavily relies on \code{data.table} which is natively parallelized already. When setting up
+#' the parallel backend, great care should be taken to reduce the overhead from this nested parallelism as otherwise it can \emph{increase} runtime.
+#' See \code{\link[data.table:setDTthreads]{setDTthreads}}, \code{\link[data.table:getDTthreads]{getDTthreads}},
+#' and \code{\link[future:plan]{plan}} for information on how to do this.
+#'
 #' @return
 #' Depending on the data object on which the model was fit, \code{pnbd} returns either an object of
-#' class \code{clv.pnbd}, \code{clv.pnbd.static.cov}, or \code{clv.pnbd.dynamic.cov}.
+#' class \link[CLVTools:clv.pnbd-class]{clv.pnbd}, \link[CLVTools:clv.pnbd.static.cov-class]{clv.pnbd.static.cov}, or \link[CLVTools:clv.pnbd.dynamic.cov-class]{clv.pnbd.dynamic.cov}.
 #'
 #' The function \code{\link[CLVTools:summary.clv.fitted]{summary}} can be used to obtain and print a summary of the results.
 #' The generic accessor functions \code{coefficients}, \code{fitted},
@@ -80,15 +89,17 @@ setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FA
 #' @seealso \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}} and \code{\link[CLVTools:SetDynamicCovariates]{SetDynamicCovariates}} to add static or dynamic covariates to an existing clv data object on which then the \code{pnbd} method can be fit
 #' @seealso \code{\link[CLVTools:predict.clv.fitted]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
 #' @seealso \code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation as predicted by the fitted model
-#' @seealso The generic functions \code{\link[CLVTools:summary.clv.fitted]{summary}} and \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
+#' @seealso The generic functions \code{\link[CLVTools:summary.clv.fitted]{summary}}, \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
+#' @seealso \code{\link[data.table]{setDTthreads}}, \code{\link[data.table]{getDTthreads}},\code{\link[doParallel]{registerDoParallel}},\code{\link[doFuture]{registerDoFuture}} for setting up paralle exectution.
 #'
 #' @template template_pnbd_reference
 #'
 #' @examples
 #' \donttest{
+#'
 #' data("apparelTrans")
 #' clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
-#'                             time.unit = "w", estimation.split = 37)
+#'                             time.unit = "w", estimation.split = 40)
 #'
 #' # Fit standard PNBD model
 #' pnbd(clv.data.apparel)
@@ -116,20 +127,20 @@ setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FA
 #'
 #' # To estimate the PNBD model with static covariates,
 #' #   add static covariates to the data
-#' data("apparelDemographics")
+#' data("apparelStaticCov")
 #' clv.data.static.cov <-
 #'  SetStaticCovariates(clv.data.apparel,
-#'                      data.cov.life = apparelDemographics,
-#'                      names.cov.life = "Gender",
-#'                      data.cov.trans = apparelDemographics,
-#'                      names.cov.trans = "Gender")
+#'                      data.cov.life = apparelStaticCov,
+#'                      names.cov.life = c("Gender", "Channel"),
+#'                      data.cov.trans = apparelStaticCov,
+#'                      names.cov.trans = c("Gender", "Channel"))
 #'
 #' # Fit PNBD with static covariates
 #' pnbd(clv.data.static.cov)
 #'
 #' # Give initial guesses for both covariate parameters
-#' pnbd(clv.data.static.cov, start.params.trans = c(Gender=0.75),
-#'                    start.params.life  = c(Gender=0.5))
+#' pnbd(clv.data.static.cov, start.params.trans = c(Gender=0.75, Channel=0.7),
+#'                    start.params.life  = c(Gender=0.5, Channel=0.5))
 #'
 #' # Use regularization
 #' pnbd(clv.data.static.cov, reg.lambdas = c(trans = 5, life=5))
@@ -138,8 +149,9 @@ setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FA
 #' pnbd(clv.data.static.cov, names.cov.constr = "Gender",
 #'                    start.params.constr = c(Gender=0.5))
 #'
-#' # Use only the covariates named
-#' # **TODO: Need data with > 1 cov
+#' # Fit model only with the Channel covariate for life but
+#' # keep all trans covariates as is
+#' pnbd(clv.data.static.cov, names.cov.life = c("Channel"))
 #'
 #'
 #'
@@ -147,14 +159,23 @@ setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FA
 #  # To estimate the PNBD model with dynamic covariates,
 #' #   add dynamic covariates to the data
 #' data("apparelDynCov")
-#'
+#' \dontrun{
 #' clv.data.dyn.cov <-
 #'   SetDynamicCovariates(clv.data = clv.data.apparel,
 #'                        data.cov.life = apparelDynCov,
 #'                        data.cov.trans = apparelDynCov,
-#'                        names.cov.life = c("DM", "High.Season", "Gender"),
-#'                        names.cov.trans = c("DM", "High.Season", "Gender"),
+#'                        names.cov.life = c("Marketing", "Gender", "Channel"),
+#'                        names.cov.trans = c("Marketing", "Gender", "Channel"),
 #'                        name.date = "Cov.Date")
+#' \dontrun{
+#' # Enable parallel execution of some parts of the dyncov LL
+#' library(doFuture)
+#' registerDoFuture()
+#' # avoid overhead from nested parallelism by setting up
+#' # appropriate to _your_ system
+#' setDTthreads(threads=8)
+#' plan("multisession", workers=2)
+#' }
 #'
 #' # Fit PNBD with dynamic covariates
 #' pnbd(clv.data.dyn.cov)
@@ -164,11 +185,20 @@ setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FA
 #' pnbd(clv.data.dyn.cov, reg.lambdas = c(trans=10, life=2))
 #'
 #' }
+#' }
 #'
-#' @rdname pnbd
-#' @aliases pnbd pnbd,clv.data-method
+NULL
+
+
+#' @exportMethod pnbd
+setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FALSE, start.param.cor=c(),
+                                  optimx.args=list(), verbose=TRUE, ...)
+  standardGeneric("pnbd"))
+
+
+
 #' @include class_clv_data.R
-#' @export
+#' @rdname pnbd
 setMethod("pnbd", signature = signature(clv.data="clv.data"), definition = function(clv.data,
                                                                                         start.params.model=c(),
                                                                                         use.cor = FALSE,
@@ -183,9 +213,7 @@ setMethod("pnbd", signature = signature(clv.data="clv.data"), definition = funct
 })
 
 #' @include class_clv_data_staticcovariates.R
-#' @aliases pnbd,clv.data.static.covariates-method
 #' @rdname pnbd
-#' @export
 setMethod("pnbd", signature = signature(clv.data="clv.data.static.covariates"), definition = function(clv.data,
                                                                                                       start.params.model=c(),
                                                                                                       use.cor = FALSE,
@@ -213,8 +241,6 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.static.covariates"), 
 
 #' @include class_clv_data_dynamiccovariates.R
 #' @rdname pnbd
-#' @aliases pnbd,clv.data.dynamic.covariates-method
-#' @export
 setMethod("pnbd", signature = signature(clv.data="clv.data.dynamic.covariates"), definition = function(clv.data,
                                                                                                         start.params.model=c(),
                                                                                                         use.cor = FALSE,

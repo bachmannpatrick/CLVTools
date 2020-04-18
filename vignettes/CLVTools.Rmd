@@ -1,17 +1,19 @@
 ---
-output: 
-  github_document:
-    pandoc_args: --webtex
-bibliography: bibliography.bib
+title: "The CLVTools Package"
+output: pdf_document
+vignette: >
+  %\VignetteIndexEntry{The CLVTools Package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+#bibliography: bibliography.bib #** is faulty atm (crashes knitr, some special characters or so) **
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "man/figures/WALKTHROUGH-",
+  #fig.path = "figures/WALKTHROUGH-",
   out.width = "100%"
 )
 ```
@@ -58,14 +60,14 @@ apparelTrans
 
 Before we estimate a model, we are required to initialize a data object using the `clvdata()` command. The data object contains the prepared transactional data and is later used as input for model fitting. Make sure to store the generated object in a variable, e.g. in our example `clv.apparel`.
 
-Through the argument `data.transactions` a `data.frame` or `data.table` which contains the transaction records, is specified. In our example this is `data.transactions=apparelTrans`. The argument `date.format` is used to indicate the format of the date variable in the data used. The date format in the apparel dataset is given as "year-month-day" (i.e., "2010-01-02"), therefore we set `date.format="ymd"`. Other combinations such as `date.format="dmy"` are possible. See the documentation of `lubridate` [@lubridate] for all details. `time.unit` is the scale used to measure time between two dates. For this dataset and in most other cases The argument `time.unit="week"` is the preferred choice. Abbreviations may be used (i.e. "w"). `estimation.split` indicates the length of the estimation period. Either the length of the estimation period (in previous specified time units) or the date at which the estimation period ends can be specified. If no value is provided, the whole dataset is used as estimation period (i.e. no holdout period). In this example, we use an estimation period of 52 weeks. Finally, the three name arguments indicate the column names for customer ID, date and price in the supplied dataset.
+Through the argument `data.transactions` a `data.frame` or `data.table` which contains the transaction records, is specified. In our example this is `data.transactions=apparelTrans`. The argument `date.format` is used to indicate the format of the date variable in the data used. The date format in the apparel dataset is given as "year-month-day" (i.e., "2005-01-03"), therefore we set `date.format="ymd"`. Other combinations such as `date.format="dmy"` are possible. See the documentation of `lubridate` [@lubridate] for all details. `time.unit` is the scale used to measure time between two dates. For this dataset and in most other cases The argument `time.unit="week"` is the preferred choice. Abbreviations may be used (i.e. "w"). `estimation.split` indicates the length of the estimation period. Either the length of the estimation period (in previous specified time units) or the date at which the estimation period ends can be specified. If no value is provided, the whole dataset is used as estimation period (i.e. no holdout period). In this example, we use an estimation period of 40 weeks. Finally, the three name arguments indicate the column names for customer ID, date and price in the supplied dataset.
 
 
 ```{r load-CreateObj}
 clv.apparel <- clvdata(apparelTrans,  
                        date.format="ymd", 
                        time.unit = "week",
-                       estimation.split = 52,
+                       estimation.split = 40,
                        name.id = "Id",
                        name.date = "Date",
                        name.price = "Price")
@@ -87,7 +89,7 @@ Alternatively the `summary()` command provides full detailed summary statistics 
 summary(clv.apparel)
 ```
 
-For the apparel dataset we observe a total of 2201 customers who made in total 10845 purchases. Approximately 61% of the customers are zero repeaters, which means that the majority of the customers do not return to the store after their first purchase. The mean inter-purchase of about 26 weeks is shorter than the estimation period and confirms that a 52-week estimation period was a good choice.
+For the apparel dataset we observe a total of 250 customers who made in total 3366 repeat purchases. Approximately 67% of the customers are zero repeaters, which means that the majority of the customers do not return to the store after their first purchase.
 
 
 ## Estimate Model Parameters
@@ -111,7 +113,7 @@ est.pnbd <- pnbd(clv.data = clv.apparel,
 ```
 
 
-Parameter estimates may be reported by either printing the estimated object (i.e. `est.pnbd`) directly in the console or by calling `summary(est.pnbd)` to get a more detailed report including the likelihood value as well as AIC and BIC. Alternatively parameters may be directly extracted using `coef(est.pnbd)`. Also `loglik()`, `confint()` and `vcov()` are available to directly access the Loglikelihood value, confidence intervals for the parameters and to calculate the Variance-Covariance Matrix for the fitted model. For the standard Pareto/NBD model, we get 4 parameters $r, \alpha, s$ and $\beta$.  where $r,\alpha$ represent the shape and scale parameter of the gamma distribution that determines the purchase rate and $s,\beta$ of the attrition rate across individual customers. $r/\alpha$ can be interpreted as the mean purchase and $s/\beta$ as the mean attrition rate. A significance level is provided for each parameter estimates. In the case of the apparelTrans dataset we observe a an average purchase rate of $r/\alpha=0.024$ transactions and an average attrition rate of $s/\beta=0.067$ per customer per week. KKT 1 and 2 indicate the Karush-Kuhn-Tucker optimality conditions of the first and second order [@KKT]. If those criteria are not met, the optimizer has probably not arrived at an optimal solution. If this is the case it is usually a good idea to rerun the estimation using alternative starting values.
+Parameter estimates may be reported by either printing the estimated object (i.e. `est.pnbd`) directly in the console or by calling `summary(est.pnbd)` to get a more detailed report including the likelihood value as well as AIC and BIC. Alternatively parameters may be directly extracted using `coef(est.pnbd)`. Also `loglik()`, `confint()` and `vcov()` are available to directly access the Loglikelihood value, confidence intervals for the parameters and to calculate the Variance-Covariance Matrix for the fitted model. For the standard Pareto/NBD model, we get 4 parameters $r, \alpha, s$ and $\beta$.  where $r,\alpha$ represent the shape and scale parameter of the gamma distribution that determines the purchase rate and $s,\beta$ of the attrition rate across individual customers. $r/\alpha$ can be interpreted as the mean purchase and $s/\beta$ as the mean attrition rate. A significance level is provided for each parameter estimates. In the case of the apparelTrans dataset we observe a an average purchase rate of $r/\alpha=0.254$ transactions and an average attrition rate of $s/\beta=0.032$ per customer per week. KKT 1 and 2 indicate the Karush-Kuhn-Tucker optimality conditions of the first and second order [@KKT]. If those criteria are not met, the optimizer has probably not arrived at an optimal solution. If this is the case it is usually a good idea to rerun the estimation using alternative starting values.
 
 
 ```{r param-summary}
@@ -147,7 +149,7 @@ vcov(est.pnbd)
 
 ## Predicting Customer Behavior
 
-Once the model parameters are estimated, we are able to predict future customer behavior on an individual level. To do so, we use `predict()` on the object with the estimated parameters (i.e. `est.pnbd`). The prediction period may be varied by specifying `prediction.end`. It is possible to provide either an end-date or a duration using the same time unit as specified when initializing the object (i.e  `prediction.end = "2013-12-31"` or `prediction.end = 104`). By default, the prediction is made until the end of the dataset specified in the `clvdata()` command. The argument `continuous.discount.factor` allows to adjust the discount rate used to estimated the discounted expected transactions (DERT). The default value is `0.1` (=10%). Probabilistic customer attrition model predict in general three expected characteristics for every customer:
+Once the model parameters are estimated, we are able to predict future customer behavior on an individual level. To do so, we use `predict()` on the object with the estimated parameters (i.e. `est.pnbd`). The prediction period may be varied by specifying `prediction.end`. It is possible to provide either an end-date or a duration using the same time unit as specified when initializing the object (i.e  `prediction.end = "2006-05-08"` or `prediction.end = 30`). By default, the prediction is made until the end of the dataset specified in the `clvdata()` command. The argument `continuous.discount.factor` allows to adjust the discount rate used to estimated the discounted expected transactions (DERT). The default value is `0.1` (=10%). Probabilistic customer attrition model predict in general three expected characteristics for every customer:
 
 * "conditional expected transactions" (CET), which is the number of transactions to expect form a customer during the prediction period,
 * "probability of a customer being alive" (PAlive) at the end of the estimation period and
@@ -168,16 +170,16 @@ print(results)
 
 ```
 
-To change the duration of the prediction time, we use the `predicton.end` argument. We can either provide a time period (15 weeks in this example):
+To change the duration of the prediction time, we use the `predicton.end` argument. We can either provide a time period (30 weeks in this example):
 
 ```{r predict-model2, eval = FALSE}
-predict(est.pnbd, prediction.end = "2011-12-31")
+predict(est.pnbd, prediction.end = 30)
 ```
 
 or provide a date indication the end of the prediction period:
 
 ```{r plot-model3, eval = FALSE}
-predict(est.pnbd, prediction.end = "2011-12-31")
+predict(est.pnbd, prediction.end = "2006-05-08")
 ```
 
 
@@ -195,43 +197,44 @@ plot(est.pnbd)
 
 
 
-To plot the *cumulative* expected transactions 15 time units (15 weeks in this example) ahead of the end of the estimation plot, we use:
+To plot the *cumulative* expected transactions 30 time units (30 weeks in this example) ahead of the end of the estimation plot, we use:
 
 ```{r plot-model2, eval = FALSE}
-plot(est.pnbd, prediction.end = 15, cumulative = TRUE)
+plot(est.pnbd, prediction.end = 30, cumulative = TRUE)
 ```
 
 Alternatively, it is possible to specify a date for the `prediction.end`argument. Note that dates are rounded to the next full time unit (i.e. week):
 
 ```{r predict-model3, eval = FALSE}
-plot(est.pnbd, prediction.end = "2011-12-31", cumulative = TRUE)
+plot(est.pnbd, prediction.end = "2006-05-08", cumulative = TRUE)
 ```
 
 
 ## Covariates
 `CLVTools` provides the option to include covariates into probabilistic customer attrition models. Covariates may affect the purchase or the attrition process, or both. It is also possible to include different covariates for the two processes. However, support for covariates is dependent on the model. Not all implemented models provide the option for covariates. In general, `CLVTools` distinguishes between two types of covariates: time-invariant and time-varying. The former include factors that do not change over time such as customer demographics or customer acquisition information. The latter may change over time and include marketing activities or seasonal patterns.
 
-Data for time-invariant covariates must contain a unique customer ID and a single value for each covariate. It should be supplied as a `data.frame` or `data.table`. In the example of the apparel retailer we use demographic information (i.e. gender) as time-invariant covariate for both, the purchase and the attrition process. Use the `data("apparelDemographics")` command to load the time-invariant covariates. In this example gender is already coded as a dummy variable with `male=0` and `female=1`.
+Data for time-invariant covariates must contain a unique customer ID and a single value for each covariate. It should be supplied as a `data.frame` or `data.table`. In the example of the apparel retailer we use demographic information "gender" as time-invariant and information on the acquisition channel as covariate for both, the purchase and the attrition process. Use the `data("apparelStaticCov")` command to load the time-invariant covariates. In this example gender is coded as a dummy variable with `male=0` and `female=1` and channel with `online=0` and `offline=1`.
 
 ```{r Cov-staticData}
-data("apparelDemographics")
-apparelDemographics
+data("apparelStaticCov")
+apparelStaticCov
 ```
 
-Data for time-varying contextual factors requires a time-series of contextual factor values for every customer. I.e. if the time-varying contextual factors are allowed to change every week, a value for every customer for every week is required. Note that all contextual factors are required to use the same time intervals for the time-series. In the example of the apparel retailer we use information on direct marketing (`DM`) and seasonal patterns (`High.Season`) as time-varying contextual factors. Additionally, we add gender as time-invariant contextual factors. Note that the data structure of invariant contextual factors needs to be aligned with the structure of time-varying contextual factors. Use `data("apparelDynCov")` command to load the time-varying contextual factors. In this example `Cov.Date` indicates the first day of a weekly contextual factor time-interval.
+Data for time-varying contextual factors requires a time-series of contextual factor values for every customer. I.e. if the time-varying contextual factors are allowed to change every week, a value for every customer for every week is required. Note that all contextual factors are required to use the same time intervals for the time-series. In the example of the apparel retailer we use information on direct marketing (`Marekting`) as time-varying contextual factors. Additionally, we add gender as time-invariant contextual factors. Note that the data structure of invariant contextual factors needs to be aligned with the structure of time-varying contextual factors. Use `data("apparelDynCov")` command to load the time-varying contextual factors. In this example `Cov.Date` indicates the first day of a weekly contextual factor time-interval.
 
 ```{r Cov-dynData}
 data("apparelDynCov")
+apparelDynCov
 ```
 
 To add the covariates to an initialized `clvdata` object the commands `SetStaticCovariates()` and `SetDynamicCovariates()` are available. The two commands are mutually exclusive. The argument `clv.data` specifies the initialized object and the argument `data.cov.life` respectively `data.cov.trans` specifies the data source for the covariates for the attrition and the purchase process. Covariates are added separately for the purchase and the attrition process. Therefore if a covariate should affect both processes it has to be added in both arguments: `data.cov.life` *and* `data.cov.trans`. The arguments `names.cov.life` and `names.cov.trans` specify the column names of the contextual factors for the two processes. In our example, we use the same covariates for both processes. Accordingly, we specify the time-invariant covariate "gender" as follows:
 
 ```{r Cov-setStatic}
 pnbd.static<- SetStaticCovariates(clv.data = clv.apparel, 
-                                      data.cov.life = apparelDemographics, 
-                                      data.cov.trans = apparelDemographics,
-                                      names.cov.life = "Gender", 
-                                      names.cov.trans ="Gender", 
+                                      data.cov.life = apparelStaticCov, 
+                                      data.cov.trans = apparelStaticCov,
+                                      names.cov.life = c("Gender", "Channel"), 
+                                      names.cov.trans =c("Gender", "Channel"), 
                                       name.id = "Id")
 ```
 
@@ -241,8 +244,8 @@ To specify the time-varying contextual factors for seasonal patterns and direct 
 pnbd.dyn <- SetDynamicCovariates(clv.data = clv.apparel, 
                                      data.cov.life = apparelDynCov,
                                      data.cov.trans = apparelDynCov, 
-                                     names.cov.life = c("DM", "High.Season", "Gender"), 
-                                     names.cov.trans = c("DM","High.Season", "Gender"), 
+                                     names.cov.life = c("Marketing", "Gender", "Channel"), 
+                                     names.cov.trans = c("Marketing", "Gender", "Channel"), 
                                      name.id = "Id",
                                      name.date = "Cov.Date")
 ```
@@ -254,11 +257,12 @@ Once the covariates are added to the model the estimation process is almost iden
 ```{r Cov-estimate}
 est.pnbd.static <- pnbd(pnbd.static, 
                          start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
-                         start.params.life = c(Gender=0.6),
-                         start.params.trans = c(Gender=0.6))
+                         start.params.life = c(Gender=0.6, Channel=0.4),
+                         start.params.trans = c(Gender=0.6, Channel=0.4))
 ```
 
-To inspect the estimated model we use `summary()`, however all other commands such as `print()`, `coef()`, `loglike()`, `confint()` and `vcov()` are also available. Now,  output contains also parameters for the covariates for both processes. Since covariates are added separately for the purchase and the attrition process, there are also separate model parameters for the two processes. These parameters are directly interpretable as rate elasticity of the corresponding factors: A 1% change in a contextual factor $\bf{X}^{P}$ or $\bf{X}^{L}$ changes the purchase or the attrition rate by $\gamma_{purch}\bf{X}^{P}$ or $\gamma_{life}\bf{X}^{L}$ percent, respectively  [@Gupta1991]. In the example of the apparel retailer, we observe that female customer significantly purchase more (trans.Gender=0.5524). However, they also churn significantly sooner (life.Gender=0.9343). Note: female customers are coded as 1, male customers as 0.
+To inspect the estimated model we use `summary()`, however all other commands such as `print()`, `coef()`, `loglike()`, `confint()` and `vcov()` are also available. Now, output contains also parameters for the covariates for both processes. Since covariates are added separately for the purchase and the attrition process, there are also separate model parameters for the two processes. These parameters are directly interpretable as rate elasticity of the corresponding factors: A 1% change in a contextual factor $\bf{X}^{P}$ or $\bf{X}^{L}$ changes the purchase or the attrition rate by $\gamma_{purch}\bf{X}^{P}$ or $\gamma_{life}\bf{X}^{L}$ percent, respectively  [@Gupta1991]. In the example of the apparel retailer, we observe that female customer significantly purchase more (`trans.Gender=1.1772`) and customer acquired offline purchase slightly more(`trans.Channel=0.5996`). Before interpreting the parameters, check the Karush-Kuhn-Tucker optimality conditions of the first and second order [@KKT] (KKT1 and KKT1). If those criteria are not met, the optimizer has probably not arrived at an optimal solution. If this is the case it is usually a good idea to rerun the estimation using alternative starting values.
+
 
 ```{r Cov-summary}
 summary(est.pnbd.static)
@@ -270,7 +274,7 @@ To predict future customer behavior we use `predict()`. Time-varying covariates 
 To relax the assumption of independence between the purchase and the attrition process, `CLVTools` provides the option to specify the argument `use.cor` in the command t fit the model (i.e. `pnbd`). In case of `use.cor=TRUE`, a Sarmanov approach is used to correlate the two processes. `start.param.cor` allows to optionally specify a starting value for the correlation parameter.
 
 ```{r Cov-cor, eval=FALSE}
-est.pnbd.cor <- pnbd(pnbd.static, 
+est.pnbd.cor <- pnbd(clv.apparel, 
                      use.cor= TRUE)
 summary(est.pnbd.cor)
 ```

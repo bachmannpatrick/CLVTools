@@ -27,8 +27,8 @@ setGeneric("clv.controlflow.estimate.generate.start.params", def=function(obj, s
 setGeneric("clv.controlflow.estimate.prepare.optimx.args", def=function(obj, start.params.all)
   standardGeneric("clv.controlflow.estimate.prepare.optimx.args"))
 
-setGeneric("clv.controlflow.estimate.put.optimx", def=function(obj, res.optimx)
-  standardGeneric("clv.controlflow.estimate.put.optimx"))
+setGeneric("clv.controlflow.estimate.process.post.estimation", def=function(obj, res.optimx)
+  standardGeneric("clv.controlflow.estimate.process.post.estimation"))
 
 
 # . Predict -----------------------------------------------------------------------------------------------
@@ -80,8 +80,8 @@ setGeneric(name="clv.model.backtransform.estimated.params.model", def=function(c
   standardGeneric("clv.model.backtransform.estimated.params.model"))
 
 # ie post.estimation.steps
-setGeneric(name="clv.model.put.optimx.output", def=function(clv.model, clv.fitted, res.optimx)
-  standardGeneric("clv.model.put.optimx.output"))
+setGeneric(name="clv.model.process.post.estimation", def=function(clv.model, clv.fitted, res.optimx)
+  standardGeneric("clv.model.process.post.estimation"))
 
 setGeneric(name="clv.model.m.to.cor", def = function(clv.model, prefixed.params.model, param.m)
   standardGeneric("clv.model.m.to.cor"))
@@ -123,6 +123,10 @@ setGeneric(name="clv.model.backtransform.estimated.params.cov", def=function(clv
 
 
 # clv.time ----------------------------------------------------------------------------------------------------
+
+setGeneric("clv.time.epsilon", function(clv.time)
+  standardGeneric("clv.time.epsilon"))
+
 # convert user given date/datetimes
 setGeneric("clv.time.convert.user.input.to.timepoint", function(clv.time, user.timepoint)
   standardGeneric("clv.time.convert.user.input.to.timepoint"))
