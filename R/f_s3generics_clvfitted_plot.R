@@ -1,7 +1,7 @@
 
 #' @title Plot expected and actual repeat transactions
 #' @param x The fitted clv model to plot
-#' @param newdata A cldata object for which the plotting should be made with the fitted model. If none or NULL is given, the plot is made for the data on which the model was fit.
+#' @param newdata A cldata clv.fittedect for which the plotting should be made with the fitted model. If none or NULL is given, the plot is made for the data on which the model was fit.
 #' @param transactions Whether the actual observed repeat transactions should be plotted.
 #' @param cumulative Whether the cumulative expected (and actual) transactions should be plotted.
 #' @param plot Whether a plot should be created or only the assembled data is returned.
@@ -29,7 +29,7 @@
 #' first time unit after \code{prediction.end}.
 #'
 #' @return
-#' An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
+#' An clv.fittedect of class \code{ggplot} from package \code{ggplot2} is returned by default.
 #' If the parameter \code{plot} is \code{FALSE}, the data that would have been melted and used to
 #' create the plot is returned. It is a \code{data.table} which contains the following columns:
 #' \item{period.first}{To which timepoint the data in this row refers.}
@@ -68,7 +68,7 @@
 #' #   (period, actual transactions, expected transactions)
 #' plot.out <- plot(pnbd.cdnow, prediction.end = 15)
 #'
-#' # A ggplot object is returned that can be further tweaked
+#' # A ggplot clv.fittedect is returned that can be further tweaked
 #' library("ggplot2")
 #' gg.pnbd.cdnow <- plot(pnbd.cdnow)
 #' gg.pnbd.cdnow + ggtitle("PNBD on CDnow")
@@ -113,7 +113,7 @@ plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FA
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=plot, var.name="plot"))
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=transactions, var.name="transactions"))
-  err.msg <- c(err.msg, check_user_data_predictionend(obj=x, prediction.end=prediction.end))
+  err.msg <- c(err.msg, check_user_data_predictionend(clv.fitted=x, prediction.end=prediction.end))
   if(!is.null(label)) # null is allowed = std. model name
     err.msg <- c(err.msg, .check_userinput_single_character(char=label, var.name="label"))
   check_err_msg(err.msg)
@@ -123,8 +123,8 @@ plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FA
             call. = FALSE, immediate. = TRUE)
   }
 
-  # do fitted object specific checks (ie dyncov checks cov data length)
-  clv.controlflow.plot.check.inputs(obj=x, prediction.end=prediction.end, cumulative=cumulative,
+  # do fitted clv.fittedect specific checks (ie dyncov checks cov data length)
+  clv.controlflow.plot.check.inputs(clv.fitted=x, prediction.end=prediction.end, cumulative=cumulative,
                                     plot=plot, label.line=label, verbose=verbose)
 
 
@@ -155,7 +155,7 @@ plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FA
 
 
   # Get expectation values -----------------------------------------------------------------------------------------
-  dt.expectation <- clv.controlflow.plot.get.data(obj=x, dt.expectation.seq=dt.dates.expectation,
+  dt.expectation <- clv.controlflow.plot.get.data(clv.fitted=x, dt.expectation.seq=dt.dates.expectation,
                                                   cumulative=cumulative, verbose=verbose)
   if(length(label)==0)
     label.model.expectation <- x@clv.model@name.model
@@ -167,7 +167,7 @@ plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FA
   # Get repeat transactions ----------------------------------------------------------------------------------------
   if(transactions){
     label.transactions <- "Actual Number of Repeat Transactions"
-    dt.repeat.trans <- clv.controlflow.plot.get.data(obj=x@clv.data, dt.expectation.seq=dt.dates.expectation,
+    dt.repeat.trans <- clv.controlflow.plot.get.data(clv.fitted=x@clv.data, dt.expectation.seq=dt.dates.expectation,
                                                      cumulative=cumulative, verbose=verbose)
     setnames(dt.repeat.trans, old = "num.repeat.trans", new = label.transactions)
   }
@@ -198,10 +198,10 @@ plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FA
     return(dt.plot)
 
   if(transactions)
-    line.colors <- setNames(object = c("black", "red"),
+    line.colors <- setNames(clv.fittedect = c("black", "red"),
                             nm = c(label.transactions, label.model.expectation))
   else
-    line.colors <- setNames(object = "red", nm = label.model.expectation)
+    line.colors <- setNames(clv.fittedect = "red", nm = label.model.expectation)
 
   # Plot table with formatting, label etc
   return(clv.controlflow.plot.make.plot(dt.data = dt.plot, clv.data = x@clv.data, line.colors = line.colors))
@@ -260,15 +260,15 @@ clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
 }
 
 # . clv.controlflow.plot.get.data ---------------------------------------------------------------
-setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.fitted"), definition = function(obj, dt.expectation.seq, cumulative, verbose){
+setMethod(f="clv.controlflow.plot.get.data", signature = signature(clv.fitted="clv.fitted"), definition = function(clv.fitted, dt.expectation.seq, cumulative, verbose){
 
   expectation <- i.expectation <- NULL
 
   # Set prediction params from coef()
-  obj <- clv.controlflow.predict.set.prediction.params(obj=obj)
+  clv.fitted <- clv.controlflow.predict.set.prediction.params(clv.fitted=clv.fitted)
 
   #   Pass copy of expectation table file becase will be modified and contain column named expecation
-  dt.model.expectation <- clv.model.expectation(clv.model=obj@clv.model, clv.fitted=obj, dt.expectation.seq=copy(dt.expectation.seq),
+  dt.model.expectation <- clv.model.expectation(clv.model=clv.fitted@clv.model, clv.fitted=clv.fitted, dt.expectation.seq=copy(dt.expectation.seq),
                                                 verbose = verbose)
 
   # include all from y to exend if predicting beyond actual transaction

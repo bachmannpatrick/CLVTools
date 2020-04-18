@@ -2,7 +2,7 @@
 #' @importFrom optimx optimx coef<-
 #' @importFrom utils modifyList
 #' @include all_generics.R
-clv.template.controlflow.estimate <- function(obj,
+clv.template.controlflow.estimate <- function(clv.fitted,
                                               cl,
                                               start.params.model,
                                               use.cor,
@@ -12,7 +12,7 @@ clv.template.controlflow.estimate <- function(obj,
                                               ...){
 
   # Input for covariate models, passed in "..."
-  # function(obj,
+  # function(clv.fitted,
   #          cl,
   #          start.params.model=c(),
   #          use.cor = FALSE,
@@ -29,26 +29,26 @@ clv.template.controlflow.estimate <- function(obj,
 
   # input checks ------------------------------------------------------------------------------------------
   #   checks for model first
-  clv.controlflow.estimate.check.inputs(obj=obj, start.params.model=start.params.model, use.cor=use.cor, start.param.cor=start.param.cor,
+  clv.controlflow.estimate.check.inputs(clv.fitted=clv.fitted, start.params.model=start.params.model, use.cor=use.cor, start.param.cor=start.param.cor,
                                         optimx.args=optimx.args, verbose=verbose, ...)
 
-  clv.model.check.input.args(clv.model=obj@clv.model, clv.fitted=obj, start.params.model=start.params.model, use.cor=use.cor, start.param.cor=start.param.cor,
+  clv.model.check.input.args(clv.model=clv.fitted@clv.model, clv.fitted=clv.fitted, start.params.model=start.params.model, use.cor=use.cor, start.param.cor=start.param.cor,
                              optimx.args=optimx.args, verbose=verbose, ...)
 
 
   # Store user input for estimation ----------------------------------------------------------------------------
-  obj <- clv.controlflow.estimate.put.inputs(obj=obj, cl=cl, use.cor=use.cor, start.param.cor=start.param.cor, ...)
-  obj <- clv.model.put.estimation.input(clv.model=obj@clv.model, clv.fitted=obj, verbose=verbose, ...)
+  clv.fitted <- clv.controlflow.estimate.put.inputs(clv.fitted=clv.fitted, cl=cl, use.cor=use.cor, start.param.cor=start.param.cor, ...)
+  clv.fitted <- clv.model.put.estimation.input(clv.model=clv.fitted@clv.model, clv.fitted=clv.fitted, verbose=verbose, ...)
 
 
   # Generate start params ---------------------------------------------------------------------------------------
-  start.params.all <- clv.controlflow.estimate.generate.start.params(obj=obj, start.params.model=start.params.model, start.param.cor=start.param.cor, verbose=verbose, ...)
+  start.params.all <- clv.controlflow.estimate.generate.start.params(clv.fitted=clv.fitted, start.params.model=start.params.model, start.param.cor=start.param.cor, verbose=verbose, ...)
 
 
   # prepare optimx args ------------------------------------------------------------------------------------------
   #   model needed to prepare LL part of optimx args
-  prepared.optimx.args <- clv.controlflow.estimate.prepare.optimx.args(obj=obj, start.params.all=start.params.all)
-  prepared.optimx.args <- clv.model.prepare.optimx.args(clv.model=obj@clv.model, clv.fitted=obj, prepared.optimx.args=prepared.optimx.args)
+  prepared.optimx.args <- clv.controlflow.estimate.prepare.optimx.args(clv.fitted=clv.fitted, start.params.all=start.params.all)
+  prepared.optimx.args <- clv.model.prepare.optimx.args(clv.model=clv.fitted@clv.model, clv.fitted=clv.fitted, prepared.optimx.args=prepared.optimx.args)
 
   # No matter what the (model) defaults, the user arguments are written ontop of what is generated
   prepared.optimx.args <- modifyList(prepared.optimx.args, optimx.args, keep.null = FALSE)
@@ -65,8 +65,8 @@ clv.template.controlflow.estimate <- function(obj,
     message("Estimation finished!")
 
   # **FUTURE only: Extract results ---------------------------------------------------------------------------------
-  # Extract results needed to build the final object
-  #   the final object is in a separate builder function because it might / will be exported to use
+  # Extract results needed to build the final clv.fittedect
+  #   the final clv.fittedect is in a separate builder function because it might / will be exported to use
   #     together with prepare.only=T
   #   could move to separate function because of possible mcmc estimation (clv.controlflow.post.estimation.steps())
   # Extracted: last used method's Hessian + coefs, kkt, LL value, ...
@@ -80,10 +80,10 @@ clv.template.controlflow.estimate <- function(obj,
 
   # Store results ------------------------------------------------------------------------------------------------
   #   also model-specifc storage and processing of optimx outputs
-  obj <- clv.controlflow.estimate.process.post.estimation(obj=obj, res.optimx=res.optimx)
-  obj <- clv.model.process.post.estimation(clv.model=obj@clv.model, clv.fitted=obj, res.optimx=res.optimx)
+  clv.fitted <- clv.controlflow.estimate.process.post.estimation(clv.fitted=clv.fitted, res.optimx=res.optimx)
+  clv.fitted <- clv.model.process.post.estimation(clv.model=clv.fitted@clv.model, clv.fitted=clv.fitted, res.optimx=res.optimx)
 
-  return(obj)
+  return(clv.fitted)
 }
 
 

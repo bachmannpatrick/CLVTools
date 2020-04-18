@@ -1,11 +1,11 @@
 #' @include all_generics.R class_clv_data.R
-setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.data"), definition = function(obj, dt.expectation.seq, cumulative, verbose){
+setMethod(f="clv.controlflow.plot.get.data", signature = signature(clv.fitted="clv.data"), definition = function(clv.fitted, dt.expectation.seq, cumulative, verbose){
   # Add the number of repeat transactions to dt.date.seq
 
   num.repeat.trans <- i.num.repeat.trans <- Date <- period.first <- NULL
 
   # Add period at every repeat transaction (and therefore copy)
-  dt.repeat.trans  <- copy(obj@data.repeat.trans)
+  dt.repeat.trans  <- copy(clv.fitted@data.repeat.trans)
 
   # join (roll: Inf=LOCF) period number onto all repeat transaction by dates
   #   ie assign each repeat transaction the period number in which it falls
@@ -26,7 +26,7 @@ setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.data
   # After last transaction, there are no more transactions.
   #   dt.expectation can however be longer. Set these intentionally to NA so that
   #   nothing is plotted (setting 0 plots a line at the bottom)
-  date.last.repeat.transaction <- obj@data.repeat.trans[, max(Date)]
+  date.last.repeat.transaction <- clv.fitted@data.repeat.trans[, max(Date)]
   dt.expectation.seq[period.first > date.last.repeat.transaction, num.repeat.trans := NA_real_]
 
   if(cumulative)

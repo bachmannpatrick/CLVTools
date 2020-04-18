@@ -15,35 +15,35 @@ setGeneric(name = "predict")
 # Steps performed by all models but different between base (no cov) and covariate models
 
 # . Estimate ---------------------------------------------------------------------------------------------------
-setGeneric("clv.controlflow.estimate.check.inputs", def=function(obj,  start.params.model, use.cor, start.param.cor, optimx.args, verbose,...)
+setGeneric("clv.controlflow.estimate.check.inputs", def=function(clv.fitted,  start.params.model, use.cor, start.param.cor, optimx.args, verbose,...)
   standardGeneric("clv.controlflow.estimate.check.inputs"))
 
-setGeneric("clv.controlflow.estimate.put.inputs", def=function(obj, cl, use.cor, ...)
+setGeneric("clv.controlflow.estimate.put.inputs", def=function(clv.fitted, cl, use.cor, ...)
   standardGeneric("clv.controlflow.estimate.put.inputs"))
 
-setGeneric("clv.controlflow.estimate.generate.start.params", def=function(obj, start.params.model,start.param.cor,verbose,...)
+setGeneric("clv.controlflow.estimate.generate.start.params", def=function(clv.fitted, start.params.model,start.param.cor,verbose,...)
   standardGeneric("clv.controlflow.estimate.generate.start.params"))
 
-setGeneric("clv.controlflow.estimate.prepare.optimx.args", def=function(obj, start.params.all)
+setGeneric("clv.controlflow.estimate.prepare.optimx.args", def=function(clv.fitted, start.params.all)
   standardGeneric("clv.controlflow.estimate.prepare.optimx.args"))
 
-setGeneric("clv.controlflow.estimate.process.post.estimation", def=function(obj, res.optimx)
+setGeneric("clv.controlflow.estimate.process.post.estimation", def=function(clv.fitted, res.optimx)
   standardGeneric("clv.controlflow.estimate.process.post.estimation"))
 
 
 # . Predict -----------------------------------------------------------------------------------------------
-setGeneric("clv.controlflow.predict.check.inputs", def = function(obj, prediction.end, continuous.discount.factor, predict.spending, verbose)
+setGeneric("clv.controlflow.predict.check.inputs", def = function(clv.fitted, prediction.end, continuous.discount.factor, predict.spending, verbose)
   standardGeneric("clv.controlflow.predict.check.inputs"))
 
-setGeneric("clv.controlflow.predict.set.prediction.params", def = function(obj)
+setGeneric("clv.controlflow.predict.set.prediction.params", def = function(clv.fitted)
   standardGeneric("clv.controlflow.predict.set.prediction.params"))
 
 # . Plot ----------------------------------------------------------------------------------------------------
-#function(obj, prediction.end, data.dyn.cov.life, data.dyn.cov.trans,...)
-setGeneric("clv.controlflow.plot.check.inputs", def = function(obj, prediction.end, cumulative, plot, label.line, verbose)
+#function(clv.fitted, prediction.end, data.dyn.cov.life, data.dyn.cov.trans,...)
+setGeneric("clv.controlflow.plot.check.inputs", def = function(clv.fitted, prediction.end, cumulative, plot, label.line, verbose)
   standardGeneric("clv.controlflow.plot.check.inputs"))
 
-setGeneric("clv.controlflow.plot.get.data", def = function(obj, dt.expectation.seq, cumulative, label.line, verbose)
+setGeneric("clv.controlflow.plot.get.data", def = function(clv.fitted, dt.expectation.seq, cumulative, label.line, verbose)
   standardGeneric("clv.controlflow.plot.get.data"))
 
 # .. Newdata: replace data in existing model -----------------------------------------------------------------

@@ -1,7 +1,7 @@
 # . clv.controlflow.estimate.generate.start.params ------------------------------------------------------------------------------
 #' @importFrom methods as
 #' @importFrom methods callNextMethod
-setMethod("clv.controlflow.estimate.generate.start.params", signature = signature(obj="clv.pnbd.dynamic.cov"),definition = function(obj,
+setMethod("clv.controlflow.estimate.generate.start.params", signature = signature(clv.fitted="clv.pnbd.dynamic.cov"),definition = function(clv.fitted,
                                                                                                                                     start.params.model,
                                                                                                                                     start.params.life,
                                                                                                                                     start.params.trans,
@@ -25,7 +25,7 @@ setMethod("clv.controlflow.estimate.generate.start.params", signature = signatur
       message("Generating model start parameters by fitting a no covariate pnbd model...")
 
     # Do optimization
-    nocov.coefs <- tryCatch(coef(pnbd(clv.data = as(object = obj@clv.data, Class = "clv.data", strict = TRUE),
+    nocov.coefs <- tryCatch(coef(pnbd(clv.data = as(clv.fittedect = clv.fitted@clv.data, Class = "clv.data", strict = TRUE),
                                       start.params.model = c(r=1, s=1, alpha=1, beta=1),
                                       verbose = FALSE)),
                             error = function(e){stop(paste0("Failed to estimate a pnbd no covariate model: ",

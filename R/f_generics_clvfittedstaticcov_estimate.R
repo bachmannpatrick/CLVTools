@@ -1,5 +1,5 @@
 # . clv.controlflow.estimate.check.inputs ------------------------------------------------------------------------------
-setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(obj="clv.fitted.static.cov"), definition = function(obj,  start.params.model, use.cor, start.param.cor, optimx.args, # clv.fitted input args
+setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv.fitted="clv.fitted.static.cov"), definition = function(clv.fitted,  start.params.model, use.cor, start.param.cor, optimx.args, # clv.fitted input args
                                                                                                                                  verbose,
                                                                                                                                  names.cov.life, names.cov.trans,
                                                                                                                                  start.params.life, start.params.trans,
@@ -9,21 +9,21 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(obj
   # check clv.fitted input
   #   only forward what would have been passed if nocov model was estimated because in the parent method
   #   it is warned if there are addtional unneded params in ...
-  callNextMethod(obj=obj,use.cor=use.cor, start.param.cor=start.param.cor, start.params.model=start.params.model, optimx.args=optimx.args, verbose=verbose)
+  callNextMethod(clv.fitted=clv.fitted,use.cor=use.cor, start.param.cor=start.param.cor, start.params.model=start.params.model, optimx.args=optimx.args, verbose=verbose)
 
   # Additional covariates input args checks
   err.msg <- c()
-  err.msg <- c(err.msg, check_user_data_namescov_reduce(names.cov = names.cov.life,  data.cov.dt = obj@clv.data@data.cov.life,  name.of.cov = "Lifetime"))
-  err.msg <- c(err.msg, check_user_data_namescov_reduce(names.cov = names.cov.trans, data.cov.dt = obj@clv.data@data.cov.trans, name.of.cov = "Transaction"))
+  err.msg <- c(err.msg, check_user_data_namescov_reduce(names.cov = names.cov.life,  data.cov.dt = clv.fitted@clv.data@data.cov.life,  name.of.cov = "Lifetime"))
+  err.msg <- c(err.msg, check_user_data_namescov_reduce(names.cov = names.cov.trans, data.cov.dt = clv.fitted@clv.data@data.cov.trans, name.of.cov = "Transaction"))
   check_err_msg(err.msg)
 
   # Get names as needed for startparams
   #   no name was provided / NULL:  use all covariate names
   #   some name provided:           use this name(s)
   if(length(names.cov.life)==0)
-    names.cov.life  <- clv.data.get.names.cov.life(obj@clv.data)
+    names.cov.life  <- clv.data.get.names.cov.life(clv.fitted@clv.data)
   if(length(names.cov.trans)==0)
-    names.cov.trans <- clv.data.get.names.cov.trans(obj@clv.data)
+    names.cov.trans <- clv.data.get.names.cov.trans(clv.fitted@clv.data)
 
   # Check first - if names are wrong they will be wrong as in put to check_startparams as well
   err.msg <- c(err.msg, check_user_data_startparamscov(start.params.cov=start.params.life,  names.params.cov = names.cov.life,  name.of.cov="Lifetime"))
@@ -33,7 +33,7 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(obj
   err.msg <- c(err.msg, check_user_data_reglambdas(reg.lambdas=reg.lambdas))
 
   # Check constraint params input
-  err.msg <- c(err.msg, check_user_data_namesconstr(obj=obj, names.cov.constr = names.cov.constr))
+  err.msg <- c(err.msg, check_user_data_namesconstr(clv.fitted=clv.fitted, names.cov.constr = names.cov.constr))
   check_err_msg(err.msg) # check because names are needed for start params
   err.msg <- c(err.msg, check_user_data_startparamconstr(start.params.constr = start.params.constr, names.cov.constr = names.cov.constr))
   check_err_msg(err.msg)
@@ -53,12 +53,12 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(obj
 
 # . clv.controlflow.estimate.put.inputs ------------------------------------------------------------------------------
 #' @importFrom methods callNextMethod
-setMethod("clv.controlflow.estimate.put.inputs", signature = signature(obj="clv.fitted.static.cov"), definition = function(obj, cl, reg.lambdas, use.cor, names.cov.constr, names.cov.life, names.cov.trans, ...){
+setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitted="clv.fitted.static.cov"), definition = function(clv.fitted, cl, reg.lambdas, use.cor, names.cov.constr, names.cov.life, names.cov.trans, ...){
   # clv.fitted put inputs
-  obj <- callNextMethod()
+  clv.fitted <- callNextMethod()
 
   # Reduce to user's desired covariates only -----------------------------------------------------------
-  obj@clv.data <- clv.data.reduce.covariates(clv.data=obj@clv.data, names.cov.life=names.cov.life,
+  clv.fitted@clv.data <- clv.data.reduce.covariates(clv.data=clv.fitted@clv.data, names.cov.life=names.cov.life,
                                              names.cov.trans=names.cov.trans)
 
   # is regularization used? ---------------------------------------------------------------------------
@@ -67,71 +67,71 @@ setMethod("clv.controlflow.estimate.put.inputs", signature = signature(obj="clv.
 
   if(!is.null(reg.lambdas) & !all(reg.lambdas == 0)){
     # Regularization: Store
-    obj@estimation.used.regularization <- TRUE
-    obj@reg.lambda.life  <- reg.lambdas[["life"]]
-    obj@reg.lambda.trans <- reg.lambdas[["trans"]]
+    clv.fitted@estimation.used.regularization <- TRUE
+    clv.fitted@reg.lambda.life  <- reg.lambdas[["life"]]
+    clv.fitted@reg.lambda.trans <- reg.lambdas[["trans"]]
   }else{
     # No regularization
-    obj@estimation.used.regularization <- FALSE
-    obj@reg.lambda.life  <- numeric(0)
-    obj@reg.lambda.trans <- numeric(0)
+    clv.fitted@estimation.used.regularization <- FALSE
+    clv.fitted@reg.lambda.life  <- numeric(0)
+    clv.fitted@reg.lambda.trans <- numeric(0)
   }
 
   # Are some parameters constraint? --------------------------------------------------------------------
   if(!is.null(names.cov.constr)){
     # Using constraints
     # Set up original and prefixed names for constraint and free
-    obj@estimation.used.constraints  <- TRUE
+    clv.fitted@estimation.used.constraints  <- TRUE
 
-    obj@names.original.params.constr <- names.cov.constr
-    obj@names.prefixed.params.constr <- paste("constr", obj@names.original.params.constr,      sep = ".")
+    clv.fitted@names.original.params.constr <- names.cov.constr
+    clv.fitted@names.prefixed.params.constr <- paste("constr", clv.fitted@names.original.params.constr,      sep = ".")
 
-    original.free.life  <- unique(setdiff(clv.data.get.names.cov.life(obj@clv.data),  obj@names.original.params.constr)) #unique not needed but be sure
-    original.free.trans <- unique(setdiff(clv.data.get.names.cov.trans(obj@clv.data), obj@names.original.params.constr))
+    original.free.life  <- unique(setdiff(clv.data.get.names.cov.life(clv.fitted@clv.data),  clv.fitted@names.original.params.constr)) #unique not needed but be sure
+    original.free.trans <- unique(setdiff(clv.data.get.names.cov.trans(clv.fitted@clv.data), clv.fitted@names.original.params.constr))
 
     if(length(original.free.life)>0){
-      obj@names.original.params.free.life  <- original.free.life
-      obj@names.prefixed.params.free.life  <- paste("life",   obj@names.original.params.free.life,   sep = ".")
+      clv.fitted@names.original.params.free.life  <- original.free.life
+      clv.fitted@names.prefixed.params.free.life  <- paste("life",   clv.fitted@names.original.params.free.life,   sep = ".")
     }else{
-      obj@names.original.params.free.life  <- character(0)
-      obj@names.prefixed.params.free.life  <- character(0)
+      clv.fitted@names.original.params.free.life  <- character(0)
+      clv.fitted@names.prefixed.params.free.life  <- character(0)
     }
 
     if(length(original.free.trans)>0){
-      obj@names.original.params.free.trans <- original.free.trans
-      obj@names.prefixed.params.free.trans <- paste("trans",  obj@names.original.params.free.trans,  sep = ".")
+      clv.fitted@names.original.params.free.trans <- original.free.trans
+      clv.fitted@names.prefixed.params.free.trans <- paste("trans",  clv.fitted@names.original.params.free.trans,  sep = ".")
     }else{
-      obj@names.original.params.free.trans <- character(0)
-      obj@names.prefixed.params.free.trans <- character(0)
+      clv.fitted@names.original.params.free.trans <- character(0)
+      clv.fitted@names.prefixed.params.free.trans <- character(0)
     }
 
   }else{
     # No constraints used
 
-    obj@estimation.used.constraints       <- FALSE
+    clv.fitted@estimation.used.constraints       <- FALSE
 
-    obj@names.original.params.free.life   <- clv.data.get.names.cov.life(obj@clv.data)
-    obj@names.original.params.free.trans  <- clv.data.get.names.cov.trans(obj@clv.data)
-    obj@names.original.params.constr      <- character(0)
+    clv.fitted@names.original.params.free.life   <- clv.data.get.names.cov.life(clv.fitted@clv.data)
+    clv.fitted@names.original.params.free.trans  <- clv.data.get.names.cov.trans(clv.fitted@clv.data)
+    clv.fitted@names.original.params.constr      <- character(0)
 
-    obj@names.prefixed.params.free.life   <- paste("life",  obj@names.original.params.free.life,  sep = ".")
-    obj@names.prefixed.params.free.trans  <- paste("trans", obj@names.original.params.free.trans, sep = ".")
-    obj@names.prefixed.params.constr      <- character(0)
+    clv.fitted@names.prefixed.params.free.life   <- paste("life",  clv.fitted@names.original.params.free.life,  sep = ".")
+    clv.fitted@names.prefixed.params.free.trans  <- paste("trans", clv.fitted@names.original.params.free.trans, sep = ".")
+    clv.fitted@names.prefixed.params.constr      <- character(0)
   }
 
   # independent of using constraints or not. These are used in LL and Reg interlayer after the
   #   potential constraint interlayer has doubled the parameters and therefore need to contain all names
-  obj@names.prefixed.params.after.constr.life  <- paste("life",  clv.data.get.names.cov.life(obj@clv.data),  sep=".")
-  obj@names.prefixed.params.after.constr.trans <- paste("trans", clv.data.get.names.cov.trans(obj@clv.data), sep=".")
+  clv.fitted@names.prefixed.params.after.constr.life  <- paste("life",  clv.data.get.names.cov.life(clv.fitted@clv.data),  sep=".")
+  clv.fitted@names.prefixed.params.after.constr.trans <- paste("trans", clv.data.get.names.cov.trans(clv.fitted@clv.data), sep=".")
 
-  return(obj)
+  return(clv.fitted)
 })
 
 
 # . clv.controlflow.estimate.generate.start.params ------------------------------------------------------------------------------
-setMethod("clv.controlflow.estimate.generate.start.params", signature = signature(obj="clv.fitted.static.cov"),
-          # original signature: obj, start.params.model,start.param.cor,
-          definition = function(obj,
+setMethod("clv.controlflow.estimate.generate.start.params", signature = signature(clv.fitted="clv.fitted.static.cov"),
+          # original signature: clv.fitted, start.params.model,start.param.cor,
+          definition = function(clv.fitted,
                                 start.params.model,
                                 start.param.cor,
                                 start.params.life,
@@ -149,48 +149,48 @@ setMethod("clv.controlflow.estimate.generate.start.params", signature = signatur
             start.params.constr     <- c()
 
             # any free params?
-            if(length(obj@names.original.params.free.life) > 0){
+            if(length(clv.fitted@names.original.params.free.life) > 0){
 
               # start params given?
               if(is.null(start.params.life)){
-                start.params.free.life        <- rep(obj@clv.model@start.param.cov, length(obj@names.original.params.free.life))
-                names(start.params.free.life) <- obj@names.original.params.free.life
+                start.params.free.life        <- rep(clv.fitted@clv.model@start.param.cov, length(clv.fitted@names.original.params.free.life))
+                names(start.params.free.life) <- clv.fitted@names.original.params.free.life
               }else{
                 # correct order
-                start.params.free.life <- start.params.life[obj@names.original.params.free.life]
+                start.params.free.life <- start.params.life[clv.fitted@names.original.params.free.life]
               }
               # apply model transformation to start params
-              start.params.free.life        <- clv.model.transform.start.params.cov(obj@clv.model, start.params.free.life)
-              names(start.params.free.life) <- obj@names.prefixed.params.free.life
+              start.params.free.life        <- clv.model.transform.start.params.cov(clv.fitted@clv.model, start.params.free.life)
+              names(start.params.free.life) <- clv.fitted@names.prefixed.params.free.life
             }
 
             # any free params?
-            if(length(obj@names.original.params.free.trans) > 0){
+            if(length(clv.fitted@names.original.params.free.trans) > 0){
               if(is.null(start.params.trans)){
-                start.params.free.trans        <- rep(obj@clv.model@start.param.cov, length(obj@names.original.params.free.trans))
-                names(start.params.free.trans) <- obj@names.original.params.free.trans
+                start.params.free.trans        <- rep(clv.fitted@clv.model@start.param.cov, length(clv.fitted@names.original.params.free.trans))
+                names(start.params.free.trans) <- clv.fitted@names.original.params.free.trans
               }else{
                 # correct order
-                start.params.free.trans <- start.params.trans[obj@names.original.params.free.trans]
+                start.params.free.trans <- start.params.trans[clv.fitted@names.original.params.free.trans]
               }
 
               # apply model transformation to start params
-              start.params.free.trans        <- clv.model.transform.start.params.cov(obj@clv.model, start.params.free.trans)
-              names(start.params.free.trans) <- obj@names.prefixed.params.free.trans
+              start.params.free.trans        <- clv.model.transform.start.params.cov(clv.fitted@clv.model, start.params.free.trans)
+              names(start.params.free.trans) <- clv.fitted@names.prefixed.params.free.trans
             }
 
             # any constrain params?
-            if(length(obj@names.original.params.constr) > 0){
+            if(length(clv.fitted@names.original.params.constr) > 0){
               if(is.null(start.params.constr)){
                 # none user given
-                start.params.constr        <- rep(obj@clv.model@start.param.cov, length(obj@names.original.params.constr))
-                names(start.params.constr) <- obj@names.original.params.constr
+                start.params.constr        <- rep(clv.fitted@clv.model@start.param.cov, length(clv.fitted@names.original.params.constr))
+                names(start.params.constr) <- clv.fitted@names.original.params.constr
               }else{
-                start.params.constr <- start.params.constr[obj@names.original.params.constr] #ensure order
+                start.params.constr <- start.params.constr[clv.fitted@names.original.params.constr] #ensure order
               }
               # apply model transformation to start params
-              start.params.constr        <- clv.model.transform.start.params.cov(obj@clv.model, start.params.constr)
-              names(start.params.constr) <- obj@names.prefixed.params.constr
+              start.params.constr        <- clv.model.transform.start.params.cov(clv.fitted@clv.model, start.params.constr)
+              names(start.params.constr) <- clv.fitted@names.prefixed.params.constr
             }
 
 
@@ -204,8 +204,8 @@ setMethod("clv.controlflow.estimate.generate.start.params", signature = signatur
 
 # . clv.controlflow.estimate.prepare.optimx.args ------------------------------------------------------------------------------
 #' @importFrom utils modifyList
-setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(obj="clv.fitted.static.cov"),
-          def=function(obj, start.params.all){
+setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(clv.fitted="clv.fitted.static.cov"),
+          def=function(clv.fitted, start.params.all){
 
             # Call clv.fitted prepare.optimx.args
             prepared.nocov.optimx.args <- callNextMethod()
@@ -216,20 +216,20 @@ setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(
 
             # Everything to call the regularization layer
             optimx.args <- modifyList(prepared.nocov.optimx.args,
-                                      list(use.interlayer.reg        = obj@estimation.used.regularization,
-                                           names.prefixed.params.after.constr.trans = obj@names.prefixed.params.after.constr.trans,
-                                           names.prefixed.params.after.constr.life  = obj@names.prefixed.params.after.constr.life,
-                                           reg.lambda.life           = obj@reg.lambda.life,
-                                           reg.lambda.trans          = obj@reg.lambda.trans,
-                                           num.observations          = nobs(object = obj)),
+                                      list(use.interlayer.reg        = clv.fitted@estimation.used.regularization,
+                                           names.prefixed.params.after.constr.trans = clv.fitted@names.prefixed.params.after.constr.trans,
+                                           names.prefixed.params.after.constr.life  = clv.fitted@names.prefixed.params.after.constr.life,
+                                           reg.lambda.life           = clv.fitted@reg.lambda.life,
+                                           reg.lambda.trans          = clv.fitted@reg.lambda.trans,
+                                           num.observations          = nobs(clv.fittedect = clv.fitted)),
                                       keep.null = TRUE)
 
 
 
             # Everything to call the constraints layer
-            optimx.args <- modifyList(optimx.args, list(use.interlayer.constr        = obj@estimation.used.constraints,
-                                                        names.original.params.constr = obj@names.original.params.constr,
-                                                        names.prefixed.params.constr = obj@names.prefixed.params.constr),
+            optimx.args <- modifyList(optimx.args, list(use.interlayer.constr        = clv.fitted@estimation.used.constraints,
+                                                        names.original.params.constr = clv.fitted@names.original.params.constr,
+                                                        names.prefixed.params.constr = clv.fitted@names.prefixed.params.constr),
                                       keep.null = TRUE)
             return(optimx.args)
           })
