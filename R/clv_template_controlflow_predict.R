@@ -4,6 +4,7 @@
 clv.template.controlflow.predict <- function(object, prediction.end, predict.spending, continuous.discount.factor, verbose, user.newdata){
   Id <- Date <- Price <- DERT <- DECT <- actual.spending <- actual.x <- predicted.CLV <- predicted.Spending <- NULL # cran silence
   period.first <- period.last <- period.length <- cbs.x <- i.x <- cbs.Spending <- i.Spending <- NULL
+  i.actual.x <- i.actual.spending <- NULL
 
   # Set prediction params -----------------------------------------------------------------------------------
   #   need to be set before adding the newdata as the model might need them (to re-estimate or similar)
