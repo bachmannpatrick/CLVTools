@@ -20,6 +20,8 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = F
 #' @description
 #' Fits BG/NBD models on transactional data without covariates.
 #'
+#' @param use.cor (Not yet supported) Whether the correlation between the transaction and lifetime process should be estimated.
+#' @param start.param.cor (Not yet supported) Start parameter for the optimization of the correlation.
 #'
 #' @details
 #' Model parameters for the BG/NBD model are \code{r, alpha, a, and b}. \cr
@@ -61,7 +63,7 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = F
 #'
 #' # Give initial guesses for the Model parameters
 #' bgnbd(clv.data.apparel,
-#'      start.params.model = c(r=1.1, alpha=3.4, a=1, beta=3))
+#'      start.params.model = c(r=1.1, alpha=3.4, a=1, b=3))
 #'
 #'
 #' # pass additional parameters to the optimizer (optimx)
