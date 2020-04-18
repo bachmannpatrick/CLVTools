@@ -5,7 +5,7 @@
 \alias{gnbd,clv.data-method}
 \alias{gnbd,clv.data.static.covariates-method}
 \alias{gnbd,clv.data.dynamic.covariates-method}
-\title{GG/NBD models - Work In Progress}
+\title{G/G/NBD models - Work In Progress}
 \usage{
 \S4method{gnbd}{clv.data}(
   clv.data,
@@ -72,5 +72,5 @@ If multiple optimization methods are specified, only the result of the last meth
 \item{reg.lambdas}{Named lambda parameters used for the L2 regularization of the lifetime and the transaction covariate parameters. Lambdas have to be >= 0.}
 }
 \description{
-Fits GG/NBD models on transactional data with static and without covariates.
+Fits G/G/NBD models on transactional data with static and without covariates.
 }

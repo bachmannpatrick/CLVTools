@@ -1,7 +1,7 @@
 #' @name gnbd
-#' @title GG/NBD models - Work In Progress
+#' @title G/G/NBD models - Work In Progress
 #'
-#' @description Fits GG/NBD models on transactional data with static and without covariates.
+#' @description Fits G/G/NBD models on transactional data with static and without covariates.
 #'
 #' @template template_params_estimate
 #' @template template_params_estimate_cov
