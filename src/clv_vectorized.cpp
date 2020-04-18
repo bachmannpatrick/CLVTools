@@ -122,4 +122,8 @@ arma::vec vec_pow(const arma::vec& vA, const arma::vec& vP){
   return(vRes);
 }
 
+arma::vec lbeta(arma::vec& vA, arma::vec& vB){
+  return arma::lgamma(vA) + arma::lgamma(vB) - arma::lgamma(vA+vB);
+}
+
 }
