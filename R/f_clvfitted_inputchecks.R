@@ -39,7 +39,7 @@ check_user_data_predictionend <- function(clv.fitted, prediction.end){
   if(is.POSIXt(prediction.end))
     return(c())
 
-  # clv.fitted or clv.data clv.fittedect (to check prediction.end in plot())
+  # clv.fitted or clv.data object (to check prediction.end in plot())
   if(is(clv.fitted, "clv.fitted"))
     clv.time <- clv.fitted@clv.data@clv.time
   else
@@ -48,7 +48,7 @@ check_user_data_predictionend <- function(clv.fitted, prediction.end){
   # if its a char or Date -> see if can convert
   if(is.character(prediction.end))
     if(anyNA( parse_date_time(x=prediction.end, orders = clv.time@time.format)))
-      return("Please provide prediction.end in a format that can be parsed with the set date.format when creating the clv.fittedect!")
+      return("Please provide prediction.end in a format that can be parsed with the set date.format when creating the object!")
 
   # Whether the date itself is ok will be checked when converting!
   return(c())

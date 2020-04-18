@@ -85,7 +85,7 @@ setMethod(f = "clv.model.process.post.estimation", signature = signature(clv.mod
                       setNames(clv.fitted@prediction.params.trans, clv.fitted@names.prefixed.params.after.constr.trans))
 
     # get LL with all values, not just ind LL or summed LL
-    clv.fitted@LL.data <- pnbd_dyncov_LL(params = final.params, obj=clv.fitted)
+    clv.fitted@LL.data <- pnbd_dyncov_LL(params = final.params, clv.fitted=clv.fitted)
     setkeyv(clv.fitted@LL.data, cols = "Id")
   }else{
     warning("Could not derive dyncov LL data with these final parameters - cannot predict and plot!", call. = FALSE)
@@ -127,7 +127,7 @@ setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.mo
   clv.fitted@data.walks.trans = l.walks[["data.walks.trans"]]
 
   # get LL with all values, not just ind LL or summed LL
-  clv.fitted@LL.data <- pnbd_dyncov_LL(params = final.params, obj=clv.fitted)
+  clv.fitted@LL.data <- pnbd_dyncov_LL(params = final.params, clv.fitted=clv.fitted)
   setkeyv(clv.fitted@LL.data, cols = "Id")
 
   return(clv.fitted)

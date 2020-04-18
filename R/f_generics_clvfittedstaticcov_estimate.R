@@ -221,7 +221,7 @@ setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(
                                            names.prefixed.params.after.constr.life  = clv.fitted@names.prefixed.params.after.constr.life,
                                            reg.lambda.life           = clv.fitted@reg.lambda.life,
                                            reg.lambda.trans          = clv.fitted@reg.lambda.trans,
-                                           num.observations          = nobs(clv.fittedect = clv.fitted)),
+                                           num.observations          = nobs(object = clv.fitted)),
                                       keep.null = TRUE)
 
 

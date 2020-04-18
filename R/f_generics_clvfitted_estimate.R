@@ -125,7 +125,7 @@ setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(
                             keep.null = TRUE)
 
   # Forbid to use any covariate specific interlayers ---------------------------------------------------
-  #   For no covariates clv.fittedects, only the correlation interlayer can be used. For covariates clv.fittedects,
+  #   For no covariates objects, only the correlation interlayer can be used. For covariates clv.fitted,
   #     this functions is overwritten to prepare more args
   #
   #   However, not passing these parameters, results in missing parameters for the interlayer manager
@@ -202,7 +202,7 @@ setMethod(f = "clv.controlflow.estimate.process.post.estimation", signature = si
   optimx.last.row <- tail(clv.fitted@optimx.estimation.output, n=1)
 
   if(anyNA(coef(optimx.last.row)))
-    warning("Estimation failed with NA coefs. The returened clv.fittedect contains results but further usage is restricted.",
+    warning("Estimation failed with NA coefs. The returened object contains results but further usage is restricted.",
             immediate. = TRUE, call. = FALSE)
 
   # extract hessian from "details" attribute which is a list (if more then 1 method given)

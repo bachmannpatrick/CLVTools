@@ -38,18 +38,20 @@ setGeneric("clv.controlflow.predict.check.inputs", def = function(clv.fitted, pr
 setGeneric("clv.controlflow.predict.set.prediction.params", def = function(clv.fitted)
   standardGeneric("clv.controlflow.predict.set.prediction.params"))
 
-# . Plot ----------------------------------------------------------------------------------------------------
-#function(clv.fitted, prediction.end, data.dyn.cov.life, data.dyn.cov.trans,...)
-setGeneric("clv.controlflow.plot.check.inputs", def = function(clv.fitted, prediction.end, cumulative, plot, label.line, verbose)
-  standardGeneric("clv.controlflow.plot.check.inputs"))
-
-setGeneric("clv.controlflow.plot.get.data", def = function(clv.fitted, dt.expectation.seq, cumulative, label.line, verbose)
-  standardGeneric("clv.controlflow.plot.get.data"))
-
 # .. Newdata: replace data in existing model -----------------------------------------------------------------
 # For plot and predict
 setGeneric("clv.controlflow.check.newdata", def = function(clv.fitted, user.newdata, prediction.end)
   standardGeneric("clv.controlflow.check.newdata"))
+
+
+# . Plot ----------------------------------------------------------------------------------------------------
+#function(clv.fitted, prediction.end, data.dyn.cov.life, data.dyn.cov.trans,...)
+setGeneric("clv.controlflow.plot.check.inputs", def = function(obj, prediction.end, cumulative, plot, label.line, verbose)
+  standardGeneric("clv.controlflow.plot.check.inputs"))
+
+setGeneric("clv.controlflow.plot.get.data", def = function(obj, dt.expectation.seq, cumulative, label.line, verbose)
+  standardGeneric("clv.controlflow.plot.get.data"))
+
 
 
 

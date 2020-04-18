@@ -65,8 +65,8 @@ clv.template.controlflow.estimate <- function(clv.fitted,
     message("Estimation finished!")
 
   # **FUTURE only: Extract results ---------------------------------------------------------------------------------
-  # Extract results needed to build the final clv.fittedect
-  #   the final clv.fittedect is in a separate builder function because it might / will be exported to use
+  # Extract results needed to build the final object
+  #   the final object is in a separate builder function because it might / will be exported to use
   #     together with prepare.only=T
   #   could move to separate function because of possible mcmc estimation (clv.controlflow.post.estimation.steps())
   # Extracted: last used method's Hessian + coefs, kkt, LL value, ...

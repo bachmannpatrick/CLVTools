@@ -10,7 +10,7 @@ clv.template.controlflow.predict <- function(clv.fitted, prediction.end, predict
   #   need to be set before adding the newdata as the model might need them (to re-estimate or similar)
 
   # Set prediction params from coef()
-  clv.fitted <- clv.controlflow.predict.set.prediction.params(obj=clv.fitted)
+  clv.fitted <- clv.controlflow.predict.set.prediction.params(clv.fitted=clv.fitted)
 
 
   # Process Newdata ----------------------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ clv.template.controlflow.predict <- function(clv.fitted, prediction.end, predict
 
   # Input checks ----------------------------------------------------------------------------------------
   #   Only after newdata replaced clv.data stored in clv.fitted because inputchecks use clv.fitted@clv.data
-  clv.controlflow.predict.check.inputs(obj=clv.fitted, prediction.end=prediction.end, predict.spending=predict.spending,
+  clv.controlflow.predict.check.inputs(clv.fitted=clv.fitted, prediction.end=prediction.end, predict.spending=predict.spending,
                                        continuous.discount.factor=continuous.discount.factor,
                                        verbose=verbose)
 
