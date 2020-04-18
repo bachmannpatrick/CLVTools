@@ -1,6 +1,12 @@
 #' @name bgnbd
 #' @title BG/NBD models - Work In Progress
 #' @description Fits BG/NBD models on transactional data with static and without covariates.
+#'
+#' @template template_params_estimate
+#' @template template_params_estimate_cov
+#' @template template_param_verbose
+#' @template template_param_dots
+#'
 NULL
 
 #' @exportMethod bgnbd

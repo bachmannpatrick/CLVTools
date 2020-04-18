@@ -7,6 +7,9 @@
 #' @template template_param_verbose
 #' @template template_param_dots
 #'
+#' @param use.cor Whether the correlation between the transaction and lifetime process should be estimated.
+#' @param start.param.cor Start parameter for the optimization of the correlation.
+#'
 #' @description
 #' Fits Pareto/NBD models on transactional data with and without covariates.
 #'
