@@ -1,11 +1,14 @@
 ---
 title: "The CLVTools Package"
-output: pdf_document
+output: 
+  pdf_document: 
+    latex_engine: xelatex
+    number_sections: yes
 vignette: >
   %\VignetteIndexEntry{The CLVTools Package}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-#bibliography: bibliography.bib #** is faulty atm (crashes knitr, some special characters or so) **
+  %\VignetteEngine{knitr::rmarkdown}
+bibliography: bibliography.bib #** is faulty atm (crashes knitr, some special characters or so) **
 ---
 
 
@@ -18,7 +21,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Walktrough for the CLVTools package
+# Walktrough for the CLVTools package
 
 
 ## Setup the R environment
@@ -190,7 +193,7 @@ plot(x, prediction.end = NULL, cumulative = FALSE,
   transactions = TRUE, label = NULL, plot = TRUE, verbose = TRUE,
   ...)
 
-```{r plot-model}
+```{r plot-model, fig.height=4.40, fig.width=9}
 plot(est.pnbd)
 
 ```
@@ -220,7 +223,7 @@ data("apparelStaticCov")
 apparelStaticCov
 ```
 
-Data for time-varying contextual factors requires a time-series of contextual factor values for every customer. I.e. if the time-varying contextual factors are allowed to change every week, a value for every customer for every week is required. Note that all contextual factors are required to use the same time intervals for the time-series. In the example of the apparel retailer we use information on direct marketing (`Marekting`) as time-varying contextual factors. Additionally, we add gender as time-invariant contextual factors. Note that the data structure of invariant contextual factors needs to be aligned with the structure of time-varying contextual factors. Use `data("apparelDynCov")` command to load the time-varying contextual factors. In this example `Cov.Date` indicates the first day of a weekly contextual factor time-interval.
+Data for time-varying contextual factors requires a time-series of contextual factor values for every customer. I.e. if the time-varying contextual factors are allowed to change every week, a value for every customer for every week is required. Note that all contextual factors are required to use the same time intervals for the time-series. In the example of the apparel retailer we use information on direct marketing (`Marketing`) as time-varying contextual factors. Additionally, we add gender as time-invariant contextual factors. Note that the data structure of invariant contextual factors needs to be aligned with the structure of time-varying contextual factors. Use `data("apparelDynCov")` command to load the time-varying contextual factors. In this example `Cov.Date` indicates the first day of a weekly contextual factor time-interval.
 
 ```{r Cov-dynData}
 data("apparelDynCov")
@@ -240,7 +243,7 @@ pnbd.static<- SetStaticCovariates(clv.data = clv.apparel,
 
 To specify the time-varying contextual factors for seasonal patterns and direct marketing, we use the following:
 
-```{r Cov-setDynamic, eval = FALSE}
+```{r Cov-setDynamic, eval=FALSE, message=FALSE, warning=TRUE}
 pnbd.dyn <- SetDynamicCovariates(clv.data = clv.apparel, 
                                      data.cov.life = apparelDynCov,
                                      data.cov.trans = apparelDynCov, 
@@ -252,23 +255,32 @@ pnbd.dyn <- SetDynamicCovariates(clv.data = clv.apparel,
 
 In order to include time-invariant covariates in a time-varying model, they may be recoded as a time-varying covariate with a constant value in every time period.
 
-Once the covariates are added to the model the estimation process is almost identical to the standard model without contextual factors. The only difference is that the provided object now data for contains either time-invariant or time-varying covariates and the option to define start parameters for the covariates of both processes using the arguments `start.params.life` and `start.params.trans`. If not set, the staring values are set to 1. To define starting parameters for the covariates, the name of the corresponding factor has to be used. For example in the case of time-invariant covariates:
+Once the covariates are added to the model the estimation process is almost identical to the standard model without covariates. The only difference is that the provided object now data for contains either time-invariant or time-varying covariates and the option to define start parameters for the covariates of both processes using the arguments `start.params.life` and `start.params.trans`. If not set, the staring values are set to 1. To define starting parameters for the covariates, the name of the corresponding factor has to be used. For example in the case of time-invariant covariates:
 
-```{r Cov-estimate}
+```{r Static-cov-estimate, message=TRUE, warning=FALSE}
 est.pnbd.static <- pnbd(pnbd.static, 
                          start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
                          start.params.life = c(Gender=0.6, Channel=0.4),
                          start.params.trans = c(Gender=0.6, Channel=0.4))
 ```
 
-To inspect the estimated model we use `summary()`, however all other commands such as `print()`, `coef()`, `loglike()`, `confint()` and `vcov()` are also available. Now, output contains also parameters for the covariates for both processes. Since covariates are added separately for the purchase and the attrition process, there are also separate model parameters for the two processes. These parameters are directly interpretable as rate elasticity of the corresponding factors: A 1% change in a contextual factor $\bf{X}^{P}$ or $\bf{X}^{L}$ changes the purchase or the attrition rate by $\gamma_{purch}\bf{X}^{P}$ or $\gamma_{life}\bf{X}^{L}$ percent, respectively  [@Gupta1991]. In the example of the apparel retailer, we observe that female customer significantly purchase more (`trans.Gender=1.1772`) and customer acquired offline purchase slightly more(`trans.Channel=0.5996`). Before interpreting the parameters, check the Karush-Kuhn-Tucker optimality conditions of the first and second order [@KKT] (KKT1 and KKT1). If those criteria are not met, the optimizer has probably not arrived at an optimal solution. If this is the case it is usually a good idea to rerun the estimation using alternative starting values.
+Analogously, we can estimate the model containing time-varying covariates. We recommend to enable the built-in support for multithreading when estimating more complex models like this. See section [Multitherading](#multithreading).
+
+```{r Dyn-cov-estimate, eval=FALSE}
+est.pnbd.static <- pnbd(pnbd.dyn, 
+                         start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
+                         start.params.life = c(Marketing=0.5, Gender=0.6, Channel=0.4),
+                         start.params.trans = c(Marketing=0.5, Gender=0.6, Channel=0.4))
+```
+
+To inspect the estimated model we use `summary()`, however all other commands such as `print()`, `coef()`, `loglike()`, `confint()` and `vcov()` are also available. Now, output contains also parameters for the covariates for both processes. Since covariates are added separately for the purchase and the attrition process, there are also separate model parameters for the two processes. These parameters are directly interpretable as rate elasticity of the corresponding factors: A 1% change in a contextual factor $\bf{X}^{P}$ or $\bf{X}^{L}$ changes the purchase or the attrition rate by $\gamma_{purch}\bf{X}^{P}$ or $\gamma_{life}\bf{X}^{L}$ percent, respectively  [@Gupta1991]. In the example of the apparel retailer, we observe that female customer purchase significantly more (`trans.Gender=1.42576`). Note, that female customers are coded as 1, male customers as 0. Also customers acquired offline (coded as Channel=1), purchase more (`trans.Channel=0.40304`) and stay longer (`life.Channel=0.9343`). Make sure to check the Karush-Kuhn-Tucker optimality conditions of the first and second order [@KKT] (KKT1 and KKT1) before interpreting the parameters. If those criteria are not met, the optimizer has probably not arrived at an optimal solution. If this is the case it is usually a good idea to rerun the estimation using alternative starting values.
 
 
 ```{r Cov-summary}
 summary(est.pnbd.static)
 ```
 
-To predict future customer behavior we use `predict()`. Time-varying covariates have to be available for the entire prediction prediction period. If the data initially provided in the `SetDynamicCovariates()` command does not cover the complete prediction period, the argument `new.data` offers the possibility to supply new data for the time-varying covariates in the from of a `clvdata` object.
+To predict future customer behavior we use `predict()`.  Note that dependent on the model, the predicted metrics may differ. For example, in the case of the Pareto/NBD model with time-varying covariates, instead of DERT, DECT is predicted. DECT only covers a finite time horizon in contrast to DERT. Time-varying covariates must be provided for the entire prediction period. If the data initially provided in the `SetDynamicCovariates()` command does not cover the complete prediction period, the argument `new.data` offers the ability to supply new data for the time-varying covariates in the from of a `clvdata` object.
 
 ## Add Correlation to the model
 To relax the assumption of independence between the purchase and the attrition process, `CLVTools` provides the option to specify the argument `use.cor` in the command t fit the model (i.e. `pnbd`). In case of `use.cor=TRUE`, a Sarmanov approach is used to correlate the two processes. `start.param.cor` allows to optionally specify a starting value for the correlation parameter.
@@ -304,6 +316,18 @@ est.pnbd.constr <- pnbd(pnbd.static,
                          names.cov.constr=c("Gender"))
 summary(est.pnbd.constr)
 ```
+
+## Multithreading: Enable parallel processing for CLVTools {#multithreading}
+`CLVTools` supports parallel processing when estimating models containing time-varying covariates using the package `future` [@future] and the corresponding foreach parallel adaptor `doFuture` [@doFuture]. To enable the distribution of the workload across all available cores, use execute the following commands before estimating the model (i.e. calling `pnbd()):
+
+```{r doFuture, eval=FALSE}
+  library("doFuture")
+  registerDoFuture()
+  plan("multisession")
+```
+To limit the number of parallel processes simultaneously executed, we can specify the number of workers `plan(multisession, workers = 2)`.
+
+
 
 ### Literature
 

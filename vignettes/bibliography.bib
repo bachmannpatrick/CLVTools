@@ -1,4 +1,4 @@
-% Encoding: windows-1252
+% Encoding: UTF-8
 
 @STRING{acp = {Academic Press}}
 
@@ -85,11 +85,9 @@
 @article{Abe2009,
   author = {Abe, Makoto},
   journal = {Marketing Science},
-  keywords = {2006,2007,2008,2009,23,Pareto-NBD,accepted,articles in advance june,bayesian method,crm,customer lifetime,december 7,direct marketing,history,june 29,mcmc,processed by peter fader,published online in,received,revised march 18},
-  mendeley-tags = {Pareto-NBD},
   number = {3},
   pages = {541--553},
-  title = {{"Counting Your Customers" One by One: A Hierarchical Bayes Extension to the Pareto/NBD Model}},
+  title = {{'Counting Your Customers' One by One: A Hierarchical Bayes Extension to the Pareto/NBD Model}},
   volume = {28},
   year = {2009}
 }
@@ -135,7 +133,7 @@ author = {Fader, Peter S. and Hardie, Bruce G.S. and Lee, KL},
 journal = {Marketing Science},
 number = {2},
 pages = {275--284},
-title = {{"Counting Your Customers" the Easy Way: An Alternative to the Pareto/NBD Model}},
+title = {{'Counting Your Customers' the Easy Way: An Alternative to the Pareto/NBD Model}},
 volume = {24},
 year = {2005}
 }
@@ -164,7 +162,7 @@ year = {2005}
 
 @INPROCEEDINGS{KKT,
   author = {{Kuhn}, H.~W. and {Tucker}, A.~W.},
-  title = "{Nonlinear Programming}",
+  title = {Nonlinear Programming},
   booktitle = {Second Berkeley Symposium on Mathematical Statistics and Probability},
   year = 1951,
   editor = {{Neyman}, J.},
@@ -203,10 +201,7 @@ year = {1987}
 
 @article{Fader2001,
 author = {Fader, Peter S and Hardie, Bruce G S},
-doi = {10.1287/inte.31.4.94.9683},
-issn = {0092-2102},
 journal = {Interfaces},
-keywords = {BG},
 number = {3 - Supplement},
 pages = {94--107},
 title = {{Forecasting Repeat Sales at CDNOW: A Case Study}},
@@ -265,6 +260,121 @@ year = {2001}
     year = {2019},
     note = {R package version 2.2.0},
     url = {https://CRAN.R-project.org/package=devtools},
+  }
+
+
+  @Book{ggplot2,
+    author = {Hadley Wickham},
+    title = {ggplot2: Elegant Graphics for Data Analysis},
+    publisher = {Springer-Verlag New York},
+    year = {2016},
+    isbn = {978-3-319-24277-4},
+    url = {https://ggplot2.tidyverse.org},
+  }
+
+  @Manual{methods,
+    title = {R: A Language and Environment for Statistical Computing},
+    author = {{R Core Team}},
+    organization = {R Foundation for Statistical Computing},
+    address = {Vienna, Austria},
+    year = {2018},
+    url = {https://www.R-project.org/},
+  }
+
+  @Manual{utils,
+    title = {R: A Language and Environment for Statistical Computing},
+    author = {{R Core Team}},
+    organization = {R Foundation for Statistical Computing},
+    address = {Vienna, Austria},
+    year = {2018},
+    url = {https://www.R-project.org/},
+  }
+
+ @Manual{stats,
+    title = {R: A Language and Environment for Statistical Computing},
+    author = {{R Core Team}},
+    organization = {R Foundation for Statistical Computing},
+    address = {Vienna, Austria},
+    year = {2018},
+    url = {https://www.R-project.org/},
+  }
+
+  @Article{gsl,
+    title = {Special functions in R: introducing the gsl package},
+    author = {Robin K. S. Hankin},
+    journal = {R News},
+    year = {2006},
+    month = {October},
+    volume = {6},
+    issue = {4},
+  }
+
+ @Book{rcpp1,
+    title = {Seamless {R} and {C++} Integration with {Rcpp}},
+    author = {Dirk Eddelbuettel},
+    publisher = {Springer},
+    address = {New York},
+    year = {2013},
+    note = {ISBN 978-1-4614-6867-7},
+    doi = {10.1007/978-1-4614-6868-4},
+  }
+
+    @Article{rcpp2,
+    title = {{Extending   extit{R} with   extit{C++}: A Brief Introduction to   extit{Rcpp}}},
+    author = {Dirk Eddelbuettel and James Joseph Balamuta},
+    journal = {PeerJ Preprints},
+    year = {2017},
+    month = {aug},
+    volume = {5},
+    pages = {e3188v1},
+    issn = {2167-9843},
+    url = {https://doi.org/10.7287/peerj.preprints.3188v1},
+    doi = {10.7287/peerj.preprints.3188v1},
+  }
+
+  @Article{rcpparamdillo,
+    title = {RcppArmadillo: Accelerating R with high-performance C++ linear algebra},
+    author = {Dirk Eddelbuettel and Conrad Sanderson},
+    journal = {Computational  Statistics and Data Analysis},
+    year = {2014},
+    volume = {71},
+    month = {March},
+    pages = {1054--1063},
+    url = {http://dx.doi.org/10.1016/j.csda.2013.02.005},
+  }
+
+  @Manual{matrix,
+    title = {Matrix: Sparse and Dense Matrix Classes and Methods},
+    author = {Douglas Bates and Martin Maechler},
+    year = {2019},
+    note = {R package version 1.2-17},
+    url = {https://CRAN.R-project.org/package=Matrix},
+  }
+
+ @Manual{foreach,
+    title = {foreach: Provides Foreach Looping Construct},
+    author = {{Microsoft} and Steve Weston},
+    year = {2019},
+    note = {R package version 1.4.7},
+    url = {https://CRAN.R-project.org/package=foreach},
+  }
+
+
+    @Manual{future,
+    title = {future: Unified Parallel and Distributed Processing in R for Everyone},
+    author = {Henrik Bengtsson},
+    year = {2020},
+    note = {R package version 1.16.0},
+    url = {https://CRAN.R-project.org/package=future},
+  }
+
+    @Manual{doFuture,
+    title = {doFuture: A Universal Foreach Parallel Adapter using the Future API of the
+'future' Package},
+    author = {Henrik Bengtsson},
+    year = {2020},
+    note = {R package version 0.9.0},
+    url = {https://CRAN.R-project.org/package=doFuture},
   }
 
 
