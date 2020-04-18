@@ -216,7 +216,7 @@
 }
 
 fct.helper.fitted.all.s3 <- function(clv.fitted, clv.newdata, full.names, clv.newdata.nohold, clv.newdata.withhold,
-                                     DERT.not.implemented){ #, name.model){
+                                     DERT.not.implemented = FALSE){ #, name.model){
 
   .fct.helper.s3.fitted.coef(clv.fitted = clv.fitted, full.names = full.names)
 
