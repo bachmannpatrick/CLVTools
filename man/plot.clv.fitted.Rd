@@ -61,23 +61,31 @@ the period that starts at \code{period.first}. Only if \code{transactions} is \c
 Plot the actual repeat transactions and overlay it with the repeat transaction as predicted by the fitted model.
 }
 \details{
-\code{prediction.end} is either a point in time (of class \code{Date}, \code{POSIXct}, or \code{character}) or the number of periods
-that indicates until when to plot the expected transactions.
+\code{prediction.end} indicates until when to predict or plot and can be given as either
+a point in time (of class \code{Date}, \code{POSIXct}, or \code{character}) or the number of periods.
 If \code{prediction.end} is of class character, the date/time format set when creating the data object is used for parsing.
-If \code{prediction.end} is the number of periods, the end of the fitting period serves as the reference point from which periods are counted. Only full periods may be specified.
-If \code{prediction.end} is omitted or NULL, it defaults to the end of the holdout period.
+If \code{prediction.end} is the number of periods, the end of the fitting period serves as the reference point
+from which periods are counted. Only full periods may be specified.
+If \code{prediction.end} is omitted or NULL, it defaults to the end of the holdout period if present and to the
+end of the estimation period otherwise.
+
+The first prediction period is defined to start right after the end of the estimation period.
+If for example weekly time units are used and the estimation period ends on Sunday 2019-01-01, then the first day
+of the first prediction period is Monday 2019-01-02. Each prediction period includes a total of 7 days and
+the first prediction period therefore will end on, and include, Sunday 2019-01-08. Subsequent prediction periods
+again start on Mondays and end on Sundays.
+If \code{prediction.end} indicates a timepoint on which to end, this timepoint is included in the prediction period.
 
 Note that only whole periods can be plotted and that the prediction end might not exactly match \code{prediction.end}.
 See the Note section for more details.
-
 
 The \code{newdata} argument has to be a clv data object of the exact same class as the data object
 on which the model was fit. In case the model was fit with covariates, \code{newdata} needs to contain identically
 named covariate data.
 The use case for \code{newdata} is mainly two-fold: First, to estimate model parameters only on a
-sample of the data and then use the fitted model object to plot for the full data set provided through \code{newdata}.
+sample of the data and then use the fitted model object to predict or plot for the full data set provided through \code{newdata}.
 Second, for models with dynamic covariates, to provide a clv data object with longer covariates than contained in the data
-on which the model was estimated what allows to plot further. When providing \code{newdata}, some models
+on which the model was estimated what allows to predict or plot further. When providing \code{newdata}, some models
 might require additional steps that can significantly increase runtime.
 }
 \note{
@@ -90,7 +98,8 @@ for which the expectation is calculated therefore is not \code{prediction.end} b
 first time unit after \code{prediction.end}.
 }
 \examples{
-\dontrun{
+\donttest{
+
 data("cdnow")
 
 # Fit ParetoNBD model on the CDnow data
@@ -103,7 +112,7 @@ pnbd.cdnow <- pnbd(clvdata(cdnow, time.unit="w",
 plot(pnbd.cdnow)
 
 # Plot cumulative expected transactions of only the model
-plot(pnbd.cdnow, cumulative=T, transactions=F)
+plot(pnbd.cdnow, cumulative=TRUE, transactions=FALSE)
 
 # Plot forecast until 2001-10-21
 plot(pnbd.cdnow, prediction.end = "2001-10-21")
@@ -124,12 +133,6 @@ library("ggplot2")
 gg.pnbd.cdnow <- plot(pnbd.cdnow)
 gg.pnbd.cdnow + ggtitle("PNBD on CDnow")
 
-# Compose plot from separate model plots
-# no cov model
-p.m1 <- plot(pnbd.cdnow, transactions = T)
-# static cov model
-p.m2 <- plot(pnbd.cdnow.cov, transactions = F)
-p.m1 + geom_line(mapping=p.m2$mapping, data=p.m2$data,
-                 color="blue")
 }
+
 }

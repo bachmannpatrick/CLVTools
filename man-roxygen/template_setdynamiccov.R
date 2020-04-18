@@ -1,5 +1,7 @@
 #' @name SetDynamicCovariates
+#'
 #' @title Add Dynamic Covariates to a CLV data object
+#'
 #' @param clv.data CLV data object to add the covariates data to.
 #' @param data.cov.life Dynamic covariate data as \code{data.frame} or \code{data.table} for the lifetime process.
 #' @param data.cov.trans Dynamic covariate data as \code{data.frame} or \code{data.table} for the transaction process.
@@ -40,7 +42,7 @@
 #'
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' data("apparelTrans")
 #' data("apparelDynCov")
 #'
@@ -52,9 +54,9 @@
 #' clv.data.dyn.cov  <-
 #'    SetDynamicCovariates(clv.data.apparel,
 #'                        data.cov.life  = apparelDynCov,
-#'                        names.cov.life = c("DM", "High.Season", "Gender"),
+#'                        names.cov.life = c("Marketing", "Gender", "Channel"),
 #'                        data.cov.trans = apparelDynCov,
-#'                        names.cov.trans = c("DM", "High.Season", "Gender"),
+#'                        names.cov.trans = c("Marketing", "Gender", "Channel"),
 #'                        name.id = "Id",
 #'                        name.date = "Cov.Date")
 #'

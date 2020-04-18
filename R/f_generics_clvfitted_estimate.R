@@ -192,10 +192,10 @@ setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(
 })
 
 
-# . clv.controlflow.estimate.put.optimx ------------------------------------------------------------------------
+# . clv.controlflow.estimate.process.post.estimation ------------------------------------------------------------------------
 #' @importFrom optimx coef<-
 #' @importFrom utils tail
-setMethod(f = "clv.controlflow.estimate.put.optimx", signature = signature(obj="clv.fitted"), definition = function(obj, res.optimx){
+setMethod(f = "clv.controlflow.estimate.process.post.estimation", signature = signature(obj="clv.fitted"), definition = function(obj, res.optimx){
 
   obj@optimx.estimation.output <- res.optimx
 

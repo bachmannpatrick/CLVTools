@@ -132,5 +132,6 @@ setMethod("bgbb", signature = signature(clv.data="clv.data.dynamic.covariates"),
                                                                                                         start.params.life=c(), start.params.trans=c(),
                                                                                                         names.cov.constr=c(),start.params.constr=c(),
                                                                                                         reg.lambdas = c(), ...){
-  stop("This model has not been implemented for this type of data.")
+
+  stop("This model cannot be fitted on this type of data!")
 })

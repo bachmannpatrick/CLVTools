@@ -3,8 +3,9 @@ skip_on_cran()
 skip_on_ci()
 skip_on_covr()
 
+
 # gamma=0 ------------------------------------------------------------------------------------------------
-context("Consistency - PNBD - gamma=0")
+context("Consistency - PNBD - nocov vs staticcov gamma=0 ")
 
 # . Data to play with ------------------------------------------------------------------------------------
 data("cdnow")
@@ -57,8 +58,6 @@ expect_silent(log.params <-log.params[c("log.r", "log.alpha", "log.s", "log.beta
 expect_silent(p.dyncov@LL.data <- CLVTools:::pnbd_dyncov_LL(params=log.params, obj = p.dyncov))
 
 
-# gamma=0 ------------------------------------------------------------------------------------------------
-context("Consistency - PNBD - gamma=0")
 
 test_that("Predict yields same results for all models with gamma=0", {
   skip_on_cran()
@@ -116,7 +115,7 @@ test_that("plot yields same results for all models with gamma=0", {
 
 
 # static cov data ------------------------------------------------------------------------------------------------
-context("Consistency - PNBD - static cov data")
+context("Consistency - PNBD - staticcov vs dyncov gamma=0 ")
 # Same covs for static and dyncov
 
 # . Data preparation ---------------------------------------------------------------------------------------------

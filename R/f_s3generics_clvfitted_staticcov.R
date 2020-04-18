@@ -12,6 +12,7 @@ print.clv.fitted.static.cov <- function(x, digits = max(3L, getOption("digits") 
 }
 
 #' @rdname summary.clv.fitted
+#' @order 2
 #' @include class_clv_data_staticcovariates.R
 #' @export
 summary.clv.fitted.static.cov <- function(object, ...){

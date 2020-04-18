@@ -26,7 +26,7 @@ interlayer_constraints <- function(next.interlayers, LL.params, LL.function.sum,
     stop("The named constrained params are not among the parameters")
 
   # All params but the fixed ones
-  new.LL.params <- LL.params[base::setdiff(names(LL.params), names.prefixed.params.constr)]
+  new.LL.params <- LL.params[setdiff(names(LL.params), names.prefixed.params.constr)]
 
   # Add the fixed params twice (passed in the orignal param vec as well)
   new.LL.params[fixed.params.names.life]  <- LL.params[names.prefixed.params.constr]

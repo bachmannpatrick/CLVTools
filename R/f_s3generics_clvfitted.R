@@ -56,11 +56,44 @@ coef.clv.fitted <- function(object, complete=TRUE, ...){
   return(original.scale.params)
 }
 
-#' @include class_clv_fitted.R
+
+
+#' @title Calculate Variance-Covariance Matrix for CLV Models fitted with Maximum Likelihood Estimation
+#'
+#' @param object a fitted clv model object
+#' @param ... ignored, for consistency with the generic function.
+#'
+#'
+#' @description
+#' Returns the variance-covariance matrix of the parameters of the fitted model object.
+#' The variance-covariance matrix is derived from the Hessian that results from the optimization procedure.
+#' First, the Moore–Penrose generalized inverse of the Hessian is used to obtain an estimate of the
+#' variance-covariance matrix. If the result is not positive definite, \link[Matrix:nearPD]{nearPD} is used
+#' with standard settings to find the nearest positive definite matrix.
+#'
+#' Because some parameters may be transformed for the purpose of restricting their value during
+#' the log-likelihood estimation, it requires that the variance estimates are adapted as well to
+#' be comparable to the reported coefficient estimates. See the references for more details on how this is done.
+#'
+#' If multiple estimation methods were used, the Hessian of the last method is used.
+#'
+#' @return
+#' A matrix of the estimated covariances between the parameter estimates of the model.
+#' The row and column names correspond to the parameter names given by the \code{coef} method.
+#'
+#' @references
+#' Jeff's "Note on p-values"
+#'
+#' @seealso \link[MASS]{ginv}, \link[Matrix]{nearPD}
+#'
+#'
 #' @importFrom stats vcov
 #' @importFrom utils tail
+#' @importFrom Matrix nearPD
+#' @importFrom MASS ginv
+#'
 #' @export
-vcov.clv.fitted <- function(object, complete = TRUE, ...){
+vcov.clv.fitted <- function(object, ...){
 
   if(any(!is.finite(object@optimx.hessian)))
     stop("The vcov matrix cannot be calulated because the hessian contains non-finite values!", call. = FALSE)
@@ -71,16 +104,17 @@ vcov.clv.fitted <- function(object, complete = TRUE, ...){
   #   Jeff:
   #   negative hessian or hessian?!
   #     -> Depends on optimization! If we have the loglikelihood we need the negative Hessian.
-  #   However we have the negative (!) Log likelihood, so I guess we need to take the Hessian directly
+  #   However we have the negative (!) Log likelihood, so we need to take the Hessian directly
 
-  # Inverse of hessian
-  #   try regular inverse first and only if fails use nearPD
-  #   Do not use sechol() of package accuracy because not available on cran
-  hessian.inv <- tryCatch(solve(object@optimx.hessian), error = function(e) return(e))
-  if(inherits(hessian.inv, 'error')){
-    warning("Failed to invert hessian, making it positive-definite first.")
-    hessian.inv <<- solve(Matrix::nearPD(object@optimx.hessian)$mat)
-  }
+  # Moore-Penrose inverse of Hessian
+  #   Results in the regular inverse if invertible
+  m.hessian.inv <- ginv(object@optimx.hessian)
+
+
+  # Make positive definite if it is not already
+  #   Returns unchanged if the matrix is PD already
+  m.hessian.inv <- as.matrix(nearPD(m.hessian.inv)$mat)
+
 
   # Apply Jeff's delta method to account for the transformations of the parameters
   #   See Jeff's Note on how to derive p-values
@@ -92,17 +126,18 @@ vcov.clv.fitted <- function(object, complete = TRUE, ...){
   m.delta.diag     <- clv.model.vcov.jacobi.diag(clv.model=object@clv.model, clv.fitted=object,
                                                  prefixed.params=prefixed.params)
 
-  stopifnot(all(colnames(hessian.inv) == colnames(m.delta.diag)))
-  stopifnot(all(rownames(hessian.inv) == rownames(m.delta.diag)))
-  m.vcov <- m.delta.diag %*% hessian.inv %*% m.delta.diag
+  stopifnot(all(colnames(m.hessian.inv) == colnames(m.delta.diag)))
+  stopifnot(all(rownames(m.hessian.inv) == rownames(m.delta.diag)))
+  m.vcov <- m.delta.diag %*% m.hessian.inv %*% m.delta.diag
 
   # Naming and sorting
   #   Sorting:  Correct because directly from optimx hessian and for delta.diag from coef(optimx)
   #   Naming:   Has to match coef(). model + cor: original
   #                                  any cov:     leave prefixed
-  #             Change the names of model+cor to display name because vcov now is in original scale as well
+  #             Change the names of model+cor to display name because
+  #               the reported vcov is in original scale as well
 
-  # Set all names of vcov to these of hessian
+  # Set all names of vcov to these of hessian (prefixed)
   rownames(m.vcov) <- colnames(m.vcov) <- colnames(object@optimx.hessian)
 
   # prefixed names to replace with original names
@@ -119,10 +154,11 @@ vcov.clv.fitted <- function(object, complete = TRUE, ...){
   rownames(m.vcov)[pos.prefixed.names] <- names.original.all
   colnames(m.vcov)[pos.prefixed.names] <- names.original.all
 
-  # **TODO: cannot easily sort to same order as coef because
-  #   optimx hessian is named after optimx names but report original display names
-  # dimnames(hessian.inv) <- dimnames(object@optimx.hessian)
-  # rownames(m.vcov) <- colnames(m.vcov) <- names(all.coefs)
+  # Of utmost importance: Ensure same sorting as coef()
+  names.coef <- names(coef(object = object))
+  m.vcov     <- m.vcov[names.coef, names.coef]
+
+  # **TODO: Add argument "complete" to be comparable to coef()!
 
   return(m.vcov)
 }
@@ -223,6 +259,7 @@ setMethod(f = "show", signature = signature(object="clv.fitted"), definition = f
 
 
 #' @rdname summary.clv.fitted
+#' @order 3
 #' @importFrom stats printCoefmat
 #' @export
 print.summary.clv.fitted <- function(x, digits=max(3L, getOption("digits")-3L),
@@ -270,8 +307,9 @@ print.summary.clv.fitted <- function(x, digits=max(3L, getOption("digits")-3L),
 }
 
 
+
 #' @template template_summary
-#' @include class_clv_fitted.R
+#' @order 1
 #' @importFrom stats coef vcov AIC BIC logLik pnorm
 #' @importFrom utils tail
 #' @importFrom methods is
@@ -294,10 +332,6 @@ summary.clv.fitted <- function(object, ...){
   # Coefficient table --------------------------------------------------------------
   # Return the full coefficient table. The subset is to relevant rows is done in the
   #   printing
-  # Jeff:
-  # SE <- sqrt(diag(Hinvcov))
-  # tval    <- (params-0) / SE
-  # pval    <- 2*(1-pnorm(abs(tval)))
   all.est.params  <- coef(object)
 
   # return NA_ placeholder if cannot calculate vcov
@@ -316,10 +350,8 @@ summary.clv.fitted <- function(object, ...){
       warning("For some parameters the standard error could not be calculated.", call. = FALSE)
   }
 
-  # **TODO: ASK Jeff for correct naming
-  # t.val <- (all.est.params-0)/se
+  # Jeff: z.val - norm
   z.val <- (all.est.params-0)/se
-  # p.val <- 2*pt(q=-abs(t.val), df=nobs(object)-1)
   p.val <- 2*(1-pnorm(abs(z.val)))
 
   res$coefficients <- cbind(all.est.params,
@@ -370,12 +402,7 @@ vcov.summary.clv.fitted <- function(object, ...){
 #' @description
 #' Extract the unconditional expectation (future transactions unconditional on beein "alive") from a fitted clv model.
 #'
-#' @details
-#' \code{prediction.end} is either a point in time (of class \code{Date}, \code{POSIXct}, or \code{character}) or the number of periods
-#' that indicates until when to calculate the unconditional expectation.
-#' If \code{prediction.end} is of class character, the date/time format set when creating the data object is used for parsing.
-#' If \code{prediction.end} is the number of periods, the end of the fitting period serves as the reference point from which periods are counted. Only full periods may be specified.
-#' If \code{prediction.end} is omitted or NULL, it defaults to the end of the holdout period.
+#' @template template_details_predictionend
 #'
 #' @include class_clv_fitted.R
 #' @importFrom stats fitted

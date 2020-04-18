@@ -1,3 +1,23 @@
+#' CLV Model providing model related functionalities
+#'
+#' @description
+#' Objects of class \code{clv.fitted} contain an instance of class clv.model that is called
+#' whenever a model-related step is performed (Strategy pattern).
+#'
+#' This class is the abstract parent class from which new clv models inherit. It implements
+#' only stubs (with stop()) for all methods that need to be implemented in order
+#' to obtain a functional \code{clv.fitted} object.
+#'
+#' @slot name.model Name of the model as it should be displayed
+#' @slot names.original.params.model character vector that defines the names of the model parameters as they should be reported
+#' @slot names.prefixed.params.model character vector that defines the names of the model parameters as they are named during LL optimization
+#' @slot start.params.model numeric vector of default values at original scale that should be used for the LL optimization if the user does not provide start parameters. Named with names.original.params.model.
+#' @slot optimx.defaults list of default arguments for calling \code{\link[optimx]{optimx}} with \code{do.call}. Named after the respective arguments in optimx.
+#'
+#' @seealso CLV model subclasses  \link{clv.model.pnbd.no.cov-class}, \link{clv.model.pnbd.static.cov-class}, \link{clv.model.pnbd.dynamic.cov-class}
+#' @seealso Class using its instances: \link{clv.fitted-class}
+#'
+#' @keywords internal
 #' @importFrom methods setClass
 setClass(Class = "clv.model", contains = "VIRTUAL",
          slots = c(
@@ -52,12 +72,12 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
 })
 
 
-# . clv.model.put.optimx.output -----------------------------------------------------------------------------------------
-setMethod("clv.model.put.optimx.output", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, res.optimx){
+# . clv.model.process.post.estimation -----------------------------------------------------------------------------------------
+setMethod("clv.model.process.post.estimation", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, res.optimx){
   # Example: do nothing
   # No additional step needed (ie store model specific stuff, extra process)
   # return(clv.fitted)
-  stop("The method clv.model.put.optimx.output has not been implemented by this model!")
+  stop("The method clv.model.process.post.estimation has not been implemented by this model!")
 })
 
 # . clv.model.cor.to.m ----------------------------------------------------------------------------------------

@@ -1,30 +1,27 @@
 # Load data ---------------------------------------------------------------------------------------
 data("apparelTrans")
 data("apparelDynCov")
-data("apparelDemographics")
+data("apparelStaticCov")
 
-# set Date as will otherwise complain in all the setdyncovs
-expect_silent(apparelDynCov[, Cov.Date := as.Date(Cov.Date)])
-# cutoff last as will result in "cutoff" message and not silent anymore
-apparelDynCov <- apparelDynCov[Cov.Date < "2016-10-09" ]
+# cutoff first as will result in "cutoff" message and not silent anymore
+apparelDynCov <- apparelDynCov[Cov.Date > "2005-01-01" ]
 
 context("Inputchecks - SetDynamicCovariates - Parameter clv.data")
 
-expect_message(clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w"),
-               regexp = "ignored")
+expect_silent(clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w"))
 
 
 # Parameter clv.data ---------------------------------------------------------------------------------------
 test_that("Fails for missing/NA/NULL", {
   expect_error(SetDynamicCovariates(clv.data = ,
-                                   data.cov.life  = apparelDynCov, names.cov.life = c("DM", "High.Season", c("DM", "High.Season", "Gender")),
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", c("DM", "High.Season", "Gender"))))
+                                   data.cov.life  = apparelDynCov, names.cov.life = c("Marketing", "Gender", c("Marketing", "Gender", "Channel")),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", c("Marketing", "Gender", "Channel"))))
   expect_error(SetDynamicCovariates(clv.data = NULL,
-                                   data.cov.life  = apparelDynCov, names.cov.life = c("DM", "High.Season", c("DM", "High.Season", "Gender")),
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", c("DM", "High.Season", "Gender"))))
+                                   data.cov.life  = apparelDynCov, names.cov.life = c("Marketing", "Gender", c("Marketing", "Gender", "Channel")),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", c("Marketing", "Gender", "Channel"))))
   expect_error(SetDynamicCovariates(clv.data = NA_real_,
-                                   data.cov.life  = apparelDynCov, names.cov.life = c("DM", "High.Season", c("DM", "High.Season", "Gender")),
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", c("DM", "High.Season", "Gender")),
+                                   data.cov.life  = apparelDynCov, names.cov.life = c("Marketing", "Gender", c("Marketing", "Gender", "Channel")),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", c("Marketing", "Gender", "Channel")),
                                    name.date = "Cov.Date"))
 })
 
@@ -32,34 +29,34 @@ test_that("Fails for missing/NA/NULL", {
 test_that("Fails if not clv.data input", {
   # dataframe / transactions
   expect_error(SetDynamicCovariates(clv.data = apparelTrans,
-                                   data.cov.life  = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                   data.cov.life  = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"))
   expect_error(SetDynamicCovariates(clv.data = list(apparelTrans),
-                                   data.cov.life  = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                   data.cov.life  = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"))
 })
 
 test_that("Fails if already has covariates", {
   expect_silent(clv.data.apparel.staticcov <-
                   SetStaticCovariates(clv.data = clv.data.apparel,
-                                      data.cov.life  = apparelDemographics, names.cov.life = c("Gender"),
-                                      data.cov.trans = apparelDemographics, names.cov.trans = c("Gender")))
+                                      data.cov.life  = apparelStaticCov, names.cov.life = c("Gender"),
+                                      data.cov.trans = apparelStaticCov, names.cov.trans = c("Gender")))
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel.staticcov,
-                                   data.cov.life  = apparelDemographics, names.cov.life = c("DM", "High.Season", "Gender"),
-                                   data.cov.trans = apparelDemographics, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                   data.cov.life  = apparelStaticCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                   data.cov.trans = apparelStaticCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
                regexp = "Cannot set")
 
   expect_silent(clv.data.apparel.dyncov <-
                   SetDynamicCovariates(clv.data = clv.data.apparel,
-                                      data.cov.life  = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                      data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                      data.cov.life  = apparelDynCov, names.cov.life = c("Marketing", "Gender"),
+                                      data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender"),
                                       name.date = "Cov.Date"))
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel.dyncov,
-                                    data.cov.life  = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life  = apparelDynCov, names.cov.life = c("Marketing", "Gender"),
+                                    data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender"),
                                     name.date = "Cov.Date"),
                regexp = "Cannot set")
 })
@@ -72,51 +69,51 @@ context("Inputchecks - SetDynamicCovariates - Parameter data.cov.life")
 
 test_that("Fails if missing/NULL/NA", {
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                   data.cov.life  = , names.cov.life = c("DM", "High.Season", "Gender"),
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                   data.cov.life  = , names.cov.life = c("Marketing", "Gender", "Channel"),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
                regexp = "missing")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                   data.cov.life = NULL, names.cov.life = c("DM", "High.Season", "Gender"),
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                   data.cov.life = NULL, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
                regexp = "type data.frame or data.table")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                   data.cov.life = NA, names.cov.life = c("DM", "High.Season", "Gender"),
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                   data.cov.life = NA, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
                regexp = "type data.frame or data.table")
 })
 
 test_that("Fails if not dataframe/datetable", {
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                   data.cov.life  = as.list(apparelDynCov), names.cov.life = c("DM", "High.Season", "Gender"),
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                   data.cov.life  = as.list(apparelDynCov), names.cov.life = c("Marketing", "Gender", "Channel"),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
                regexp = "type data.frame or data.table")
 })
 
 test_that("Fails if empty", {
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                   data.cov.life  = data.frame(), names.cov.life = c("DM", "High.Season", "Gender"),
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                   data.cov.life  = data.frame(), names.cov.life = c("Marketing", "Gender", "Channel"),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
                regexp = "empty")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                   data.cov.life  = data.frame(Id=character(), Gender=character()), names.cov.life = c("DM", "High.Season", "Gender"),
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                   data.cov.life  = data.frame(Id=character(), Gender=character()), names.cov.life = c("Marketing", "Gender", "Channel"),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
                regexp = "empty")
 })
 
 test_that("Fails if covariate data is to short for all customers",{
   apparelDynCov.tooshort <- data.table::copy(apparelDynCov)
-  apparelDynCov.tooshort <- apparelDynCov.tooshort[Cov.Date < "2016-01-01"]
+  apparelDynCov.tooshort <- apparelDynCov.tooshort[Cov.Date < "2005-02-01"]
                                                      # clv.data.apparel@clv.time@timepoint.estimation.end - lubridate::dweeks(15)]
 
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life  = apparelDynCov.tooshort, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life  = apparelDynCov.tooshort, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "covariate data exactly from")
 })
@@ -127,8 +124,8 @@ test_that("Fails if does not have covariates for all customers", {
   # delete all by this customer
   apparelDynCov.1missing <- apparelDynCov.1missing[Id != first.customer]
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life  = apparelDynCov.1missing, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life  = apparelDynCov.1missing, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "Every Id")
 })
@@ -137,8 +134,8 @@ test_that("Fails if does not have covariates for all customers and dates", {
   apparelDynCov.1missing <- data.table::copy(apparelDynCov)
   apparelDynCov.1missing <- apparelDynCov.1missing[-1000]
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                   data.cov.life  = apparelDynCov.1missing, names.cov.life = c("DM", "High.Season", "Gender"),
-                                   data.cov.trans = apparelDynCov,          names.cov.trans = c("DM", "High.Season", "Gender"),
+                                   data.cov.life  = apparelDynCov.1missing, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                   data.cov.trans = apparelDynCov,          names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
                regexp = "need to have the same number of Dates")
 })
@@ -151,16 +148,16 @@ test_that("Fails if duplicate covariate (Id/Date)", {
   apparelDynCov.duplicate.diff <-
     data.table::rbindlist(list(apparelDynCov,
                    # Different cov value
-                   apparelDynCov[1000,.(Id,Cov.Date, DM=1,High.Season=0, Gender=0)]))
+                   apparelDynCov[1000,.(Id,Cov.Date, Marketing=1,Gender=0, Channel=0)]))
 
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life  = apparelDynCov.duplicate.same, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life  = apparelDynCov.duplicate.same, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "need to have the same number")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life  = apparelDynCov.duplicate.diff, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life  = apparelDynCov.duplicate.diff, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "need to have the same number")
 })
@@ -170,8 +167,8 @@ test_that("Fails if any NA in cov data - Id", {
   apparelDemo.1na <- data.table::copy(apparelDynCov)
   apparelDemo.1na[1000, Id := NA]
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                   data.cov.life  = apparelDemo.1na, names.cov.life = c("DM", "High.Season", "Gender"),
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                   data.cov.life  = apparelDemo.1na, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
                regexp = "any NA")
 })
@@ -180,35 +177,35 @@ test_that("Fails if any NA in cov data - Date", {
   apparelDemo.1na <- data.table::copy(apparelDynCov)
   apparelDemo.1na[1000, Cov.Date := NA_real_]
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life  = apparelDemo.1na, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life  = apparelDemo.1na, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "any NA")
 })
 
 test_that("Fails if any NA in cov data - Cov", {
   apparelDemo.1na <- data.table::copy(apparelDynCov)
+  apparelDemo.1na[1000, Channel := NA_real_]
+  expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
+                                    data.cov.life  = apparelDemo.1na, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
+                                    name.date = "Cov.Date"),
+               regexp = "any NA")
+
+  apparelDemo.1na <- data.table::copy(apparelDynCov)
   apparelDemo.1na[1000, Gender := NA_real_]
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life  = apparelDemo.1na, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
-                                    name.date = "Cov.Date"),
-               regexp = "any NA")
-
-  apparelDemo.1na <- data.table::copy(apparelDynCov)
-  apparelDemo.1na[1000, High.Season := NA_real_]
-  expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life  = apparelDemo.1na, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life  = apparelDemo.1na, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "any NA")
 
 
   apparelDemo.1na <- data.table::copy(apparelDynCov)
-  apparelDemo.1na[1000, DM := NA_real_]
+  apparelDemo.1na[1000, Marketing := NA_real_]
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life  = apparelDemo.1na, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life  = apparelDemo.1na, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "any NA")
 })
@@ -222,8 +219,8 @@ test_that("Fails for variable with single category", {
 
   # "variable with a single category cannot be used as covariates."
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life  = apparelDynCov.1cat,  names.cov.life  = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDynCov,       names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life  = apparelDynCov.1cat,  names.cov.life  = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDynCov,       names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "variables with only a single category")
 })
@@ -234,41 +231,41 @@ context("Inputchecks - SetDynamicCovariates - Parameter data.cov.trans")
 
 test_that("Fails if missing/NULL/NA", {
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life  = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = , names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life  = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = , names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "missing")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = NULL, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = NULL, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "type data.frame or data.table")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = NA, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = NA, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "type data.frame or data.table")
 })
 
 test_that("Fails if not dataframe/datetable", {
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life  = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = as.list(apparelDynCov), names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life  = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = as.list(apparelDynCov), names.cov.trans = cc("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "type data.frame or data.table")
 })
 
 test_that("Fails if empty", {
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life  = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = data.frame(), names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life  = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = data.frame(), names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "empty")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                     data.cov.life  = apparelDynCov,
-                                    names.cov.life = c("DM", "High.Season", "Gender"),
+                                    names.cov.life = c("Marketing", "Gender", "Channel"),
                                     data.cov.trans = data.frame(Id=character(), Gender=character()),
-                                    names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "empty")
 })
@@ -276,12 +273,12 @@ test_that("Fails if empty", {
 
 test_that("Fails if covariate data is to short for all customers",{
   apparelDynCov.tooshort <- data.table::copy(apparelDynCov)
-  apparelDynCov.tooshort <- apparelDynCov.tooshort[Cov.Date < "2016-01-01"]
+  apparelDynCov.tooshort <- apparelDynCov.tooshort[Cov.Date < "2005-02-01"]
   # clv.data.apparel@clv.time@timepoint.estimation.end - lubridate::dweeks(15)]
 
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life  = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDynCov.tooshort, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life  = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDynCov.tooshort, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "covariate data exactly from")
 })
@@ -293,8 +290,8 @@ test_that("Fails if does not have covariates for all customers", {
   # delete all by this customer
   apparelDemo.1missing <- apparelDemo.1missing[Id != first.customer]
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life  = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDemo.1missing, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life  = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDemo.1missing, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "Every Id")
 })
@@ -303,8 +300,8 @@ test_that("Fails if does not have covariates for all customers and dates", {
   apparelDemo.1missing <- data.table::copy(apparelDynCov)
   apparelDemo.1missing <- apparelDemo.1missing[-1000]
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life  = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDemo.1missing, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life  = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDemo.1missing, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "need to have the same number of Dates")
 })
@@ -317,16 +314,16 @@ test_that("Fails if duplicate covariate (Id/Date)", {
   apparelDynCov.duplicate.diff <-
     data.table::rbindlist(list(apparelDynCov,
                    # Different cov value
-                   apparelDynCov[1000,.(Id,Cov.Date, DM=1,High.Season=0, Gender=0)]))
+                   apparelDynCov[1000,.(Id,Cov.Date, Marketing=1,Gender=0, Channel=0)]))
 
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life  = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDynCov.duplicate.same, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life  = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDynCov.duplicate.same, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "need to have the same number")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life  = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDynCov.duplicate.diff, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life  = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDynCov.duplicate.diff, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "need to have the same number")
 })
@@ -336,8 +333,8 @@ test_that("Fails if any NA in cov data - Id", {
   apparelDemo.1na <- data.table::copy(apparelDynCov)
   apparelDemo.1na[1000, Id := NA]
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life  = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDemo.1na, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life  = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDemo.1na, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "any NA")
 })
@@ -346,35 +343,35 @@ test_that("Fails if any NA in cov data - Date", {
   apparelDemo.1na <- data.table::copy(apparelDynCov)
   apparelDemo.1na[1000, Cov.Date := NA_real_]
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life  = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDemo.1na, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life  = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDemo.1na, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "any NA")
 })
 
 test_that("Fails if any NA in cov data - Cov", {
   apparelDemo.1na <- data.table::copy(apparelDynCov)
+  apparelDemo.1na[1000, Channel := NA_real_]
+  expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
+                                    data.cov.life  = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDemo.1na, names.cov.trans = c("Marketing", "Gender", "Channel"),
+                                    name.date = "Cov.Date"),
+               regexp = "any NA")
+
+  apparelDemo.1na <- data.table::copy(apparelDynCov)
   apparelDemo.1na[1000, Gender := NA_real_]
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life  = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDemo.1na, names.cov.trans = c("DM", "High.Season", "Gender"),
-                                    name.date = "Cov.Date"),
-               regexp = "any NA")
-
-  apparelDemo.1na <- data.table::copy(apparelDynCov)
-  apparelDemo.1na[1000, High.Season := NA_real_]
-  expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life  = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDemo.1na, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life  = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDemo.1na, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "any NA")
 
 
   apparelDemo.1na <- data.table::copy(apparelDynCov)
-  apparelDemo.1na[1000, DM := NA_real_]
+  apparelDemo.1na[1000, Marketing := NA_real_]
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life  = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDemo.1na, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life  = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDemo.1na, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "any NA")
 })
@@ -387,8 +384,8 @@ test_that("Fails for variable with single category", {
 
   # "variable with a single category cannot be used as covariates."
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life  = apparelDynCov,     names.cov.life  = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDynCov.1cat,names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.life  = apparelDynCov,     names.cov.life  = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDynCov.1cat,names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "variables with only a single category")
 })
@@ -398,22 +395,22 @@ context("Inputchecks - SetDynamicCovariates - Parameter name.cov.life")
 test_that("Fails if missing/NULL/NA/empty",{
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelDynCov, names.cov.life = ,
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
                regexp = "missing")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelDynCov, names.cov.life = NULL ,
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
                regexp = "may not be NULL")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelDynCov, names.cov.life = NA_character_ ,
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
                regexp = "any NA")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelDynCov, names.cov.life = "" ,
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
                regexp = "could not be found")
 })
@@ -421,18 +418,18 @@ test_that("Fails if missing/NULL/NA/empty",{
 test_that("Fails if not character vector",{
   # ** Fails properly
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                   data.cov.life = apparelDynCov, names.cov.life = list(c("DM", "High.Season", "Gender")),
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                   data.cov.life = apparelDynCov, names.cov.life = list(c("Marketing", "Gender", "Channel")),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
                regexp = "character")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                   data.cov.life = apparelDynCov, names.cov.life = data.frame(c("DM", "High.Season", "Gender")),
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                   data.cov.life = apparelDynCov, names.cov.life = data.frame(c("Marketing", "Gender", "Channel")),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
                regexp = "character")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelDynCov, names.cov.life = 2,
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
                regexp = "character")
 })
@@ -440,12 +437,12 @@ test_that("Fails if not character vector",{
 test_that("Fails if contains NA", {
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelDynCov, names.cov.life = NA_character_,
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
                regexp = "any NA")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                   data.cov.life = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender", NA_character_),
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                   data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel", NA_character_),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
                regexp = "any NA")
 })
@@ -453,13 +450,13 @@ test_that("Fails if contains NA", {
 test_that("Fails if names not in data", {
   # ** TODO: Check and fail properly
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                   data.cov.life = apparelDynCov, names.cov.life = c("DM", "High.Season", "GenderBender"),
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                   data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "ChannelBender"),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
                regexp = "could not be found")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                   data.cov.life = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "GenderBender"),
+                                   data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "ChannelBender"),
                                    name.date = "Cov.Date"),
                regexp = "could not be found")
 })
@@ -467,14 +464,14 @@ test_that("Fails if names not in data", {
 test_that("Fails if has duplicate names", {
   # ** TODO: Fail properly
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                   data.cov.life = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender", "Gender"),
-                                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                   data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel", "Channel"),
+                                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
                regexp = "duplicates")
 
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                     data.cov.life = apparelDynCov, names.cov.life = c("Gender", "Gender"),
-                                    data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                                    data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "duplicates")
 })
@@ -484,22 +481,22 @@ test_that("Fails if has duplicate names", {
 context("Inputchecks - SetDynamicCovariates - Parameter name.cov.trans")
 test_that("Fails if missing/NULL/NA/empty",{
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
+                                    data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
                                     data.cov.trans = apparelDynCov, names.cov.trans = ,
                                     name.date = "Cov.Date"),
                regexp = "missing")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender") ,
+                                    data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel") ,
                                     data.cov.trans = apparelDynCov, names.cov.trans = NULL,
                                     name.date = "Cov.Date"),
                regexp = "may not be NULL")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender") ,
+                                    data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel") ,
                                     data.cov.trans = apparelDynCov, names.cov.trans = NA_character_,
                                     name.date = "Cov.Date"),
                regexp = "any NA")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender") ,
+                                    data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel") ,
                                     data.cov.trans = apparelDynCov, names.cov.trans = "",
                                     name.date = "Cov.Date"),
                regexp = "could not be found")
@@ -508,17 +505,17 @@ test_that("Fails if missing/NULL/NA/empty",{
 test_that("Fails if not character vector",{
   # ** Fails properly
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDynCov, names.cov.trans = list("DM", "High.Season", "Gender"),
+                                    data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDynCov, names.cov.trans = list("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "character")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDynCov, names.cov.trans = data.frame(c("DM", "High.Season", "Gender")),
+                                    data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDynCov, names.cov.trans = data.frame(c("Marketing", "Gender", "Channel")),
                                     name.date = "Cov.Date"),
                regexp = "character")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
+                                    data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
                                     data.cov.trans = apparelDynCov, names.cov.trans = 2,
                                     name.date = "Cov.Date"),
                regexp = "character")
@@ -526,13 +523,13 @@ test_that("Fails if not character vector",{
 
 test_that("Fails if contains NA", {
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
+                                    data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
                                     data.cov.trans = apparelDynCov, names.cov.trans = NA_character_,
                                     name.date = "Cov.Date"),
                regexp = "any NA")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender", NA_character_),
+                                    data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel", NA_character_),
                                     name.date = "Cov.Date"),
                regexp = "any NA")
 })
@@ -540,13 +537,13 @@ test_that("Fails if contains NA", {
 test_that("Fails if names not in data", {
   # ** TODO: Check and fail properly
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "GenderBender"),
+                                    data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "GenderBender"),
                                     name.date = "Cov.Date"),
                regexp = "could not be found")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life = apparelDynCov, names.cov.life = c("DM", "HighSeason", "Gender"),
-                                    data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "HighSeason", "Gender"),
+                                    data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gend", "Channel"),
+                                    data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gend", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "could not be found")
 })
@@ -554,13 +551,13 @@ test_that("Fails if names not in data", {
 test_that("Fails if has duplicate names", {
   # ** TODO: Fail properly
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                                    data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender", "Gender"),
+                                    data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                                    data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel", "Channel"),
                                     name.date = "Cov.Date"),
                regexp = "duplicates")
 
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
-                                    data.cov.life = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
+                                    data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
                                     data.cov.trans = apparelDynCov, names.cov.trans = c("Gender", "Gender"),
                                     name.date = "Cov.Date"),
                regexp = "duplicates")
@@ -570,8 +567,8 @@ test_that("Fails if has duplicate names", {
 # Parameter name.id ---------------------------------------------------------------------------------------
 # **TODO: proper inputchecks and fails
 l.std.args <- list(clv.data = clv.data.apparel,
-                   data.cov.life = apparelDynCov, names.cov.life = c("DM", "High.Season", "Gender"),
-                   data.cov.trans = apparelDynCov, names.cov.trans = c("DM", "High.Season", "Gender"),
+                   data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
+                   data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                    name.date = "Cov.Date", name.id = "Id")
 
 test_that("Fails if NA/NULL", {

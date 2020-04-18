@@ -1,36 +1,39 @@
 Package: CLVTools
 Title: Tools for Customer Lifetime Value Estimation
 Version: 0.5.0
-Date: 2020-03-27
+Date: 2020-04-16
 Authors@R: c(
     person(given="Patrick", family="Bachmann",    email = "patrick.bachmann@business.uzh.ch", role = c("cre","aut")),
-    person(given="Jeffrey", family="Näf",         email = "naef@stat.math.ethz.ch",role = "aut"),
+    person(given="Jeffrey", family="Naef",         email = "naef@stat.math.ethz.ch",role = "aut"),
     person(given="Patrik",  family="Schilter",    email = "patrik.schilter@gmail.com",role = "aut"),
     person(given="Markus",  family="Meierer",     email = "markus.meierer@business.uzh.ch", role = "aut"),
-    person(given="Rene",    family="Algesheimer", email = "market-research@business.uzh.ch", role = "aut"))
+    person(given="Niels",    family="Kuebler", email = "niels.kuebler@uzh.ch", role = "aut"))
 Depends:
     R (>= 3.5.0),
+    methods
 Description: Package to fit probabilistic models to estimate customer lifetime value (CLV).
     It includes fast and accurate implementations of buy-'til-you-die models in 
     non-contractual settings (e.g., retail business). with and without time-invariant and time-varying covariates. Currently, the package includes the 
     Pareto/NBD model, the GGompertz/NBD model for the purchase and the attrition processes as well as the Gamma/Gamma model for the spending process.
 Imports:
-    methods, 
-    utils,
-    stats,
     data.table (>= 1.12.0),
-    lubridate (>= 1.7.3), 
+    foreach (>= 1.5.0),
     ggplot2 (>= 3.2.0),
-    optimx (>= 2018-7.10),
+    lubridate (>= 1.7.3), 
+    Matrix (>= 1.2-17), 
+    MASS,
+    optimx (>= 2019-12.02),
     Rcpp (>= 0.12.12),
-    Matrix (>= 1.2-17),
-    foreach (>= 1.4.7),
-    doParallel (>= 1.0.10)
+    stats,
+    utils
 Suggests:
-    testthat,
+    BTYD,
     covr,
+    doFuture, 
+    doParallel,
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 License: GPL-3
 URL: https://github.com/bachmannpatrick/CLVTools
 BugReports: https://github.com/bachmannpatrick/CLVTools/issues
@@ -45,7 +48,13 @@ Collate:
     'all_generics.R'
     'class_clv_time.R'
     'class_clv_data.R'
+<<<<<<< HEAD
     'class_clv_model_basestrategy.R'
+=======
+    'class_clv_data_staticcovariates.R'
+    'class_clv_data_dynamiccovariates.R'
+    'class_clv_model.R'
+>>>>>>> development
     'class_clv_fitted.R'
     'class_clv_model_bgbb_nocov.R'
     'class_clv_bgbb.R'
@@ -70,7 +79,7 @@ Collate:
     'data.R'
     'f_DoExpectation.R'
     'f_clvdata_inputchecks.R'
-    'f_clvfitted_checkuserinput.R'
+    'f_clvfitted_inputchecks.R'
     'f_generics_clvdata.R'
     'f_generics_clvfitted.R'
     'f_generics_clvfitted_estimate.R'
@@ -78,9 +87,15 @@ Collate:
     'f_generics_clvfittedstaticcov.R'
     'f_generics_clvfittedstaticcov_estimate.R'
     'f_generics_clvpnbddyncov.R'
+<<<<<<< HEAD
     'class_clv_model_bgnbd_nocov.R'
     'f_interface_bgbb.R'
+=======
+    'f_interface_bgbb.R'
+    'f_interface_bgnbd.R'
+>>>>>>> development
     'f_interface_clvdata.R'
+    'f_interface_gnbd.R'
     'f_interface_pnbd.R'
     'f_interface_setdynamiccovariates.R'
     'f_interface_setstaticcovariates.R'

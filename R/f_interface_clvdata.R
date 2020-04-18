@@ -1,5 +1,6 @@
-
 #' @name clvdata
+#' @md
+#'
 #' @title Create an object for transactional data required to estimate CLV
 #'
 #' @param data.transactions Transaction data as \code{data.frame} or \code{data.table}. See details.
@@ -16,7 +17,6 @@
 #' model fitting. The transaction data may be split in an estimation and holdout sample if desired.
 #' The model then will only be fit on the estimation sample.
 #'
-#'
 #' If covariates should be used when fitting a model, covariate data can be added
 #' to an object returned from this function.
 #'
@@ -26,7 +26,8 @@
 #' Optionally, the price of the transaction may be included to also allow for prediction
 #' of future customer spending.
 #'
-#' \code{time.unit} Time unit that defines a single period. Currently available are \code{"hours"}, \code{"days"}, \code{"weeks"}, and \code{"years"}.
+#' \code{time.unit} The definition of a single period. Currently available are \code{"hours"}, \code{"days"}, \code{"weeks"}, and \code{"years"}.
+#' May be abbreviated.
 #'
 #' \code{date.format} A single format to use when parsing any date that is given as character input. This includes
 #' the dates given in \code{data.transaction}, \code{estimation.split}, or as an input to any other function at
@@ -40,6 +41,15 @@
 #' (either as character, Date, or POSIXct) at which the estimation period ends. The indicated timepoint itself will be part of the estimation sample.
 #' If no value is provided or set to \code{NULL}, the whole dataset will used for fitting the model (no holdout sample).
 #'
+#' @details ## Aggregation of Transactions
+#'
+#' Multiple transactions by the same customer that occur on the minimally representable temporal resolution are aggregated to a
+#' single transaction with their spending summed. For time units \code{days} and any other coarser \code{Date}-based
+#' time units (i.e. \code{weeks}, \code{years}), this means that transactions on the same day are combined.
+#' When using finer time units such as \code{hours} which are based on \code{POSIXct}, transactions on the same second are aggregated.
+#'
+#' For the definition of repeat-purchases, combined transactions are viewed as a single transaction. Hence, repeat-transactions
+#' are determined from the aggregated transactions.
 #'
 #' @return
 #' An object of class \code{clv.data}.
@@ -56,6 +66,7 @@
 #' @seealso \code{\link[CLVTools:pnbd]{pnbd}} to fit Pareto/NBD models on a \code{clv.data} object
 #'
 #' @examples
+#'
 #' data("cdnow")
 #'
 #' # create clv data object with weekly periods
@@ -87,6 +98,7 @@
 #' # create data with the weekly periods defined to
 #' #   start on Mondays
 #'
+#' \dontrun{
 #' # set start of week to Monday
 #' options("lubridate.week.start"=1)
 #'
@@ -96,6 +108,7 @@
 #'                           time.unit = "weeks")
 #'
 #' # Dynamic covariates now have to be supplied for every Monday
+#' }
 #'
 #'
 #' @export
@@ -183,19 +196,14 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
   }
   setkeyv(dt.trans, cols = c("Id", "Date"))
 
-  # Aggregate what is on same smallest scale representable by class
-  # in same time.unit does not not make sense
+
+  # Aggregate transactions at the same timepoint ------------------------------------------------
+  # Aggregate what is on same smallest scale representable by time
+  # aggregating in the same time.unit does not make sense
   #   Date: on same day
   #   posix: on same second
+  dt.trans <- clv.data.aggregate.transactions(dt.transactions = dt.trans, has.spending = has.spending)
 
-  if(has.spending){
-    dt.trans <- dt.trans[, list("Price" = sum(Price)), by=c("Id", "Date")]
-  }else{
-    # Only keep one observation, does not matter which
-    # head(.SD) does not work because Id and Date both in by=
-    # unique() has the same effect because there are only 2 columns
-    dt.trans <- unique(dt.trans, by=c("Id", "Date"))
-  }
 
   # Set estimation and holdout periods ---------------------------------------------------------
   tp.first.transaction <- dt.trans[, min(Date)]
@@ -230,26 +238,14 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
 
 
   # Repeat Transactions ------------------------------------------------------------
-  #   Save because used at many places (ie plotting, first.repeat.trans, ...)
+  #   Save because used when plotting
   #   Remove the first transaction per customer
-
-  dt.repeat.trans <- copy(dt.trans)
-  setkeyv(dt.repeat.trans, c("Id", "Date"))
-
-  dt.repeat.trans[, previous := shift(x=Date, n = 1, type = "lag"), by="Id"]
-  dt.repeat.trans            <- dt.repeat.trans[!is.na(previous)]
-  dt.repeat.trans[, previous := NULL]
-
-  # **TODO: Cross-check with what is done for clv.time aggregation of transactions
-  # Works only because all on same Date were aggregated. Otherwise, there could be more than one removed
-  # dt.repeat.trans[, is.first.trans := (Date == min(Date), by="Id"]
-  # dt.repeat.trans <- dt.trans[is.first.trans == F, c("Id","Date", "Price")]
-  # setkeyv(dt.repeat.trans, c("Id", "Date"))
+  dt.repeat.trans <- clv.data.make.repeat.transactions(dt.transactions = dt.trans)
 
 
   # Create clvdata object ----------------------------------------------------------
   obj <- clv.data(call=cl,
-                  data.transactions=dt.trans,
+                  data.transactions = dt.trans,
                   data.repeat.trans = dt.repeat.trans,
                   has.spending = has.spending,
                   clv.time=clv.t)

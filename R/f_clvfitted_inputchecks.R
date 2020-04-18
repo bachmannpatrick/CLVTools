@@ -176,7 +176,7 @@ check_user_data_optimxargs <- function(optimx.args){
       if(!(n %in% optimx.allowed))
         err.msg <- c(err.msg, paste0("The element ",n," in optimx.args is not a valid input to optimx()!"))
 
-    # **TODO: Allowed or not??
+    # Now, multiple optimization methods are allowed and the last one is used
     # only one method allowed
     # if("method" %in% names(optimx.args))
     #   if(length(optimx.args$method) > 1)

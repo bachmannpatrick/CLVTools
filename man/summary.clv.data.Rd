@@ -64,31 +64,31 @@ and further contains the elements:
 \item{names.cov.data.life}{Names of the covariates for the Lifetime process.}
 }
 \description{
-Summary method for CLV data objects that provides information about the estimation and
+Summary method for objects of class \code{clv.data} that provides information about the estimation and
 possible holdout sample, and descriptive statistics of the transaction data.
 }
 \examples{
-\dontrun{
+
 data("apparelTrans")
 clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
                             time.unit = "w",
-                            estimation.split = 37)
+                            estimation.split = 40)
 
 # summary of transaction data and split
 summary(clv.data.apparel)
 
 # add contextual factors
-data("apparelDemographics")
+data("apparelStaticCov")
 clv.data.apparel.cov <-
  SetStaticCovariates(clv.data.apparel,
-                     data.cov.life = apparelDemographics,
+                     data.cov.life = apparelStaticCov,
                      names.cov.life = "Gender",
-                     data.cov.trans = apparelDemographics,
+                     data.cov.trans = apparelStaticCov,
                      names.cov.trans = "Gender")
 
 # additional info about the covariates
 summary(clv.data.apparel.cov)
-}
+
 
 }
 \seealso{
