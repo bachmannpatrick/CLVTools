@@ -17,10 +17,13 @@ arma::vec bgbb_CET(const double alpha,
 
   const unsigned int n = vX.n_elem;
 
+  arma::vec vAlphaVx1 = (alpha + vX + 1);
+  arma::vec vBetaVnCalVx = (beta + vN_cal - vX);
+
   arma::vec vPart1(n), vPart2(n), vPart3(n), vPart4(n), vPart5(n), vPart6(n), vPart7(n), vPart8(n);
 
   vPart1 = 1 / arma::exp(bgbb_LL_ind(alpha, beta, gamma, delta, vX, vT_x, vT_cal, vN_cal));
-  vPart2 = arma::exp(clv::lbeta((alpha + vX + 1), (beta + vN_cal - vX))) - R::lbeta(alpha, beta); // TODO: find a vectorized lbeta
+  vPart2 = arma::exp(clv::lbeta(vAlphaVx1, vBetaVnCalVx)) - R::lbeta(alpha, beta); // TODO: find a vectorized lbeta
   vPart3 = delta / (gamma - 1);
   vPart4 = std::exp(std::lgamma(gamma + delta) - std::lgamma(1 + delta));
   vPart5 = arma::exp(arma::lgamma(1 + delta + vN_cal) - arma::lgamma(gamma + delta + vN_cal));

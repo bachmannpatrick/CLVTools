@@ -5,11 +5,13 @@
 \alias{bgbb,clv.data-method}
 \alias{bgbb,clv.data.static.covariates-method}
 \alias{bgbb,clv.data.dynamic.covariates-method}
-\title{BG/BB models - Work In Progress}
+\title{BG/BB models}
 \usage{
 \S4method{bgbb}{clv.data}(
   clv.data,
   start.params.model = c(),
+  use.cor = FALSE,
+  start.param.cor = c(),
   optimx.args = list(),
   verbose = TRUE,
   ...
@@ -18,6 +20,8 @@
 \S4method{bgbb}{clv.data.static.covariates}(
   clv.data,
   start.params.model = c(),
+  use.cor = FALSE,
+  start.param.cor = c(),
   optimx.args = list(),
   verbose = TRUE,
   names.cov.life = c(),
@@ -33,6 +37,8 @@
 \S4method{bgbb}{clv.data.dynamic.covariates}(
   clv.data,
   start.params.model = c(),
+  use.cor = FALSE,
+  start.param.cor = c(),
   optimx.args = list(),
   verbose = TRUE,
   names.cov.life = c(),
@@ -71,6 +77,73 @@ If multiple optimization methods are specified, only the result of the last meth
 
 \item{reg.lambdas}{Named lambda parameters used for the L2 regularization of the lifetime and the transaction covariate parameters. Lambdas have to be >= 0.}
 }
+\value{
+\code{bgbb} returns an object of
+class \code{clv.bgbb}.
+
+The function \code{\link[CLVTools:summary.clv.fitted]{summary}} can be used to obtain and print a summary of the results.
+The generic accessor functions \code{coefficients}, \code{fitted},
+\code{residuals}, \code{vcov}, \code{logLik}, \code{AIC}, \code{BIC}, and \code{nobs} are available.
+}
 \description{
-Fits BG/BB models on transactional data with static and without covariates.
+Fits BG/BB models on transactional data without covariates.
+}
+\details{
+Model parameters for the BG/BB model are \code{alpha, beta, gamma, delta}. \cr
+\code{alpha}: TODO \cr
+\code{beta}: TODO \cr
+\code{gamma}: TODO \cr
+\code{delta}: TODO \cr
+
+If no start parameters are given, alpha = 0.5, beta = 1, gamma = 0.5, delta = 1 is used.
+The model start parameters are required to be > 0.
+
+\subsection{The BG/NBD model}{
+TODO
+}
+}
+\examples{
+\donttest{
+data("cdnow")
+clv.data.cdnow <- clvdata(cdnow, date.format = "ymd",
+                            time.unit = "w", estimation.split = 37)
+
+# Fit standard BG/NBD model
+bgbb(clv.data.cdnow)
+
+# Give initial guesses for the Model parameters
+bgbb(clv.data.apparel,
+     start.params.model = c(r=0.5, alpha=1, a=0.5, beta=1))
+
+
+# pass additional parameters to the optimizer (optimx)
+#    Use Nelder-Mead as optimization method and print
+#    detailed information about the optimization process
+estimation.bgbb <- bgbb(clv.data.cdnow,
+                     optimx.args = list(method="Nelder-Mead",
+                                        control=list(trace=6)))
+
+# estimated coefs
+coef(estimation.bgbb)
+
+# summary of the fitted model
+summary(estimation.bgbb)
+
+predict.bgbb <- predict(estimation.bgbb, prediction.end = "2011-12-31")
+
+plot(estimation.bgbb)
+}
+}
+\references{
+BG/BB model according to
+\url{https://github.com/cran/BTYD}
+}
+\seealso{
+\code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object
+
+\code{\link[CLVTools:predict.clv.fitted]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
+
+\code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation as predicted by the fitted model
+
+The generic functions \code{\link[CLVTools:summary.clv.fitted]{summary}} and \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
 }

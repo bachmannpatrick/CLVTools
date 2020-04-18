@@ -2,7 +2,6 @@
 #include <math.h>
 #include "clv_vectorized.h"
 #include "bgbb_LL_ind.h"
-using namespace Rcpp;
 
 // Code adapted from BTYD BGBB implementation https://github.com/cran/BTYD/blob/master/R/bgbb.R
 // [[Rcpp::depends(RcppArmadillo)]]
@@ -19,10 +18,17 @@ arma::vec bgbb_LL_ind(const double alpha,
 
   //TODO: figure out how to build this
   arma::vec vLL;
+
+  arma::vec vAlphaVx = (alpha + vX);
+  arma::vec vBetaVnCalVx = (beta + vN_cal - vX);
+
+  arma::vec vGamma(1);
+  vGamma.fill(gamma);
+  arma::vec vDeltaVnCal = (delta + vN_cal);
   double denomAb = R::lbeta(alpha, beta);
   double denomGd = R::lbeta(gamma, delta);
 
-  arma::vec ind_LL_sum = Rcpp::lbeta(alpha + vX, beta + vN_cal - vX) - denomAb + Rcpp::lbeta(gamma, delta + vN_cal) - denomGd;
+  arma::vec ind_LL_sum = clv::lbeta(vAlphaVx, vBetaVnCalVx) - denomAb + clv::lbeta(vGamma, vDeltaVnCal) - denomGd;
 
   return(vLL);
 }

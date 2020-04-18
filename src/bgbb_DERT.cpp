@@ -16,11 +16,19 @@ arma::vec bgbb_DERT_ind(const double alpha,
 
   const unsigned int n = vX.n_elem;
 
+  arma::vec vAlphaVx1 = (alpha + vX + 1);
+  arma::vec vBetaVnCalVx = (beta + vN_cal - vX);
+  arma::vec vGamma(1), vOne(1);
+  vGamma.fill(gamma);
+  vOne.fill(1);
+  arma::vec vDeltaVnCal1 = (delta + vN_cal + 1);
+  arma::vec vGammaDeltaVnCal1 = (gamma + delta + vN_cal + 1);
+
   arma::vec vPart1(n), vPart2(n), vPart3(n), vPart4(n);
 
-  vPart1 = arma::exp(clv::lbeta(alpha + vX + 1, beta + vN_cal - vX) - R::lbeta(alpha, beta));
-  vPart2 = arma::exp(clv::lbeta(gamma, delta + vN_cal + 1) - R::lbeta(gamma, delta))/ (1 + continuous_discount_factor);
-  vPart3 = clv::vec_hyp2F1(1, delta + vN_cal + 1, gamma + delta + vN_cal + 1, 1 / (1 + continuous_discount_factor));
+  vPart1 = arma::exp(clv::lbeta(vAlphaVx1, vBetaVnCalVx) - R::lbeta(alpha, beta));
+  vPart2 = arma::exp(clv::lbeta(vGamma, vDeltaVnCal1) - R::lbeta(gamma, delta))/ (1 + continuous_discount_factor);
+  vPart3 = clv::vec_hyp2F1(vOne, vDeltaVnCal1,vGammaDeltaVnCal1, vOne / (1 + continuous_discount_factor));
   vPart4 = arma::exp(bgbb_LL_ind(alpha, beta, gamma, delta, vX, vT_x, vT_cal, vN_cal));
 
   return vPart1 % vPart2 % (vPart3 / vPart4);

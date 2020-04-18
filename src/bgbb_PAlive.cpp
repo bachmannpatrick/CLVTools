@@ -16,7 +16,13 @@ arma::vec bgbb_PAlive(const double alpha,
 
   arma::vec vPart1(n), vPart2(n);
 
-  vPart1 = arma::exp(lbeta(alpha + vX, beta + vN_cal + vX) - R::lbeta(alpha, beta) + lbeta(gamma, delta + vN_cal + 1) - R::lbeta(gamma, delta));
+  arma::vec vAlphaVx = (alpha + vX);
+  arma::vec vBetaVnCalVx = (beta + vN_cal + vX);
+  arma::vec vGamma(1);
+  vGamma.fill(gamma);
+  arma::vec vDeltaVnCal1 = (delta + vN_cal + 1);
+
+  vPart1 = arma::exp(clv::lbeta(vAlphaVx, vBetaVnCalVx) - R::lbeta(alpha, beta) + clv::lbeta(vGamma, vDeltaVnCal1) - R::lbeta(gamma, delta));
   vPart2 = 1 / arma::exp(bgbb_LL_ind(alpha, beta, gamma, delta, vX, vT_x, vT_cal, vN_cal));
 
   return vPart1 % vPart2;

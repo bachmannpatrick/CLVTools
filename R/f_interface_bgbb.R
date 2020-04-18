@@ -83,7 +83,7 @@ setGeneric("bgbb", def = function(clv.data, start.params.model=c(), use.cor = FA
 #' plot(estimation.bgbb)
 #' }
 #' @aliases bgbb bgbb,clv.data-method
-#' @include class_clv_data.R class_clv_model_bgnbd_nocov.R
+#' @include class_clv_data.R class_clv_model_bgbb_nocov.R
 #' @export
 setMethod("bgbb", signature = signature(clv.data="clv.data"), definition = function(clv.data,
                                                                                      start.params.model=c(),
