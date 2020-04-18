@@ -1,16 +1,16 @@
 # Load required data -----------------------------------------------------------------------------------
 data("apparelTrans")
-data("apparelDemographics")
+data("apparelStaticCov")
 
-expect_message(clv.data.apparel.no.holdout   <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w"), regexp = "ignored")
-expect_message(clv.data.apparel.with.holdout <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w"), regexp = "ignored")
+expect_silent(clv.data.apparel.no.holdout   <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w"))
+expect_silent(clv.data.apparel.with.holdout <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w"))
 
 expect_silent(clv.data.apparel.no.holdout <- SetStaticCovariates(clv.data = clv.data.apparel.no.holdout,
-                                                                 data.cov.life = apparelDemographics, names.cov.life = "Gender",
-                                                                 data.cov.trans = apparelDemographics, names.cov.trans = "Gender"))
+                                                                 data.cov.life = apparelStaticCov, names.cov.life = "Gender",
+                                                                 data.cov.trans = apparelStaticCov, names.cov.trans = "Gender"))
 expect_silent(clv.data.apparel.with.holdout <- SetStaticCovariates(clv.data = clv.data.apparel.with.holdout,
-                                                                   data.cov.life = apparelDemographics, names.cov.life = "Gender",
-                                                                   data.cov.trans = apparelDemographics, names.cov.trans = "Gender"))
+                                                                   data.cov.life = apparelStaticCov, names.cov.life = "Gender",
+                                                                   data.cov.trans = apparelStaticCov, names.cov.trans = "Gender"))
 l.std.args.noholdout   <- list(clv.data=clv.data.apparel.no.holdout)
 l.std.args.withholdout <- list(clv.data=clv.data.apparel.with.holdout)
 
