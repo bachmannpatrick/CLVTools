@@ -48,14 +48,9 @@ Collate:
     'all_generics.R'
     'class_clv_time.R'
     'class_clv_data.R'
-<<<<<<< HEAD
-    'class_clv_model_basestrategy.R'
-=======
-    'class_clv_data_staticcovariates.R'
-    'class_clv_data_dynamiccovariates.R'
     'class_clv_model.R'
->>>>>>> development
     'class_clv_fitted.R'
+    'class_clv_model_basestrategy.R'
     'class_clv_model_bgbb_nocov.R'
     'class_clv_bgbb.R'
     'class_clv_data_staticcovariates.R'
@@ -87,13 +82,9 @@ Collate:
     'f_generics_clvfittedstaticcov.R'
     'f_generics_clvfittedstaticcov_estimate.R'
     'f_generics_clvpnbddyncov.R'
-<<<<<<< HEAD
     'class_clv_model_bgnbd_nocov.R'
     'f_interface_bgbb.R'
-=======
-    'f_interface_bgbb.R'
     'f_interface_bgnbd.R'
->>>>>>> development
     'f_interface_clvdata.R'
     'f_interface_gnbd.R'
     'f_interface_pnbd.R'
