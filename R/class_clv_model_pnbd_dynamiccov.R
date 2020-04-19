@@ -8,15 +8,23 @@
 #' @seealso Classes using its instance: \link{clv.fitted.dynamic.cov-class},
 #' @include all_generics.R class_clv_model.R class_clv_model_pnbd_nocov.R class_clv_model_pnbd_staticcov.R
 setClass(Class = "clv.model.pnbd.dynamic.cov", contains = "clv.model.pnbd.static.cov",
-         slots = list(start.param.cov = "numeric"),
+         slots = list(),
 
          # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
-         #  init with model defaults
-         prototype = list(start.param.cov = 1,
-                          # New model defaults
-                          optimx.defaults  = list(method = "Nelder-Mead",
-                                                  itnmax = 3000),
-                          name.model       = "Pareto NBD with Dynamic Covariates"))
+         #  init with model defaults, inherit all other slots from static and nocov
+         prototype = list(
+           name.model       = "Pareto NBD with Dynamic Covariates",
+
+           # New model defaults
+           optimx.defaults  = list(method = "Nelder-Mead",
+                                   itnmax = 3000,
+                                   control = list(
+                                     kkt = TRUE,
+                                     save.failures = TRUE,
+                                     # Do not perform starttests because it checks the scales with max(logpar)-min(logpar)
+                                     #   but all standard start parameters are <= 0, hence there are no logpars what
+                                     #   produces a warning
+                                     starttests = FALSE))))
 
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------

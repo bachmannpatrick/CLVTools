@@ -9,15 +9,16 @@
 #'
 #' @include all_generics.R class_clv_model.R class_clv_model_pnbd_nocov.R
 setClass(Class = "clv.model.pnbd.static.cov", contains = "clv.model.pnbd.no.cov",
-         slots = list(start.param.cov = "numeric"),
+         slots = list(
+           start.param.cov = "numeric"),
 
          # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
-         #  init with model defaults
-         prototype = list(start.param.cov = 1,
-                          # New model defaults
-                          optimx.defaults  = list(method = "L-BFGS-B",
-                                                  itnmax = 3000),
-                          name.model       = "Pareto NBD with Static Covariates"))
+         #  init with model defaults, additional to what was set for nocov
+         #  optimx.args stay the same as for nocov
+         prototype = list(
+           start.param.cov = 1,
+           # Overwrite nocov name
+           name.model      = "Pareto NBD with Static Covariates"))
 
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------

@@ -53,7 +53,7 @@ setClass(Class = "clv.fitted", # contains = "VIRTUAL",
            name.correlation.cor        = "Cor(life,trans)",
 
            optimx.estimation.output = structure(data.frame(), class="optimx"),
-           optimx.hessian     = matrix(data = numeric(0))))
+           optimx.hessian           = matrix(data = numeric(0))))
 
 
 # Convenience constructor to encapsulate all steps for object creation and

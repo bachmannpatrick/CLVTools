@@ -23,7 +23,15 @@ setClass("clv.time.date", contains = c("clv.time", "VIRTUAL"),
            timepoint.estimation.start = "Date",
            timepoint.estimation.end   = "Date",
            timepoint.holdout.start    = "Date",
-           timepoint.holdout.end      = "Date"))
+           timepoint.holdout.end      = "Date"),
+
+         # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
+         prototype = list(
+           timepoint.estimation.start = as.Date(character(0)),
+           timepoint.estimation.end   = as.Date(character(0)),
+           timepoint.holdout.start    = as.Date(character(0)),
+           timepoint.holdout.end      = as.Date(character(0))))
+
 
 setMethod("initialize", signature = signature(.Object="clv.time.date"),
           definition = function(.Object, time.format, name.time.unit,...){

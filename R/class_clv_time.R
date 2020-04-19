@@ -34,7 +34,7 @@
 #'
 #' @include all_generics.R
 #' @keywords internal
-setClass("clv.time",
+setClass("clv.time", contains = "VIRTUAL",
          slots = list(
            timepoint.estimation.start = "ANY",
            timepoint.estimation.end   = "ANY",
@@ -44,11 +44,15 @@ setClass("clv.time",
            estimation.period.in.tu = "numeric",
            holdout.period.in.tu    = "numeric",
 
-           time.format = "character",
+           time.format    = "character",
+           name.time.unit = "character"),
 
-           name.time.unit = "character"
-         ),
-         contains = "VIRTUAL")
+         prototype = list(
+           estimation.period.in.tu = numeric(0),
+           holdout.period.in.tu    = numeric(0),
+
+           time.format             = character(0),
+           name.time.unit          = character(0)))
 
 # **FUTURE: future usage:
 # custom time interval appraoch:

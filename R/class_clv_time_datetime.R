@@ -18,14 +18,22 @@
 #' @include class_clv_time.R all_generics.R
 #' @keywords internal
 setClass("clv.time.datetime", contains = c("clv.time", "VIRTUAL"),
-         slots = c(
+         slots = list(
            # Use ct because dates in transaction data have to be ct
            timepoint.estimation.start = "POSIXct",
            timepoint.estimation.end   = "POSIXct",
            timepoint.holdout.start    = "POSIXct",
            timepoint.holdout.end      = "POSIXct",
 
-           timezone = "character"))
+           timezone = "character"),
+         # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
+         prototype = list(
+           timezone = character(0),
+
+           timepoint.estimation.start = as.POSIXct(character(0)),
+           timepoint.estimation.end   = as.POSIXct(character(0)),
+           timepoint.holdout.start    = as.POSIXct(character(0)),
+           timepoint.holdout.end      = as.POSIXct(character(0))))
 
 setMethod("initialize", signature = signature(.Object="clv.time.datetime"),
           definition = function(.Object, time.format, name.time.unit,timezone,...){

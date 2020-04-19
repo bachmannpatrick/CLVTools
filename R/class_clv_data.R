@@ -27,12 +27,14 @@ setClass(Class = "clv.data",
 
            data.transactions = "data.table",
            data.repeat.trans = "data.table",
-           has.spending = "logical",
 
+           has.spending   = "logical",
            has.holdout    = "logical"),
 
          # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
          prototype = list(
+           name = character(0),
+
            data.transactions  = data.table(),
            data.repeat.trans  = data.table(),
 
