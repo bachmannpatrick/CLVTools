@@ -211,7 +211,7 @@ setMethod("pnbd", signature = signature(clv.data="clv.data"), definition = funct
                                                                                         start.param.cor=c(),
                                                                                         optimx.args=list(),
                                                                                         verbose=TRUE,...){
-  cl  <- sys.call(1)
+  cl  <- match.call()
   obj <- clv.pnbd(cl=cl, clv.data=clv.data)
 
   return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
@@ -231,7 +231,7 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.static.covariates"), 
                                                                                                       names.cov.constr=c(),start.params.constr=c(),
                                                                                                       reg.lambdas = c(), ...){
 
-  cl  <- sys.call(1)
+  cl  <- match.call()
   obj <- clv.pnbd.static.cov(cl=cl, clv.data=clv.data)
 
   # Do the estimate controlflow / process steps with the static cov object
@@ -257,7 +257,7 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.dynamic.covariates"),
                                                                                                         start.params.life=c(), start.params.trans=c(),
                                                                                                         names.cov.constr=c(),start.params.constr=c(),
                                                                                                         reg.lambdas = c(), ...){
-  cl  <- sys.call(1)
+  cl  <- match.call()
   obj <- clv.pnbd.dynamic.cov(cl = cl, clv.data=clv.data)
 
   return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor, start.param.cor = start.param.cor,
