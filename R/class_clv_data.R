@@ -131,6 +131,9 @@ clv.data.make.descriptives <- function(clv.data){
 
   Id <- Date <- .N <- N <- Price <- interp.time<- NULL
 
+  # readability
+  clv.time <- clv.data@clv.time
+
 
   # Data preparation ---------------------------------------------------------------------------------
   # If there is no holdout period, give the estimation period data as input to be able to calculate values.
@@ -138,11 +141,11 @@ clv.data.make.descriptives <- function(clv.data){
 
   data.transactions.total      <- clv.data@data.transactions
 
-  data.transactions.estimation <- data.transactions.total[Date >= clv.data@clv.time@timepoint.estimation.start &
-                                                            Date <= clv.data@clv.time@timepoint.estimation.end]
+  data.transactions.estimation <- data.transactions.total[Date >= clv.time@timepoint.estimation.start &
+                                                            Date <= clv.time@timepoint.estimation.end]
   if(clv.data.has.holdout(clv.data=clv.data))
-    data.transactions.holdout  <- data.transactions.total[Date >= clv.data@clv.time@timepoint.holdout.start &
-                                                            Date <= clv.data@clv.time@timepoint.holdout.end]
+    data.transactions.holdout  <- data.transactions.total[Date >= clv.time@timepoint.holdout.start &
+                                                            Date <= clv.time@timepoint.holdout.end]
   else
     data.transactions.holdout  <- data.transactions.estimation
 
@@ -164,14 +167,14 @@ clv.data.make.descriptives <- function(clv.data){
            Holdout    = "-",
            Total      = nrow(no.trans.by.cust.total)),
     "First Transaction in period"   =
-      list(Estimation= as.character(data.transactions.estimation[, min(Date)]),
-           Holdout    = as.character(data.transactions.holdout[,   min(Date)]),
-           Total      = as.character(data.transactions.total[,     min(Date)])),
+      list(Estimation = clv.time.format.timepoint(clv.time=clv.time, timepoint=data.transactions.estimation[, min(Date)]),
+           Holdout    = clv.time.format.timepoint(clv.time=clv.time, timepoint=data.transactions.holdout[,   min(Date)]),
+           Total      = clv.time.format.timepoint(clv.time=clv.time, timepoint=data.transactions.total[,     min(Date)])),
 
     "Last Transaction in period"    =
-      list(Estimation = as.character(data.transactions.estimation[, max(Date)]),
-           Holdout    = as.character(data.transactions.holdout[,    max(Date)]),
-           Total      = as.character(data.transactions.total[,      max(Date)])),
+      list(Estimation = clv.time.format.timepoint(clv.time=clv.time, timepoint=data.transactions.estimation[, max(Date)]),
+           Holdout    = clv.time.format.timepoint(clv.time=clv.time, timepoint=data.transactions.holdout[,    max(Date)]),
+           Total      = clv.time.format.timepoint(clv.time=clv.time, timepoint=data.transactions.total[,      max(Date)])),
     "Total # Transactions"          =
       list(Estimation = nrow(data.transactions.estimation),
            Holdout    = nrow(data.transactions.holdout),
@@ -194,8 +197,8 @@ clv.data.make.descriptives <- function(clv.data){
       "(SD) " =
         list(Estimation  = data.transactions.estimation[, sd(Price)],
              Holdout    = data.transactions.holdout[,     sd(Price)],
-             Total      = data.transactions.total[,        sd(Price)]),
-      "Total Spending"                =
+             Total      = data.transactions.total[,       sd(Price)]),
+      "Total Spending" =
         list(Estimation  = data.transactions.estimation[, sum(Price)],
              Holdout    = data.transactions.holdout[,     sum(Price)],
              Total      = data.transactions.total[,       sum(Price)])))

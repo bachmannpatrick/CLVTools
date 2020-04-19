@@ -18,12 +18,12 @@ print.clv.time <- function(x, digits=max(3L, getOption("digits")-3L),
 
   .print.list(list("Time unit"         = x@name.time.unit,
                    "   " ="",
-                   "Estimation start"  = as.character(x@timepoint.estimation.start),
-                   "Estimation end"    = as.character(x@timepoint.estimation.end),
+                   "Estimation start"  = clv.time.format.timepoint(clv.time=x, timepoint=x@timepoint.estimation.start),
+                   "Estimation end"    = clv.time.format.timepoint(clv.time=x, timepoint=x@timepoint.estimation.end),
                    "Estimation length" = paste0(format(x@estimation.period.in.tu, digits=digits,nsmall=nsmall), " ", x@name.time.unit),
                    "  " ="",
-                   "Holdout start"     = ifelse(has.holdout, as.character(x@timepoint.holdout.start), "-"),
-                   "Holdout end"       = ifelse(has.holdout, as.character(x@timepoint.holdout.end), "-"),
+                   "Holdout start"     = ifelse(has.holdout, clv.time.format.timepoint(clv.time=x, timepoint=x@timepoint.holdout.start), "-"),
+                   "Holdout end"       = ifelse(has.holdout, clv.time.format.timepoint(clv.time=x, timepoint=x@timepoint.holdout.end), "-"),
                    "Holdout length"    = ifelse(has.holdout, paste0(format(x@holdout.period.in.tu, nsmall=nsmall), " ", x@name.time.unit), "-")),
               nsmall=nsmall)
 

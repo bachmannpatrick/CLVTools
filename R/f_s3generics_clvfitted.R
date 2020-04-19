@@ -274,8 +274,8 @@ print.summary.clv.fitted <- function(x, digits=max(3L, getOption("digits")-3L),
   # Print fitting period information ----------------------------------------
   cat("Fitting period:")
   .print.list(nsmall=nsmall,
-              l=list("Estimation start"  = as.character(x$tp.estimation.start),
-                     "Estimation end"    = as.character(x$tp.estimation.end),
+              l=list("Estimation start"  = clv.time.format.timepoint(clv.time=x$clv.time, timepoint=x$tp.estimation.start),
+                     "Estimation end"    = clv.time.format.timepoint(clv.time=x$clv.time, timepoint=x$tp.estimation.end),
                      "Estimation length" = paste0(format(x$estimation.period.in.tu, digits=digits,nsmall=nsmall), " ", x$time.unit)))
 
   cat("\n")
@@ -322,10 +322,11 @@ summary.clv.fitted <- function(object, ...){
 
   # Estimation & Transaction --------------------------------------------------------
   # Fitting period
-  res$tp.estimation.start     <- object@clv.data@clv.time@timepoint.estimation.start
-  res$tp.estimation.end       <- object@clv.data@clv.time@timepoint.estimation.end
-  res$estimation.period.in.tu <- object@clv.data@clv.time@estimation.period.in.tu
-  res$time.unit               <- object@clv.data@clv.time@name.time.unit
+  res$clv.time                <- object@clv.data@clv.time # needed for formating when printing
+  res$tp.estimation.start     <- res$clv.time@timepoint.estimation.start
+  res$tp.estimation.end       <- res$clv.time@timepoint.estimation.end
+  res$estimation.period.in.tu <- res$clv.time@estimation.period.in.tu
+  res$time.unit               <- res$clv.time@name.time.unit
 
   # Coefficient table --------------------------------------------------------------
   # Return the full coefficient table. The subset is to relevant rows is done in the

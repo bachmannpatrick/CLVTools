@@ -233,7 +233,7 @@ clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
 
   # Axis and title
   p <- p + labs(x = "Date", y= "Number of Repeat Transactions", title= paste0(clv.time.tu.to.ly(clv.time=clv.data@clv.time), " tracking plot"),
-                subtitle = paste0("Estimation end: ",  clv.data@clv.time@timepoint.estimation.end))
+                subtitle = paste0("Estimation end: ",  clv.time.format.timepoint(clv.time=clv.data@clv.time, timepoint=clv.data@clv.time@timepoint.estimation.end)))
 
   p <- p + theme(
     plot.title = element_text(face = "bold", size = rel(1.5)),

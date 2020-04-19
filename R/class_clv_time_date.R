@@ -43,6 +43,12 @@ setMethod("initialize", signature = signature(.Object="clv.time.date"),
 })
 
 
+
+setMethod("clv.time.format.timepoint", signature = signature(clv.time="clv.time.date"), definition = function(clv.time, timepoint){
+  return(format.Date(timepoint, "%Y-%m-%d"))
+})
+
+
 #' @importFrom lubridate days
 setMethod("clv.time.epsilon", signature =  signature(clv.time="clv.time.date"), function(clv.time){
   # Alternative: return 1L
@@ -96,4 +102,6 @@ setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.
   # None of these cases
   stop("The provided data is in an unknown format! Only Date, POSIXct/lt, and character are accepted!", call. = FALSE)
 })
+
+
 
