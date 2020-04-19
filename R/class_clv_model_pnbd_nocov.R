@@ -201,7 +201,7 @@ setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.mo
 
 # .clv.model.predict.clv --------------------------------------------------------------------------------------------------------
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
-  period.length <- Id <- x <- t.x <- T.cal <-  PAlive <- CET <- DERT <- NULL # cran silence
+  period.length <- Id <- x <- t.x <- T.cal <-  PAlive <- CET <- DERT <- i.CET <- i.PAlive <- i.DERT <- NULL # cran silence
 
   predict.number.of.periods <- dt.prediction[1, period.length]
 
