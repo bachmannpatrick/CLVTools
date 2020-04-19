@@ -50,14 +50,14 @@ clv.data <- function(call, data.transactions, data.repeat.trans, has.spending, c
   setkeyv(data.transactions, c("Id", "Date"))
   setkeyv(data.repeat.trans, c("Id", "Date"))
 
-  return(new(Class = "clv.data",
-             name = "CLV Transaction Data",
-             call = call,
+  return(new("clv.data",
+             name       = "CLV Transaction Data",
+             call       = call,
+             clv.time   = clv.time,
              data.transactions = copy(data.transactions),
-             data.repeat.trans = data.repeat.trans,
+             data.repeat.trans = copy(data.repeat.trans),
              has.spending = has.spending,
-             clv.time = clv.time,
-             has.holdout = has.holdout))
+             has.holdout  = has.holdout))
 }
 
 clv.data.has.holdout <- function(clv.data){

@@ -10,7 +10,6 @@
 setClass(Class = "clv.model.pnbd.dynamic.cov", contains = "clv.model.pnbd.static.cov")
 
 clv.model.pnbd.dynamic.cov <- function(){
-
   return(new("clv.model.pnbd.dynamic.cov",
              clv.model.pnbd.static.cov(),
 

@@ -33,8 +33,6 @@ clv.pnbd.static.cov <- function(cl, clv.data){
   dt.cbs.pnbd <- pnbd_cbs(clv.data = clv.data)
   clv.model   <- clv.model.pnbd.static.cov()
 
-  # Reuse clv.fitted constructor to ensure proper object creation
-  #   a recommended pattern by Martin Morgan on SO
   return(new("clv.pnbd.static.cov",
              clv.fitted.static.cov(cl=cl, clv.model=clv.model, clv.data=clv.data),
              cbs = dt.cbs.pnbd))
