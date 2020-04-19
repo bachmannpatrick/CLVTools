@@ -39,9 +39,9 @@ print.clv.time <- function(x, digits=max(3L, getOption("digits")-3L),
 summary.clv.time <- function(object, ...){
   res <- structure(list(), class="summary.clv.time")
 
-  res$name.time.unit <- object@name.time.unit
+  res$name.time.unit          <- object@name.time.unit
   res$estimation.period.in.tu <- object@estimation.period.in.tu
-  res$has.holdout <- (object@holdout.period.in.tu > 0)
+  res$has.holdout             <- clv.time.has.holdout(clv.time=object)
   if(res$has.holdout)
     res$holdout.period.in.tu <- object@holdout.period.in.tu
 
