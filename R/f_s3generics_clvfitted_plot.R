@@ -264,9 +264,6 @@ setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.fitt
 
   expectation <- i.expectation <- NULL
 
-  # Set prediction params from coef()
-  obj <- clv.controlflow.predict.set.prediction.params(clv.fitted=obj)
-
   #   Pass copy of expectation table file becase will be modified and contain column named expecation
   dt.model.expectation <- clv.model.expectation(clv.model=obj@clv.model, clv.fitted=obj, dt.expectation.seq=copy(dt.expectation.seq),
                                                 verbose = verbose)

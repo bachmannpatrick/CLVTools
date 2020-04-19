@@ -65,8 +65,9 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
 
 # . clv.model.process.post.estimation ------------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.process.post.estimation", signature = signature(clv.model="clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, res.optimx){
+
   # Estimate again at found values to get LL.data (of last method used)
-  #   ** or is this part of plot/predict only??
+  # This is then used when plotting and predicting
   optimal.coefs <- drop(tail(coef(res.optimx), n=1))
 
 

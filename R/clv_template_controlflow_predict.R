@@ -6,12 +6,6 @@ clv.template.controlflow.predict <- function(clv.fitted, prediction.end, predict
   period.first <- period.last <- period.length <- cbs.x <- i.x <- cbs.Spending <- i.Spending <- NULL
   i.actual.x <- i.actual.spending <- NULL
 
-  # Set prediction params -----------------------------------------------------------------------------------
-  #   need to be set before adding the newdata as the model might need them (to re-estimate or similar)
-
-  # Set prediction params from coef()
-  clv.fitted <- clv.controlflow.predict.set.prediction.params(clv.fitted=clv.fitted)
-
 
   # Process Newdata ----------------------------------------------------------------------------------------------
   # Because many of the following steps refer to the data stored in the fitted model,

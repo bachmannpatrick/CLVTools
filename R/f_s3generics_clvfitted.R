@@ -410,7 +410,6 @@ fitted.clv.fitted <- function(object, prediction.end=NULL, verbose=FALSE, ...){
 
   dt.expectation.seq <- clv.time.expectation.periods(clv.time = object@clv.data@clv.time,
                                                      user.tp.end = prediction.end)
-  object <- clv.controlflow.predict.set.prediction.params(object)
 
   dt.model.expectation <- clv.model.expectation(clv.model=object@clv.model, clv.fitted=object,
                                                 dt.expectation.seq=dt.expectation.seq, verbose=verbose)
