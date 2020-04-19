@@ -35,9 +35,6 @@ clv.data.dynamic.covariates <- function(no.cov.obj,
                                         names.cov.data.life,
                                         names.cov.data.trans){
 
-  # Ensure its really set
-  setkeyv(data.cov.life,  cols = c("Id", "Cov.Date"))
-  setkeyv(data.cov.trans, cols = c("Id", "Cov.Date"))
 
   obj.cov <- new("clv.data.dynamic.covariates",
                  # no need for deep copy as done in static cov constructor

@@ -10,7 +10,6 @@
 #' @include all_generics.R class_clv_model.R
 setClass(Class = "clv.model.pnbd.no.cov", contains = "clv.model",
          # no additional slots for pnbd base model
-         slots = list(),
 
          # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
          prototype = list(

@@ -83,11 +83,9 @@ SetStaticCovariates <- function(clv.data, data.cov.life, data.cov.trans, names.c
 
   # Create object ---------------------------------------------------------------------------
   # Create from given clv.data obj
-  data.static.cov <- clv.data.static.covariates(no.cov.obj = clv.data,
-                                                data.cov.life = data.cov.life,
-                                                data.cov.trans=data.cov.trans,
-                                                names.cov.data.life  = names.cov.data.life,
-                                                names.cov.data.trans = names.cov.data.trans)
-
-  return(data.static.cov)
+  return(clv.data.static.covariates(no.cov.obj     = clv.data,
+                                    data.cov.life  = data.cov.life,
+                                    data.cov.trans = data.cov.trans,
+                                    names.cov.data.life  = names.cov.data.life,
+                                    names.cov.data.trans = names.cov.data.trans))
 }
