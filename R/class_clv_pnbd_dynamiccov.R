@@ -35,8 +35,6 @@ setClass(Class = "clv.pnbd.dynamic.cov", contains = "clv.fitted.dynamic.cov",
            LL.data          = data.table()))
 
 
-# Convenience constructor to encapsulate all steps for object creation
-#' @include class_clv_data.R
 #' @importFrom methods new
 clv.pnbd.dynamic.cov <- function(cl, clv.data){
 

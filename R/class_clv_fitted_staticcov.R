@@ -76,7 +76,6 @@ setClass(Class = "clv.fitted.static.cov", contains = "clv.fitted",
 
 
 
-# Convenience constructor function
 #' @importFrom methods new
 clv.fitted.static.cov <- function(cl, clv.model, clv.data){
   return(new("clv.fitted.static.cov",

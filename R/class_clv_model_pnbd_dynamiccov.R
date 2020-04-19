@@ -6,8 +6,9 @@
 #' @keywords internal
 #' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.pnbd.no.cov-class}, \link{clv.model.pnbd.static.cov-class}
 #' @seealso Classes using its instance: \link{clv.fitted.dynamic.cov-class},
-#' @include all_generics.R class_clv_model.R class_clv_model_pnbd_nocov.R class_clv_model_pnbd_staticcov.R
+#' @include all_generics.R class_clv_model.R class_clv_model_pnbd.R class_clv_model_pnbd_staticcov.R
 setClass(Class = "clv.model.pnbd.dynamic.cov", contains = "clv.model.pnbd.static.cov")
+
 
 clv.model.pnbd.dynamic.cov <- function(){
   return(new("clv.model.pnbd.dynamic.cov",

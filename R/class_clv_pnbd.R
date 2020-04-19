@@ -15,7 +15,7 @@
 #'
 #' @keywords internal
 #' @importFrom methods setClass
-#' @include class_clv_model_pnbd_nocov.R class_clv_data.R class_clv_fitted.R
+#' @include class_clv_model_pnbd.R class_clv_data.R class_clv_fitted.R
 setClass(Class = "clv.pnbd", contains = "clv.fitted",
          slots = c(
            cbs = "data.table"),
@@ -26,8 +26,7 @@ setClass(Class = "clv.pnbd", contains = "clv.fitted",
 
 
 
-# Convenience constructor to encapsulate all steps for object creation
-#' @include class_clv_model_pnbd_nocov.R
+
 #' @importFrom methods new
 clv.pnbd <- function(cl, clv.data){
 

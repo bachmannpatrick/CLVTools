@@ -7,7 +7,7 @@
 #' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.pnbd.no.cov-class}, \link{clv.model.pnbd.dynamic.cov-class}
 #' @seealso Classes using its instance: \link{clv.fitted.static.cov-class},
 #'
-#' @include all_generics.R class_clv_model.R class_clv_model_pnbd_nocov.R
+#' @include all_generics.R class_clv_model.R class_clv_model_pnbd.R
 setClass(Class = "clv.model.pnbd.static.cov", contains = "clv.model.pnbd.no.cov",
          slots = list(
            start.param.cov = "numeric"),
@@ -17,9 +17,11 @@ setClass(Class = "clv.model.pnbd.static.cov", contains = "clv.model.pnbd.no.cov"
            start.param.cov = numeric()))
 
 
+#' @importFrom methods new
 clv.model.pnbd.static.cov <- function(){
-  #  init with model defaults, additional to what was set for nocov
-  #  optimx.args stay the same as for nocov
+
+  # optimx.args stay the same as for nocov
+
   return(new("clv.model.pnbd.static.cov",
              clv.model.pnbd.no.cov(),
              # Overwrite nocov name

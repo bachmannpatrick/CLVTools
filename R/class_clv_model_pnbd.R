@@ -22,7 +22,9 @@ setClass(Class = "clv.model.pnbd.no.cov", contains = "clv.model",
            optimx.defaults = list()))
 
 
+#' @importFrom methods new
 clv.model.pnbd.no.cov <- function(){
+
   return(new("clv.model.pnbd.no.cov",
              name.model                  = "Pareto NBD Standard",
              names.original.params.model = c(r="r", alpha="alpha", s="s", beta="beta"),

@@ -27,7 +27,6 @@
 setClass(Class = "clv.data.dynamic.covariates", contains = "clv.data.static.covariates")
 
 
-# Constructor
 #' @importFrom methods new
 clv.data.dynamic.covariates <- function(no.cov.obj,
                                         data.cov.life,
@@ -36,7 +35,7 @@ clv.data.dynamic.covariates <- function(no.cov.obj,
                                         names.cov.data.trans){
 
 
-  obj.cov <- new("clv.data.dynamic.covariates",
+  return(new("clv.data.dynamic.covariates",
                  # no need for deep copy as done in static cov constructor
                  clv.data.static.covariates(no.cov.obj = no.cov.obj,
                                             names.cov.data.life  = names.cov.data.life,
@@ -48,7 +47,5 @@ clv.data.dynamic.covariates <- function(no.cov.obj,
                  name = "CLV Transaction Data with Dynamic Covariates",
 
                  names.cov.data.life  = names.cov.data.life,
-                 names.cov.data.trans = names.cov.data.trans)
-
-  return(obj.cov)
+                 names.cov.data.trans = names.cov.data.trans))
 }
