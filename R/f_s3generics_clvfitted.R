@@ -61,28 +61,27 @@ coef.clv.fitted <- function(object, ...){
 #' @title Calculate Variance-Covariance Matrix for CLV Models fitted with Maximum Likelihood Estimation
 #'
 #' @param object a fitted clv model object
-#' @param ... ignored, for consistency with the generic function.
+#' @template template_param_dots
 #'
 #'
 #' @description
 #' Returns the variance-covariance matrix of the parameters of the fitted model object.
 #' The variance-covariance matrix is derived from the Hessian that results from the optimization procedure.
 #' First, the Moore–Penrose generalized inverse of the Hessian is used to obtain an estimate of the
-#' variance-covariance matrix. If the result is not positive definite, \link[Matrix:nearPD]{nearPD} is used
+#' variance-covariance matrix.
+#' Next, because some parameters may be transformed for the purpose of restricting their value during
+#' the log-likelihood estimation, the variance estimates are adapted to
+#' be comparable to the reported coefficient estimates.
+#' If the result is not positive definite, \link[Matrix:nearPD]{nearPD} is used
 #' with standard settings to find the nearest positive definite matrix.
-#'
-#' Because some parameters may be transformed for the purpose of restricting their value during
-#' the log-likelihood estimation, it requires that the variance estimates are adapted as well to
-#' be comparable to the reported coefficient estimates. See the references for more details on how this is done.
 #'
 #' If multiple estimation methods were used, the Hessian of the last method is used.
 #'
 #' @return
-#' A matrix of the estimated covariances between the parameter estimates of the model.
+#' A matrix of the estimated covariances between the parameters of the model.
 #' The row and column names correspond to the parameter names given by the \code{coef} method.
 #'
-#' @references
-#' Jeff's "Note on p-values"
+# @references  Jeff's "Note on p-values"
 #'
 #' @seealso \link[MASS]{ginv}, \link[Matrix]{nearPD}
 #'
