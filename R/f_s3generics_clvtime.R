@@ -14,7 +14,7 @@ print.clv.time <- function(x, digits=max(3L, getOption("digits")-3L),
 
   nsmall <- 4 # dont leave to user, hardcode
 
-  has.holdout <- (x@holdout.period.in.tu > 0)
+  has.holdout <- clv.time.has.holdout(clv.time=x)
 
   .print.list(list("Time unit"         = x@name.time.unit,
                    "   " ="",
