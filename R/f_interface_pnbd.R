@@ -7,6 +7,9 @@
 #' @template template_param_verbose
 #' @template template_param_dots
 #'
+#' @param use.cor Whether the correlation between the transaction and lifetime process should be estimated.
+#' @param start.param.cor Start parameter for the optimization of the correlation.
+#'
 #' @description
 #' Fits Pareto/NBD models on transactional data with and without covariates.
 #'
@@ -205,7 +208,7 @@ setMethod("pnbd", signature = signature(clv.data="clv.data"), definition = funct
   cl  <- sys.call(1)
   obj <- clv.pnbd(cl=cl, clv.data=clv.data)
 
-  return(clv.template.controlflow.estimate(obj=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
+  return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
                                            start.param.cor = start.param.cor, optimx.args = optimx.args, verbose=verbose, ...))
 })
 
@@ -226,7 +229,7 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.static.covariates"), 
   obj <- clv.pnbd.static.cov(cl=cl, clv.data=clv.data)
 
   # Do the estimate controlflow / process steps with the static cov object
-  return(clv.template.controlflow.estimate(obj=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor, start.param.cor = start.param.cor,
+  return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor, start.param.cor = start.param.cor,
                                            optimx.args = optimx.args, verbose=verbose,
                                            names.cov.life=names.cov.life, names.cov.trans=names.cov.trans,
                                            start.params.life=start.params.life, start.params.trans=start.params.trans,
@@ -251,7 +254,7 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.dynamic.covariates"),
   cl  <- sys.call(1)
   obj <- clv.pnbd.dynamic.cov(cl = cl, clv.data=clv.data)
 
-  return(clv.template.controlflow.estimate(obj=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor, start.param.cor = start.param.cor,
+  return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor, start.param.cor = start.param.cor,
                                            optimx.args = optimx.args, verbose=verbose,
                                            names.cov.life=names.cov.life, names.cov.trans=names.cov.trans,
                                            start.params.life=start.params.life, start.params.trans=start.params.trans,

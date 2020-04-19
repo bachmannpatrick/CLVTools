@@ -17,7 +17,7 @@
 #     - Date (posixt, Date)
 #' @importFrom lubridate is.Date is.POSIXt
 #' @importFrom methods is
-check_user_data_predictionend <- function(obj, prediction.end){
+check_user_data_predictionend <- function(clv.fitted, prediction.end){
   # NULL is valid input to prediction end
   if(is.null(prediction.end))
     return(c())
@@ -40,10 +40,10 @@ check_user_data_predictionend <- function(obj, prediction.end){
     return(c())
 
   # clv.fitted or clv.data object (to check prediction.end in plot())
-  if(is(obj, "clv.fitted"))
-    clv.time <- obj@clv.data@clv.time
+  if(is(clv.fitted, "clv.fitted"))
+    clv.time <- clv.fitted@clv.data@clv.time
   else
-    clv.time <- obj@clv.time
+    clv.time <- clv.fitted@clv.time
 
   # if its a char or Date -> see if can convert
   if(is.character(prediction.end))
@@ -237,7 +237,7 @@ check_user_data_startparamconstr <- function(start.params.constr, names.cov.cons
                                        name.of.cov       = "Constraint"))
 }
 
-check_user_data_namesconstr <- function(obj, names.cov.constr){
+check_user_data_namesconstr <- function(clv.fitted, names.cov.constr){
   err.msg <- c()
 
   if(is.null(names.cov.constr))
@@ -254,10 +254,10 @@ check_user_data_namesconstr <- function(obj, names.cov.constr){
 
   # Check that every name is in both data
   for(n in names.cov.constr){
-    if(!(n %in% colnames(obj@clv.data@data.cov.life)))
+    if(!(n %in% colnames(clv.fitted@clv.data@data.cov.life)))
       err.msg <- c(err.msg, paste0("The Constraint covariate named ", n, " could not be found in the Lifetime covariate data!"))
 
-    if(!(n %in% colnames(obj@clv.data@data.cov.trans)))
+    if(!(n %in% colnames(clv.fitted@clv.data@data.cov.trans)))
       err.msg <- c(err.msg, paste0("The Constraint covariate named ", n, " could not be found in the Transaction covariate data!"))
   }
 
