@@ -26,7 +26,7 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.dyna
   period.last <- Cov.Date <- NULL
 
   # prediction.end needs to be ok to work with it
-  check_err_msg(check_user_data_predictionend(obj=clv.fitted, prediction.end=prediction.end))
+  check_err_msg(check_user_data_predictionend(clv.fitted=clv.fitted, prediction.end=prediction.end))
 
   err.msg <- c()
 
@@ -50,7 +50,7 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.dyna
 
 # . clv.controlflow.predict.check.inputs ------------------------------------------------------------------------
 #' @importFrom methods callNextMethod
-setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(obj="clv.fitted.dynamic.cov"), function(obj, prediction.end, continuous.discount.factor, predict.spending, verbose){
+setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.fitted="clv.fitted.dynamic.cov"), function(clv.fitted, prediction.end, continuous.discount.factor, predict.spending, verbose){
   # Do static cov (and hence also nocov) inputchecks first
   #   After this, newdata is basically ok
   callNextMethod()
@@ -61,13 +61,13 @@ setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(obj=
 
   # Check that dyncov covariate is long enough for prediction end
   #   Convert prediction.end already for this
-  dt.prediction <- clv.time.get.prediction.table(clv.time = obj@clv.data@clv.time,
+  dt.prediction <- clv.time.get.prediction.table(clv.time = clv.fitted@clv.data@clv.time,
                                                  user.prediction.end = prediction.end)
-  tp.last.required.cov.period <- clv.time.floor.date(clv.time = obj@clv.data@clv.time,
+  tp.last.required.cov.period <- clv.time.floor.date(clv.time = clv.fitted@clv.data@clv.time,
                                                      timepoint = dt.prediction[1, period.last])
 
   # only need to check one cov data, guaranteed that both are same length
-  if(tp.last.required.cov.period > obj@clv.data@data.cov.trans[, max(Cov.Date)])
+  if(tp.last.required.cov.period > clv.fitted@clv.data@data.cov.trans[, max(Cov.Date)])
     err.msg <- c(err.msg, "The dynamic covariates in the fitted model are not long enough for the given parameter prediction.end!")
 
   check_err_msg(err.msg)

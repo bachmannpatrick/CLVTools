@@ -29,7 +29,7 @@ nobs.clv.fitted   <- function(object, ...){
 #' @importFrom optimx coef<-
 #' @importFrom utils tail
 #' @export
-coef.clv.fitted <- function(object, complete=TRUE, ...){
+coef.clv.fitted <- function(object, ...){
 
   last.row.optimx.coef <- tail(coef(object@optimx.estimation.output),n=1)
 
@@ -44,7 +44,7 @@ coef.clv.fitted <- function(object, complete=TRUE, ...){
   original.scale.params <- original.scale.model.params
 
   # Correlation param ---------------------------------------------------------------------------------------
-  if(object@estimation.used.correlation & complete==TRUE){
+  if(object@estimation.used.correlation){
     last.row.optimx.coef   <- tail(coef(object@optimx.estimation.output),n=1)
     param.m                <- last.row.optimx.coef[1, object@name.prefixed.cor.param.m, drop=TRUE]
     param.cor              <- clv.model.m.to.cor(clv.model = object@clv.model, prefixed.params.model=prefixed.params.model,
@@ -106,14 +106,10 @@ vcov.clv.fitted <- function(object, ...){
   #     -> Depends on optimization! If we have the loglikelihood we need the negative Hessian.
   #   However we have the negative (!) Log likelihood, so we need to take the Hessian directly
 
+
   # Moore-Penrose inverse of Hessian
   #   Results in the regular inverse if invertible
   m.hessian.inv <- ginv(object@optimx.hessian)
-
-
-  # Make positive definite if it is not already
-  #   Returns unchanged if the matrix is PD already
-  m.hessian.inv <- as.matrix(nearPD(m.hessian.inv)$mat)
 
 
   # Apply Jeff's delta method to account for the transformations of the parameters
@@ -122,13 +118,18 @@ vcov.clv.fitted <- function(object, ...){
 
   # Get the numbers to put in diag() for back transformation from the model
   #   Jeff: Apply the transformation on optimizer-scale parameters
-  prefixed.params  <- tail(coef(object@optimx.estimation.output), n=1)[1, ,drop = TRUE]
+  prefixed.params  <- tail(coef(object@optimx.estimation.output), n=1)[1, , drop = TRUE]
   m.delta.diag     <- clv.model.vcov.jacobi.diag(clv.model=object@clv.model, clv.fitted=object,
                                                  prefixed.params=prefixed.params)
 
   stopifnot(all(colnames(m.hessian.inv) == colnames(m.delta.diag)))
   stopifnot(all(rownames(m.hessian.inv) == rownames(m.delta.diag)))
   m.vcov <- m.delta.diag %*% m.hessian.inv %*% m.delta.diag
+
+  # Make positive definite if it is not already
+  #   Returns unchanged if the matrix is PD already
+  m.vcov <- as.matrix(nearPD(m.vcov)$mat)
+
 
   # Naming and sorting
   #   Sorting:  Correct because directly from optimx hessian and for delta.diag from coef(optimx)
@@ -157,8 +158,6 @@ vcov.clv.fitted <- function(object, ...){
   # Of utmost importance: Ensure same sorting as coef()
   names.coef <- names(coef(object = object))
   m.vcov     <- m.vcov[names.coef, names.coef]
-
-  # **TODO: Add argument "complete" to be comparable to coef()!
 
   return(m.vcov)
 }
