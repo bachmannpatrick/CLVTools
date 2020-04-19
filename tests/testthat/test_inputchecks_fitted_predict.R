@@ -2,7 +2,7 @@ data("cdnow")
 data("apparelTrans")
 data("apparelStaticCov")
 
-context("Inputchecks - clv fitted - predict")
+context("Inputchecks - clvfitted - predict")
 expect_silent(clv.cdnow <- clvdata(cdnow, date.format = "ymd", time.unit = "w", estimation.split = 37))
 expect_silent(pnbd.cdnow <- pnbd(clv.cdnow, verbose = FALSE))
 

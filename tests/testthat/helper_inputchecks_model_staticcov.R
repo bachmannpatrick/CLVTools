@@ -192,14 +192,14 @@
 
 .fct.helper.inputchecks.staticcov... <- function(fct.model, l.std.args){
 
-  test_that("Warning if unnecessary inputs given in ellipsis", {
+  test_that("Stop if unnecessary inputs given in ellipsis", {
     # stuff that is for nothing
-    expect_warning(do.call(fct.model, modifyList(l.std.args, list(abc="Gender"))),
-                   regexp = "ignored")
-    expect_warning(do.call(fct.model, modifyList(l.std.args, list(abc=124))),
-                   regexp = "ignored")
-    expect_warning(do.call(fct.model, modifyList(l.std.args, list(dyn.cov =124))),
-                   regexp = "ignored")
+    expect_error(do.call(fct.model, modifyList(l.std.args, list(abc="Gender"))),
+                   regexp = "not needed")
+    expect_error(do.call(fct.model, modifyList(l.std.args, list(abc=124))),
+                   regexp = "not needed")
+    expect_error(do.call(fct.model, modifyList(l.std.args, list(dyn.cov =124))),
+                   regexp = "not needed")
   })
 }
 

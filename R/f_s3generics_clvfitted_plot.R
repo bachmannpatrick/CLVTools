@@ -119,8 +119,7 @@ plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FA
   check_err_msg(err.msg)
 
   if(length(list(...))>0){
-    warning("Any parameters passed in ... are ignored because they are not needed.",
-            call. = FALSE, immediate. = TRUE)
+    stop("Any additional parameters passed in ... are not needed!", call. = FALSE)
   }
 
   # do fitted object specific checks (ie dyncov checks cov data length)

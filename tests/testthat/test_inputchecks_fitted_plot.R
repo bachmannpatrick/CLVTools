@@ -1,6 +1,6 @@
 data("cdnow")
 
-context("Inputchecks - clv fitted - plot")
+context("Inputchecks - clvfitted - plot")
 
 expect_silent(pnbd.cdnow <- pnbd(clvdata(cdnow, date.format = "ymd", time.unit = "w"), verbose = FALSE))
 
