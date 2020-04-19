@@ -212,8 +212,7 @@ clv.template.controlflow.predict <- function(clv.fitted, prediction.end, predict
 #'}
 #'
 #'
-#'
-#'
+#' @template template_details_newdata
 #'
 #' @template template_details_predictionend
 #'
@@ -232,7 +231,6 @@ clv.template.controlflow.predict <- function(clv.fitted, prediction.end, predict
 #' also has to be considered. To model customer spending the Gamma/Gamma is a
 #' popular choice.
 #' }
-#'
 #'
 #' @references
 #' Schmittlein DC, Morrison DG, Colombo R (1987). “Counting Your Customers:
