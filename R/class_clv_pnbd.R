@@ -32,7 +32,7 @@ setClass(Class = "clv.pnbd", contains = "clv.fitted",
 clv.pnbd <- function(cl, clv.data){
 
   dt.cbs.pnbd <- pnbd_cbs(clv.data = clv.data)
-  clv.model <- new("clv.model.pnbd.no.cov")
+  clv.model <- clv.model.pnbd.no.cov()
 
   # Reuse clv.fitted constructor to ensure proper object creation
   #   a recommended pattern by Martin Morgan on SO

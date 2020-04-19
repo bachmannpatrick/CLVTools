@@ -43,6 +43,8 @@ setClass(Class = "clv.model", contains = "VIRTUAL",
            optimx.defaults             = list()))
 
 
+# No constructor as should not be created
+
 # Default / fallback methods for all models --------------------------------------------------------
 
 # . clv.model.check.input.args -----------------------------------------------------------------------------

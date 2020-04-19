@@ -33,6 +33,9 @@ setClass("clv.time.date", contains = c("clv.time", "VIRTUAL"),
            timepoint.holdout.end      = as.Date(character(0))))
 
 
+# No constructor function, as should not be instanciated (**?)
+
+
 setMethod("initialize", signature = signature(.Object="clv.time.date"),
           definition = function(.Object, time.format, name.time.unit,...){
 

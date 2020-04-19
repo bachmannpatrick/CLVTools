@@ -7,24 +7,25 @@
 #' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.pnbd.no.cov-class}, \link{clv.model.pnbd.static.cov-class}
 #' @seealso Classes using its instance: \link{clv.fitted.dynamic.cov-class},
 #' @include all_generics.R class_clv_model.R class_clv_model_pnbd_nocov.R class_clv_model_pnbd_staticcov.R
-setClass(Class = "clv.model.pnbd.dynamic.cov", contains = "clv.model.pnbd.static.cov",
-         slots = list(),
+setClass(Class = "clv.model.pnbd.dynamic.cov", contains = "clv.model.pnbd.static.cov")
 
-         # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
-         #  init with model defaults, inherit all other slots from static and nocov
-         prototype = list(
-           name.model       = "Pareto NBD with Dynamic Covariates",
+clv.model.pnbd.dynamic.cov <- function(){
 
-           # New model defaults
-           optimx.defaults  = list(method = "Nelder-Mead",
-                                   itnmax = 3000,
-                                   control = list(
-                                     kkt = TRUE,
-                                     save.failures = TRUE,
-                                     # Do not perform starttests because it checks the scales with max(logpar)-min(logpar)
-                                     #   but all standard start parameters are <= 0, hence there are no logpars what
-                                     #   produces a warning
-                                     starttests = FALSE))))
+  return(new("clv.model.pnbd.dynamic.cov",
+             clv.model.pnbd.static.cov(),
+
+             name.model       = "Pareto NBD with Dynamic Covariates",
+             # Overwrite optimx default args
+             optimx.defaults  = list(method = "Nelder-Mead",
+                                     itnmax = 3000,
+                                     control = list(
+                                       kkt = TRUE,
+                                       save.failures = TRUE,
+                                       # Do not perform starttests because it checks the scales with max(logpar)-min(logpar)
+                                       #   but all standard start parameters are <= 0, hence there are no logpars what
+                                       #   produces a warning
+                                       starttests = FALSE))))
+}
 
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------

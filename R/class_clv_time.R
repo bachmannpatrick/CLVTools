@@ -54,6 +54,10 @@ setClass("clv.time", contains = "VIRTUAL",
            time.format             = character(0),
            name.time.unit          = character(0)))
 
+
+# No constructor function, as should not be instanciated
+
+
 # **FUTURE: future usage:
 # custom time interval appraoch:
 # cut(hour(now()), breaks=c(0,6,12,18,24), include.lowest = TRUE, labels = FALSE)

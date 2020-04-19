@@ -42,7 +42,7 @@ clv.pnbd.dynamic.cov <- function(cl, clv.data){
 
   dt.cbs.pnbd <- pnbd_dyncov_cbs(clv.data = clv.data)
 
-  clv.model <- new("clv.model.pnbd.dynamic.cov")
+  clv.model <- clv.model.pnbd.dynamic.cov()
 
   # Create walks only after inputchecks
   #   (do walks in clv.model.put.estimation.input)

@@ -31,7 +31,7 @@ setClass(Class = "clv.pnbd.static.cov", contains = "clv.fitted.static.cov",
 clv.pnbd.static.cov <- function(cl, clv.data){
 
   dt.cbs.pnbd <- pnbd_cbs(clv.data = clv.data)
-  clv.model <- new("clv.model.pnbd.static.cov")
+  clv.model   <- clv.model.pnbd.static.cov()
 
   # Reuse clv.fitted constructor to ensure proper object creation
   #   a recommended pattern by Martin Morgan on SO
