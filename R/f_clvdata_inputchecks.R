@@ -257,7 +257,6 @@ check_userinput_datadyncov_datadyncovspecific <- function(dt.data.dyn.cov, dt.re
 
 
   # Date checks -----------------------------------------------------------------------------------
-  # ??** do the cov dates have to match the time.unit dates! (ie dates have to be exactly on week start day) **??
 
   # Last date, for every Id:
   #   - the last  Date is at least until the specified end
