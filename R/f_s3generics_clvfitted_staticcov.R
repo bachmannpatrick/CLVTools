@@ -50,7 +50,7 @@ summary.clv.fitted.static.cov <- function(object, ...){
 #' @importFrom utils tail
 #' @include class_clv_fitted_staticcov.R
 #' @export
-coef.clv.fitted.static.cov <- function(object, complete = TRUE, ...){
+coef.clv.fitted.static.cov <- function(object, ...){
 
   # Covariates params -----------------------------------------------------------------------------------
 
@@ -101,8 +101,7 @@ coef.clv.fitted.static.cov <- function(object, complete = TRUE, ...){
   #   append correlation param, if exists and should be returned. If not included here, it is removed from nocov param vec
   names.original.named.prefixed.all <- names(original.scale.coef.model)
 
-  # names.original.named.prefixed.all does not contain cor if complete=FALSE
-  if(object@estimation.used.correlation & complete == TRUE)
+  if(object@estimation.used.correlation)
     names(names.original.named.prefixed.all) <- c(object@clv.model@names.prefixed.params.model,
                                                   object@name.prefixed.cor.param.m)
   else
@@ -116,10 +115,6 @@ coef.clv.fitted.static.cov <- function(object, complete = TRUE, ...){
   # bring into same order as in optimx
   #   read definitive order from optimx through prefixed names
   names.optimx.coefs <- colnames(last.row.optimx.coef)
-
-  # Do not try to select correlation if not previously selected into coefs
-  if(complete==FALSE)
-    names.optimx.coefs <- setdiff(names.optimx.coefs, object@name.prefixed.cor.param.m)
 
   # bring original scale names into order of optimx (prefixed) names
   names.original.named.prefixed.all <- names.original.named.prefixed.all[names.optimx.coefs]

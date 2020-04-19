@@ -27,6 +27,7 @@ Imports:
     stats,
     utils
 Suggests:
+    BTYD,
     covr,
     doFuture, 
     doParallel,
@@ -78,7 +79,10 @@ Collate:
     'f_generics_clvfittedstaticcov.R'
     'f_generics_clvfittedstaticcov_estimate.R'
     'f_generics_clvpnbddyncov.R'
+    'f_interface_bgbb.R'
+    'f_interface_bgnbd.R'
     'f_interface_clvdata.R'
+    'f_interface_gnbd.R'
     'f_interface_pnbd.R'
     'f_interface_setdynamiccovariates.R'
     'f_interface_setstaticcovariates.R'

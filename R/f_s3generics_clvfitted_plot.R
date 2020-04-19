@@ -113,7 +113,7 @@ plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FA
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=plot, var.name="plot"))
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=transactions, var.name="transactions"))
-  err.msg <- c(err.msg, check_user_data_predictionend(obj=x, prediction.end=prediction.end))
+  err.msg <- c(err.msg, check_user_data_predictionend(clv.fitted=x, prediction.end=prediction.end))
   if(!is.null(label)) # null is allowed = std. model name
     err.msg <- c(err.msg, .check_userinput_single_character(char=label, var.name="label"))
   check_err_msg(err.msg)
@@ -265,7 +265,7 @@ setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.fitt
   expectation <- i.expectation <- NULL
 
   # Set prediction params from coef()
-  obj <- clv.controlflow.predict.set.prediction.params(obj=obj)
+  obj <- clv.controlflow.predict.set.prediction.params(clv.fitted=obj)
 
   #   Pass copy of expectation table file becase will be modified and contain column named expecation
   dt.model.expectation <- clv.model.expectation(clv.model=obj@clv.model, clv.fitted=obj, dt.expectation.seq=copy(dt.expectation.seq),

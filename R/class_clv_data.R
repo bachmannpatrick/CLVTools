@@ -69,6 +69,8 @@ clv.data.has.spending <- function(clv.data){
 
 clv.data.make.repeat.transactions <- function(dt.transactions){
 
+  Date <- previous <- NULL
+
   # Copy because alters table
   dt.repeat.transactions <- copy(dt.transactions)
 
@@ -91,6 +93,7 @@ clv.data.make.repeat.transactions <- function(dt.transactions){
 #   Date: on same day
 #   posix: on same second
 clv.data.aggregate.transactions <- function(dt.transactions, has.spending){
+  Price <- NULL
 
   if(has.spending){
     dt.aggregated.transactions <- dt.transactions[, list("Price" = sum(Price)), by=c("Id", "Date")]
@@ -109,12 +112,14 @@ clv.data.aggregate.transactions <- function(dt.transactions, has.spending){
 #   If zero-repeaters (only 1 trans) set NA to ignore it in mean / sd calculations
 #' @importFrom lubridate int_diff
 clv.data.mean.interpurchase.times <- function(clv.data, dt.transactions){
-  num.transactions <- dt.transactions[, .(num.trans = .N), by="Id"]
+  Id <- num.trans <- Date <- NULL
+
+  num.transactions <- dt.transactions[, list(num.trans = .N), by="Id"]
   return(rbindlist(list(
     # 1 Transaction = NA
-    dt.transactions[Id %in% num.transactions[num.trans == 1,Id], .(interp.time = NA_real_, Id)],
+    dt.transactions[Id %in% num.transactions[num.trans == 1,Id], list(interp.time = NA_real_, Id)],
     dt.transactions[Id %in% num.transactions[num.trans >  1,Id],
-                    .(interp.time = mean(clv.time.interval.in.number.tu(clv.time = clv.data@clv.time,
+                    list(interp.time = mean(clv.time.interval.in.number.tu(clv.time = clv.data@clv.time,
                                                                         interv = int_diff(Date)))),
                     by="Id"]
   ), use.names = TRUE))

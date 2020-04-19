@@ -8,6 +8,7 @@
 #' @importFrom stats nobs
 #' @export
 nobs.clv.data   <- function(object, ...){
+  Id <- NULL
   # Observations are number of customers
   return(as.integer(object@data.transactions[, uniqueN(Id)]))
 }

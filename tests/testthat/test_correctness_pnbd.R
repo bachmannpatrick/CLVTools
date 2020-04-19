@@ -1,22 +1,63 @@
 # Load required data ---------------------------------------------------------------------------------
 data("cdnow")
 
-cdnow.nocov.coef <- c(r=0.5437, alpha = 10.3242,s = 0.7072, beta = 14.1526)
-cdnow.nocov.se   <- c(r =0.0469, alpha = 0.8281, s = 0.2511, beta = 8.1587)
 
 
 # Recover parameters ---------------------------------------------------------------------------------
 context("Correctness - PNBD nocov - Recover parameters")
+
+# Is used at various places
 expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "W",
                                    estimation.split = 38))
 
 # **TODO: Check vs PAPER!
 test_that("Cdnow nocov correct coefs and SE", {
-  expect_silent(e.pnbd.cdnow.nocov<-pnbd(clv.data=clv.cdnow, start.params.model = c(r=1, alpha = 2, s = 1, beta = 2), verbose=FALSE))
+  expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "w", estimation.split = "1997-09-30"))
+  expect_silent(p.cdnow <- pnbd(clv.data=clv.cdnow, start.params.model = c(r=1, alpha = 2, s = 1, beta = 2), verbose=FALSE))
 
-  # expect_equal(coef(e.pnbd.cdnow.nocov), cdnow.nocov.coef)
-  # **TODO: check SE
-  # expect_equal(sqrt(diag(vcov(e.pnbd.cdnow.nocov))), cdnow.nocov.se)
+
+  # cdnow.nocov.coef <- c(r = 0.5437, alpha = 10.3242,s = 0.7072, beta = 14.1526)
+  # cdnow.nocov.se   <- c(r =0.0469,  alpha = 0.8281, s = 0.2511, beta = 8.1587)
+
+  # From previous fit
+  cdnow.nocov.coef <- c(r=0.55315,   alpha=10.57633,  s=0.60625,   beta=11.67150)
+  cdnow.nocov.se   <- c(r=0.0476264, alpha=0.8427222, s=0.1872594, beta=6.2105448)
+
+  expect_equal(coef(p.cdnow), cdnow.nocov.coef, tolerance = 0.001)
+  expect_equal(sqrt(diag(vcov(p.cdnow))), cdnow.nocov.se, tolerance = 0.001)
+
+})
+
+
+test_that("Same results as BTYD", {
+  # Fitting
+  # From ?BTYD::pnbd.cbs.LL()
+  data(cdnowSummary, package = "BTYD")
+  expect_silent(cal.cbs <- cdnowSummary$cbs)
+  expect_silent(startingparams <- c(0.5, 6, 0.9, 8))
+  expect_silent(est.params <- BTYD::pnbd.EstimateParameters(cal.cbs, startingparams))
+
+  # CLVTools
+  expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "w", estimation.split = "1997-09-30"))
+  expect_silent(p.cdnow <- pnbd(clv.data=clv.cdnow, start.params.model = c(r=0.5, alpha = 6, s = 0.9, beta = 8), verbose=FALSE))
+  expect_equal(unname(coef(p.cdnow)), est.params)
+
+
+  # Predicting
+  expect_silent(btyd.dert <- BTYD::pnbd.DERT(est.params, x=cal.cbs[,"x"], t.x = cal.cbs[,"t.x"], T.cal = cal.cbs[,"T.cal"], d=0.15))
+  expect_silent(btyd.cet  <- BTYD::pnbd.ConditionalExpectedTransactions(est.params, x=cal.cbs[,"x"], t.x = cal.cbs[,"t.x"], T.cal = cal.cbs[,"T.cal"],
+                                                          T.star = 10))
+  expect_silent(btyd.palive <- BTYD::pnbd.PAlive(est.params, x=cal.cbs[,"x"], t.x = cal.cbs[,"t.x"], T.cal = cal.cbs[,"T.cal"]))
+
+  # CLVTools
+  expect_silent(dt.pred <- predict(p.cdnow, prediction.end = 10, continuous.discount.factor = 0.15, verbose = FALSE))
+
+  expect_equivalent(btyd.dert[dt.pred$Id],   dt.pred$DERT)
+  expect_equivalent(btyd.cet[dt.pred$Id],    dt.pred$CET)
+  expect_equivalent(btyd.palive[dt.pred$Id], dt.pred$PAlive)
+
+  # Expectation: Cannot compare 1vs1 from fitted() output
+  # expect_silent(btyd.expect <- BTYD::pnbd.Expectation(est.params, t=2))
 })
 
 
