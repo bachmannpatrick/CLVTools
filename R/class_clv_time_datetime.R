@@ -35,28 +35,12 @@ setClass("clv.time.datetime", contains = c("clv.time", "VIRTUAL"),
            timepoint.holdout.start    = as.POSIXct(character(0)),
            timepoint.holdout.end      = as.POSIXct(character(0))))
 
-setMethod("initialize", signature = signature(.Object="clv.time.datetime"),
-          definition = function(.Object, time.format, name.time.unit,timezone,...){
 
-            # Define customer initialize because otherwise when creating a new
-            #   object with new() for a subclass: The validObject() is called
-            #   that finds a subclass with Date/posixct to have the wrong class for the
-            #   timepoints.* slots.
-            # Reason is that clv.time has slots of "ANY" (S4) while clv.time.datetime expects "POSIXct".
-            # Therefore define own initializer but do not call parent constructor/initializer.
-            # To keep the copy/assign functionality, assign the passed args
-            # for initialization (time.format+name) directly
-            # callNextMethod()
-
-            .Object@time.format                <- time.format
-            .Object@name.time.unit             <- name.time.unit
-            .Object@timezone                   <- timezone #"UTC" #timezone
-            .Object@timepoint.estimation.start <- as.POSIXct(character(0))
-            .Object@timepoint.estimation.end   <- as.POSIXct(character(0))
-            .Object@timepoint.holdout.start    <- as.POSIXct(character(0))
-            .Object@timepoint.holdout.end      <- as.POSIXct(character(0))
-            return(.Object)
-          })
+# Because this class is VIRTUAL, no instance can be created and the
+#   usual approach of using a constructor function where an instance is created
+#   does not work.
+# In case validity methods are added, the "initialize" method needs to be
+#   defined and omit calling the parent class initialize (see PR linked to issue #47)
 
 
 #' @importFrom lubridate seconds
