@@ -28,26 +28,21 @@ setClass(Class = "clv.pnbd.dynamic.cov", contains = "clv.fitted.dynamic.cov",
          # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
          prototype = list(
            cbs = data.table(),
+
            data.walks.life  = list(),
            data.walks.trans = list(),
 
            LL.data          = data.table()))
 
 
-# Convenience constructor to encapsulate all steps for object creation
-#' @include class_clv_data.R
 #' @importFrom methods new
 clv.pnbd.dynamic.cov <- function(cl, clv.data){
 
   dt.cbs.pnbd <- pnbd_dyncov_cbs(clv.data = clv.data)
-
-  clv.model <- new("clv.model.pnbd.dynamic.cov")
-
+  clv.model   <- clv.model.pnbd.dynamic.cov()
   # Create walks only after inputchecks
-  #   (do walks in clv.model.put.estimation.input)
+  #   (walks are done in clv.model.put.estimation.input)
 
-  # Reuse clv.fitted constructor to ensure proper object creation
-  #   a recommended pattern by Martin Morgan on SO
   return(new("clv.pnbd.dynamic.cov",
              clv.fitted.dynamic.cov(cl=cl, clv.model=clv.model, clv.data=clv.data),
              cbs = dt.cbs.pnbd))

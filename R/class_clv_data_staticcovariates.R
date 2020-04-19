@@ -35,20 +35,26 @@ setClass(Class = "clv.data.static.covariates", contains = "clv.data",
            names.cov.data.life     = character(0),
            names.cov.data.trans    = character(0)))
 
-# Constructor
+
 #' @importFrom methods new
-clv.data.static.covariates <- function(no.cov.obj,data.cov.life,data.cov.trans, names.cov.data.life,names.cov.data.trans){
+clv.data.static.covariates <- function(no.cov.obj, data.cov.life, data.cov.trans, names.cov.data.life,names.cov.data.trans){
+
+  # Cannot set keys here because only setting "Id" would remove the keys set for dyncov
 
   # all the data in the no covariate clv.data object need to be deep copied.
   #   This is only relevant for the data.tables in it (data.transactions)
-  obj.cov <- new(Class = "clv.data.static.covariates",
+  # Do not call the clv.data constructor function because it would require taking the clv.data object apart to pass
+  #   it as single arguments
+  return(new("clv.data.static.covariates",
                  copy(no.cov.obj), # copy construct on deep copy of no cov data
-                 name = "CLV Transaction Data with Static Covariates",
-                 names.cov.data.life=names.cov.data.life, names.cov.data.trans=names.cov.data.trans,
-                 data.cov.life  = data.cov.life,
-                 data.cov.trans = data.cov.trans)
 
-  return(obj.cov)
+                 name = "CLV Transaction Data with Static Covariates",
+
+                 names.cov.data.life  = names.cov.data.life,
+                 names.cov.data.trans = names.cov.data.trans,
+
+                 data.cov.life  = data.cov.life,
+                 data.cov.trans = data.cov.trans))
 }
 
 

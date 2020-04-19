@@ -54,7 +54,7 @@ Collate:
     'class_clv_fitted.R'
     'class_clv_fitted_staticcov.R'
     'class_clv_fitted_dynamiccov.R'
-    'class_clv_model_pnbd_nocov.R'
+    'class_clv_model_pnbd.R'
     'class_clv_model_pnbd_staticcov.R'
     'class_clv_model_pnbd_dynamiccov.R'
     'class_clv_pnbd.R'
