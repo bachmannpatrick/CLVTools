@@ -260,6 +260,10 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.dynamic.covariates"),
   cl  <- match.call()
   obj <- clv.pnbd.dynamic.cov(cl = cl, clv.data=clv.data)
 
+  if(is(clv.data@clv.time, "clv.time.datetime")){
+    stop("This model currently cannot be fitted with data that has a temporal resolution of less than 1d (ie hours).")
+  }
+
   return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor, start.param.cor = start.param.cor,
                                            optimx.args = optimx.args, verbose=verbose,
                                            names.cov.life=names.cov.life, names.cov.trans=names.cov.trans,
