@@ -7,9 +7,9 @@ setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.data
   # Add period at every repeat transaction (and therefore copy)
   dt.repeat.trans  <- copy(obj@data.repeat.trans)
 
-  # join (roll: Inf=LOCF) period number onto all repeat transaction by dates
-  #   ie assign each repeat transaction the period number in which it falls
-  dt.repeat.trans <- dt.expectation.seq[dt.repeat.trans, on = c("period.first"="Date"), roll=+Inf, rollends=c(FALSE, FALSE)]
+  # join (roll: -Inf=NOCF) period number onto all repeat transaction by dates
+  #   ie assign each repeat transaction the next period number to which it belongs
+  dt.repeat.trans <- dt.expectation.seq[dt.repeat.trans, on = c("period.first"="Date"), roll=-Inf, rollends=c(FALSE, FALSE)]
   # !period.first now is missleading, as it stands for the repeat transaction date!
 
   # Count num rep trans in every time unit
