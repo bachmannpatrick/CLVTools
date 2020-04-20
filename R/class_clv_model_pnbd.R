@@ -215,6 +215,7 @@ setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.mo
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
   period.length <- Id <- x <- t.x <- T.cal <-  PAlive <- i.PAlive <- CET <- i.CET <- DERT <- i.DERT <- NULL # cran silence
 
+
   predict.number.of.periods <- dt.prediction[1, period.length]
 
   # Put params together in single vec
