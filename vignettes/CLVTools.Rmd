@@ -8,7 +8,7 @@ vignette: >
   %\VignetteIndexEntry{The CLVTools Package}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
-bibliography: bibliography.bib #** is faulty atm (crashes knitr, some special characters or so) **
+bibliography: bibliography.bib
 ---
 
 
@@ -47,7 +47,7 @@ library("CLVTools")
 # Load sample data provided in the package
 As Input data `CLVTools` requires customers' transaction history. Every transaction record consists of a purchase date and customer ID. Optionally, the price of the transaction may be included to allow for prediction of future customer spending using an additional Gamma/Gamma model[@Fader2005b; @Colombo1999]. Using the full history of transaction data allows for comprehensive plots and summary statistics, which allow the identification of possible issues prior to model estimation. Data may be provided as `data.frame` or `data.table` [@data.table].  
 
-It is common practice to split time series data into two parts, an estimation and a holdout period. The model is estimated based on the data from the estimation period while the data from the holdout period allows to rigorously assess model performance. Once model performance is checked on known data one can proceed to predict data without a holdout period. The length of the estimation period is heavily dependent on the characteristics of the analyzed dataset. We recommend to choose an estimation period that contains in minimum the lenght of the average inter-purchase time. Note that all customers in the dataset need to purchase at least once during the estimation period, i.e. these models do not account for prospects who have not yet a purchase record.
+It is common practice to split time series data into two parts, an estimation and a holdout period. The model is estimated based on the data from the estimation period while the data from the holdout period allows to rigorously assess model performance. Once model performance is checked on known data one can proceed to predict data without a holdout period. The length of the estimation period is heavily dependent on the characteristics of the analyzed dataset. We recommend to choose an estimation period that contains in minimum the length of the average inter-purchase time. Note that all customers in the dataset need to purchase at least once during the estimation period, i.e. these models do not account for prospects who have not yet a purchase record.
 
 Some models included in `CLVTools` allow to model the impact of covariates. These covariates may explain heterogeneity among the customers and therefore increase the predictive accuracy of the model. At the same time we may also identify and quantify the effects of these covariates on customer purchase and customer attrition. `CLVTools` distinguishes between time-invariant and time-varying covariates. Time-invariant covariates include customer characteristics such as demographics that do not change over time. Time-varying covariates are allowed to change over time. They include for example direct marketing information or seasonal patterns.
 
@@ -96,7 +96,7 @@ summary(clv.apparel)
 
 ## Estimate Model Parameters
 
-After initializing the object, we are able to estimate the first probabilistic latent attrtition model. We start with the standard Pareto/NBD model [@Schmittlein1987] and therefore use the command `pnbd()` to fit the model and estimate model parameters. `clv.data` specifies the initialized object prepared in the last step. Optionally, starting values for the model parameters and control settings for the optimization algorithm may be provided: The argument `start.params.model` allows to assign a vector (e.g. `c(alpha=1, beta=2, s=1, beta=2)` in the case of the Pareto/NBD model) of starting values for the optimization. This is useful if prior knowledge on the parameters of the distributions are available. By default starting values are set to 1 for all parameters. The argument `optimx.args` provides an option to control settings for the optimization routine. It passes a list of arguments to the optimizer. All options known from the package `optimx` [@optimx1; @optimx2] may be used. This option enables users to specify specific optimization algorithms, set upper and/or lower limits or enable tracing information on the progress of the optimization. In the case of the standard Pareto/NBD model, `CLVTools` uses by default the optimization method `L-BFGS-G` [@byrd1995limited]. If the result of the optimization is infeasible, the optimization automatically switches to the more robust but often slower `Nelder-Mead` method [@nelder1965simplex]. `verbose` shows additional output. 
+After initializing the object, we are able to estimate the first probabilistic latent attrition model. We start with the standard Pareto/NBD model [@Schmittlein1987] and therefore use the command `pnbd()` to fit the model and estimate model parameters. `clv.data` specifies the initialized object prepared in the last step. Optionally, starting values for the model parameters and control settings for the optimization algorithm may be provided: The argument `start.params.model` allows to assign a vector (e.g. `c(alpha=1, beta=2, s=1, beta=2)` in the case of the Pareto/NBD model) of starting values for the optimization. This is useful if prior knowledge on the parameters of the distributions are available. By default starting values are set to 1 for all parameters. The argument `optimx.args` provides an option to control settings for the optimization routine. It passes a list of arguments to the optimizer. All options known from the package `optimx` [@optimx1; @optimx2] may be used. This option enables users to specify specific optimization algorithms, set upper and/or lower limits or enable tracing information on the progress of the optimization. In the case of the standard Pareto/NBD model, `CLVTools` uses by default the optimization method `L-BFGS-G` [@byrd1995limited]. If the result of the optimization is in-feasible, the optimization automatically switches to the more robust but often slower `Nelder-Mead` method [@nelder1965simplex]. `verbose` shows additional output. 
 
 
 ```{r estimate-model}
@@ -104,7 +104,7 @@ est.pnbd <- pnbd(clv.data = clv.apparel)
 est.pnbd
 ```
 
-If we assign starting parameters and addititonal arguments for the optimizer we use: 
+If we assign starting parameters and additional arguments for the optimizer we use: 
 ```{r estimate-model2, eval=FALSE}
 est.pnbd <- pnbd(clv.data = clv.apparel, 
                      start.params.model = c(r=1, alpha = 2, s = 1, beta = 2), 
@@ -138,7 +138,7 @@ confint(est.pnbd)
 
 ```
 
-In order to get the Likelihood value and the corresponding Variance-Covariance Matrix we use the follwing commands:
+In order to get the Likelihood value and the corresponding Variance-Covariance Matrix we use the following commands:
 ```{r ll-model}
 # LogLikelihood at maximum
 logLik(est.pnbd)
@@ -162,7 +162,7 @@ If spending information was provided when initializing the object, `CLVTools` pr
 * predicted spending estimated by a Gamma/Gamma model [@Colombo1999; @Fader2005c] and 
 *  the customer lifetime value (CLV).
 
-If a holdout period is available additionally the true numbers of transactions ("actual.x") and true spendings ("actual.spendings") during the holdout period are reported.
+If a holdout period is available additionally the true numbers of transactions ("actual.x") and true spending ("actual.spendings") during the holdout period are reported.
 
 To use the parameter estimates on new data (e.g., an other customer cohort), the argument `newdata` optionally allows to provide a new `clvdata` object.
 
@@ -186,7 +186,7 @@ predict(est.pnbd, prediction.end = "2006-05-08")
 
 
 ## Model Plotting
-`clvdata` objects may be plotted using the `plot()` command. Similar to `summary()`, the output of `plot()` adapts on the current modeling step. It provides a descriptive plot of the actual transactional data if the model has not yet been fitted. Once the model has been estimated, `plot()` provides an aggregated incremental tracking plot of the actual data and the model based on the estimated parameters. The timespan for the plot may be altered using the `prediction.end` argument by providing either a duration or an end date. By default the plot is generated for the entire timespan of the provided dataset specified in the `clvdata()` command. The dashed line indicates the end of the estimation period. Alternatively cumulative actual and expected transactions can be plotted by setting `cumulative` to `TRUE`. The argument `transactions` disable for plotting actual transactions (`transactions=FALSE`). For further plotting options see the documentation
+`clvdata` objects may be plotted using the `plot()` command. Similar to `summary()`, the output of `plot()` adapts on the current modeling step. It provides a descriptive plot of the actual transactional data if the model has not yet been fitted. Once the model has been estimated, `plot()` provides an aggregated incremental tracking plot of the actual data and the model based on the estimated parameters. The time-span for the plot may be altered using the `prediction.end` argument by providing either a duration or an end date. By default the plot is generated for the entire time-span of the provided dataset specified in the `clvdata()` command. The dashed line indicates the end of the estimation period. Alternatively cumulative actual and expected transactions can be plotted by setting `cumulative` to `TRUE`. The argument `transactions` disable for plotting actual transactions (`transactions=FALSE`). For further plotting options see the documentation
 
 plot(x, prediction.end = NULL, cumulative = FALSE,
   transactions = TRUE, label = NULL, plot = TRUE, verbose = TRUE,
@@ -317,7 +317,7 @@ summary(est.pnbd.constr)
 ```
 
 ## Multithreading: Enable parallel processing for CLVTools {#multithreading}
-`CLVTools` supports parallel processing when estimating models containing time-varying covariates using the package `future` [@future] and the corresponding foreach parallel adaptor `doFuture` [@doFuture]. To enable the distribution of the workload across all available cores, use execute the following commands before estimating the model (i.e. calling `pnbd()):
+`CLVTools` supports parallel processing when estimating models containing time-varying covariates using the package `future` [@future] and the corresponding `foreach` [@foreach] parallel adapter `doFuture` [@doFuture]. To enable the distribution of the workload across all available cores, use execute the following commands before estimating the model (i.e. calling `pnbd()):
 
 ```{r doFuture, eval=FALSE}
   library("doFuture")
