@@ -116,7 +116,7 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
   # silence CRAN notes
   Date <- Price <- Id <- date.first.actual.trans <- date.last.transaction <- x <- previous <- NULL
 
-  cl <- match.call()
+  cl <- match.call(expand.dots = TRUE)
 
   # Check input parameters ---------------------------------------------------------
 
