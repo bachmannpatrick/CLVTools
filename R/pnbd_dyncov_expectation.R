@@ -148,7 +148,7 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
   #   Only alive customers
 
   # consider only customers alive already at expectation date
-  # ***JEFF: Is this < or <= ?
+  # According to Jeff's email: (0, t_i], ie <=
   dt.alive.customers <- clv.fitted@cbs[date.first.actual.trans <= period.first,
                                        c("Id", "date.first.actual.trans")]
 
