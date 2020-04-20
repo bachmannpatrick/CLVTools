@@ -4,16 +4,16 @@ Version: 0.5.0
 Date: 2020-04-16
 Authors@R: c(
     person(given="Patrick", family="Bachmann",    email = "patrick.bachmann@business.uzh.ch", role = c("cre","aut")),
-    person(given="Jeffrey", family="Naef",         email = "naef@stat.math.ethz.ch",role = "aut"),
+    person(given="Jeffrey", family="Naef",        email = "naef@stat.math.ethz.ch",role = "aut"),
     person(given="Patrik",  family="Schilter",    email = "patrik.schilter@gmail.com",role = "aut"),
     person(given="Markus",  family="Meierer",     email = "markus.meierer@business.uzh.ch", role = "aut"),
-    person(given="Niels",    family="Kuebler", email = "niels.kuebler@uzh.ch", role = "aut"))
+    person(given="Niels",   family="Kuebler",     email = "niels.kuebler@uzh.ch", role = "aut"))
 Depends:
     R (>= 3.5.0),
     methods
 Description: Package to fit probabilistic models to estimate customer lifetime value (CLV).
     It includes fast and accurate implementations of buy-'til-you-die models in 
-    non-contractual settings (e.g., retail business). with and without time-invariant and time-varying covariates. Currently, the package includes the 
+    non-contractual settings (e.g., retail business) with and without time-invariant and time-varying covariates. Currently, the package includes the 
     Pareto/NBD model, the GGompertz/NBD model for the purchase and the attrition processes as well as the Gamma/Gamma model for the spending process.
 Imports:
     data.table (>= 1.12.0),
