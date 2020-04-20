@@ -27,7 +27,6 @@
 setClass(Class = "clv.data.dynamic.covariates", contains = "clv.data.static.covariates")
 
 
-# Constructor
 #' @importFrom methods new
 clv.data.dynamic.covariates <- function(no.cov.obj,
                                         data.cov.life,
@@ -35,14 +34,9 @@ clv.data.dynamic.covariates <- function(no.cov.obj,
                                         names.cov.data.life,
                                         names.cov.data.trans){
 
-  # Ensure its really set
-  setkeyv(data.cov.life, cols = c("Id", "Cov.Date"))
-  setkeyv(data.cov.trans, cols = c("Id", "Cov.Date"))
 
-  obj.cov <- new(Class = "clv.data.dynamic.covariates",
-                 # Do not copy construct from clv.data directly, go through clv.data.static constructor
-                 #  Pattern suggested by Martin Morgan
-                 #  (https://stackoverflow.com/questions/16247583/inheritance-in-r/16248773)
+  return(new("clv.data.dynamic.covariates",
+                 # no need for deep copy as done in static cov constructor
                  clv.data.static.covariates(no.cov.obj = no.cov.obj,
                                             names.cov.data.life  = names.cov.data.life,
                                             names.cov.data.trans = names.cov.data.trans,
@@ -50,9 +44,8 @@ clv.data.dynamic.covariates <- function(no.cov.obj,
                                             data.cov.life  = data.cov.life,
                                             data.cov.trans = data.cov.trans),
 
-                 names.cov.data.life  = names.cov.data.life,
-                 names.cov.data.trans = names.cov.data.trans,
-                 name = "CLV Transaction Data with Dynamic Covariates")
+                 name = "CLV Transaction Data with Dynamic Covariates",
 
-  return(obj.cov)
+                 names.cov.data.life  = names.cov.data.life,
+                 names.cov.data.trans = names.cov.data.trans))
 }

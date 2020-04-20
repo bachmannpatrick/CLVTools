@@ -49,20 +49,22 @@ setClass(Class = "clv.fitted", # contains = "VIRTUAL",
            prediction.params.model = numeric(0),
 
            estimation.used.correlation = logical(0),
-           name.prefixed.cor.param.m   = "correlation.param.m",
-           name.correlation.cor        = "Cor(life,trans)",
+           name.prefixed.cor.param.m   = character(0),
+           name.correlation.cor        = character(0),
 
            optimx.estimation.output = structure(data.frame(), class="optimx"),
-           optimx.hessian     = matrix(data = numeric(0))))
+           optimx.hessian           = matrix(data = numeric(0))))
 
 
-# Convenience constructor to encapsulate all steps for object creation and
-#   enforce all required inputs
-#   no generic needed because always constructed in same way from transaction data and model
 #' @importFrom methods new
 clv.fitted <- function(cl, clv.model, clv.data){
 
   # Deep copy of clv.data if ever modified by reference later on
-  return(new("clv.fitted", call=cl, clv.model = clv.model,
-             clv.data = copy(clv.data)))
+  return(new("clv.fitted",
+             call      = cl,
+             clv.model = clv.model,
+             clv.data  = copy(clv.data),
+
+             name.prefixed.cor.param.m   = "correlation.param.m",
+             name.correlation.cor        = "Cor(life,trans)"))
 }
