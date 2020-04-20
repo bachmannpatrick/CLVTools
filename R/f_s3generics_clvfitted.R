@@ -399,7 +399,7 @@ vcov.summary.clv.fitted <- function(object, ...){
 #' @template template_param_dots
 #'
 #' @description
-#' Extract the unconditional expectation (future transactions unconditional on beein "alive") from a fitted clv model.
+#' Extract the unconditional expectation (future transactions unconditional on being "alive") from a fitted clv model.
 #'
 #' @template template_details_predictionend
 #'

@@ -34,7 +34,7 @@
 
 \item{prediction.end}{Until what point in time to predict. This can be the number of periods (numeric) or a form of date/time object. See details.}
 
-\item{newdata}{A cldata object for which the plotting should be made with the fitted model. If none or NULL is given, the plot is made for the data on which the model was fit.}
+\item{newdata}{An object of class clv.data for which the plotting should be made with the fitted model. If none or NULL is given, the plot is made for the data on which the model was fit.}
 
 \item{cumulative}{Whether the cumulative expected (and actual) transactions should be plotted.}
 
@@ -91,7 +91,7 @@ might require additional steps that can significantly increase runtime.
 }
 \note{
 Because the expectation value is an incremental value derived from the cumulative expectation function,
-all timepoints for which the expectation is calcuated need to be spaced exactly 1 time unit apart.
+all timepoints for which the expectation is calculated need to be spaced exactly 1 time unit apart.
 Each \code{period.first} marks the beginning of a time unit (ie 1st of January in case of yearly
 time units) and the expectation values are calculated up until and including \code{period.first}.
 If \code{prediction.end} does not coincide with the start of a time unit, the last timepoint

@@ -1,7 +1,7 @@
 
 #' @title Plot expected and actual repeat transactions
 #' @param x The fitted clv model to plot
-#' @param newdata A cldata object for which the plotting should be made with the fitted model. If none or NULL is given, the plot is made for the data on which the model was fit.
+#' @param newdata An object of class clv.data for which the plotting should be made with the fitted model. If none or NULL is given, the plot is made for the data on which the model was fit.
 #' @param transactions Whether the actual observed repeat transactions should be plotted.
 #' @param cumulative Whether the cumulative expected (and actual) transactions should be plotted.
 #' @param plot Whether a plot should be created or only the assembled data is returned.
@@ -21,7 +21,7 @@
 #' @template template_details_newdata
 #'
 #' @note Because the expectation value is an incremental value derived from the cumulative expectation function,
-#' all timepoints for which the expectation is calcuated need to be spaced exactly 1 time unit apart.
+#' all timepoints for which the expectation is calculated need to be spaced exactly 1 time unit apart.
 #' Each \code{period.first} marks the beginning of a time unit (ie 1st of January in case of yearly
 #' time units) and the expectation values are calculated up until and including \code{period.first}.
 #' If \code{prediction.end} does not coincide with the start of a time unit, the last timepoint

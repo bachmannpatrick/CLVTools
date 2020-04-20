@@ -19,8 +19,8 @@ implementation framework for probabilistic customer attrition models in
 non-contractual settings. Building up on the learnings of other
 implementations, the package adopts S4 classes to allow constructing
 rich and rather complex models that nevertheless still are easy to apply
-for the end user. The framework is capable to accomodate a variety of
-probabilistic customer attition models for non-contractual settings in
+for the end user. The framework is capable to accommodate a variety of
+probabilistic customer attrition models for non-contractual settings in
 continuous and discrete time.
 
 Currently, CLVTools implements the following probabilistic models:
@@ -33,9 +33,9 @@ Currently, CLVTools implements the following probabilistic models:
 3)  Pareto/NBD model with **time-varying** contextual factors (Bachmann
     & Meierer XX)
 
-In addtion the framework features an “interlayer system” to allow the
+In addition the framework features an “interlayer system” to allow the
 flexible addtion of model extensions during the model fitting process.
-Currently these layeyers include:
+Currently these layers include:
 
   - Correlation of the purchase and the attrition process
 
