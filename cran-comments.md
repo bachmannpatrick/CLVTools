@@ -16,6 +16,6 @@ This is the initial release of the CLVTools package. It provides convenient meth
 * Ubuntu Linux 16.04 LTS, R-release, GCC (rhub as cran)
 * Fedora Linux, R-devel, clang, gfortran (rhub as cran)
 
-## R CMD check results
-0 errors | 0 warnings | 1 note
+## Local R CMD check results
+0 errors | 0 warnings | 1 notes
 * This is a new release.
