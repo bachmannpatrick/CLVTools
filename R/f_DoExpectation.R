@@ -34,5 +34,6 @@ DoExpectation <- function(dt.expectation.seq, params_i, fct.expectation, clv.tim
   #   Same as: [first, diff(expectation)]
   dt.expectation.seq[, expectation := expectation - c(0, expectation[seq(from=1, to=.N-1)])]
 
+
   return(dt.expectation.seq)
 }

@@ -11,7 +11,8 @@
 #' @template template_param_dots
 #'
 #' @description
-#' Plot the actual repeat transactions and overlay it with the repeat transaction as predicted by the fitted model.
+#' Plot the actual repeat transactions and overlay it with the repeat transaction as predicted
+#' by the fitted model (unconditional expectation).
 #'
 #' @template template_details_predictionend
 #'
@@ -32,10 +33,10 @@
 #' An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
 #' If the parameter \code{plot} is \code{FALSE}, the data that would have been melted and used to
 #' create the plot is returned. It is a \code{data.table} which contains the following columns:
-#' \item{period.first}{To which timepoint the data in this row refers.}
+#' \item{period.first}{The timepoint that marks the end of the period to which the data in this row refers.}
 #' \item{Number of Repeat Transactions}{The number of actual repeat transactions in
-#' the period that starts at \code{period.first}. Only if \code{transactions} is \code{TRUE}.}
-#' \item{"Name of Model" or "label"}{The value of the unconditional expectation until \code{period.first} as per the given model.}
+#' the period that ends at \code{period.first}. Only if \code{transactions} is \code{TRUE}.}
+#' \item{"Name of Model" or "label"}{The value of the unconditional expectation in the period that ends on \code{period.first}.}
 #'
 #' @examples
 #' \donttest{

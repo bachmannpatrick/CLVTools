@@ -44,7 +44,7 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
 
 
   # . i --------------------------------------------------------------------------------------------------------
-  # Number of covariates since customer came alive
+  # Number of active covariates since customer came alive
   #   = relative to when alive
   # First is the one which was active when the customer had its first transaction
   #   The data is already cut to only these dates when a customer was alive
