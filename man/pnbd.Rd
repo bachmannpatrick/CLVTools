@@ -154,6 +154,9 @@ The part executed with \code{foreach} also heavily relies on \code{data.table} w
 the parallel backend, great care should be taken to reduce the overhead from this nested parallelism as otherwise it can \emph{increase} runtime.
 See \code{\link[data.table:setDTthreads]{setDTthreads}}, \code{\link[data.table:getDTthreads]{getDTthreads}},
 and \code{\link[future:plan]{plan}} for information on how to do this.
+
+The Pareto/NBD model with dynamic covariates can currently not be fit with data that has a temporal resolution
+of less than one day (data that was built with time unit \code{hours}).
 }
 \examples{
 \donttest{

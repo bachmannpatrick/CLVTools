@@ -77,6 +77,9 @@
 #' See \code{\link[data.table:setDTthreads]{setDTthreads}}, \code{\link[data.table:getDTthreads]{getDTthreads}},
 #' and \code{\link[future:plan]{plan}} for information on how to do this.
 #'
+#' The Pareto/NBD model with dynamic covariates can currently not be fit with data that has a temporal resolution
+#' of less than one day (data that was built with time unit \code{hours}).
+#'
 #' @return
 #' Depending on the data object on which the model was fit, \code{pnbd} returns either an object of
 #' class \link[CLVTools:clv.pnbd-class]{clv.pnbd}, \link[CLVTools:clv.pnbd.static.cov-class]{clv.pnbd.static.cov}, or \link[CLVTools:clv.pnbd.dynamic.cov-class]{clv.pnbd.dynamic.cov}.
