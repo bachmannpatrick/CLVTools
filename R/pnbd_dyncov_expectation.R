@@ -167,7 +167,7 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
 
   # Cut data to maximal range
   # Consider all covariates which are active before and during the period for which the expectation is
-  #   calculated (because period.first is the beginning of the covariate period)
+  #   calculated (incl / <= because period.first is the beginning of the covariate period)
   dt.ABCD.alive <- dt.ABCD.alive[Cov.Date <= period.first]
 
 
