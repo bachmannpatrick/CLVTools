@@ -150,11 +150,48 @@ ggomnbd_staticcov_CET <- function(vEstimated_params, dPrediction_period, vX, vT_
     .Call(`_CLVTools_ggomnbd_staticcov_CET`, vEstimated_params, dPrediction_period, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans)
 }
 
-#' @rdname ggomnbd_staticcov_LL_sum
+#' @title GGompertz/NBD: LogLikelihood with static covariates
+#'
+#' @description
+#' GGompertz/NBD with Static Covariates:
+#'
+#' The function \code{ggomnbd_staticcov_LL_ind} calculates the individual LogLikelihood
+#' values for each customer for the given parameters and covariates.
+#'
+#' The function \code{ggomnbd_staticcov_LL_sum} calculates the individual LogLikelihood values summed
+#' across customers.
+#'
+#' @param vParams vector with the parameters for the GGompertz/NBD model and the static covariates. See Details.
+#' @template template_params_rcppxtxtcal
+#' @template template_params_rcppcovmatrix
+#'
+#' @details
+#' \code{vParams} is vector with the GGompertz/NBD model parameters at log scale,
+#' followed by the parameters for the lifetime covariate at original scale and then
+#' followed by the parameters for the transaction covariate at original scale
+#'
+#' \code{mCov_life} is a matrix containing the covariates data of
+#' the time-invariant covariates that affect the lifetime process.
+#' Each column represents a different covariate. For every column, a gamma parameter
+#' needs to added to \code{vParams} at the respective position.
+#'
+#' \code{mCov_trans} is a matrix containing the covariates data of
+#' the time-invariant covariates that affect the transaction process.
+#' Each column represents a different covariate. For every column, a gamma parameter
+#' needs to added to \code{vParams} at the respective position.
+#'
+#'
+#'@return
+#'  Returns the respective LogLikelihood value for the GGompertz/NBD model with static covariates.
+#'
+#'@references
+#' TODO
+#'
 ggomnbd_staticcov_LL_ind <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans) {
     .Call(`_CLVTools_ggomnbd_staticcov_LL_ind`, vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
 
+#' @name ggomnbd_staticcov_LL_sum
 #' @title GGompertz/NBD: LogLikelihood with static covariates
 #'
 #' @description
@@ -165,7 +202,7 @@ ggomnbd_staticcov_LL_ind <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_
 #' The function \code{ggomnbd_staticcov_LL_sum} calculates the LogLikelihood value summed
 #' across customers for the given parameters.
 #'
-#' @param vParams vector with the parameters for the Pareto/NBD model and for the static
+#' @param vParams vector with the parameters for the GGompertz/NBD model and for the static
 #' covariates. See Details.
 #' @template template_params_rcppxtxtcal
 #' @template template_params_rcppcovmatrix

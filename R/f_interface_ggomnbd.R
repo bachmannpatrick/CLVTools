@@ -21,7 +21,11 @@ setMethod("ggomnbd", signature = signature(clv.data="clv.data"), definition = fu
                                                                                      start.params.model=c(),
                                                                                      optimx.args=list(),
                                                                                      verbose=TRUE,...){
-  stop("This model has not yet been implemented!")
+  cl        <- sys.call(1)
+  obj <- clv.ggomnbd(cl=cl, clv.data=clv.data)
+
+  return(clv.template.controlflow.estimate(obj=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
+                                           start.param.cor = start.param.cor, optimx.args = optimx.args, verbose=verbose, ...))
 })
 
 
@@ -35,7 +39,15 @@ setMethod("ggomnbd", signature = signature(clv.data="clv.data.static.covariates"
                                                                                                        start.params.life=c(), start.params.trans=c(),
                                                                                                        names.cov.constr=c(), start.params.constr=c(),
                                                                                                        reg.lambdas = c(), ...){
-  stop("This model has not yet been implemented!")
+  cl        <- sys.call(1)
+  obj <- clv.ggomnbd.static.cov(cl=cl, clv.data=clv.data)
+
+  return(clv.template.controlflow.estimate(obj=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
+                                           start.param.cor = start.param.cor, optimx.args = optimx.args, verbose=verbose,
+                                           names.cov.life=names.cov.life, names.cov.trans=names.cov.trans,
+                                           start.params.life=start.params.life, start.params.trans=start.params.trans,
+                                           names.cov.constr=names.cov.constr,start.params.constr=start.params.constr,
+                                           reg.lambdas = reg.lambdas, ...))
 })
 
 

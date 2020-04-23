@@ -1,6 +1,7 @@
 #include <RcppArmadillo.h>
 #include "ggomnbd_staticcov_LL_ind.h"
 
+//' @name ggomnbd_staticcov_LL_sum
 //' @title GGompertz/NBD: LogLikelihood with static covariates
 //'
 //' @description
@@ -11,7 +12,7 @@
 //' The function \code{ggomnbd_staticcov_LL_sum} calculates the LogLikelihood value summed
 //' across customers for the given parameters.
 //'
-//' @param vParams vector with the parameters for the Pareto/NBD model and for the static
+//' @param vParams vector with the parameters for the GGompertz/NBD model and for the static
 //' covariates. See Details.
 //' @template template_params_rcppxtxtcal
 //' @template template_params_rcppcovmatrix

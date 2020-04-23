@@ -2,7 +2,43 @@
 #include "ggomnbd_LL_ind.h"
 
 
-//' @rdname ggomnbd_staticcov_LL_sum
+//' @title GGompertz/NBD: LogLikelihood with static covariates
+//'
+//' @description
+//' GGompertz/NBD with Static Covariates:
+//'
+//' The function \code{ggomnbd_staticcov_LL_ind} calculates the individual LogLikelihood
+//' values for each customer for the given parameters and covariates.
+//'
+//' The function \code{ggomnbd_staticcov_LL_sum} calculates the individual LogLikelihood values summed
+//' across customers.
+//'
+//' @param vParams vector with the parameters for the GGompertz/NBD model and the static covariates. See Details.
+//' @template template_params_rcppxtxtcal
+//' @template template_params_rcppcovmatrix
+//'
+//' @details
+//' \code{vParams} is vector with the GGompertz/NBD model parameters at log scale,
+//' followed by the parameters for the lifetime covariate at original scale and then
+//' followed by the parameters for the transaction covariate at original scale
+//'
+//' \code{mCov_life} is a matrix containing the covariates data of
+//' the time-invariant covariates that affect the lifetime process.
+//' Each column represents a different covariate. For every column, a gamma parameter
+//' needs to added to \code{vParams} at the respective position.
+//'
+//' \code{mCov_trans} is a matrix containing the covariates data of
+//' the time-invariant covariates that affect the transaction process.
+//' Each column represents a different covariate. For every column, a gamma parameter
+//' needs to added to \code{vParams} at the respective position.
+//'
+//'
+//'@return
+//'  Returns the respective LogLikelihood value for the GGompertz/NBD model with static covariates.
+//'
+//'@references
+//' TODO
+//'
 // [[Rcpp::export]]
 arma::vec ggomnbd_staticcov_LL_ind(const arma::vec& vParams,
                                 const arma::vec& vX,
