@@ -119,8 +119,7 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
   # Cumulative to incremental --------------------------------------------------------------------------
   #   First entry is already correct, because cumulative = incremental there, and cannot be
   #   infered using "diff". Therefore let first entry as is, rest is diff
-  dt.expectation.seq[order(period.num, decreasing = FALSE), expectation := c(expectation[[1]], diff(expectation))]
-
+  dt.expectation.seq[order(period.num, decreasing = FALSE), expectation := c(0, diff(expectation))]
   return(dt.expectation.seq)
 }
 
