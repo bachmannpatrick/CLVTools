@@ -32,7 +32,7 @@ DoExpectation <- function(dt.expectation.seq, params_i, fct.expectation, clv.tim
   #   All afterwards are the incremental differences
   #   -> Subtract previous element, for first subtract 0
   #   Same as: [first, diff(expectation)]
-  dt.expectation.seq[, expectation := expectation - c(0, expectation[seq(from=1, to=.N-1)])]
+  dt.expectation.seq[order(period.until, decreasing = FALSE), expectation := expectation - c(0, expectation[seq(from=1, to=.N-1)])]
 
 
   return(dt.expectation.seq)
