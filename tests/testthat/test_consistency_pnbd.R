@@ -55,7 +55,7 @@ expect_silent(p.dyncov@optimx.estimation.output[1, c("life.Haircolor","trans.Hai
 expect_silent(log.params <- coef(p.dyncov))
 expect_silent(log.params[c("log.r", "log.alpha", "log.s", "log.beta")] <- log(log.params[c("r", "alpha", "s", "beta")]))
 expect_silent(log.params <-log.params[c("log.r", "log.alpha", "log.s", "log.beta","trans.Haircolor", "life.Haircolor")])
-expect_silent(p.dyncov@LL.data <- CLVTools:::pnbd_dyncov_LL(params=log.params, obj = p.dyncov))
+expect_silent(p.dyncov@LL.data <- CLVTools:::pnbd_dyncov_LL(params=log.params, clv.fitted = p.dyncov))
 
 
 
@@ -143,7 +143,7 @@ expect_silent(p.static.dyncov@optimx.estimation.output[1, c("log.r","log.alpha",
 expect_silent(log.params <- coef(p.static.dyncov))
 expect_silent(log.params[c("log.r", "log.alpha", "log.s", "log.beta")] <- log(log.params[c("r", "alpha", "s", "beta")]))
 expect_silent(log.params <-log.params[c("log.r", "log.alpha", "log.s", "log.beta","trans.Gender", "life.Gender")])
-expect_silent(p.static.dyncov@LL.data <- CLVTools:::pnbd_dyncov_LL(params=log.params, obj = p.static.dyncov))
+expect_silent(p.static.dyncov@LL.data <- CLVTools:::pnbd_dyncov_LL(params=log.params, clv.fitted = p.static.dyncov))
 
 # . Run plot and predict
 test_that("Predict yields same result as static cov", {

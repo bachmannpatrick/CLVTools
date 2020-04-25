@@ -70,7 +70,6 @@ clv.data.has.spending <- function(clv.data){
 
 
 clv.data.make.repeat.transactions <- function(dt.transactions){
-
   Date <- previous <- NULL
 
   # Copy because alters table
@@ -117,6 +116,7 @@ clv.data.mean.interpurchase.times <- function(clv.data, dt.transactions){
   Id <- num.trans <- Date <- NULL
 
   num.transactions <- dt.transactions[, list(num.trans = .N), by="Id"]
+  
   return(rbindlist(list(
     # 1 Transaction = NA
     dt.transactions[Id %in% num.transactions[num.trans == 1,Id], list(interp.time = NA_real_, Id)],
