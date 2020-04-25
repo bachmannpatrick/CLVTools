@@ -29,9 +29,11 @@ fct.helper.test.runability.clv.data.plot <- function(clv.data){
     expect_message(plot(clv.data, cumulative=TRUE), regexp = "Plotting")
   })
 
-  test_that("plot, plot = FALSE", {
+  test_that("plot, plot = FALSE, repeat trans = 0", {
     expect_message(dt.plot <- plot(clv.data, plot=FALSE), regexp = "Plotting")
     expect_s3_class(dt.plot, "data.table")
+    expect_true(isTRUE(all.equal(unlist(dt.plot[period.first == min(period.first), 2]),
+                                 0, check.attributes = FALSE)))
   })
 
   test_that("plot, verbose = TRUE", {

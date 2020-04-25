@@ -1,6 +1,6 @@
 # Load Data ------------------------------------------------------------------------------------------------------------------
-data("apparelDynCov")
 data("apparelTrans")
+data("apparelDynCov")
 apparelDynCov <- apparelDynCov[Cov.Date > "2005-01-01" ] #otherwise "cutoff" message
 
 
@@ -95,6 +95,13 @@ test_that("Plot works", {
                  regexp = "Not plotting full holdout period")
 })
 
+test_that("Plot always has 0 on repeat transactions and expectations", {
+  expect_warning(dt.plot <- plot(fitted.dyncov, prediction.end = 5, verbose=FALSE, plot=FALSE),
+                 regexp = "Not plotting full holdout period")
+  expect_true(isTRUE(all.equal(unlist(dt.plot[period.first == min(period.first), c(2,3)]),
+                               c(0,0), check.attributes = FALSE)))
+})
+
 # Predict ----------------------------------------------------------------
 test_that("Predict works", {
   # Only check whether the expectation runs through,
@@ -136,7 +143,7 @@ test_that("Predict newdata works by predicting on another sample", {
   expect_silent(predict(fitted.dyncov, newdata=clv.data.mini2.dyncov, verbose=FALSE))
 
   # Check that the fitted model is left unchanged
-  all.equal(bck.fittted.dyncov, fitted.dyncov)
+  expect_true(isTRUE(all.equal(bck.fittted.dyncov, fitted.dyncov)))
 })
 
 

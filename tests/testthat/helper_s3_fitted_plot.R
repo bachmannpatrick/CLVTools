@@ -23,9 +23,10 @@
     expect_message(plot(clv.fitted, verbose=TRUE), "until")
   })
 
-  test_that("Works for plot=FALSE",{
-    skip_on_cran()
-    expect_silent(plot(clv.fitted, plot=FALSE, verbose=FALSE))
+  test_that("Works for plot=FALSE and always has 0 repeat trans and expectation on first",{
+    expect_silent(dt.plot <- plot(clv.fitted, plot=FALSE, verbose=FALSE))
+    expect_true(isTRUE(all.equal( unlist(dt.plot[period.first == min(period.first), 2:3]),
+                                  c(0,0), check.attributes = FALSE)))
   })
 
   test_that("Works for label set to text",{
@@ -93,8 +94,8 @@
     #   = also not some expectations missing
     # **TODO: Add back once prediction periods are corrected.
     #   This needs to be same if only holdout is plotted
-    # expect_true(all.equal(dt.plot[variable == unique(variable)[1], "period.first"],
-    #                       dt.plot[variable == unique(variable)[2], "period.first"]))
+    # expect_true(isTRUE(all.equal(dt.plot[variable == unique(variable)[1], "period.first"],
+    #                       dt.plot[variable == unique(variable)[2], "period.first"])))
     # expect_true(all(1 == clv.time.interval.in.number.tu(clv.time=clv.fitted@clv.data@clv.time,
     #                                                interv = lubridate::int_diff(dt.plot[variable == unique(variable)[1],
     #                                                                                     period.first]))))
