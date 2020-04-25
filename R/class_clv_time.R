@@ -265,8 +265,8 @@ clv.time.expectation.periods <- function(clv.time, user.tp.end){
   }
 
   # Make data.table, sort, add period.num (used throughout)
-  dt.expectation <- data.table(period.first = vec.tp.expectation.date.i)
-  setkeyv(dt.expectation, cols = "period.first")
+  dt.expectation <- data.table(period.until = vec.tp.expectation.date.i)
+  setkeyv(dt.expectation, cols = "period.until")
   dt.expectation[, period.num := seq.int(from=1, to=.N)]
 
   return(dt.expectation)

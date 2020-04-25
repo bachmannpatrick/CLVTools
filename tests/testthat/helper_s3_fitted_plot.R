@@ -25,7 +25,7 @@
 
   test_that("Works for plot=FALSE and always has 0 repeat trans and expectation on first",{
     expect_silent(dt.plot <- plot(clv.fitted, plot=FALSE, verbose=FALSE))
-    expect_true(isTRUE(all.equal( unlist(dt.plot[period.first == min(period.first), 2:3]),
+    expect_true(isTRUE(all.equal( unlist(dt.plot[period.until == min(period.until), 2:3]),
                                   c(0,0), check.attributes = FALSE)))
   })
 
@@ -78,11 +78,11 @@
     expect_silent(dt.plot <- plot(clv.fitted, plot=FALSE, verbose=FALSE))
     expect_s3_class(dt.plot, "data.table")
 
-    # expect_true(all(c("period.first", "variable", "value") %in% colnames(dt.plot)))
-    expect_true(all(c("period.first", "Actual Number of Repeat Transactions", clv.fitted@clv.model@name.model)
+    # expect_true(all(c("period.until", "variable", "value") %in% colnames(dt.plot)))
+    expect_true(all(c("period.until", "Actual Number of Repeat Transactions", clv.fitted@clv.model@name.model)
                     %in% colnames(dt.plot)))
     # Num repeat trans may have some NA if prediction.end beyond holdout.end
-    expect_false(anyNA(dt.plot[, c("period.first", clv.fitted@clv.model@name.model)]))
+    expect_false(anyNA(dt.plot[, c("period.until", clv.fitted@clv.model@name.model)]))
 
     # expect_silent(dt.plot <- plot(clv.fitted, transactions = TRUE, plot=FALSE, verbose=FALSE))
     expect_true(ncol(dt.plot) == 3)
@@ -94,14 +94,14 @@
     #   = also not some expectations missing
     # **TODO: Add back once prediction periods are corrected.
     #   This needs to be same if only holdout is plotted
-    # expect_true(isTRUE(all.equal(dt.plot[variable == unique(variable)[1], "period.first"],
-    #                       dt.plot[variable == unique(variable)[2], "period.first"])))
+    # expect_true(isTRUE(all.equal(dt.plot[variable == unique(variable)[1], "period.until"],
+    #                       dt.plot[variable == unique(variable)[2], "period.until"])))
     # expect_true(all(1 == clv.time.interval.in.number.tu(clv.time=clv.fitted@clv.data@clv.time,
     #                                                interv = lubridate::int_diff(dt.plot[variable == unique(variable)[1],
-    #                                                                                     period.first]))))
+    #                                                                                     period.until]))))
     # expect_true(all(1 == clv.time.interval.in.number.tu(clv.time=clv.fitted@clv.data@clv.time,
     #                                                     interv = lubridate::int_diff(dt.plot[variable == unique(variable)[2],
-    #                                                                                          period.first]))))
+    #                                                                                          period.until]))))
     # **MAYBE: Check that its the correct dates
 
   })
@@ -132,8 +132,8 @@
   #   expect_equal(res.num, res.Date)
   #   expect_equal(res.Date, res.posix)
   #
-  #   expect_true(res.char[, .(N=data.table::uniqueN(period.first)), by="variable"][, diff(N) == 4])
-  #   expect_true(res.char[, .(N=data.table::uniqueN(period.first)), by="variable"][, diff(N) == 4])
+  #   expect_true(res.char[, .(N=data.table::uniqueN(period.until)), by="variable"][, diff(N) == 4])
+  #   expect_true(res.char[, .(N=data.table::uniqueN(period.until)), by="variable"][, diff(N) == 4])
   # })
 
 }

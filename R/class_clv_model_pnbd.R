@@ -258,7 +258,7 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.no.cov"),
 # . clv.model.expectation --------------------------------------------------------------------------------------------------------
 setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.no.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
 
-  r <- s <- alpha_i <- beta_i <- date.first.actual.trans <- T.cal <- t_i<- period.first.trans<-NULL
+  r <- s <- alpha_i <- beta_i <- date.first.actual.trans <- T.cal <- t_i <- NULL
 
   params_i <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
 

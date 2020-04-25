@@ -32,7 +32,7 @@ fct.helper.test.runability.clv.data.plot <- function(clv.data){
   test_that("plot, plot = FALSE, repeat trans = 0", {
     expect_message(dt.plot <- plot(clv.data, plot=FALSE), regexp = "Plotting")
     expect_s3_class(dt.plot, "data.table")
-    expect_true(isTRUE(all.equal(unlist(dt.plot[period.first == min(period.first), 2]),
+    expect_true(isTRUE(all.equal(unlist(dt.plot[period.until == min(period.until), 2]),
                                  0, check.attributes = FALSE)))
   })
 

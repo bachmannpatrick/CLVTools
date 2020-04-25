@@ -98,7 +98,7 @@ test_that("Plot works", {
 test_that("Plot always has 0 on repeat transactions and expectations", {
   expect_warning(dt.plot <- plot(fitted.dyncov, prediction.end = 5, verbose=FALSE, plot=FALSE),
                  regexp = "Not plotting full holdout period")
-  expect_true(isTRUE(all.equal(unlist(dt.plot[period.first == min(period.first), c(2,3)]),
+  expect_true(isTRUE(all.equal(unlist(dt.plot[period.until == min(period.until), c(2,3)]),
                                c(0,0), check.attributes = FALSE)))
 })
 
@@ -185,7 +185,7 @@ test_that("Can plot longer with newdata than with the data used for fitting", {
                regexp = "in the fitted model are not long enough")
   expect_silent(dt.plot <- plot(fitted.dyncov, newdata=clv.data.mini.extra, plot=FALSE,
                                 prediction.end = "2006-07-26",verbose=FALSE))
-  expect_true(dt.plot[, max(period.first)] > clv.data.trans@clv.time@timepoint.holdout.end)
+  expect_true(dt.plot[, max(period.until)] > clv.data.trans@clv.time@timepoint.holdout.end)
 })
 
 # Overlong data ------------------------------------------------------------------------------
@@ -220,7 +220,7 @@ expect_silent(clv.data.mini.extra <- SetDynamicCovariates(clv.data.trans,
   # Only predict & plots until transaction data end / holdout end
   expect_silent(dt.plot <- plot(fitted.dyncov, plot=FALSE, verbose=FALSE))
   expect_silent(dt.predict <- predict(fitted.dyncov, verbose=FALSE))
-  expect_true(dt.plot[, max(period.first)] <= ceiling_date(clv.data.trans@clv.time@timepoint.holdout.end, unit="week"))
+  expect_true(dt.plot[, max(period.until)] <= ceiling_date(clv.data.trans@clv.time@timepoint.holdout.end, unit="week"))
   expect_true(dt.predict[, max(period.last)] <= clv.data.trans@clv.time@timepoint.holdout.end)
 
   # Can also predict & plot further
@@ -228,7 +228,7 @@ expect_silent(clv.data.mini.extra <- SetDynamicCovariates(clv.data.trans,
   expect_silent(dt.plot <- plot(fitted.dyncov, plot=FALSE, verbose=FALSE, prediction.end = prediction.end.over))
   expect_silent(dt.predict <- predict(fitted.dyncov, verbose=FALSE, prediction.end = prediction.end.over))
 
-  expect_true(dt.plot[, max(period.first)] > clv.data.trans@clv.time@timepoint.holdout.end)
+  expect_true(dt.plot[, max(period.until)] > clv.data.trans@clv.time@timepoint.holdout.end)
   expect_true(dt.predict[, max(period.last)] > clv.data.trans@clv.time@timepoint.holdout.end)
 })
 

@@ -52,10 +52,10 @@
 An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
 If the parameter \code{plot} is \code{FALSE}, the data that would have been melted and used to
 create the plot is returned. It is a \code{data.table} which contains the following columns:
-\item{period.first}{The timepoint that marks the end of the period to which the data in this row refers.}
+\item{period.until}{The timepoint that marks the end of the period to which the data in this row refers.}
 \item{Number of Repeat Transactions}{The number of actual repeat transactions in
-the period that ends at \code{period.first}. Only if \code{transactions} is \code{TRUE}.}
-\item{"Name of Model" or "label"}{The value of the unconditional expectation in the period that ends on \code{period.first}.}
+the period that ends at \code{period.until}. Only if \code{transactions} is \code{TRUE}.}
+\item{"Name of Model" or "label"}{The value of the unconditional expectation in the period that ends on \code{period.until}.}
 }
 \description{
 Plot the actual repeat transactions and overlay it with the repeat transaction as predicted
@@ -92,8 +92,8 @@ might require additional steps that can significantly increase runtime.
 \note{
 Because the expectation value is an incremental value derived from the cumulative expectation function,
 all timepoints for which the expectation is calcuated need to be spaced exactly 1 time unit apart.
-Each \code{period.first} marks the beginning of a time unit (ie 1st of January in case of yearly
-time units) and the expectation values are calculated up until and including \code{period.first}.
+Each \code{period.until} marks the beginning of a time unit (ie 1st of January in case of yearly
+time units) and the expectation values are calculated up until and including \code{period.until}.
 If \code{prediction.end} does not coincide with the start of a time unit, the last timepoint
 for which the expectation is calculated therefore is not \code{prediction.end} but the start of the
 first time unit after \code{prediction.end}.

@@ -11,7 +11,7 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
   #   Subset ABCD to who had transactions before (strictly?) this date
   #   Calc expectation for these already alive
 
-  tp.last.period.start <- dt.expectation.seq[, max(period.first)]
+  tp.last.period.start <- dt.expectation.seq[, max(period.until)]
   max.period.no <- dt.expectation.seq[, max(period.num)]
 
   if(max.period.no <=2)
@@ -103,11 +103,11 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
   # For every period, do unconditional expectation (sumF)
   #   Do for loop because more expressive than doing by="period.num" in table
   for(p.no in dt.expectation.seq$period.num){
-    period.first <- dt.expectation.seq[period.num == p.no, period.first]
+    period.until <- dt.expectation.seq[period.num == p.no, period.until]
 
     expectation_i <- .pnbd_dyncov_unconditionalexpectation(clv.fitted = clv.fitted,
                                                            dt.ABCD = dt.ABCD,
-                                                           period.first = period.first)
+                                                           period.until = period.until)
 
     dt.expectation.seq[period.num == p.no, expectation := expectation_i]
 
@@ -128,7 +128,7 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
 
 # **** JEFF: t = TUs from alive until date.expectation.period.start oder date.expectation.period.end?
 # **** JEFF: cut: At date.expectation.period.start oder date.expectation.period.end?
-.pnbd_dyncov_unconditionalexpectation <- function(clv.fitted, dt.ABCD, period.first){
+.pnbd_dyncov_unconditionalexpectation <- function(clv.fitted, dt.ABCD, period.until){
 
   # cran silence
   i <- Ai <- Bbar_i <- Ci <- Dbar_i <- d1 <-S <- i.S <- f <- A_k0t <- Bbar_k0t <- C_k0t <- Dbar_k0t <- Id  <- NULL
@@ -149,10 +149,10 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
 
   # consider only customers alive already at expectation date
   # According to Jeff's email: (0, t_i], ie <=
-  dt.alive.customers <- clv.fitted@cbs[date.first.actual.trans <= period.first,
+  dt.alive.customers <- clv.fitted@cbs[date.first.actual.trans <= period.until,
                                        c("Id", "date.first.actual.trans")]
 
-  # Keep only who is alive already at period.first
+  # Keep only who is alive already at period.until
   dt.ABCD.alive <- dt.ABCD[dt.alive.customers, on="Id", nomatch = NULL]
 
 
@@ -160,15 +160,15 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
   dt.alive.customers[, num.periods.alive.expectation.date :=
                        clv.time.interval.in.number.tu(clv.time=clv.time,
                                                       interv=interval(start = date.first.actual.trans,
-                                                                      end   = period.first))]
+                                                                      end   = period.until))]
   # Add to every cov period
   dt.ABCD.alive[dt.alive.customers, num.periods.alive.expectation.date := i.num.periods.alive.expectation.date,
                 on = "Id"]
 
   # Cut data to maximal range
   # Consider all covariates which are active before and during the period for which the expectation is
-  #   calculated (incl / <= because period.first is the beginning of the covariate period)
-  dt.ABCD.alive <- dt.ABCD.alive[Cov.Date <= period.first]
+  #   calculated (incl / <= because period.until is the beginning of the covariate period)
+  dt.ABCD.alive <- dt.ABCD.alive[Cov.Date <= period.until]
 
 
   # S --------------------------------------------------------------------------------------------------------
