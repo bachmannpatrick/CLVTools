@@ -31,10 +31,16 @@ expect_silent(clv.cdnow.dyn <- SetDynamicCovariates(clv.data = clv.cdnow,
 expect_silent(p.nocov <- pnbd(clv.cdnow, verbose=FALSE))
 
 # Fit staticcov model ----------------------------------------------------------------------------------
-#   Replace coefs with the ones from dyncov, set coefs for covs to 0
 expect_silent(p.staticcov <- pnbd(clv.cdnow.static, verbose=FALSE))
-expect_silent(p.staticcov@optimx.estimation.output[1, c("log.r", "log.alpha", "log.s", "log.beta", "life.Gender", "trans.Gender")] <-
-                c(p.nocov@optimx.estimation.output[1, c("log.r", "log.alpha", "log.s", "log.beta")], 0,0))
+
+#   Replace coefs with the ones from dyncov, set coefs for covs to 0
+# expect_silent(p.staticcov@optimx.estimation.output[1, c("log.r", "log.alpha", "log.s", "log.beta", "life.Gender", "trans.Gender")] <-
+#                 c(p.nocov@optimx.estimation.output[1, c("log.r", "log.alpha", "log.s", "log.beta")], 0,0))
+expect_silent(p.staticcov@prediction.params.model[c("r", "alpha", "s", "beta")] <-
+                p.nocov@prediction.params.model[c("r", "alpha", "s", "beta")])
+expect_silent(p.staticcov@prediction.params.life["Gender"] <- 0)
+expect_silent(p.staticcov@prediction.params.trans["Gender"] <- 0)
+
 
 
 # Fit dyncov model --------------------------------------------------------------------------------------
@@ -47,20 +53,21 @@ expect_warning(p.dyncov <- pnbd(clv.cdnow.dyn, start.params.model = c(r=1, alpha
                regexp = "Hessian")
 
 # Set params to nocov params cov gammas=0
-expect_silent(p.dyncov@optimx.estimation.output[1, c("log.r", "log.alpha", "log.s", "log.beta")] <-
-                p.nocov@optimx.estimation.output[1, c("log.r", "log.alpha", "log.s", "log.beta")])
-expect_silent(p.dyncov@optimx.estimation.output[1, c("life.Haircolor","trans.Haircolor")] <- c(0,0))
+expect_silent(p.dyncov@prediction.params.model[c("r", "alpha", "s", "beta")] <-
+                p.nocov@prediction.params.model[c("r", "alpha", "s", "beta")])
+expect_silent(p.dyncov@prediction.params.life["Haircolor"] <- 0)
+expect_silent(p.dyncov@prediction.params.trans["Haircolor"] <- 0)
+
 
 # Recalculate the LL data for these fake params
-expect_silent(log.params <- coef(p.dyncov))
-expect_silent(log.params[c("log.r", "log.alpha", "log.s", "log.beta")] <- log(log.params[c("r", "alpha", "s", "beta")]))
-expect_silent(log.params <-log.params[c("log.r", "log.alpha", "log.s", "log.beta","trans.Haircolor", "life.Haircolor")])
+expect_silent(log.params <- setNames(log(p.dyncov@prediction.params.model[c("r", "alpha", "s", "beta")]),
+                                     c("log.r", "log.alpha", "log.s", "log.beta")))
+expect_silent(log.params[c("trans.Haircolor", "life.Haircolor")] <- 0)
 expect_silent(p.dyncov@LL.data <- CLVTools:::pnbd_dyncov_LL(params=log.params, clv.fitted = p.dyncov))
 
 
 
 test_that("Predict yields same results for all models with gamma=0", {
-  skip_on_cran()
 
   # DERT unequal to DECT because only predict short period!
 
