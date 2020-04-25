@@ -7,10 +7,10 @@
 #' @template template_params_estimate_cov
 #' @template template_param_verbose
 #' @template template_param_dots
-NULL
 
 #' @exportMethod ggomnbd
-setGeneric("ggomnbd", def = function(clv.data, start.params.model=c(), optimx.args=list(), verbose=TRUE, ...)
+setGeneric("ggomnbd", def = function(clv.data, start.params.model=c(), use.cor = FALSE, start.param.cor=c(),
+                                     optimx.args=list(), verbose=TRUE, ...)
   standardGeneric("ggomnbd"))
 
 
@@ -18,13 +18,15 @@ setGeneric("ggomnbd", def = function(clv.data, start.params.model=c(), optimx.ar
 #' @include class_clv_data.R
 #' @rdname ggomnbd
 setMethod("ggomnbd", signature = signature(clv.data="clv.data"), definition = function(clv.data,
-                                                                                     start.params.model=c(),
-                                                                                     optimx.args=list(),
-                                                                                     verbose=TRUE,...){
+                                                                                       start.params.model=c(),
+                                                                                       use.cor = FALSE,
+                                                                                       start.param.cor=c(),
+                                                                                       optimx.args=list(),
+                                                                                       verbose=TRUE,...){
   cl        <- sys.call(1)
   obj <- clv.ggomnbd(cl=cl, clv.data=clv.data)
 
-  return(clv.template.controlflow.estimate(obj=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
+  return(clv.template.controlflow.estimate(clv.fitted = obj, obj=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
                                            start.param.cor = start.param.cor, optimx.args = optimx.args, verbose=verbose, ...))
 })
 

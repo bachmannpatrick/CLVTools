@@ -7,9 +7,21 @@
 \alias{ggomnbd,clv.data.dynamic.covariates-method}
 \title{Gamma-Gompertz/NBD models - Work In Progress}
 \usage{
+ggomnbd(
+  clv.data,
+  start.params.model = c(),
+  use.cor = FALSE,
+  start.param.cor = c(),
+  optimx.args = list(),
+  verbose = TRUE,
+  ...
+)
+
 \S4method{ggomnbd}{clv.data}(
   clv.data,
   start.params.model = c(),
+  use.cor = FALSE,
+  start.param.cor = c(),
   optimx.args = list(),
   verbose = TRUE,
   ...
