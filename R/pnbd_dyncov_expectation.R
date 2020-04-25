@@ -11,8 +11,8 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
   #   Subset ABCD to who had transactions before (strictly?) this date
   #   Calc expectation for these already alive
 
-  tp.last.period.start <- dt.expectation.seq[, max(period.until)]
-  max.period.no <- dt.expectation.seq[, max(period.num)]
+  tp.last.period.end <- dt.expectation.seq[, max(period.until)]
+  max.period.no        <- dt.expectation.seq[, max(period.num)]
 
   if(max.period.no <=2)
     stop("Have to plot at least 3 periods!", call. = FALSE)
@@ -28,7 +28,7 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
   #     the covariate is active then and is included as well.
   #     => max cov: floor_tu(max(dates.periods))
 
-  date.last.cov  <- clv.time.floor.date(clv.time=clv.time, timepoint=tp.last.period.start)
+  date.last.cov  <- clv.time.floor.date(clv.time=clv.time, timepoint=tp.last.period.end)
 
   l.covs <- pnbd_dyncov_alivecovariates(clv.fitted = clv.fitted, date.upper.cov = date.last.cov)
   dt.trans <- l.covs[["dt.trans"]]
@@ -38,9 +38,6 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
   dt.ABCD <- dt.life[, c("Id", "Cov.Date", "exp.gX.L")]
   setkeyv(dt.ABCD, cols = c("Id", "Cov.Date"))
   dt.ABCD[dt.trans, exp.gX.P := i.exp.gX.P, on = c("Id", "Cov.Date")]
-
-  # Add all other needed data
-  dt.ABCD[clv.fitted@cbs, d_omega := i.d_omega, on="Id"]
 
 
   # . i --------------------------------------------------------------------------------------------------------
@@ -194,6 +191,7 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
   # Last = max(i) is per customer, but only after cutting to expectation date!
   #   After cutting to expectation date, all have the same max date!
   # **JEFF: Wird davon ausgegangen, dass num.periods.alive.expectation.date > i ist?
+  # **JEFF: For first period d1+i-2 is negative..? or exactly -d1 and num.periods.alive.expectation.date = d1, hence = 0?
   dt.ABCD.alive[Cov.Date == max(Cov.Date),
                 S := s.fct.expectation(term = (d1 + i - 2), A=Ai, B=Bbar_i, C=Ci, D=Dbar_i, beta_0=beta_0, s=s) -
                   s.fct.expectation(term = num.periods.alive.expectation.date, A=Ai, B=Bbar_i, C=Ci, D=Dbar_i, beta_0=beta_0, s=s)]
