@@ -44,7 +44,7 @@ test_that("Model parameters are nearly the same", {
 
 
 
-context("Nocov/cov Consistency - PNBD - prediction with cov params = 0")
+context("Nocov/cov Consistency - PNBD - cov params = 0")
 # Also possible for dyncov
 
 # Create dyncov model, quickly ------------------------------------------------------------------
