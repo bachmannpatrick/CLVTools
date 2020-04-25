@@ -1,176 +1,137 @@
 # Tests that PNBD models are consistent among themselves
 skip_on_cran()
-skip_on_ci()
-skip_on_covr()
 
 
-# gamma=0 ------------------------------------------------------------------------------------------------
-context("Consistency - PNBD - nocov vs staticcov gamma=0 ")
+# Consistency
+# nocov vs static cov:
+#   same fit with all covs = 0
+#   same predict with gamma=0
 
-# . Data to play with ------------------------------------------------------------------------------------
-data("cdnow")
-expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd",
-                                   time.unit = "w", estimation.split = 37))
-
-dt.cov.static <- data.table::data.table(Id = unique(cdnow$Id), Gender=c(1, rep(c(1,0), 1178)))
-expect_silent(clv.cdnow.static <- SetStaticCovariates(clv.cdnow,
-                                                      data.cov.life = dt.cov.static, data.cov.trans = dt.cov.static,
-                                                      names.cov.life = "Gender", names.cov.trans = "Gender"))
-
-dt.cov.dyn <- data.table::data.table(expand.grid(Id = unique(cdnow$Id),
-                                                 Date = seq(lubridate::ymd("1996-12-29"),
-                                                            lubridate::ymd("1998-06-28"),
-                                                            by = "weeks")))
-dt.cov.dyn[, Haircolor := c(1, rep(c(1,2), nrow(dt.cov.dyn)/2))]
-expect_silent(clv.cdnow.dyn <- SetDynamicCovariates(clv.data = clv.cdnow,
-                                                    data.cov.life = dt.cov.dyn, data.cov.trans = dt.cov.dyn,
-                                                    names.cov.life = "Haircolor", names.cov.trans = "Haircolor"))
-
-# Fit nocov model --------------------------------------------------------------------------------------
-#   Replace coefs with the ones from dyncov
-expect_silent(p.nocov <- pnbd(clv.cdnow, verbose=FALSE))
-
-# Fit staticcov model ----------------------------------------------------------------------------------
-expect_silent(p.staticcov <- pnbd(clv.cdnow.static, verbose=FALSE))
-
-#   Replace coefs with the ones from dyncov, set coefs for covs to 0
-# expect_silent(p.staticcov@optimx.estimation.output[1, c("log.r", "log.alpha", "log.s", "log.beta", "life.Gender", "trans.Gender")] <-
-#                 c(p.nocov@optimx.estimation.output[1, c("log.r", "log.alpha", "log.s", "log.beta")], 0,0))
-expect_silent(p.staticcov@prediction.params.model[c("r", "alpha", "s", "beta")] <-
-                p.nocov@prediction.params.model[c("r", "alpha", "s", "beta")])
-expect_silent(p.staticcov@prediction.params.life["Gender"] <- 0)
-expect_silent(p.staticcov@prediction.params.trans["Gender"] <- 0)
+# nocov vs dyncov:
+#   same fit with all covs = 0
+#   same predict with gamma=0
 
 
+context("Nocov/cov Consistency - PNBD - all cov data = 0")
+data("apparelTrans")
+expect_silent(clv.apparel <- clvdata(data.transactions = apparelTrans, date.format = "ymd", time.unit = "w",
+                                     estimation.split = 38))
 
-# Fit dyncov model --------------------------------------------------------------------------------------
-expect_warning(p.dyncov <- pnbd(clv.cdnow.dyn, start.params.model = c(r=1, alpha=3, s=1, beta=3),
-                 optimx.args = list(method="Nelder-Mead", # NelderMead verifies nothing = faster
-                                    hessian=FALSE, # no hessian
-                                    control=list(kkt=FALSE, # kkt takes forever
-                                                 reltol = 1000)),
-                 verbose = FALSE),
+data("apparelStaticCov")
+# Cannot set all to 0 as requires at least 2 distinct values per cov
+expect_silent(apparelStaticCov.0 <- apparelStaticCov)
+expect_silent(apparelStaticCov.0[, Gender := 0])
+expect_silent(apparelStaticCov.0[1, Gender := 1])
+expect_silent(apparelStaticCov.0[, Channel := 0])
+expect_silent(apparelStaticCov.0[1, Channel := 1])
+expect_silent(clv.apparel.static <- SetStaticCovariates(clv.apparel,
+                                                        data.cov.life = apparelStaticCov.0, data.cov.trans = apparelStaticCov.0,
+                                                        names.cov.life = c("Gender", "Channel"), names.cov.trans = c("Gender", "Channel")))
+
+
+# Fit models
+# Cannot fully fit dyncov as takes way too long
+expect_silent(p.nocov  <- pnbd(clv.apparel, verbose = FALSE))
+expect_silent(p.static <- pnbd(clv.apparel.static, verbose = FALSE))
+
+test_that("Cov params are insignificant", {
+  expect_true(all(coef(summary(p.static))[c("life.Gender", "life.Channel", "trans.Gender", "trans.Channel"), 4] > 0.1))
+})
+
+test_that("Model parameters are nearly the same", {
+  expect_true(all.equal(coef(p.nocov), coef(p.static)[c("r", "alpha", "s","beta")], tolerance = 0.05))
+})
+
+
+
+context("Nocov/cov Consistency - PNBD - prediction with cov params = 0")
+# Also possible for dyncov
+
+# Create dyncov model, quickly ------------------------------------------------------------------
+data("apparelDynCov")
+expect_message(clv.apparel.dyn  <- SetDynamicCovariates(clv.apparel,name.id = "Id",name.date = "Cov.Date",
+                                                        data.cov.life  = apparelDynCov,names.cov.life = c("Marketing", "Gender", "Channel"),
+                                                        data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel")),
+               regexp = "cut off")
+
+expect_warning(p.dyncov <- pnbd(clv.apparel.dyn, start.params.model = c(r=1, alpha=3, s=1, beta=3),
+                                optimx.args = list(method="Nelder-Mead", # NelderMead verifies nothing = faster
+                                                   hessian=FALSE, # no hessian
+                                                   control=list(kkt=FALSE, # kkt takes forever
+                                                                reltol = 1000)),
+                                verbose = FALSE),
                regexp = "Hessian")
 
-# Set params to nocov params cov gammas=0
+
+# Set parameters ------------------------------------------------------------------------
+# Fake the parameters to be exactly the same and 0 for covariates
+#   Replace model coefs with that from nocov
+
+# static cov
+expect_silent(p.static@prediction.params.model[c("r", "alpha", "s", "beta")] <-
+                p.nocov@prediction.params.model[c("r", "alpha", "s", "beta")])
+expect_silent(p.static@prediction.params.life[c("Gender", "Channel")] <- 0)
+expect_silent(p.static@prediction.params.trans[c("Gender", "Channel")] <- 0)
+
+# dyncov
 expect_silent(p.dyncov@prediction.params.model[c("r", "alpha", "s", "beta")] <-
                 p.nocov@prediction.params.model[c("r", "alpha", "s", "beta")])
-expect_silent(p.dyncov@prediction.params.life["Haircolor"] <- 0)
-expect_silent(p.dyncov@prediction.params.trans["Haircolor"] <- 0)
-
+expect_silent(p.dyncov@prediction.params.life[c("Marketing", "Gender", "Channel")] <- 0)
+expect_silent(p.dyncov@prediction.params.trans[c("Marketing", "Gender", "Channel")] <- 0)
 
 # Recalculate the LL data for these fake params
 expect_silent(log.params <- setNames(log(p.dyncov@prediction.params.model[c("r", "alpha", "s", "beta")]),
                                      c("log.r", "log.alpha", "log.s", "log.beta")))
-expect_silent(log.params[c("trans.Haircolor", "life.Haircolor")] <- 0)
+expect_silent(log.params[c("trans.Marketing", "trans.Gender", "trans.Channel", "life.Marketing", "life.Gender", "life.Channel")] <- 0)
 expect_silent(p.dyncov@LL.data <- CLVTools:::pnbd_dyncov_LL(params=log.params, clv.fitted = p.dyncov))
 
 
+# Actual tests ---------------------------------------------------------------------------------
 
 test_that("Predict yields same results for all models with gamma=0", {
 
   # DERT unequal to DECT because only predict short period!
 
   # Standard
-  expect_silent(dt.pred.nocov     <- predict(p.nocov, verbose=FALSE))
-  expect_silent(dt.pred.staticcov <- predict(p.staticcov, verbose=FALSE))
-  expect_silent(dt.pred.dyncov    <- predict(p.dyncov, verbose=FALSE))
+  expect_silent(dt.pred.nocov    <- predict(p.nocov, verbose=FALSE))
+  expect_silent(dt.pred.static   <- predict(p.static, verbose=FALSE))
+  expect_silent(dt.pred.dyncov   <- predict(p.dyncov, verbose=FALSE))
   expect_silent(data.table::setnames(dt.pred.dyncov, old="DECT",new = "DERT"))
-  expect_true(isTRUE(all.equal(dt.pred.nocov, dt.pred.staticcov)))
-  expect_true(isTRUE(all.equal(dt.pred.staticcov[, !c("DERT", "predicted.CLV")],
+  expect_true(isTRUE(all.equal(dt.pred.nocov, dt.pred.static)))
+  expect_true(isTRUE(all.equal(dt.pred.nocov[,  !c("DERT", "predicted.CLV")],
                                dt.pred.dyncov[, !c("DERT", "predicted.CLV")])))
 
   # With prediction.end
-  expect_silent(dt.pred.nocov     <- predict(p.nocov, verbose=FALSE, prediction.end = 6))
-  expect_silent(dt.pred.staticcov <- predict(p.staticcov, verbose=FALSE, prediction.end = 6))
+  expect_silent(dt.pred.nocov     <- predict(p.nocov,  verbose=FALSE, prediction.end = 6))
+  expect_silent(dt.pred.static    <- predict(p.static, verbose=FALSE, prediction.end = 6))
   expect_silent(dt.pred.dyncov    <- predict(p.dyncov, verbose=FALSE, prediction.end = 6))
   expect_silent(data.table::setnames(dt.pred.dyncov, old="DECT",new = "DERT"))
-  expect_true(isTRUE(all.equal(dt.pred.nocov, dt.pred.staticcov)))
-  expect_true(isTRUE(all.equal(dt.pred.staticcov[, !c("DERT", "predicted.CLV")],
+  expect_true(isTRUE(all.equal(dt.pred.nocov, dt.pred.static)))
+  expect_true(isTRUE(all.equal(dt.pred.nocov[,  !c("DERT", "predicted.CLV")],
                                dt.pred.dyncov[, !c("DERT", "predicted.CLV")])))
 
 
   # with discount rates
   expect_silent(dt.pred.nocov     <- predict(p.nocov, verbose=FALSE, continuous.discount.factor = 0.25))
-  expect_silent(dt.pred.staticcov <- predict(p.staticcov, verbose=FALSE, continuous.discount.factor = 0.25))
+  expect_silent(dt.pred.static    <- predict(p.static, verbose=FALSE, continuous.discount.factor = 0.25))
   expect_silent(dt.pred.dyncov    <- predict(p.dyncov, verbose=FALSE, continuous.discount.factor = 0.25))
   expect_silent(data.table::setnames(dt.pred.dyncov, old="DECT",new = "DERT"))
-  expect_true(isTRUE(all.equal(dt.pred.nocov, dt.pred.staticcov)))
-  expect_true(isTRUE(all.equal(dt.pred.staticcov[, !c("DERT", "predicted.CLV")],
+  expect_true(isTRUE(all.equal(dt.pred.nocov, dt.pred.static)))
+  expect_true(isTRUE(all.equal(dt.pred.nocov[,  !c("DERT", "predicted.CLV")],
                                dt.pred.dyncov[, !c("DERT", "predicted.CLV")])))
 })
 
 
 test_that("plot yields same results for all models with gamma=0", {
-  skip_on_cran()
-
   # Prediction end for faster calcs. Should not affect results
-  expect_warning(dt.plot.no        <- plot(p.nocov, verbose=FALSE, plot=FALSE, prediction.end = 10),
-                 regexp = "full holdout")
-  expect_warning(dt.plot.staticcov <- plot(p.staticcov, verbose=FALSE, plot=FALSE, prediction.end = 10),
-                 regexp = "full holdout")
-  expect_warning(dt.plot.dyncov    <- plot(p.dyncov, verbose=FALSE, plot=FALSE, prediction.end = 10),
-                 regexp = "full holdout")
+  expect_warning(dt.plot.nocov     <- plot(p.nocov, verbose=FALSE, plot=FALSE, prediction.end = 10), regexp = "full holdout")
+  expect_warning(dt.plot.static    <- plot(p.static, verbose=FALSE, plot=FALSE, prediction.end = 10), regexp = "full holdout")
+  expect_warning(dt.plot.dyncov    <- plot(p.dyncov, verbose=FALSE, plot=FALSE, prediction.end = 10), regexp = "full holdout")
 
   # Rename to random names because have different colnames by model
-  data.table::setnames(dt.plot.no, c("A", "B", "C"))
-  data.table::setnames(dt.plot.staticcov, c("A", "B", "C"))
+  data.table::setnames(dt.plot.nocov, c("A", "B", "C"))
+  data.table::setnames(dt.plot.static , c("A", "B", "C"))
   data.table::setnames(dt.plot.dyncov, c("A", "B", "C"))
-  expect_true(isTRUE(all.equal(dt.plot.no, dt.plot.staticcov)))
-  expect_true(isTRUE(all.equal(dt.plot.staticcov, dt.plot.dyncov)))
+  expect_true(isTRUE(all.equal(dt.plot.nocov, dt.plot.static)))
+  expect_true(isTRUE(all.equal(dt.plot.nocov, dt.plot.dyncov)))
 })
-
-
-# static cov data ------------------------------------------------------------------------------------------------
-context("Consistency - PNBD - staticcov vs dyncov gamma=0 ")
-# Same covs for static and dyncov
-
-# . Data preparation ---------------------------------------------------------------------------------------------
-# Dyncov corresponds to static cov data
-expect_silent(dt.cov.dyn[dt.cov.static, Gender := i.Gender, on="Id"])
-expect_silent(clv.static.dyn <- SetDynamicCovariates(clv.data =clv.cdnow,
-                                                     data.cov.life = dt.cov.dyn, data.cov.trans = dt.cov.dyn,
-                                                     names.cov.life = "Gender", names.cov.trans = "Gender"))
-
-# set dyncov params to same as static cov
-expect_warning(p.static.dyncov <-
-                 pnbd(clv.static.dyn, start.params.model = c(r=1, alpha=3, s=1, beta=3),
-                      optimx.args = list(method="Nelder-Mead", # NelderMead verifies nothing = faster
-                                         hessian=FALSE, # no hessian
-                                         control=list(kkt=FALSE, # kkt takes forever
-                                                      reltol = 1000)),
-                      verbose = FALSE),
-               regexp = "Hessian")
-
-# Set params to staticcov params
-expect_silent(p.static.dyncov@optimx.estimation.output[1, c("log.r","log.alpha","log.s","log.beta", "life.Gender","trans.Gender")] <-
-                p.staticcov@optimx.estimation.output[1, c("log.r","log.alpha","log.s","log.beta", "life.Gender","trans.Gender")])
-
-# Recalculate the LL data for these fake params
-expect_silent(log.params <- coef(p.static.dyncov))
-expect_silent(log.params[c("log.r", "log.alpha", "log.s", "log.beta")] <- log(log.params[c("r", "alpha", "s", "beta")]))
-expect_silent(log.params <-log.params[c("log.r", "log.alpha", "log.s", "log.beta","trans.Gender", "life.Gender")])
-expect_silent(p.static.dyncov@LL.data <- CLVTools:::pnbd_dyncov_LL(params=log.params, clv.fitted = p.static.dyncov))
-
-# . Run plot and predict
-test_that("Predict yields same result as static cov", {
-  expect_silent(dt.pred.static <- predict(p.staticcov, verbose=FALSE))
-  expect_silent(dt.pred.dyncov <- predict(p.static.dyncov, verbose=FALSE))
-  expect_silent(data.table::setnames(dt.pred.dyncov, old="DECT",new = "DERT"))
-  expect_true(isTRUE(all.equal(dt.pred.static[, !c("DERT", "predicted.CLV")],
-                               dt.pred.dyncov[, !c("DERT", "predicted.CLV")])))
-})
-
-test_that("Plot yields same result as static cov", {
-  expect_warning(dt.plot.static <- plot(p.staticcov, verbose=FALSE, prediction.end = 10, plot=FALSE),
-                 regexp = "full holdout")
-  expect_warning(dt.plot.dyncov <- plot(p.static.dyncov, verbose=FALSE, prediction.end = 10, plot=FALSE),
-                 regexp = "full holdout")
-  data.table::setnames(dt.plot.static, c("A", "B", "C"))
-  data.table::setnames(dt.plot.dyncov, c("A", "B", "C"))
-  expect_true(isTRUE(all.equal(dt.plot.static, dt.plot.dyncov)))
-})
-
-
-
-
