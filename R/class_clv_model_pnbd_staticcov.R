@@ -47,11 +47,11 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
                              start.param.cor=start.param.cor, optimx.args=optimx.args, verbose=verbose)
 
               if(length(list(...)) > 0)
-                warning("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
+                stop("Any additional parameters passed in ... are not needed!", call. = FALSE)
 
               # Nothing model-specific to check about all other user inputs
               # Nothing to return
-            })
+})
 
 # . clv.model.put.estimation.input ------------------------------------------------------------------------------------------------------------
 #   Use pnbd.no.cov methods, dont need to overwrite

@@ -257,7 +257,6 @@ check_userinput_datadyncov_datadyncovspecific <- function(dt.data.dyn.cov, dt.re
 
 
   # Date checks -----------------------------------------------------------------------------------
-  # ??** do the cov dates have to match the time.unit dates! (ie dates have to be exactly on week start day) **??
 
   # Last date, for every Id:
   #   - the last  Date is at least until the specified end
@@ -277,7 +276,9 @@ check_userinput_datadyncov_datadyncovspecific <- function(dt.data.dyn.cov, dt.re
                 dt.required.dates,
                 all=FALSE))
     err.msg <- c(err.msg, paste0("There need to be ",tolower(clv.time.tu.to.ly(clv.time))," covariate data exactly from ",
-                                 dt.required.dates[, min(Cov.Date)], " until ", dt.required.dates[, max(Cov.Date)]))
+                                 clv.time.format.timepoint(clv.time=clv.time, timepoint=dt.required.dates[, min(Cov.Date)]),
+                                 " until ",
+                                 clv.time.format.timepoint(clv.time=clv.time, timepoint=dt.required.dates[, max(Cov.Date)])))
 
   # It can still be that some customers dont have all these dates, ie have some dates missing
   #   (even only have 1 ) and can still have duplicated

@@ -6,12 +6,6 @@ clv.template.controlflow.predict <- function(clv.fitted, prediction.end, predict
   period.first <- period.last <- period.length <- cbs.x <- i.x <- cbs.Spending <- i.Spending <- NULL
   i.actual.x <- i.actual.spending <- NULL
 
-  # Set prediction params -----------------------------------------------------------------------------------
-  #   need to be set before adding the newdata as the model might need them (to re-estimate or similar)
-
-  # Set prediction params from coef()
-  clv.fitted <- clv.controlflow.predict.set.prediction.params(clv.fitted=clv.fitted)
-
 
   # Process Newdata ----------------------------------------------------------------------------------------------
   # Because many of the following steps refer to the data stored in the fitted model,
@@ -218,8 +212,7 @@ clv.template.controlflow.predict <- function(clv.fitted, prediction.end, predict
 #'}
 #'
 #'
-#'
-#'
+#' @template template_details_newdata
 #'
 #' @template template_details_predictionend
 #'
@@ -238,7 +231,6 @@ clv.template.controlflow.predict <- function(clv.fitted, prediction.end, predict
 #' also has to be considered. To model customer spending the Gamma/Gamma is a
 #' popular choice.
 #' }
-#'
 #'
 #' @references
 #' Schmittlein DC, Morrison DG, Colombo R (1987). “Counting Your Customers:
@@ -317,10 +309,9 @@ clv.template.controlflow.predict <- function(clv.fitted, prediction.end, predict
 #' @export
 predict.clv.fitted <- function(object, newdata=NULL, prediction.end=NULL, predict.spending=clv.data.has.spending(object@clv.data),
                                continuous.discount.factor=0.1, verbose=TRUE, ...){
-  # warn if unnecessary input
+  # stop if unnecessary input, user does not know what is doing
   if(length(list(...))>0)
-    warning("The additional parameters given in '...' are ignored because they are unneded!",
-            call. = FALSE)
+    stop("Any additional parameters passed in ... are not needed!", call. = FALSE)
 
   clv.template.controlflow.predict(clv.fitted=object, prediction.end=prediction.end, predict.spending=predict.spending,
                                    continuous.discount.factor=continuous.discount.factor, verbose=verbose, user.newdata=newdata)

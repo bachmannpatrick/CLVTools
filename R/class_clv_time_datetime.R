@@ -50,6 +50,11 @@ setMethod("clv.time.epsilon", signature = signature(clv.time="clv.time.datetime"
 })
 
 
+setMethod("clv.time.format.timepoint", signature = signature(clv.time="clv.time.datetime"), definition = function(clv.time, timepoint){
+  return(format.POSIXct(timepoint, "%Y-%m-%d %H:%M:%S"))
+})
+
+
 
 # Parsing methods ------------------------------------------------------------------------
 # Only allow one timezone set in clv.time@timezone: UTC, because it does not switch DST

@@ -83,6 +83,11 @@ clv.template.controlflow.estimate <- function(clv.fitted,
   clv.fitted <- clv.controlflow.estimate.process.post.estimation(clv.fitted=clv.fitted, res.optimx=res.optimx)
   clv.fitted <- clv.model.process.post.estimation(clv.model=clv.fitted@clv.model, clv.fitted=clv.fitted, res.optimx=res.optimx)
 
+  # Set prediction params from coef()
+  #   Do after process.post.estimate because needs optimx result stored
+  #   Needed for predict/plot/fitted (incl when processing newdata) but set here already instead of in every of these
+  clv.fitted <- clv.controlflow.predict.set.prediction.params(clv.fitted=clv.fitted)
+
   return(clv.fitted)
 }
 

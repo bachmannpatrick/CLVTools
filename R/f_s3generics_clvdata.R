@@ -69,10 +69,10 @@ print.clv.data.dynamic.covariates <- function(x, digits = max(3L, getOption("dig
   timepoint.last.cov.trans  <- x@data.cov.trans[, max(Cov.Date)]
 
   # Print first and last day of cov data
-  .print.list(list("Cov Date start Life"  = as.character(timepoint.first.cov.life),
-                   "Cov Date end   Life"  = as.character(timepoint.last.cov.life),
-                   "Cov Date start Trans" = as.character(timepoint.first.cov.trans),
-                   "Cov Date end   Trans" = as.character(timepoint.last.cov.trans)))
+  .print.list(list("Cov Date start Life"  = clv.time.format.timepoint(clv.time=x@clv.time, timepoint=timepoint.first.cov.life),
+                   "Cov Date end   Life"  = clv.time.format.timepoint(clv.time=x@clv.time, timepoint=timepoint.last.cov.life),
+                   "Cov Date start Trans" = clv.time.format.timepoint(clv.time=x@clv.time, timepoint=timepoint.first.cov.trans),
+                   "Cov Date end   Trans" = clv.time.format.timepoint(clv.time=x@clv.time, timepoint=timepoint.last.cov.trans)))
 
   invisible(x)
 }
@@ -84,6 +84,7 @@ summary.clv.data <- function(object, ...){
   res <- structure(list(), class="summary.clv.data")
 
   res$name <- object@name
+  res$clv.time         <- object@clv.time # needed for formating when printing
   res$summary.clv.time <- summary(object@clv.time)
 
   res$descriptives.transactions <- clv.data.make.descriptives(clv.data=object)

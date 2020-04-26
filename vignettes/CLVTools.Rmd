@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Walktrough for the CLVTools package
+# Walkthrough for the CLVTools package
 
 
 ## Setup the R environment

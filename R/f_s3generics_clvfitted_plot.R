@@ -1,7 +1,7 @@
 
 #' @title Plot expected and actual repeat transactions
 #' @param x The fitted clv model to plot
-#' @param newdata A cldata object for which the plotting should be made with the fitted model. If none or NULL is given, the plot is made for the data on which the model was fit.
+#' @param newdata An object of class clv.data for which the plotting should be made with the fitted model. If none or NULL is given, the plot is made for the data on which the model was fit.
 #' @param transactions Whether the actual observed repeat transactions should be plotted.
 #' @param cumulative Whether the cumulative expected (and actual) transactions should be plotted.
 #' @param plot Whether a plot should be created or only the assembled data is returned.
@@ -21,7 +21,7 @@
 #' @template template_details_newdata
 #'
 #' @note Because the expectation value is an incremental value derived from the cumulative expectation function,
-#' all timepoints for which the expectation is calcuated need to be spaced exactly 1 time unit apart.
+#' all timepoints for which the expectation is calculated need to be spaced exactly 1 time unit apart.
 #' Each \code{period.first} marks the beginning of a time unit (ie 1st of January in case of yearly
 #' time units) and the expectation values are calculated up until and including \code{period.first}.
 #' If \code{prediction.end} does not coincide with the start of a time unit, the last timepoint
@@ -119,8 +119,7 @@ plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FA
   check_err_msg(err.msg)
 
   if(length(list(...))>0){
-    warning("Any parameters passed in ... are ignored because they are not needed.",
-            call. = FALSE, immediate. = TRUE)
+    stop("Any additional parameters passed in ... are not needed!", call. = FALSE)
   }
 
   # do fitted object specific checks (ie dyncov checks cov data length)
@@ -233,7 +232,7 @@ clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
 
   # Axis and title
   p <- p + labs(x = "Date", y= "Number of Repeat Transactions", title= paste0(clv.time.tu.to.ly(clv.time=clv.data@clv.time), " tracking plot"),
-                subtitle = paste0("Estimation end: ",  clv.data@clv.time@timepoint.estimation.end))
+                subtitle = paste0("Estimation end: ",  clv.time.format.timepoint(clv.time=clv.data@clv.time, timepoint=clv.data@clv.time@timepoint.estimation.end)))
 
   p <- p + theme(
     plot.title = element_text(face = "bold", size = rel(1.5)),
@@ -263,9 +262,6 @@ clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
 setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.fitted"), definition = function(obj, dt.expectation.seq, cumulative, verbose){
 
   expectation <- i.expectation <- NULL
-
-  # Set prediction params from coef()
-  obj <- clv.controlflow.predict.set.prediction.params(clv.fitted=obj)
 
   #   Pass copy of expectation table file becase will be modified and contain column named expecation
   dt.model.expectation <- clv.model.expectation(clv.model=obj@clv.model, clv.fitted=obj, dt.expectation.seq=copy(dt.expectation.seq),
