@@ -55,7 +55,7 @@ create the plot is returned. It is a \code{data.table} which contains the follow
 \item{period.until}{The timepoint that marks the end (up until and including) of the period to which the data in this row refers.}
 \item{Number of Repeat Transactions}{The number of actual repeat transactions in
 the period that ends at \code{period.until}. Only if \code{transactions} is \code{TRUE}.}
-\item{"Name of Model" or "label"}{The value of the unconditional expectation in the period that ends on \code{period.until}.}
+\item{"Name of Model" or "label"}{The value of the unconditional expectation for the period that ends on \code{period.until}.}
 }
 \description{
 Plot the actual repeat transactions and overlay it with the repeat transaction as predicted

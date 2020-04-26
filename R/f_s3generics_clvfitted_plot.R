@@ -38,7 +38,7 @@
 #' \item{period.until}{The timepoint that marks the end (up until and including) of the period to which the data in this row refers.}
 #' \item{Number of Repeat Transactions}{The number of actual repeat transactions in
 #' the period that ends at \code{period.until}. Only if \code{transactions} is \code{TRUE}.}
-#' \item{"Name of Model" or "label"}{The value of the unconditional expectation in the period that ends on \code{period.until}.}
+#' \item{"Name of Model" or "label"}{The value of the unconditional expectation for the period that ends on \code{period.until}.}
 #'
 #' @examples
 #' \donttest{
@@ -266,19 +266,19 @@ setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.fitt
 
   expectation <- i.expectation <- NULL
 
-  #   Pass copy of expectation table file becase will be modified and contain column named expecation
+  #   Pass copy of expectation table file because will be modified and contain column named expecation
   dt.model.expectation <- clv.model.expectation(clv.model=obj@clv.model, clv.fitted=obj, dt.expectation.seq=copy(dt.expectation.seq),
                                                 verbose = verbose)
 
-  # include all from y to exend if predicting beyond actual transaction
-  dt.model.expectation <- dt.model.expectation[, c("period.until", "expectation")] # Only the expectation data
+  # Only the expectation data
+  dt.model.expectation <- dt.model.expectation[, c("period.until", "expectation")]
 
   if(cumulative)
     dt.model.expectation[, expectation := cumsum(expectation)]
 
   # add expectation to plot data
   #   name columns by model
-  dt.expectation.seq[dt.model.expectation, expectation := i.expectation,on = "period.until"]
+  dt.expectation.seq[dt.model.expectation, expectation := i.expectation, on = "period.until"]
   return(dt.expectation.seq)
 })
 
