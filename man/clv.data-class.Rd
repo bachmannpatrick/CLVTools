@@ -27,6 +27,10 @@ A \code{clv.data} object serves as input into the various model fitting function
 
 \item{\code{data.repeat.trans}}{Single \code{data.table} containing only the repeat transactions}
 
+\item{\code{data.opportunities}}{Single \code{data.table} containing transaction opportunities with columns named 'Id', 'n_cal'}
+
+\item{\code{data.opportunities.n_cal}}{Sinlge numeric describing the number of transaction opportunities for all customers}
+
 \item{\code{has.spending}}{Single logical whether the data contains information about the amount spent per transaction}
 
 \item{\code{has.holdout}}{Single logical whether the data is split in a holdout and estimation period}

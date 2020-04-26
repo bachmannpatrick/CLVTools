@@ -7,7 +7,7 @@ setClass(Class = "clv.model.bgbb.no.cov", contains = "clv.model",
            name.model = "BG/BB Standard",
            names.original.params.model = c(alpha="alpha", beta="beta", gamma="gamma", delta="delta"),
            names.prefixed.params.model = c("log.alpha", "log.beta", "log.gamma", "log.delta"),
-           start.params.model = c(alpha = 0.5, beta = 1, gamma = 0.5, delta = 1)
+           start.params.model = c(alpha = 1, beta = 1, gamma = 1, delta = 1)
          ))
 
 

@@ -112,7 +112,7 @@
 #'
 #'
 #' @export
-clvdata <- function(data.transactions, date.format, time.unit, estimation.split=NULL, name.id="Id", name.date="Date", name.price="Price"){
+clvdata <- function(data.transactions, date.format, time.unit, estimation.split=NULL, name.id="Id", name.date="Date", name.price="Price", data.opportunities = data.table(), data.opportunities.n_cal = 0){
   # silence CRAN notes
   Date <- Price <- Id <- date.first.actual.trans <- date.last.transaction <- x <- previous <- NULL
 
@@ -165,6 +165,14 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
     dt.trans <- dt.trans[, .SD, .SDcols = c(name.id, name.date)]
     setnames(dt.trans, old = c(name.id, name.date), new = c("Id", "Date"))
     dt.trans <- dt.trans[, c("Id", "Date")]
+  }
+
+  has.opportunities <- FALSE
+  has.opportunities.n_cal <- FALSE
+  if(data.opportunities.n_cal != 0){
+    has.opportunities.n_cal <- TRUE
+  } else if(nrow(data.opportunities) != 0){
+    has.opportunities <- TRUE
   }
 
   # Check transaction data type  ------------------------------------------------------
@@ -247,7 +255,11 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
   obj <- clv.data(call=cl,
                   data.transactions = dt.trans,
                   data.repeat.trans = dt.repeat.trans,
+                  data.opportunities = data.opportunities,
+                  data.opportunities.n_cal = data.opportunities.n_cal,
                   has.spending = has.spending,
+                  has.opportunities = has.opportunities,
+                  has.opportunities.n_cal = has.opportunities.n_cal,
                   clv.time=clv.t)
 
   return(obj)

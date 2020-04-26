@@ -11,6 +11,8 @@
 #' @slot clv.time clv.time object that stores and is used for processing all timepoint related information
 #' @slot data.transactions Single \code{data.table} containing the original transaction data, with columns renamed to 'Id', 'Date', 'Price'
 #' @slot data.repeat.trans Single \code{data.table} containing only the repeat transactions
+#' @slot data.opportunities Single \code{data.table} containing transaction opportunities with columns named 'Id', 'n_cal'
+#' @slot data.opportunities.n_cal Sinlge numeric describing the number of transaction opportunities for all customers
 #' @slot has.spending Single logical whether the data contains information about the amount spent per transaction
 #' @slot has.holdout Single logical whether the data is split in a holdout and estimation period
 #'
@@ -25,23 +27,29 @@ setClass(Class = "clv.data",
 
            clv.time          = "clv.time",
 
-           data.transactions = "data.table",
-           data.repeat.trans = "data.table",
-           has.spending = "logical",
-
+           data.transactions  = "data.table",
+           data.repeat.trans  = "data.table",
+           data.opportunities  = "data.table",
+           data.opportunities.n_cal = "numeric",
+           has.spending       = "logical",
+           has.opportunities  = "logical",
+           has.opportunities.n_cal = "logical",
            has.holdout    = "logical"),
 
          # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
          prototype = list(
            data.transactions  = data.table(),
            data.repeat.trans  = data.table(),
-
+           data.opportunities   = data.table(),
+           data.opportunities.n_cal = numeric(),
            has.spending       = logical(0),
+           has.opportunities  = logical(0),
+           has.opportunities.n_cal = logical(0),
            has.holdout        = logical(0)))
 
 
 #' @importFrom methods new
-clv.data <- function(call, data.transactions, data.repeat.trans, has.spending, clv.time){
+clv.data <- function(call, data.transactions, data.repeat.trans, has.spending, clv.time, data.opportunities, data.opportunities.n_cal, has.opportunities = FALSE, has.opportunities.n_cal = FALSE){
 
   has.holdout <- clv.time.has.holdout(clv.time)
 
@@ -53,7 +61,11 @@ clv.data <- function(call, data.transactions, data.repeat.trans, has.spending, c
              call = call,
              data.transactions = copy(data.transactions),
              data.repeat.trans = data.repeat.trans,
+             data.opportunities = data.opportunities,
+             data.opportunities.n_cal = data.opportunities.n_cal,
              has.spending = has.spending,
+             has.opportunities = has.opportunities,
+             has.opportunities.n_cal = has.opportunities.n_cal,
              clv.time = clv.time,
              has.holdout = has.holdout))
 }

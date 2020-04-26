@@ -11,7 +11,9 @@ clvdata(
   estimation.split = NULL,
   name.id = "Id",
   name.date = "Date",
-  name.price = "Price"
+  name.price = "Price",
+  data.opportunities = data.table(),
+  data.opportunities.n_cal = 0
 )
 }
 \arguments{
