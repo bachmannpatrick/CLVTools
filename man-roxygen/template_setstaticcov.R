@@ -21,7 +21,7 @@
 #' \code{data.cov.life} and \code{data.cov.trans} are \code{data.frame}s or \code{data.table}s that
 #' each contain exactly one single row of covariate data for every customer appearing in the
 #' transaction data. Covariates of class \code{character} or \code{factor} are converted
-#' to k-1 numeric dummie variables.
+#' to k-1 numeric dummy variables.
 #'
 #' @return
 #' An object of class \code{clv.data.static.covariates}.

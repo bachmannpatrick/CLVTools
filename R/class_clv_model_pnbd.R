@@ -53,7 +53,7 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
     check_err_msg(err.msg = "Please provide only model start parameters greater than 0 as they will be log()-ed for the optimization!")
 
   if(length(list(...)) > 0)
-    warning("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
+    stop("Any additional parameters passed in ... are not needed!", call. = FALSE)
 })
 
 

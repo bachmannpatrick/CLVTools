@@ -442,3 +442,6 @@ setMethod("clv.time.ceiling.date", signature = "clv.time", function(clv.time, ti
   stop("This method needs to be implemented by a subclass.")
 })
 
+setMethod("clv.time.format.timepoint", signature = "clv.time", function(clv.time, timepoint){
+  stop("This method needs to be implemented by a subclass.")
+})

@@ -11,9 +11,9 @@ for non-contractual settings. It provides a framework, which is capable
 of unifying different probabilistic customer attrition models. This package
 provides tools to estimate the number of future transactions of individual
 customers as well as the probability of customers being alive in future
-periods. Furhter, the average spending by customers can be estimated.
-Multiplying the future transactions conditional on beeing alive and the
-predicted individual spending per transaction results in an indivudal CLV value.
+periods. Further, the average spending by customers can be estimated.
+Multiplying the future transactions conditional on being alive and the
+predicted individual spending per transaction results in an individual CLV value.
 
 The implemented models require transactional data from non-contractual
 businesses (i.e. customers' purchase history).

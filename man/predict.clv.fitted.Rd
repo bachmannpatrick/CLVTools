@@ -73,6 +73,16 @@ to predict spending and calculate the predicted CLV. In this case, the predictio
 }
 }
 \details{
+The \code{newdata} argument has to be a clv data object of the exact same class as the data object
+on which the model was fit. In case the model was fit with covariates, \code{newdata} needs to contain identically
+named covariate data.
+
+The use case for \code{newdata} is mainly two-fold: First, to estimate model parameters only on a
+sample of the data and then use the fitted model object to predict or plot for the full data set provided through \code{newdata}.
+Second, for models with dynamic covariates, to provide a clv data object with longer covariates than contained in the data
+on which the model was estimated what allows to predict or plot further. When providing \code{newdata}, some models
+might require additional steps that can significantly increase runtime.
+
 \code{prediction.end} indicates until when to predict or plot and can be given as either
 a point in time (of class \code{Date}, \code{POSIXct}, or \code{character}) or the number of periods.
 If \code{prediction.end} is of class character, the date/time format set when creating the data object is used for parsing.

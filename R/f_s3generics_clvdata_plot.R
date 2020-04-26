@@ -71,8 +71,7 @@ plot.clv.data <- function(x, prediction.end=NULL, cumulative=FALSE, plot=TRUE, v
   check_err_msg(err.msg)
 
   if(length(list(...))>0){
-    warning("Any parameters passed in ... are ignored because they are not needed.",
-            call. = FALSE, immediate. = TRUE)
+    stop("Any additional parameters passed in ... are not needed!", call. = FALSE)
   }
 
 

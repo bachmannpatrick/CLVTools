@@ -148,3 +148,7 @@ setGeneric("clv.time.floor.date", function(clv.time, timepoint)
 # only for pnbd dyncov createwalks
 setGeneric("clv.time.ceiling.date", function(clv.time, timepoint)
   standardGeneric("clv.time.ceiling.date"))
+
+setGeneric("clv.time.format.timepoint", function(clv.time, timepoint)
+  standardGeneric("clv.time.format.timepoint"))
+

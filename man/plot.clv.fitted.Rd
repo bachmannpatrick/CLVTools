@@ -34,7 +34,7 @@
 
 \item{prediction.end}{Until what point in time to predict. This can be the number of periods (numeric) or a form of date/time object. See details.}
 
-\item{newdata}{A cldata object for which the plotting should be made with the fitted model. If none or NULL is given, the plot is made for the data on which the model was fit.}
+\item{newdata}{An object of class clv.data for which the plotting should be made with the fitted model. If none or NULL is given, the plot is made for the data on which the model was fit.}
 
 \item{cumulative}{Whether the cumulative expected (and actual) transactions should be plotted.}
 
@@ -83,6 +83,7 @@ See the Note section for more details.
 The \code{newdata} argument has to be a clv data object of the exact same class as the data object
 on which the model was fit. In case the model was fit with covariates, \code{newdata} needs to contain identically
 named covariate data.
+
 The use case for \code{newdata} is mainly two-fold: First, to estimate model parameters only on a
 sample of the data and then use the fitted model object to predict or plot for the full data set provided through \code{newdata}.
 Second, for models with dynamic covariates, to provide a clv data object with longer covariates than contained in the data
@@ -91,8 +92,9 @@ might require additional steps that can significantly increase runtime.
 }
 \note{
 Because the unconditional expectation for a period is derived as the difference of
-the cumulative expectations calculated at the beginning and end of the period,
-all timepoints for which the expectation is calcuated need to be spaced exactly 1 time unit apart.
+the cumulative expectations calculated at the beginning and at end of the period,
+all timepoints for which the expectation is calcuated are required to be spaced exactly 1 time unit apart.
+
 If \code{prediction.end} does not coincide with the start of a time unit, the last timepoint
 for which the expectation is calculated and plotted therefore is not \code{prediction.end}
 but the start of the first time unit after \code{prediction.end}.

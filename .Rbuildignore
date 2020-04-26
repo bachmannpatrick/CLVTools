@@ -8,3 +8,4 @@
 ^man-roxygen$
 ^thoughts_parameterhandling\.rtf$
 ^\.github$
+^cran-comments\.md$
