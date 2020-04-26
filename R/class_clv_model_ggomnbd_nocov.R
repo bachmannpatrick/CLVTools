@@ -95,19 +95,23 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.ggomnbd.no.cov
   params_i[, beta := clv.fitted@prediction.params.model[["beta"]]]
   params_i[, b := clv.fitted@prediction.params.model[["b"]]]
   params_i[, s := clv.fitted@prediction.params.model[["s"]]]
-  params_i[, t := clv.fitted@clv.data@clv.time@estimation.period.in.tu]
 
-  fct.ggomnbd.expectation <- function(params_i.t){
-    term1 <- params_i.t[, (r/alpha)]
-    term2 <- params_i.t[, ((beta/(beta+exp(b*t)-t))^s)*t]
-    term3 <- params_i.t[, b*s*beta^s]
-    term4 <- params_i.t[, integrate(f = function(tau){tau*exp(b*tau)*(beta + exp(b*tau)-1)^-(s+1)}, lower = 0, upper = t)]
+  fct.ggomnbd.expectation <- function(r, alpha, beta, b, s, T.cal){
+
+    term1 <- (r/alpha)
+    term2 <- (beta/(beta+exp(b*T.cal)-1))^s*T.cal
+    term3 <- b*s*beta^s
+    term4 <- integrate(f = function(tau){tau*exp(b*tau)*(beta + exp(b*tau)-1)^(-(s+1))}, lower = 0, upper = T.cal)$value
 
     return(term1 * (term2 + (term3 * term4)))
   }
 
+  fct.expectation <- function(params_i.t){
+    return(params_i.t[,.(res = fct.ggomnbd.expectation(r = r, alpha = alpha, beta = beta, b = b, s = s, T.cal = T.cal)), by="Id"]$res)
+  }
+
   return(DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
-                       fct.expectation = fct.ggomnbd.expectation, clv.time = clv.fitted@clv.data@clv.time))
+                       fct.expectation = fct.expectation, clv.time = clv.fitted@clv.data@clv.time))
 })
 
 #' @include all_generics.R
