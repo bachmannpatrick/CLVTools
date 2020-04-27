@@ -77,7 +77,29 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
 
 #' @include all_generics.R
 setMethod("clv.model.expectation", signature(clv.model="clv.model.ggomnbd.static.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
- #TODO
+  params_i <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
+  params_i[, r := clv.fitted@prediction.params.model[["r"]]]
+  params_i[, alpha_i := clv.fitted@prediction.params.model[["alpha"]] * exp( -clv.data.get.matrix.data.cov.trans(clv.fitted@clv.data) %*% clv.fitted@prediction.params.trans)]
+  params_i[, beta_i  := clv.fitted@prediction.params.model[["beta"]]  * exp( -clv.data.get.matrix.data.cov.life(clv.fitted@clv.data)  %*% clv.fitted@prediction.params.life)]
+  params_i[, b := clv.fitted@prediction.params.model[["b"]]]
+  params_i[, s := clv.fitted@prediction.params.model[["s"]]]
+
+  fct.ggomnbd.expectation <- function(r, alpha_i, beta_i, b, s, t_i){
+
+    term1 <- (r/alpha_i)
+    term2 <- (beta_i/(beta_i+exp(b*t_i)-1))^s*t_i
+    term3 <- b*s*beta_i^s
+    term4 <- integrate(f = function(tau){tau*exp(b*tau)*(beta_i + exp(b*tau)-1)^(-(s+1))}, lower = 0, upper = t_i)$value
+
+    return(term1 * (term2 + (term3 * term4)))
+  }
+
+  fct.expectation <- function(params_i.t){
+    return(params_i.t[,.(res = fct.ggomnbd.expectation(r = r, alpha_i = alpha_i, beta_i = beta_i, b = b, s = s, t_i = t_i)), by="Id"]$res)
+  }
+
+  return(DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
+                       fct.expectation = fct.expectation, clv.time = clv.fitted@clv.data@clv.time))
 })
 
 #' @include all_generics.R
