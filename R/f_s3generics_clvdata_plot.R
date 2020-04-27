@@ -19,9 +19,9 @@
 #' An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
 #' If the parameter \code{plot} is \code{FALSE}, the data that would have been melted and used to
 #' create the plot is returned. It is a \code{data.table} which contains the following columns:
-#' \item{period.first}{To which timepoint the data in this row refers.}
+#' \item{period.until}{The timepoint that marks the end (up until and including) of the period to which the data in this row refers.}
 #' \item{Number of Repeat Transactions}{The number of actual repeat transactions in
-#' the period that starts at \code{period.first} and lasts until before the subsequent \code{period.first}.}
+#' the period that ends at \code{period.until}.}
 #'
 #'
 #' @examples
@@ -55,7 +55,7 @@
 #' @export
 plot.clv.data <- function(x, prediction.end=NULL, cumulative=FALSE, plot=TRUE, verbose=TRUE, ...){
 
-  period.first <- period.num <- NULL
+  period.until <- period.num <- NULL
 
   # This is nearly the same as plot.clv
   #   However, creating a single plotting controlflow leads to all kinds of side effects and special cases.
@@ -82,8 +82,8 @@ plot.clv.data <- function(x, prediction.end=NULL, cumulative=FALSE, plot=TRUE, v
 
   dt.dates.expectation <- clv.time.expectation.periods(clv.time = x@clv.time, user.tp.end = prediction.end)
 
-  tp.data.start <- dt.dates.expectation[, min(period.first)]
-  tp.data.end   <- dt.dates.expectation[, max(period.first)]
+  tp.data.start <- dt.dates.expectation[, min(period.until)]
+  tp.data.end   <- dt.dates.expectation[, max(period.until)]
 
   if(verbose)
     message("Plotting from ", tp.data.start, " until ", tp.data.end, ".")
@@ -111,7 +111,7 @@ plot.clv.data <- function(x, prediction.end=NULL, cumulative=FALSE, plot=TRUE, v
   # Merge data for plotting
   #   To be sure to have all dates, merge data on original dates
   dt.dates.expectation[, period.num := NULL]
-  dt.dates.expectation[dt.repeat.trans, (label.transactions) := get(label.transactions), on="period.first"]
+  dt.dates.expectation[dt.repeat.trans, (label.transactions) := get(label.transactions), on="period.until"]
   dt.plot <- dt.dates.expectation
 
   # data.table does not print when returned because it is returned directly after last [:=]
