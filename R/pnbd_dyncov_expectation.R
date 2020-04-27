@@ -4,15 +4,9 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
   expectation <- exp.gX.P <- i.exp.gX.P <- exp.gX.L <- d_omega <- i.d_omega <- NULL
   i <- Ai <- Bi <- Ci <- Di <- Dbar_i <- Bbar_i <- period.num <- d1 <- NULL
 
-  # Create ABCD for expectation
-  #   i starts at when becoming alive
-  #
-  # Loop over expectation dates
-  #   Subset ABCD to who had transactions before (strictly?) this date
-  #   Calc expectation for these already alive
 
   tp.last.period.end <- dt.expectation.seq[, max(period.until)]
-  max.period.no        <- dt.expectation.seq[, max(period.num)]
+  max.period.no      <- dt.expectation.seq[, max(period.num)]
 
   if(max.period.no <=2)
     stop("Have to plot at least 3 periods!", call. = FALSE)
@@ -22,6 +16,7 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
 
   # Create ABCD ---------------------------------------------------------------------------------------------
   # Calculate Ai, Bbar_i, Ci, Dbar_i
+  #   i is per customer, since when coming alive
   #   i=1 in period when customer turns alive
   # Upper max cov period is where the last expectation date lies in
   #   If max(dates.periods) falls directly onto the start of a covariate,
