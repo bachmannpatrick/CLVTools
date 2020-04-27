@@ -27,15 +27,32 @@ Currently, CLVTools implements the following probabilistic models:
 
 1)  Standard Pareto/NBD model (Schmittlein, Morrison & Colombo 1987)
 
-2)  Pareto/NBD model with **time-invariant** contextual factors (Fader
-    and Hardie 2007)
+2)  Pareto/NBD model with **time-invariant** contextual factors (Fader &
+    Hardie 2007)
 
-3)  Pareto/NBD model with **time-varying** contextual factors (Bachmann
-    & Meierer, forthcoming)
+3)  Pareto/NBD model with **time-varying** contextual factors (Bachmann,
+    Meierer & Näf 2020)
 
-In addition the framework features an “interlayer system” to allow the
-flexible addtion of model extensions during the model fitting process.
-Currently these layers include:
+In future versions of **CLVTools** the following models are added. See
+[GitHub Issues](https://github.com/bachmannpatrick/CLVTools/projects)
+for a time-line.
+
+4)  Standard BG/NBD model (Fader, Hardie, & Lee 2005)
+
+5)  BG/NBD model with **time-invariant** contextual factors (Fader &
+    Hardie 2007)
+
+6)  Gamma/Gompertz/NBD (Bemmaor & Glady 2012)
+
+7)  Gamma/Gompertz/NBD model with **time-invariant** contextual factors
+    (Näf, Bachmann & Meierer 2020)
+
+8)  BG/BB model (Fader, Hardie, & Shang 2010)
+
+In addition the framework features a system of layers between the
+optimizer and the log-likelihood function to allow the flexible addition
+of model extensions during the model fitting process. Currently these
+layers include:
 
   - Correlation of the purchase and the attrition process
 
