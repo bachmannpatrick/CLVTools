@@ -24,17 +24,17 @@
 #' customers in the BG/BB model.
 #'
 #' @name bgnbd_CET
-bgnbd_nocov_CET <- function(alpha, beta, gamma, delta, nPeriods, vX, vT_x, vT_cal, vN_cal, vN_star) {
-    .Call(`_CLVTools_bgnbd_nocov_CET`, alpha, beta, gamma, delta, nPeriods, vX, vT_x, vT_cal, vN_cal, vN_star)
+bgnbd_nocov_CET <- function(alpha, beta, gamma, delta, nPeriods, vX, vT_x, vN_cal, vN_star) {
+    .Call(`_CLVTools_bgnbd_nocov_CET`, alpha, beta, gamma, delta, nPeriods, vX, vT_x, vN_cal, vN_star)
 }
 
-bgbb_nocov_DERT <- function(vEstimated_params, continuous_discount_factor, vX, vT_x, vT_cal, vN_cal) {
-    .Call(`_CLVTools_bgbb_nocov_DERT`, vEstimated_params, continuous_discount_factor, vX, vT_x, vT_cal, vN_cal)
+bgbb_nocov_DERT <- function(vEstimated_params, continuous_discount_factor, vX, vT_x, vN_cal) {
+    .Call(`_CLVTools_bgbb_nocov_DERT`, vEstimated_params, continuous_discount_factor, vX, vT_x, vN_cal)
 }
 
 #' @rdname bgbb_nocov_LL_sum
-bgbb_nocov_LL_ind <- function(vLogparams, vX, vT_x, vT_cal, vN_cal) {
-    .Call(`_CLVTools_bgbb_nocov_LL_ind`, vLogparams, vX, vT_x, vT_cal, vN_cal)
+bgbb_nocov_LL_ind <- function(vLogparams, vX, vT_x, vN_cal) {
+    .Call(`_CLVTools_bgbb_nocov_LL_ind`, vLogparams, vX, vT_x, vN_cal)
 }
 
 #' @title BG/BB: LogLikelihood without covariates
@@ -62,8 +62,8 @@ bgbb_nocov_LL_ind <- function(vLogparams, vX, vT_x, vT_cal, vN_cal) {
 #'
 #'  \url{https://github.com/cran/BTYD/}.
 #'
-bgbb_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal, vN_cal) {
-    .Call(`_CLVTools_bgbb_nocov_LL_sum`, vLogparams, vX, vT_x, vT_cal, vN_cal)
+bgbb_nocov_LL_sum <- function(vLogparams, vX, vT_x, vN_cal) {
+    .Call(`_CLVTools_bgbb_nocov_LL_sum`, vLogparams, vX, vT_x, vN_cal)
 }
 
 #' @title BG/BB: PAlive without covariates
@@ -87,8 +87,8 @@ bgbb_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal, vN_cal) {
 #'Returns a vector with the PAlive for each customer.
 #'
 #' @name bgbb_nocov_PAlive
-bgbb_nocov_PAlive <- function(alpha, beta, gamma, delta, vX, vT_x, vT_cal, vN_cal) {
-    .Call(`_CLVTools_bgbb_nocov_PAlive`, alpha, beta, gamma, delta, vX, vT_x, vT_cal, vN_cal)
+bgbb_nocov_PAlive <- function(alpha, beta, gamma, delta, vX, vT_x, vN_cal) {
+    .Call(`_CLVTools_bgbb_nocov_PAlive`, alpha, beta, gamma, delta, vX, vT_x, vN_cal)
 }
 
 #' @title GSL Hypergeom 2f0 for equal length vectors

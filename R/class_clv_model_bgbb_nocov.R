@@ -71,7 +71,6 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
                                  obj    = clv.fitted,
                                  vX     = clv.fitted@cbs$x,
                                  vT_x   = clv.fitted@cbs$t.x,
-                                 vT_cal = clv.fitted@cbs$T.cal,
                                  vN_cal = clv.fitted@cbs$n.cal,
                                  # parameter ordering for the callLL interlayer
                                  LL.params.names.ordered = c(log.alpha = "log.alpha", log.beta =  "log.beta", log.gamma = "log.gamma", log.delta = "log.delta")),
@@ -81,9 +80,9 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
 
 #' @include all_generics.R
 setMethod("clv.model.expectation", signature(clv.model="clv.model.bgbb.no.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
-  alpha <- beta <- gamma <- delta <- date.first.repeat.trans<- date.first.actual.trans <- T.cal <- n.cal <- period.first.trans<-NULL
+  alpha <- beta <- gamma <- delta <- date.first.repeat.trans<- date.first.actual.trans <- n.cal <- period.first.trans<-NULL
 
-  params_i <- clv.fitted@cbs[, c("Id", "T.cal", "n.cal", "date.first.actual.trans")]
+  params_i <- clv.fitted@cbs[, c("Id", "n.cal", "date.first.actual.trans")]
 
   params_i[, alpha := clv.fitted@prediction.params.model[["alpha"]]]
   params_i[, beta := clv.fitted@prediction.params.model[["beta"]]]
@@ -117,7 +116,6 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgbb.no.cov"),
                                          nPeriods = predict.number.of.periods,
                                          vX = clv.fitted@cbs[, x],
                                          vT_x = clv.fitted@cbs[, t.x],
-                                         vT_cal = clv.fitted@cbs[, T.cal],
                                          vN_cal = clv.fitted@cbs[, n.cal])]
 
 
@@ -128,7 +126,6 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgbb.no.cov"),
                                                delta = clv.fitted@prediction.params.model[["delta"]],
                                                vX = clv.fitted@cbs[, x],
                                                vT_x = clv.fitted@cbs[, t.x],
-                                               vT_cal = clv.fitted@cbs[, T.cal],
                                                vN_cal = clv.fitted@cbs[, n.cal])]
   # Add DERT
   dt.prediction[, DERT := bgbb_nocov_DERT(alpha = clv.fitted@prediction.params.model[["alpha"]],
@@ -138,7 +135,6 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgbb.no.cov"),
                                           continuous_discount_factor = continuous.discount.factor,
                                           vX     = clv.fitted@cbs[, x],
                                           vT_x   = clv.fitted@cbs[, t.x],
-                                          vT_cal = clv.fitted@cbs[, T.cal],
                                           vN_cal = clv.fitted@cbs[, n.cal])]
 
   return(dt.prediction)

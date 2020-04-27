@@ -12,7 +12,6 @@ arma::vec bgbb_LL_ind(const double alpha,
                        const double delta,
                        const arma::vec& vX,
                        const arma::vec& vT_x,
-                       const arma::vec& vT_cal,
                        const arma::vec& vN_cal){
   const unsigned int n = vX.n_elem;
 
@@ -38,7 +37,6 @@ arma::vec bgbb_LL_ind(const double alpha,
 arma::vec bgbb_nocov_LL_ind(const arma::vec& vLogparams,
                              const arma::vec& vX,
                              const arma::vec& vT_x,
-                             const arma::vec& vT_cal,
                              const arma::vec& vN_cal){
 
   const double alpha = exp(vLogparams(0));
@@ -46,7 +44,7 @@ arma::vec bgbb_nocov_LL_ind(const arma::vec& vLogparams,
   const double gamma = exp(vLogparams(2));
   const double delta = exp(vLogparams(3));
 
-  arma::vec vLL = bgbb_LL_ind(alpha, beta, gamma, delta, vX, vT_x, vT_cal, vN_cal);
+  arma::vec vLL = bgbb_LL_ind(alpha, beta, gamma, delta, vX, vT_x, vN_cal);
 
   return(vLL);
 }
@@ -80,13 +78,11 @@ arma::vec bgbb_nocov_LL_ind(const arma::vec& vLogparams,
 double bgbb_nocov_LL_sum(const arma::vec& vLogparams,
                           const arma::vec& vX,
                           const arma::vec& vT_x,
-                          const arma::vec& vT_cal,
                           const arma::vec& vN_cal){
 
   arma::vec vLL = bgbb_nocov_LL_ind(vLogparams,
                                      vX,
                                      vT_x,
-                                     vT_cal,
                                      vN_cal);
 
   return(arma::sum(vN_cal % vLL));

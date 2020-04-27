@@ -10,7 +10,6 @@ arma::vec bgbb_DERT_ind(const double alpha,
                         const double delta,
                         const arma::vec& vX,
                         const arma::vec& vT_x,
-                        const arma::vec& vT_cal,
                         const arma::vec& vN_cal,
                         const double continuous_discount_factor){
 
@@ -29,7 +28,7 @@ arma::vec bgbb_DERT_ind(const double alpha,
   vPart1 = arma::exp(clv::lbeta(vAlphaVx1, vBetaVnCalVx) - R::lbeta(alpha, beta));
   vPart2 = arma::exp(clv::lbeta(vGamma, vDeltaVnCal1) - R::lbeta(gamma, delta))/ (1 + continuous_discount_factor);
   vPart3 = clv::vec_hyp2F1(vOne, vDeltaVnCal1,vGammaDeltaVnCal1, vOne / (1 + continuous_discount_factor));
-  vPart4 = arma::exp(bgbb_LL_ind(alpha, beta, gamma, delta, vX, vT_x, vT_cal, vN_cal));
+  vPart4 = arma::exp(bgbb_LL_ind(alpha, beta, gamma, delta, vX, vT_x, vN_cal));
 
   return vPart1 % vPart2 % (vPart3 / vPart4);
 }
@@ -42,7 +41,6 @@ arma::vec bgbb_nocov_DERT(const arma::vec& vEstimated_params,
                           const double continuous_discount_factor,
                           const arma::vec& vX,
                           const arma::vec& vT_x,
-                          const arma::vec& vT_cal,
                           const arma::vec& vN_cal){
 
   const double alpha  = vEstimated_params(0);
@@ -54,7 +52,7 @@ arma::vec bgbb_nocov_DERT(const arma::vec& vEstimated_params,
   // Calculate DERT -------------------------------------------------
   return bgbb_DERT_ind(alpha, beta,
                        gamma, delta,
-                       vX, vT_x, vT_cal, vN_cal,
+                       vX, vT_x, vN_cal,
                        continuous_discount_factor);
 }
 

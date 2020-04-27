@@ -4,7 +4,7 @@
 \alias{bgbb_nocov_PAlive}
 \title{BG/BB: PAlive without covariates}
 \usage{
-bgbb_nocov_PAlive(alpha, beta, gamma, delta, vX, vT_x, vT_cal, vN_cal)
+bgbb_nocov_PAlive(alpha, beta, gamma, delta, vX, vT_x, vN_cal)
 }
 \arguments{
 \item{alpha}{TODO: describe}

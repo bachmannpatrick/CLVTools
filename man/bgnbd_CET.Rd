@@ -5,18 +5,7 @@
 \alias{bgnbd_nocov_CET}
 \title{BG/BB: Conditional Expected Transactions without covariates}
 \usage{
-bgnbd_nocov_CET(
-  alpha,
-  beta,
-  gamma,
-  delta,
-  nPeriods,
-  vX,
-  vT_x,
-  vT_cal,
-  vN_cal,
-  vN_star
-)
+bgnbd_nocov_CET(alpha, beta, gamma, delta, nPeriods, vX, vT_x, vN_cal, vN_star)
 }
 \arguments{
 \item{alpha}{TODO: describe}

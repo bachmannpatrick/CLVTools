@@ -11,7 +11,6 @@ arma::vec bgbb_CET(const double alpha,
                    const double nPeriods,
                    const arma::vec& vX,
                    const arma::vec& vT_x,
-                   const arma::vec& vT_cal,
                    const arma::vec& vN_cal,
                    const arma::vec& vN_star){
 
@@ -22,7 +21,7 @@ arma::vec bgbb_CET(const double alpha,
 
   arma::vec vPart1(n), vPart2(n), vPart3(n), vPart4(n), vPart5(n), vPart6(n), vPart7(n), vPart8(n);
 
-  vPart1 = 1 / arma::exp(bgbb_LL_ind(alpha, beta, gamma, delta, vX, vT_x, vT_cal, vN_cal));
+  vPart1 = 1 / arma::exp(bgbb_LL_ind(alpha, beta, gamma, delta, vX, vT_x, vN_cal));
   vPart2 = arma::exp(clv::lbeta(vAlphaVx1, vBetaVnCalVx)) - R::lbeta(alpha, beta); // TODO: find a vectorized lbeta
   vPart3 = delta / (gamma - 1);
   vPart4 = std::exp(std::lgamma(gamma + delta) - std::lgamma(1 + delta));
@@ -63,11 +62,10 @@ arma::vec bgnbd_nocov_CET(const double alpha,
                           const double nPeriods,
                           const arma::vec& vX,
                           const arma::vec& vT_x,
-                          const arma::vec& vT_cal,
                           const arma::vec& vN_cal,
                           const arma::vec& vN_star){
   // Build alpha and beta --------------------------------------------------------
   //    No covariates: Same alpha, beta, gamma, delta for every customer
 
-  return bgbb_CET(alpha, beta, gamma, delta, nPeriods, vX, vT_x, vT_cal, vN_cal, vN_star);
+  return bgbb_CET(alpha, beta, gamma, delta, nPeriods, vX, vT_x, vN_cal, vN_star);
 }

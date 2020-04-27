@@ -5,9 +5,9 @@
 \alias{bgbb_nocov_LL_sum}
 \title{BG/BB: LogLikelihood without covariates}
 \usage{
-bgbb_nocov_LL_ind(vLogparams, vX, vT_x, vT_cal, vN_cal)
+bgbb_nocov_LL_ind(vLogparams, vX, vT_x, vN_cal)
 
-bgbb_nocov_LL_sum(vLogparams, vX, vT_x, vT_cal, vN_cal)
+bgbb_nocov_LL_sum(vLogparams, vX, vT_x, vN_cal)
 }
 \arguments{
 \item{vLogparams}{vector with the BG/BB model parameters log scaled}

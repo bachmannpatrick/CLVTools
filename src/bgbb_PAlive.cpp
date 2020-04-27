@@ -10,7 +10,6 @@ arma::vec bgbb_PAlive(const double alpha,
                       const double delta,
                       const arma::vec& vX,
                       const arma::vec& vT_x,
-                      const arma::vec& vT_cal,
                       const arma::vec& vN_cal){
   const unsigned int n = vX.n_elem;
 
@@ -23,7 +22,7 @@ arma::vec bgbb_PAlive(const double alpha,
   arma::vec vDeltaVnCal1 = (delta + vN_cal + 1);
 
   vPart1 = arma::exp(clv::lbeta(vAlphaVx, vBetaVnCalVx) - R::lbeta(alpha, beta) + clv::lbeta(vGamma, vDeltaVnCal1) - R::lbeta(gamma, delta));
-  vPart2 = 1 / arma::exp(bgbb_LL_ind(alpha, beta, gamma, delta, vX, vT_x, vT_cal, vN_cal));
+  vPart2 = 1 / arma::exp(bgbb_LL_ind(alpha, beta, gamma, delta, vX, vT_x, vN_cal));
 
   return vPart1 % vPart2;
 }
@@ -56,7 +55,6 @@ arma::vec bgbb_nocov_PAlive(const double alpha,
                              const double delta,
                              const arma::vec& vX,
                              const arma::vec& vT_x,
-                             const arma::vec& vT_cal,
                              const arma::vec& vN_cal){
 
   return bgbb_PAlive(alpha,
@@ -65,6 +63,5 @@ arma::vec bgbb_nocov_PAlive(const double alpha,
                       delta,
                       vX,
                       vT_x,
-                      vT_cal,
                       vN_cal);
 }

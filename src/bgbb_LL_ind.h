@@ -8,6 +8,5 @@ arma::vec bgbb_LL_ind(const double alpha,
                       const double delta,
                       const arma::vec& vX,
                       const arma::vec& vT_x,
-                      const arma::vec& vT_cal,
                       const arma::vec& vN_cal);
 #endif
