@@ -26,7 +26,7 @@ setMethod("ggomnbd", signature = signature(clv.data="clv.data"), definition = fu
   cl        <- sys.call(1)
   obj <- clv.ggomnbd(cl=cl, clv.data=clv.data)
 
-  return(clv.template.controlflow.estimate(clv.fitted = obj, obj=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
+  return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
                                            start.param.cor = start.param.cor, optimx.args = optimx.args, verbose=verbose, ...))
 })
 
@@ -46,7 +46,7 @@ setMethod("ggomnbd", signature = signature(clv.data="clv.data.static.covariates"
   cl        <- sys.call(1)
   obj <- clv.ggomnbd.static(cl=cl, clv.data=clv.data)
 
-  return(clv.template.controlflow.estimate(clv.fitted = obj, obj=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
+  return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
                                            start.param.cor = start.param.cor, optimx.args = optimx.args, verbose=verbose,
                                            names.cov.life=names.cov.life, names.cov.trans=names.cov.trans,
                                            start.params.life=start.params.life, start.params.trans=start.params.trans,
@@ -60,6 +60,8 @@ setMethod("ggomnbd", signature = signature(clv.data="clv.data.static.covariates"
 #' @rdname ggomnbd
 setMethod("ggomnbd", signature = signature(clv.data="clv.data.dynamic.covariates"), definition = function(clv.data,
                                                                                                         start.params.model=c(),
+                                                                                                        use.cor = FALSE,
+                                                                                                        start.param.cor = c(),
                                                                                                         optimx.args=list(),
                                                                                                         verbose=TRUE,
                                                                                                         names.cov.life=c(), names.cov.trans=c(),

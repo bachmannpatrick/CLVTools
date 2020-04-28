@@ -47,6 +47,8 @@ ggomnbd(
 \S4method{ggomnbd}{clv.data.dynamic.covariates}(
   clv.data,
   start.params.model = c(),
+  use.cor = FALSE,
+  start.param.cor = c(),
   optimx.args = list(),
   verbose = TRUE,
   names.cov.life = c(),
