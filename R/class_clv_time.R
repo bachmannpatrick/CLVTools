@@ -265,8 +265,8 @@ clv.time.expectation.periods <- function(clv.time, user.tp.end){
   }
 
   # Make data.table, sort, add period.num (used throughout)
-  dt.expectation <- data.table(period.first = vec.tp.expectation.date.i)
-  setkeyv(dt.expectation, cols = "period.first")
+  dt.expectation <- data.table(period.until = vec.tp.expectation.date.i)
+  setkeyv(dt.expectation, cols = "period.until")
   dt.expectation[, period.num := seq.int(from=1, to=.N)]
 
   return(dt.expectation)
@@ -442,3 +442,6 @@ setMethod("clv.time.ceiling.date", signature = "clv.time", function(clv.time, ti
   stop("This method needs to be implemented by a subclass.")
 })
 
+setMethod("clv.time.format.timepoint", signature = "clv.time", function(clv.time, timepoint){
+  stop("This method needs to be implemented by a subclass.")
+})

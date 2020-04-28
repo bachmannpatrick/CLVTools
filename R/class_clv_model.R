@@ -51,7 +51,7 @@ setClass(Class = "clv.model", contains = "VIRTUAL",
 setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...){
   # Example:
   # if(length(list(...)) > 0)
-  #   warning("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
+  #   stop("Any further parameters passed in ... are not needed for this model.", call. = FALSE, immediate. = TRUE)
   stop("The method clv.model.check.input.args has not been implemented by this model!")
 })
 

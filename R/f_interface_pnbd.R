@@ -77,20 +77,23 @@
 #' See \code{\link[data.table:setDTthreads]{setDTthreads}}, \code{\link[data.table:getDTthreads]{getDTthreads}},
 #' and \code{\link[future:plan]{plan}} for information on how to do this.
 #'
+#' The Pareto/NBD model with dynamic covariates can currently not be fit with data that has a temporal resolution
+#' of less than one day (data that was built with time unit \code{hours}).
+#'
 #' @return
 #' Depending on the data object on which the model was fit, \code{pnbd} returns either an object of
 #' class \link[CLVTools:clv.pnbd-class]{clv.pnbd}, \link[CLVTools:clv.pnbd.static.cov-class]{clv.pnbd.static.cov}, or \link[CLVTools:clv.pnbd.dynamic.cov-class]{clv.pnbd.dynamic.cov}.
 #'
 #' The function \code{\link[CLVTools:summary.clv.fitted]{summary}} can be used to obtain and print a summary of the results.
-#' The generic accessor functions \code{coefficients}, \code{fitted},
-#' \code{residuals}, \code{vcov}, \code{logLik}, \code{AIC}, \code{BIC}, and \code{nobs} are available.
+#' The generic accessor functions \code{coefficients}, \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}},
+#' \code{logLik}, \code{AIC}, \code{BIC}, and \code{nobs} are available.
 #'
-#' @seealso \code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object
-#' @seealso \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}} and \code{\link[CLVTools:SetDynamicCovariates]{SetDynamicCovariates}} to add static or dynamic covariates to an existing clv data object on which then the \code{pnbd} method can be fit
+#' @seealso \code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object, \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}} and \code{\link[CLVTools:SetDynamicCovariates]{SetDynamicCovariates}}
+#' to add static or dynamic covariates to an existing clv data object on which then the \code{pnbd} method can be fit
 #' @seealso \code{\link[CLVTools:predict.clv.fitted]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
 #' @seealso \code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation as predicted by the fitted model
-#' @seealso The generic functions \code{\link[CLVTools:summary.clv.fitted]{summary}}, \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
-#' @seealso \code{\link[data.table]{setDTthreads}}, \code{\link[data.table]{getDTthreads}},\code{\link[doParallel]{registerDoParallel}},\code{\link[doFuture]{registerDoFuture}} for setting up paralle exectution.
+#' @seealso The generic functions \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:summary.clv.fitted]{summary}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
+#' @seealso \code{\link[data.table]{setDTthreads}}, \code{\link[data.table]{getDTthreads}},\code{\link[doParallel]{registerDoParallel}},\code{\link[doFuture]{registerDoFuture}} for setting up parallel execution.
 #'
 #' @template template_pnbd_reference
 #'
@@ -123,6 +126,12 @@
 #'
 #' # summary of the fitted model
 #' summary(apparel.pnbd)
+#'
+#' # predict CLV etc for holdout period
+#' predict(apparel.pnbd)
+#'
+#' # predict CLV etc for the next 15 periods
+#' predict(apparel.pnbd, prediction.end = 15)
 #'
 #'
 #' # To estimate the PNBD model with static covariates,
@@ -205,7 +214,9 @@ setMethod("pnbd", signature = signature(clv.data="clv.data"), definition = funct
                                                                                         start.param.cor=c(),
                                                                                         optimx.args=list(),
                                                                                         verbose=TRUE,...){
-  cl  <- sys.call(1)
+
+  cl  <- match.call(call = sys.call(-1), expand.dots = TRUE)
+
   obj <- clv.pnbd(cl=cl, clv.data=clv.data)
 
   return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
@@ -225,7 +236,8 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.static.covariates"), 
                                                                                                       names.cov.constr=c(),start.params.constr=c(),
                                                                                                       reg.lambdas = c(), ...){
 
-  cl  <- sys.call(1)
+  cl  <- match.call(call = sys.call(-1), expand.dots = TRUE)
+
   obj <- clv.pnbd.static.cov(cl=cl, clv.data=clv.data)
 
   # Do the estimate controlflow / process steps with the static cov object
@@ -251,8 +263,14 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.dynamic.covariates"),
                                                                                                         start.params.life=c(), start.params.trans=c(),
                                                                                                         names.cov.constr=c(),start.params.constr=c(),
                                                                                                         reg.lambdas = c(), ...){
-  cl  <- sys.call(1)
+
+  cl  <- match.call(call = sys.call(-1), expand.dots = TRUE)
+
   obj <- clv.pnbd.dynamic.cov(cl = cl, clv.data=clv.data)
+
+  if(is(clv.data@clv.time, "clv.time.datetime")){
+    stop("This model currently cannot be fitted with data that has a temporal resolution of less than 1d (ie hours).")
+  }
 
   return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor, start.param.cor = start.param.cor,
                                            optimx.args = optimx.args, verbose=verbose,

@@ -47,11 +47,11 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
                              start.param.cor=start.param.cor, optimx.args=optimx.args, verbose=verbose)
 
               if(length(list(...)) > 0)
-                warning("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
+                stop("Any additional parameters passed in ... are not needed!", call. = FALSE)
 
               # Nothing model-specific to check about all other user inputs
               # Nothing to return
-            })
+})
 
 # . clv.model.put.estimation.input ------------------------------------------------------------------------------------------------------------
 #   Use pnbd.no.cov methods, dont need to overwrite
@@ -187,7 +187,7 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.static.co
 # . clv.model.expectation -----------------------------------------------------------------------------------------------------
 setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.static.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
 
-  r<-s<-alpha_i<-beta_i <- T.cal <- t_i<- period.first.trans <- NULL
+  r<-s<-alpha_i<-beta_i <- T.cal <- t_i <- NULL
 
   #calculate alpha_i, beta_i
   params_i <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]

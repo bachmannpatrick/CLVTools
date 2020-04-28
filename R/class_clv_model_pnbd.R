@@ -53,7 +53,7 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
     check_err_msg(err.msg = "Please provide only model start parameters greater than 0 as they will be log()-ed for the optimization!")
 
   if(length(list(...)) > 0)
-    warning("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
+    stop("Any additional parameters passed in ... are not needed!", call. = FALSE)
 })
 
 
@@ -215,6 +215,7 @@ setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.mo
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
   period.length <- Id <- x <- t.x <- T.cal <-  PAlive <- i.PAlive <- CET <- i.CET <- DERT <- i.DERT <- NULL # cran silence
 
+
   predict.number.of.periods <- dt.prediction[1, period.length]
 
   # Put params together in single vec
@@ -257,7 +258,7 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.no.cov"),
 # . clv.model.expectation --------------------------------------------------------------------------------------------------------
 setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.no.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
 
-  r <- s <- alpha_i <- beta_i <- date.first.actual.trans <- T.cal <- t_i<- period.first.trans<-NULL
+  r <- s <- alpha_i <- beta_i <- date.first.actual.trans <- T.cal <- t_i <- NULL
 
   params_i <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
 

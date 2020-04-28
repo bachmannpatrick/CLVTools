@@ -34,7 +34,7 @@
 
 \item{prediction.end}{Until what point in time to predict. This can be the number of periods (numeric) or a form of date/time object. See details.}
 
-\item{newdata}{A cldata object for which the plotting should be made with the fitted model. If none or NULL is given, the plot is made for the data on which the model was fit.}
+\item{newdata}{An object of class clv.data for which the plotting should be made with the fitted model. If none or NULL is given, the plot is made for the data on which the model was fit.}
 
 \item{cumulative}{Whether the cumulative expected (and actual) transactions should be plotted.}
 
@@ -52,13 +52,14 @@
 An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
 If the parameter \code{plot} is \code{FALSE}, the data that would have been melted and used to
 create the plot is returned. It is a \code{data.table} which contains the following columns:
-\item{period.first}{To which timepoint the data in this row refers.}
+\item{period.until}{The timepoint that marks the end (up until and including) of the period to which the data in this row refers.}
 \item{Number of Repeat Transactions}{The number of actual repeat transactions in
-the period that starts at \code{period.first}. Only if \code{transactions} is \code{TRUE}.}
-\item{"Name of Model" or "label"}{The value of the unconditional expectation until \code{period.first} as per the given model.}
+the period that ends at \code{period.until}. Only if \code{transactions} is \code{TRUE}.}
+\item{"Name of Model" or "label"}{The value of the unconditional expectation for the period that ends on \code{period.until}.}
 }
 \description{
-Plot the actual repeat transactions and overlay it with the repeat transaction as predicted by the fitted model.
+Plot the actual repeat transactions and overlay it with the repeat transaction as predicted
+by the fitted model (unconditional expectation).
 }
 \details{
 \code{prediction.end} indicates until when to predict or plot and can be given as either
@@ -82,6 +83,7 @@ See the Note section for more details.
 The \code{newdata} argument has to be a clv data object of the exact same class as the data object
 on which the model was fit. In case the model was fit with covariates, \code{newdata} needs to contain identically
 named covariate data.
+
 The use case for \code{newdata} is mainly two-fold: First, to estimate model parameters only on a
 sample of the data and then use the fitted model object to predict or plot for the full data set provided through \code{newdata}.
 Second, for models with dynamic covariates, to provide a clv data object with longer covariates than contained in the data
@@ -89,13 +91,13 @@ on which the model was estimated what allows to predict or plot further. When pr
 might require additional steps that can significantly increase runtime.
 }
 \note{
-Because the expectation value is an incremental value derived from the cumulative expectation function,
-all timepoints for which the expectation is calcuated need to be spaced exactly 1 time unit apart.
-Each \code{period.first} marks the beginning of a time unit (ie 1st of January in case of yearly
-time units) and the expectation values are calculated up until and including \code{period.first}.
+Because the unconditional expectation for a period is derived as the difference of
+the cumulative expectations calculated at the beginning and at end of the period,
+all timepoints for which the expectation is calcuated are required to be spaced exactly 1 time unit apart.
+
 If \code{prediction.end} does not coincide with the start of a time unit, the last timepoint
-for which the expectation is calculated therefore is not \code{prediction.end} but the start of the
-first time unit after \code{prediction.end}.
+for which the expectation is calculated and plotted therefore is not \code{prediction.end}
+but the start of the first time unit after \code{prediction.end}.
 }
 \examples{
 \donttest{

@@ -14,16 +14,16 @@ print.clv.time <- function(x, digits=max(3L, getOption("digits")-3L),
 
   nsmall <- 4 # dont leave to user, hardcode
 
-  has.holdout <- (x@holdout.period.in.tu > 0)
+  has.holdout <- clv.time.has.holdout(clv.time=x)
 
   .print.list(list("Time unit"         = x@name.time.unit,
                    "   " ="",
-                   "Estimation start"  = as.character(x@timepoint.estimation.start),
-                   "Estimation end"    = as.character(x@timepoint.estimation.end),
+                   "Estimation start"  = clv.time.format.timepoint(clv.time=x, timepoint=x@timepoint.estimation.start),
+                   "Estimation end"    = clv.time.format.timepoint(clv.time=x, timepoint=x@timepoint.estimation.end),
                    "Estimation length" = paste0(format(x@estimation.period.in.tu, digits=digits,nsmall=nsmall), " ", x@name.time.unit),
                    "  " ="",
-                   "Holdout start"     = ifelse(has.holdout, as.character(x@timepoint.holdout.start), "-"),
-                   "Holdout end"       = ifelse(has.holdout, as.character(x@timepoint.holdout.end), "-"),
+                   "Holdout start"     = ifelse(has.holdout, clv.time.format.timepoint(clv.time=x, timepoint=x@timepoint.holdout.start), "-"),
+                   "Holdout end"       = ifelse(has.holdout, clv.time.format.timepoint(clv.time=x, timepoint=x@timepoint.holdout.end), "-"),
                    "Holdout length"    = ifelse(has.holdout, paste0(format(x@holdout.period.in.tu, nsmall=nsmall), " ", x@name.time.unit), "-")),
               nsmall=nsmall)
 
@@ -39,9 +39,9 @@ print.clv.time <- function(x, digits=max(3L, getOption("digits")-3L),
 summary.clv.time <- function(object, ...){
   res <- structure(list(), class="summary.clv.time")
 
-  res$name.time.unit <- object@name.time.unit
+  res$name.time.unit          <- object@name.time.unit
   res$estimation.period.in.tu <- object@estimation.period.in.tu
-  res$has.holdout <- (object@holdout.period.in.tu > 0)
+  res$has.holdout             <- clv.time.has.holdout(clv.time=object)
   if(res$has.holdout)
     res$holdout.period.in.tu <- object@holdout.period.in.tu
 
