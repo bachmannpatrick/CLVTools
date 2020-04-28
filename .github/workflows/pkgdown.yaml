@@ -15,8 +15,8 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@master
 
       - name: Install gsl for mac
-          run: |
-            brew install gsl
+        run: |
+          brew install gsl
 
       - name: Query dependencies
         run: |
