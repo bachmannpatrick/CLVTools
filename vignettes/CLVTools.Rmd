@@ -279,9 +279,6 @@ To inspect the estimated model we use `summary()`, however all other commands su
 summary(est.pnbd.static)
 ```
 
-```{r Cov-summary_dyn}
-summary(est.pnbd.dyn)
-```
 
 To predict future customer behavior we use `predict()`.  Note that dependent on the model, the predicted metrics may differ. For example, in the case of the Pareto/NBD model with time-varying covariates, instead of DERT, DECT is predicted. DECT only covers a finite time horizon in contrast to DERT. Time-varying covariates must be provided for the entire prediction period. If the data initially provided in the `SetDynamicCovariates()` command does not cover the complete prediction period, the argument `new.data` offers the ability to supply new data for the time-varying covariates in the from of a `clvdata` object.
 
