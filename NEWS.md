@@ -1,7 +1,7 @@
-# CHANGES IN CLVTools 0.5.0
+# CLVTools 0.5.0
 * Initial release of the CLVTools package
 
-## NEW FEATURES
+### NEW FEATURES
 * Pareto/NBD model to predict repeat transactions without and with static or dynamic covariates 
 * Gamma-Gamma model to predict average spending
 * Predicting CLV and future transactions per customer
