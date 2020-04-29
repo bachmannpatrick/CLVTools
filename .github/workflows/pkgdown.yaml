@@ -1,6 +1,6 @@
 on:
   push:
-    branches: feature-githubpages-setup
+    branches: master
 
 name: pkgdown
 
