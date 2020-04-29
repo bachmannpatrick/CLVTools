@@ -5,7 +5,7 @@ This is the initial release of the CLVTools package. It provides convenient meth
 ## Test environments
 
 ## Testthat
-A total of 3201 (local: 5776) tests that provide a coverage of roughly 94 percent (covr)
+A total of 3201 (local: 5809) tests that provide a coverage of roughly 94 percent (covr)
 * ubuntu 16.04, R 3.6 (on github-actions)
 * Windows Server 2008 R2 SP1, R-devel, 32/64 bit (rhub check_for_cran)
 * Debian Linux, R-devel, GCC  (rhub check_for_cran)
