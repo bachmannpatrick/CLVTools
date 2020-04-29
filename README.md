@@ -42,12 +42,12 @@ for a time-line.
 5)  BG/NBD model with **time-invariant** contextual factors (Fader &
     Hardie 2007)
 
-6)  Standard Gamma/Gompertz/NBD (Bemmaor & Glady 2012)
+6)  Gamma/Gompertz/NBD (Bemmaor & Glady 2012)
 
 7)  Gamma/Gompertz/NBD model with **time-invariant** contextual factors
     (Näf, Bachmann & Meierer 2020)
 
-8)  Standard BG/BB model (Fader, Hardie, & Shang 2010)
+8)  BG/BB model (Fader, Hardie, & Shang 2010)
 
 In addition the framework features a system of layers between the
 optimizer and the log-likelihood function to allow the flexible addition
@@ -69,7 +69,7 @@ Install the stable version from CRAN:
 
 Install the development version from GitHub:
 
-    devtools::install_github("bachmannpatrick/CLVTools", ref = "development")
+    devtools::install_github("CLVTools", ref = "development")
 
 Note that the package depends on RcppArmadillo and RcppGSL which will
 likely require additional setup steps in order to compile and install
