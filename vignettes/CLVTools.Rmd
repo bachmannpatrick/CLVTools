@@ -36,7 +36,7 @@ Install the development version from GitHub (using the `devtools` [@devtools] pa
 
 ```{r install-package-GITHUB, eval = FALSE}
 install.packages("devtools")
-devtools::install_github("CLVTools", ref = "master")
+devtools::install_github("bachmannpatrick/CLVTools", ref = "master")
 ```
 
 Load the package
