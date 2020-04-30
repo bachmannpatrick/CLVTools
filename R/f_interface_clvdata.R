@@ -87,13 +87,14 @@
 #'                           time.unit = "w",
 #'                           estimation.split = "1997-10-15")
 #'
+#' \donttest{
 #'
 #' # summary of the transaction data
 #' summary(clv.data.cdnow)
 #'
 #' # plot the transaction data
 #' plot(clv.data.cdnow)
-#'
+#' }
 #'
 #' # create data with the weekly periods defined to
 #' #   start on Mondays
