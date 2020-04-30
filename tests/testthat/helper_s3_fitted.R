@@ -21,12 +21,18 @@
     expect_named(res.coef, rownames(coef(summary(clv.fitted))), ignore.case = FALSE, ignore.order = FALSE)
   })
 
-  test_that("No NAs", {
-    expect_false(anyNA(res.coef))
+  test_that("No cor if complete = FALSE", {
+    expect_false(clv.fitted@name.correlation.cor %in% names(coef(clv.fitted, complete=FALSE)))
   })
 
-# model specific: coef() same as exp(coef(optimx))
-# model specific: test that coef() really use last row of optimx result, not any other
+  test_that("No NAs", {
+    # ** TODO: Really?
+    expect_false(anyNA(res.coef))
+    expect_false(anyNA(coef(clv.fitted, complete = FALSE)))
+  })
+
+  # model specific: coef() same as exp(coef(optimx))
+  # model specific: test that coef() really use last row of optimx result, not any other
 }
 
 .fct.helper.s3.fitted.vcov <- function(clv.fitted, full.names){
@@ -209,7 +215,8 @@
   })
 }
 
-fct.helper.fitted.all.s3 <- function(clv.fitted, clv.newdata, full.names, clv.newdata.nohold, clv.newdata.withhold){ #, name.model){
+fct.helper.fitted.all.s3 <- function(clv.fitted, clv.newdata, full.names, clv.newdata.nohold, clv.newdata.withhold,
+                                     DERT.not.implemented = FALSE){ #, name.model){
 
   .fct.helper.s3.fitted.coef(clv.fitted = clv.fitted, full.names = full.names)
 
@@ -229,7 +236,7 @@ fct.helper.fitted.all.s3 <- function(clv.fitted, clv.newdata, full.names, clv.ne
                              clv.newdata.withhold=clv.newdata.withhold)
 
   .fct.helper.s3.fitted.predict(clv.fitted = clv.fitted, clv.newdata.nohold=clv.newdata.nohold,
-                                clv.newdata.withhold=clv.newdata.withhold)
+                                clv.newdata.withhold=clv.newdata.withhold, DERT.not.implemented=DERT.not.implemented)
 
 }
 
@@ -237,8 +244,3 @@ fct.helper.fitted.all.s3 <- function(clv.fitted, clv.newdata, full.names, clv.ne
 # plot with predict.end=NULL same as predict.end=holdout.end and predict.end=holdout.period.in.tu
 # correct that label = model name same as no label
 #  names(vcov()) = names(coef(summary)) = names(coef()) with and without correlation
-
-
-
-
-

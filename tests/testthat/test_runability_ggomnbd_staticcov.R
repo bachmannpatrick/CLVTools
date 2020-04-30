@@ -54,9 +54,9 @@ expect_silent(clv.newdata.withhold <- SetStaticCovariates(
 test_that("Works out-of-the box, without additional params", {
   expect_silent(p.hold    <- ggomnbd(clv.data.cov.holdout, verbose=FALSE))
   expect_silent(p.no.hold <- ggomnbd(clv.data.cov.no.holdout, verbose=FALSE))
-  fct.helper.fitted.all.s3(p.hold,   full.names = c("r", "alpha", "beta","b", "s", "life.Gender", "trans.Gender"),
+  fct.helper.fitted.all.s3(p.hold,   full.names = c("r", "alpha", "b","s", "beta", "life.Gender", "trans.Gender"),
                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = TRUE)
-  fct.helper.fitted.all.s3(p.no.hold, full.names = c("r", "alpha", "beta","b", "s", "life.Gender", "trans.Gender"),
+  fct.helper.fitted.all.s3(p.no.hold, full.names = c("r", "alpha", "b","s", "beta", "life.Gender", "trans.Gender"),
                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = TRUE)
 })
 
@@ -107,9 +107,9 @@ test_that("Works with single constraints", {
   # Without start param
   expect_silent(p.hold    <- ggomnbd(clv.data.cov.holdout,    names.cov.constr = "Gender",verbose=FALSE))
   expect_silent(p.no.hold <- ggomnbd(clv.data.cov.no.holdout, names.cov.constr = "Gender",verbose=FALSE))
-  fct.helper.fitted.all.s3(p.hold,    full.names = c("r", "alpha", "a","b", "constr.Gender"),
+  fct.helper.fitted.all.s3(p.hold,    full.names = c("r", "alpha", "b", "s", "beta", "constr.Gender"),
                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = TRUE)
-  fct.helper.fitted.all.s3(p.no.hold, full.names = c("r", "alpha", "a","b", "constr.Gender"),
+  fct.helper.fitted.all.s3(p.no.hold, full.names = c("r", "alpha", "b", "s", "beta", "constr.Gender"),
                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = TRUE)
 
   # With start param
@@ -121,9 +121,9 @@ context("Runability - GGompertz / NBD static cov - w/ Regularization")
 test_that("Works with regularization", {
   expect_silent(p.hold    <- ggomnbd(clv.data.cov.holdout,    reg.lambdas = c(trans=10, life=10),verbose=FALSE))
   expect_silent(p.no.hold <- ggomnbd(clv.data.cov.no.holdout, reg.lambdas = c(trans=10, life=10),verbose=FALSE))
-  fct.helper.fitted.all.s3(p.hold,    full.names = c("r", "alpha", "a","b", "life.Gender", "trans.Gender"),
+  fct.helper.fitted.all.s3(p.hold,    full.names = c("r", "alpha", "b", "s", "beta", "life.Gender", "trans.Gender"),
                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = TRUE)
-  fct.helper.fitted.all.s3(p.no.hold, full.names = c("r", "alpha", "a","b", "life.Gender", "trans.Gender"),
+  fct.helper.fitted.all.s3(p.no.hold, full.names = c("r", "alpha", "b", "s", "beta", "life.Gender", "trans.Gender"),
                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = TRUE)
 })
 
@@ -133,9 +133,9 @@ test_that("Works with 0 regularization lambdas", {
   skip_on_covr()
   expect_silent(p.hold    <- ggomnbd(clv.data.cov.holdout,   reg.lambdas = c(trans=0, life=0),verbose=FALSE))
   expect_silent(p.no.hold <- ggomnbd(clv.data.cov.no.holdout,reg.lambdas = c(trans=0, life=0),verbose=FALSE))
-  fct.helper.fitted.all.s3(p.hold,   full.names = c("r", "alpha", "a","b", "life.Gender", "trans.Gender"),
+  fct.helper.fitted.all.s3(p.hold,   full.names = c("r", "alpha", "b", "s", "beta", "life.Gender", "trans.Gender"),
                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = TRUE)
-  fct.helper.fitted.all.s3(p.no.hold, full.names = c("r", "alpha", "a","b", "life.Gender", "trans.Gender"),
+  fct.helper.fitted.all.s3(p.no.hold, full.names = c("r", "alpha", "b", "s", "beta", "life.Gender", "trans.Gender"),
                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = TRUE)
 })
 
@@ -151,8 +151,8 @@ test_that("Works with combined interlayers", {
                                    names.cov.constr = "Gender",reg.lambdas = c(trans=10, life=10),verbose=FALSE))
   expect_silent(p.no.hold <- ggomnbd(clv.data.cov.no.holdout,
                                    names.cov.constr = "Gender",reg.lambdas = c(trans=10, life=10),verbose=FALSE))
-  fct.helper.fitted.all.s3(p.hold,    full.names = c("r", "alpha", "a","b", "constr.Gender"),
+  fct.helper.fitted.all.s3(p.hold,    full.names = c("r", "alpha", "b", "s", "beta", "constr.Gender"),
                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = TRUE)
-  fct.helper.fitted.all.s3(p.no.hold, full.names = c("r", "alpha", "a","b", "constr.Gender"),
+  fct.helper.fitted.all.s3(p.no.hold, full.names = c("r", "alpha", "b", "s", "beta", "constr.Gender"),
                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = TRUE)
 })

@@ -15,24 +15,15 @@ arma::vec ggomnbd_PAlive(const double r,
 
   // Individual LL values -------------------------------------------------
   // ggomnbd_LL_ind(r,b,s,vAlpha_i,vBeta_i,vX,vT_x, vT_cal):
-  arma::vec vLL = ggomnbd_LL_ind(r, b ,s, vAlpha_i, vBeta_i, vX,vT_x, vT_cal);
+  arma::vec vLL = ggomnbd_LL_ind(r, b ,s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal);
 
-  //   P1 <- (gamma(r+cbs$x)/gamma(r))
-  //   P2 <- (alpha_i/(alpha_i+cbs$T.cal))^r
-  //   P3 <- (1/(alpha_i+cbs$T.cal)^cbs$x)*(beta_i/(beta_i-1+exp(b*cbs$T.cal)))^s/(ll)
+  arma::vec vP1(n), vP2(n), vP3(n), vOnes(n);
+  vOnes.fill(1);
 
-  arma::vec vP1(n), vP2(n), vP3(n);
+  vP1 = arma::lgamma(r + vX) - lgamma(r);
+  vP2 = r * arma::log(vAlpha_i/(vAlpha_i + vT_cal)) + vX % arma::log(1/(vAlpha_i + vT_cal)) + s * arma::log(vBeta_i/(vBeta_i - 1 + exp(b * vT_cal)));
+  vP3 = vLL;
 
-  for( unsigned int i=0; i<n; i++){
-    vP1(i) = tgamma(r + vX(i)) / tgamma(r);
-    vP2(i) = std::pow(vAlpha_i(i) / (vAlpha_i(i) + vT_cal(i) ), r );
-    vP3(i) = (1.0 / std::pow(vAlpha_i(i) + vT_cal(i) , vX(i)) ) *
-      std::pow( vBeta_i(i) / (vBeta_i(i) - 1.0 + std::exp(b * vT_cal(i) )) , s) /
-      vLL(i);
-  }
-
-  // return(P1*P2*P3)
-  //% := element wise multiplication
-  return (vP1 % vP2 % vP3);
+  return arma::min(arma::exp(vP1 + vP2 - vP3), vOnes);
 
 }
