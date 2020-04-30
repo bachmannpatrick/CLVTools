@@ -47,6 +47,8 @@ to k-1 numeric dummy variables.
 }
 \examples{
 
+\donttest{
+
 data("apparelTrans")
 data("apparelStaticCov")
 
@@ -68,6 +70,6 @@ summary(clv.data.apparel.cov)
 
 # fit model with static covariates
 pnbd(clv.data.apparel.cov)
-
+}
 
 }
