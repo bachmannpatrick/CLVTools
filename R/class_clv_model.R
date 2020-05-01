@@ -20,19 +20,30 @@
 #' @keywords internal
 #' @importFrom methods setClass
 setClass(Class = "clv.model", contains = "VIRTUAL",
-         slots = c(
+         slots = list(
            # Anything that will be used from main execution code.
            #  Enforce it through slots instead of relying on setting it in model generics
            name.model                  = "character",
+
            names.original.params.model = "character",
            names.prefixed.params.model = "character",
            start.params.model          = "numeric",
            # The standard method is overwritten with Nelder-Mead if correlation is used because
            #  if param.m is out of bounds, Inf is returned.
-           optimx.defaults             = "list"))
+           optimx.defaults             = "list"),
 
-# ** TODO: Separate clv.covariate.model virtual class to hard-code method arguments?
-# ** or move altogether to clv.fitted.static.cov?
+         # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
+         prototype = list(
+           name.model                  = character(0),
+
+           names.original.params.model = character(0),
+           names.prefixed.params.model = character(0),
+           start.params.model          = numeric(0),
+
+           optimx.defaults             = list()))
+
+
+# No constructor as should not be created
 
 # Default / fallback methods for all models --------------------------------------------------------
 
@@ -40,7 +51,7 @@ setClass(Class = "clv.model", contains = "VIRTUAL",
 setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...){
   # Example:
   # if(length(list(...)) > 0)
-  #   warning("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
+  #   stop("Any further parameters passed in ... are not needed for this model.", call. = FALSE, immediate. = TRUE)
   stop("The method clv.model.check.input.args has not been implemented by this model!")
 })
 

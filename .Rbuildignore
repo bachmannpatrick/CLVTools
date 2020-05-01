@@ -10,4 +10,5 @@
 ^\.github$
 ^Extensions\.md$
 ^docs$
+^cran-comments\.md$
 

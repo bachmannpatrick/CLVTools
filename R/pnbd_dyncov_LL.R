@@ -1,43 +1,43 @@
-pnbd_dyncov_LL_sum <- function(params, obj){
-  return(-sum(pnbd_dyncov_LL_ind(params=params, obj=obj)))
+pnbd_dyncov_LL_sum <- function(params, clv.fitted){
+  return(-sum(pnbd_dyncov_LL_ind(params=params, clv.fitted=clv.fitted)))
 }
 
 
 # Returns only the individual LL values per customer and no other data.
-pnbd_dyncov_LL_ind <- function(params, obj){
+pnbd_dyncov_LL_ind <- function(params, clv.fitted){
   LL <- NULL
-  cbsdata_ind <- pnbd_dyncov_LL(params=params, obj=obj)
+  cbsdata_ind <- pnbd_dyncov_LL(params=params, clv.fitted=clv.fitted)
   return(cbsdata_ind[, LL])
 }
 
 #' @importFrom foreach foreach %dopar%
-pnbd_dyncov_LL <- function(params, obj){
+pnbd_dyncov_LL <- function(params, clv.fitted){
   # cran silence
   Num.Walk <- AuxTrans <- Di.Max.Walk <- adj.Max.Walk <- Di.adj.Walk1 <- adj.Walk1 <- A1T <- x <- A1sum <- AuxTrans <- transaction.cov.dyn <- Id <- Bjsum <- Bksum <- AkT <- NULL
   adj.transaction.cov.dyn <- dT <- d <- B1 <- t.x <- BT <- a1 <- akt <- aT <- T.cal <- C1T <- CkT <- adj.lifetime.cov.dyn <- D1 <- DT <- DkT <- b1 <- bkT <- bT <- a1T <- NULL
   b1T <- alpha_1 <- beta_1 <- alpha_2 <- beta_2 <- F2.1 <- F2.2 <- F2.3 <- i <- Ai <- Bi <- ai <- Ci <- Id <- Di <- bi <- log.F0 <- F1 <- F2 <- F3 <- LL <- NULL
   splus1 <- log.F1 <- log.F3 <- max.AB <- NULL
 
-  model.params <- params[obj@clv.model@names.prefixed.params.model]
+  model.params <- params[clv.fitted@clv.model@names.prefixed.params.model]
   # The param names after duplication in the constraint interlayer
-  life.params  <- params[obj@names.prefixed.params.after.constr.life]
-  trans.params <- params[obj@names.prefixed.params.after.constr.trans]
+  life.params  <- params[clv.fitted@names.prefixed.params.after.constr.life]
+  trans.params <- params[clv.fitted@names.prefixed.params.after.constr.trans]
 
   r         <- exp(model.params[["log.r"]])
   alpha_0   <- exp(model.params[["log.alpha"]])
   s         <- exp(model.params[["log.s"]])
   beta_0    <- exp(model.params[["log.beta"]])
 
-  for(i in seq_along(obj@data.walks.life))
-    setkeyv(obj@data.walks.life[[i]], c("Id", "Date"))
-  for(i in seq_along(obj@data.walks.trans))
-    setkeyv(obj@data.walks.trans[[i]], c("Id", "Date"))
+  for(i in seq_along(clv.fitted@data.walks.life))
+    setkeyv(clv.fitted@data.walks.life[[i]], c("Id", "Date"))
+  for(i in seq_along(clv.fitted@data.walks.trans))
+    setkeyv(clv.fitted@data.walks.trans[[i]], c("Id", "Date"))
 
-  # Make copy of obj's cbs as will be extensively modified / ie all data saved in
-  cbs <- copy(obj@cbs)
+  # Make copy of clv.fitted's cbs as will be extensively modified / ie all data saved in
+  cbs <- copy(clv.fitted@cbs)
 
   #add num walk to cbs
-  cbs[, Num.Walk := obj@data.walks.trans[[1]][AuxTrans==TRUE, Num.Walk]]
+  cbs[, Num.Walk := clv.fitted@data.walks.trans[[1]][AuxTrans==TRUE, Num.Walk]]
   setkeyv(cbs, c("Id", "Num.Walk"))
 
   # create a single, large data.table ---------------------------------------------------
@@ -45,24 +45,24 @@ pnbd_dyncov_LL <- function(params, obj){
 
   # for future: USE SET TO COPY FASTER
 
-  data.work.trans <- data.table(obj@data.walks.trans[[1]][, "Id"],
-                                obj@data.walks.trans[[1]][, "Date"],
-                                obj@data.walks.trans[[1]][, "AuxTrans"],
-                                obj@data.walks.trans[[1]][, "Num.Walk"],
-                                obj@data.walks.trans[[1]][, "d"],
-                                obj@data.walks.trans[[1]][, "delta"],
-                                obj@data.walks.trans[[1]][, "tjk"],
-                                adj      = .calc.adjusted.walks(walks=obj@data.walks.trans, gammas = trans.params), #adj.Walk1, adj.Walk2, ... adj.Max.Walk
-                                adj      = .calc.adjusted.data(data = obj@data.walks.trans, data.names = c("transaction.cov.dyn"), gammas = trans.params))
+  data.work.trans <- data.table(clv.fitted@data.walks.trans[[1]][, "Id"],
+                                clv.fitted@data.walks.trans[[1]][, "Date"],
+                                clv.fitted@data.walks.trans[[1]][, "AuxTrans"],
+                                clv.fitted@data.walks.trans[[1]][, "Num.Walk"],
+                                clv.fitted@data.walks.trans[[1]][, "d"],
+                                clv.fitted@data.walks.trans[[1]][, "delta"],
+                                clv.fitted@data.walks.trans[[1]][, "tjk"],
+                                adj      = .calc.adjusted.walks(walks=clv.fitted@data.walks.trans, gammas = trans.params), #adj.Walk1, adj.Walk2, ... adj.Max.Walk
+                                adj      = .calc.adjusted.data(data = clv.fitted@data.walks.trans, data.names = c("transaction.cov.dyn"), gammas = trans.params))
 
 
-  data.work.life <- data.table(obj@data.walks.life[[1]][, "Id"],
-                               obj@data.walks.life[[1]][, "Date"],
-                               obj@data.walks.life[[1]][, "AuxTrans"],
-                               obj@data.walks.life[[1]][, "Num.Walk"],
-                               obj@data.walks.life[[1]][, "d"],
-                               adj      = .calc.adjusted.walks(walks = obj@data.walks.life, gammas = life.params), #adj.Walk1, adj.Walk2, ... adj.Max.Walk
-                               adj      = .calc.adjusted.data( data  = obj@data.walks.life, data.names = c("lifetime.cov.dyn"), gammas = life.params) )
+  data.work.life <- data.table(clv.fitted@data.walks.life[[1]][, "Id"],
+                               clv.fitted@data.walks.life[[1]][, "Date"],
+                               clv.fitted@data.walks.life[[1]][, "AuxTrans"],
+                               clv.fitted@data.walks.life[[1]][, "Num.Walk"],
+                               clv.fitted@data.walks.life[[1]][, "d"],
+                               adj      = .calc.adjusted.walks(walks = clv.fitted@data.walks.life, gammas = life.params), #adj.Walk1, adj.Walk2, ... adj.Max.Walk
+                               adj      = .calc.adjusted.data( data  = clv.fitted@data.walks.life, data.names = c("lifetime.cov.dyn"), gammas = life.params) )
 
   setkeyv(data.work.trans, c("Id", "Date", "AuxTrans", "Num.Walk"))
   setkeyv(data.work.life,  c("Id", "Date", "AuxTrans", "Num.Walk"))
@@ -94,7 +94,7 @@ pnbd_dyncov_LL <- function(params, obj){
   cbs[x==0, A1sum:= 0]
   # calc g1*sum(trans.cov.dyn)[1] + g1*sum(trans.cov.dyn)[2] + g1*sum(trans.cov.dyn)[3]
   # exp() missing, ie not adj. function
-  cbs[x!=0, A1sum:= rowSums(mapply(function(w,g){w[AuxTrans==F, g* sum(transaction.cov.dyn),by=Id ]$V1}, w=obj@data.walks.trans, g=trans.params ) )]
+  cbs[x!=0, A1sum:= rowSums(mapply(function(w,g){w[AuxTrans==F, g* sum(transaction.cov.dyn),by=Id ]$V1}, w=clv.fitted@data.walks.trans, g=trans.params ) )]
 
   cbs[, Bjsum:=.pnbd_dyncov_LL_BkSum(data.work.trans = data.work.trans, BkT = F)$Bjsum]
   cbs[, Bksum:=.pnbd_dyncov_LL_BkSum(data.work.trans = data.work.trans, BkT = T)$Bksum]

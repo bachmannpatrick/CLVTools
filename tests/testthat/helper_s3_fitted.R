@@ -21,14 +21,8 @@
     expect_named(res.coef, rownames(coef(summary(clv.fitted))), ignore.case = FALSE, ignore.order = FALSE)
   })
 
-  test_that("No cor if complete = FALSE", {
-    expect_false(clv.fitted@name.correlation.cor %in% names(coef(clv.fitted, complete=FALSE)))
-  })
-
   test_that("No NAs", {
-    # ** TODO: Really?
     expect_false(anyNA(res.coef))
-    expect_false(anyNA(coef(clv.fitted, complete = FALSE)))
   })
 
 # model specific: coef() same as exp(coef(optimx))

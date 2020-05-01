@@ -235,8 +235,8 @@ test_that("Works with combined interlayers", {
 
 
   # Regularization + Correlation + Constraints
-  expect_silent(p.hold    <- pnbd(clv.data.cov.holdout,    use.cor = TRUE, names.cov.constr = c("Gender", "Channel"),reg.lambdas = c(trans=100, life=100),verbose=FALSE))
-  expect_silent(p.no.hold <- pnbd(clv.data.cov.no.holdout, use.cor = TRUE, names.cov.constr = c("Gender", "Channel"),reg.lambdas = c(trans=100, life=100),verbose=FALSE))
+  expect_silent(p.hold    <- pnbd(clv.data.cov.holdout,    use.cor = TRUE, names.cov.constr = c("Gender", "Channel"),reg.lambdas = c(trans=10, life=10),verbose=FALSE))
+  expect_silent(p.no.hold <- pnbd(clv.data.cov.no.holdout, use.cor = TRUE, names.cov.constr = c("Gender", "Channel"),reg.lambdas = c(trans=10, life=10),verbose=FALSE))
 
   fct.helper.fitted.all.s3(p.hold,    full.names = c("r", "alpha", "s","beta", p.hold@name.correlation.cor, p.hold@names.prefixed.params.constr),
                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)

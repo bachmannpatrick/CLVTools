@@ -10,26 +10,38 @@
 #' @include all_generics.R class_clv_model.R
 setClass(Class = "clv.model.pnbd.no.cov", contains = "clv.model",
          # no additional slots for pnbd base model
-         slots = list(),
+
          # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
-         #  init with model defaults
          prototype = list(
-           name.model                  = "Pareto NBD Standard",
-           names.original.params.model = c(r="r", alpha="alpha", s="s", beta="beta"),
-           names.prefixed.params.model = c("log.r","log.alpha", "log.s", "log.beta"),
-           start.params.model          = c(r=1, alpha=1, s=1, beta=1),
-           optimx.defaults = list(method = "L-BFGS-B",
-                                  # lower   = c(log(1*10^(-5)),log(1*10^(-5)),log(1*10^(-5)),log(1*10^(-5))),
-                                  # upper   = c(log(300),log(2000),log(300),log(2000)),
-                                  itnmax  = 3000,
-                                  control = list(
-                                    kkt = TRUE,
-                                    all.methods = FALSE,
-                                    save.failures = TRUE,
-                                    # Do not perform starttests because it checks the scales with max(logpar)-min(logpar)
-                                    #   but all standard start parameters are <= 0, hence there are no logpars what
-                                    #   produces a warning
-                                    starttests = FALSE))))
+           name.model                  = character(),
+
+           names.original.params.model = character(0),
+           names.prefixed.params.model = character(0),
+           start.params.model          = numeric(0),
+
+           optimx.defaults = list()))
+
+
+#' @importFrom methods new
+clv.model.pnbd.no.cov <- function(){
+
+  return(new("clv.model.pnbd.no.cov",
+             name.model                  = "Pareto NBD Standard",
+             names.original.params.model = c(r="r", alpha="alpha", s="s", beta="beta"),
+             names.prefixed.params.model = c("log.r","log.alpha", "log.s", "log.beta"),
+             start.params.model          = c(r=1, alpha=1, s=1, beta=1),
+             optimx.defaults = list(method = "L-BFGS-B",
+                                    # lower   = c(log(1*10^(-5)),log(1*10^(-5)),log(1*10^(-5)),log(1*10^(-5))),
+                                    # upper   = c(log(300),log(2000),log(300),log(2000)),
+                                    itnmax  = 3000,
+                                    control = list(
+                                      kkt = TRUE,
+                                      save.failures = TRUE,
+                                      # Do not perform starttests because it checks the scales with max(logpar)-min(logpar)
+                                      #   but all standard start parameters are <= 0, hence there are no logpars what
+                                      #   produces a warning
+                                      starttests = FALSE))))
+}
 
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
@@ -41,7 +53,7 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
     check_err_msg(err.msg = "Please provide only model start parameters greater than 0 as they will be log()-ed for the optimization!")
 
   if(length(list(...)) > 0)
-    warning("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
+    stop("Any additional parameters passed in ... are not needed!", call. = FALSE)
 })
 
 
@@ -203,6 +215,7 @@ setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.mo
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
   period.length <- Id <- x <- t.x <- T.cal <-  PAlive <- i.PAlive <- CET <- i.CET <- DERT <- i.DERT <- NULL # cran silence
 
+
   predict.number.of.periods <- dt.prediction[1, period.length]
 
   # Put params together in single vec
@@ -245,7 +258,7 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.no.cov"),
 # . clv.model.expectation --------------------------------------------------------------------------------------------------------
 setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.no.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
 
-  r <- s <- alpha_i <- beta_i <- date.first.actual.trans <- T.cal <- t_i<- period.first.trans<-NULL
+  r <- s <- alpha_i <- beta_i <- date.first.actual.trans <- T.cal <- t_i <- NULL
 
   params_i <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
 

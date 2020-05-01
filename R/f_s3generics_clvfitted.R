@@ -29,7 +29,7 @@ nobs.clv.fitted   <- function(object, ...){
 #' @importFrom optimx coef<-
 #' @importFrom utils tail
 #' @export
-coef.clv.fitted <- function(object, complete=TRUE, ...){
+coef.clv.fitted <- function(object, ...){
 
   last.row.optimx.coef <- tail(coef(object@optimx.estimation.output),n=1)
 
@@ -44,7 +44,7 @@ coef.clv.fitted <- function(object, complete=TRUE, ...){
   original.scale.params <- original.scale.model.params
 
   # Correlation param ---------------------------------------------------------------------------------------
-  if(object@estimation.used.correlation & complete==TRUE){
+  if(object@estimation.used.correlation){
     last.row.optimx.coef   <- tail(coef(object@optimx.estimation.output),n=1)
     param.m                <- last.row.optimx.coef[1, object@name.prefixed.cor.param.m, drop=TRUE]
     param.cor              <- clv.model.m.to.cor(clv.model = object@clv.model, prefixed.params.model=prefixed.params.model,
@@ -61,28 +61,27 @@ coef.clv.fitted <- function(object, complete=TRUE, ...){
 #' @title Calculate Variance-Covariance Matrix for CLV Models fitted with Maximum Likelihood Estimation
 #'
 #' @param object a fitted clv model object
-#' @param ... ignored, for consistency with the generic function.
+#' @template template_param_dots
 #'
 #'
 #' @description
 #' Returns the variance-covariance matrix of the parameters of the fitted model object.
 #' The variance-covariance matrix is derived from the Hessian that results from the optimization procedure.
 #' First, the Moore–Penrose generalized inverse of the Hessian is used to obtain an estimate of the
-#' variance-covariance matrix. If the result is not positive definite, \link[Matrix:nearPD]{nearPD} is used
+#' variance-covariance matrix.
+#' Next, because some parameters may be transformed for the purpose of restricting their value during
+#' the log-likelihood estimation, the variance estimates are adapted to
+#' be comparable to the reported coefficient estimates.
+#' If the result is not positive definite, \link[Matrix:nearPD]{nearPD} is used
 #' with standard settings to find the nearest positive definite matrix.
-#'
-#' Because some parameters may be transformed for the purpose of restricting their value during
-#' the log-likelihood estimation, it requires that the variance estimates are adapted as well to
-#' be comparable to the reported coefficient estimates. See the references for more details on how this is done.
 #'
 #' If multiple estimation methods were used, the Hessian of the last method is used.
 #'
 #' @return
-#' A matrix of the estimated covariances between the parameter estimates of the model.
+#' A matrix of the estimated covariances between the parameters of the model.
 #' The row and column names correspond to the parameter names given by the \code{coef} method.
 #'
-#' @references
-#' Jeff's "Note on p-values"
+# @references  Jeff's "Note on p-values"
 #'
 #' @seealso \link[MASS]{ginv}, \link[Matrix]{nearPD}
 #'
@@ -106,14 +105,10 @@ vcov.clv.fitted <- function(object, ...){
   #     -> Depends on optimization! If we have the loglikelihood we need the negative Hessian.
   #   However we have the negative (!) Log likelihood, so we need to take the Hessian directly
 
+
   # Moore-Penrose inverse of Hessian
   #   Results in the regular inverse if invertible
   m.hessian.inv <- ginv(object@optimx.hessian)
-
-
-  # Make positive definite if it is not already
-  #   Returns unchanged if the matrix is PD already
-  m.hessian.inv <- as.matrix(nearPD(m.hessian.inv)$mat)
 
 
   # Apply Jeff's delta method to account for the transformations of the parameters
@@ -122,13 +117,18 @@ vcov.clv.fitted <- function(object, ...){
 
   # Get the numbers to put in diag() for back transformation from the model
   #   Jeff: Apply the transformation on optimizer-scale parameters
-  prefixed.params  <- tail(coef(object@optimx.estimation.output), n=1)[1, ,drop = TRUE]
+  prefixed.params  <- tail(coef(object@optimx.estimation.output), n=1)[1, , drop = TRUE]
   m.delta.diag     <- clv.model.vcov.jacobi.diag(clv.model=object@clv.model, clv.fitted=object,
                                                  prefixed.params=prefixed.params)
 
   stopifnot(all(colnames(m.hessian.inv) == colnames(m.delta.diag)))
   stopifnot(all(rownames(m.hessian.inv) == rownames(m.delta.diag)))
   m.vcov <- m.delta.diag %*% m.hessian.inv %*% m.delta.diag
+
+  # Make positive definite if it is not already
+  #   Returns unchanged if the matrix is PD already
+  m.vcov <- as.matrix(nearPD(m.vcov)$mat)
+
 
   # Naming and sorting
   #   Sorting:  Correct because directly from optimx hessian and for delta.diag from coef(optimx)
@@ -157,8 +157,6 @@ vcov.clv.fitted <- function(object, ...){
   # Of utmost importance: Ensure same sorting as coef()
   names.coef <- names(coef(object = object))
   m.vcov     <- m.vcov[names.coef, names.coef]
-
-  # **TODO: Add argument "complete" to be comparable to coef()!
 
   return(m.vcov)
 }
@@ -276,8 +274,8 @@ print.summary.clv.fitted <- function(x, digits=max(3L, getOption("digits")-3L),
   # Print fitting period information ----------------------------------------
   cat("Fitting period:")
   .print.list(nsmall=nsmall,
-              l=list("Estimation start"  = as.character(x$tp.estimation.start),
-                     "Estimation end"    = as.character(x$tp.estimation.end),
+              l=list("Estimation start"  = clv.time.format.timepoint(clv.time=x$clv.time, timepoint=x$tp.estimation.start),
+                     "Estimation end"    = clv.time.format.timepoint(clv.time=x$clv.time, timepoint=x$tp.estimation.end),
                      "Estimation length" = paste0(format(x$estimation.period.in.tu, digits=digits,nsmall=nsmall), " ", x$time.unit)))
 
   cat("\n")
@@ -324,10 +322,11 @@ summary.clv.fitted <- function(object, ...){
 
   # Estimation & Transaction --------------------------------------------------------
   # Fitting period
-  res$tp.estimation.start     <- object@clv.data@clv.time@timepoint.estimation.start
-  res$tp.estimation.end       <- object@clv.data@clv.time@timepoint.estimation.end
-  res$estimation.period.in.tu <- object@clv.data@clv.time@estimation.period.in.tu
-  res$time.unit               <- object@clv.data@clv.time@name.time.unit
+  res$clv.time                <- object@clv.data@clv.time # needed for formating when printing
+  res$tp.estimation.start     <- res$clv.time@timepoint.estimation.start
+  res$tp.estimation.end       <- res$clv.time@timepoint.estimation.end
+  res$estimation.period.in.tu <- res$clv.time@estimation.period.in.tu
+  res$time.unit               <- res$clv.time@name.time.unit
 
   # Coefficient table --------------------------------------------------------------
   # Return the full coefficient table. The subset is to relevant rows is done in the
@@ -400,7 +399,7 @@ vcov.summary.clv.fitted <- function(object, ...){
 #' @template template_param_dots
 #'
 #' @description
-#' Extract the unconditional expectation (future transactions unconditional on beein "alive") from a fitted clv model.
+#' Extract the unconditional expectation (future transactions unconditional on being "alive") from a fitted clv model.
 #'
 #' @template template_details_predictionend
 #'
@@ -411,7 +410,6 @@ fitted.clv.fitted <- function(object, prediction.end=NULL, verbose=FALSE, ...){
 
   dt.expectation.seq <- clv.time.expectation.periods(clv.time = object@clv.data@clv.time,
                                                      user.tp.end = prediction.end)
-  object <- clv.controlflow.predict.set.prediction.params(object)
 
   dt.model.expectation <- clv.model.expectation(clv.model=object@clv.model, clv.fitted=object,
                                                 dt.expectation.seq=dt.expectation.seq, verbose=verbose)

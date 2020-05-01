@@ -54,7 +54,7 @@ setClass(Class = "clv.fitted.static.cov", contains = "clv.fitted",
 
          # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
          prototype = list(
-           estimation.used.constraints      = logical(),
+           estimation.used.constraints      = logical(0),
 
            names.original.params.free.life  = character(0),
            names.original.params.free.trans = character(0),
@@ -72,19 +72,14 @@ setClass(Class = "clv.fitted.static.cov", contains = "clv.fitted",
            reg.lambda.trans = numeric(0),
 
            prediction.params.life  = numeric(0),
-           prediction.params.trans = numeric(0)
-         ))
+           prediction.params.trans = numeric(0)))
 
 
 
-# Convenience constructor function
 #' @importFrom methods new
 clv.fitted.static.cov <- function(cl, clv.model, clv.data){
-  # Deep copy of clv.data if ever modified by reference later on
   return(new("clv.fitted.static.cov",
-             call=cl,
-             clv.model = clv.model,
-             clv.data = copy(clv.data)))
+             clv.fitted(cl = cl, clv.model = clv.model, clv.data = clv.data)))
 }
 
 

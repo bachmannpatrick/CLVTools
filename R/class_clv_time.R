@@ -34,7 +34,7 @@
 #'
 #' @include all_generics.R
 #' @keywords internal
-setClass("clv.time",
+setClass("clv.time", contains = "VIRTUAL",
          slots = list(
            timepoint.estimation.start = "ANY",
            timepoint.estimation.end   = "ANY",
@@ -44,11 +44,19 @@ setClass("clv.time",
            estimation.period.in.tu = "numeric",
            holdout.period.in.tu    = "numeric",
 
-           time.format = "character",
+           time.format    = "character",
+           name.time.unit = "character"),
 
-           name.time.unit = "character"
-         ),
-         contains = "VIRTUAL")
+         prototype = list(
+           estimation.period.in.tu = numeric(0),
+           holdout.period.in.tu    = numeric(0),
+
+           time.format             = character(0),
+           name.time.unit          = character(0)))
+
+
+# No constructor function, as should not be instanciated
+
 
 # **FUTURE: future usage:
 # custom time interval appraoch:
@@ -257,8 +265,8 @@ clv.time.expectation.periods <- function(clv.time, user.tp.end){
   }
 
   # Make data.table, sort, add period.num (used throughout)
-  dt.expectation <- data.table(period.first = vec.tp.expectation.date.i)
-  setkeyv(dt.expectation, cols = "period.first")
+  dt.expectation <- data.table(period.until = vec.tp.expectation.date.i)
+  setkeyv(dt.expectation, cols = "period.until")
   dt.expectation[, period.num := seq.int(from=1, to=.N)]
 
   return(dt.expectation)
@@ -434,3 +442,6 @@ setMethod("clv.time.ceiling.date", signature = "clv.time", function(clv.time, ti
   stop("This method needs to be implemented by a subclass.")
 })
 
+setMethod("clv.time.format.timepoint", signature = "clv.time", function(clv.time, timepoint){
+  stop("This method needs to be implemented by a subclass.")
+})

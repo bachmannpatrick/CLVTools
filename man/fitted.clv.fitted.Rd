@@ -16,7 +16,7 @@
 \item{...}{Ignored}
 }
 \description{
-Extract the unconditional expectation (future transactions unconditional on beein "alive") from a fitted clv model.
+Extract the unconditional expectation (future transactions unconditional on being "alive") from a fitted clv model.
 }
 \details{
 \code{prediction.end} indicates until when to predict or plot and can be given as either

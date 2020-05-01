@@ -1,7 +1,7 @@
 
 #' @title Plot expected and actual repeat transactions
 #' @param x The fitted clv model to plot
-#' @param newdata A cldata object for which the plotting should be made with the fitted model. If none or NULL is given, the plot is made for the data on which the model was fit.
+#' @param newdata An object of class clv.data for which the plotting should be made with the fitted model. If none or NULL is given, the plot is made for the data on which the model was fit.
 #' @param transactions Whether the actual observed repeat transactions should be plotted.
 #' @param cumulative Whether the cumulative expected (and actual) transactions should be plotted.
 #' @param plot Whether a plot should be created or only the assembled data is returned.
@@ -11,7 +11,8 @@
 #' @template template_param_dots
 #'
 #' @description
-#' Plot the actual repeat transactions and overlay it with the repeat transaction as predicted by the fitted model.
+#' Plot the actual repeat transactions and overlay it with the repeat transaction as predicted
+#' by the fitted model (unconditional expectation).
 #'
 #' @template template_details_predictionend
 #'
@@ -20,22 +21,24 @@
 #'
 #' @template template_details_newdata
 #'
-#' @note Because the expectation value is an incremental value derived from the cumulative expectation function,
-#' all timepoints for which the expectation is calcuated need to be spaced exactly 1 time unit apart.
-#' Each \code{period.first} marks the beginning of a time unit (ie 1st of January in case of yearly
-#' time units) and the expectation values are calculated up until and including \code{period.first}.
+#'
+#' @note Because the unconditional expectation for a period is derived as the difference of
+#' the cumulative expectations calculated at the beginning and at end of the period,
+#' all timepoints for which the expectation is calcuated are required to be spaced exactly 1 time unit apart.
+#'
 #' If \code{prediction.end} does not coincide with the start of a time unit, the last timepoint
-#' for which the expectation is calculated therefore is not \code{prediction.end} but the start of the
-#' first time unit after \code{prediction.end}.
+#' for which the expectation is calculated and plotted therefore is not \code{prediction.end}
+#' but the start of the first time unit after \code{prediction.end}.
+#'
 #'
 #' @return
 #' An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
 #' If the parameter \code{plot} is \code{FALSE}, the data that would have been melted and used to
 #' create the plot is returned. It is a \code{data.table} which contains the following columns:
-#' \item{period.first}{To which timepoint the data in this row refers.}
+#' \item{period.until}{The timepoint that marks the end (up until and including) of the period to which the data in this row refers.}
 #' \item{Number of Repeat Transactions}{The number of actual repeat transactions in
-#' the period that starts at \code{period.first}. Only if \code{transactions} is \code{TRUE}.}
-#' \item{"Name of Model" or "label"}{The value of the unconditional expectation until \code{period.first} as per the given model.}
+#' the period that ends at \code{period.until}. Only if \code{transactions} is \code{TRUE}.}
+#' \item{"Name of Model" or "label"}{The value of the unconditional expectation for the period that ends on \code{period.until}.}
 #'
 #' @examples
 #' \donttest{
@@ -89,7 +92,7 @@
 #' @export
 plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FALSE, transactions=TRUE, label=NULL, plot=TRUE, verbose=TRUE,...) {
 
-  period.first <- period.num <- NULL
+  period.until <- period.num <- NULL
 
   # Newdata ------------------------------------------------------------------------------------------------
   # Because many of the following steps refer to the data stored in the fitted model,
@@ -113,14 +116,13 @@ plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FA
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=plot, var.name="plot"))
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=transactions, var.name="transactions"))
-  err.msg <- c(err.msg, check_user_data_predictionend(obj=x, prediction.end=prediction.end))
+  err.msg <- c(err.msg, check_user_data_predictionend(clv.fitted=x, prediction.end=prediction.end))
   if(!is.null(label)) # null is allowed = std. model name
     err.msg <- c(err.msg, .check_userinput_single_character(char=label, var.name="label"))
   check_err_msg(err.msg)
 
   if(length(list(...))>0){
-    warning("Any parameters passed in ... are ignored because they are not needed.",
-            call. = FALSE, immediate. = TRUE)
+    stop("Any additional parameters passed in ... are not needed!", call. = FALSE)
   }
 
   # do fitted object specific checks (ie dyncov checks cov data length)
@@ -136,8 +138,8 @@ plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FA
 
   dt.dates.expectation <- clv.time.expectation.periods(clv.time = x@clv.data@clv.time, user.tp.end = prediction.end)
 
-  tp.data.start <- dt.dates.expectation[, min(period.first)]
-  tp.data.end   <- dt.dates.expectation[, max(period.first)]
+  tp.data.start <- dt.dates.expectation[, min(period.until)]
+  tp.data.end   <- dt.dates.expectation[, max(period.until)]
 
   if(verbose)
     message("Plotting from ", tp.data.start, " until ", tp.data.end, ".")
@@ -179,11 +181,11 @@ plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FA
   dt.dates.expectation[, period.num := NULL]
 
   if(transactions){
-    dt.dates.expectation[dt.expectation, (label.model.expectation) := get(label.model.expectation), on="period.first"]
-    dt.dates.expectation[dt.repeat.trans, (label.transactions) := get(label.transactions), on="period.first"]
+    dt.dates.expectation[dt.expectation, (label.model.expectation) := get(label.model.expectation), on="period.until"]
+    dt.dates.expectation[dt.repeat.trans, (label.transactions) := get(label.transactions), on="period.until"]
     dt.plot <- dt.dates.expectation
   }else{
-    dt.dates.expectation[dt.expectation, (label.model.expectation) := get(label.model.expectation), on="period.first"]
+    dt.dates.expectation[dt.expectation, (label.model.expectation) := get(label.model.expectation), on="period.until"]
     dt.plot <- dt.dates.expectation
   }
 
@@ -210,15 +212,15 @@ plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FA
 #' @importFrom ggplot2 ggplot aes geom_line geom_vline labs theme scale_fill_manual guide_legend element_text element_rect element_blank element_line rel
 clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
   # cran silence
-  period.first <- value <- variable <- NULL
+  period.until <- value <- variable <- NULL
 
   # Melt everything except what comes from the standard expectation table
-  meas.vars   <- setdiff(colnames(dt.data), c("period.num", "period.first"))
-  data.melted <- melt(data=dt.data, id.vars = c("period.first"),
+  meas.vars   <- setdiff(colnames(dt.data), c("period.num", "period.until"))
+  data.melted <- melt(data=dt.data, id.vars = c("period.until"),
                       variable.factor = FALSE, na.rm = TRUE,
                       measure.vars = meas.vars)
 
-  p <- ggplot(data = data.melted, aes(x=period.first, y=value, colour=variable)) + geom_line()
+  p <- ggplot(data = data.melted, aes(x=period.until, y=value, colour=variable)) + geom_line()
 
   # Add holdout line if there is a holdout period
   if(clv.data.has.holdout(clv.data)){
@@ -233,7 +235,7 @@ clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
 
   # Axis and title
   p <- p + labs(x = "Date", y= "Number of Repeat Transactions", title= paste0(clv.time.tu.to.ly(clv.time=clv.data@clv.time), " tracking plot"),
-                subtitle = paste0("Estimation end: ",  clv.data@clv.time@timepoint.estimation.end))
+                subtitle = paste0("Estimation end: ",  clv.time.format.timepoint(clv.time=clv.data@clv.time, timepoint=clv.data@clv.time@timepoint.estimation.end)))
 
   p <- p + theme(
     plot.title = element_text(face = "bold", size = rel(1.5)),
@@ -264,22 +266,19 @@ setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.fitt
 
   expectation <- i.expectation <- NULL
 
-  # Set prediction params from coef()
-  obj <- clv.controlflow.predict.set.prediction.params(obj=obj)
-
-  #   Pass copy of expectation table file becase will be modified and contain column named expecation
+  #   Pass copy of expectation table file because will be modified and contain column named expecation
   dt.model.expectation <- clv.model.expectation(clv.model=obj@clv.model, clv.fitted=obj, dt.expectation.seq=copy(dt.expectation.seq),
                                                 verbose = verbose)
 
-  # include all from y to exend if predicting beyond actual transaction
-  dt.model.expectation <- dt.model.expectation[, c("period.first", "expectation")] # Only the expectation data
+  # Only the expectation data
+  dt.model.expectation <- dt.model.expectation[, c("period.until", "expectation")]
 
   if(cumulative)
     dt.model.expectation[, expectation := cumsum(expectation)]
 
   # add expectation to plot data
   #   name columns by model
-  dt.expectation.seq[dt.model.expectation, expectation := i.expectation,on = "period.first"]
+  dt.expectation.seq[dt.model.expectation, expectation := i.expectation, on = "period.until"]
   return(dt.expectation.seq)
 })
 

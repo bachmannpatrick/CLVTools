@@ -19,7 +19,7 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted"), d
                                  class(clv.fitted@clv.data)))
 
   }else{
-    # Is actually a clv.data object. Also check if it is the right type
+    # Is actually a clv.data object Also check if it is the right type
     # Check if the provided newdata is of the exact same class as the currently
     #   stored data object.
     # Cannot use is() because subclasses are recognized as well
@@ -36,22 +36,22 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted"), d
 
 
 # . clv.controlflow.predict.set.prediction.params ------------------------------------------------------------------------
-setMethod(f = "clv.controlflow.predict.set.prediction.params", signature = signature(obj="clv.fitted"), definition = function(obj){
-  obj@prediction.params.model <- coef(obj)[obj@clv.model@names.original.params.model]
-  return(obj)
+setMethod(f = "clv.controlflow.predict.set.prediction.params", signature = signature(clv.fitted="clv.fitted"), definition = function(clv.fitted){
+  clv.fitted@prediction.params.model <- coef(clv.fitted)[clv.fitted@clv.model@names.original.params.model]
+  return(clv.fitted)
 })
 
 # . clv.controlflow.predict.check.inputs ------------------------------------------------------------------------
-setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(obj="clv.fitted"),
-          definition = function(obj, prediction.end, continuous.discount.factor,predict.spending, verbose){
+setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.fitted="clv.fitted"),
+          definition = function(clv.fitted, prediction.end, continuous.discount.factor,predict.spending, verbose){
             err.msg <- c()
 
             err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
 
-            err.msg <- c(err.msg, check_user_data_predictionend(obj=obj, prediction.end=prediction.end))
+            err.msg <- c(err.msg, check_user_data_predictionend(clv.fitted=clv.fitted, prediction.end=prediction.end))
 
             # Cannot predict if no prediction.end (=null) and no holdout
-            if(is.null(prediction.end) & clv.data.has.holdout(obj@clv.data) == FALSE)
+            if(is.null(prediction.end) & clv.data.has.holdout(clv.fitted@clv.data) == FALSE)
               err.msg <- c(err.msg, "Cannot predict without prediction.end if there is no holdout!")
 
             err.msg <- c(err.msg, check_user_data_continuousdiscountfactor(continuous.discount.factor=continuous.discount.factor))
@@ -63,7 +63,7 @@ setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(obj=
             check_err_msg(err.msg)
 
             # Check the data in the fitted model if it has spending
-            if(predict.spending == TRUE & clv.data.has.spending(obj@clv.data) == FALSE)
+            if(predict.spending == TRUE & clv.data.has.spending(clv.fitted@clv.data) == FALSE)
               err.msg <- c(err.msg, "Cannot predict spending if there is no spending data!")
 
             check_err_msg(err.msg)

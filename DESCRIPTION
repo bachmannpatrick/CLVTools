@@ -1,25 +1,25 @@
 Package: CLVTools
 Title: Tools for Customer Lifetime Value Estimation
 Version: 0.5.0
-Date: 2020-04-16
+Date: 2020-04-21
 Authors@R: c(
     person(given="Patrick", family="Bachmann",    email = "patrick.bachmann@business.uzh.ch", role = c("cre","aut")),
-    person(given="Jeffrey", family="Naef",         email = "naef@stat.math.ethz.ch",role = "aut"),
+    person(given="Jeffrey", family="Naef",        email = "naef@stat.math.ethz.ch",role = "aut"),
     person(given="Patrik",  family="Schilter",    email = "patrik.schilter@gmail.com",role = "aut"),
     person(given="Markus",  family="Meierer",     email = "markus.meierer@business.uzh.ch", role = "aut"),
-    person(given="Niels",    family="Kuebler", email = "niels.kuebler@uzh.ch", role = "aut"))
+    person(given="Niels",   family="Kuebler",     email = "niels.kuebler@uzh.ch", role = "aut"))
 Depends:
     R (>= 3.5.0),
     methods
 Description: Package to fit probabilistic models to estimate customer lifetime value (CLV).
     It includes fast and accurate implementations of buy-'til-you-die models in 
-    non-contractual settings (e.g., retail business). with and without time-invariant and time-varying covariates. Currently, the package includes the 
+    non-contractual settings (e.g., retail business) with and without time-invariant and time-varying covariates. Currently, the package includes the 
     Pareto/NBD model, the GGompertz/NBD model for the purchase and the attrition processes as well as the Gamma/Gamma model for the spending process.
 Imports:
     data.table (>= 1.12.0),
     foreach (>= 1.5.0),
     ggplot2 (>= 3.2.0),
-    lubridate (>= 1.7.3), 
+    lubridate (>= 1.7.8), 
     Matrix (>= 1.2-17), 
     MASS,
     optimx (>= 2019-12.02),
@@ -58,7 +58,7 @@ Collate:
     'class_clv_bgnbd_staticcov.R'
     'class_clv_data_dynamiccovariates.R'
     'class_clv_fitted_dynamiccov.R'
-    'class_clv_model_pnbd_nocov.R'
+    'class_clv_model_pnbd.R'
     'class_clv_model_pnbd_staticcov.R'
     'class_clv_model_pnbd_dynamiccov.R'
     'class_clv_pnbd.R'
@@ -86,7 +86,7 @@ Collate:
     'f_interface_bgbb.R'
     'f_interface_bgnbd.R'
     'f_interface_clvdata.R'
-    'f_interface_gnbd.R'
+    'f_interface_ggomnbd.R'
     'f_interface_pnbd.R'
     'f_interface_setdynamiccovariates.R'
     'f_interface_setstaticcovariates.R'

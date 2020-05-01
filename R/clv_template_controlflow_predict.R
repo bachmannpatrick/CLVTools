@@ -1,44 +1,38 @@
 #' @importFrom stats predict
 #' @importFrom methods extends
 #' @include all_generics.R
-clv.template.controlflow.predict <- function(object, prediction.end, predict.spending, continuous.discount.factor, verbose, user.newdata){
+clv.template.controlflow.predict <- function(clv.fitted, prediction.end, predict.spending, continuous.discount.factor, verbose, user.newdata){
   Id <- Date <- Price <- DERT <- DECT <- actual.spending <- actual.x <- predicted.CLV <- predicted.Spending <- NULL # cran silence
   period.first <- period.last <- period.length <- cbs.x <- i.x <- cbs.Spending <- i.Spending <- NULL
   i.actual.x <- i.actual.spending <- NULL
 
-  # Set prediction params -----------------------------------------------------------------------------------
-  #   need to be set before adding the newdata as the model might need them (to re-estimate or similar)
-
-  # Set prediction params from coef()
-  object <- clv.controlflow.predict.set.prediction.params(obj=object)
-
 
   # Process Newdata ----------------------------------------------------------------------------------------------
-  # Because many of the following steps refer to the data stored in the fitted model (object),
+  # Because many of the following steps refer to the data stored in the fitted model,
   #   it first is replaced with newdata before any other steps are done
   if(!is.null(user.newdata)){
     # check newdata
-    clv.controlflow.check.newdata(clv.fitted = object, user.newdata = user.newdata, prediction.end=prediction.end)
+    clv.controlflow.check.newdata(clv.fitted = clv.fitted, user.newdata = user.newdata, prediction.end=prediction.end)
 
     # Replace data in model with newdata
     #   Deep copy to not change user input
-    object@clv.data <- copy(user.newdata)
+    clv.fitted@clv.data <- copy(user.newdata)
 
     # Do model dependent steps of adding newdata
-    object <- clv.model.put.newdata(clv.model = object@clv.model, clv.fitted=object, verbose=verbose)
+    clv.fitted <- clv.model.put.newdata(clv.model = clv.fitted@clv.model, clv.fitted=clv.fitted, verbose=verbose)
   }
 
 
   # Input checks ----------------------------------------------------------------------------------------
-  #   Only after newdata replaced clv.data stored in object because inputchecks use object@clv.data
-  clv.controlflow.predict.check.inputs(obj=object, prediction.end=prediction.end, predict.spending=predict.spending,
+  #   Only after newdata replaced clv.data stored in clv.fitted because inputchecks use clv.fitted@clv.data
+  clv.controlflow.predict.check.inputs(clv.fitted=clv.fitted, prediction.end=prediction.end, predict.spending=predict.spending,
                                        continuous.discount.factor=continuous.discount.factor,
                                        verbose=verbose)
 
 
 
   # Prediction result table ------------------------------------------------------------------------------
-  dt.prediction <- copy(object@cbs[, "Id"])
+  dt.prediction <- copy(clv.fitted@cbs[, "Id"])
 
   # Add information about range of prediction period
   #   tp.prediction.start: Start of prediction, including this timepoint
@@ -47,7 +41,7 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 
   # Could be viewed as part of input checks
   #   but the end of the prediction period cannot be determined until after newdata is set
-  dt.prediction.time.table <- clv.time.get.prediction.table(clv.time = object@clv.data@clv.time,
+  dt.prediction.time.table <- clv.time.get.prediction.table(clv.time = clv.fitted@clv.data@clv.time,
                                                             user.prediction.end = prediction.end)
   # Add information to prediction table
   dt.prediction <- cbind(dt.prediction, dt.prediction.time.table)
@@ -59,7 +53,7 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
   if(verbose)
     message("Predicting from ", timepoint.prediction.first, " until (incl.) ",
             timepoint.prediction.last, " (", format(prediction.period.length, digits = 4, nsmall=2)," ",
-            object@clv.data@clv.time@name.time.unit,").")
+            clv.fitted@clv.data@clv.time@name.time.unit,").")
 
 
   # Need at least > 2 time units to predict
@@ -69,7 +63,7 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 
 
   # Model prediction -------------------------------------------------------------------------------------
-  dt.prediction <- clv.model.predict.clv(clv.model = object@clv.model, clv.fitted = object,
+  dt.prediction <- clv.model.predict.clv(clv.model = clv.fitted@clv.model, clv.fitted = clv.fitted,
                                          dt.prediction = dt.prediction,
                                          continuous.discount.factor = continuous.discount.factor,
                                          verbose = verbose)
@@ -87,13 +81,13 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
   #     actual.x:         number of transactions
   #     actual.spending:  $
 
-  has.actuals <- clv.data.has.holdout(object@clv.data) & (timepoint.prediction.last <= object@clv.data@clv.time@timepoint.holdout.end)
+  has.actuals <- clv.data.has.holdout(clv.fitted@clv.data) & (timepoint.prediction.last <= clv.fitted@clv.data@clv.time@timepoint.holdout.end)
   if(has.actuals)
   {
     # only what is in prediction period!
 
-    if(clv.data.has.spending(object@clv.data)){
-      dt.actuals    <- object@clv.data@data.transactions[between(x = Date,
+    if(clv.data.has.spending(clv.fitted@clv.data)){
+      dt.actuals    <- clv.fitted@clv.data@data.transactions[between(x = Date,
                                                                  lower = timepoint.prediction.first,
                                                                  upper = timepoint.prediction.last,
                                                                  incbounds = TRUE),
@@ -102,7 +96,7 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
                                                          by="Id"]
     }else{
       # No Spending
-      dt.actuals    <- object@clv.data@data.transactions[between(x = Date,
+      dt.actuals    <- clv.fitted@clv.data@data.transactions[between(x = Date,
                                                                  lower = timepoint.prediction.first,
                                                                  upper = timepoint.prediction.last,
                                                                  incbounds = TRUE),
@@ -130,8 +124,8 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
     # Optimize GG LL
     results <- optimx(par    = c(p=log(1),q=log(1),gamma=log(1)), # will be exp()ed in gg_LL
                       fn     = gg_LL,
-                      vX     = object@cbs$x,
-                      vM_x   = object@cbs$Spending,
+                      vX     = clv.fitted@cbs$x,
+                      vM_x   = clv.fitted@cbs$Spending,
                       upper  = c(log(10000),log(10000),log(10000)),
                       lower  = c(log(0),log(0),log(0)),
                       method = "L-BFGS-B",
@@ -147,8 +141,8 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 
     # Predict spending
     #   add data from cbs by Id to ensure matching
-    dt.prediction[object@cbs, cbs.x := i.x, on="Id"]
-    dt.prediction[object@cbs, cbs.Spending := i.Spending, on="Id"]
+    dt.prediction[clv.fitted@cbs, cbs.x := i.x, on="Id"]
+    dt.prediction[clv.fitted@cbs, cbs.Spending := i.Spending, on="Id"]
     dt.prediction[, predicted.Spending := (gamma + cbs.Spending * cbs.x) * p/(p * cbs.x + q - 1)]
     dt.prediction[, cbs.x        := NULL]
     dt.prediction[, cbs.Spending := NULL]
@@ -218,8 +212,7 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 #'}
 #'
 #'
-#'
-#'
+#' @template template_details_newdata
 #'
 #' @template template_details_predictionend
 #'
@@ -238,7 +231,6 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 #' also has to be considered. To model customer spending the Gamma/Gamma is a
 #' popular choice.
 #' }
-#'
 #'
 #' @references
 #' Schmittlein DC, Morrison DG, Colombo R (1987). “Counting Your Customers:
@@ -317,12 +309,11 @@ clv.template.controlflow.predict <- function(object, prediction.end, predict.spe
 #' @export
 predict.clv.fitted <- function(object, newdata=NULL, prediction.end=NULL, predict.spending=clv.data.has.spending(object@clv.data),
                                continuous.discount.factor=0.1, verbose=TRUE, ...){
-  # warn if unnecessary input
+  # stop if unnecessary input, user does not know what is doing
   if(length(list(...))>0)
-    warning("The additional parameters given in '...' are ignored because they are unneded!",
-            call. = FALSE)
+    stop("Any additional parameters passed in ... are not needed!", call. = FALSE)
 
-  clv.template.controlflow.predict(object=object, prediction.end=prediction.end, predict.spending=predict.spending,
+  clv.template.controlflow.predict(clv.fitted=object, prediction.end=prediction.end, predict.spending=predict.spending,
                                    continuous.discount.factor=continuous.discount.factor, verbose=verbose, user.newdata=newdata)
 }
 

@@ -23,23 +23,26 @@ setClass("clv.time.date", contains = c("clv.time", "VIRTUAL"),
            timepoint.estimation.start = "Date",
            timepoint.estimation.end   = "Date",
            timepoint.holdout.start    = "Date",
-           timepoint.holdout.end      = "Date"))
+           timepoint.holdout.end      = "Date"),
 
-setMethod("initialize", signature = signature(.Object="clv.time.date"),
-          definition = function(.Object, time.format, name.time.unit,...){
+         # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
+         prototype = list(
+           timepoint.estimation.start = as.Date(character(0)),
+           timepoint.estimation.end   = as.Date(character(0)),
+           timepoint.holdout.start    = as.Date(character(0)),
+           timepoint.holdout.end      = as.Date(character(0))))
 
-  # dont call parent constructor/initiaizer as validObject will stop it.
-  # Reason is that clv.time has slots of "ANY" (S4) while clv.time.date expects "Date".
-  # Rather assign passed args for initialization (time.format+name) directly
-  # callNextMethod()
 
-  .Object@time.format                <- time.format
-  .Object@name.time.unit             <- name.time.unit
-  .Object@timepoint.estimation.start <- as.Date(character(0))
-  .Object@timepoint.estimation.end   <- as.Date(character(0))
-  .Object@timepoint.holdout.start    <- as.Date(character(0))
-  .Object@timepoint.holdout.end      <- as.Date(character(0))
-  return(.Object)
+# Because this class is VIRTUAL, no instance can be created and the
+#   usual approach of using a constructor function where an instance is created
+#   does not work.
+# In case validity methods are added, the "initialize" method needs to be
+#   defined and omit calling the parent class initialize (see PR linked to issue #47)
+
+
+
+setMethod("clv.time.format.timepoint", signature = signature(clv.time="clv.time.date"), definition = function(clv.time, timepoint){
+  return(format.Date(timepoint, "%Y-%m-%d"))
 })
 
 
@@ -96,4 +99,6 @@ setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.
   # None of these cases
   stop("The provided data is in an unknown format! Only Date, POSIXct/lt, and character are accepted!", call. = FALSE)
 })
+
+
 
