@@ -144,7 +144,7 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.ggomnbd.static
                                                   mCov_trans = data.cov.mat.trans)]
 
   # Add DERT
-  dt.prediction[, DERT := 1]
+  dt.prediction[, DERT := 0]
   # dt.prediction[, DERT := ggomnbd_staticcov_DERT(vEstimated_params = estimated.params,
   #                                             continuous_discount_factor = continuous.discount.factor,
   #                                             vX     = clv.fitted@cbs[, x],

@@ -1,9 +1,7 @@
-
 #include <RcppArmadillo.h>
 #include <math.h>
-#include "crbond_quadpack.h"
 #include "ggomnbd_PAlive.h"
-
+#include <gsl/gsl_integration.h>
 
 
 
@@ -19,7 +17,7 @@ const arma::vec * gpvBeta_i=0; //will point to vectors to avoid copying
   double globB=0, globS=0;//parameters extracted from passed vector
 
   // integrand<-function(omega){omega*exp(b*omega)*(beta_i[i]+exp(b*omega)-1)^-(s+1)}
-  double integrationFunction (double omega)
+  double integrationFunction (double omega, void * params)
   {
     return omega * std::exp(globB * omega) * std::pow( (*gpvBeta_i)(globI) + std::exp(globB * omega) - 1.0, -(globS+1.0) )
     ;
@@ -46,41 +44,27 @@ arma::vec ggomnbd_CET(const double r,
   globS = s;
   gpvBeta_i = &vBeta_i;
 
-  //   r=r+cbs$x
-  //     alpha_i=alpha_i+cbs$x
-  //     betas=beta_i+exp(b*cbs$T.cal)-1
-  // *! r will be implemented directly in the code to avoid creating a n-vector *!
   vAlpha_i += vX;
   vBeta_i += arma::exp(b * vT_cal) - 1.0;
 
-  //   int<-c()
-  //     for (i in 1:n){
-  //       integrand<-function(omega){omega*exp(b*omega)*(beta_i[i]+exp(b*omega)-1)^-(s+1)}
-  //       int[i]<-integrate(integrand,0,prediction.period)$value
-  //     }
   arma::vec vIntegrals(n);
-  int err;
+  double res, err;
+
+  gsl_integration_workspace *workspace
+    = gsl_integration_workspace_alloc (1000);
+
+  gsl_function integrand;
+  integrand.function = &integrationFunction;
+  integrand.params = NULL;
+
   for(globI = 0; globI<n; globI++){
-    // integrand<-function(omega){omega*exp(b*omega)*(beta_i[i]+exp(b*omega)-1)^-(s+1)}
-    vIntegrals(globI) = quadpack::integrate(&integrationFunction,
-               0.0,  //lower bound
-               dPrediction_period,//upper bound
-               &err);
-    // if(err==)
-    // throw error ** TODO **
+    gsl_integration_qags(&integrand, 0, dPrediction_period, 1.0e-8, 1.0e-8, 0, workspace, &res, &err);
+    vIntegrals(globI) = res;
   }
 
-
-  //   P1 <- ggomnbd_PAlive(params, cbs, covariates, dropout.cov.var, transaction.cov.var) * (r/alpha_i)
-  //     P2 <- ((beta_i/(beta_i+exp(b*prediction.period)-1))^s)
-  //     P3 <- prediction.period + b * s * beta_i^s * int
-
-  // ** TODO:r has values added (+cbs$x) before this functions in R (??)
   arma::vec vP1 = vPAlive % ((r+vX) / (vAlpha_i));
-  // /:= element wise division
   arma::vec vP2 = arma::pow( vBeta_i / (vBeta_i + std::exp(b* dPrediction_period) - 1.0 ), s );
   arma::vec vP3 = dPrediction_period + b * s * (arma::pow(vBeta_i, s) % vIntegrals);
 
-  // return(P1 * P2 * P3)
   return( vP1 % vP2 % vP3);
 }

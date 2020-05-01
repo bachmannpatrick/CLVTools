@@ -1,5 +1,5 @@
 #include <RcppArmadillo.h>
-#include "crbond_quadpack.h"
+#include <gsl/gsl_integration.h>
 
 
 // INTEGRATION WORKAROUND
@@ -14,7 +14,7 @@ const arma::vec * gpvX=0, * gpvAlpha_i=0, * gpvBeta_i=0; //will point to vectors
   double r_glob=0, b_glob=0, s_glob=0;//parameters extracted from passed vector
 
   //integrand<-function(y){(y+alpha_i[i])^-(r+cbs$x[i])*(beta_i[i]+exp(b*y)-1)^-(s+1)*exp(b*y)}
-  double integrationFunction (double x)
+  double integrationFunction (double x, void * params)
   {
     return  std::pow(x + (*gpvAlpha_i)(globI),  -(r_glob + (*gpvX)(globI)))
     * std::pow((*gpvBeta_i)(globI) + std::exp( b_glob * x) - 1.0 , -(s_glob + 1.0))
@@ -59,18 +59,21 @@ arma::vec ggomnbd_LL_ind(const double r,
   if( above > pow(10,200) )
     Rcpp::Rcout<<"Log of the integral might diverge; Upper Boundary ="<<above<<std::endl;
 
-
   // # P(omega>T_i|r,alpha0,b,s,beta0,,x_i,t_i,T_i,gamma1,gamma2):
   arma::vec vIntegrals(n);
-  int err;
+
+  double res, err;
+
+  gsl_integration_workspace *workspace
+    = gsl_integration_workspace_alloc (1000);
+
+  gsl_function integrand;
+  integrand.function = &integrationFunction;
+  integrand.params = NULL;
+
   for(globI = 0; globI<n; globI++){
-    // int[i]<-integrate(integrand,cbs$t.x[i],cbs$T.cal[i])$value
-    vIntegrals(globI) = quadpack::integrate(&integrationFunction,
-                                             vT_x(globI),  //lower bound
-                                             vT_cal(globI),//upper bound
-                                             &err);
-    // if(err==)
-    // throw error ** TODO **
+    gsl_integration_qags(&integrand, vT_x(globI), vT_cal(globI), 1.0e-8, 1.0e-8, 0, workspace, &res, &err);
+    vIntegrals(globI) = res;
   }
 
   arma::vec vL1(n), vL2(n);
