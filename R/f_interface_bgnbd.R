@@ -95,7 +95,7 @@ setMethod("bgnbd", signature = signature(clv.data="clv.data"), definition = func
   cl        <- sys.call(1)
   obj <- clv.bgnbd(cl=cl, clv.data=clv.data)
 
-  return(clv.template.controlflow.estimate(obj=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
+  return(clv.template.controlflow.estimate(clv.fitted = obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
                                            start.param.cor = start.param.cor, optimx.args = optimx.args, verbose=verbose, ...))
 })
 
@@ -117,7 +117,7 @@ setMethod("bgnbd", signature = signature(clv.data="clv.data.static.covariates"),
   cl        <- sys.call(1)
   obj <- clv.bgnbd.static.cov(cl=cl, clv.data=clv.data)
 
-  return(clv.template.controlflow.estimate(obj=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
+  return(clv.template.controlflow.estimate(clv.fitted = obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
                                            start.param.cor = start.param.cor, optimx.args = optimx.args, verbose=verbose,
                                            names.cov.life=names.cov.life, names.cov.trans=names.cov.trans,
                                            start.params.life=start.params.life, start.params.trans=start.params.trans,
