@@ -32,7 +32,7 @@
 #' The model start parameters are required to be > 0.
 #'
 #' \subsection{The Pareto/NBD model}{
-#' The Pareto/NBD was the first model addressing the issue of modeling customer purchases and
+#' The Pareto/NBD is the first model addressing the issue of modeling customer purchases and
 #' attrition simultaneously for non-contractual settings. The model uses a Pareto distribution,
 #' a combination of an Exponential and a Gamma distribution, to explicitly model customers'
 #' (unobserved) attrition behavior in addition to customers' purchase process.\cr
@@ -61,7 +61,7 @@
 #' covariates can affect customer on aggregated level as well as on an individual level:
 #' In the first case, all customers are affected simultaneously, in the latter case a
 #' covariate is only relevant for a particular customer. For technical details we refer to
-#' the paper by Bachmann, Meierer and Näf (2019).
+#' the paper by Bachmann, Meierer and Näf (2020).
 #' }
 #'
 #' @note

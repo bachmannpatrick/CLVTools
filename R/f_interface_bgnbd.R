@@ -25,16 +25,30 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = F
 #'
 #' @details
 #' Model parameters for the BG/NBD model are \code{r, alpha, a, and b}. \cr
-#' \code{r}: TODO \cr
-#' \code{alpha}: TODO \cr
-#' \code{a}: TODO \cr
-#' \code{b}: TODO
+#' \code{r}: shape parameter of the Gamma distribution of the purchase process.
+#' \code{alpha}: scale parameter of the Gamma distribution of the purchase process.
+#' \code{a}: shape parameter of the Beta distribution of the dropout process.
+#' \code{b}: shape parameter of the Beta distribution of the dropout process.
 #'
 #' If no start parameters are given, r = 1, alpha = 3, a = 1, b = 3 is used.
 #' The model start parameters are required to be > 0.
 #'
 #' \subsection{The BG/NBD model}{
-#' TODO
+#' The BG/NBD is an "easy" alternative to the Pareto/NBD model that is easyer to implement. The BG/NBD model slight adapts
+#' the beavioral "story" associated with the Pareto/NBD model inorder to simplyfiy the implementation. The BG/NBD model uses a beta-geometric and
+#' exponentioal gamma misture distributions to model customer behavior. The key difference to the Pareto/NBD model that a customer can only
+#' churn right after a transaction. This simplifies computations signifiantly, however has the drawback that a customer cannot chun until he/she
+#' makes a transction. The Pareto/NBD model assumes that a customer can churn any time.
+#' }
+#'
+#' \subsection{BG/NBD model with static covariates}{
+#' The standard BG/NBD model captures heterogeneity was solely using Gamma distributions.
+#' However, often exogenous knowledge, such as for example customer demographics, is available.
+#' The supplementary knowledge may explain part of the heterogeneity among the customers and
+#' therefore increase the predictive accuracy of the model. In addition, we can rely on these
+#' parameter estimates for inference, i.e. identify and quantify effects of contextual factors
+#' on the two underlying purchase and attrition processes. For technical details we refer to
+#' the technical note by Fader and Hardie (2007).
 #' }
 #'
 #' @return
@@ -50,7 +64,7 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = F
 #' @seealso \code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation as predicted by the fitted model
 #' @seealso The generic functions \code{\link[CLVTools:summary.clv.fitted]{summary}} and \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
 #'
-
+#' @template template_bgnbd_reference
 #'
 #' @examples
 #' \donttest{
