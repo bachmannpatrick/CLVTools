@@ -23,6 +23,6 @@ of 1997.
 }
 \references{
 Fader, Peter S. and Bruce G.,S. Hardie, (2001), "Forecasting Repeat Sales at CDNOW:
-A Case Study," Interfaces, 31 (May-June), Part 2 of 2, p94-107.
+A Case Study," Interfaces, 31 (May-June), p. 94-107.
 }
 \keyword{datasets}

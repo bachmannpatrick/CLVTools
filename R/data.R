@@ -17,7 +17,7 @@
 #' @keywords datasets
 #' @references
 #' Fader, Peter S. and Bruce G.,S. Hardie, (2001), "Forecasting Repeat Sales at CDNOW:
-#' A Case Study," Interfaces, 31 (May-June), Part 2 of 2, p94-107.
+#' A Case Study," Interfaces, 31 (May-June), p. 94-107.
 "cdnow"
 
 
@@ -84,3 +84,23 @@ t
 #' @usage data("apparelDynCov")
 #' @docType data
 "apparelDynCov"
+
+#' @title Discrete donation dataset
+#' @description
+#' A simulated dataset containing a simulated donation history of 10000 individuals from 1970
+#' up to 1983. The individuals have a yearly opportunity to donate.
+#'
+#' @format A \code{data.table} with 52432 rows and 2 variables:
+#' \describe{
+#'   \item{\code{Id}}{Customer Id}
+#'   \item{\code{Date}}{Date of donnations}
+#' }
+#'
+#' @usage data("donationTrans")
+#' @docType data
+#' @keywords datasets
+#' @references
+#' Dziurzynski, Lukasz, Wadsworth, Edward and McCarthy, Daniel, (2014), "BTYD: Implementing Buy 'Til You Die Models"
+#' R Package version 2.4, https://CRAN.R-project.org/package=BTYD.
+"donationTrans"
+
