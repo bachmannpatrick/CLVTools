@@ -100,7 +100,7 @@
 #'
 #' \dontrun{
 #' # set start of week to Monday
-#' options("lubridate.week.start"=1)
+#' oldopts <- options("lubridate.week.start"=1)
 #'
 #' # create clv.data while Monday is the beginning of the week
 #' clv.data.cdnow <- clvdata(data.transactions = cdnow,
@@ -108,6 +108,9 @@
 #'                           time.unit = "weeks")
 #'
 #' # Dynamic covariates now have to be supplied for every Monday
+#'
+#' # set week start to what it was before
+#' options(oldopts)
 #' }
 #'
 #'}
