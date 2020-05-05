@@ -10,6 +10,6 @@
 ^\.github$
 ^cran-comments\.md$
 ^_pkgdown\.yml$
-^src/[.]o$
-^src/[.]o.tmp$
+[.]o$
+[.]o.tmp$
 
