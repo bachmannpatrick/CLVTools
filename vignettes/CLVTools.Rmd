@@ -21,6 +21,13 @@ knitr::opts_chunk$set(
 )
 ```
 
+
+```{r save-options, include=FALSE}
+#Save current options
+oldoption <- options()
+```
+
+
 # Walkthrough for the CLVTools package
 
 
@@ -326,6 +333,12 @@ summary(est.pnbd.constr)
   plan("multisession")
 ```
 To limit the number of parallel processes simultaneously executed, we can specify the number of workers `plan(multisession, workers = 2)`.
+
+```{r, restore-options, include=FALSE}
+#Restore old options
+options(oldoption)
+```
+
 
 
 
