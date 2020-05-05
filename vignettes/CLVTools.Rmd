@@ -21,13 +21,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-
-```{r save-options, include=FALSE}
-#Save current options
-oldoption <- options()
-```
-
-
 # Walkthrough for the CLVTools package
 
 
@@ -270,7 +263,7 @@ est.pnbd.static <- pnbd(pnbd.static,
                          start.params.trans = c(Gender=0.6, Channel=0.4))
 ```
 
-Analogously, we can estimate the model containing time-varying covariates. We recommend to enable the built-in support for multithreading when estimating more complex models like this. See section [Multitherading](#multithreading).
+Analogously, we can estimate the model containing time-varying covariates. We recommend to enable the built-in support for multithreading when estimating more complex models like this. See section [Multithreading](#multithreading).
 
 ```{r Dyn-cov-estimate, eval=FALSE}
 est.pnbd.dyn <- pnbd(pnbd.dyn, 
@@ -333,11 +326,6 @@ summary(est.pnbd.constr)
   plan("multisession")
 ```
 To limit the number of parallel processes simultaneously executed, we can specify the number of workers `plan(multisession, workers = 2)`.
-
-```{r, restore-options, include=FALSE}
-#Restore old options
-options(oldoption)
-```
 
 
 
