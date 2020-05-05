@@ -244,7 +244,6 @@ registerDoFuture()
 # appropriate to _your_ system
 setDTthreads(threads=8)
 plan("multisession", workers=2)
-}
 
 # Fit PNBD with dynamic covariates
 pnbd(clv.data.dyn.cov)
@@ -252,6 +251,8 @@ pnbd(clv.data.dyn.cov)
 # The same fitting options as for the
 #  static covariate are available
 pnbd(clv.data.dyn.cov, reg.lambdas = c(trans=10, life=2))
+}
+
 
 }
 
