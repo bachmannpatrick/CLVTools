@@ -13,9 +13,20 @@ logLik.clv.fitted <- function(object, ...){
 }
 
 
-#' @include class_clv_fitted.R
+
+#' Number of observations
+#'
+#'
+#' The number of observations is defined as the number of unique customers for which the model was fit.
+#'
+#' @param object An object of class clv.fitted.
+#' @template template_param_dots
+#'
+#' @return The number of customers.
+#'
 #' @importFrom stats nobs
 #' @export
+#' @include class_clv_fitted.R
 nobs.clv.fitted   <- function(object, ...){
   # Observations are number of customers
   return(nrow(object@cbs))
