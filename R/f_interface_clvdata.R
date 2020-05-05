@@ -94,7 +94,6 @@
 #'
 #' # plot the transaction data
 #' plot(clv.data.cdnow)
-#' }
 #'
 #' # create data with the weekly periods defined to
 #' #   start on Mondays
@@ -110,6 +109,8 @@
 #'
 #' # Dynamic covariates now have to be supplied for every Monday
 #' }
+#'
+#'}
 #'
 #'
 #' @export
