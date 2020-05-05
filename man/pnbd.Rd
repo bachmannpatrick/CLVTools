@@ -236,7 +236,7 @@ clv.data.dyn.cov <-
                        names.cov.life = c("Marketing", "Gender", "Channel"),
                        names.cov.trans = c("Marketing", "Gender", "Channel"),
                        name.date = "Cov.Date")
-\dontrun{
+
 # Enable parallel execution of some parts of the dyncov LL
 library(doFuture)
 registerDoFuture()
@@ -253,7 +253,6 @@ pnbd(clv.data.dyn.cov)
 #  static covariate are available
 pnbd(clv.data.dyn.cov, reg.lambdas = c(trans=10, life=2))
 
-}
 }
 
 }
