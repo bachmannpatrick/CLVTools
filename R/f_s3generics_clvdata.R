@@ -94,7 +94,7 @@ summary.clv.data <- function(object, ...){
 }
 
 #' @param x An object of class \code{"summary.clv.data"}, usually, a result of a call to \code{summary.clv.data}.
-#' @template template_params_digits
+#' @param digits The number of significant digits to use when printing.
 #'
 #' @export
 #' @rdname summary.clv.data
