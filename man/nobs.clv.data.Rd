@@ -11,6 +11,9 @@
 
 \item{...}{Ignored}
 }
+\value{
+The number of customers.
+}
 \description{
 The number of observations is defined as the number of unique customers in the transaction data.
 }
