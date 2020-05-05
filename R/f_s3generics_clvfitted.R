@@ -411,8 +411,18 @@ vcov.summary.clv.fitted <- function(object, ...){
 #'
 #' @description
 #' Extract the unconditional expectation (future transactions unconditional on being "alive") from a fitted clv model.
+#' This is the unconditional expectation data that is used when ploting the fitted model.
 #'
 #' @template template_details_predictionend
+#'
+#' @seealso \code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation
+#'
+#' @return
+#' A \code{data.table} which contains the following columns:
+#' \item{period.until}{The timepoint that marks the end (up until and including) of the period to which the data in this row refers.}
+#' \item{period.num}{The number of this period. }
+#' \item{expectation}{The value of the unconditional expectation for the period that ends on \code{period.until}.}
+#'
 #'
 #' @include class_clv_fitted.R
 #' @importFrom stats fitted
