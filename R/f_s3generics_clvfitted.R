@@ -411,7 +411,7 @@ vcov.summary.clv.fitted <- function(object, ...){
 #'
 #' @description
 #' Extract the unconditional expectation (future transactions unconditional on being "alive") from a fitted clv model.
-#' This is the unconditional expectation data that is used when ploting the fitted model.
+#' This is the unconditional expectation data that is used when plotting the fitted model.
 #'
 #' @template template_details_predictionend
 #'

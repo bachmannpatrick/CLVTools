@@ -23,7 +23,7 @@ A \code{data.table} which contains the following columns:
 }
 \description{
 Extract the unconditional expectation (future transactions unconditional on being "alive") from a fitted clv model.
-This is the unconditional expectation data that is used when ploting the fitted model.
+This is the unconditional expectation data that is used when plotting the fitted model.
 }
 \details{
 \code{prediction.end} indicates until when to predict or plot and can be given as either
