@@ -1,7 +1,7 @@
 name: coverage
 on: pull_request # default to types [opened, synchronize, reopened]
 jobs:
-  coverage-ubuntu-16-04-R-3-6:
+  coverage-ubuntu-16-04-R-4-0:
     runs-on: ubuntu-16.04
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: r-lib/actions/setup-r@master
         with:
-          r-version: 3.6
+          r-version: 4.0
       - name: Install system dependencies
         env:
           RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
