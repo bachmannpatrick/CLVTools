@@ -3,7 +3,6 @@
 # These are parameters for the print functions whose documentation link to the summary docu
 #' @param x An object of class \code{"summary.clv.time"}, usually, a result of a call to \code{summary.clv.time}.
 #' @param digits The number of significant digits to use when printing.
-#' @param signif.stars Logical. If TRUE, ‘significance stars’ are printed for each coefficient.
 #' @param ... Ignored.
 #' @description
 #'

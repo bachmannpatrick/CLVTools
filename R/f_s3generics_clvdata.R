@@ -95,18 +95,16 @@ summary.clv.data <- function(object, ...){
 
 #' @param x An object of class \code{"summary.clv.data"}, usually, a result of a call to \code{summary.clv.data}.
 #' @param digits The number of significant digits to use when printing.
-#' @param signif.stars Logical. If TRUE, ‘significance stars’ are printed for each coefficient.
 #'
 #' @export
 #' @rdname summary.clv.data
 #' @keywords internal
-print.summary.clv.data <- function(x, digits=max(3L, getOption("digits")-3L),
-                                   signif.stars = getOption("show.signif.stars"), ...){
+print.summary.clv.data <- function(x, digits=max(3L, getOption("digits")-3L), ...){
   nsmall <- 4
 
   cat(x$name, "\n")
 
-  print(x$summary.clv.time, digits=digits, signif.stars = signif.stars, ...)
+  print(x$summary.clv.time, digits=digits, ...)
 
 
   # Print transactions descriptives for each period -------------------------------------------

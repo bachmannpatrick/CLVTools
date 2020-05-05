@@ -12,30 +12,15 @@
 \usage{
 \method{summary}{clv.data}(object, ...)
 
-\method{print}{summary.clv.data}(
-  x,
-  digits = max(3L, getOption("digits") - 3L),
-  signif.stars = getOption("show.signif.stars"),
-  ...
-)
+\method{print}{summary.clv.data}(x, digits = max(3L, getOption("digits") - 3L), ...)
 
 \method{summary}{clv.data.dynamic.covariates}(object, ...)
 
-\method{print}{summary.clv.data.dynamic.covariates}(
-  x,
-  digits = max(3L, getOption("digits") - 3L),
-  signif.stars = getOption("show.signif.stars"),
-  ...
-)
+\method{print}{summary.clv.data.dynamic.covariates}(x, digits = max(3L, getOption("digits") - 3L), ...)
 
 \method{summary}{clv.data.static.covariates}(object, ...)
 
-\method{print}{summary.clv.data.static.covariates}(
-  x,
-  digits = max(3L, getOption("digits") - 3L),
-  signif.stars = getOption("show.signif.stars"),
-  ...
-)
+\method{print}{summary.clv.data.static.covariates}(x, digits = max(3L, getOption("digits") - 3L), ...)
 }
 \arguments{
 \item{object}{A CLV data object containing transactional data and potentially also contextual factors.}
@@ -45,8 +30,6 @@
 \item{x}{An object of class \code{"summary.clv.data"}, usually, a result of a call to \code{summary.clv.data}.}
 
 \item{digits}{The number of significant digits to use when printing.}
-
-\item{signif.stars}{Logical. If TRUE, ‘significance stars’ are printed for each coefficient.}
 }
 \value{
 This function computes and returns summary statistics of the

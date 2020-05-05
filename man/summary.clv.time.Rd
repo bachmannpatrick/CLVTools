@@ -5,12 +5,7 @@
 \alias{summary.clv.time}
 \title{Summarizing a CLV time object}
 \usage{
-\method{print}{clv.time}(
-  x,
-  digits = max(3L, getOption("digits") - 3L),
-  signif.stars = getOption("show.signif.stars"),
-  ...
-)
+\method{print}{clv.time}(x, digits = max(3L, getOption("digits") - 3L), ...)
 
 \method{summary}{clv.time}(object, ...)
 }
@@ -18,8 +13,6 @@
 \item{x}{An object of class \code{"summary.clv.time"}, usually, a result of a call to \code{summary.clv.time}.}
 
 \item{digits}{The number of significant digits to use when printing.}
-
-\item{signif.stars}{Logical. If TRUE, ‘significance stars’ are printed for each coefficient.}
 
 \item{...}{Ignored.}
 
