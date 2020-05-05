@@ -5,6 +5,8 @@
 #' @template template_param_dots
 #' @param object An object of class clv.data.
 #'
+#' @return The number of customers.
+#'
 #' @importFrom stats nobs
 #' @export
 nobs.clv.data   <- function(object, ...){
