@@ -1,7 +1,7 @@
 # Comment from the authors
 This is the initial release of the CLVTools package. It provides convenient methods to estimate customer lifetime value from transaction data.
 
-This is the 2nd re-submission after the first two submissions were rejected in the pre-tests because the examples run for too long on windows. We have misread the timing previously and have now (hopefully) marked the correct examples to not be tested anymore.
+This is the 2nd re-submission after the first two submissions were rejected in the pre-tests because the examples run for too long on windows. We have misread the timings of the examples previously and have now (hopefully) marked the correct examples to not be tested anymore.
 
 ## Test environments
 
