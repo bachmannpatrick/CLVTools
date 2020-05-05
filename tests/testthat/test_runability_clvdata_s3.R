@@ -1,3 +1,5 @@
+skip_on_cran()
+
 # Load required data -----------------------------------------------------------------------------------
 data("apparelTrans")
 data("apparelStaticCov")
