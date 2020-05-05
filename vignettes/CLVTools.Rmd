@@ -162,7 +162,7 @@ If spending information was provided when initializing the object, `CLVTools` pr
 * predicted spending estimated by a Gamma/Gamma model [@Colombo1999; @Fader2005c] and 
 *  the customer lifetime value (CLV).
 
-If a holdout period is available additionally the true numbers of transactions ("actual.x") and true spending ("actual.spendings") during the holdout period are reported.
+If a holdout period is available additionally the true numbers of transactions ("actual.x") and true spending ("actual.spending") during the holdout period are reported.
 
 To use the parameter estimates on new data (e.g., an other customer cohort), the argument `newdata` optionally allows to provide a new `clvdata` object.
 
