@@ -17,8 +17,7 @@ summary.clv.data.static.covariates <- function(object, ...){
 
 #' @export
 #' @rdname summary.clv.data
-print.summary.clv.data.static.covariates <- function(x, digits=max(3L, getOption("digits")-3L),
-                                                     signif.stars = getOption("show.signif.stars"), ...){
+print.summary.clv.data.static.covariates <- function(x, digits=max(3L, getOption("digits")-3L), ...){
 
   NextMethod()
 

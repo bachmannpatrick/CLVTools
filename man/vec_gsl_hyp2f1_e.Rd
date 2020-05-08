@@ -6,6 +6,15 @@
 \usage{
 vec_gsl_hyp2f1_e(vA, vB, vC, vZ)
 }
+\arguments{
+\item{vA}{Vector of values for parameter a}
+
+\item{vB}{Vector of values for parameter b}
+
+\item{vC}{Vector of values for parameter c}
+
+\item{vZ}{Vector of values for parameter z}
+}
 \value{
 List with vector of values and vector of gsl status codes
 }

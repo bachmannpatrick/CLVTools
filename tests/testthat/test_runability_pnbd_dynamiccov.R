@@ -132,3 +132,4 @@ fct.testthat.runability.dynamiccov.can.predict.plot.beyond.holdout(method = pnbd
                                                                    mini.apparelDynCov.long = mini.apparelDynCov.long,
                                                                    start.params.model = c(r=0.4011475, alpha=22.7155565,
                                                                                           s=0.2630372, beta=19.1752426))
+

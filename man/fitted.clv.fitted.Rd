@@ -15,8 +15,15 @@
 
 \item{...}{Ignored}
 }
+\value{
+A \code{data.table} which contains the following columns:
+\item{period.until}{The timepoint that marks the end (up until and including) of the period to which the data in this row refers.}
+\item{period.num}{The number of this period. }
+\item{expectation}{The value of the unconditional expectation for the period that ends on \code{period.until}.}
+}
 \description{
 Extract the unconditional expectation (future transactions unconditional on being "alive") from a fitted clv model.
+This is the unconditional expectation data that is used when plotting the fitted model.
 }
 \details{
 \code{prediction.end} indicates until when to predict or plot and can be given as either
@@ -33,4 +40,7 @@ of the first prediction period is Monday 2019-01-02. Each prediction period incl
 the first prediction period therefore will end on, and include, Sunday 2019-01-08. Subsequent prediction periods
 again start on Mondays and end on Sundays.
 If \code{prediction.end} indicates a timepoint on which to end, this timepoint is included in the prediction period.
+}
+\seealso{
+\code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation
 }

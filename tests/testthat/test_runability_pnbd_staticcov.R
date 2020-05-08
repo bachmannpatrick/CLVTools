@@ -121,6 +121,7 @@ fct.testthat.runability.staticcov.works.with.regularization(method = pnbd,
                                                             clv.newdata.withhold = clv.newdata.withhold,
                                                             param.names = pnbd.param.names)
 
+
 fct.testthat.runability.staticcov.works.with.0.lambdas(method = pnbd,
                                                        clv.data.holdout = clv.data.cov.holdout,
                                                        clv.data.no.holdout = clv.data.cov.no.holdout,

@@ -9,3 +9,7 @@
 ^thoughts_parameterhandling\.rtf$
 ^\.github$
 ^cran-comments\.md$
+^_pkgdown\.yml$
+[.]o$
+[.]o.tmp$
+

@@ -18,6 +18,8 @@
 #'
 #' @examples
 #'
+#' \donttest{
+#'
 #' data("cdnow")
 #'
 #' # Create a CLV data object, split data in estimation and holdout sample
@@ -39,6 +41,8 @@
 #'
 #' # Plot the fitted model to the actual repeat transactions
 #' plot(pnbd.cdnow)
+#'
+#' }
 #'
 #' @docType package
 #' @useDynLib CLVTools, .registration=TRUE
