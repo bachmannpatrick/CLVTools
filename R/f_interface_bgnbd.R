@@ -143,9 +143,6 @@ setMethod("bgnbd", signature = signature(clv.data="clv.data.static.covariates"),
 
 
 #' @keywords internal
-#' @name bgnbd
-#' @include class_clv_data_dynamiccovariates.R
-#' @aliases bgnbd,clv.data.dynamic.covariates-method.R
 setMethod("bgnbd", signature = signature(clv.data="clv.data.dynamic.covariates"), definition = function(clv.data,
                                                                                                         start.params.model=c(),
                                                                                                         optimx.args=list(),
