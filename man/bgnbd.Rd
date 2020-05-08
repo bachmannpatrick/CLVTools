@@ -4,6 +4,7 @@
 \alias{bgnbd}
 \alias{bgnbd,clv.data-method}
 \alias{bgnbd,clv.data.static.covariates-method}
+\alias{bgnbd,clv.data.dynamic.covariates-method.R}
 \title{BG/NBD models}
 \usage{
 \S4method{bgnbd}{clv.data}(
@@ -21,6 +22,21 @@
   start.params.model = c(),
   use.cor = FALSE,
   start.param.cor = c(),
+  optimx.args = list(),
+  verbose = TRUE,
+  names.cov.life = c(),
+  names.cov.trans = c(),
+  start.params.life = c(),
+  start.params.trans = c(),
+  names.cov.constr = c(),
+  start.params.constr = c(),
+  reg.lambdas = c(),
+  ...
+)
+
+\S4method{bgnbd}{clv.data.dynamic.covariates}(
+  clv.data,
+  start.params.model = c(),
   optimx.args = list(),
   verbose = TRUE,
   names.cov.life = c(),
@@ -157,3 +173,4 @@ URL http://www.brucehardie.com/notes/019/time_invariant_ covariates.pdf.
 
 The generic functions \code{\link[CLVTools:summary.clv.fitted]{summary}} and \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
 }
+\keyword{internal}
