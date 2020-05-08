@@ -34,16 +34,34 @@ expect_silent(clv.apparel.static <- SetStaticCovariates(clv.apparel,
 expect_silent(p.nocov  <- pnbd(clv.apparel, verbose = FALSE))
 expect_silent(p.static <- pnbd(clv.apparel.static, verbose = FALSE))
 
-fct.testthat.consistency.staticcov.cov.insignificant(p.static = p.static)
 
-param.names <- c("r", "alpha", "s","beta")
 
-fct.testthat.consistency.nocov.model.params.nearly.same(p.nocov = p.nocov,
-                                                          p.static = p.static,
-                                                          param.names = param.names)
+fct.testthat.consistency.cov.data.0.cov.params.insignificant(p.static = p.static)
+
+fct.testthat.consistency.cov.data.0.model.params.nearly.same(p.nocov = p.nocov,
+                                                             p.static = p.static,
+                                                             param.names = c("r", "alpha", "s","beta"))
+
+fct.testthat.consistency.cov.data.0.same.LL(fct.LL.ind.nocov = pnbd_nocov_LL_ind,
+                                            fct.LL.ind.static.cov = pnbd_staticcov_LL_ind,
+                                            fitted.nocov = p.nocov, fitted.static.cov = p.static)
+
+
+
+
+
+
+
 
 context("Nocov/cov Consistency - PNBD - cov params = 0")
 # Also possible for dyncov
+
+# Create staticcov model with ordinary cov data
+expect_silent(clv.apparel.static <- SetStaticCovariates(clv.apparel,
+                                                        data.cov.life = apparelStaticCov, data.cov.trans = apparelStaticCov,
+                                                        names.cov.life = c("Gender", "Channel"), names.cov.trans = c("Gender", "Channel")))
+expect_silent(p.static.g0 <- pnbd(clv.apparel.static, verbose=FALSE))
+
 
 # Create dyncov model, quickly ------------------------------------------------------------------
 data("apparelDynCov")
@@ -52,12 +70,12 @@ expect_message(clv.apparel.dyn  <- SetDynamicCovariates(clv.apparel,name.id = "I
                                                         data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel")),
                regexp = "cut off")
 
-expect_warning(p.dyncov <- pnbd(clv.apparel.dyn, start.params.model = c(r=1, alpha=3, s=1, beta=3),
-                                optimx.args = list(method="Nelder-Mead", # NelderMead verifies nothing = faster
-                                                   hessian=FALSE, # no hessian
-                                                   control=list(kkt=FALSE, # kkt takes forever
-                                                                reltol = 1000)),
-                                verbose = FALSE),
+expect_warning(p.dyncov.g0 <- pnbd(clv.apparel.dyn, start.params.model = c(r=1, alpha=3, s=1, beta=3),
+                                   optimx.args = list(method="Nelder-Mead", # NelderMead verifies nothing = faster
+                                                      hessian=FALSE, # no hessian
+                                                      control=list(kkt=FALSE, # kkt takes forever
+                                                                   reltol = 1000)),
+                                   verbose = FALSE),
                regexp = "Hessian")
 
 
@@ -65,29 +83,32 @@ expect_warning(p.dyncov <- pnbd(clv.apparel.dyn, start.params.model = c(r=1, alp
 # Fake the parameters to be exactly the same and 0 for covariates
 #   Replace model coefs with that from nocov
 
-# static cov
-expect_silent(p.static@prediction.params.model[c("r", "alpha", "s", "beta")] <-
+expect_silent(p.static.g0@prediction.params.model[c("r", "alpha", "s", "beta")] <-
                 p.nocov@prediction.params.model[c("r", "alpha", "s", "beta")])
-expect_silent(p.static@prediction.params.life[c("Gender", "Channel")] <- 0)
-expect_silent(p.static@prediction.params.trans[c("Gender", "Channel")] <- 0)
+expect_silent(p.static.g0@prediction.params.life[c("Gender", "Channel")] <- 0)
+expect_silent(p.static.g0@prediction.params.trans[c("Gender", "Channel")] <- 0)
 
 # dyncov
-expect_silent(p.dyncov@prediction.params.model[c("r", "alpha", "s", "beta")] <-
+expect_silent(p.dyncov.g0@prediction.params.model[c("r", "alpha", "s", "beta")] <-
                 p.nocov@prediction.params.model[c("r", "alpha", "s", "beta")])
-expect_silent(p.dyncov@prediction.params.life[c("Marketing", "Gender", "Channel")] <- 0)
-expect_silent(p.dyncov@prediction.params.trans[c("Marketing", "Gender", "Channel")] <- 0)
+expect_silent(p.dyncov.g0@prediction.params.life[c("Marketing", "Gender", "Channel")] <- 0)
+expect_silent(p.dyncov.g0@prediction.params.trans[c("Marketing", "Gender", "Channel")] <- 0)
 
 # Recalculate the LL data for these fake params
-expect_silent(log.params <- setNames(log(p.dyncov@prediction.params.model[c("r", "alpha", "s", "beta")]),
+expect_silent(log.params <- setNames(log(p.dyncov.g0@prediction.params.model[c("r", "alpha", "s", "beta")]),
                                      c("log.r", "log.alpha", "log.s", "log.beta")))
 expect_silent(log.params[c("trans.Marketing", "trans.Gender", "trans.Channel", "life.Marketing", "life.Gender", "life.Channel")] <- 0)
-expect_silent(p.dyncov@LL.data <- CLVTools:::pnbd_dyncov_LL(params=log.params, clv.fitted = p.dyncov))
+expect_silent(p.dyncov.g0@LL.data <- CLVTools:::pnbd_dyncov_LL(params=log.params, clv.fitted = p.dyncov.g0))
 
-# Actual tests ---------------------------------------------------------------------------------
-fct.testthat.consistency.predict.same.as.gamma.zero(p.nocov = p.nocov,
-                                                    p.static = p.static,
-                                                    p.dyncov = p.dyncov)
 
-fct.testthat.consistency.plot.same.as.gamma.zero(p.nocov = p.nocov,
-                                                 p.static = p.static,
-                                                 p.dyncov = p.dyncov)
+fct.testthat.consistency.cov.params.0.same.LL(fct.LL.ind.nocov = pnbd_nocov_LL_ind,
+                                              fct.LL.ind.static.cov = pnbd_staticcov_LL_ind,
+                                              fitted.nocov = p.nocov, fitted.static.cov = p.static.g0)
+
+fct.testthat.consistency.cov.params.0.predict.same(p.nocov = p.nocov,
+                                                   p.static = p.static.g0,
+                                                   p.dyncov = p.dyncov.g0)
+
+fct.testthat.consistency.cov.params.0.plot.same(p.nocov = p.nocov,
+                                                p.static = p.static.g0,
+                                                p.dyncov = p.dyncov.g0)
