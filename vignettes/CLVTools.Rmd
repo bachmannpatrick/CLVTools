@@ -265,7 +265,7 @@ est.pnbd.static <- pnbd(pnbd.static,
 
 Analogously, we can estimate the model containing time-varying covariates. We recommend to enable the built-in support for multithreading when estimating more complex models like this. See section [Multitherading](#multithreading).
 
-```{r Dyn-cov-estimate, message=TRUE, warning=FALSE}
+```{r Dyn-cov-estimate, eval=FALSE}
 est.pnbd.dyn <- pnbd(pnbd.dyn, 
                      start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
                      start.params.life = c(Marketing=0.5, Gender=0.6, Channel=0.4),
@@ -279,7 +279,7 @@ To inspect the estimated model we use `summary()`, however all other commands su
 summary(est.pnbd.static)
 ```
 
-```{r Cov-summary_dyn}
+```{r Cov-summary_dyn, eval=FALSE}
 summary(est.pnbd.dyn)
 ```
 
