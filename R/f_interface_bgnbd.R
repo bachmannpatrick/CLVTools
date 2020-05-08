@@ -76,7 +76,7 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = F
 #' bgnbd(clv.data.cdnow)
 #'
 #' # Give initial guesses for the Model parameters
-#' bgnbd(clv.data.apparel,
+#' bgnbd(clv.data.cdnow,
 #'      start.params.model = c(r=1.1, alpha=3.4, a=1, b=3))
 #'
 #'
@@ -106,7 +106,8 @@ setMethod("bgnbd", signature = signature(clv.data="clv.data"), definition = func
                                                                                     start.param.cor=c(),
                                                                                     optimx.args=list(),
                                                                                     verbose=TRUE,...){
-  cl        <- sys.call(1)
+  cl <- match.call(call = sys.call(-1), expand.dots = TRUE)
+
   obj <- clv.bgnbd(cl=cl, clv.data=clv.data)
 
   return(clv.template.controlflow.estimate(clv.fitted = obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
@@ -128,7 +129,8 @@ setMethod("bgnbd", signature = signature(clv.data="clv.data.static.covariates"),
                                                                                                       names.cov.constr=c(),start.params.constr=c(),
                                                                                                       reg.lambdas = c(), ...){
 
-  cl        <- sys.call(1)
+  cl <- match.call(call = sys.call(-1), expand.dots = TRUE)
+
   obj <- clv.bgnbd.static.cov(cl=cl, clv.data=clv.data)
 
   return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor, start.param.cor = start.param.cor,
@@ -142,7 +144,7 @@ setMethod("bgnbd", signature = signature(clv.data="clv.data.static.covariates"),
 
 
 #' @include class_clv_data_dynamiccovariates.R
-#' @rdname bgnbd
+#' @keywords internal
 setMethod("bgnbd", signature = signature(clv.data="clv.data.dynamic.covariates"), definition = function(clv.data,
                                                                                                         start.params.model=c(),
                                                                                                         optimx.args=list(),

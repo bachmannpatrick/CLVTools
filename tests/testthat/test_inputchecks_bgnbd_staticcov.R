@@ -16,8 +16,8 @@ l.std.args.withholdout <- list(clv.data=clv.data.apparel.with.holdout)
 
 
 # Covariate specific parameters --------------------------------------------------------------------------
-fct.helper.inputchecks.check.all.static.cov.model(fct.model = bgnbd, l.std.args = l.std.args.noholdout, name.model = "bgnbd staticcov")
-fct.helper.inputchecks.check.all.static.cov.model(fct.model = bgnbd, l.std.args = l.std.args.withholdout, name.model = "bgnbd staticcov")
+fct.helper.inputchecks.check.all.static.cov.model(fct.model = bgnbd, l.std.args = l.std.args.noholdout, name.model = "BGNBD static cov")
+fct.helper.inputchecks.check.all.static.cov.model(fct.model = bgnbd, l.std.args = l.std.args.withholdout, name.model = "BGNBD static cov")
 
 context("Inputchecks - BGNBD staticcov - Model specific")
 test_that("Fails for start params <= 0", {

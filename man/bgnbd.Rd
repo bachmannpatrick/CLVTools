@@ -4,7 +4,6 @@
 \alias{bgnbd}
 \alias{bgnbd,clv.data-method}
 \alias{bgnbd,clv.data.static.covariates-method}
-\alias{bgnbd,clv.data.dynamic.covariates-method}
 \title{BG/NBD models}
 \usage{
 \S4method{bgnbd}{clv.data}(
@@ -22,21 +21,6 @@
   start.params.model = c(),
   use.cor = FALSE,
   start.param.cor = c(),
-  optimx.args = list(),
-  verbose = TRUE,
-  names.cov.life = c(),
-  names.cov.trans = c(),
-  start.params.life = c(),
-  start.params.trans = c(),
-  names.cov.constr = c(),
-  start.params.constr = c(),
-  reg.lambdas = c(),
-  ...
-)
-
-\S4method{bgnbd}{clv.data.dynamic.covariates}(
-  clv.data,
-  start.params.model = c(),
   optimx.args = list(),
   verbose = TRUE,
   names.cov.life = c(),
@@ -128,7 +112,7 @@ clv.data.cdnow <- clvdata(cdnow, date.format = "ymd",
 bgnbd(clv.data.cdnow)
 
 # Give initial guesses for the Model parameters
-bgnbd(clv.data.apparel,
+bgnbd(clv.data.cdnow,
      start.params.model = c(r=1.1, alpha=3.4, a=1, b=3))
 
 

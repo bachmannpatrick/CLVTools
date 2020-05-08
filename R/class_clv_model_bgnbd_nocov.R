@@ -28,7 +28,7 @@ if(use.cor){
 }
 
 if(length(list(...)) > 0){
-  warning("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
+  stop("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
 }
 
 check_err_msg(err.msg)

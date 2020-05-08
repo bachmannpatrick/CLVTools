@@ -29,8 +29,8 @@ test_that("Same results as BTYD", {
 
   # CLVTools
   expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "w", estimation.split = "1997-09-30"))
-  expect_silent(p.cdnow <- bgnbd(clv.data=clv.cdnow, start.params.model = c(r=1, alpha = 3, a = 1, b = 3), verbose=FALSE))
-  expect_equal(unname(coef(p.cdnow)), est.params, tolerance = 0.0001)
+  expect_silent(b.cdnow <- bgnbd(clv.data=clv.cdnow, start.params.model = c(r=1, alpha = 3, a = 1, b = 3), verbose=FALSE))
+  expect_equal(unname(coef(b.cdnow)), est.params, tolerance = 0.0001)
 
 
   # Predicting
@@ -39,7 +39,7 @@ test_that("Same results as BTYD", {
   expect_silent(btyd.palive <- BTYD::bgnbd.PAlive(est.params, x=cal.cbs[,"x"], t.x = cal.cbs[,"t.x"], T.cal = cal.cbs[,"T.cal"]))
 
   # CLVTools
-  expect_silent(dt.pred <- predict(p.cdnow, prediction.end = 10, continuous.discount.factor = 0.15, verbose = FALSE))
+  expect_silent(dt.pred <- predict(b.cdnow, prediction.end = 10, continuous.discount.factor = 0.15, verbose = FALSE))
 
   expect_equivalent(btyd.cet[dt.pred$Id],    dt.pred$CET, tolerance = 0.0001)
   expect_equivalent(btyd.palive[dt.pred$Id], dt.pred$PAlive, tolerance = 0.0001)
@@ -99,7 +99,7 @@ expect_silent(clv.apparel.staticcov <- SetStaticCovariates(clv.apparel,
                                                            names.cov.life = c("Gender", "Channel"), names.cov.trans = c("Gender", "Channel"),
                                                            data.cov.life = apparelStaticCov, data.cov.trans = apparelStaticCov))
 
-expect_silent(p.static <- bgnbd(clv.data=clv.apparel.staticcov, verbose=FALSE))
+expect_silent(b.static <- bgnbd(clv.data=clv.apparel.staticcov, verbose=FALSE))
 
 
 test_that("Same result for differently sorted covariates", {
@@ -112,23 +112,23 @@ test_that("Same result for differently sorted covariates", {
   expect_silent(clv.apparel.shuffle <- SetStaticCovariates(clv.apparel,
                                                            names.cov.life = c("Gender", "Channel"), names.cov.trans = c("Gender", "Channel"),
                                                            data.cov.life = apparelStaticCov.shuffle, data.cov.trans = apparelStaticCov.shuffle))
-  expect_silent(p.static.shuffle <- bgnbd(clv.data=clv.apparel.shuffle, verbose=FALSE))
+  expect_silent(b.static.shuffle <- bgnbd(clv.data=clv.apparel.shuffle, verbose=FALSE))
 
 
   # All should be exactly the same, except the call and optimx time
   #   replace these
-  expect_silent(p.static.shuffle@call                           <- p.static@call)
-  expect_silent(p.static.shuffle@optimx.estimation.output$xtime <- p.static@optimx.estimation.output$xtime)
-  expect_true(isTRUE(all.equal(p.static.shuffle, p.static)))
+  expect_silent(b.static.shuffle@call                           <- b.static@call)
+  expect_silent(b.static.shuffle@optimx.estimation.output$xtime <- b.static@optimx.estimation.output$xtime)
+  expect_true(isTRUE(all.equal(b.static.shuffle, b.static)))
 })
 
 # Static cov: predict ---------------------------------------------------------------------------------------
-context("Correctness - PNBD static cov - predict")
+context("Correctness - BGNBD static cov - predict")
 
 test_that("Same when predicting as with fitting data", {
   # skip_on_cran()
-  expect_true(isTRUE(all.equal(predict(p.static, verbose=FALSE),
-                               predict(p.static, newdata = clv.apparel.staticcov, verbose=FALSE))))
+  expect_true(isTRUE(all.equal(predict(b.static, verbose=FALSE),
+                               predict(b.static, newdata = clv.apparel.staticcov, verbose=FALSE))))
 })
 
 test_that("Fitting with sample but predicting full data yields same results as predicting sample only", {
@@ -144,11 +144,11 @@ test_that("Fitting with sample but predicting full data yields same results as p
                                                    names.cov.life = c("Gender", "Channel"), names.cov.trans = c("Gender", "Channel"))
 
   # Fit on sample only
-  expect_silent(p.sample <- bgnbd(clv.apparel.static.sample, verbose = FALSE))
+  expect_silent(b.sample <- bgnbd(clv.apparel.static.sample, verbose = FALSE))
 
   # Predictions
-  expect_silent(dt.predict.sample <- predict(p.sample,                                      verbose=FALSE, predict.spending=FALSE,  prediction.end="2007-01-01"))
-  expect_silent(dt.predict.full   <- predict(p.sample, newdata = clv.apparel.static.sample, verbose=FALSE, predict.spending=FALSE,  prediction.end="2007-01-01"))
+  expect_silent(dt.predict.sample <- predict(b.sample,                                      verbose=FALSE, predict.spending=FALSE,  prediction.end="2007-01-01"))
+  expect_silent(dt.predict.full   <- predict(b.sample, newdata = clv.apparel.static.sample, verbose=FALSE, predict.spending=FALSE,  prediction.end="2007-01-01"))
 
   # The sample ones should be the exact same ones in the full
   expect_true(isTRUE(all.equal(dt.predict.sample,
@@ -159,8 +159,8 @@ test_that("Fitting with sample but predicting full data yields same results as p
 
 test_that("Regularization with 0 lambda has the same effect as no regularization", {
   skip_on_cran()
-  expect_silent(p.0.reg <- bgnbd(clv.apparel.staticcov, reg.lambdas = c(trans=0, life=0), verbose = FALSE))
+  expect_silent(b.0.reg <- bgnbd(clv.apparel.staticcov, reg.lambdas = c(trans=0, life=0), verbose = FALSE))
 
-  expect_equal(coef(p.0.reg),          coef(p.static))
-  expect_equal(coef(summary(p.0.reg)), coef(summary(p.static)))
+  expect_equal(coef(b.0.reg),          coef(b.static))
+  expect_equal(coef(summary(b.0.reg)), coef(summary(b.static)))
 })

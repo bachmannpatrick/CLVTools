@@ -28,11 +28,11 @@ expect_silent(clv.newdata.withhold <- clvdata(data.transactions = dt.newdata.tra
 # Basic runability -------------------------------------------------------------------------------------------------------
 
 test_that("Works out-of-the box, without additional params", {
-  expect_silent(p.hold    <- bgnbd(clv.data=clv.data.cdnow.withholdout, verbose=FALSE))
-  expect_silent(p.no.hold <- bgnbd(clv.data=clv.data.cdnow.noholdout, verbose=FALSE))
-  fct.helper.fitted.all.s3(clv.fitted = p.hold,     full.names = names(p.hold@clv.model@names.original.params.model),
+  expect_silent(b.hold    <- bgnbd(clv.data=clv.data.cdnow.withholdout, verbose=FALSE))
+  expect_silent(b.no.hold <- bgnbd(clv.data=clv.data.cdnow.noholdout, verbose=FALSE))
+  fct.helper.fitted.all.s3(clv.fitted = b.hold,     full.names = names(b.hold@clv.model@names.original.params.model),
                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = TRUE)
-  fct.helper.fitted.all.s3(clv.fitted = p.no.hold,  full.names = names(p.no.hold@clv.model@names.original.params.model),
+  fct.helper.fitted.all.s3(clv.fitted = b.no.hold,  full.names = names(b.no.hold@clv.model@names.original.params.model),
                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = TRUE)
 })
 
