@@ -23,7 +23,6 @@ l.std.args <- alist(data.cov.life  = apparelDynCov,  names.cov.life = c("Marketi
 
 test_that("Factor and char covariates result in same dummies",{
 
-
   apparelDynCov.char <- data.table::copy(apparelDynCov)
   apparelDynCov.char[, Channel := as.character(Channel)]
   apparelDynCov.char[, Marketing     := as.character(Marketing)]
@@ -61,6 +60,7 @@ test_that("Factor and char covariates result in same dummies",{
 
 
 test_that("Cuts to correct range if more cov data before estimation start than needed ",{
+  skip_on_cran()
 
   # longer lower end
   apparelDynCov.longer.lower <-
@@ -99,6 +99,8 @@ test_that("Cuts to correct range if more cov data before estimation start than n
 })
 
 test_that("Single cov data longer than other data requires all data to be this long", {
+  skip_on_cran()
+
   # longer upper end
   apparelDynCov.longer.upper  <-
     data.table::rbindlist(list(apparelDynCov,
@@ -123,6 +125,7 @@ test_that("Single cov data longer than other data requires all data to be this l
 })
 
 test_that("Creates correct number of dummies - 2 categories", {
+  skip_on_cran()
 
   apparelDynCov.2cat <- data.table::copy(apparelDynCov)
   apparelDynCov.2cat[, Gender := rep(c("F", "M"), nrow(apparelDynCov.2cat)/2)]
@@ -150,7 +153,7 @@ test_that("Creates correct number of dummies - 2 categories", {
 
 
 test_that("Creates correct number of dummies - 3 categories",{
-
+  skip_on_cran()
 
   apparelDynCov.3cat <- data.table::copy(apparelDynCov)
   apparelDynCov.3cat[, Gender := c(rep(c("F", "M", "X"), nrow(apparelDynCov.3cat)/3))]
@@ -183,6 +186,7 @@ test_that("Creates correct number of dummies - 3 categories",{
 context("Correctness - SetDynamicCovariates - Covariate datatypes")
 
 test_that("Converts categories to dummies - no numeric", {
+  skip_on_cran()
 
   apparelDynCov.dummy <- data.table::copy(apparelDynCov)
   apparelDynCov.dummy[, Gender.char := as.character(Gender)]
@@ -211,6 +215,7 @@ test_that("Converts categories to dummies - no numeric", {
 
 
 test_that("Converts categories to dummies - with numeric", {
+  skip_on_cran()
 
   apparelDynCov.mixed <- data.table::copy(apparelDynCov)
   apparelDynCov.mixed[, Gender.char := as.character(Gender)]
@@ -246,6 +251,7 @@ test_that("Converts categories to dummies - with numeric", {
 # Copied ----------------------------------------------------------------------------------------
 
 test_that("Cov data was properly copied", {
+  skip_on_cran()
 
   expect_silent(dyn.cov <- SetDynamicCovariates(clv.data = clv.data.apparel.withhold,
                                                 data.cov.life  = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),

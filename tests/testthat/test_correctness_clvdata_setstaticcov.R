@@ -52,6 +52,8 @@ test_that("Factor and char covariates result in same dummies - no holdout",{
 
 
 test_that("Factor and char covariates result in same dummies - with holdout",{
+  skip_on_cran()
+
   apparelStaticCov.char <- data.table::copy(apparelStaticCov)
   apparelStaticCov.char[, Gender := as.character(Gender)]
 
@@ -91,6 +93,8 @@ test_that("Factor and char covariates result in same dummies - with holdout",{
 
 
 test_that("Creates correct number of dummies - 2 categories", {
+  skip_on_cran()
+
   apparelStaticCov.2cat <- data.table::copy(apparelStaticCov)
   apparelStaticCov.2cat[, Gender := c(rep(c("F", "M"), nrow(apparelStaticCov.2cat)/2))]
 
@@ -104,6 +108,7 @@ test_that("Creates correct number of dummies - 2 categories", {
 })
 
 test_that("Creates correct number of dummies - 3 categories",{
+  skip_on_cran()
   apparelStaticCov.3cat <- data.table::copy(apparelStaticCov)
   apparelStaticCov.3cat[, Gender := c("F", rep(c("F", "M", "X"), nrow(apparelStaticCov.3cat)/3))]
   expect_silent(static.cov <- SetStaticCovariates(clv.data = clv.data.apparel.withhold,
@@ -178,6 +183,7 @@ test_that("Keeps numeric as numeric - with categories", {
 
 # Copied ---------------------------------------------------------------------------
 test_that("Cov data was properly copied", {
+  skip_on_cran()
   expect_silent(static.cov <- SetStaticCovariates(clv.data = clv.data.apparel.withhold,
                                                         data.cov.life  = apparelStaticCov, names.cov.life = "Gender",
                                                         data.cov.trans = apparelStaticCov, names.cov.trans = "Gender"))

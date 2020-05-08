@@ -3,6 +3,10 @@
 
 #' @title GSL Hypergeom 2f0 for equal length vectors
 #'
+#' @param vA Vector of values for parameter a
+#' @param vB Vector of values for parameter b
+#' @param vZ Vector of values for parameter z
+#'
 #' @description Calculate the hypergeometric 2f0 using the GSL library (gsl_sf_hyperg_2F0_e)
 #' @return List with vector of values and vector of gsl status codes
 #' @keywords internal
@@ -11,6 +15,11 @@ vec_gsl_hyp2f0_e <- function(vA, vB, vZ) {
 }
 
 #' @title GSL Hypergeom 2f1 for equal length vectors
+#'
+#' @param vA Vector of values for parameter a
+#' @param vB Vector of values for parameter b
+#' @param vC Vector of values for parameter c
+#' @param vZ Vector of values for parameter z
 #'
 #' @description Calculate the hypergeometric 2f1 using the GSL library (gsl_sf_hyperg_2F1_e)
 #' @return List with vector of values and vector of gsl status codes

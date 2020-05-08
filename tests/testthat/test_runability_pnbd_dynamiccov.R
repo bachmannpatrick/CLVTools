@@ -19,28 +19,28 @@ expect_silent(clv.data.trans <- clvdata(data.transactions = mini.apparelTrans, d
                                         time.unit = "W", estimation.split = 40))
 
 expect_silent(clv.data.mini.dyncov <-
-                 SetDynamicCovariates(clv.data = clv.data.trans,
-                                      data.cov.life = mini.apparelDynCov,
-                                      data.cov.trans = mini.apparelDynCov,
-                                      names.cov.life = "Gender",
-                                      names.cov.trans = "Gender",
-                                      name.date = "Cov.Date"))
+                SetDynamicCovariates(clv.data = clv.data.trans,
+                                     data.cov.life = mini.apparelDynCov,
+                                     data.cov.trans = mini.apparelDynCov,
+                                     names.cov.life = "Gender",
+                                     names.cov.trans = "Gender",
+                                     name.date = "Cov.Date"))
 
 
 # Can fit dyncov pnbd. Do outside so only have to fit once but use for all tests
 #   high tolerance to converge quickly
 #   no hessian to avoid additional evaluations after convergence
 expect_warning(fitted.dyncov <- pnbd(clv.data.mini.dyncov,
-                                    start.params.model = c(r=0.4011475, alpha=22.7155565,
-                                                           s=0.2630372, beta=19.1752426),
-                                    start.params.life = c(Gender=0.9304636),
-                                    start.params.trans = c(Gender=1.0934721),
-                                    optimx.args = list(method="Nelder-Mead", # NelderMead verifies nothing = faster
-                                                       hessian=FALSE, # no hessian
-                                                       control=list(kkt=FALSE, # kkt takes forever
-                                                                    reltol = 1000))),
-                                                                    # trace=6, REPORT=1))),
-                regexp = "Hessian could not be derived.")
+                                     start.params.model = c(r=0.4011475, alpha=22.7155565,
+                                                            s=0.2630372, beta=19.1752426),
+                                     start.params.life = c(Gender=0.9304636),
+                                     start.params.trans = c(Gender=1.0934721),
+                                     optimx.args = list(method="Nelder-Mead", # NelderMead verifies nothing = faster
+                                                        hessian=FALSE, # no hessian
+                                                        control=list(kkt=FALSE, # kkt takes forever
+                                                                     reltol = 1000))),
+               # trace=6, REPORT=1))),
+               regexp = "Hessian could not be derived.")
 
 # Do not call usual helper for S3 checks as they take too long
 
@@ -110,7 +110,7 @@ test_that("Predict works", {
 })
 
 test_that("Predict newdata works by predicting on another sample", {
-# Full fails for whatever reason
+  # Full fails for whatever reason
 
   # expect_output(dt.pred.mini <- predict(fitted.dyncov))
   # expect_output(dt.pred.full <- predict(fitted.dyncov, newdata=clv.data.full.dyncov))
@@ -162,11 +162,11 @@ expect_silent(mini.apparelDynCov.long <- data.table::rbindlist(l = list(mini.app
                                                                use.names = TRUE))
 
 expect_silent(clv.data.mini.extra <- SetDynamicCovariates(clv.data.trans,
-                                                           data.cov.life = mini.apparelDynCov.long,
-                                                           data.cov.trans = mini.apparelDynCov.long,
-                                                           names.cov.life = c("Gender"),
-                                                           names.cov.trans = c("Gender"),
-                                                           name.date = "Cov.Date"))
+                                                          data.cov.life = mini.apparelDynCov.long,
+                                                          data.cov.trans = mini.apparelDynCov.long,
+                                                          names.cov.life = c("Gender"),
+                                                          names.cov.trans = c("Gender"),
+                                                          name.date = "Cov.Date"))
 
 # Newdata ----------------------------------------------------------------------------------------------------------
 context("Runability - PNBD dynamiccov - newdata")
@@ -195,14 +195,13 @@ context("Runability - PNBD dynamiccov - Overlong data")
 # Cannot do without holdout because takes too long to estimate
 test_that("Can predict/plot beyond holdout if there is more covs in the data than used for holdout",{
   skip_on_covr()
-  skip_on_ci()
 
-expect_silent(clv.data.mini.extra <- SetDynamicCovariates(clv.data.trans,
-                                                           data.cov.life = mini.apparelDynCov.long,
-                                                           data.cov.trans = mini.apparelDynCov.long,
-                                                           names.cov.life = c("Marketing", "Gender","Channel"),
-                                                           names.cov.trans = c("Marketing", "Gender","Channel"),
-                                                           name.date = "Cov.Date"))
+  expect_silent(clv.data.mini.extra <- SetDynamicCovariates(clv.data.trans,
+                                                            data.cov.life = mini.apparelDynCov.long,
+                                                            data.cov.trans = mini.apparelDynCov.long,
+                                                            names.cov.life = c("Marketing", "Gender","Channel"),
+                                                            names.cov.trans = c("Marketing", "Gender","Channel"),
+                                                            name.date = "Cov.Date"))
   # Fit model until estimation.end only (end of estimation.end, 2016-10-08)
   #   high tolerance to converge quickly
   #   no hessian to avoid additional evaluations after convergence

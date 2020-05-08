@@ -99,6 +99,7 @@ clv.data.cdnow <- clvdata(data.transactions = cdnow,
                           time.unit = "w",
                           estimation.split = "1997-10-15")
 
+\donttest{
 
 # summary of the transaction data
 summary(clv.data.cdnow)
@@ -106,13 +107,12 @@ summary(clv.data.cdnow)
 # plot the transaction data
 plot(clv.data.cdnow)
 
-
 # create data with the weekly periods defined to
 #   start on Mondays
 
 \dontrun{
 # set start of week to Monday
-options("lubridate.week.start"=1)
+oldopts <- options("lubridate.week.start"=1)
 
 # create clv.data while Monday is the beginning of the week
 clv.data.cdnow <- clvdata(data.transactions = cdnow,
@@ -120,6 +120,11 @@ clv.data.cdnow <- clvdata(data.transactions = cdnow,
                           time.unit = "weeks")
 
 # Dynamic covariates now have to be supplied for every Monday
+
+# set week start to what it was before
+options(oldopts)
+}
+
 }
 
 

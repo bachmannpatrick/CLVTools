@@ -1,12 +1,15 @@
 #' @name bgbb
 #' @title BG/BB models - Work In Progress
 #'
-#' @description Fits BG/BB models on transactional data with static and without covariates.
+#' @description Fits BG/BB models on transactional data with static and without covariates. Not yet implemented.
 #'
 #' @template template_params_estimate
 #' @template template_params_estimate_cov
 #' @template template_param_verbose
 #' @template template_param_dots
+#'
+#' @return No value is returned.
+#'
 NULL
 
 #' @exportMethod bgbb

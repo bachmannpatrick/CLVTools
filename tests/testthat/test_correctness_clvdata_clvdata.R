@@ -13,7 +13,7 @@ context("Correctness - clvdata - estimation.split")
 
 #
 test_that("Different estimation.split formats result in same split - data in Dates", {
-  #skip_on_cran()
+
   cdnow.date <- data.table::copy(cdnow)
   cdnow.date[, Date := as.Date(Date)]
 
@@ -40,7 +40,6 @@ test_that("Different estimation.split formats result in same split - data in Dat
 
 
 test_that("Different estimation.split formats result in same split - data in POSIX UTC", {
-  #skip_on_cran()
   cdnow.posix <- data.table::copy(cdnow)
   cdnow.posix[, Date := lubridate::parse_date_time(Date ,orders = "ymd", tz = "UTC")]
 
@@ -66,7 +65,7 @@ test_that("Different estimation.split formats result in same split - data in POS
 })
 
 test_that("Different estimation.split formats result in same split - data in POSIX ACST", {
-  #skip_on_cran()
+
   cdnow.posix <- data.table::copy(cdnow)
   cdnow.posix[, Date := lubridate::parse_date_time(Date ,orders = "ymd", tz = "Australia/Darwin")]
 
@@ -92,7 +91,7 @@ test_that("Different estimation.split formats result in same split - data in POS
 
 
 test_that("Different estimation.split formats result in same split - data in char", {
-  #skip_on_cran()
+
   cdnow.char <- data.table::copy(cdnow)
   cdnow.char[, Date := as.character(Date)]
 
@@ -119,7 +118,7 @@ test_that("Different estimation.split formats result in same split - data in cha
 
 
 test_that("No estimation.split ends on last transaction date", {
-  #skip_on_cran()
+  skip_on_cran()
   expect_silent(clv.data.cdnow <- clvdata(time.unit = "w", data.transactions = cdnow, date.format = "ymd"))
   expect_equal(clv.data.cdnow@clv.time@timepoint.estimation.start, cdnow[,min(Date)])
   expect_equal(clv.data.cdnow@clv.time@timepoint.estimation.end, cdnow[, max(Date)])
@@ -129,6 +128,7 @@ test_that("No estimation.split ends on last transaction date", {
 
 # time.unit ------------------------------------------------------------------------------
 context("Correctness - clvdata - time.units")
+
 test_that("Different units with same split results in same dates", {
   #skip_on_cran()
 
@@ -156,7 +156,21 @@ test_that("Different units with same split results in same dates", {
 # transaction.data ----------------------------------------------------------------------------
 context("Correctness - clvdata - data.transactions")
 
+test_that("Same result for differently sorted transactions", {
+  cdnow.shuffle   <- data.table::copy(cdnow)[sample.int(n = nrow(cdnow)), ]
+
+  expect_silent(data.normal  <- clvdata(cdnow,         date.format = "ymd", time.unit = "w"))
+  expect_silent(data.shuffle <- clvdata(cdnow.shuffle, date.format = "ymd", time.unit = "w"))
+
+  data.normal@call  <- data.shuffle@call <- as.symbol("abc")
+
+  expect_equal(data.normal, data.shuffle)
+})
+
+
 test_that("Same results for different Id formats", {
+  skip_on_cran()
+
   cdnow.char      <- data.table::copy(cdnow)
   cdnow.factor    <- data.table::copy(cdnow) # often when loading data
   cdnow.numeric   <- data.table::copy(cdnow)
@@ -177,6 +191,8 @@ test_that("Same results for different Id formats", {
 })
 
 test_that("Same results for different Price formats", {
+  skip_on_cran()
+
   cdnow.integer   <- data.table::copy(cdnow) # often when loading data
   cdnow.numeric   <- data.table::copy(cdnow)
 
@@ -193,19 +209,10 @@ test_that("Same results for different Price formats", {
 })
 
 
-test_that("Same result for differently sorted transactions", {
-  cdnow.shuffle   <- data.table::copy(cdnow)[sample.int(n = nrow(cdnow)), ]
-
-  expect_silent(data.normal  <- clvdata(cdnow,         date.format = "ymd", time.unit = "w"))
-  expect_silent(data.shuffle <- clvdata(cdnow.shuffle, date.format = "ymd", time.unit = "w"))
-
-  data.normal@call  <- data.shuffle@call <- as.symbol("abc")
-
-  expect_equal(data.normal, data.shuffle)
-})
-
 
 test_that("No price data gives correct object", {
+  skip_on_cran()
+
   expect_silent(clv.cdnow <- clvdata(cdnow, date.format = "ymd", time.unit = "w", estimation.split = 37, name.price = NULL))
   expect_false(clv.cdnow@has.spending)
   expect_false("Price" %in% colnames(clv.cdnow@data.transactions))
@@ -215,6 +222,7 @@ test_that("No price data gives correct object", {
 })
 
 test_that("Price data gives correct object", {
+  skip_on_cran()
   expect_silent(clv.cdnow <- clvdata(cdnow, date.format = "ymd", time.unit = "w", estimation.split = 37, name.price = "Price"))
   expect_true(clv.cdnow@has.spending)
   expect_true("Price" %in% colnames(clv.cdnow@data.transactions))
@@ -225,10 +233,10 @@ test_that("Price data gives correct object", {
 
 
 
-
 # test_that: same results for different Date formats is already checked very often in estimation.split
 
 test_that("Transaction data was properly copied", {
+  skip_on_cran()
   expect_silent(clv.data.cdnow <- clvdata(data.transactions = cdnow,time.unit = "weeks", date.format = "ymd"))
   expect_false(isTRUE(all.equal(data.table::address(clv.data.cdnow@data.transactions),
                                 data.table::address(cdnow))))

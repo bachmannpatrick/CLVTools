@@ -93,7 +93,7 @@ might require additional steps that can significantly increase runtime.
 \note{
 Because the unconditional expectation for a period is derived as the difference of
 the cumulative expectations calculated at the beginning and at end of the period,
-all timepoints for which the expectation is calcuated are required to be spaced exactly 1 time unit apart.
+all timepoints for which the expectation is calculated are required to be spaced exactly 1 time unit apart.
 
 If \code{prediction.end} does not coincide with the start of a time unit, the last timepoint
 for which the expectation is calculated and plotted therefore is not \code{prediction.end}

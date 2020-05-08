@@ -51,14 +51,21 @@ expect_silent(clv.newdata.withhold <- SetStaticCovariates(
 
 # Basic runability -------------------------------------------------------------------------------------------------------
 
-test_that("Works out-of-the box, without additional params", {
+# Split in holdout and noholdout to skip one on cran
+test_that("Works out-of-the box, without additional params - holdout", {
   expect_silent(p.hold    <- pnbd(clv.data.cov.holdout, verbose=FALSE))
-  expect_silent(p.no.hold <- pnbd(clv.data.cov.no.holdout, verbose=FALSE))
   fct.helper.fitted.all.s3(p.hold,   full.names = c("r", "alpha", "s","beta", p.hold@names.prefixed.params.free.life, p.hold@names.prefixed.params.free.trans),
                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
-  fct.helper.fitted.all.s3(p.no.hold, full.names = c("r", "alpha", "s","beta", p.hold@names.prefixed.params.free.life, p.hold@names.prefixed.params.free.trans),
+})
+
+test_that("Works out-of-the box, without additional params - no holdout", {
+  skip_on_cran()
+  expect_silent(p.no.hold <- pnbd(clv.data.cov.no.holdout, verbose=FALSE))
+  fct.helper.fitted.all.s3(p.no.hold, full.names = c("r", "alpha", "s","beta", p.no.hold@names.prefixed.params.free.life, p.no.hold@names.prefixed.params.free.trans),
                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
 })
+
+
 
 test_that("Works with custom model start parameters", {
   skip_on_cran()
@@ -125,7 +132,6 @@ test_that("Works with use.cor=T", {
 #
 test_that("Works with use.cor=T and start.params", {
   skip_on_cran()
-  skip_on_ci()
   skip_on_covr()
 
   expect_silent(pscc <- pnbd(clv.data.cov.holdout, use.cor=TRUE, start.param.cor = 0.0, verbose=FALSE))
@@ -143,11 +149,11 @@ test_that("Works with 2 constraints", {
   skip_on_cran()
 
   expect_silent(p.hold    <- pnbd(clv.data.cov.holdout,   names.cov.constr = c("Gender", "Channel"),verbose=FALSE))
-  expect_silent(p.hold    <- pnbd(clv.data.cov.no.holdout,   names.cov.constr = c("Gender", "Channel"),verbose=FALSE))
+  expect_silent(p.no.hold <- pnbd(clv.data.cov.no.holdout,   names.cov.constr = c("Gender", "Channel"),verbose=FALSE))
 
   fct.helper.fitted.all.s3(p.hold,    full.names = c("r", "alpha", "s","beta", "constr.Gender", "constr.Channel"),
                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
-  fct.helper.fitted.all.s3(p.hold,    full.names = c("r", "alpha", "s","beta", "constr.Gender", "constr.Channel"),
+  fct.helper.fitted.all.s3(p.no.hold,    full.names = c("r", "alpha", "s","beta", "constr.Gender", "constr.Channel"),
                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
 })
 
@@ -173,6 +179,7 @@ test_that("Works with 1 constraint, 1 free", {
 
 context("Runability - PNBD static cov - w/ Regularization")
 test_that("Works with regularization", {
+  skip_on_cran()
 
   expect_silent(p.hold    <- pnbd(clv.data.cov.holdout,    reg.lambdas = c(trans=10, life=10),verbose=FALSE))
   expect_silent(p.no.hold <- pnbd(clv.data.cov.no.holdout, reg.lambdas = c(trans=10, life=10),verbose=FALSE))
@@ -185,7 +192,6 @@ test_that("Works with regularization", {
 
 test_that("Works with 0 regularization lambdas", {
   skip_on_cran()
-  skip_on_ci()
   skip_on_covr()
 
   expect_silent(p.hold    <- pnbd(clv.data.cov.holdout,   reg.lambdas = c(trans=0, life=0),verbose=FALSE))

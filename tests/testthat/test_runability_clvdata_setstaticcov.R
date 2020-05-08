@@ -12,7 +12,6 @@ expect_silent(clv.data.apparel.withhold <- clvdata(apparelTrans, date.format = "
 
 
 test_that("Works with and withouth holdout period", {
-  skip_on_cran()
   expect_silent(SetStaticCovariates(clv.data = clv.data.apparel.nohold,
                                     data.cov.life  = apparelStaticCov, names.cov.life = "Gender",
                                     data.cov.trans = apparelStaticCov, names.cov.trans = "Gender"))
@@ -23,6 +22,7 @@ test_that("Works with and withouth holdout period", {
 })
 
 test_that("Works with data.table and data.frame", {
+  skip_on_cran()
   expect_silent(SetStaticCovariates(clv.data = clv.data.apparel.nohold,
                                     data.cov.life  = as.data.frame(apparelStaticCov), names.cov.life = "Gender",
                                     data.cov.trans = apparelStaticCov, names.cov.trans = "Gender"))
@@ -43,6 +43,7 @@ test_that("Works with data.table and data.frame", {
 })
 
 test_that("Works with char covariates", {
+  skip_on_cran()
   apparelStaticCov.char <- data.table::copy(apparelStaticCov)
   apparelStaticCov.char[, Gender := as.character(Gender)]
 
@@ -55,6 +56,7 @@ test_that("Works with char covariates", {
 })
 
 test_that("Works with factor covariates", {
+  skip_on_cran()
   apparelStaticCov.factor <- data.table::copy(apparelStaticCov)
   apparelStaticCov.factor[, Gender := as.factor(as.character(Gender))]
 
@@ -67,6 +69,7 @@ test_that("Works with factor covariates", {
 })
 
 test_that("Works with numeric covariates", {
+  skip_on_cran()
   apparelStaticCov.numeric <- data.table::copy(apparelStaticCov)
   apparelStaticCov.numeric[, Gender := as.numeric(Gender)]
 
@@ -80,6 +83,8 @@ test_that("Works with numeric covariates", {
 
 
 test_that("Works with non standard Id name", {
+  skip_on_cran()
+
   apparelStaticCov.id <- data.table::copy(apparelStaticCov)
   apparelStaticCov.id[, Idasfasflj := Id]
 
@@ -95,6 +100,7 @@ test_that("Works with non standard Id name", {
 
 
 test_that("Works with Ids as factor, numeric, character", {
+  skip_on_cran()
 
   apparelStaticCov.char <- data.table::copy(apparelStaticCov)
   apparelStaticCov.char[, Id := as.character(Id)]
