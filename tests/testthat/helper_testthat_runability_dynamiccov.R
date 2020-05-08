@@ -95,7 +95,6 @@ fct.testthat.runability.dynamiccov.plot.longer.with.newdata <- function(clv.fitt
 fct.testthat.runability.dynamiccov.can.predict.plot.beyond.holdout <- function(method, clv.data.trans, mini.apparelDynCov.long, start.params.model){
   test_that("Can predict/plot beyond holdout if there is more covs in the data than used for holdout",{
     skip_on_covr()
-    skip_on_ci()
 
     expect_silent(clv.data.mini.extra <- SetDynamicCovariates(clv.data.trans,
                                                               data.cov.life = mini.apparelDynCov.long,

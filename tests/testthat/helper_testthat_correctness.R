@@ -54,6 +54,7 @@ fct.testthat.correctness.same.as.btyd <- function(clvtools.method, btyd.method, 
 
 fct.testthat.correctness.same.predicting.fitting <- function(method, clv.cdnow){
   test_that("Same when predicting as with fitting data", {
+    skip_on_cran()
     l.args <- list(clv.data = clv.cdnow, verbose = FALSE)
     expect_silent(cdnow.fit <- do.call(what = method, args = l.args))
 
@@ -118,7 +119,7 @@ fct.testthat.correctness.sorted.covariates <- function(method, clv.apparel, appa
 }
 fct.testthat.correctness.staticcov.predicting.fitting <- function(p.static, clv.apparel.staticcov){
   test_that("Same when predicting as with fitting data", {
-    # skip_on_cran()
+    skip_on_cran()
     expect_true(isTRUE(all.equal(predict(p.static, verbose=FALSE),
                                  predict(p.static, newdata = clv.apparel.staticcov, verbose=FALSE))))
   })

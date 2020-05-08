@@ -92,7 +92,6 @@ fct.testthat.staticcov.works.with.cor <- function(method, clv.data.holdout, clv.
 fct.testthat.runability.staticcov.works.with.cor.start.params <- function(method, clv.data.holdout, clv.newdata.nohold, clv.newdata.withhold, param.names){
   test_that("Works with use.cor=T and start.params", {
     skip_on_cran()
-    skip_on_ci()
     skip_on_covr()
     l.args <- list(clv.data = clv.data.holdout, use.cor=TRUE, start.param.cor = 0.0, verbose=FALSE)
 
@@ -145,6 +144,7 @@ fct.testthat.runability.staticcov.works.with.1.constraint.1.free <- function(met
 
 fct.testthat.runability.staticcov.works.with.regularization <- function(method, clv.data.holdout, clv.data.no.holdout, clv.newdata.nohold, clv.newdata.withhold, param.names){
    test_that("Works with regularization", {
+     skip_on_cran()
      l.args.holdout <- list(clv.data = clv.data.holdout, reg.lambdas = c(trans=10, life=10),verbose=FALSE)
      l.args.no.holdout <- list(clv.data = clv.data.no.holdout, reg.lambdas = c(trans=10, life=10),verbose=FALSE)
 
@@ -161,7 +161,6 @@ fct.testthat.runability.staticcov.works.with.regularization <- function(method, 
 fct.testthat.runability.staticcov.works.with.0.lambdas <- function(method, clv.data.holdout, clv.data.no.holdout, clv.newdata.nohold, clv.newdata.withhold, param.names){
   test_that("Works with 0 regularization lambdas", {
     skip_on_cran()
-    skip_on_ci()
     skip_on_covr()
 
     l.args.holdout <- list(clv.data = clv.data.holdout,   reg.lambdas = c(trans=0, life=0),verbose=FALSE)
