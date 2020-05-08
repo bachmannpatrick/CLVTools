@@ -5,11 +5,13 @@
 \alias{clv.time.days-class}
 \title{Time unit representing a single Day}
 \description{
-Time unit representing a single Day
+Inherits from \code{clv.time.date} and therefore stores all timepoints
+with instances of class \code{Date}. Hence, no temporal resolution finer than 1 day is
+possible with this time unit.
 }
 \seealso{
-\code{\link[CLVTools:clv.time]{clv.time}}
+\code{\link[CLVTools:clv.time-class]{clv.time}}
 
-\code{\link[CLVTools:clv.time.date]{clv.time.date}}
+\code{\link[CLVTools:clv.time.date-class]{clv.time.date}}
 }
 \keyword{internal}

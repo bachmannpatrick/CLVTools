@@ -12,9 +12,9 @@
 #'
 #' @seealso
 #' For time unit implementations based on this class:
-#' \code{\link[CLVTools:clv.time.days]{clv.time.days}}
-#' \code{\link[CLVTools:clv.time.weeks]{clv.time.weeks}}
-#' \code{\link[CLVTools:clv.time.years]{clv.time.years}}
+#' \code{\link[CLVTools:clv.time.days-class]{clv.time.days}}
+#' \code{\link[CLVTools:clv.time.weeks-class]{clv.time.weeks}}
+#' \code{\link[CLVTools:clv.time.years-class]{clv.time.years}}
 #'
 #' @include class_clv_time.R all_generics.R
 #' @keywords internal
@@ -23,23 +23,33 @@ setClass("clv.time.date", contains = c("clv.time", "VIRTUAL"),
            timepoint.estimation.start = "Date",
            timepoint.estimation.end   = "Date",
            timepoint.holdout.start    = "Date",
-           timepoint.holdout.end      = "Date"))
+           timepoint.holdout.end      = "Date"),
 
-setMethod("initialize", signature = signature(.Object="clv.time.date"),
-          definition = function(.Object, time.format, name.time.unit,...){
+         # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
+         prototype = list(
+           timepoint.estimation.start = as.Date(character(0)),
+           timepoint.estimation.end   = as.Date(character(0)),
+           timepoint.holdout.start    = as.Date(character(0)),
+           timepoint.holdout.end      = as.Date(character(0))))
 
-  # dont call parent constructor/initiaizer as validObject will stop it.
-  # Reason is that clv.time has slots of "ANY" (S4) while clv.time.date expects "Date".
-  # Rather assign passed args for initialization (time.format+name) directly
-  # callNextMethod()
 
-  .Object@time.format                <- time.format
-  .Object@name.time.unit             <- name.time.unit
-  .Object@timepoint.estimation.start <- as.Date(character(0))
-  .Object@timepoint.estimation.end   <- as.Date(character(0))
-  .Object@timepoint.holdout.start    <- as.Date(character(0))
-  .Object@timepoint.holdout.end      <- as.Date(character(0))
-  return(.Object)
+# Because this class is VIRTUAL, no instance can be created and the
+#   usual approach of using a constructor function where an instance is created
+#   does not work.
+# In case validity methods are added, the "initialize" method needs to be
+#   defined and omit calling the parent class initialize (see PR linked to issue #47)
+
+
+
+setMethod("clv.time.format.timepoint", signature = signature(clv.time="clv.time.date"), definition = function(clv.time, timepoint){
+  return(format.Date(timepoint, "%Y-%m-%d"))
+})
+
+
+#' @importFrom lubridate days
+setMethod("clv.time.epsilon", signature =  signature(clv.time="clv.time.date"), function(clv.time){
+  # Alternative: return 1L
+  return(days(x = 1L))
 })
 
 
@@ -54,8 +64,7 @@ setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.
 #' @importFrom lubridate floor_date
 setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.time="clv.time.date",
                                                                             user.timepoint="POSIXlt"), definition = function(clv.time, user.timepoint){
-  # Check if has any time different from 00:00:00
-  # if(any(floor_date(x = user.timepoint, unit = "day") != user.timepoint))
+
   message("The time of day stored in the provided POSIXlt object is ignored (cut off).")
 
   return(as.Date.POSIXlt(user.timepoint))
@@ -64,8 +73,6 @@ setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.
 #' @importFrom lubridate tz
 setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.time="clv.time.date",
                                                                             user.timepoint="POSIXct"), definition = function(clv.time, user.timepoint){
-  # Check if has any time different from 00:00:00
-  # if(any(floor_date(x = user.timepoint, unit = "day") != user.timepoint))
   message("The time of day stored in the provided data (of type POSIXct) is ignored (cut off).")
 
   return(as.Date.POSIXct(x=user.timepoint, tz = tz(user.timepoint)))
@@ -92,8 +99,6 @@ setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.
   # None of these cases
   stop("The provided data is in an unknown format! Only Date, POSIXct/lt, and character are accepted!", call. = FALSE)
 })
-
-
 
 
 

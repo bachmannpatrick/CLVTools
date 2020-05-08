@@ -1,19 +1,39 @@
-# Class --------------------------------------------------------------------------------------------------------------------------------
-#' @include class_clv_model_basestrategy.R class_clv_model_pnbd_nocov.R class_clv_model_pnbd_staticcov.R
-setClass(Class = "clv.model.pnbd.dynamic.cov", contains = "clv.model.pnbd.static.cov",
-         slots = list(start.param.cov = "numeric"),
-         prototype = list(start.param.cov = 1,
-                          # New model defaults
-                          optimx.defaults  = list(method = "Nelder-Mead",
-                                                  itnmax = 3000),
-                          name.model       = "Pareto NBD with Dynamic Covariates"))
+#' CLV Model functionality for PNBD with dynamic covariates
+#'
+#' This class implements the functionalities and model-specific steps which are required
+#' to fit the Pareto/NBD model with dynamic covariates.
+#'
+#' @keywords internal
+#' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.pnbd.no.cov-class}, \link{clv.model.pnbd.static.cov-class}
+#' @seealso Classes using its instance: \link{clv.fitted.dynamic.cov-class},
+#' @include all_generics.R class_clv_model.R class_clv_model_pnbd.R class_clv_model_pnbd_staticcov.R
+setClass(Class = "clv.model.pnbd.dynamic.cov", contains = "clv.model.pnbd.static.cov")
+
+
+clv.model.pnbd.dynamic.cov <- function(){
+  return(new("clv.model.pnbd.dynamic.cov",
+             clv.model.pnbd.static.cov(),
+
+             name.model       = "Pareto NBD with Dynamic Covariates",
+             # Overwrite optimx default args
+             optimx.defaults  = list(method = "Nelder-Mead",
+                                     itnmax = 3000,
+                                     control = list(
+                                       kkt = TRUE,
+                                       save.failures = TRUE,
+                                       # Do not perform starttests because it checks the scales with max(logpar)-min(logpar)
+                                       #   but all standard start parameters are <= 0, hence there are no logpars what
+                                       #   produces a warning
+                                       starttests = FALSE))))
+}
 
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
-
+# . clv.model.put.estimation.input ------------------------------------------------------------------------------------------------
+#' @importFrom methods callNextMethod
 setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, verbose, ...){
   # Create walks - they are specific to the pnbd dyncov model
-  # clv.data, data.dyn.cov.life, data.dyn.cov.trans, names.cov.life, names.cov.trans
+
   if(verbose)
     message("Creating walks...")
 
@@ -29,38 +49,34 @@ setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model=
 })
 
 
-# Override staticov implementation
+# Override static cov implementation
+# . clv.model.prepare.optimx.args ------------------------------------------------------------------------------------------------
+#' @importFrom utils modifyList
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.pnbd.dynamic.cov"),
           definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
 
             # Do not call the no.cov function because the LL is different
             x <- t.x <- T.cal <- NULL
 
-            # Fit nocov model if no parameters were provided
-            #   how know if parameters were provided....???
-            #   coerce to no cov data
-            # data.no.cov <- as(clv.data, "clv.data")
-            # pnbd(data.no.cov)
-            # params:
-
             # Everything to call the LL function
             optimx.args <- modifyList(prepared.optimx.args,
                                       list(
-                                        obj = clv.fitted,
+                                        clv.fitted = clv.fitted,
                                         LL.function.sum = pnbd_dyncov_LL_sum,
                                         LL.function.ind = pnbd_dyncov_LL_ind, # if doing correlation
                                         # Ordering does not actually matter for dyncov_LL(params), just need all params
                                         LL.params.names.ordered = c(clv.model@names.prefixed.params.model,
                                                                     clv.fitted@names.prefixed.params.after.constr.life,
                                                                     clv.fitted@names.prefixed.params.after.constr.trans)))
-            # str(optimx.args)
             return(optimx.args)
           })
 
 
-setMethod(f = "clv.model.put.optimx.output", signature = signature(clv.model="clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, res.optimx){
+# . clv.model.process.post.estimation ------------------------------------------------------------------------------------------------
+setMethod(f = "clv.model.process.post.estimation", signature = signature(clv.model="clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, res.optimx){
+
   # Estimate again at found values to get LL.data (of last method used)
-  #   ** or is this part of plot/predict only??
+  # This is then used when plotting and predicting
   optimal.coefs <- drop(tail(coef(res.optimx), n=1))
 
 
@@ -71,7 +87,7 @@ setMethod(f = "clv.model.put.optimx.output", signature = signature(clv.model="cl
     # For the LL, the model params need to be logged again
     #   can do directly, as know this is the pnbd dyncov model
     # Other option: read from optimx result
-    # final.params <- c(drop(tail(coef(clv.fitted@optimx.estimation.output), n=1))[clv.fitted@clv.model@names.prefixed.params.model])
+    #   final.params <- c(drop(tail(coef(clv.fitted@optimx.estimation.output), n=1))[clv.fitted@clv.model@names.prefixed.params.model])
     final.params <- c(setNames(log(clv.fitted@prediction.params.model[c("r", "alpha", "s", "beta")]),
                                c("log.r", "log.alpha", "log.s", "log.beta")),
                       # use the same names as after interlayers. Need these as could be constrained
@@ -79,7 +95,7 @@ setMethod(f = "clv.model.put.optimx.output", signature = signature(clv.model="cl
                       setNames(clv.fitted@prediction.params.trans, clv.fitted@names.prefixed.params.after.constr.trans))
 
     # get LL with all values, not just ind LL or summed LL
-    clv.fitted@LL.data <- pnbd_dyncov_LL(params = final.params, obj=clv.fitted)
+    clv.fitted@LL.data <- pnbd_dyncov_LL(params = final.params, clv.fitted=clv.fitted)
     setkeyv(clv.fitted@LL.data, cols = "Id")
   }else{
     warning("Could not derive dyncov LL data with these final parameters - cannot predict and plot!", call. = FALSE)
@@ -89,14 +105,15 @@ setMethod(f = "clv.model.put.optimx.output", signature = signature(clv.model="cl
 })
 
 
+# . clv.model.put.newdata ------------------------------------------------------------------------------------------------
+#' @importFrom methods callNextMethod
 setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, verbose){
   # do nocov preparations (new cbs only)
   clv.fitted <- callNextMethod()
 
   # data in clv.fitted is already newdata
 
-  # In the nocov cbs, there is no d_omega.
-  # Remake cbs for dyncov
+  # Remake cbs for dyncov becasuse in the nocov cbs, there is no d_omega.
   clv.fitted@cbs <- pnbd_dyncov_cbs(clv.data = clv.fitted@clv.data)
 
   if(verbose)
@@ -118,24 +135,19 @@ setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.mo
   l.walks <- pnbd_dyncov_makewalks(clv.data = clv.fitted@clv.data)
   clv.fitted@data.walks.life  = l.walks[["data.walks.life"]]
   clv.fitted@data.walks.trans = l.walks[["data.walks.trans"]]
-  # if(verbose)
-  #   message("Creating walks")
 
   # get LL with all values, not just ind LL or summed LL
-  clv.fitted@LL.data <- pnbd_dyncov_LL(params = final.params, obj=clv.fitted)
+  clv.fitted@LL.data <- pnbd_dyncov_LL(params = final.params, clv.fitted=clv.fitted)
   setkeyv(clv.fitted@LL.data, cols = "Id")
 
   return(clv.fitted)
 })
 
 
-#' @include all_generics.R
+# . clv.model.predict.clv ------------------------------------------------------------------------------------------------
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.dynamic.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
 
-  CET <- PAlive <- DECT <- NULL
-
-  # err.msg <- check_user_data_dyncovlongenough(clv.fitted=clv.fitted, date.end = prediction.end.date)
-  # check_err_msg(err.msg)
+  period.length <- period.last <- CET <- i.CET <- PAlive <- i.palive <-  DECT <- i.DECT <-  NULL
 
   predict.number.of.periods <- dt.prediction[1, period.length]
   tp.period.last <- dt.prediction[1, period.last]
@@ -169,7 +181,13 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.dynamic.c
     dt.prediction[, DECT := CET]
   }
 
-
   return(dt.prediction)
 })
+
+
+# . clv.model.expectation ------------------------------------------------------------------------------------------------
+setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.dynamic.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
+  return(pnbd_dyncov_expectation(clv.fitted=clv.fitted, dt.expectation.seq=dt.expectation.seq, verbose=verbose))
+})
+
 

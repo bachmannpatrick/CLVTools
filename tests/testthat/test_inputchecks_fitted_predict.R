@@ -1,15 +1,15 @@
 data("cdnow")
 data("apparelTrans")
-data("apparelDemographics")
+data("apparelStaticCov")
 
-context("Inputchecks - clv fitted - predict")
+context("Inputchecks - clvfitted - predict")
 expect_silent(clv.cdnow <- clvdata(cdnow, date.format = "ymd", time.unit = "w", estimation.split = 37))
 expect_silent(pnbd.cdnow <- pnbd(clv.cdnow, verbose = FALSE))
 
-expect_message(clv.apparel <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w",
-                                    estimation.split = 52), regexp = "ignored")
+expect_silent(clv.apparel <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w",
+                                    estimation.split = 40))
 expect_silent(clv.apparel.static <- SetStaticCovariates(clv.data = clv.apparel,
-                                                        data.cov.life = apparelDemographics, data.cov.trans = apparelDemographics,
+                                                        data.cov.life = apparelStaticCov, data.cov.trans = apparelStaticCov,
                                                         names.cov.life = "Gender",
                                                         names.cov.trans = "Gender"))
 expect_silent(p.apparel.static <- pnbd(clv.apparel.static, verbose=FALSE))
@@ -81,8 +81,8 @@ test_that("Fails if newdata is of wrong clv.data", {
 })
 
 test_that("Fails if newdata has not the same covariates", {
-  apparelDemographics.additional <- data.table::copy(apparelDemographics)
-  apparelDemographics.additional[, Haircolor := c(1, rep(c(1,2), .N/2))]
+  apparelDemographics.additional <- data.table::copy(apparelStaticCov)
+  apparelDemographics.additional[, Haircolor := c(rep(c(1,2), .N/2))]
 
   # Other covs
   expect_silent(clv.apparel.static.other <- SetStaticCovariates(clv.data = clv.apparel,

@@ -192,50 +192,50 @@
 
 .fct.helper.inputchecks.staticcov... <- function(fct.model, l.std.args){
 
-  test_that("Warning if unnecessary inputs given in ellipsis", {
+  test_that("Stop if unnecessary inputs given in ellipsis", {
     # stuff that is for nothing
-    expect_warning(do.call(fct.model, modifyList(l.std.args, list(abc="Gender"))),
-                   regexp = "ignored")
-    expect_warning(do.call(fct.model, modifyList(l.std.args, list(abc=124))),
-                   regexp = "ignored")
-    expect_warning(do.call(fct.model, modifyList(l.std.args, list(dyn.cov =124))),
-                   regexp = "ignored")
+    expect_error(do.call(fct.model, modifyList(l.std.args, list(abc="Gender"))),
+                   regexp = "not needed")
+    expect_error(do.call(fct.model, modifyList(l.std.args, list(abc=124))),
+                   regexp = "not needed")
+    expect_error(do.call(fct.model, modifyList(l.std.args, list(dyn.cov =124))),
+                   regexp = "not needed")
   })
 }
 
 
 fct.helper.inputchecks.check.all.static.cov.model <- function(fct.model, l.std.args, name.model){
 
-  context(paste0("Checkinputs - ", name.model," - Parameter start.params.model"))
+  context(paste0("Inputchecks - ", name.model," - Parameter start.params.model"))
   .fct.helper.inputchecks.startparamsmodel(fct.model = fct.model, l.std.args = l.std.args,
                                            correct.params = c(alpha=1, beta=1, r=1, s=1),
                                            names.params = c("alpha", "beta", "r", "s"))
 
-  context(paste0("Checkinputs - ", name.model," - Parameter use.cor"))
+  context(paste0("Inputchecks - ", name.model," - Parameter use.cor"))
   .fct.helper.inputchecks.usecor(fct.model = fct.model, l.std.args = l.std.args,
                                  correct.param = TRUE)
 
-  context(paste0("Checkinputs - ", name.model," - Parameter start.param.cor"))
+  context(paste0("Inputchecks - ", name.model," - Parameter start.param.cor"))
   .fct.helper.inputchecks.startparamcor(fct.model, l.std.args, correct.param = 0.5)
 
-  context(paste0("Checkinputs - ", name.model," - Parameter optimx.args"))
+  context(paste0("Inputchecks - ", name.model," - Parameter optimx.args"))
   .fct.helper.inputchecks.optimxargs(fct.model, l.std.args)
 
-  context(paste0("Checkinputs - ",name.model," - Parameter start.param.life"))
+  context(paste0("Inputchecks - ",name.model," - Parameter start.param.life"))
   .fct.helper.inputchecks.startparamcov(fct.model = fct.model, l.std.args = l.std.args, name.param = "start.params.life")
 
-  context(paste0("Checkinputs - ",name.model," - Parameter start.param.trans"))
+  context(paste0("Inputchecks - ",name.model," - Parameter start.param.trans"))
   .fct.helper.inputchecks.startparamcov(fct.model = fct.model, l.std.args = l.std.args, name.param = "start.params.trans")
 
-  context(paste0("Checkinputs - ",name.model," - Parameter names.cov.constr"))
+  context(paste0("Inputchecks - ",name.model," - Parameter names.cov.constr"))
   .fct.helper.inputchecks.namescovconstr(fct.model = fct.model, l.std.args = l.std.args)
 
-  context(paste0("Checkinputs - ",name.model," - Parameter start.params.constr"))
+  context(paste0("Inputchecks - ",name.model," - Parameter start.params.constr"))
   .fct.helper.inputchecks.startparamconstr(fct.model = fct.model, l.std.args = l.std.args)
 
-  context(paste0("Checkinputs - ",name.model," - Parameter reg.lambdas"))
+  context(paste0("Inputchecks - ",name.model," - Parameter reg.lambdas"))
   .fct.helper.inputchecks.reglambdas(fct.model = fct.model, l.std.args = l.std.args)
 
-  context(paste0("Checkinputs - ",name.model," - Parameter ..."))
+  context(paste0("Inputchecks - ",name.model," - Parameter ..."))
   .fct.helper.inputchecks.staticcov...(fct.model = fct.model, l.std.args = l.std.args)
 }

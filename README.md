@@ -1,4 +1,8 @@
 
+[![R CMD
+checks](https://github.com/bachmannpatrick/CLVTools/workflows/R-CMD-check/badge.svg?branch=development)](https://github.com/bachmannpatrick/CLVTools/actions)
+[![Tests](https://github.com/bachmannpatrick/CLVTools/workflows/testthat-tests/badge.svg?branch=development)](https://github.com/bachmannpatrick/CLVTools/actions)
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ## The CLVTools Package
@@ -12,7 +16,7 @@ literature and practice.
 
 The R package **CLVTools** provides an efficient and easy to use
 implementation framework for probabilistic customer attrition models in
-non-contractual settings. Building up on learnings of other
+non-contractual settings. Building up on the learnings of other
 implementations, the package adopts S4 classes to allow constructing
 rich and rather complex models that nevertheless still are easy to apply
 for the end user. The framework is capable to accommodate a variety of
@@ -38,16 +42,17 @@ for a time-line.
 5)  BG/NBD model with **time-invariant** contextual factors (Fader &
     Hardie 2007)
 
-6)  Gamma/Gompertz/NBD (Bemmaor & Glady 2012)
+6)  Standard Gamma/Gompertz/NBD (Bemmaor & Glady 2012)
 
 7)  Gamma/Gompertz/NBD model with **time-invariant** contextual factors
     (Näf, Bachmann & Meierer 2020)
 
-8)  BG/BB model (Fader, Hardie, & Shang 2010)
+8)  Standard BG/BB model (Fader, Hardie, & Shang 2010)
 
-In addition the framework features an “inter-layer system” to allow the
-flexible addition of model extensions during the model fitting process.
-Currently these layers include:
+In addition the framework features a system of layers between the
+optimizer and the log-likelihood function to allow the flexible addition
+of model extensions during the model fitting process. Currently these
+layers include:
 
   - Correlation of the purchase and the attrition process
 
@@ -64,7 +69,11 @@ Install the stable version from CRAN:
 
 Install the development version from GitHub:
 
-    devtools::install_github("CLVTools", ref = "development")
+    devtools::install_github("bachmannpatrick/CLVTools", ref = "development")
+
+Note that the package depends on RcppArmadillo and RcppGSL which will
+likely require additional setup steps in order to compile and install
+the CLVTools package from source.
 
 ## Contributions
 

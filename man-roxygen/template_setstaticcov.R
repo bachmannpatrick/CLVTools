@@ -1,4 +1,4 @@
-#' @rdname SetStaticCovariates-methods
+#' @name SetStaticCovariates
 #' @title Add Static Covariates to a CLV data object
 #' @param clv.data CLV data object to add the covariates data to.
 #' @param data.cov.life Static covariate data as \code{data.frame} or \code{data.table} for the lifetime process.
@@ -21,7 +21,7 @@
 #' \code{data.cov.life} and \code{data.cov.trans} are \code{data.frame}s or \code{data.table}s that
 #' each contain exactly one single row of covariate data for every customer appearing in the
 #' transaction data. Covariates of class \code{character} or \code{factor} are converted
-#' to k-1 numeric dummie variables.
+#' to k-1 numeric dummy variables.
 #'
 #' @return
 #' An object of class \code{clv.data.static.covariates}.
@@ -30,9 +30,10 @@
 #'
 #' @examples
 #'
-#' \dontrun{
+#' \donttest{
+#'
 #' data("apparelTrans")
-#' data("apparelDemographics")
+#' data("apparelStaticCov")
 #'
 #' # Create a clv data object without covariates
 #' clv.data.apparel <- clvdata(apparelTrans, time.unit="w",
@@ -41,9 +42,9 @@
 #' # Add static covariate data
 #' clv.data.apparel.cov  <-
 #'    SetStaticCovariates(clv.data.apparel,
-#'                        data.cov.life  = apparelDemographics,
+#'                        data.cov.life  = apparelStaticCov,
 #'                        names.cov.life = "Gender",
-#'                        data.cov.trans = apparelDemographics,
+#'                        data.cov.trans = apparelStaticCov,
 #'                        names.cov.trans = "Gender",
 #'                        name.id = "Id")
 #'

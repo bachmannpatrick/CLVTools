@@ -5,6 +5,8 @@
 \alias{clv.time.weeks-class}
 \title{Time unit representing a single Week}
 \description{
-Time unit representing a single Week
+Inherits from \code{clv.time.date} and therefore stores all timepoints
+with instances of class \code{Date}. Hence, no temporal resolution finer than 1 day is
+possible with this time unit.
 }
 \keyword{internal}

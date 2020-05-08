@@ -1,14 +1,17 @@
+#' @name summary.clv.fitted
+#'
 #' @title Summarizing a fitted CLV model
+#'
 #' @param object A fitted CLV model
 #' @param x an object of class \code{"summary.clv.no.covariates"}, usually, a result of a call to \code{summary.clv.no.covariates}.
 #' @param digits the number of significant digits to use when printing.
-#' @param signif.stars logical. If TRUE, ‘significance stars’ are printed for each coefficient.
+#' @param signif.stars logical. If TRUE, \sQuote{significance stars} are printed for each coefficient.
 #' @param ... Ignored for \code{summary}, forwarded to \code{printCoefmat} for \code{print}.
 #' @description
 #'
 #' Summary method for fitted CLV models that provides statistics about the estimated parameters
 #' and information about the optimization process. If multiple optimization methods were used
-#' (for example if specified by the user in the argument \code{optimx.args}), all information here refers to
+#' (for example if specified in parameter \code{optimx.args}), all information here refers to
 #' the last method/row of the resulting \code{optimx} object.
 #'
 #' @return This function computes and returns a list of summary information of the fitted model
@@ -46,27 +49,30 @@
 #'            \item{Constraint params}{Name of the covariate parameters which were constraint, if used.}}}
 #'
 #' @seealso The model fitting functions \code{\link[CLVTools]{pnbd}}.
-#' @seealso Function \code{\link[CLVTools]{coef}} will extract the matrix of coefficients and
-#' summary statistics.
+#'
+#' @seealso Function \code{coef} will extract the \code{coefficients} matrix including summary statistics and
+#' function \code{vcov} will extract the \code{vcov} from the returned summary object.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#'
 #' data("apparelTrans")
 #'
 #' # Fit pnbd standard model, no covariates
-#' pnbd.apparel <- pnbd(clvdata(apparelTrans, time.unit="w",
-#'                     estimation.split=37, date.format="ymd"))
+#' clv.data.apparel <- clvdata(apparelTrans, time.unit="w",
+#'                                 estimation.split=40, date.format="ymd")
+#' pnbd.apparel <- pnbd(clv.data.apparel)
 #'
 #' # summary about model fit
 #' summary(pnbd.apparel)
 #'
 #' # Add static covariate data
-#' data("apparelDemographics")
+#' data("apparelStaticCov")
 #' data.apparel.cov  <-
 #'    SetStaticCovariates(clv.data.apparel,
-#'                        data.cov.life  = apparelDemographics,
+#'                        data.cov.life  = apparelStaticCov,
 #'                        names.cov.life = "Gender",
-#'                        data.cov.trans = apparelDemographics,
+#'                        data.cov.trans = apparelStaticCov,
 #'                        names.cov.trans = "Gender",
 #'                        name.id = "Id")
 #'
@@ -78,4 +84,5 @@
 #' #   and used regularization
 #' summary(pnbd.apparel.cov)
 #' }
+#'
 #'

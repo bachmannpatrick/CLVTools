@@ -1,8 +1,11 @@
+skip_on_cran()
+
 # Load required data -----------------------------------------------------------------------------------
 data("apparelTrans")
-data("apparelDemographics")
+data("apparelStaticCov")
 data("apparelDynCov")
 apparelDynCov[, Cov.Date := as.Date(Cov.Date)] # otherwise warnings when setting dyncov
+apparelDynCov <- apparelDynCov[Cov.Date > "2005-01-01" ] # otherwise warnings when setting dyncov
 
 fct.helper.test.runability.clv.data.summary <- function(clv.data){
   test_that("summary works",{
@@ -28,9 +31,11 @@ fct.helper.test.runability.clv.data.plot <- function(clv.data){
     expect_message(plot(clv.data, cumulative=TRUE), regexp = "Plotting")
   })
 
-  test_that("plot, plot = FALSE", {
+  test_that("plot, plot = FALSE, repeat trans = 0", {
     expect_message(dt.plot <- plot(clv.data, plot=FALSE), regexp = "Plotting")
     expect_s3_class(dt.plot, "data.table")
+    expect_true(isTRUE(all.equal(unlist(dt.plot[period.until == min(period.until), 2]),
+                                 0, check.attributes = FALSE)))
   })
 
   test_that("plot, verbose = TRUE", {
@@ -62,29 +67,29 @@ fct.helper.test.runability.clv.data.others3 <- function(clv.data){
 context("Runability - clvdata - S3")
 
 # Create with and withouth holdout, with and withouth static covariates
-expect_message(apparel.holdout    <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w", estimation.split = 39), regexp = "ignored")
-expect_message(apparel.no.holdout <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w"), regexp = "ignored")
+expect_silent(apparel.holdout    <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w", estimation.split = 39))
+expect_silent(apparel.no.holdout <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w"))
 
 expect_silent(apparel.holdout.static.cov     <- SetStaticCovariates(clv.data = apparel.holdout,
-                                                                    data.cov.life = apparelDemographics,  names.cov.life = "Gender",
-                                                                    data.cov.trans = apparelDemographics, names.cov.trans = "Gender"))
+                                                                    data.cov.life = apparelStaticCov,  names.cov.life = "Gender",
+                                                                    data.cov.trans = apparelStaticCov, names.cov.trans = "Gender"))
 expect_silent(apparel.no.holdout.static.cov  <- SetStaticCovariates(clv.data = apparel.no.holdout,
-                                                             data.cov.life = apparelDemographics,  names.cov.life = "Gender",
-                                                             data.cov.trans = apparelDemographics, names.cov.trans = "Gender"))
+                                                             data.cov.life = apparelStaticCov,  names.cov.life = "Gender",
+                                                             data.cov.trans = apparelStaticCov, names.cov.trans = "Gender"))
 
 
 expect_silent(apparel.holdout.dyn.cov     <- SetDynamicCovariates(clv.data = apparel.holdout,
                                                                   data.cov.life = apparelDynCov,
                                                                   data.cov.trans = apparelDynCov,
-                                                                  names.cov.life = c("Gender", "DM", "High.Season"),
-                                                                  names.cov.trans = c("Gender", "DM", "High.Season"),
+                                                                  names.cov.life = c("Channel", "Marketing", "Gender"),
+                                                                  names.cov.trans = c("Channel", "Marketing", "Gender"),
                                                                   name.date = "Cov.Date"))
 
 expect_silent(apparel.no.holdout.dyn.cov     <- SetDynamicCovariates(clv.data = apparel.no.holdout,
                                                                       data.cov.life = apparelDynCov,
                                                                       data.cov.trans = apparelDynCov,
-                                                                      names.cov.life = c("Gender", "DM", "High.Season"),
-                                                                      names.cov.trans = c("Gender", "DM", "High.Season"),
+                                                                      names.cov.life = c("Channel", "Marketing", "Gender"),
+                                                                      names.cov.trans = c("Channel", "Marketing", "Gender"),
                                                                       name.date = "Cov.Date"))
 
 

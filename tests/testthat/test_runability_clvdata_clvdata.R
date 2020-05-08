@@ -105,6 +105,8 @@ test_that("Works with Price as numeric and Integer", {
 
 
 test_that("Works without column Price", {
+  skip_on_cran()
+
   cdnow.noprice <- data.table::copy(cdnow)
   cdnow.noprice[, Price := NULL]
   expect_silent(clvdata(data.transactions = cdnow.noprice,

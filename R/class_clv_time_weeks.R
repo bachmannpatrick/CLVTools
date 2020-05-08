@@ -1,5 +1,7 @@
 #' Time unit representing a single Week
 #'
+#' @template template_clvdate_description
+#'
 #' @include class_clv_time.R class_clv_time_date.R all_generics.R
 #' @keywords internal
 setClass("clv.time.weeks", contains = "clv.time.date")
@@ -8,6 +10,7 @@ setClass("clv.time.weeks", contains = "clv.time.date")
 # Constructor
 #   Cannot set estimation/holdout start/end here because for this it needs transaction dates, which first
 #     need to be converted to dates and then returned to the transaction data table
+#' @importFrom methods new
 clv.time.weeks <- function(time.format){
   return(new("clv.time.weeks",
              time.format                = time.format,

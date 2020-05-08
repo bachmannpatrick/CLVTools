@@ -3,10 +3,9 @@ interlayer_callnextinterlayer <- function(next.interlayers, LL.params, LL.functi
 
   all.other.args <- list(...)
 
-  # Put together call
+  # Put together call ----------------------------------------------------------
   #   remove the current interlayer
   #   Call layer on top
-  # ---------------------------------------------------------------------------
   interlayer.call.args <- list(next.interlayers = next.interlayers[-1],
                                LL.params        = LL.params,
                                LL.function.sum  = LL.function.sum)

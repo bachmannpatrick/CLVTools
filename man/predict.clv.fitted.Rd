@@ -2,13 +2,24 @@
 % Please edit documentation in R/clv_template_controlflow_predict.R
 \name{predict.clv.fitted}
 \alias{predict.clv.fitted}
+\alias{predict,clv.fitted-method}
 \title{Predict CLV from a fitted model}
 \usage{
 \method{predict}{clv.fitted}(
   object,
   newdata = NULL,
   prediction.end = NULL,
-  predict.spending = object@clv.data@has.spending,
+  predict.spending = clv.data.has.spending(object@clv.data),
+  continuous.discount.factor = 0.1,
+  verbose = TRUE,
+  ...
+)
+
+\S4method{predict}{clv.fitted}(
+  object,
+  newdata = NULL,
+  prediction.end = NULL,
+  predict.spending = clv.data.has.spending(object@clv.data),
   continuous.discount.factor = 0.1,
   verbose = TRUE,
   ...
@@ -39,7 +50,7 @@ An object of class \code{data.table} with each columns containing the prediction
 \item{CET}{The Conditional Expected Transactions}
 \item{DERT or DECT}{Discounted Expected Residual Transactions or Discounted Expected Conditional Transactions for dynamic covariates models}
 \item{actual.x}{Actual number of transactions until prediction.end. Only if there is a holdout period and the prediction ends in it.}
-\item{actual.Spending}{Actual spending until prediction.end. Only if there is a holdout period and the prediction ends in it.}
+\item{actual.Spending}{Actual spending until prediction.end. Only if there is a holdout period and the prediction ends in it, 0 otherwise.}
 \item{predicted.Spending}{The spending as predicted by the Gamma-Gamma model.}
 \item{predicted.CLV}{Customer Lifetime Value based on DERT and predicted spending.}
 }
@@ -65,30 +76,34 @@ to predict spending and calculate the predicted CLV. In this case, the predictio
 The \code{newdata} argument has to be a clv data object of the exact same class as the data object
 on which the model was fit. In case the model was fit with covariates, \code{newdata} needs to contain identically
 named covariate data.
+
 The use case for \code{newdata} is mainly two-fold: First, to estimate model parameters only on a
-sample of the data and then use the fitted model object to predict for the full data set provided through \code{newdata}.
+sample of the data and then use the fitted model object to predict or plot for the full data set provided through \code{newdata}.
 Second, for models with dynamic covariates, to provide a clv data object with longer covariates than contained in the data
-on which the model was estimated what allows to predict further. When providing \code{newdata}, some models
+on which the model was estimated what allows to predict or plot further. When providing \code{newdata}, some models
 might require additional steps that can significantly increase runtime.
 
-
-\code{prediction.end} is either a point in time (of class \code{Date}, \code{POSIXct}, or \code{character}) or the number of periods
-that indicates until when to predict.
+\code{prediction.end} indicates until when to predict or plot and can be given as either
+a point in time (of class \code{Date}, \code{POSIXct}, or \code{character}) or the number of periods.
 If \code{prediction.end} is of class character, the date/time format set when creating the data object is used for parsing.
-If \code{prediction.end} is the number of periods, the end of the fitting period serves as the reference point from which periods are counted.
-Only full periods may be specified.
-If \code{prediction.end} is omitted or NULL, it defaults to the end of the holdout period.
+If \code{prediction.end} is the number of periods, the end of the fitting period serves as the reference point
+from which periods are counted. Only full periods may be specified.
+If \code{prediction.end} is omitted or NULL, it defaults to the end of the holdout period if present and to the
+end of the estimation period otherwise.
 
+The first prediction period is defined to start right after the end of the estimation period.
+If for example weekly time units are used and the estimation period ends on Sunday 2019-01-01, then the first day
+of the first prediction period is Monday 2019-01-02. Each prediction period includes a total of 7 days and
+the first prediction period therefore will end on, and include, Sunday 2019-01-08. Subsequent prediction periods
+again start on Mondays and end on Sundays.
+If \code{prediction.end} indicates a timepoint on which to end, this timepoint is included in the prediction period.
 
 \code{predict.spending} uses a Gamma/Gamma model to predict customer spending. This option is only available
 if customer spending information was provided when the data object was created.
 
-
 \code{continuous.discount.factor} allows to adjust the discount rate used to estimated the discounted expected
 transactions (\code{DERT}).
 The default value is \code{0.1} (=10\%). Note that a continuous rate needs to be provided.
-
-
 
 
 \subsection{The Gamma-Gamma model to Predict Spending}{
@@ -100,7 +115,9 @@ popular choice.
 }
 }
 \examples{
+
 \donttest{
+
 data("apparelTrans")
 # Fit pnbd standard model on data, WITH holdout
 pnc <- pnbd(clvdata(apparelTrans, time.unit="w",
@@ -124,14 +141,16 @@ predict(pnc, prediction.end = lubridate::ymd("2016-12-31"))
 pnc <- pnbd(clvdata(apparelTrans, time.unit="w", date.format="ymd"))
 
 # This fails, because without holdout, a prediction.end is required
+\dontrun{
 predict(pnc)
+}
 
 # Now, predict 10 periods from the end of the last transaction
-   (end of estimation period)
+#   (end of estimation period)
 predict(pnc, prediction.end = 10) # ends on 2016-12-17
 
-
 }
+
 }
 \references{
 Schmittlein DC, Morrison DG, Colombo R (1987). “Counting Your Customers:

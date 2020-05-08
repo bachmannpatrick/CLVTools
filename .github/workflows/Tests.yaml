@@ -1,0 +1,36 @@
+name: testthat-tests
+on: pull_request # default to types [opened, synchronize, reopened]
+jobs:
+  tests-ubuntu-16-04-R-release:
+    runs-on: ubuntu-16.04
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      # to install binaries on ubuntu
+      RSPM: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: r-lib/actions/setup-r@master
+        with:
+          r-version: 'release'
+      - name: Install system dependencies
+        env:
+          RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
+        run: |
+          Rscript -e "install.packages(c('remotes', 'rcmdcheck'))"
+          Rscript -e "remotes::install_github('r-hub/sysreqs')"
+          sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
+          sudo -s eval "$sysreqs"
+      - name: Install package dependencies
+        run: |
+          remotes::install_deps(dependencies = TRUE) # installs binaries
+          # Install testing stuff (testthat and covr are part of package's Suggests and installed as package dependency)
+          remotes::install_cran("devtools")
+        shell: Rscript {0}
+
+      - name: Run tests
+        run: |
+          library(testthat)
+          library(devtools)
+          reporter <- RstudioReporter$new() # has to be defined outside capture.output to still print
+          capture.output(devtools::test(reporter = reporter, stop_on_failure=TRUE, stop_on_warning=TRUE))
+        shell: Rscript {0}

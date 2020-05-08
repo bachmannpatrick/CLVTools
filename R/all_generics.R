@@ -1,16 +1,3 @@
-
-# Set Covariates Generics ------------------------------------------------
-
-#' @exportMethod SetStaticCovariates
-setGeneric(name = "SetStaticCovariates",  def = function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id")
-  standardGeneric("SetStaticCovariates"))
-
-
-#' @exportMethod SetDynamicCovariates
-setGeneric(name = "SetDynamicCovariates",  def = function(clv.data, data.cov.life, data.cov.trans, names.cov.life, names.cov.trans, name.id="Id", name.date="Date")
-  standardGeneric("SetDynamicCovariates"))
-
-
 # Predict Generics -------------------------------------------------------
 # The S4 generic is defined explicitely for clarity, instead of relying on it as a side-effect of
 #    only defining the method with setMethod
@@ -23,67 +10,48 @@ setGeneric(name = "SetDynamicCovariates",  def = function(clv.data, data.cov.lif
 #   exportMethods(fun)
 setGeneric(name = "predict")
 
-# clv.data accessors -----------------------------------------------------------------------------------------
-
-# covs only
-setGeneric("clv.data.get.matrix.data.cov.life", def=function(clv.data)
-  standardGeneric("clv.data.get.matrix.data.cov.life"))
-
-# get matrix representation of specified cov data
-setGeneric("clv.data.get.matrix.data.cov.trans", def=function(clv.data)
-  standardGeneric("clv.data.get.matrix.data.cov.trans"))
-
-setGeneric("clv.data.get.names.cov.life", def=function(clv.data)
-  standardGeneric("clv.data.get.names.cov.life"))
-
-setGeneric("clv.data.get.names.cov.trans", def=function(clv.data)
-  standardGeneric("clv.data.get.names.cov.trans"))
-
-# reduce covariates to the ones given in names.x
-setGeneric("clv.data.reduce.covariates", def=function(clv.data, names.cov.life, names.cov.trans)
-  standardGeneric("clv.data.reduce.covariates"))
-
-
 
 # Controlflows -------------------------------------------------------------------------------------------------
 # Steps performed by all models but different between base (no cov) and covariate models
 
 # . Estimate ---------------------------------------------------------------------------------------------------
-setGeneric("clv.controlflow.estimate.check.inputs", def=function(obj,  start.params.model, use.cor, start.param.cor, optimx.args, verbose,...)
+setGeneric("clv.controlflow.estimate.check.inputs", def=function(clv.fitted,  start.params.model, use.cor, start.param.cor, optimx.args, verbose,...)
   standardGeneric("clv.controlflow.estimate.check.inputs"))
 
-setGeneric("clv.controlflow.estimate.put.inputs", def=function(obj, cl, use.cor, ...)
+setGeneric("clv.controlflow.estimate.put.inputs", def=function(clv.fitted, cl, use.cor, ...)
   standardGeneric("clv.controlflow.estimate.put.inputs"))
 
-setGeneric("clv.controlflow.estimate.generate.start.params", def=function(obj, start.params.model,start.param.cor,verbose,...)
+setGeneric("clv.controlflow.estimate.generate.start.params", def=function(clv.fitted, start.params.model,start.param.cor,verbose,...)
   standardGeneric("clv.controlflow.estimate.generate.start.params"))
 
-setGeneric("clv.controlflow.estimate.prepare.optimx.args", def=function(obj, start.params.all)
+setGeneric("clv.controlflow.estimate.prepare.optimx.args", def=function(clv.fitted, start.params.all)
   standardGeneric("clv.controlflow.estimate.prepare.optimx.args"))
 
-setGeneric("clv.controlflow.estimate.put.optimx", def=function(obj, res.optimx)
-  standardGeneric("clv.controlflow.estimate.put.optimx"))
+setGeneric("clv.controlflow.estimate.process.post.estimation", def=function(clv.fitted, res.optimx)
+  standardGeneric("clv.controlflow.estimate.process.post.estimation"))
 
 
 # . Predict -----------------------------------------------------------------------------------------------
-setGeneric("clv.controlflow.predict.check.inputs", def = function(obj, prediction.end, continuous.discount.factor, predict.spending, verbose)
+setGeneric("clv.controlflow.predict.check.inputs", def = function(clv.fitted, prediction.end, continuous.discount.factor, predict.spending, verbose)
   standardGeneric("clv.controlflow.predict.check.inputs"))
 
-setGeneric("clv.controlflow.predict.set.prediction.params", def = function(obj)
+setGeneric("clv.controlflow.predict.set.prediction.params", def = function(clv.fitted)
   standardGeneric("clv.controlflow.predict.set.prediction.params"))
 
+# .. Newdata: replace data in existing model -----------------------------------------------------------------
+# For plot and predict
+setGeneric("clv.controlflow.check.newdata", def = function(clv.fitted, user.newdata, prediction.end)
+  standardGeneric("clv.controlflow.check.newdata"))
+
+
 # . Plot ----------------------------------------------------------------------------------------------------
-#function(obj, prediction.end, data.dyn.cov.life, data.dyn.cov.trans,...)
+#function(clv.fitted, prediction.end, data.dyn.cov.life, data.dyn.cov.trans,...)
 setGeneric("clv.controlflow.plot.check.inputs", def = function(obj, prediction.end, cumulative, plot, label.line, verbose)
   standardGeneric("clv.controlflow.plot.check.inputs"))
 
 setGeneric("clv.controlflow.plot.get.data", def = function(obj, dt.expectation.seq, cumulative, label.line, verbose)
   standardGeneric("clv.controlflow.plot.get.data"))
 
-# .. Newdata: replace data in existing model -----------------------------------------------------------------
-# For plot and predict
-setGeneric("clv.controlflow.check.newdata", def = function(clv.fitted, user.newdata, prediction.end)
-  standardGeneric("clv.controlflow.check.newdata"))
 
 
 
@@ -114,8 +82,14 @@ setGeneric(name="clv.model.backtransform.estimated.params.model", def=function(c
   standardGeneric("clv.model.backtransform.estimated.params.model"))
 
 # ie post.estimation.steps
-setGeneric(name="clv.model.put.optimx.output", def=function(clv.model, clv.fitted, res.optimx)
-  standardGeneric("clv.model.put.optimx.output"))
+setGeneric(name="clv.model.process.post.estimation", def=function(clv.model, clv.fitted, res.optimx)
+  standardGeneric("clv.model.process.post.estimation"))
+
+setGeneric(name="clv.model.m.to.cor", def = function(clv.model, prefixed.params.model, param.m)
+  standardGeneric("clv.model.m.to.cor"))
+
+setGeneric(name="clv.model.cor.to.m", def = function(clv.model, prefixed.params.model, param.cor)
+  standardGeneric("clv.model.cor.to.m"))
 
 # .. Predict ----------------------------------------------------------------------------------------------------------------------
 # Predict clv per model
@@ -133,7 +107,6 @@ setGeneric(name="clv.model.vcov.jacobi.diag", def=function(clv.model, clv.fitted
 
 # .. Newdata ---------------------------------------------------------------------------------------------------------------
 # Do the steps necessary to integrate user newdata in the fitted model (ie do cbs etc)
-# **TODO: Add default model strategy for this method
 setGeneric(name="clv.model.put.newdata", def=function(clv.model, clv.fitted, user.newdata, verbose)
   standardGeneric("clv.model.put.newdata"))
 
@@ -151,35 +124,31 @@ setGeneric(name="clv.model.backtransform.estimated.params.cov", def=function(clv
   standardGeneric("clv.model.backtransform.estimated.params.cov"))
 
 
-
-# Function to reduce the covariates in the object to the ones named by the user when calling estimate
-# - not used, yet
-# Generic because a covariate specific version is required for dyn covs (reduce walk list as well)
-# setGeneric(name = "clv.model.reduce.covs", def = function(obj, names.cov.data.life, names.cov.data.trans)
-#   standardGeneric("clv.model.reduce.covs"))
-
-setGeneric(name="clv.model.m.to.cor", def = function(clv.model, prefixed.params.model, param.m)
-  standardGeneric("clv.model.m.to.cor"))
-
-setGeneric(name="clv.model.cor.to.m", def = function(clv.model, prefixed.params.model, param.cor)
-  standardGeneric("clv.model.cor.to.m"))
-
-
 # clv.time ----------------------------------------------------------------------------------------------------
-setGeneric("clv.time.set.sample.periods", function(clv.time, tp.first.transaction, tp.last.transaction, user.estimation.end)
-  standardGeneric("clv.time.set.sample.periods"))
+
+setGeneric("clv.time.epsilon", function(clv.time)
+  standardGeneric("clv.time.epsilon"))
+
 # convert user given date/datetimes
 setGeneric("clv.time.convert.user.input.to.timepoint", function(clv.time, user.timepoint)
   standardGeneric("clv.time.convert.user.input.to.timepoint"))
 
 setGeneric("clv.time.interval.in.number.tu", def = function(clv.time, interv)
   standardGeneric("clv.time.interval.in.number.tu"))
+
 setGeneric("clv.time.number.timeunits.to.timeperiod", function(clv.time, user.number.periods)
   standardGeneric("clv.time.number.timeunits.to.timeperiod"))
+
 setGeneric("clv.time.tu.to.ly", function(clv.time)
   standardGeneric("clv.time.tu.to.ly"))
+
 setGeneric("clv.time.floor.date", function(clv.time, timepoint)
   standardGeneric("clv.time.floor.date"))
+
 # only for pnbd dyncov createwalks
 setGeneric("clv.time.ceiling.date", function(clv.time, timepoint)
   standardGeneric("clv.time.ceiling.date"))
+
+setGeneric("clv.time.format.timepoint", function(clv.time, timepoint)
+  standardGeneric("clv.time.format.timepoint"))
+

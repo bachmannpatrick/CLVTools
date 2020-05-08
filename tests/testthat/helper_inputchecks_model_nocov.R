@@ -174,31 +174,31 @@
 
 .fct.helper.inputchecks.nocov... <- function(fct.model, l.std.args){
 
-  test_that("Warning if unnecessary inputs given in ellipsis", {
+  test_that("Stop if unnecessary inputs given in ellipsis", {
     # stuff that is for covariate models only
 
-    expect_warning(do.call(fct.model, modifyList(l.std.args, list(names.cov.trans="Gender"))),
-                   regexp = "ignored")
-    expect_warning(do.call(fct.model, modifyList(l.std.args, list(names.cov.life="Gender"))),
-                   regexp = "ignored")
+    expect_error(do.call(fct.model, modifyList(l.std.args, list(names.cov.trans="Gender"))),
+                 regexp = "not need")
+    expect_error(do.call(fct.model, modifyList(l.std.args, list(names.cov.life="Gender"))),
+                 regexp = "not need")
 
-    expect_warning(do.call(fct.model, modifyList(l.std.args, list(start.params.life=c(Gender=0.5)))),
-                   regexp = "ignored")
-    expect_warning(do.call(fct.model, modifyList(l.std.args, list(start.params.trans=c(Gender=0.5)))),
-                   regexp = "ignored")
+    expect_error(do.call(fct.model, modifyList(l.std.args, list(start.params.life=c(Gender=0.5)))),
+                 regexp = "not needed")
+    expect_error(do.call(fct.model, modifyList(l.std.args, list(start.params.trans=c(Gender=0.5)))),
+                 regexp = "not need")
 
-    expect_warning(do.call(fct.model, modifyList(l.std.args, list(names.cov.constr="Gender"))),
-                   regexp = "ignored")
-    expect_warning(do.call(fct.model, modifyList(l.std.args, list(start.params.constr=c(Gender=0.5)))),
-                   regexp = "ignored")
+    expect_error(do.call(fct.model, modifyList(l.std.args, list(names.cov.constr="Gender"))),
+                 regexp = "not need")
+    expect_error(do.call(fct.model, modifyList(l.std.args, list(start.params.constr=c(Gender=0.5)))),
+                 regexp = "not need")
 
-    expect_warning(do.call(fct.model, modifyList(l.std.args, list(reg.lambdas=c(trans=10, life=10)))),
-                   regexp = "ignored")
+    expect_error(do.call(fct.model, modifyList(l.std.args, list(reg.lambdas=c(trans=10, life=10)))),
+                 regexp = "not need")
   })
 
-  test_that("Warning if anything else in ellipsis", {
-    expect_warning(do.call(fct.model, modifyList(l.std.args, list(abc=10))),
-                   regexp = "ignored")
+  test_that("Stop if anything else in ellipsis", {
+    expect_error(do.call(fct.model, modifyList(l.std.args, list(abc=10))),
+                 regexp = "not needed")
   })
 }
 
@@ -207,23 +207,23 @@
 # Check all params ----------------------------------------------------
 fct.helper.inputchecks.check.all.no.cov.model <- function(fct.model, l.std.args, name.model){
 
-  context(paste0("Checkinputs - ", name.model," - Parameter start.params.model"))
+  context(paste0("Inputchecks - ", name.model," - Parameter start.params.model"))
   .fct.helper.inputchecks.startparamsmodel(fct.model = fct.model, l.std.args = l.std.args,
-                                          correct.params = c(alpha=1, beta=1, r=1, s=1),
-                                          names.params = c("alpha", "beta", "r", "s"))
+                                           correct.params = c(alpha=1, beta=1, r=1, s=1),
+                                           names.params = c("alpha", "beta", "r", "s"))
 
 
-  context(paste0("Checkinputs - ", name.model," - Parameter use.cor"))
+  context(paste0("Inputchecks - ", name.model," - Parameter use.cor"))
   .fct.helper.inputchecks.usecor(fct.model = fct.model, l.std.args = l.std.args,
-                                correct.param = TRUE)
+                                 correct.param = TRUE)
 
-  context(paste0("Checkinputs - ", name.model," - Parameter start.param.cor"))
+  context(paste0("Inputchecks - ", name.model," - Parameter start.param.cor"))
   .fct.helper.inputchecks.startparamcor(fct.model, l.std.args, correct.param = 0.5)
 
-  context(paste0("Checkinputs - ", name.model," - Parameter optimx.args"))
+  context(paste0("Inputchecks - ", name.model," - Parameter optimx.args"))
   .fct.helper.inputchecks.optimxargs(fct.model, l.std.args)
 
-  context(paste0("Checkinputs - ", name.model," - Parameter ..."))
+  context(paste0("Inputchecks - ", name.model," - Parameter ..."))
   .fct.helper.inputchecks.nocov...(fct.model = fct.model, l.std.args = l.std.args)
 }
 

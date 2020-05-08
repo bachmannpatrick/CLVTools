@@ -60,7 +60,8 @@
 
 \item{start.param.cor}{Start parameter for the optimization of the correlation.}
 
-\item{optimx.args}{Additional control arguments to use during optimization. Forwarded to the optimx function of package optimx.}
+\item{optimx.args}{Additional arguments to control the optimization which are forwarded to \code{\link[optimx:optimx]{optimx::optimx}}.
+If multiple optimization methods are specified, only the result of the last method is further processed.}
 
 \item{verbose}{Show details about the running of the function.}
 
@@ -82,11 +83,11 @@
 }
 \value{
 Depending on the data object on which the model was fit, \code{pnbd} returns either an object of
-class \code{clv.pnbd}, \code{clv.pnbd.static.cov}, or \code{clv.pnbd.dynamic.cov}.
+class \link[CLVTools:clv.pnbd-class]{clv.pnbd}, \link[CLVTools:clv.pnbd.static.cov-class]{clv.pnbd.static.cov}, or \link[CLVTools:clv.pnbd.dynamic.cov-class]{clv.pnbd.dynamic.cov}.
 
 The function \code{\link[CLVTools:summary.clv.fitted]{summary}} can be used to obtain and print a summary of the results.
-The generic accessor functions \code{coefficients}, \code{fitted},
-\code{residuals}, \code{vcov}, \code{logLik}, \code{AIC}, \code{BIC}, and \code{nobs} are available.
+The generic accessor functions \code{coefficients}, \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}},
+\code{logLik}, \code{AIC}, \code{BIC}, and \code{nobs} are available.
 }
 \description{
 Fits Pareto/NBD models on transactional data with and without covariates.
@@ -141,11 +142,28 @@ covariate is only relevant for a particular customer. For technical details we r
 the paper by Bachmann, Meierer and Näf (2019).
 }
 }
+\note{
+Fitting the Pareto/NBD model with dynamic covariates is for the most part implemented using \code{data.table} and to a smaller part further
+parallelized with the \code{foreach} package. Registering a
+parallel backend with \code{\link[doFuture:doFuture]{doFuture}} or \code{\link[doParallel:doParallel]{doParallel}} before fitting the
+models allows to take advantage of this. If no parallel backend is set up, the \code{foreach} package gives a friendly reminder that
+it is executed sequentially. In case this is desired but no warning should be given, a parallel backend in sequential mode
+can be set up, for example package \code{doFuture} with \code{\link[future:plan]{plan("sequential")}}.
+
+The part executed with \code{foreach} also heavily relies on \code{data.table} which is natively parallelized already. When setting up
+the parallel backend, great care should be taken to reduce the overhead from this nested parallelism as otherwise it can \emph{increase} runtime.
+See \code{\link[data.table:setDTthreads]{setDTthreads}}, \code{\link[data.table:getDTthreads]{getDTthreads}},
+and \code{\link[future:plan]{plan}} for information on how to do this.
+
+The Pareto/NBD model with dynamic covariates can currently not be fit with data that has a temporal resolution
+of less than one day (data that was built with time unit \code{hours}).
+}
 \examples{
 \donttest{
+
 data("apparelTrans")
 clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
-                            time.unit = "w", estimation.split = 37)
+                            time.unit = "w", estimation.split = 40)
 
 # Fit standard PNBD model
 pnbd(clv.data.apparel)
@@ -170,47 +188,62 @@ coef(apparel.pnbd)
 # summary of the fitted model
 summary(apparel.pnbd)
 
+# predict CLV etc for holdout period
+predict(apparel.pnbd)
+
+# predict CLV etc for the next 15 periods
+predict(apparel.pnbd, prediction.end = 15)
+
 
 # To estimate the PNBD model with static covariates,
 #   add static covariates to the data
-data("apparelDemographics")
+data("apparelStaticCov")
 clv.data.static.cov <-
  SetStaticCovariates(clv.data.apparel,
-                     data.cov.life = apparelDemographics,
-                     names.cov.life = "Gender",
-                     data.cov.trans = apparelDemographics,
-                     names.cov.trans = "Gender")
+                     data.cov.life = apparelStaticCov,
+                     names.cov.life = c("Gender", "Channel"),
+                     data.cov.trans = apparelStaticCov,
+                     names.cov.trans = c("Gender", "Channel"))
 
 # Fit PNBD with static covariates
 pnbd(clv.data.static.cov)
 
 # Give initial guesses for both covariate parameters
-pnbd(clv.data.static.cov, start.params.trans = c(Gender=0.75),
-                   start.params.life  = c(Gender=0.5))
+pnbd(clv.data.static.cov, start.params.trans = c(Gender=0.75, Channel=0.7),
+                   start.params.life  = c(Gender=0.5, Channel=0.5))
 
 # Use regularization
 pnbd(clv.data.static.cov, reg.lambdas = c(trans = 5, life=5))
 
 # Force the same coefficient to be used for both covariates
-pnbd(clv.data.static.cov, names.cov.constr = "Gender"
+pnbd(clv.data.static.cov, names.cov.constr = "Gender",
                    start.params.constr = c(Gender=0.5))
 
-# Use only the covariates named
-# **TODO: Need data with > 1 cov
+# Fit model only with the Channel covariate for life but
+# keep all trans covariates as is
+pnbd(clv.data.static.cov, names.cov.life = c("Channel"))
 
 
 
 # Add dynamic covariates data to the data object
 #   add dynamic covariates to the data
 data("apparelDynCov")
-
+\dontrun{
 clv.data.dyn.cov <-
   SetDynamicCovariates(clv.data = clv.data.apparel,
                        data.cov.life = apparelDynCov,
                        data.cov.trans = apparelDynCov,
-                       names.cov.life = c("DM", "High.Season", "Gender"),
-                       names.cov.trans = c("DM", "High.Season", "Gender"),
+                       names.cov.life = c("Marketing", "Gender", "Channel"),
+                       names.cov.trans = c("Marketing", "Gender", "Channel"),
                        name.date = "Cov.Date")
+
+# Enable parallel execution of some parts of the dyncov LL
+library(doFuture)
+registerDoFuture()
+# avoid overhead from nested parallelism by setting up
+# appropriate to _your_ system
+setDTthreads(threads=8)
+plan("multisession", workers=2)
 
 # Fit PNBD with dynamic covariates
 pnbd(clv.data.dyn.cov)
@@ -218,30 +251,33 @@ pnbd(clv.data.dyn.cov)
 # The same fitting options as for the
 #  static covariate are available
 pnbd(clv.data.dyn.cov, reg.lambdas = c(trans=10, life=2))
+}
+
 
 }
 
 }
 \references{
-Schmittlein DC, Morrison DG, Colombo R (1987). “Counting Your Customers: 
-Who-Are They and What Will They Do Next?” Management Science, 33(1), 1–24.
+Schmittlein DC, Morrison DG, Colombo R (1987). "Counting Your Customers:
+Who-Are They and What Will They Do Next?" Management Science, 33(1), 1–24.
 
-Fader PS, Hardie BGS (2005). “A Note on Deriving the Pareto/NBD Model and 
-Related Expressions.” 
-URL http://www.brucehardie.com/notes/009/pareto_nbd_derivations_ 2005-11-05.pdf.
+Fader PS, Hardie BGS (2005). "A Note on Deriving the Pareto/NBD Model and
+Related Expressions."
+URL \url{http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf}.
 
-Fader PS, Hardie BG (2007). "Incorporating time-invariant covariates into the 
-Pareto/NBD and BG/NBD models." 
-URL http://www.brucehardie.com/notes/019/time_invariant_ covariates.pdf.
+Fader PS, Hardie BG (2007). "Incorporating time-invariant covariates into the
+Pareto/NBD and BG/NBD models."
+URL \url{http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf}.
 }
 \seealso{
-\code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object
-
-\code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}} and \code{\link[CLVTools:SetDynamicCovariates]{SetDynamicCovariates}} to add static or dynamic covariates to an existing clv data object on which then the \code{pnbd} method can be fit
+\code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object, \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}} and \code{\link[CLVTools:SetDynamicCovariates]{SetDynamicCovariates}}
+to add static or dynamic covariates to an existing clv data object on which then the \code{pnbd} method can be fit
 
 \code{\link[CLVTools:predict.clv.fitted]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
 
 \code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation as predicted by the fitted model
 
-The generic functions \code{\link[CLVTools:summary.clv.fitted]{summary}} and \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
+The generic functions \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:summary.clv.fitted]{summary}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
+
+\code{\link[data.table]{setDTthreads}}, \code{\link[data.table]{getDTthreads}},\code{\link[doParallel]{registerDoParallel}},\code{\link[doFuture]{registerDoFuture}} for setting up parallel execution.
 }

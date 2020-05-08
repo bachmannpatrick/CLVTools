@@ -4,6 +4,7 @@
 # data.transactions will not be used as the standard transaction data:
 #     for trans covs: will be reduced to repeat trans with the set flag is.first.trans
 #     for life covs - reduced to 2 (sometimes 3) transactions
+#' @importFrom methods is
 pnbd_dyncov_createwalks <- function(clv.time, data.transactions, data.dyn.cov, names.dyn.cov){
 
   Date <- Id <- Cov.Date <- Mapping.Transaction.Id <- is.first.trans <- NULL # from add dyn cov
@@ -12,7 +13,7 @@ pnbd_dyncov_createwalks <- function(clv.time, data.transactions, data.dyn.cov, n
 
   cov.dt <- data.dyn.cov # readability, no copy
 
-  # Setup data for date interval merging
+  # Setup data for date interval merging ------------------------------------
   #
   #   Covariate intervals:
   #     Covs date indicates when it got active - has influence until next cov
@@ -23,9 +24,8 @@ pnbd_dyncov_createwalks <- function(clv.time, data.transactions, data.dyn.cov, n
   #       -> Interval from (last Trans + 1sec) to (this Trans)
   #
   #   This needs to be done before removing irrelevant transactions
-  # -------------------------------------------------------------------------
 
-  #sort before so shift refers to the right dates
+  # sort before so shift refers to the right dates
   setkeyv(data.transactions, c("Id", "Date", "AuxTrans"))
   setkeyv(cov.dt, c("Id", "Cov.Date"))
 
@@ -54,12 +54,11 @@ pnbd_dyncov_createwalks <- function(clv.time, data.transactions, data.dyn.cov, n
 
 
 
-  # Transaction specific measures
+  # Transaction specific measures -------------------------------------------
   #   This cannot be done in the walks creation code as the date
   #     will be missing there
-  # -------------------------------------------------------------------------
 
-  # d
+  # . d ---------------------------------------------------------------------
   # time between date.lagged and period end (ceiling(data.lagged+1))
   # d shall be 1 if it is exactly on the time.unit boundary!
   # Plus.Eps is already "+ 1"
@@ -68,28 +67,14 @@ pnbd_dyncov_createwalks <- function(clv.time, data.transactions, data.dyn.cov, n
                                                                     end   = clv.time.ceiling.date(clv.time=clv.time,
                                                                                                   timepoint=Prev.Trans.Date.Plus.Eps)))]
 
-  # tjk
+  # . tjk ---------------------------------------------------------------------
   # time between Trans and the previous Trans / from date.lagged to date
   data.transactions[, tjk := clv.time.interval.in.number.tu(clv.time = clv.time,
                                                              interv = interval( start = Prev.Trans.Date.Plus.Eps - 1L,
                                                                                 end   = Trans.Date))]
 
 
-
-  # Original:
-  # data.transactions[, d := time_length(x =interval( start = Prev.Trans.Date.Plus.Eps - 1,
-  #                                                   end   = ceiling_date(x=Prev.Trans.Date.Plus.Eps, unit="weeks")),
-  #                                     unit = "weeks")]
-  # #
-  # # # tjk
-  # # # time between Trans and the previous Trans / from date.lagged to date
-  # data.transactions[, tjk := time_length(x = interval( start = Prev.Trans.Date.Plus.Eps - 1,
-  #                                                      end = Trans.Date),
-  #                                        unit = "weeks")]
-
-
-
-  # Remove first transaction of each customer
+  # Remove first transaction of each customer ---------------------------------
   #
   #   For Transaction walks:
   #       Because only repeat transactions are relevant
@@ -101,17 +86,16 @@ pnbd_dyncov_createwalks <- function(clv.time, data.transactions, data.dyn.cov, n
   #         One of the duplicates has is.first.trans = T, the other one not
   #
   #   Aux Trans need to be added first, otherwise some customers are lost
-  # -------------------------------------------------------------------------
 
   data.transactions <- data.transactions[is.first.trans == FALSE]
 
 
 
-  # Merge transaction to covariates
-  # -------------------------------------------------------------------------
+  # Merge transaction to covariates ------------------------------------------
 
   #Merge using Date intervals
   # NEW IN cleanup-dyncov ---------------------------------------------------
+  # **TODO: IMPLEMENT CLEANER!
   # CONVERT DATES TO POSIXCT!
   if(is(clv.time, "clv.time.date")){
     covs.mapped <- foverlaps(x=cov.dt, y=data.transactions[Trans.Date <= floor_date(force_tz(as.POSIXct.Date(clv.time@timepoint.estimation.end), tzone = "UTC"), unit="day")],  # only up to Cal.End
@@ -139,9 +123,8 @@ pnbd_dyncov_createwalks <- function(clv.time, data.transactions, data.dyn.cov, n
   #for some/a lot of covariates there are no transactions mapped to it - remove them, otherwise to many walks (rows) are added
   covs.mapped <- covs.mapped[!is.na(Mapping.Transaction.Id)]
 
-  # Create Walks
+  # Create Walks -------------------------------------------------------------
   #   Create the whole walks table for all covariates given
-  # -------------------------------------------------------------------------
 
   #find the largest walk
   no.walks <- covs.mapped[, .N, by=c("Id", "Mapping.Transaction.Id")][, max(N)]
@@ -151,17 +134,16 @@ pnbd_dyncov_createwalks <- function(clv.time, data.transactions, data.dyn.cov, n
   #Create a walks table for every covariate
   covariate.walks <- lapply(X=names.dyn.cov, FUN=function(cov.name){
 
-    # Walks
+    # Walks -------------------------------------------
     #   Write the covariates to the columns
-    # -------------------------------------------
 
     # pre allocate the whole walk data.table in advance and fill with NAs
     walks           <- as.data.table(matrix(data  = NA_real_, nrow = no.rows, ncol = no.walks))
     walk.names      <- paste0("Walk", seq(no.walks))
     colnames(walks) <- walk.names
 
-    #Helper to write the .SD vector to the walk data.table
-    #Walks will be ordered by group / .GRP is row number
+    # Helper to write the .SD vector to the walk data.table
+    # Walks will be ordered by group / .GRP is row number
     write.walk <- function(SD, GRP){
       for(j in seq_along(SD)) { #all covariates in SD
         set(x=walks, i=GRP, j=j, value=as.numeric(SD[j]))
@@ -170,15 +152,13 @@ pnbd_dyncov_createwalks <- function(clv.time, data.transactions, data.dyn.cov, n
     covs.mapped[, write.walk(SD = unlist(.SD), GRP = .GRP), by=c("Id", "Mapping.Transaction.Id"), .SDcols = cov.name]
 
 
-    # Num.Walk
+    # Num.Walk -------------------------------------------
     #   Count number of walks (non NA entries)
-    # -------------------------------------------
     walks[, Num.Walk := as.integer(rowSums(!is.na(.SD))), .SDcols = walk.names]
 
 
-    # Max.Walk
+    # Max.Walk -------------------------------------------
     #   Write the first non NA value to Max.Walk
-    # -------------------------------------------
 
     # Idea: - Go backwards through walk cols and move the value to Max.Walk (regardless of content)
     #       - Restrain for rows where Max.Walk is still NA (=last non-NA element not found yet)
@@ -205,16 +185,15 @@ pnbd_dyncov_createwalks <- function(clv.time, data.transactions, data.dyn.cov, n
     #   copy covariate in Max.Walk back to Walk1
     walks[Num.Walk == 1, Walk1 := Max.Walk]
 
-    # Add further columns from transactions (covs.mapped)
+    # Add further columns from transactions (covs.mapped) -----------------------------------------
     #   Add one row from last(!) transaction in
     #   cov table
-    # --------------------------------------------------
 
     transaction.spec.data <- covs.mapped[ , .SD[.N],  by=c("Id", "Mapping.Transaction.Id")]
     walks[, c("Id", "AuxTrans", "Date", "tjk", "d") := transaction.spec.data[, c("Id", "AuxTrans", "Date", "tjk", "d") ] ]
 
-    #do separatly as get() is needed and cannot use get on vectors
-    #this is actually just Max.Walk!
+    # do separatly as get() is needed and cannot use get on vectors
+    # this is actually just Max.Walk!
     walks[, c("Cov.on.trans.date") := transaction.spec.data[, get(cov.name)]]
 
 
@@ -225,7 +204,7 @@ pnbd_dyncov_createwalks <- function(clv.time, data.transactions, data.dyn.cov, n
 
     #set col order: Id, Date, Cov.on.trans.date, AuxTrans, Walk1:n, Max.Walk, Num.Walk, delta, tjk, d
     setcolorder(walks, c("Id", "Date", "AuxTrans", "Cov.on.trans.date", walk.names, "Max.Walk", "Num.Walk", "delta", "tjk", "d"))
-    walks[, Date := force_tz(Date, tz="UTC")]
+    walks[, Date := force_tz(Date, tzone="UTC")]
     walks[, Date := suppressMessages(clv.time.convert.user.input.to.timepoint(clv.time, Date))]
     setkeyv(walks, c("Id", "Date", "AuxTrans"))
     return(walks)

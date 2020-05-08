@@ -1,7 +1,9 @@
 #' Time unit representing a single Day
 #'
-#' @seealso  \code{\link[CLVTools:clv.time]{clv.time}}
-#' @seealso  \code{\link[CLVTools:clv.time.date]{clv.time.date}}
+#' @template template_clvdate_description
+#'
+#' @seealso  \code{\link[CLVTools:clv.time-class]{clv.time}}
+#' @seealso  \code{\link[CLVTools:clv.time.date-class]{clv.time.date}}
 #'
 #' @include class_clv_time.R class_clv_time_date.R all_generics.R
 #' @keywords internal
@@ -11,6 +13,7 @@ setClass("clv.time.days", contains = "clv.time.date")
 # Constructor
 #   Cannot set estimation/holdout start/end here because for this it needs transaction dates, which first
 #     need to be converted to dates and then returned to the transaction data table
+#' @importFrom methods new
 clv.time.days <- function(time.format){
   return(new("clv.time.days",
              time.format                = time.format,
