@@ -1,6 +1,6 @@
 #' @importFrom methods setClass
 #' @keywords internal
-#' @include class_clv_model_bgnbd_nocov.R class_clv_fitted.R
+#' @include class_clv_model_bgnbd.R class_clv_fitted.R
 setClass(Class = "clv.bgnbd", contains = "clv.fitted",
          slots = c(
            cbs = "data.table"),

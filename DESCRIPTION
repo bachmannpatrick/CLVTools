@@ -53,7 +53,7 @@ Collate:
     'class_clv_data.R'
     'class_clv_model.R'
     'class_clv_fitted.R'
-    'class_clv_model_bgnbd_nocov.R'
+    'class_clv_model_bgnbd.R'
     'class_clv_bgnbd.R'
     'class_clv_fitted_staticcov.R'
     'class_clv_data_staticcovariates.R'

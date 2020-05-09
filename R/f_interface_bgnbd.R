@@ -90,7 +90,7 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = F
 #' plot(cdnow.bgnbd)
 #' }
 #' @aliases bgnbd bgnbd,clv.data-method
-#' @include class_clv_data.R class_clv_model_bgnbd_nocov.R
+#' @include class_clv_data.R class_clv_model_bgnbd.R
 #' @export
 setMethod("bgnbd", signature = signature(clv.data="clv.data"), definition = function(clv.data,
                                                                                     start.params.model=c(),
