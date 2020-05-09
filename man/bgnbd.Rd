@@ -4,6 +4,7 @@
 \alias{bgnbd}
 \alias{bgnbd,clv.data-method}
 \alias{bgnbd,clv.data.static.covariates-method}
+\alias{bgnbd,clv.data.dynamic.covariates-method}
 \title{BG/NBD models}
 \usage{
 \S4method{bgnbd}{clv.data}(
