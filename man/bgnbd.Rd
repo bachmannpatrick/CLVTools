@@ -64,11 +64,8 @@ If multiple optimization methods are specified, only the result of the last meth
 \item{reg.lambdas}{Named lambda parameters used for the L2 regularization of the lifetime and the transaction covariate parameters. Lambdas have to be >= 0.}
 }
 \value{
-\code{bgnbd} returns an object of class \code{clv.bgnbd}.
-
-The function \code{\link[CLVTools:summary.clv.fitted]{summary}} can be used to obtain and print a summary of the results.
-The generic accessor functions \code{coefficients}, \code{fitted},
-\code{residuals}, \code{vcov}, \code{logLik}, \code{AIC}, \code{BIC}, and \code{nobs} are available.
+Depending on the data object on which the model was fit, \code{bgnbd} returns either an object of
+class \link[CLVTools:clv.bgnbd-class]{clv.bgnbd} or \link[CLVTools:clv.bgnbd.static.cov-class]{clv.bgnbd.static.cov}.
 }
 \description{
 Fits BG/NBD models on transactional data without and with static covariates.
@@ -145,11 +142,12 @@ Pareto/NBD and BG/NBD models.}
 URL \url{http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf}.
 }
 \seealso{
-\code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object
+\code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object, \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}}
+to add static covariates to an existing clv data object.
 
 \code{\link[CLVTools:predict.clv.fitted]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
 
 \code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation as predicted by the fitted model
 
-The generic functions \code{\link[CLVTools:summary.clv.fitted]{summary}} and \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
+The generic functions \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:summary.clv.fitted]{summary}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
 }
