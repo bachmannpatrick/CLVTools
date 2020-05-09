@@ -62,32 +62,32 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = F
 #' \donttest{
 #' data("cdnow")
 #' clv.data.cdnow <- clvdata(cdnow, date.format = "ymd",
-#'                             time.unit = "w", estimation.split = 37)
+#'                           time.unit = "w", estimation.split = 37)
 #'
 #' # Fit standard BG/NBD model
 #' bgnbd(clv.data.cdnow)
 #'
 #' # Give initial guesses for the Model parameters
 #' bgnbd(clv.data.cdnow,
-#'      start.params.model = c(r=1.1, alpha=3.4, a=1, b=3))
+#'       start.params.model = c(r=1.1, alpha=3.4, a=1, b=3))
 #'
 #'
 #' # pass additional parameters to the optimizer (optimx)
 #' #    Use Nelder-Mead as optimization method and print
 #' #    detailed information about the optimization process
-#' estimation.bgnbd <- bgnbd(clv.data.cdnow,
+#' cdnow.bgnbd <- bgnbd(clv.data.cdnow,
 #'                      optimx.args = list(method="Nelder-Mead",
 #'                                         control=list(trace=6)))
 #'
 #' # estimated coefs
-#' coef(estimation.bgnbd)
+#' coef(cdnow.bgnbd)
 #'
 #' # summary of the fitted model
-#' summary(estimation.bgnbd)
+#' summary(cdnow.bgnbd)
 #'
-#' predict.bgnbd <- predict(estimation.bgnbd, prediction.end = "2011-12-31")
+#' dt.pred.bgnbd <- predict(cdnow.bgnbd, prediction.end = "2011-12-31")
 #'
-#' plot(estimation.bgnbd)
+#' plot(cdnow.bgnbd)
 #' }
 #' @aliases bgnbd bgnbd,clv.data-method
 #' @include class_clv_data.R class_clv_model_bgnbd_nocov.R
@@ -109,6 +109,7 @@ setMethod("bgnbd", signature = signature(clv.data="clv.data"), definition = func
 #' @rdname bgnbd
 #' @include class_clv_data_staticcovariates.R
 #' @aliases bgnbd,clv.data.static.covariates-method
+#' @aliases bgnbd,clv.data.dynamic.covariates-method
 #' @export
 setMethod("bgnbd", signature = signature(clv.data="clv.data.static.covariates"), definition = function(clv.data,
                                                                                                       start.params.model=c(),
