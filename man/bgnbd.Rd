@@ -71,7 +71,7 @@ The generic accessor functions \code{coefficients}, \code{fitted},
 \code{residuals}, \code{vcov}, \code{logLik}, \code{AIC}, \code{BIC}, and \code{nobs} are available.
 }
 \description{
-Fits BG/NBD models on transactional data without covariates.
+Fits BG/NBD models on transactional data without and with static covariates.
 }
 \details{
 Model parameters for the BG/NBD model are \code{r, alpha, a, and b}. \cr
@@ -84,11 +84,11 @@ If no start parameters are given, r = 1, alpha = 3, a = 1, b = 3 is used.
 The model start parameters are required to be > 0.
 
 \subsection{The BG/NBD model}{
-The BG/NBD is an "easy" alternative to the Pareto/NBD model that is easyer to implement. The BG/NBD model slight adapts
-the beavioral "story" associated with the Pareto/NBD model inorder to simplyfiy the implementation. The BG/NBD model uses a beta-geometric and
-exponentioal gamma misture distributions to model customer behavior. The key difference to the Pareto/NBD model that a customer can only
-churn right after a transaction. This simplifies computations signifiantly, however has the drawback that a customer cannot chun until he/she
-makes a transction. The Pareto/NBD model assumes that a customer can churn any time.
+The BG/NBD is an "easy" alternative to the Pareto/NBD model that is easier to implement. The BG/NBD model slight adapts
+the behavioral "story" associated with the Pareto/NBD model in order to simplify the implementation. The BG/NBD model uses a beta-geometric and
+exponential gamma mixture distributions to model customer behavior. The key difference to the Pareto/NBD model is that a customer can only
+churn right after a transaction. This simplifies computations significantly, however has the drawback that a customer cannot churn until he/she
+makes a transaction. The Pareto/NBD model assumes that a customer can churn at any time.
 }
 
 \subsection{BG/NBD model with static covariates}{
@@ -134,18 +134,15 @@ plot(estimation.bgnbd)
 }
 }
 \references{
-BG/NBD model according to
-\url{https://github.com/cran/BTYD}
+Fader PS, Hardie BGS, Lee, KL (2005). \dQuote{\dQuote{Counting Your Customers} the Easy Way:
+An Alternative to the Pareto/NBD Model} Marketing Science, 24(2), 275–284.
 
-Fader PS, Hardie BGS, Lee, KL (2005). “"Counting Your Customers" the Easy Way: 
-An Alternative to the Pareto/NBD Model” Marketing Science, 24(2), 275–284.
+Fader PS, Hardie BGS (2013). \dQuote{Overcoming the BG/NBD Model’s #NUM! Error Problem}
+URL \url{http://brucehardie.com/notes/027/bgnbd_num_error.pdf}.
 
-Fader PS, Hardie BGS (2013). “Overcoming the BG/NBD Model’s #NUM! Error Problem“ 
-URL http://brucehardie.com/notes/027/bgnbd_num_error.pdf.
-
-Fader PS, Hardie BGS (2007). "Incorporating time-invariant covariates into the 
-Pareto/NBD and BG/NBD models." 
-URL http://www.brucehardie.com/notes/019/time_invariant_ covariates.pdf.
+Fader PS, Hardie BGS (2007). \dQuote{Incorporating time-invariant covariates into the
+Pareto/NBD and BG/NBD models.}
+URL \url{http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf}.
 }
 \seealso{
 \code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object

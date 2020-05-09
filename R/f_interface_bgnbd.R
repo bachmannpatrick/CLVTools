@@ -13,12 +13,9 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = F
 #' @template template_params_estimate_cov
 #' @template template_param_dots
 #'
-#' @references
-#' BG/NBD model according to
-#' \url{https://github.com/cran/BTYD}
 #'
 #' @description
-#' Fits BG/NBD models on transactional data without covariates.
+#' Fits BG/NBD models on transactional data without and with static covariates.
 #'
 #' @param use.cor (Not yet supported) Whether the correlation between the transaction and lifetime process should be estimated.
 #' @param start.param.cor (Not yet supported) Start parameter for the optimization of the correlation.
@@ -34,11 +31,11 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = F
 #' The model start parameters are required to be > 0.
 #'
 #' \subsection{The BG/NBD model}{
-#' The BG/NBD is an "easy" alternative to the Pareto/NBD model that is easyer to implement. The BG/NBD model slight adapts
-#' the beavioral "story" associated with the Pareto/NBD model inorder to simplyfiy the implementation. The BG/NBD model uses a beta-geometric and
-#' exponentioal gamma misture distributions to model customer behavior. The key difference to the Pareto/NBD model that a customer can only
-#' churn right after a transaction. This simplifies computations signifiantly, however has the drawback that a customer cannot chun until he/she
-#' makes a transction. The Pareto/NBD model assumes that a customer can churn any time.
+#' The BG/NBD is an "easy" alternative to the Pareto/NBD model that is easier to implement. The BG/NBD model slight adapts
+#' the behavioral "story" associated with the Pareto/NBD model in order to simplify the implementation. The BG/NBD model uses a beta-geometric and
+#' exponential gamma mixture distributions to model customer behavior. The key difference to the Pareto/NBD model is that a customer can only
+#' churn right after a transaction. This simplifies computations significantly, however has the drawback that a customer cannot churn until he/she
+#' makes a transaction. The Pareto/NBD model assumes that a customer can churn at any time.
 #' }
 #'
 #' \subsection{BG/NBD model with static covariates}{
@@ -144,11 +141,10 @@ setMethod("bgnbd", signature = signature(clv.data="clv.data.static.covariates"),
 #' @keywords internal
 setMethod("bgnbd", signature = signature(clv.data="clv.data.dynamic.covariates"), definition = function(clv.data,
                                                                                                         start.params.model=c(),
+                                                                                                        use.cor = FALSE,
+                                                                                                        start.param.cor=c(),
                                                                                                         optimx.args=list(),
                                                                                                         verbose=TRUE,
-                                                                                                        names.cov.life=c(), names.cov.trans=c(),
-                                                                                                        start.params.life=c(), start.params.trans=c(),
-                                                                                                        names.cov.constr=c(),start.params.constr=c(),
-                                                                                                        reg.lambdas = c(), ...){
+                                                                                                        ...){
   stop("This model cannot be fitted on this type of data!")
 })
