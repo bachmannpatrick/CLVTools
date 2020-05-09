@@ -1,3 +1,6 @@
+
+skip_on_cran()
+
 # Load data ---------------------------------------------------------------------------------------
 data("apparelTrans")
 data("apparelDynCov")
@@ -14,7 +17,6 @@ l.std.args <- alist(data.cov.life  = apparelDynCov,  names.cov.life = c("Marketi
                     name.date = "Cov.Date")
 
 test_that("Works with and withouth holdout period", {
-  skip_on_cran()
   expect_silent(do.call(SetDynamicCovariates, modifyList(l.std.args, alist(clv.data = clv.data.apparel.nohold))))
   expect_silent(do.call(SetDynamicCovariates, modifyList(l.std.args, alist(clv.data = clv.data.apparel.withhold))))
 })
@@ -23,7 +25,6 @@ test_that("Works with and withouth holdout period", {
 context("Runability - SetDynamicCovariates - Covariate length")
 
 test_that("Works with cov data longer than estimation.end/holdout.end", {
-  skip_on_cran()
 
   # Add additional 100w of fake cov data for all Ids
   dt.additional.cov <- expand.grid(Id = unique(apparelDynCov$Id),

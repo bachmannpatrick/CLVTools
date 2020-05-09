@@ -11,4 +11,7 @@
 ^Extensions\.md$
 ^docs$
 ^cran-comments\.md$
+^_pkgdown\.yml$
+[.]o$
+[.]o.tmp$
 

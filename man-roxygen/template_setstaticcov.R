@@ -30,6 +30,8 @@
 #'
 #' @examples
 #'
+#' \donttest{
+#'
 #' data("apparelTrans")
 #' data("apparelStaticCov")
 #'
@@ -51,6 +53,6 @@
 #'
 #' # fit model with static covariates
 #' pnbd(clv.data.apparel.cov)
-#'
+#' }
 #'
 

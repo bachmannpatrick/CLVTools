@@ -65,6 +65,8 @@ test_that("Same results as BTYD", {
 context("Correctness - PNBD nocov - predict")
 
 test_that("Same when predicting as with fitting data", {
+  skip_on_cran()
+
   expect_silent(pnbd.cdnow.fit <- pnbd(clv.cdnow, verbose = FALSE))
 
   expect_true(isTRUE(all.equal(predict(pnbd.cdnow.fit),
@@ -145,7 +147,7 @@ test_that("Same result for differently sorted covariates", {
 context("Correctness - PNBD static cov - predict")
 
 test_that("Same when predicting as with fitting data", {
-  # skip_on_cran()
+  skip_on_cran()
   expect_true(isTRUE(all.equal(predict(p.static, verbose=FALSE),
                                predict(p.static, newdata = clv.apparel.staticcov, verbose=FALSE))))
 })

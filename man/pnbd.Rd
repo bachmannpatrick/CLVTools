@@ -236,7 +236,7 @@ clv.data.dyn.cov <-
                        names.cov.life = c("Marketing", "Gender", "Channel"),
                        names.cov.trans = c("Marketing", "Gender", "Channel"),
                        name.date = "Cov.Date")
-\dontrun{
+
 # Enable parallel execution of some parts of the dyncov LL
 library(doFuture)
 registerDoFuture()
@@ -244,7 +244,6 @@ registerDoFuture()
 # appropriate to _your_ system
 setDTthreads(threads=8)
 plan("multisession", workers=2)
-}
 
 # Fit PNBD with dynamic covariates
 pnbd(clv.data.dyn.cov)
@@ -252,22 +251,23 @@ pnbd(clv.data.dyn.cov)
 # The same fitting options as for the
 #  static covariate are available
 pnbd(clv.data.dyn.cov, reg.lambdas = c(trans=10, life=2))
-
 }
+
+
 }
 
 }
 \references{
-Schmittlein DC, Morrison DG, Colombo R (1987). “Counting Your Customers: 
-Who-Are They and What Will They Do Next?” Management Science, 33(1), 1–24.
+Schmittlein DC, Morrison DG, Colombo R (1987). "Counting Your Customers:
+Who-Are They and What Will They Do Next?" Management Science, 33(1), 1–24.
 
-Fader PS, Hardie BGS (2005). “A Note on Deriving the Pareto/NBD Model and 
-Related Expressions.” 
-URL http://www.brucehardie.com/notes/009/pareto_nbd_derivations_ 2005-11-05.pdf.
+Fader PS, Hardie BGS (2005). "A Note on Deriving the Pareto/NBD Model and
+Related Expressions."
+URL \url{http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf}.
 
-Fader PS, Hardie BG (2007). "Incorporating time-invariant covariates into the 
-Pareto/NBD and BG/NBD models." 
-URL http://www.brucehardie.com/notes/019/time_invariant_ covariates.pdf.
+Fader PS, Hardie BG (2007). "Incorporating time-invariant covariates into the
+Pareto/NBD and BG/NBD models."
+URL \url{http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf}.
 }
 \seealso{
 \code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object, \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}} and \code{\link[CLVTools:SetDynamicCovariates]{SetDynamicCovariates}}

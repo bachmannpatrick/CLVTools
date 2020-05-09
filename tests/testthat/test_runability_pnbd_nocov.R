@@ -27,14 +27,20 @@ expect_silent(clv.newdata.withhold <- clvdata(data.transactions = dt.newdata.tra
 
 # Basic runability -------------------------------------------------------------------------------------------------------
 
-test_that("Works out-of-the box, without additional params", {
+# Split in holdout and noholdout to skip one on cran
+test_that("Works out-of-the box, without additional params - holdout", {
   expect_silent(p.hold    <- pnbd(clv.data=clv.data.cdnow.withholdout, verbose=FALSE))
-  expect_silent(p.no.hold <- pnbd(clv.data=clv.data.cdnow.noholdout, verbose=FALSE))
   fct.helper.fitted.all.s3(clv.fitted = p.hold,     full.names = names(p.hold@clv.model@names.original.params.model),
                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = FALSE)
+})
+
+test_that("Works out-of-the box, without additional params - no holdout", {
+  skip_on_cran()
+  expect_silent(p.no.hold <- pnbd(clv.data=clv.data.cdnow.noholdout, verbose=FALSE))
   fct.helper.fitted.all.s3(clv.fitted = p.no.hold,  full.names = names(p.no.hold@clv.model@names.original.params.model),
                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = FALSE)
 })
+
 
 test_that("Works with custom model.start.params", {
   skip_on_cran()

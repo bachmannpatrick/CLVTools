@@ -9,8 +9,7 @@ setMethod(f = "show", signature = signature(object="clv.time"), definition = fun
 #' @include class_clv_time.R
 #' @keywords internal
 #' @export
-print.clv.time <- function(x, digits=max(3L, getOption("digits")-3L),
-                           signif.stars = getOption("show.signif.stars"), ...){
+print.clv.time <- function(x, digits=max(3L, getOption("digits")-3L), ...){
 
   nsmall <- 4 # dont leave to user, hardcode
 
@@ -50,8 +49,7 @@ summary.clv.time <- function(object, ...){
 
 #' @keywords internal
 #' @export
-print.summary.clv.time <-function(x, digits=max(3L, getOption("digits")-3L),
-                                  signif.stars = getOption("show.signif.stars"), ...){
+print.summary.clv.time <-function(x, digits=max(3L, getOption("digits")-3L), ...){
   nsmall <- 4
 
   .print.list(list("Time unit"         = x$name.time.unit,

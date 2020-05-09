@@ -64,8 +64,7 @@ If multiple optimization methods are specified, only the result of the last meth
 \item{reg.lambdas}{Named lambda parameters used for the L2 regularization of the lifetime and the transaction covariate parameters. Lambdas have to be >= 0.}
 }
 \value{
-\code{bgnbd} returns an object of
-class \code{clv.bgnbd}.
+\code{bgnbd} returns an object of class \code{clv.bgnbd}.
 
 The function \code{\link[CLVTools:summary.clv.fitted]{summary}} can be used to obtain and print a summary of the results.
 The generic accessor functions \code{coefficients}, \code{fitted},

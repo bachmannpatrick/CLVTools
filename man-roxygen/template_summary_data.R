@@ -30,6 +30,8 @@
 #'
 #' @examples
 #'
+#' \donttest{
+#'
 #' data("apparelTrans")
 #' clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
 #'                             time.unit = "w",
@@ -49,5 +51,5 @@
 #'
 #' # additional info about the covariates
 #' summary(clv.data.apparel.cov)
-#'
+#' }
 #'

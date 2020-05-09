@@ -52,8 +52,7 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = F
 #' }
 #'
 #' @return
-#' \code{bgnbd} returns an object of
-#' class \code{clv.bgnbd}.
+#' \code{bgnbd} returns an object of class \code{clv.bgnbd}.
 #'
 #' The function \code{\link[CLVTools:summary.clv.fitted]{summary}} can be used to obtain and print a summary of the results.
 #' The generic accessor functions \code{coefficients}, \code{fitted},
