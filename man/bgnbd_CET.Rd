@@ -42,7 +42,7 @@ bgnbd_staticcov_CET(
 
 \item{vCovParams_trans}{Vector of estimated parameters for the transaction covariates.}
 
-\item{vCovParams_life}{Vector of estimated parameters for the dropout covariates.}
+\item{vCovParams_life}{Vector of estimated parameters for the lifetime covariates.}
 
 \item{mCov_trans}{Matrix containing the covariates data affecting the transaction process. One column for each covariate.}
 

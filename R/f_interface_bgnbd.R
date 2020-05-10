@@ -56,7 +56,7 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = F
 #'
 #' @template template_clvfitted_seealso
 #'
-#' @template template_bgnbd_reference
+#' @template template_references_bgnbd
 #'
 #' @examples
 #' \donttest{

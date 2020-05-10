@@ -13,12 +13,16 @@
 //' @template template_params_rcppcovmatrix
 //' @template template_params_rcppvcovparams
 //'
-//' @template template_details_bgnbd
+//' @template template_details_paramsbgnbd
+//'
+//' @templateVar name_params_cov_life vCovParams_life
+//' @templateVar name_params_cov_trans vCovParams_trans
+//' @template template_details_rcppcovmatrix
 //'
 //' @return
 //' Returns a vector containing the PAlive for each customer.
 //'
-//' @template template_bgnbd_reference
+//' @template template_references_bgnbd
 //'
 arma::vec bgnbd_PAlive(const double r,
                        const arma::vec& vAlpha_i,

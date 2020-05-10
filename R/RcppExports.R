@@ -14,13 +14,17 @@
 #' @template template_params_rcppcovmatrix
 #' @template template_params_rcppvcovparams
 #'
-#' @template template_details_bgnbd
+#' @template template_details_paramsbgnbd
+#'
+#' @templateVar name_params_cov_life vCovParams_life
+#' @templateVar name_params_cov_trans vCovParams_trans
+#' @template template_details_rcppcovmatrix
 #'
 #' @return
 #' Returns a vector with the conditional expected transactions for the existing
 #' customers in the BG/NBD model.
 #'
-#' @template template_bgnbd_reference
+#' @template template_references_bgnbd
 #'
 NULL
 
@@ -56,12 +60,15 @@ bgnbd_staticcov_CET <- function(r, alpha, a, b, nPeriods, vX, vT_x, vT_cal, vCov
 #' @template template_params_rcppxtxtcal
 #' @template template_params_rcppcovmatrix
 #'
-#' @template template_details_bgnbd
+#' @template template_details_paramsbgnbd
+#' @templateVar name_params_cov_life vLogparams
+#' @templateVar name_params_cov_trans vLogparams
+#' @template template_details_rcppcovmatrix
 #'
 #' @return
 #'  Returns the respective LogLikelihood value for the BG/NBD model without covariates.
 #'
-#' @template template_bgnbd_reference
+#' @template template_references_bgnbd
 #'
 NULL
 
@@ -96,12 +103,16 @@ bgnbd_staticcov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal, mCov_life, mCov
 #' @template template_params_rcppcovmatrix
 #' @template template_params_rcppvcovparams
 #'
-#' @template template_details_bgnbd
+#' @template template_details_paramsbgnbd
+#'
+#' @templateVar name_params_cov_life vCovParams_life
+#' @templateVar name_params_cov_trans vCovParams_trans
+#' @template template_details_rcppcovmatrix
 #'
 #' @return
 #' Returns a vector containing the PAlive for each customer.
 #'
-#' @template template_bgnbd_reference
+#' @template template_references_bgnbd
 #'
 NULL
 
@@ -160,7 +171,7 @@ vec_gsl_hyp2f1_e <- function(vA, vB, vC, vZ) {
 #'@return
 #' Returns the Log-Likelihood value for the Gamma-Gamma model.
 #'
-#' @template template_rcpp_gg_reference
+#' @template template_references_gg
 #'
 #'
 gg_LL <- function(vLogparams, vX, vM_x) {
@@ -188,33 +199,19 @@ gg_LL <- function(vLogparams, vX, vM_x) {
 #' @template template_params_rcppcovmatrix
 #' @template template_params_rcppvcovparams
 #'
+#' @templateVar name_params_pnbd vEstimated_params
+#' @template template_details_paramspnbd
 #'
-#' @details
-#' \code{vEstimated_params} vector with the estimated parameters in original scale
-#' for the Pareto/NBD model, namely (r, alpha, s, beta).
-#' r and alpha: unobserved parameters that describe the NBD transaction process.
-#' s and beta: unobserved parameters that describe the pareto
-#' (exponential gamma) dropout process.
-#'
-#' \code{mCov_trans} is a matrix containing the covariates data of
-#' the time-invariant covariates that affect the transaction process.
-#' Each column represents a different covariate. For every column a gamma parameter
-#' needs to added to \code{vCovParams_trans} at the respective position.
-#'
-#' \code{mCov_life} is a matrix containing the covariates data of
-#' the time-invariant covariates that affect the lifetime process.
-#' Each column represents a different covariate. For every column a gamma parameter
-#' needs to added to \code{vCovParams_life} at the respective position.
+#' @templateVar name_params_cov_life vCovParams_life
+#' @templateVar name_params_cov_trans vCovParams_trans
+#' @template template_details_rcppcovmatrix
 #'
 #'
 #'@return
 #' Returns a vector containing the conditional expected transactions for the existing
 #' customers in the Pareto/NBD model.
 #'
-#'@references
-#'  Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
-#'  Pareto/NBD Model and Related Expressions.", Web.
-#'  \url{http://www.brucehardie.com/notes/008/}.
+#'@template template_references_pnbd
 #'
 NULL
 
@@ -246,31 +243,17 @@ pnbd_staticcov_CET <- function(vEstimated_params, dPrediction_period, vX, vT_x, 
 #' @template template_params_rcppvcovparams
 #' @param continuous_discount_factor continuous discount factor to use
 #'
-#' @details
+#' @templateVar name_params_pnbd vEstimated_params
+#' @template template_details_paramspnbd
 #'
-#' \code{vEstimated_params} vector with the estimated parameters in original scale
-#' for the Pareto/NBD model, namely (r, alpha, s, beta). \cr
-#' r and alpha: unobserved parameters that describe the NBD transaction process. \cr
-#' s and beta: unobserved parameters that describe the pareto
-#' (exponential gamma) lifetime process.
-#'
-#' \code{mCov_trans} is a matrix containing the covariates data of
-#' the time-invariant covariates that affect the transaction process.
-#' Each column represents a different covariate. For every column a gamma parameter
-#' needs to added to \code{vCovParams_trans} at the respective position.
-#'
-#' \code{mCov_life} is a matrix containing the covariates data of
-#' the time-invariant covariates that affect the lifetime process.
-#' Each column represents a different covariate. For every column a gamma parameter
-#' needs to added to \code{vCovParams_life} at the respective position.
+#' @templateVar name_params_cov_life vCovParams_life
+#' @templateVar name_params_cov_trans vCovParams_trans
+#' @template template_details_rcppcovmatrix
 #'
 #' @return
 #' Returns a vector with the DERT for each customer.
 #'
-#' @references
-#' Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
-#' Pareto/NBD Model and Related Expressions.", Web.
-#' \url{http://www.brucehardie.com/notes/008/}.
+#' @template template_references_pnbd
 #'
 #'
 NULL
@@ -323,24 +306,15 @@ pnbd_staticcov_DERT <- function(vEstimated_params, continuous_discount_factor, v
 #' followed by the parameters for the lifetime covariates at original scale and then
 #' followed by the parameters for the transaction covariates at original scale
 #'
-#' \code{mCov_life} is a matrix containing the covariates data of
-#' the time-invariant covariates that affect the lifetime process.
-#' Each column represents a different covariate. For every column, a gamma parameter
-#' needs to added to \code{vParams} at the respective position.
+#' @templateVar name_params_cov_life vParams
+#' @templateVar name_params_cov_trans vParams
+#' @template template_details_rcppcovmatrix
 #'
-#' \code{mCov_trans} is a matrix containing the covariates data of
-#' the time-invariant covariates that affect the transaction process.
-#' Each column represents a different covariate. For every column, a gamma parameter
-#' needs to added to \code{vParams} at the respective position.
-#'
-#'@return
+#' @return
 #'  Returns the respective Log-Likelihood value(s) for the Pareto/NBD model
 #'  with or without covariates.
 #'
-#'@references
-#'  Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
-#'  Pareto/NBD Model and Related Expressions.", Web.
-#'  \url{http://www.brucehardie.com/notes/008/}.
+#' @template template_references_pnbd
 #'
 NULL
 
@@ -382,30 +356,20 @@ pnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_tra
 #' @template template_params_rcppvcovparams
 #'
 #' @details
-#' \code{vEstimated_params} vector with the estimated parameters in original scale
-#' for the Pareto/NBD model, namely (r, alpha, s, beta). \cr
-#' r and alpha: unobserved parameters that describe the NBD transaction process. \cr
-#' s and beta: unobserved parameters that describe the pareto
-#' (exponential gamma) lifetime process.
+#' @templateVar name_params_pnbd vEstimated_params
+#' @template template_details_paramspnbd
 #'
-#' \code{mCov_trans} is a matrix containing the covariates data of
-#' the time-invariant covariates that affect the transaction process.
-#' Each column represents a different covariate. For every column a gamma parameter
-#' needs to added to \code{vCovParams_trans} at the respective position.
 #'
-#' \code{mCov_life} is a matrix containing the covariates data of
-#' the time-invariant covariates that affect the lifetime process.
-#' Each column represents a different covariate. For every column a gamma parameter
-#' needs to added to \code{vCovParams_life} at the respective position.
+#' @templateVar name_params_cov_life vCovParams_life
+#' @templateVar name_params_cov_trans vCovParams_trans
+#' @template template_details_rcppcovmatrix
+#'
 #'
 #'
 #'@return
 #'Returns a vector with the PAlive for each customer.
 #'
-#'@references
-#'  Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
-#'  Pareto/NBD Model and Related Expressions.", Web.
-#'  \url{http://www.brucehardie.com/notes/008/}.
+#'@template template_references_pnbd
 #'
 NULL
 

@@ -21,31 +21,17 @@
 //' @template template_params_rcppvcovparams
 //' @param continuous_discount_factor continuous discount factor to use
 //'
-//' @details
+//' @templateVar name_params_pnbd vEstimated_params
+//' @template template_details_paramspnbd
 //'
-//' \code{vEstimated_params} vector with the estimated parameters in original scale
-//' for the Pareto/NBD model, namely (r, alpha, s, beta). \cr
-//' r and alpha: unobserved parameters that describe the NBD transaction process. \cr
-//' s and beta: unobserved parameters that describe the pareto
-//' (exponential gamma) lifetime process.
-//'
-//' \code{mCov_trans} is a matrix containing the covariates data of
-//' the time-invariant covariates that affect the transaction process.
-//' Each column represents a different covariate. For every column a gamma parameter
-//' needs to added to \code{vCovParams_trans} at the respective position.
-//'
-//' \code{mCov_life} is a matrix containing the covariates data of
-//' the time-invariant covariates that affect the lifetime process.
-//' Each column represents a different covariate. For every column a gamma parameter
-//' needs to added to \code{vCovParams_life} at the respective position.
+//' @templateVar name_params_cov_life vCovParams_life
+//' @templateVar name_params_cov_trans vCovParams_trans
+//' @template template_details_rcppcovmatrix
 //'
 //' @return
 //' Returns a vector with the DERT for each customer.
 //'
-//' @references
-//' Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
-//' Pareto/NBD Model and Related Expressions.", Web.
-//' \url{http://www.brucehardie.com/notes/008/}.
+//' @template template_references_pnbd
 //'
 //'
 arma::vec pnbd_DERT_ind(const double r,

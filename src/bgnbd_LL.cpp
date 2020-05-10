@@ -26,12 +26,15 @@ arma::vec beta_ratio(const arma::vec& a, const arma::vec& b, const arma::vec& x,
 //' @template template_params_rcppxtxtcal
 //' @template template_params_rcppcovmatrix
 //'
-//' @template template_details_bgnbd
+//' @template template_details_paramsbgnbd
+//' @templateVar name_params_cov_life vLogparams
+//' @templateVar name_params_cov_trans vLogparams
+//' @template template_details_rcppcovmatrix
 //'
 //' @return
 //'  Returns the respective LogLikelihood value for the BG/NBD model without covariates.
 //'
-//' @template template_bgnbd_reference
+//' @template template_references_bgnbd
 //'
 arma::vec bgnbd_LL_ind(const double r,
                        const arma::vec& vAlpha_i,

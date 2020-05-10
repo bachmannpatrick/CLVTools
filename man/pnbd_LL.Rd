@@ -63,18 +63,25 @@ alpha: scale parameter of the Gamma distribution of the purchase process.
 followed by the parameters for the lifetime covariates at original scale and then
 followed by the parameters for the transaction covariates at original scale
 
-\code{mCov_life} is a matrix containing the covariates data of
-the time-invariant covariates that affect the lifetime process.
-Each column represents a different covariate. For every column, a gamma parameter
-needs to added to \code{vParams} at the respective position.
-
 \code{mCov_trans} is a matrix containing the covariates data of
 the time-invariant covariates that affect the transaction process.
-Each column represents a different covariate. For every column, a gamma parameter
+Each column represents a different covariate. For every column a gamma parameter
+needs to added to \code{vParams} at the respective position.
+
+\code{mCov_life} is a matrix containing the covariates data of
+the time-invariant covariates that affect the lifetime process.
+Each column represents a different covariate. For every column a gamma parameter
 needs to added to \code{vParams} at the respective position.
 }
 \references{
-Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
- Pareto/NBD Model and Related Expressions.", Web.
- \url{http://www.brucehardie.com/notes/008/}.
+Schmittlein DC, Morrison DG, Colombo R (1987). \dQuote{Counting Your Customers:
+Who-Are They and What Will They Do Next?} Management Science, 33(1), 1–24.
+
+Fader PS, Hardie BGS (2005). \dQuote{A Note on Deriving the Pareto/NBD Model and
+Related Expressions.}
+URL \url{http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf}.
+
+Fader PS, Hardie BG (2007). \dQuote{Incorporating time-invariant covariates into the
+Pareto/NBD and BG/NBD models.}
+URL \url{http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf}.
 }

@@ -24,7 +24,7 @@ arma::vec lbeta(const arma::vec& a, const double b){
 //'@return
 //' Returns the Log-Likelihood value for the Gamma-Gamma model.
 //'
-//' @template template_rcpp_gg_reference
+//' @template template_references_gg
 //'
 //'
 // [[Rcpp::export]]

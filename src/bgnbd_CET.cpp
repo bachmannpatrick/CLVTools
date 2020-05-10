@@ -15,13 +15,17 @@
 //' @template template_params_rcppcovmatrix
 //' @template template_params_rcppvcovparams
 //'
-//' @template template_details_bgnbd
+//' @template template_details_paramsbgnbd
+//'
+//' @templateVar name_params_cov_life vCovParams_life
+//' @templateVar name_params_cov_trans vCovParams_trans
+//' @template template_details_rcppcovmatrix
 //'
 //' @return
 //' Returns a vector with the conditional expected transactions for the existing
 //' customers in the BG/NBD model.
 //'
-//' @template template_bgnbd_reference
+//' @template template_references_bgnbd
 //'
 arma::vec bgnbd_CET(const double r,
                     const arma::vec& vAlpha_i,

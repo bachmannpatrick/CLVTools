@@ -317,7 +317,7 @@ print.summary.clv.fitted <- function(x, digits=max(3L, getOption("digits")-3L),
 
 
 
-#' @template template_summary
+#' @template template_summary_clvfitted
 #' @order 1
 #' @importFrom stats coef vcov AIC BIC logLik pnorm
 #' @importFrom utils tail

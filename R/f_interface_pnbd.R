@@ -91,7 +91,7 @@
 #'
 #' @seealso \code{\link[data.table]{setDTthreads}}, \code{\link[data.table]{getDTthreads}},\code{\link[doParallel]{registerDoParallel}},\code{\link[doFuture]{registerDoFuture}} for setting up parallel execution.
 #'
-#' @template template_pnbd_reference
+#' @template template_references_pnbd
 #'
 #' @examples
 #' \donttest{
