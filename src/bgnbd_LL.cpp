@@ -26,6 +26,11 @@ arma::vec beta_ratio(const arma::vec& a, const arma::vec& b, const arma::vec& x,
 //' @template template_params_rcppxtxtcal
 //' @template template_params_rcppcovmatrix
 //'
+//' @details
+//' \code{vLogparams} is vector with the BG/NBD model parameters at log scale,
+//' followed by the parameters for the lifetime covariate at original scale and then
+//' followed by the parameters for the transaction covariate at original scale
+//'
 //' @template template_details_paramsbgnbd
 //' @templateVar name_params_cov_life vLogparams
 //' @templateVar name_params_cov_trans vLogparams

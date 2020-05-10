@@ -48,14 +48,14 @@ The function \code{bgnbd_staticcov_LL_sum} calculates the individual Log-Likelih
 across customers.
 }
 \details{
+\code{vLogparams} is vector with the BG/NBD model parameters at log scale,
+followed by the parameters for the lifetime covariate at original scale and then
+followed by the parameters for the transaction covariate at original scale
+
 \code{r} r: TODO
 \code{alpha} alpha: TODO
 \code{a} a: TODO
 \code{b} b: TODO
-
-\code{vLogparams} is vector with the BG/NBD model parameters at log scale,
-followed by the parameters for the lifetime covariate at original scale and then
-followed by the parameters for the transaction covariate at original scale
 
 \code{mCov_trans} is a matrix containing the covariates data of
 the time-invariant covariates that affect the transaction process.

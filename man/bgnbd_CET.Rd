@@ -62,10 +62,6 @@ on a customer's past transaction behavior and the BG/NBD model parameters.
 \code{a} a: TODO
 \code{b} b: TODO
 
-\code{vLogparams} is vector with the BG/NBD model parameters at log scale,
-followed by the parameters for the lifetime covariate at original scale and then
-followed by the parameters for the transaction covariate at original scale
-
 \code{mCov_trans} is a matrix containing the covariates data of
 the time-invariant covariates that affect the transaction process.
 Each column represents a different covariate. For every column a gamma parameter
