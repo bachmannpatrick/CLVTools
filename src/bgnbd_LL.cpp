@@ -4,8 +4,35 @@
 
 arma::vec beta_ratio(const arma::vec& a, const arma::vec& b, const arma::vec& x, const arma::vec& y);
 
-//Individual bgnbd LL. No cov and staticcov differ by the individual vAlpha_i, vA_i and vB_i which are different
-// for each customer depending on the covariate.
+//' @name bgnbd_LL
+//' @title BG/NBD: Log-Likelihood
+//'
+//' @description
+//' Calculates the Log-likelihood for the BG/NBD model with and without static covariates.
+//'
+//' The function \code{bgnbd_nocov_LL_ind} calculates the individual LogLikelihood
+//' values for each customer for the given parameters.
+//'
+//' The function \code{bgnbd_nocov_LL_sum} calculates the LogLikelihood value summed
+//' across customers for the given parameters.
+//'
+//' The function \code{bgnbd_staticcov_LL_ind} calculates the individual Log-Likelihood
+//' values for each customer for the given parameters and covariates.
+//'
+//' The function \code{bgnbd_staticcov_LL_sum} calculates the individual Log-Likelihood values summed
+//' across customers.
+//'
+//' @param vLogparams vector with the BG/NBD model parameters log scaled
+//' @template template_params_rcppxtxtcal
+//' @template template_params_rcppcovmatrix
+//'
+//' @template template_details_bgnbd
+//'
+//' @return
+//'  Returns the respective LogLikelihood value for the BG/NBD model without covariates.
+//'
+//' @template template_bgnbd_reference
+//'
 arma::vec bgnbd_LL_ind(const double r,
                        const arma::vec& vAlpha_i,
                        const arma::vec& vA_i,
@@ -26,7 +53,7 @@ arma::vec bgnbd_LL_ind(const double r,
   return(vLL);
 }
 
-//' @rdname bgnbd_nocov_LL_sum
+//' @rdname bgnbd_LL
 // [[Rcpp::export]]
 arma::vec bgnbd_nocov_LL_ind(const arma::vec& vLogparams,
                             const arma::vec& vX,
@@ -52,31 +79,7 @@ arma::vec bgnbd_nocov_LL_ind(const arma::vec& vLogparams,
 }
 
 
-//' @title BG/NBD: LogLikelihood without covariates
-//'
-//' @description
-//' BG/NBD without Covariates:
-//'
-//' The function \code{bgnbd_nocov_LL_ind} calculates the individual LogLikelihood
-//' values for each customer for the given parameters.
-//'
-//' The function \code{bgnbd_nocov_LL_sum} calculates the LogLikelihood value summed
-//' across customers for the given parameters.
-//'
-//' @param vLogparams vector with the Pareto/NBD model parameters log scaled
-//' @template template_params_rcppxtxtcal
-//'
-//' @details
-//' \code{r, alpha, a, b} are the parameters used for estimation.\cr
-//' TODO: add description of parameters
-//'
-//'@return
-//'  Returns the respective LogLikelihood value for the BG/NBD model without covariates.
-//'
-//'@references
-//'
-//'  \url{https://github.com/cran/BTYD/}.
-//'
+//' @rdname bgnbd_LL
 // [[Rcpp::export]]
 double bgnbd_nocov_LL_sum(const arma::vec& vLogparams,
                          const arma::vec& vX,
@@ -91,43 +94,7 @@ double bgnbd_nocov_LL_sum(const arma::vec& vLogparams,
   return(-arma::sum(vLL));
 }
 
-//' @title BG/NBD: LogLikelihood with static covariates
-//'
-//' @description
-//' BG/NBD with Static Covariates:
-//'
-//' The function \code{bgnbd_staticcov_LL_ind} calculates the individual LogLikelihood
-//' values for each customer for the given parameters and covariates.
-//'
-//' The function \code{bgnbd_staticcov_LL_sum} calculates the individual LogLikelihood values summed
-//' across customers.
-//'
-//' @param vLogparams vector with the parameters for the BG/NBD model and the static covariates. See Details.
-//' @template template_params_rcppxtxtcal
-//' @template template_params_rcppcovmatrix
-//'
-//' @details
-//' \code{vLogparams} is vector with the BG/NBD model parameters at log scale,
-//' followed by the parameters for the lifetime covariate at original scale and then
-//' followed by the parameters for the transaction covariate at original scale
-//'
-//' \code{mCov_life} is a matrix containing the covariates data of
-//' the time-invariant covariates that affect the lifetime process.
-//' Each column represents a different covariate. For every column, a gamma parameter
-//' needs to added to \code{vParams} at the respective position.
-//'
-//' \code{mCov_trans} is a matrix containing the covariates data of
-//' the time-invariant covariates that affect the transaction process.
-//' Each column represents a different covariate. For every column, a gamma parameter
-//' needs to added to \code{vParams} at the respective position.
-//'
-//'
-//'@return
-//'  Returns the respective LogLikelihood value for the BG/NBD model with static covariates.
-//'
-//'@references
-//' TODO
-//'
+//' @rdname bgnbd_LL
 // [[Rcpp::export]]
 arma::vec bgnbd_staticcov_LL_ind(const arma::vec& vLogparams,
                                  const arma::vec& vX,
@@ -170,7 +137,7 @@ arma::vec bgnbd_staticcov_LL_ind(const arma::vec& vLogparams,
   return(vLL);
 }
 
-//' @rdname bgnbd_staticcov_LL_ind
+//' @rdname bgnbd_LL
 // [[Rcpp::export]]
 double bgnbd_staticcov_LL_sum(const arma::vec& vLogparams,
                               const arma::vec& vX,

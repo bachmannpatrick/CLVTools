@@ -1,14 +1,29 @@
-#' @importFrom methods setClass
-#' @include all_generics.R class_clv_model.R
+#' CLV Model functionality for BG/NBD with static covariates
+#'
+#' This class implements the functionalities and model-specific steps which are required
+#' to fit the BG/NBD model with static covariates.
+#'
+#' @keywords internal
+#' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.bgnbd.no.cov-class}
+#' @seealso Classes using its instance: \link{clv.fitted.static.cov-class},
+#'
+#' @include all_generics.R class_clv_model.R class_clv_model_bgnbd.R
 setClass(Class = "clv.model.bgnbd.static.cov", contains = "clv.model.bgnbd.no.cov",
          slots = list(start.param.cov = "numeric"),
          prototype = list(
-           name.model = "BG/NBD with Static Covariates",
-           start.param.cov = 1,
-           optimx.defaults = list(method="L-BFGS-B",
-                                  itnmax = 3000)
+           start.param.cov = numeric()
          ))
 
+#' @importFrom methods new
+clv.model.bgnbd.static.cov <- function(){
+  return(new("clv.model.bgnbd.static.cov",
+             clv.model.bgnbd.no.cov(),
+             name.model = "BG/NBD with Static Covariates",
+             start.param.cov = 1,
+             optimx.defaults = list(method="L-BFGS-B",
+                  itnmax = 3000)
+             ))
+}
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
 #' @importFrom methods callNextMethod
@@ -43,13 +58,6 @@ setMethod(f = "clv.model.transform.start.params.cov", signature = signature(clv.
 setMethod(f = "clv.model.backtransform.estimated.params.cov", signature = signature(clv.model="clv.model.bgnbd.static.cov"), definition = function(clv.model, prefixed.params.cov){
   # no transformation needed
   return(prefixed.params.cov)
-})
-
-setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.model.bgnbd.static.cov"), definition = function(clv.model, clv.fitted, verbose){
-  # clv.data in clv.fitted is already replaced with newdata here
-  # Need to only redo cbs if given new data
-  clv.fitted@cbs <- bgnbd_cbs(clv.data = clv.fitted@clv.data)
-  return(clv.fitted)
 })
 
 # . clv.model.prepare.optimx.args -----------------------------------------------------------------------------------------------------
@@ -103,6 +111,8 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.static.c
 
 # . clv.model.predict.clv -----------------------------------------------------------------------------------------------------
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgnbd.static.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
+  r <- alpha <- a <- b <- period.length <- CET <- PAlive <- x <- t.x <- T.cal <- DERT <- NULL
+
   # To be sure they are both sorted the same when calling cpp functions
   setkeyv(dt.prediction, "Id")
   setkeyv(clv.fitted@cbs, "Id")

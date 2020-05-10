@@ -1,6 +1,21 @@
-#' @importFrom methods setClass
+#' Result of fitting the BG/NBD model without covariates
+#'
+#' @description
+#' Output from fitting the BG/NBD model on data without covariates. It constitutes the estimation
+#' result and is returned to the user to use it as input to other methods such as to make
+#' predictions or plot the unconditional expectation.
+#'
+#' Inherits from \code{clv.fitted} in order to execute all steps required for fitting a model
+#' without covariates and it contains an instance of class \code{clv.model.bgnbd.no.cov} which
+#' provides the required BG/NBD (no covariates) specific functionalities.
+#'
+#' @template template_slot_bgnbdcbs
+#'
+#' @seealso \link{clv.fitted-class}, \link{clv.model.bgnbd.no.cov-class}, \link{clv.bgnbd.static.cov-class}
+#'
 #' @keywords internal
-#' @include class_clv_model_bgnbd.R class_clv_fitted.R
+#' @importFrom methods setClass
+#' @include class_clv_model_bgnbd.R class_clv_data.R class_clv_fitted.R
 setClass(Class = "clv.bgnbd", contains = "clv.fitted",
          slots = c(
            cbs = "data.table"),
@@ -13,7 +28,7 @@ setClass(Class = "clv.bgnbd", contains = "clv.fitted",
 clv.bgnbd <- function(cl, clv.data){
 
   dt.cbs.bgnbd <- bgnbd_cbs(clv.data = clv.data)
-  clv.model    <- new("clv.model.bgnbd.no.cov")
+  clv.model    <- clv.model.bgnbd.no.cov()
 
   return(new("clv.bgnbd",
              clv.fitted(cl=cl, clv.model=clv.model, clv.data=clv.data),

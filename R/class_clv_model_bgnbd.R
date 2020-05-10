@@ -1,14 +1,30 @@
+#' CLV Model functionality for BG/NBD without covariates
+#'
+#' This class implements the functionalities and model-specific steps which are required
+#' to fit the BG/NBD model without covariates.
+#'
+#' @keywords internal
 #' @importFrom methods setClass
+#' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.bgnbd.static.cov-class}
+#' @seealso Classes using its instance: \link{clv.fitted-class}
 #' @include all_generics.R class_clv_model.R
 setClass(Class = "clv.model.bgnbd.no.cov", contains = "clv.model",
          slots = list(),
          prototype = list(
-           name.model = "BG/NBD Standard",
-           names.original.params.model = c(r="r", alpha="alpha", a="a", b="b"),
-           names.prefixed.params.model = c("log.r", "log.alpha", "log.a", "log.b"),
-           start.params.model = c(r=1, alpha = 3, a = 1, b = 3)
+           name.model = character(),
+           names.original.params.model = character(0),
+           names.prefixed.params.model = character(0),
+           start.params.model = numeric(0)
          ))
 
+#' @importFrom methods new
+clv.model.bgnbd.no.cov <- function(){
+  return(new("clv.model.bgnbd.no.cov",
+             name.model = "BG/NBD Standard",
+             names.original.params.model = c(r="r", alpha="alpha", a="a", b="b"),
+             names.prefixed.params.model = c("log.r", "log.alpha", "log.a", "log.b"),
+             start.params.model = c(r=1, alpha = 3, a = 1, b = 3)))
+}
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
@@ -94,7 +110,7 @@ setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.mo
 # . clv.model.expectation --------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
 setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.no.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
-  r <- alpha_i <- a_i <- b_i <- date.first.repeat.trans<- date.first.actual.trans <- T.cal <- t_i<- period.first.trans<-NULL
+  r <- alpha <- a <- b <- date.first.repeat.trans<- date.first.actual.trans <- T.cal <- t_i<- period.first.trans<-NULL
 
   params_i <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
 
@@ -120,6 +136,8 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.no.cov")
 # .clv.model.predict.clv --------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgnbd.no.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
+  r <- alpha <- a <- b <- period.length <- CET <- x <- t.x <- T.cal <- PAlive <- DERT <- NULL
+
   # To be sure they are both sorted the same when calling cpp functions
   setkeyv(dt.prediction, "Id")
   setkeyv(clv.fitted@cbs, "Id")
