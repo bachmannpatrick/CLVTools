@@ -141,9 +141,6 @@ URL \url{http://brucehardie.com/notes/027/bgnbd_num_error.pdf}.
 Fader PS, Hardie BGS (2007). \dQuote{Incorporating time-invariant covariates into the
 Pareto/NBD and BG/NBD models.}
 URL \url{http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf}.
-
-Buy Till You Die
-URL \url{https://github.com/cran/BTYD/}.
 }
 \seealso{
 \code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object, \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}}
