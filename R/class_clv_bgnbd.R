@@ -1,13 +1,6 @@
-#' Result of fitting the BG/NBD model without covariates
-#'
-#' @description
-#' Output from fitting the BG/NBD model on data without covariates. It constitutes the estimation
-#' result and is returned to the user to use it as input to other methods such as to make
-#' predictions or plot the unconditional expectation.
-#'
-#' Inherits from \code{clv.fitted} in order to execute all steps required for fitting a model
-#' without covariates and it contains an instance of class \code{clv.model.bgnbd.no.cov} which
-#' provides the required BG/NBD (no covariates) specific functionalities.
+#' @templateVar name_model_full BG/NBD
+#' @templateVar name_class_clvmodel clv.model.bgnbd.no.cov
+#' @template template_class_clvfittedmodels
 #'
 #' @template template_slot_bgnbdcbs
 #'
