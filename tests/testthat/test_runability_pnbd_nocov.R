@@ -7,6 +7,8 @@ expect_silent(clv.data.cdnow.noholdout <- clvdata(data.transactions = cdnow, dat
 expect_silent(clv.data.cdnow.withholdout <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "W",
                                                     estimation.split = 37))
 
+pnbd.param.names = c("r", "alpha", "s", "beta")
+
 # Newdata clv data object to test plot/predict
 #   Create with new fake data and generally other names
 set.seed(0xcaffe) # hipster seed
@@ -24,24 +26,28 @@ expect_silent(clv.newdata.withhold <- clvdata(data.transactions = dt.newdata.tra
                                               estimation.split = 37, name.id = "cust.id", name.date = "trans.date",
                                               name.price = NULL))
 
-fct.testthat.runability.nocov.out.of.the.box(method = pnbd, clv.data.withholdout = clv.data.cdnow.withholdout,
+fct.testthat.runability.common.out.of.the.box(method = pnbd, clv.data.withholdout = clv.data.cdnow.withholdout,
                                          clv.data.noholdout = clv.data.cdnow.noholdout,
                                          clv.newdata.withhold = clv.newdata.withhold,
-                                         clv.newdata.nohold = clv.newdata.nohold)
+                                         clv.newdata.nohold = clv.newdata.nohold,
+                                         param.names = pnbd.param.names)
 
-fct.testthat.runability.nocov.custom.model.start.params(method = pnbd, start.params.model = c(r=1, alpha = 2, s = 1, beta = 2), clv.data.cdnow.noholdout, clv.data.cdnow.withholdout)
+fct.testthat.runability.common.custom.model.start.params(method = pnbd, start.params.model = c(r=1, alpha = 2, s = 1, beta = 2), clv.data.cdnow.noholdout, clv.data.cdnow.withholdout)
 
 fct.testthat.runability.nocov.custom.optimx.args(method = pnbd,
                                          clv.data.noholdout = clv.data.cdnow.noholdout,
                                          clv.data.withholdout = clv.data.cdnow.withholdout)
 
-fct.testthat.runability.nocov.all.optimization.methods(method = pnbd,
-                                         clv.data.noholdout = clv.data.cdnow.noholdout)
+fct.testthat.runability.common.all.optimization.methods(method = pnbd,
+                                         clv.data.noholdout = clv.data.cdnow.noholdout,
+                                         expected.message = "replaced by maximum positive value|Gradient not computable after method nlm|unused control arguments ignored|Estimation failed with NA coefs|Hessian could not be derived"
+                                         )
 
-fct.testthat.runability.nocov.multiple.optimization.methods(method = pnbd,
+fct.testthat.runability.common.multiple.optimization.methods(method = pnbd,
                                                         clv.data.noholdout = clv.data.cdnow.noholdout,
                                                         clv.newdata.nohold = clv.newdata.nohold,
-                                                        clv.newdata.withhold = clv.newdata.withhold)
+                                                        clv.newdata.withhold = clv.newdata.withhold,
+                                                        param.names = pnbd.param.names)
 
 fct.testthat.runability.nocov.without.spending.data(method = pnbd, data.transactions = cdnow)
 

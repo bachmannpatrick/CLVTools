@@ -1,27 +1,4 @@
-fct.testthat.runability.staticcov.out.of.the.box <- function(method, clv.data.holdout, clv.data.no.holdout, clv.newdata.nohold, clv.newdata.withhold, param.names){
-  test_that("Works out-of-the box, without additional params", {
-    l.args.holdout <- list(clv.data = clv.data.holdout, verbose=FALSE)
-    l.args.no.holdout <- list(clv.data.no.holdout, verbose=FALSE)
-
-    expect_silent(p.hold    <- do.call(what = method, args = l.args.holdout))
-    expect_silent(p.no.hold <- do.call(what = method, args = l.args.no.holdout))
-    fct.helper.fitted.all.s3(p.hold,   full.names = c(param.names, p.hold@names.prefixed.params.free.life, p.hold@names.prefixed.params.free.trans),
-                             clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
-    fct.helper.fitted.all.s3(p.no.hold, full.names = c(param.names, p.hold@names.prefixed.params.free.life, p.hold@names.prefixed.params.free.trans),
-                             clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
-  })
-}
-
-fct.testthat.runability.staticcov.custom.model.start.params <- function(method, clv.data.holdout, clv.data.no.holdout, start.params.model){
-  test_that("Works with custom model start parameters", {
-    l.args.holdout <- list(clv.data = clv.data.holdout,    start.params.model = start.params.model,verbose=FALSE)
-    l.args.no.holdout <- list(clv.data = clv.data.no.holdout, start.params.model = start.params.model,verbose=FALSE)
-    skip_on_cran()
-    expect_silent(do.call(what = method, args = l.args.holdout))
-    expect_silent(do.call(what = method, args = l.args.no.holdout))
-  })
-}
-
+#use nocov
 fct.testthat.runability.staticcov.custom.model.covariate.start.params <- function(method, clv.data.holdout, clv.data.no.holdout, start.params.model){
   test_that("Works with custom model and covariate start parameters", {
     skip_on_cran()
@@ -35,17 +12,18 @@ fct.testthat.runability.staticcov.custom.model.covariate.start.params <- functio
   })
 }
 
-
-fct.testthat.runability.staticcov.all.optimization.methods <- function(method, clv.data.holdout){
+#use nocov
+fct.testthat.runability.staticcov.all.optimization.methods <- function(method, clv.data.holdout, expected.message){
   test_that("Works for all optimx optimization methods", {
     skip_on_cran()
     skip_on_covr()
     l.args <- list(clv.data=clv.data.holdout, optimx.args = list(control=list(all.methods=TRUE)), verbose=FALSE)
     expect_warning(do.call(what = method, args = l.args),
-                   regexp = "replaced by maximum positive value|Gradient not computable after method nlm|Rcgmin|unused control arguments ignored|Gradient not computable|Estimation failed with NA coefs|Hessian could not be derived", all=TRUE)
+                   regexp = expected.message, all=TRUE)
   })
 }
 
+# use nocov
 fct.testthat.runability.staticcov.multiple.optimization.methods <- function(method, clv.data.holdout, clv.newdata.nohold, clv.newdata.withhold, param.names){
   test_that("Works fully with multiple optimization methods", {
     skip_on_cran()
