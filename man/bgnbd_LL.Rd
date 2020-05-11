@@ -50,12 +50,13 @@ across customers.
 \details{
 \code{vLogparams} is vector with the BG/NBD model parameters at log scale,
 followed by the parameters for the lifetime covariate at original scale and then
-followed by the parameters for the transaction covariate at original scale
+followed by the parameters for the transaction covariate at original scale.
 
-\code{r} r: TODO
-\code{alpha} alpha: TODO
-\code{a} a: TODO
-\code{b} b: TODO
+Model parameters for the BG/NBD model are \code{r, alpha, a, and b}. \cr
+\code{r}: shape parameter of the Gamma distribution of the purchase process. \cr
+\code{alpha}: scale parameter of the Gamma distribution of the purchase process. \cr
+\code{a}: shape parameter of the Beta distribution of the dropout process.\cr
+\code{b}: shape parameter of the Beta distribution of the dropout process.
 
 \code{mCov_trans} is a matrix containing the covariates data of
 the time-invariant covariates that affect the transaction process.

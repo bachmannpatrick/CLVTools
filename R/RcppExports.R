@@ -14,7 +14,6 @@
 #' @template template_params_rcppcovmatrix
 #' @template template_params_rcppvcovparams
 #'
-#' @template template_details_paramsbgnbd
 #'
 #' @templateVar name_params_cov_life vCovParams_life
 #' @templateVar name_params_cov_trans vCovParams_trans
@@ -63,9 +62,9 @@ bgnbd_staticcov_CET <- function(r, alpha, a, b, nPeriods, vX, vT_x, vT_cal, vCov
 #' @details
 #' \code{vLogparams} is vector with the BG/NBD model parameters at log scale,
 #' followed by the parameters for the lifetime covariate at original scale and then
-#' followed by the parameters for the transaction covariate at original scale
-#'
+#' followed by the parameters for the transaction covariate at original scale.
 #' @template template_details_paramsbgnbd
+#'
 #' @templateVar name_params_cov_life vLogparams
 #' @templateVar name_params_cov_trans vLogparams
 #' @template template_details_rcppcovmatrix
@@ -108,7 +107,6 @@ bgnbd_staticcov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal, mCov_life, mCov
 #' @template template_params_rcppcovmatrix
 #' @template template_params_rcppvcovparams
 #'
-#' @template template_details_paramsbgnbd
 #'
 #' @templateVar name_params_cov_life vCovParams_life
 #' @templateVar name_params_cov_trans vCovParams_trans
@@ -360,7 +358,6 @@ pnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_tra
 #' @template template_params_rcppcovmatrix
 #' @template template_params_rcppvcovparams
 #'
-#' @details
 #' @templateVar name_params_pnbd vEstimated_params
 #' @template template_details_paramspnbd
 #'

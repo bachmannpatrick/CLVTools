@@ -24,13 +24,13 @@ bgnbd_staticcov_CET(
 )
 }
 \arguments{
-\item{r}{TODO: describe}
+\item{r}{shape parameter of the Gamma distribution of the purchase process}
 
-\item{alpha}{TODO: describe}
+\item{alpha}{scale parameter of the Gamma distribution of the purchase process}
 
-\item{a}{TODO: describe}
+\item{a}{shape parameter of the Beta distribution of the lifetime process}
 
-\item{b}{TODO: describe}
+\item{b}{shape parameter of the Beta distribution of the lifetime process}
 
 \item{nPeriods}{time prediction time frame}
 
@@ -57,11 +57,6 @@ Calculates the expected number of transactions in a given time period based
 on a customer's past transaction behavior and the BG/NBD model parameters.
 }
 \details{
-\code{r} r: TODO
-\code{alpha} alpha: TODO
-\code{a} a: TODO
-\code{b} b: TODO
-
 \code{mCov_trans} is a matrix containing the covariates data of
 the time-invariant covariates that affect the transaction process.
 Each column represents a different covariate. For every column a gamma parameter

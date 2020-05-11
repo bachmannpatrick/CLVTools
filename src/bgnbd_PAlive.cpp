@@ -13,7 +13,6 @@
 //' @template template_params_rcppcovmatrix
 //' @template template_params_rcppvcovparams
 //'
-//' @template template_details_paramsbgnbd
 //'
 //' @templateVar name_params_cov_life vCovParams_life
 //' @templateVar name_params_cov_trans vCovParams_trans

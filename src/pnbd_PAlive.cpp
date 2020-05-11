@@ -22,7 +22,6 @@
 //' @template template_params_rcppcovmatrix
 //' @template template_params_rcppvcovparams
 //'
-//' @details
 //' @templateVar name_params_pnbd vEstimated_params
 //' @template template_details_paramspnbd
 //'

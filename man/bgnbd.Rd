@@ -73,13 +73,13 @@ Fits BG/NBD models on transactional data without and with static covariates.
 }
 \details{
 Model parameters for the BG/NBD model are \code{r, alpha, a, and b}. \cr
-\code{r}: shape parameter of the Gamma distribution of the purchase process.
-\code{alpha}: scale parameter of the Gamma distribution of the purchase process.
-\code{a}: shape parameter of the Beta distribution of the dropout process.
+\code{r}: shape parameter of the Gamma distribution of the purchase process. \cr
+\code{alpha}: scale parameter of the Gamma distribution of the purchase process. \cr
+\code{a}: shape parameter of the Beta distribution of the dropout process.\cr
 \code{b}: shape parameter of the Beta distribution of the dropout process.
 
 If no start parameters are given, r = 1, alpha = 3, a = 1, b = 3 is used.
-The model start parameters are required to be > 0.
+All model start parameters are required to be > 0.
 
 \subsection{The BG/NBD model}{
 The BG/NBD is an "easy" alternative to the Pareto/NBD model that is easier to implement. The BG/NBD model slight adapts

@@ -20,15 +20,11 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = F
 #' @param use.cor (Not yet supported) Whether the correlation between the transaction and lifetime process should be estimated.
 #' @param start.param.cor (Not yet supported) Start parameter for the optimization of the correlation.
 #'
-#' @details
-#' Model parameters for the BG/NBD model are \code{r, alpha, a, and b}. \cr
-#' \code{r}: shape parameter of the Gamma distribution of the purchase process.
-#' \code{alpha}: scale parameter of the Gamma distribution of the purchase process.
-#' \code{a}: shape parameter of the Beta distribution of the dropout process.
-#' \code{b}: shape parameter of the Beta distribution of the dropout process.
 #'
-#' If no start parameters are given, r = 1, alpha = 3, a = 1, b = 3 is used.
-#' The model start parameters are required to be > 0.
+#' @template template_details_paramsbgnbd
+#'
+#' @details If no start parameters are given, r = 1, alpha = 3, a = 1, b = 3 is used.
+#' All model start parameters are required to be > 0.
 #'
 #' \subsection{The BG/NBD model}{
 #' The BG/NBD is an "easy" alternative to the Pareto/NBD model that is easier to implement. The BG/NBD model slight adapts
