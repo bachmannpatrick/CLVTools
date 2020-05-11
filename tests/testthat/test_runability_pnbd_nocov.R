@@ -26,11 +26,17 @@ expect_silent(clv.newdata.withhold <- clvdata(data.transactions = dt.newdata.tra
                                               estimation.split = 37, name.id = "cust.id", name.date = "trans.date",
                                               name.price = NULL))
 
-fct.testthat.runability.common.out.of.the.box(method = pnbd, clv.data.withholdout = clv.data.cdnow.withholdout,
-                                         clv.data.noholdout = clv.data.cdnow.noholdout,
-                                         clv.newdata.withhold = clv.newdata.withhold,
-                                         clv.newdata.nohold = clv.newdata.nohold,
-                                         param.names = pnbd.param.names)
+fct.testthat.runability.common.out.of.the.box.no.hold(method = pnbd,
+                                                        clv.data.noholdout = clv.data.cdnow.noholdout,
+                                                        clv.newdata.withhold = clv.newdata.withhold,
+                                                        clv.newdata.nohold = clv.newdata.nohold,
+                                                        param.names = pnbd.param.names)
+
+fct.testthat.runability.common.out.of.the.box.with.hold(method = pnbd,
+                                                          clv.data.withholdout = clv.data.cdnow.withholdout,
+                                                          clv.newdata.withhold = clv.newdata.withhold,
+                                                          clv.newdata.nohold = clv.newdata.nohold,
+                                                          param.names = pnbd.param.names)
 
 fct.testthat.runability.common.custom.model.start.params(method = pnbd, start.params.model = c(r=1, alpha = 2, s = 1, beta = 2), clv.data.cdnow.noholdout, clv.data.cdnow.withholdout)
 

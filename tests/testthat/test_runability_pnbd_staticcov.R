@@ -51,12 +51,17 @@ expect_silent(clv.newdata.withhold <- SetStaticCovariates(
 
 # Basic runability ------------------------------------------------------------------------------------------
 
-fct.testthat.runability.common.out.of.the.box(method = pnbd,
-                                              clv.data.withholdout = clv.data.cov.holdout,
-                                              clv.data.noholdout = clv.data.cov.no.holdout,
-                                              clv.newdata.nohold = clv.newdata.nohold,
-                                              clv.newdata.withhold = clv.newdata.withhold,
-                                              param.names = pnbd.param.names.with.cov)
+fct.testthat.runability.common.out.of.the.box.no.hold(method = pnbd,
+                                                        clv.data.noholdout = clv.data.cov.no.holdout,
+                                                        clv.newdata.nohold = clv.newdata.nohold,
+                                                        clv.newdata.withhold = clv.newdata.withhold,
+                                                        param.names = pnbd.param.names.with.cov)
+
+fct.testthat.runability.common.out.of.the.box.with.hold(method = pnbd,
+                                                      clv.data.withholdout = clv.data.cov.holdout,
+                                                      clv.newdata.nohold = clv.newdata.nohold,
+                                                      clv.newdata.withhold = clv.newdata.withhold,
+                                                      param.names = pnbd.param.names.with.cov)
 
 fct.testthat.runability.common.custom.model.start.params(method = pnbd,
                                                           clv.data.withholdout = clv.data.cov.holdout,

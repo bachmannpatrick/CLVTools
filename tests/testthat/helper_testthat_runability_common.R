@@ -1,13 +1,22 @@
-fct.testthat.runability.common.out.of.the.box <- function(method, clv.data.withholdout, clv.data.noholdout, clv.newdata.withhold, clv.newdata.nohold, param.names) {
-  test_that("Works out-of-the box, without additional params", {
-    l.args.hold <- list(clv.data = clv.data.withholdout, verbose=FALSE)
+fct.testthat.runability.common.out.of.the.box.no.hold <- function(method, clv.data.noholdout, clv.newdata.withhold, clv.newdata.nohold, param.names) {
+  test_that("Works out-of-the box, without additional params (no holdout)", {
     l.args.no.hold <- list(clv.data = clv.data.noholdout, verbose=FALSE)
 
-    expect_silent(p.hold    <- do.call(what = method, args = l.args.hold))
     expect_silent(p.no.hold <- do.call(what = method, args = l.args.no.hold))
-    fct.helper.fitted.all.s3(clv.fitted = p.hold,     full.names = param.names,
-                             clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
+
     fct.helper.fitted.all.s3(clv.fitted = p.no.hold,  full.names = param.names,
+                             clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
+  })
+}
+
+fct.testthat.runability.common.out.of.the.box.with.hold <- function(method, clv.data.withholdout, clv.newdata.withhold, clv.newdata.nohold, param.names) {
+  test_that("Works out-of-the box, without additional params (with holdout)", {
+    skip_on_cran()
+    l.args.hold <- list(clv.data = clv.data.withholdout, verbose=FALSE)
+
+    expect_silent(p.hold    <- do.call(what = method, args = l.args.hold))
+
+    fct.helper.fitted.all.s3(clv.fitted = p.hold,  full.names = param.names,
                              clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
   })
 }
