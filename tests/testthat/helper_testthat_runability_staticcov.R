@@ -153,8 +153,28 @@ fct.testthat.runability.staticcov.works.with.0.lambdas <- function(method, clv.d
   })
 }
 
-fct.testthat.runability.staticcov.works.with.combined.interlayers <- function(method, clv.data.holdout, clv.data.no.holdout, clv.newdata.nohold, clv.newdata.withhold, param.names){
-  test_that("Works with combined interlayers", {
+fct.testthat.runability.staticcov.works.with.combined.interlayers.without.cor <- function(method, clv.data.holdout, clv.data.no.holdout, clv.newdata.nohold, clv.newdata.withhold, param.names){
+  test_that("Works with combined interlayers (without correlation)", {
+    # Try all combinations of interlayers
+    skip_on_cran()
+    skip_on_covr()
+
+    l.args.holdout <- list(clv.data = clv.data.holdout, names.cov.constr = c("Gender", "Channel"), reg.lambdas = c(trans=10, life=10),verbose=FALSE)
+    l.args.no.holdout <- list(clv.data = clv.data.no.holdout, names.cov.constr = c("Gender", "Channel"), reg.lambdas = c(trans=10, life=10),verbose=FALSE)
+
+    # Regularization + Constraints
+    expect_silent(p.hold    <- do.call(what = method, args = l.args.holdout))
+    expect_silent(p.no.hold <- do.call(what = method, args = l.args.no.holdout))
+
+    fct.helper.fitted.all.s3(p.hold,    full.names = c(param.names, p.hold@names.prefixed.params.constr),
+                             clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
+    fct.helper.fitted.all.s3(p.no.hold, full.names = c(param.names, p.no.hold@names.prefixed.params.constr),
+                             clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
+  })
+}
+
+fct.testthat.runability.staticcov.works.with.combined.interlayers.with.cor <- function(method, clv.data.holdout, clv.data.no.holdout, clv.newdata.nohold, clv.newdata.withhold, param.names){
+  test_that("Works with combined interlayers (with correlation)", {
     # Try all combinations of interlayers
     skip_on_cran()
     skip_on_covr()
@@ -183,24 +203,12 @@ fct.testthat.runability.staticcov.works.with.combined.interlayers <- function(me
     fct.helper.fitted.all.s3(p.no.hold, full.names = c(param.names, p.no.hold@name.correlation.cor, p.no.hold@names.prefixed.params.free.life, p.no.hold@names.prefixed.params.free.trans),
                              clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
 
-    l.args.holdout.3 <- list(clv.data = clv.data.holdout, names.cov.constr = c("Gender", "Channel"), reg.lambdas = c(trans=10, life=10),verbose=FALSE)
-    l.args.no.holdout.3 <- list(clv.data = clv.data.no.holdout, names.cov.constr = c("Gender", "Channel"), reg.lambdas = c(trans=10, life=10),verbose=FALSE)
-
-    # Regularization + Constraints
-    expect_silent(p.hold    <- do.call(what = method, args = l.args.holdout.3))
-    expect_silent(p.no.hold <- do.call(what = method, args = l.args.no.holdout.3))
-
-    fct.helper.fitted.all.s3(p.hold,    full.names = c(param.names, p.hold@names.prefixed.params.constr),
-                             clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
-    fct.helper.fitted.all.s3(p.no.hold, full.names = c(param.names, p.no.hold@names.prefixed.params.constr),
-                             clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
-
-    l.args.holdout.4 <- list(clv.data = clv.data.holdout, use.cor = TRUE, names.cov.constr = c("Gender", "Channel"),reg.lambdas = c(trans=10, life=10),verbose=FALSE)
-    l.args.no.holdout.4 <- list(clv.data = clv.data.no.holdout, use.cor = TRUE, names.cov.constr = c("Gender", "Channel"),reg.lambdas = c(trans=10, life=10),verbose=FALSE)
+    l.args.holdout.3 <- list(clv.data = clv.data.holdout, use.cor = TRUE, names.cov.constr = c("Gender", "Channel"),reg.lambdas = c(trans=10, life=10),verbose=FALSE)
+    l.args.no.holdout.3 <- list(clv.data = clv.data.no.holdout, use.cor = TRUE, names.cov.constr = c("Gender", "Channel"),reg.lambdas = c(trans=10, life=10),verbose=FALSE)
 
     # Regularization + Correlation + Constraints
-    expect_silent(p.hold    <- do.call(what = method, args = l.args.holdout.4))
-    expect_silent(p.no.hold <- do.call(what = method, args = l.args.no.holdout.4))
+    expect_silent(p.hold    <- do.call(what = method, args = l.args.holdout.3))
+    expect_silent(p.no.hold <- do.call(what = method, args = l.args.no.holdout.3))
 
     fct.helper.fitted.all.s3(p.hold,    full.names = c(param.names, p.hold@name.correlation.cor, p.hold@names.prefixed.params.constr),
                              clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)

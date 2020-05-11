@@ -139,9 +139,16 @@ fct.testthat.runability.staticcov.works.with.0.lambdas(method = pnbd,
 
 context("Runability - PNBD static cov - w/ combinations")
 
-fct.testthat.runability.staticcov.works.with.combined.interlayers(method = pnbd,
+fct.testthat.runability.staticcov.works.with.combined.interlayers.without.cor(method = pnbd,
                                                                   clv.data.holdout = clv.data.cov.holdout,
                                                                   clv.data.no.holdout = clv.data.cov.no.holdout,
                                                                   clv.newdata.nohold = clv.newdata.nohold,
                                                                   clv.newdata.withhold = clv.newdata.withhold,
                                                                   param.names = pnbd.param.names.no.cov)
+
+fct.testthat.runability.staticcov.works.with.combined.interlayers.with.cor(method = pnbd,
+                                                                              clv.data.holdout = clv.data.cov.holdout,
+                                                                              clv.data.no.holdout = clv.data.cov.no.holdout,
+                                                                              clv.newdata.nohold = clv.newdata.nohold,
+                                                                              clv.newdata.withhold = clv.newdata.withhold,
+                                                                              param.names = pnbd.param.names.no.cov)
