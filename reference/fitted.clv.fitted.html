@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Extract Unconditional Expectation — fitted.clv.fitted" />
-<meta property="og:description" content="Extract the unconditional expectation (future transactions unconditional on being &quot;alive&quot;) from a fitted clv model." />
+<meta property="og:description" content="Extract the unconditional expectation (future transactions unconditional on being &quot;alive&quot;) from a fitted clv model.
+This is the unconditional expectation data that is used when plotting the fitted model." />
 
 
 
@@ -54,6 +55,16 @@
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-31477052-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-31477052-2');
+</script>
 
 
   </head>
@@ -132,7 +143,8 @@
     </div>
 
     <div class="ref-description">
-    <p>Extract the unconditional expectation (future transactions unconditional on being "alive") from a fitted clv model.</p>
+    <p>Extract the unconditional expectation (future transactions unconditional on being "alive") from a fitted clv model.
+This is the unconditional expectation data that is used when plotting the fitted model.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for clv.fitted</span>
@@ -159,6 +171,13 @@
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A <code>data.table</code> which contains the following columns:</p>
+<dt>period.until</dt><dd><p>The timepoint that marks the end (up until and including) of the period to which the data in this row refers.</p></dd>
+<dt>period.num</dt><dd><p>The number of this period.</p></dd>
+<dt>expectation</dt><dd><p>The value of the unconditional expectation for the period that ends on <code>period.until</code>.</p></dd>
+
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p><code>prediction.end</code> indicates until when to predict or plot and can be given as either
@@ -174,6 +193,9 @@ of the first prediction period is Monday 2019-01-02. Each prediction period incl
 the first prediction period therefore will end on, and include, Sunday 2019-01-08. Subsequent prediction periods
 again start on Mondays and end on Sundays.
 If <code>prediction.end</code> indicates a timepoint on which to end, this timepoint is included in the prediction period.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='plot.clv.fitted.html'>plot</a></code> to plot the unconditional expectation</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

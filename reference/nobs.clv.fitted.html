@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Time unit representing a single Year — clv.time.years-class • CLVTools</title>
+<title>Number of observations — nobs.clv.fitted • CLVTools</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,8 @@
 
 
 
-<meta property="og:title" content="Time unit representing a single Year — clv.time.years-class" />
-<meta property="og:description" content="Inherits from clv.time.date and therefore stores all timepoints
-with instances of class Date. Hence, no temporal resolution finer than 1 day is
-possible with this time unit." />
+<meta property="og:title" content="Number of observations — nobs.clv.fitted" />
+<meta property="og:description" content="The number of observations is defined as the number of unique customers for which the model was fit." />
 
 
 
@@ -138,19 +136,34 @@ possible with this time unit." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Time unit representing a single Year</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bachmannpatrick/CLVTools/blob/master/R/class_clv_time_years.R'><code>R/class_clv_time_years.R</code></a></small>
-    <div class="hidden name"><code>clv.time.years-class.Rd</code></div>
+    <h1>Number of observations</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bachmannpatrick/CLVTools/blob/master/R/f_s3generics_clvfitted.R'><code>R/f_s3generics_clvfitted.R</code></a></small>
+    <div class="hidden name"><code>nobs.clv.fitted.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Inherits from <code>clv.time.date</code> and therefore stores all timepoints
-with instances of class <code>Date</code>. Hence, no temporal resolution finer than 1 day is
-possible with this time unit.</p>
+    <p>The number of observations is defined as the number of unique customers for which the model was fit.</p>
     </div>
 
+    <pre class="usage"><span class='co'># S3 method for clv.fitted</span>
+<span class='fu'><a href='https://rdrr.io/r/stats/nobs.html'>nobs</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)</pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>object</th>
+      <td><p>An object of class clv.fitted.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Ignored</p></td>
+    </tr>
+    </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>The number of customers.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -56,6 +56,16 @@ the estimation and possible holdout sample." />
 <![endif]-->
 
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-31477052-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-31477052-2');
+</script>
+
 
   </head>
 
@@ -138,12 +148,7 @@ the estimation and possible holdout sample.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for clv.time</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(
-  <span class='no'>x</span>,
-  <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='fl'>3L</span>, <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"digits"</span>) - <span class='fl'>3L</span>),
-  <span class='kw'>signif.stars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"show.signif.stars"</span>),
-  <span class='no'>...</span>
-)
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>x</span>, <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='fl'>3L</span>, <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"digits"</span>) - <span class='fl'>3L</span>), <span class='no'>...</span>)
 
 <span class='co'># S3 method for clv.time</span>
 <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)</pre>
@@ -158,10 +163,6 @@ the estimation and possible holdout sample.</p>
     <tr>
       <th>digits</th>
       <td><p>The number of significant digits to use when printing.</p></td>
-    </tr>
-    <tr>
-      <th>signif.stars</th>
-      <td><p>Logical. If TRUE, ‘significance stars’ are printed for each coefficient.</p></td>
     </tr>
     <tr>
       <th>...</th>

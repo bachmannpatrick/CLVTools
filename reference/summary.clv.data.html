@@ -56,6 +56,16 @@ possible holdout sample, and descriptive statistics of the transaction data." />
 <![endif]-->
 
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-31477052-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-31477052-2');
+</script>
+
 
   </head>
 
@@ -141,34 +151,19 @@ possible holdout sample, and descriptive statistics of the transaction data.</p>
 <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for summary.clv.data</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(
-  <span class='no'>x</span>,
-  <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='fl'>3L</span>, <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"digits"</span>) - <span class='fl'>3L</span>),
-  <span class='kw'>signif.stars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"show.signif.stars"</span>),
-  <span class='no'>...</span>
-)
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>x</span>, <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='fl'>3L</span>, <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"digits"</span>) - <span class='fl'>3L</span>), <span class='no'>...</span>)
 
 <span class='co'># S3 method for clv.data.dynamic.covariates</span>
 <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for summary.clv.data.dynamic.covariates</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(
-  <span class='no'>x</span>,
-  <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='fl'>3L</span>, <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"digits"</span>) - <span class='fl'>3L</span>),
-  <span class='kw'>signif.stars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"show.signif.stars"</span>),
-  <span class='no'>...</span>
-)
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>x</span>, <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='fl'>3L</span>, <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"digits"</span>) - <span class='fl'>3L</span>), <span class='no'>...</span>)
 
 <span class='co'># S3 method for clv.data.static.covariates</span>
 <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for summary.clv.data.static.covariates</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(
-  <span class='no'>x</span>,
-  <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='fl'>3L</span>, <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"digits"</span>) - <span class='fl'>3L</span>),
-  <span class='kw'>signif.stars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"show.signif.stars"</span>),
-  <span class='no'>...</span>
-)</pre>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>x</span>, <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='fl'>3L</span>, <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"digits"</span>) - <span class='fl'>3L</span>), <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -188,10 +183,6 @@ possible holdout sample, and descriptive statistics of the transaction data.</p>
     <tr>
       <th>digits</th>
       <td><p>The number of significant digits to use when printing.</p></td>
-    </tr>
-    <tr>
-      <th>signif.stars</th>
-      <td><p>Logical. If TRUE, ‘significance stars’ are printed for each coefficient.</p></td>
     </tr>
     </table>
 
@@ -220,6 +211,8 @@ and further contains the elements:
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
+<span class='co'># \donttest{</span>
+
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"apparelTrans"</span>)
 <span class='no'>clv.data.apparel</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='clvdata.html'>clvdata</a></span>(<span class='no'>apparelTrans</span>, <span class='kw'>date.format</span> <span class='kw'>=</span> <span class='st'>"ymd"</span>,
                             <span class='kw'>time.unit</span> <span class='kw'>=</span> <span class='st'>"w"</span>,
@@ -285,7 +278,7 @@ and further contains the elements:
 #&gt;        # covs        1     
 #&gt; Life.  Covariates    Gender
 #&gt;        # covs        1     
-#&gt; </div><div class='input'>
+#&gt; </div><div class='input'># }
 
 </div></pre>
   </div>

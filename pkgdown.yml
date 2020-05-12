@@ -4,5 +4,8 @@ pkgdown_sha: c181e5c9ac09b28974a97f5e32deddc36690fcf2
 articles:
   CLVTools: CLVTools.html
   internal_docu: internal_docu/internal_docu.html
-last_built: 2020-04-28T23:25Z
+last_built: 2020-05-12T10:16Z
+urls:
+  reference: https://www.clvtools.com/reference
+  article: https://www.clvtools.com/articles
 

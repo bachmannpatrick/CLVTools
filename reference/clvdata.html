@@ -59,6 +59,16 @@ to an object returned from this function." />
 <![endif]-->
 
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-31477052-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-31477052-2');
+</script>
+
 
   </head>
 
@@ -251,6 +261,7 @@ are determined from the aggregated transactions.</p>
                           <span class='kw'>time.unit</span> <span class='kw'>=</span> <span class='st'>"w"</span>,
                           <span class='kw'>estimation.split</span> <span class='kw'>=</span> <span class='st'>"1997-10-15"</span>)
 
+<span class='co'># \donttest{</span>
 
 <span class='co'># summary of the transaction data</span>
 <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>clv.data.cdnow</span>)</div><div class='output co'>#&gt; CLV Transaction Data 
@@ -276,14 +287,13 @@ are determined from the aggregated transactions.</p>
 #&gt; (SD)                               8.250           6.185           14.533    
 #&gt; </div><div class='input'>
 <span class='co'># plot the transaction data</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>clv.data.cdnow</span>)</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 1998-07-05.</span></div><div class='img'><img src='clvdata-1.png' alt='' width='700' height='433' /></div><div class='input'>
-
+<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>clv.data.cdnow</span>)</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 1998-07-05.</span></div><div class='img'><img src='clvdata-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># create data with the weekly periods defined to</span>
 <span class='co'>#   start on Mondays</span>
 
 <span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='co'># set start of week to Monday</span>
-<span class='fu'><a href='https://rdrr.io/r/base/options.html'>options</a></span>(<span class='st'>"lubridate.week.start"</span><span class='kw'>=</span><span class='fl'>1</span>)
+<span class='no'>oldopts</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>options</a></span>(<span class='st'>"lubridate.week.start"</span><span class='kw'>=</span><span class='fl'>1</span>)
 
 <span class='co'># create clv.data while Monday is the beginning of the week</span>
 <span class='no'>clv.data.cdnow</span> <span class='kw'>&lt;-</span> <span class='fu'>clvdata</span>(<span class='kw'>data.transactions</span> <span class='kw'>=</span> <span class='no'>cdnow</span>,
@@ -291,7 +301,12 @@ are determined from the aggregated transactions.</p>
                           <span class='kw'>time.unit</span> <span class='kw'>=</span> <span class='st'>"weeks"</span>)
 
 <span class='co'># Dynamic covariates now have to be supplied for every Monday</span>
-}</div></pre>
+
+<span class='co'># set week start to what it was before</span>
+<span class='fu'><a href='https://rdrr.io/r/base/options.html'>options</a></span>(<span class='no'>oldopts</span>)
+}
+
+<span class='co'># }</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

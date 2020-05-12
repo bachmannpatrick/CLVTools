@@ -55,6 +55,16 @@
 <![endif]-->
 
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-31477052-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-31477052-2');
+</script>
+
 
   </head>
 
@@ -136,7 +146,7 @@
     </div>
 
     <pre class="usage"><span class='co'># S3 method for clv.data</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(
+<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(
   <span class='no'>x</span>,
   <span class='kw'>prediction.end</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>cumulative</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
@@ -210,17 +220,17 @@ contain <code>NA</code> in column <code>Number of Repeat Transactions</code>.</p
                           <span class='kw'>date.format</span><span class='kw'>=</span><span class='st'>"ymd"</span>)
 
 <span class='co'># Plot the actual repeat transactions</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>clv.data.cdnow</span>)</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 1998-07-05.</span></div><div class='img'><img src='plot.clv.data-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>clv.data.cdnow</span>)</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 1998-07-05.</span></div><div class='img'><img src='plot.clv.data-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># plot cumulative repeat transactions</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>clv.data.cdnow</span>, <span class='kw'>cumulative</span><span class='kw'>=</span><span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 1998-07-05.</span></div><div class='img'><img src='plot.clv.data-2.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>clv.data.cdnow</span>, <span class='kw'>cumulative</span><span class='kw'>=</span><span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 1998-07-05.</span></div><div class='img'><img src='plot.clv.data-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Dont automatically plot but tweak further</span>
-<span class='no'>gg.cdnow</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>clv.data.cdnow</span>)</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 1998-07-05.</span></div><div class='input'>
+<span class='no'>gg.cdnow</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>clv.data.cdnow</span>)</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 1998-07-05.</span></div><div class='input'>
 <span class='co'># change Title</span>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
 <span class='no'>gg.cdnow</span> + <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ggtitle</a></span>(<span class='st'>"CDnow repeat transactions"</span>)</div><div class='img'><img src='plot.clv.data-3.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Dont return a plot but only the data from</span>
 <span class='co'>#   which it would have been created</span>
-<span class='no'>dt.plot.data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>clv.data.cdnow</span>, <span class='kw'>plot</span><span class='kw'>=</span><span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 1998-07-05.</span></div><div class='input'>
+<span class='no'>dt.plot.data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>clv.data.cdnow</span>, <span class='kw'>plot</span><span class='kw'>=</span><span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 1998-07-05.</span></div><div class='input'>
 
 </div></pre>
   </div>

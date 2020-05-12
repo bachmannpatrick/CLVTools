@@ -12,14 +12,23 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Tools for Customer Lifetime Value Estimation">
-<meta property="og:description" content="Package to fit probabilistic models to estimate customer lifetime value (CLV).
-    It includes fast and accurate implementations of buy-'til-you-die models in 
-    non-contractual settings (e.g., retail business) with and without time-invariant and time-varying covariates. Currently, the package includes the 
-    Pareto/NBD model, the GGompertz/NBD model for the purchase and the attrition processes as well as the Gamma/Gamma model for the spending process.">
+<meta property="og:description" content="Probabilistic latent customer attrition models (also known as &quot;buy-'til-you-die models&quot;) are used to 
+    predict future purchase behavior of customers. This package includes fast and accurate implementations of various 
+    probabilistic latent customer attrition models for non-contractual settings (e.g., retail business) with and 
+    without time-invariant and time-varying covariates. Currently, the package includes the Pareto/NBD model 
+    (Pareto/Negative-Binomial-Distribution) for the purchase and the attrition processes as well as the Gamma/Gamma model 
+    for the spending process. For reference to the Pareto/NBD model, see Schmittlein DC, Morrison DG, Colombo R (1987) &lt;doi:10.1287/mnsc.33.1.1&gt;. 
+    For reference to the Gamma/Gamma model, see Fader PS, Hardie BG, Lee K (2005) &lt;doi:10.1509/jmkr.2005.42.4.415&gt;.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<![endif]--><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=UA-31477052-2"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-31477052-2');
+</script>
 </head>
 <body data-spy="scroll" data-target="#toc">
     <div class="container template-home">
@@ -102,9 +111,9 @@
 <p>In future versions of <strong>CLVTools</strong> the following models are added. See <a href="https://github.com/bachmannpatrick/CLVTools/projects">GitHub Issues</a> for a time-line.</p>
 <p>4) Standard BG/NBD model (Fader, Hardie, &amp; Lee 2005)</p>
 <p>5) BG/NBD model with <strong>time-invariant</strong> contextual factors (Fader &amp; Hardie 2007)</p>
-<p>6) Gamma/Gompertz/NBD (Bemmaor &amp; Glady 2012)</p>
+<p>6) Standard Gamma/Gompertz/NBD (Bemmaor &amp; Glady 2012)</p>
 <p>7) Gamma/Gompertz/NBD model with <strong>time-invariant</strong> contextual factors (Näf, Bachmann &amp; Meierer 2020)</p>
-<p>8) BG/BB model (Fader, Hardie, &amp; Shang 2010)</p>
+<p>8) Standard BG/BB model (Fader, Hardie, &amp; Shang 2010)</p>
 <p>In addition the framework features a system of layers between the optimizer and the log-likelihood function to allow the flexible addition of model extensions during the model fitting process. Currently these layers include:</p>
 <ul>
 <li><p>Correlation of the purchase and the attrition process</p></li>
@@ -118,7 +127,7 @@
 <p>Install the stable version from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">install.packages</span>(<span class="st">"CLVTools"</span>)</span></code></pre></div>
 <p>Install the development version from GitHub:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"CLVTools"</span>, <span class="dt">ref =</span> <span class="st">"development"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"bachmannpatrick/CLVTools"</span>, <span class="dt">ref =</span> <span class="st">"development"</span>)</span></code></pre></div>
 <p>Note that the package depends on RcppArmadillo and RcppGSL which will likely require additional setup steps in order to compile and install the CLVTools package from source.</p>
 </div>
 <div id="contributions" class="section level2">
@@ -133,6 +142,8 @@
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
+<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=CLVTools">https://​cloud.r-project.org/​package=CLVTools</a>
+</li>
 <li>Browse source code at <br><a href="https://github.com/bachmannpatrick/CLVTools/">https://​github.com/​bachmannpatrick/​CLVTools/​</a>
 </li>
 <li>Report a bug at <br><a href="https://github.com/bachmannpatrick/CLVTools/issues">https://​github.com/​bachmannpatrick/​CLVTools/​issues</a>

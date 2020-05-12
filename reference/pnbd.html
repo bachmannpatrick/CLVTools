@@ -55,6 +55,16 @@
 <![endif]-->
 
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-31477052-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-31477052-2');
+</script>
+
 
   </head>
 
@@ -312,14 +322,14 @@ and <code><a href='https://rdrr.io/pkg/future/man/plan.html'>plan</a></code> for
 of less than one day (data that was built with time unit <code>hours</code>).</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>Schmittlein DC, Morrison DG, Colombo R (1987). “Counting Your Customers: 
-Who-Are They and What Will They Do Next?” Management Science, 33(1), 1–24.</p>
-<p>Fader PS, Hardie BGS (2005). “A Note on Deriving the Pareto/NBD Model and 
-Related Expressions.” 
-URL http://www.brucehardie.com/notes/009/pareto_nbd_derivations_ 2005-11-05.pdf.</p>
-<p>Fader PS, Hardie BG (2007). "Incorporating time-invariant covariates into the 
-Pareto/NBD and BG/NBD models." 
-URL http://www.brucehardie.com/notes/019/time_invariant_ covariates.pdf.</p>
+    <p>Schmittlein DC, Morrison DG, Colombo R (1987). "Counting Your Customers:
+Who-Are They and What Will They Do Next?" Management Science, 33(1), 1–24.</p>
+<p>Fader PS, Hardie BGS (2005). "A Note on Deriving the Pareto/NBD Model and
+Related Expressions."
+URL <a href='http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf'>http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf</a>.</p>
+<p>Fader PS, Hardie BG (2007). "Incorporating time-invariant covariates into the
+Pareto/NBD and BG/NBD models."
+URL <a href='http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf'>http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf</a>.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='clvdata.html'>clvdata</a></code> to create a clv data object, <code><a href='SetStaticCovariates.html'>SetStaticCovariates</a></code> and <code><a href='SetDynamicCovariates.html'>SetDynamicCovariates</a></code>
@@ -330,7 +340,569 @@ to add static or dynamic covariates to an existing clv data object on which then
 <p><code><a href='https://Rdatatable.gitlab.io/data.table/reference/openmp-utils.html'>setDTthreads</a></code>, <code><a href='https://Rdatatable.gitlab.io/data.table/reference/openmp-utils.html'>getDTthreads</a></code>,<code><a href='https://rdrr.io/pkg/doParallel/man/registerDoParallel.html'>registerDoParallel</a></code>,<code><a href='https://rdrr.io/pkg/doFuture/man/registerDoFuture.html'>registerDoFuture</a></code> for setting up parallel execution.</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"></pre>
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"apparelTrans"</span>)
+<span class='no'>clv.data.apparel</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='clvdata.html'>clvdata</a></span>(<span class='no'>apparelTrans</span>, <span class='kw'>date.format</span> <span class='kw'>=</span> <span class='st'>"ymd"</span>,
+                            <span class='kw'>time.unit</span> <span class='kw'>=</span> <span class='st'>"w"</span>, <span class='kw'>estimation.split</span> <span class='kw'>=</span> <span class='fl'>40</span>)
+
+<span class='co'># Fit standard PNBD model</span>
+<span class='fu'>pnbd</span>(<span class='no'>clv.data.apparel</span>)</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD Standard  Model
+#&gt; 
+#&gt; Call:
+#&gt; pnbd(clv.data = clv.data.apparel)
+#&gt; 
+#&gt; Coefficients:
+#&gt;       r    alpha        s     beta  
+#&gt;  0.7867   5.3356   0.3574  11.6316  
+#&gt; KKT1: TRUE 
+#&gt; KKT2: TRUE 
+#&gt; 
+#&gt; Used Options:
+#&gt; Correlation:     FALSE </div><div class='input'>
+<span class='co'># Give initial guesses for the Model parameters</span>
+<span class='fu'>pnbd</span>(<span class='no'>clv.data.apparel</span>,
+     <span class='kw'>start.params.model</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>r</span><span class='kw'>=</span><span class='fl'>0.5</span>, <span class='kw'>alpha</span><span class='kw'>=</span><span class='fl'>15</span>, <span class='kw'>s</span><span class='kw'>=</span><span class='fl'>0.5</span>, <span class='kw'>beta</span><span class='kw'>=</span><span class='fl'>10</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD Standard  Model
+#&gt; 
+#&gt; Call:
+#&gt; pnbd(clv.data = clv.data.apparel, start.params.model = c(r = 0.5, 
+#&gt;     alpha = 15, s = 0.5, beta = 10))
+#&gt; 
+#&gt; Coefficients:
+#&gt;       r    alpha        s     beta  
+#&gt;  0.7858   5.3312   0.3606  11.8221  
+#&gt; KKT1: TRUE 
+#&gt; KKT2: TRUE 
+#&gt; 
+#&gt; Used Options:
+#&gt; Correlation:     FALSE </div><div class='input'>
+<span class='co'># Estimate correlation as well</span>
+<span class='fu'>pnbd</span>(<span class='no'>clv.data.apparel</span>, <span class='kw'>use.cor</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD Standard  Model
+#&gt; 
+#&gt; Call:
+#&gt; pnbd(clv.data = clv.data.apparel, use.cor = TRUE)
+#&gt; 
+#&gt; Coefficients:
+#&gt;               r            alpha                s             beta  
+#&gt;        0.790394         5.355977         0.278047         7.116957  
+#&gt; Cor(life,trans)  
+#&gt;       -0.009087  
+#&gt; KKT1: TRUE 
+#&gt; KKT2: FALSE 
+#&gt; 
+#&gt; Used Options:
+#&gt; Correlation:     TRUE </div><div class='input'>
+<span class='co'># pass additional parameters to the optimizer (optimx)</span>
+<span class='co'>#    Use Nelder-Mead as optimization method and print</span>
+<span class='co'>#    detailed information about the optimization process</span>
+<span class='no'>apparel.pnbd</span> <span class='kw'>&lt;-</span> <span class='fu'>pnbd</span>(<span class='no'>clv.data.apparel</span>,
+                     <span class='kw'>optimx.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>method</span><span class='kw'>=</span><span class='st'>"Nelder-Mead"</span>,
+                                        <span class='kw'>control</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>trace</span><span class='kw'>=</span><span class='fl'>6</span>)))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; fn is  fn 
+#&gt; Looking for method =  Nelder-Mead 
+#&gt; Methods to be used:[1] "Nelder-Mead"
+#&gt; optcfg:$fname
+#&gt; [1] "fn"
+#&gt; 
+#&gt; $npar
+#&gt; [1] 4
+#&gt; 
+#&gt; $ctrl
+#&gt; $ctrl$follow.on
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $ctrl$save.failures
+#&gt; [1] TRUE
+#&gt; 
+#&gt; $ctrl$trace
+#&gt; [1] 6
+#&gt; 
+#&gt; $ctrl$kkt
+#&gt; [1] TRUE
+#&gt; 
+#&gt; $ctrl$all.methods
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $ctrl$starttests
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $ctrl$maximize
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $ctrl$dowarn
+#&gt; [1] TRUE
+#&gt; 
+#&gt; $ctrl$usenumDeriv
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $ctrl$kkttol
+#&gt; [1] 0.001
+#&gt; 
+#&gt; $ctrl$kkt2tol
+#&gt; [1] 1e-06
+#&gt; 
+#&gt; $ctrl$badval
+#&gt; [1] 8.988466e+307
+#&gt; 
+#&gt; $ctrl$scaletol
+#&gt; [1] 3
+#&gt; 
+#&gt; $ctrl$have.bounds
+#&gt; [1] FALSE
+#&gt; 
+#&gt; 
+#&gt; $usenumDeriv
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $ufn
+#&gt; function (LL.params, LL.function.sum, use.interlayer.constr, 
+#&gt;     use.interlayer.reg, reg.lambda.trans, reg.lambda.life, use.cor, 
+#&gt;     ...) 
+#&gt; {
+#&gt;     all.other.args &lt;- list(...)
+#&gt;     interlayers.to.use &lt;- list(callLL = interlayer_callLL)
+#&gt;     if (use.cor == T &amp; !anyNA(use.cor)) 
+#&gt;         interlayers.to.use &lt;- c(correlation = interlayer_correlation, 
+#&gt;             interlayers.to.use)
+#&gt;     if (use.interlayer.reg == T &amp; !is.null(reg.lambda.trans) &amp; 
+#&gt;         !anyNA(reg.lambda.trans) &amp; !is.null(reg.lambda.life) &amp; 
+#&gt;         !anyNA(reg.lambda.life)) {
+#&gt;         interlayers.to.use &lt;- c(regularization = interlayer_regularization, 
+#&gt;             interlayers.to.use)
+#&gt;     }
+#&gt;     if (use.interlayer.constr == TRUE) {
+#&gt;         interlayers.to.use &lt;- c(constraints = interlayer_constraints, 
+#&gt;             interlayers.to.use)
+#&gt;     }
+#&gt;     interlayer.call.args &lt;- list(next.interlayers = interlayers.to.use, 
+#&gt;         LL.function.sum = LL.function.sum, LL.params = LL.params, 
+#&gt;         reg.lambda.life = reg.lambda.life, reg.lambda.trans = reg.lambda.trans)
+#&gt;     interlayer.call.args &lt;- modifyList(interlayer.call.args, 
+#&gt;         all.other.args)
+#&gt;     return(do.call(what = interlayer_callnextinterlayer, args = interlayer.call.args))
+#&gt; }
+#&gt; &lt;bytecode: 0x7fc9a816a970&gt;
+#&gt; &lt;environment: namespace:CLVTools&gt;
+#&gt; 
+#&gt; $have.bounds
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $method
+#&gt; [1] "Nelder-Mead"
+#&gt; 
+#&gt; Method:  Nelder-Mead 
+#&gt;   Nelder-Mead direct search function minimizer
+#&gt; function value for initial parameters = 3322.356869
+#&gt;   Scaled convergence tolerance is 4.9507e-05
+#&gt; Stepsize computed as 0.100000
+#&gt; BUILD              5 3369.036239 3309.338871
+#&gt; EXTENSION          7 3348.164879 3244.722352
+#&gt; LO-REDUCTION       9 3322.356869 3244.722352
+#&gt; EXTENSION         11 3311.326140 3190.793764
+#&gt; EXTENSION         13 3309.338871 3136.995127
+#&gt; EXTENSION         15 3244.970943 3070.661973
+#&gt; LO-REDUCTION      17 3244.722352 3070.661973
+#&gt; EXTENSION         19 3190.793764 2962.711423
+#&gt; LO-REDUCTION      21 3136.995127 2962.711423
+#&gt; LO-REDUCTION      23 3092.779244 2962.711423
+#&gt; EXTENSION         25 3070.661973 2904.899192
+#&gt; EXTENSION         27 2979.692293 2901.790592
+#&gt; REFLECTION        29 2971.137892 2896.215344
+#&gt; LO-REDUCTION      31 2962.711423 2890.642122
+#&gt; LO-REDUCTION      33 2906.533400 2890.642122
+#&gt; LO-REDUCTION      35 2904.899192 2890.642122
+#&gt; HI-REDUCTION      37 2901.790592 2890.642122
+#&gt; LO-REDUCTION      39 2896.854291 2890.642122
+#&gt; LO-REDUCTION      41 2896.733398 2890.642122
+#&gt; LO-REDUCTION      43 2896.215344 2890.642122
+#&gt; EXTENSION         45 2895.169640 2884.464824
+#&gt; LO-REDUCTION      47 2891.545912 2884.464824
+#&gt; LO-REDUCTION      49 2890.755169 2884.464824
+#&gt; EXTENSION         51 2890.642122 2882.953045
+#&gt; REFLECTION        53 2888.700681 2882.446051
+#&gt; LO-REDUCTION      55 2884.570203 2882.446051
+#&gt; HI-REDUCTION      57 2884.464824 2882.446051
+#&gt; LO-REDUCTION      59 2883.270678 2882.446051
+#&gt; HI-REDUCTION      61 2882.953045 2882.396690
+#&gt; HI-REDUCTION      63 2882.895319 2882.314190
+#&gt; HI-REDUCTION      65 2882.482512 2882.248928
+#&gt; HI-REDUCTION      67 2882.446051 2882.248928
+#&gt; HI-REDUCTION      69 2882.396690 2882.240024
+#&gt; LO-REDUCTION      71 2882.314190 2882.191572
+#&gt; LO-REDUCTION      73 2882.251157 2882.163573
+#&gt; LO-REDUCTION      75 2882.248928 2882.163573
+#&gt; HI-REDUCTION      77 2882.240024 2882.163573
+#&gt; HI-REDUCTION      79 2882.191572 2882.162231
+#&gt; HI-REDUCTION      81 2882.167468 2882.140209
+#&gt; LO-REDUCTION      83 2882.166824 2882.140209
+#&gt; HI-REDUCTION      85 2882.163573 2882.140209
+#&gt; LO-REDUCTION      87 2882.162231 2882.138172
+#&gt; REFLECTION        89 2882.144473 2882.137304
+#&gt; LO-REDUCTION      91 2882.141601 2882.135061
+#&gt; HI-REDUCTION      93 2882.140209 2882.132257
+#&gt; REFLECTION        95 2882.138172 2882.129096
+#&gt; EXTENSION         97 2882.137304 2882.117858
+#&gt; LO-REDUCTION      99 2882.135061 2882.117858
+#&gt; LO-REDUCTION     101 2882.132257 2882.117858
+#&gt; EXTENSION        103 2882.129096 2882.106725
+#&gt; EXTENSION        105 2882.126478 2882.091916
+#&gt; LO-REDUCTION     107 2882.119912 2882.091916
+#&gt; LO-REDUCTION     109 2882.117858 2882.091916
+#&gt; EXTENSION        111 2882.106725 2882.071824
+#&gt; LO-REDUCTION     113 2882.104616 2882.071824
+#&gt; EXTENSION        115 2882.099252 2882.044612
+#&gt; EXTENSION        117 2882.091916 2882.012574
+#&gt; LO-REDUCTION     119 2882.079287 2882.012574
+#&gt; EXTENSION        121 2882.071824 2881.969055
+#&gt; EXTENSION        123 2882.044612 2881.898069
+#&gt; LO-REDUCTION     125 2882.032117 2881.898069
+#&gt; EXTENSION        127 2882.012574 2881.780423
+#&gt; LO-REDUCTION     129 2881.969055 2881.780423
+#&gt; EXTENSION        131 2881.918692 2881.640737
+#&gt; LO-REDUCTION     133 2881.898069 2881.640737
+#&gt; EXTENSION        135 2881.809312 2881.425073
+#&gt; LO-REDUCTION     137 2881.780423 2881.425073
+#&gt; EXTENSION        139 2881.647928 2881.303066
+#&gt; EXTENSION        141 2881.640737 2881.229749
+#&gt; REFLECTION       143 2881.430767 2881.166043
+#&gt; LO-REDUCTION     145 2881.425073 2881.166043
+#&gt; HI-REDUCTION     147 2881.303066 2881.166043
+#&gt; EXTENSION        149 2881.279120 2881.119888
+#&gt; EXTENSION        151 2881.277302 2881.042370
+#&gt; LO-REDUCTION     153 2881.229749 2881.042370
+#&gt; EXTENSION        155 2881.166043 2880.967832
+#&gt; EXTENSION        157 2881.119888 2880.879994
+#&gt; LO-REDUCTION     159 2881.087359 2880.879994
+#&gt; REFLECTION       161 2881.042370 2880.879853
+#&gt; LO-REDUCTION     163 2880.967832 2880.879853
+#&gt; LO-REDUCTION     165 2880.901343 2880.879853
+#&gt; HI-REDUCTION     167 2880.882262 2880.869537
+#&gt; REFLECTION       169 2880.881546 2880.868296
+#&gt; REFLECTION       171 2880.879994 2880.855871
+#&gt; HI-REDUCTION     173 2880.879853 2880.854640
+#&gt; HI-REDUCTION     175 2880.869537 2880.854640
+#&gt; EXTENSION        177 2880.868296 2880.818013
+#&gt; LO-REDUCTION     179 2880.857420 2880.818013
+#&gt; LO-REDUCTION     181 2880.855871 2880.818013
+#&gt; LO-REDUCTION     183 2880.854640 2880.818013
+#&gt; EXTENSION        185 2880.842474 2880.781988
+#&gt; LO-REDUCTION     187 2880.842315 2880.781988
+#&gt; LO-REDUCTION     189 2880.832743 2880.781988
+#&gt; EXTENSION        191 2880.818013 2880.720303
+#&gt; EXTENSION        193 2880.795624 2880.670354
+#&gt; LO-REDUCTION     195 2880.787343 2880.670354
+#&gt; EXTENSION        197 2880.781988 2880.617628
+#&gt; EXTENSION        199 2880.720303 2880.439926
+#&gt; LO-REDUCTION     201 2880.680023 2880.439926
+#&gt; EXTENSION        203 2880.670354 2880.358120
+#&gt; EXTENSION        205 2880.617628 2880.277481
+#&gt; EXTENSION        207 2880.473779 2879.924264
+#&gt; LO-REDUCTION     209 2880.439926 2879.924264
+#&gt; LO-REDUCTION     211 2880.358120 2879.924264
+#&gt; LO-REDUCTION     213 2880.277481 2879.924264
+#&gt; EXTENSION        215 2880.105129 2879.758291
+#&gt; EXTENSION        217 2880.090475 2879.608276
+#&gt; LO-REDUCTION     219 2879.960968 2879.608276
+#&gt; LO-REDUCTION     221 2879.924264 2879.608276
+#&gt; HI-REDUCTION     223 2879.758291 2879.608276
+#&gt; REFLECTION       225 2879.713263 2879.550139
+#&gt; LO-REDUCTION     227 2879.630410 2879.550139
+#&gt; EXTENSION        229 2879.610548 2879.511643
+#&gt; LO-REDUCTION     231 2879.608276 2879.511643
+#&gt; REFLECTION       233 2879.568497 2879.480952
+#&gt; LO-REDUCTION     235 2879.550139 2879.480952
+#&gt; LO-REDUCTION     237 2879.526502 2879.480952
+#&gt; LO-REDUCTION     239 2879.511643 2879.480932
+#&gt; REFLECTION       241 2879.492292 2879.478755
+#&gt; LO-REDUCTION     243 2879.484230 2879.476099
+#&gt; LO-REDUCTION     245 2879.480952 2879.475526
+#&gt; REFLECTION       247 2879.480932 2879.471443
+#&gt; HI-REDUCTION     249 2879.478755 2879.471443
+#&gt; HI-REDUCTION     251 2879.476099 2879.471443
+#&gt; LO-REDUCTION     253 2879.475526 2879.471441
+#&gt; LO-REDUCTION     255 2879.473131 2879.470985
+#&gt; LO-REDUCTION     257 2879.472498 2879.470985
+#&gt; HI-REDUCTION     259 2879.471443 2879.470914
+#&gt; HI-REDUCTION     261 2879.471441 2879.470638
+#&gt; REFLECTION       263 2879.471127 2879.470444
+#&gt; HI-REDUCTION     265 2879.470985 2879.470444
+#&gt; HI-REDUCTION     267 2879.470914 2879.470444
+#&gt; HI-REDUCTION     269 2879.470638 2879.470444
+#&gt; REFLECTION       271 2879.470543 2879.470242
+#&gt; LO-REDUCTION     273 2879.470526 2879.470242
+#&gt; EXTENSION        275 2879.470450 2879.470087
+#&gt; LO-REDUCTION     277 2879.470444 2879.470087
+#&gt; LO-REDUCTION     279 2879.470311 2879.470087
+#&gt; LO-REDUCTION     281 2879.470242 2879.470087
+#&gt; REFLECTION       283 2879.470158 2879.470001
+#&gt; HI-REDUCTION     285 2879.470109 2879.470001
+#&gt; LO-REDUCTION     287 2879.470101 2879.470001
+#&gt; LO-REDUCTION     289 2879.470087 2879.470001
+#&gt; Exiting from Nelder Mead minimizer
+#&gt;     291 function evaluations used
+#&gt; Post processing for method  Nelder-Mead 
+#&gt; Successful convergence! 
+#&gt; Compute Hessian approximation at finish of  Nelder-Mead 
+#&gt; Compute gradient approximation at finish of  Nelder-Mead 
+#&gt; Save results from method  Nelder-Mead 
+#&gt; $par
+#&gt;     log.r log.alpha     log.s  log.beta 
+#&gt; -0.238902  1.675864 -1.030490  2.452082 
+#&gt; 
+#&gt; $value
+#&gt; [1] 2879.47
+#&gt; 
+#&gt; $message
+#&gt; NULL
+#&gt; 
+#&gt; $convcode
+#&gt; [1] 0
+#&gt; 
+#&gt; $fevals
+#&gt; function 
+#&gt;      291 
+#&gt; 
+#&gt; $gevals
+#&gt; gradient 
+#&gt;       NA 
+#&gt; 
+#&gt; $nitns
+#&gt; [1] NA
+#&gt; 
+#&gt; $kkt1
+#&gt; [1] TRUE
+#&gt; 
+#&gt; $kkt2
+#&gt; [1] TRUE
+#&gt; 
+#&gt; $xtimes
+#&gt; user.self 
+#&gt;     0.143 
+#&gt; 
+#&gt; Assemble the answers</div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='input'>
+<span class='co'># estimated coefs</span>
+<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='no'>apparel.pnbd</span>)</div><div class='output co'>#&gt;         r     alpha         s      beta 
+#&gt;  0.787492  5.343412  0.356832 11.612502 </div><div class='input'>
+<span class='co'># summary of the fitted model</span>
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>apparel.pnbd</span>)</div><div class='output co'>#&gt; Pareto NBD Standard  Model 
+#&gt; 
+#&gt; Call:
+#&gt; pnbd(clv.data = clv.data.apparel, optimx.args = list(method = "Nelder-Mead", 
+#&gt;     control = list(trace = 6)))
+#&gt; 
+#&gt; Fitting period:                               
+#&gt; Estimation start  2005-01-03   
+#&gt; Estimation end    2005-10-10   
+#&gt; Estimation length 40.0000 Weeks
+#&gt; 
+#&gt; Coefficients:
+#&gt;       Estimate Std. Error z-val Pr(&gt;|z|)    
+#&gt; r       0.7875     0.1326 5.941 2.83e-09 ***
+#&gt; alpha   5.3434     0.9039 5.912 3.38e-09 ***
+#&gt; s       0.3568     0.1833 1.947   0.0515 .  
+#&gt; beta   11.6125    10.6334 1.092   0.2748    
+#&gt; ---
+#&gt; Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+#&gt; 
+#&gt; Optimization info:                  
+#&gt; LL     -2879.4700 
+#&gt; AIC    5766.9400  
+#&gt; BIC    5781.0258  
+#&gt; KKT 1  TRUE       
+#&gt; KKT 2  TRUE       
+#&gt; fevals 291.0000   
+#&gt; Method Nelder-Mead
+#&gt; 
+#&gt; Used Options:                 
+#&gt; Correlation FALSE</div><div class='input'>
+<span class='co'># predict CLV etc for holdout period</span>
+<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='no'>apparel.pnbd</span>)</div><div class='output co'>#&gt; <span class='message'>Predicting from 2005-10-11 until (incl.) 2006-07-16 (39.86 Weeks).</span></div><div class='output co'>#&gt;        Id period.first period.last period.length actual.x actual.spending
+#&gt;   1:    1   2005-10-11  2006-07-16      39.85714        0            0.00
+#&gt;   2:   10   2005-10-11  2006-07-16      39.85714        0            0.00
+#&gt;   3:  100   2005-10-11  2006-07-16      39.85714       23         5086.44
+#&gt;   4: 1000   2005-10-11  2006-07-16      39.85714       23         4077.34
+#&gt;   5: 1001   2005-10-11  2006-07-16      39.85714       11         2914.10
+#&gt;  ---                                                                     
+#&gt; 246: 1219   2005-10-11  2006-07-16      39.85714       14         3233.78
+#&gt; 247:  122   2005-10-11  2006-07-16      39.85714        0            0.00
+#&gt; 248: 1220   2005-10-11  2006-07-16      39.85714        0            0.00
+#&gt; 249: 1221   2005-10-11  2006-07-16      39.85714        9         1322.94
+#&gt; 250: 1222   2005-10-11  2006-07-16      39.85714        0            0.00
+#&gt;         PAlive        CET       DERT predicted.Spending predicted.CLV
+#&gt;   1: 0.3571652  0.2214654 0.05854369           216.7955      12.69201
+#&gt;   2: 0.4226928  0.9277460 0.24524673           209.1146      51.28468
+#&gt;   3: 0.9156048 13.5446396 3.58048291           188.9758     676.62447
+#&gt;   4: 0.9967799 13.1757590 3.48297048           171.0913     595.90582
+#&gt;   5: 0.5100298  3.5289953 0.93287881           229.8529     214.42492
+#&gt;  ---                                                                 
+#&gt; 246: 0.9579466  3.6111037 0.95458391           206.0859     196.72627
+#&gt; 247: 0.3571652  0.2214654 0.05854369           216.7955      12.69201
+#&gt; 248: 0.3571652  0.2214654 0.05854369           216.7955      12.69201
+#&gt; 249: 0.9434610  4.2993712 1.13652527           207.0518     235.31960
+#&gt; 250: 0.4137006  0.5822653 0.15391999           208.3194      32.06452</div><div class='input'>
+<span class='co'># predict CLV etc for the next 15 periods</span>
+<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='no'>apparel.pnbd</span>, <span class='kw'>prediction.end</span> <span class='kw'>=</span> <span class='fl'>15</span>)</div><div class='output co'>#&gt; <span class='message'>Predicting from 2005-10-11 until (incl.) 2006-01-23 (15 Weeks).</span></div><div class='output co'>#&gt;        Id period.first period.last period.length actual.x actual.spending
+#&gt;   1:    1   2005-10-11  2006-01-23            15        0            0.00
+#&gt;   2:   10   2005-10-11  2006-01-23            15        0            0.00
+#&gt;   3:  100   2005-10-11  2006-01-23            15       10         1516.83
+#&gt;   4: 1000   2005-10-11  2006-01-23            15       10         1980.30
+#&gt;   5: 1001   2005-10-11  2006-01-23            15        6         1673.55
+#&gt;  ---                                                                     
+#&gt; 246: 1219   2005-10-11  2006-01-23            15       11         2256.68
+#&gt; 247:  122   2005-10-11  2006-01-23            15        0            0.00
+#&gt; 248: 1220   2005-10-11  2006-01-23            15        0            0.00
+#&gt; 249: 1221   2005-10-11  2006-01-23            15        7         1180.04
+#&gt; 250: 1222   2005-10-11  2006-01-23            15        0            0.00
+#&gt;         PAlive        CET       DERT predicted.Spending predicted.CLV
+#&gt;   1: 0.3571652 0.08876335 0.05854369           216.7955      12.69201
+#&gt;   2: 0.4226928 0.37184063 0.24524673           209.1146      51.28468
+#&gt;   3: 0.9156048 5.42869219 3.58048291           188.9758     676.62447
+#&gt;   4: 0.9967799 5.28084482 3.48297048           171.0913     595.90582
+#&gt;   5: 0.5100298 1.41442148 0.93287881           229.8529     214.42492
+#&gt;  ---                                                                 
+#&gt; 246: 0.9579466 1.44733052 0.95458391           206.0859     196.72627
+#&gt; 247: 0.3571652 0.08876335 0.05854369           216.7955      12.69201
+#&gt; 248: 0.3571652 0.08876335 0.05854369           216.7955      12.69201
+#&gt; 249: 0.9434610 1.72318818 1.13652527           207.0518     235.31960
+#&gt; 250: 0.4137006 0.23337194 0.15391999           208.3194      32.06452</div><div class='input'>
+
+<span class='co'># To estimate the PNBD model with static covariates,</span>
+<span class='co'>#   add static covariates to the data</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"apparelStaticCov"</span>)
+<span class='no'>clv.data.static.cov</span> <span class='kw'>&lt;-</span>
+ <span class='fu'><a href='SetStaticCovariates.html'>SetStaticCovariates</a></span>(<span class='no'>clv.data.apparel</span>,
+                     <span class='kw'>data.cov.life</span> <span class='kw'>=</span> <span class='no'>apparelStaticCov</span>,
+                     <span class='kw'>names.cov.life</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Gender"</span>, <span class='st'>"Channel"</span>),
+                     <span class='kw'>data.cov.trans</span> <span class='kw'>=</span> <span class='no'>apparelStaticCov</span>,
+                     <span class='kw'>names.cov.trans</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Gender"</span>, <span class='st'>"Channel"</span>))
+
+<span class='co'># Fit PNBD with static covariates</span>
+<span class='fu'>pnbd</span>(<span class='no'>clv.data.static.cov</span>)</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD with Static Covariates  Model
+#&gt; 
+#&gt; Call:
+#&gt; pnbd(clv.data = clv.data.static.cov)
+#&gt; 
+#&gt; Coefficients:
+#&gt;             r          alpha              s           beta    life.Gender  
+#&gt;        1.4187        35.5931         0.2726         8.5451         1.5216  
+#&gt;  life.Channel   trans.Gender  trans.Channel  
+#&gt;       -1.7034         1.4222         0.4023  
+#&gt; KKT1: TRUE 
+#&gt; KKT2: TRUE 
+#&gt; 
+#&gt; Used Options:
+#&gt; Correlation:     FALSE 
+#&gt; Constraints:     FALSE 
+#&gt; Regularization:  FALSE </div><div class='input'>
+<span class='co'># Give initial guesses for both covariate parameters</span>
+<span class='fu'>pnbd</span>(<span class='no'>clv.data.static.cov</span>, <span class='kw'>start.params.trans</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>Gender</span><span class='kw'>=</span><span class='fl'>0.75</span>, <span class='kw'>Channel</span><span class='kw'>=</span><span class='fl'>0.7</span>),
+                   <span class='kw'>start.params.life</span>  <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>Gender</span><span class='kw'>=</span><span class='fl'>0.5</span>, <span class='kw'>Channel</span><span class='kw'>=</span><span class='fl'>0.5</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD with Static Covariates  Model
+#&gt; 
+#&gt; Call:
+#&gt; pnbd(clv.data = clv.data.static.cov, start.params.life = c(Gender = 0.5, 
+#&gt;     Channel = 0.5), start.params.trans = c(Gender = 0.75, Channel = 0.7))
+#&gt; 
+#&gt; Coefficients:
+#&gt;             r          alpha              s           beta    life.Gender  
+#&gt;        1.4187        35.6150         0.2731         8.5896         1.5221  
+#&gt;  life.Channel   trans.Gender  trans.Channel  
+#&gt;       -1.7012         1.4228         0.4024  
+#&gt; KKT1: TRUE 
+#&gt; KKT2: TRUE 
+#&gt; 
+#&gt; Used Options:
+#&gt; Correlation:     FALSE 
+#&gt; Constraints:     FALSE 
+#&gt; Regularization:  FALSE </div><div class='input'>
+<span class='co'># Use regularization</span>
+<span class='fu'>pnbd</span>(<span class='no'>clv.data.static.cov</span>, <span class='kw'>reg.lambdas</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>trans</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>life</span><span class='kw'>=</span><span class='fl'>5</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD with Static Covariates  Model
+#&gt; 
+#&gt; Call:
+#&gt; pnbd(clv.data = clv.data.static.cov, reg.lambdas = c(trans = 5, 
+#&gt;     life = 5))
+#&gt; 
+#&gt; Coefficients:
+#&gt;             r          alpha              s           beta    life.Gender  
+#&gt;     0.7918760      5.4432020      0.3582027     11.6263432     -0.0004814  
+#&gt;  life.Channel   trans.Gender  trans.Channel  
+#&gt;    -0.0023693      0.0106766      0.0087496  
+#&gt; KKT1: TRUE 
+#&gt; KKT2: TRUE 
+#&gt; 
+#&gt; Used Options:
+#&gt; Correlation:     FALSE 
+#&gt; Constraints:     FALSE 
+#&gt; Regularization:  TRUE </div><div class='input'>
+<span class='co'># Force the same coefficient to be used for both covariates</span>
+<span class='fu'>pnbd</span>(<span class='no'>clv.data.static.cov</span>, <span class='kw'>names.cov.constr</span> <span class='kw'>=</span> <span class='st'>"Gender"</span>,
+                   <span class='kw'>start.params.constr</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>Gender</span><span class='kw'>=</span><span class='fl'>0.5</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD with Static Covariates  Model
+#&gt; 
+#&gt; Call:
+#&gt; pnbd(clv.data = clv.data.static.cov, names.cov.constr = "Gender", 
+#&gt;     start.params.constr = c(Gender = 0.5))
+#&gt; 
+#&gt; Coefficients:
+#&gt;             r          alpha              s           beta   life.Channel  
+#&gt;        1.4236        35.4670         0.2740         7.8680        -1.6889  
+#&gt; trans.Channel  constr.Gender  
+#&gt;        0.4018         1.4160  
+#&gt; KKT1: TRUE 
+#&gt; KKT2: TRUE 
+#&gt; 
+#&gt; Used Options:
+#&gt; Correlation:     FALSE 
+#&gt; Constraints:     TRUE 
+#&gt; Regularization:  FALSE </div><div class='input'>
+<span class='co'># Fit model only with the Channel covariate for life but</span>
+<span class='co'># keep all trans covariates as is</span>
+<span class='fu'>pnbd</span>(<span class='no'>clv.data.static.cov</span>, <span class='kw'>names.cov.life</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Channel"</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD with Static Covariates  Model
+#&gt; 
+#&gt; Call:
+#&gt; pnbd(clv.data = clv.data.static.cov, names.cov.life = c("Channel"))
+#&gt; 
+#&gt; Coefficients:
+#&gt;             r          alpha              s           beta   life.Channel  
+#&gt;        1.4912        32.1394         0.2497         1.8006        -1.6940  
+#&gt;  trans.Gender  trans.Channel  
+#&gt;        1.2721         0.3936  
+#&gt; KKT1: TRUE 
+#&gt; KKT2: TRUE 
+#&gt; 
+#&gt; Used Options:
+#&gt; Correlation:     FALSE 
+#&gt; Constraints:     FALSE 
+#&gt; Regularization:  FALSE </div><div class='input'>
+
+
+<span class='co'># Add dynamic covariates data to the data object</span>
+<span class='co'>#   add dynamic covariates to the data</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"apparelDynCov"</span>)
+<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='no'>clv.data.dyn.cov</span> <span class='kw'>&lt;-</span>
+  <span class='fu'><a href='SetDynamicCovariates.html'>SetDynamicCovariates</a></span>(<span class='kw'>clv.data</span> <span class='kw'>=</span> <span class='no'>clv.data.apparel</span>,
+                       <span class='kw'>data.cov.life</span> <span class='kw'>=</span> <span class='no'>apparelDynCov</span>,
+                       <span class='kw'>data.cov.trans</span> <span class='kw'>=</span> <span class='no'>apparelDynCov</span>,
+                       <span class='kw'>names.cov.life</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Marketing"</span>, <span class='st'>"Gender"</span>, <span class='st'>"Channel"</span>),
+                       <span class='kw'>names.cov.trans</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Marketing"</span>, <span class='st'>"Gender"</span>, <span class='st'>"Channel"</span>),
+                       <span class='kw'>name.date</span> <span class='kw'>=</span> <span class='st'>"Cov.Date"</span>)
+
+<span class='co'># Enable parallel execution of some parts of the dyncov LL</span>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>doFuture</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/doFuture/man/registerDoFuture.html'>registerDoFuture</a></span>()
+<span class='co'># avoid overhead from nested parallelism by setting up</span>
+<span class='co'># appropriate to _your_ system</span>
+<span class='fu'>setDTthreads</span>(<span class='kw'>threads</span><span class='kw'>=</span><span class='fl'>8</span>)
+<span class='fu'>plan</span>(<span class='st'>"multisession"</span>, <span class='kw'>workers</span><span class='kw'>=</span><span class='fl'>2</span>)
+
+<span class='co'># Fit PNBD with dynamic covariates</span>
+<span class='fu'>pnbd</span>(<span class='no'>clv.data.dyn.cov</span>)
+
+<span class='co'># The same fitting options as for the</span>
+<span class='co'>#  static covariate are available</span>
+<span class='fu'>pnbd</span>(<span class='no'>clv.data.dyn.cov</span>, <span class='kw'>reg.lambdas</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>trans</span><span class='kw'>=</span><span class='fl'>10</span>, <span class='kw'>life</span><span class='kw'>=</span><span class='fl'>2</span>))
+}
+
+
+<span class='co'># }</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
