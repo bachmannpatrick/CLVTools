@@ -17,6 +17,7 @@ fct.testthat.runability.staticcov.all.optimization.methods <- function(method, c
   test_that("Works for all optimx optimization methods", {
     skip_on_cran()
     skip_on_covr()
+    skip_on_ci()
     l.args <- list(clv.data=clv.data.holdout, optimx.args = list(control=list(all.methods=TRUE)), verbose=FALSE)
     expect_warning(do.call(what = method, args = l.args),
                    regexp = expected.message, all=TRUE)
@@ -55,32 +56,10 @@ fct.testthat.runability.staticcov.reduce.relevant.covariates.estimation <- funct
   })
 }
 
-fct.testthat.staticcov.works.with.cor <- function(method, clv.data.holdout, clv.newdata.nohold, clv.newdata.withhold, param.names){
-  test_that("Works with use.cor=T", {
-    skip_on_cran()
-    l.args <- list(clv.data = clv.data.holdout, use.cor=TRUE, verbose=FALSE)
 
-    expect_silent(pscc <- do.call(what = method, args = l.args))
-    fct.helper.fitted.all.s3(pscc, full.names = c(param.names, pscc@name.correlation.cor,
-                                                  pscc@names.prefixed.params.free.life, pscc@names.prefixed.params.free.trans),
-                             clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
-  })
-}
 
-fct.testthat.runability.staticcov.works.with.cor.start.params <- function(method, clv.data.holdout, clv.newdata.nohold, clv.newdata.withhold, param.names){
-  test_that("Works with use.cor=T and start.params", {
-    skip_on_cran()
-    skip_on_covr()
-    l.args <- list(clv.data = clv.data.holdout, use.cor=TRUE, start.param.cor = 0.0, verbose=FALSE)
 
-    expect_silent(pscc <- do.call(what = method, args = l.args))
-    fct.helper.fitted.all.s3(pscc, full.names = c(param.names, pscc@name.correlation.cor,
-                                                  pscc@names.prefixed.params.free.life, pscc@names.prefixed.params.free.trans),
-                             clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
-  })
-}
-
-fct.testthat.staticcov.works.with.2.constraints <- function(method, clv.data.holdout, clv.data.no.holdout, clv.newdata.nohold, clv.newdata.withhold, param.names){
+fct.testthat.runability.staticcov.works.with.2.constraints <- function(method, clv.data.holdout, clv.data.no.holdout, clv.newdata.nohold, clv.newdata.withhold, param.names){
   test_that("Works with 2 constraints", {
     skip_on_cran()
 
@@ -140,6 +119,7 @@ fct.testthat.runability.staticcov.works.with.0.lambdas <- function(method, clv.d
   test_that("Works with 0 regularization lambdas", {
     skip_on_cran()
     skip_on_covr()
+    skip_on_ci()
 
     l.args.holdout <- list(clv.data = clv.data.holdout,   reg.lambdas = c(trans=0, life=0),verbose=FALSE)
     l.args.no.holdout <- list(clv.data = clv.data.no.holdout,reg.lambdas = c(trans=0, life=0),verbose=FALSE)
@@ -157,7 +137,6 @@ fct.testthat.runability.staticcov.works.with.combined.interlayers.without.cor <-
   test_that("Works with combined interlayers (without correlation)", {
     # Try all combinations of interlayers
     skip_on_cran()
-    skip_on_covr()
 
     l.args.holdout <- list(clv.data = clv.data.holdout, names.cov.constr = c("Gender", "Channel"), reg.lambdas = c(trans=10, life=10),verbose=FALSE)
     l.args.no.holdout <- list(clv.data = clv.data.no.holdout, names.cov.constr = c("Gender", "Channel"), reg.lambdas = c(trans=10, life=10),verbose=FALSE)
@@ -178,6 +157,7 @@ fct.testthat.runability.staticcov.works.with.combined.interlayers.with.cor <- fu
     # Try all combinations of interlayers
     skip_on_cran()
     skip_on_covr()
+    skip_on_ci()
 
     l.args.holdout.1 = list(clv.data = clv.data.holdout, use.cor = TRUE, names.cov.constr = c("Gender", "Channel"),verbose=FALSE)
     l.args.no.holdout.1 = list(clv.data = clv.data.no.holdout, use.cor = TRUE, names.cov.constr = c("Gender", "Channel"), verbose=FALSE)

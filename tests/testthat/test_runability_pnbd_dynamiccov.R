@@ -4,7 +4,7 @@ data("apparelDynCov")
 apparelDynCov <- apparelDynCov[Cov.Date > "2005-01-01" ] #otherwise "cutoff" message
 
 
-# DO NOT RUN ANYTHING DYNCOV ON CRAN (runtime ca 1min..?)
+# DO NOT RUN ANYTHING DYNCOV ON CRAN
 skip_on_cran()
 
 

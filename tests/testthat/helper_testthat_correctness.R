@@ -1,4 +1,4 @@
-fct.testthat.correctness.correct.coefs.se <- function(method, cdnow, start.params.model, params.nocov.coef, params.nocov.se)
+fct.testthat.correctness.nocov.correct.coefs.se <- function(method, cdnow, start.params.model, params.nocov.coef, params.nocov.se)
 
 # **TODO: Check vs PAPER!
 test_that("Cdnow nocov correct coefs and SE", {
@@ -15,7 +15,7 @@ test_that("Cdnow nocov correct coefs and SE", {
   expect_equal(sqrt(diag(vcov(p.cdnow))), params.nocov.se, tolerance = 0.001)
 })
 
-fct.testthat.correctness.same.as.btyd <- function(clvtools.method, btyd.method, btyd.dert.method, btyd.cet.method, btyd.palive.method, start.params.model, cdnow){
+fct.testthat.correctness.nocov.same.as.btyd <- function(clvtools.method, btyd.method, btyd.dert.method, btyd.cet.method, btyd.palive.method, start.params.model, cdnow){
   test_that("Same results as BTYD", {
     # Fitting
     # From ?BTYD::<model>.cbs.LL()
@@ -52,18 +52,8 @@ fct.testthat.correctness.same.as.btyd <- function(clvtools.method, btyd.method, 
   })
 }
 
-fct.testthat.correctness.same.predicting.fitting <- function(method, clv.cdnow){
-  test_that("Same when predicting as with fitting data", {
-    skip_on_cran()
-    l.args <- list(clv.data = clv.cdnow, verbose = FALSE)
-    expect_silent(cdnow.fit <- do.call(what = method, args = l.args))
 
-    expect_true(isTRUE(all.equal(predict(cdnow.fit),
-                                 predict(cdnow.fit, newdata = clv.cdnow))))
-  })
-}
-
-fct.testthat.correctness.fitting.sample.predicting.full.data.equal <- function(method, cdnow, clv.cdnow){
+fct.testthat.correctness.nocov.newdata.fitting.sample.predicting.full.data.equal <- function(method, cdnow, clv.cdnow){
   test_that("Fitting sample but predicting with full data yields same results as predicting sample only", {
     skip_on_cran()
     # Sample only
@@ -96,7 +86,7 @@ fct.testthat.correctness.fitting.sample.predicting.full.data.equal <- function(m
   })
 }
 
-fct.testthat.correctness.sorted.covariates <- function(method, clv.apparel, apparelStaticCov, p.static = p.static){
+fct.testthat.correctness.staticcov.sorted.covariates <- function(method, clv.apparel, apparelStaticCov, p.static = p.static){
   test_that("Same result for differently sorted covariates", {
     skip_on_cran()
 
@@ -117,13 +107,15 @@ fct.testthat.correctness.sorted.covariates <- function(method, clv.apparel, appa
     expect_true(isTRUE(all.equal(p.static.shuffle, p.static)))
   })
 }
-fct.testthat.correctness.staticcov.predicting.fitting <- function(p.static, clv.apparel.staticcov){
+
+fct.testthat.correctness.common.newdata.same.predicting.fitting <- function(clv.fitted, clv.newdata){
   test_that("Same when predicting as with fitting data", {
     skip_on_cran()
-    expect_true(isTRUE(all.equal(predict(p.static, verbose=FALSE),
-                                 predict(p.static, newdata = clv.apparel.staticcov, verbose=FALSE))))
+    expect_true(isTRUE(all.equal(predict(clv.fitted, verbose=FALSE),
+                                 predict(clv.fitted, newdata = clv.newdata, verbose=FALSE))))
   })
 }
+
 
 fct.testthat.correctness.staticcov.fitting.sample.predicting.full.data.equal <- function(method, apparelTrans, apparelStaticCov, clv.apparel.staticcov){
   test_that("Fitting with sample but predicting full data yields same results as predicting sample only", {
@@ -153,7 +145,7 @@ fct.testthat.correctness.staticcov.fitting.sample.predicting.full.data.equal <- 
   })
 }
 
-fct.testthat.correctness.regularization.lambda.0.no.regularization <- function(method, clv.apparel.staticcov, p.static){
+fct.testthat.correctness.staticcov.regularization.lambda.0.no.regularization <- function(method, clv.apparel.staticcov, p.static){
   test_that("Regularization with 0 lambda has the same effect as no regularization", {
     skip_on_cran()
     l.args <- list(clv.data = clv.apparel.staticcov, reg.lambdas = c(trans=0, life=0), verbose = FALSE)

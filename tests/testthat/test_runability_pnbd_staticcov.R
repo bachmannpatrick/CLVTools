@@ -52,72 +52,72 @@ expect_silent(clv.newdata.withhold <- SetStaticCovariates(
 # Basic runability ------------------------------------------------------------------------------------------
 
 fct.testthat.runability.common.out.of.the.box.no.hold(method = pnbd,
-                                                        clv.data.noholdout = clv.data.cov.no.holdout,
-                                                        clv.newdata.nohold = clv.newdata.nohold,
-                                                        clv.newdata.withhold = clv.newdata.withhold,
-                                                        param.names = pnbd.param.names.with.cov)
-
-fct.testthat.runability.common.out.of.the.box.with.hold(method = pnbd,
-                                                      clv.data.withholdout = clv.data.cov.holdout,
+                                                      clv.data.noholdout = clv.data.cov.no.holdout,
                                                       clv.newdata.nohold = clv.newdata.nohold,
                                                       clv.newdata.withhold = clv.newdata.withhold,
                                                       param.names = pnbd.param.names.with.cov)
 
+fct.testthat.runability.common.out.of.the.box.with.hold(method = pnbd,
+                                                        clv.data.withholdout = clv.data.cov.holdout,
+                                                        clv.newdata.nohold = clv.newdata.nohold,
+                                                        clv.newdata.withhold = clv.newdata.withhold,
+                                                        param.names = pnbd.param.names.with.cov)
+
 fct.testthat.runability.common.custom.model.start.params(method = pnbd,
-                                                          clv.data.withholdout = clv.data.cov.holdout,
-                                                          clv.data.noholdout = clv.data.cov.no.holdout,
-                                                          start.params.model = c(r=1, alpha = 2, s = 1, beta = 2))
+                                                         clv.data.withholdout = clv.data.cov.holdout,
+                                                         clv.data.noholdout = clv.data.cov.no.holdout,
+                                                         start.params.model = c(r=1, alpha = 2, s = 1, beta = 2))
 
 fct.testthat.runability.staticcov.custom.model.covariate.start.params(method = pnbd,
-                                                                        clv.data.holdout = clv.data.cov.holdout,
-                                                                        clv.data.no.holdout = clv.data.cov.no.holdout,
-                                                                        start.params.model = c(r=1, alpha = 2, s = 1, beta = 2))
+                                                                      clv.data.holdout = clv.data.cov.holdout,
+                                                                      clv.data.no.holdout = clv.data.cov.no.holdout,
+                                                                      start.params.model = c(r=1, alpha = 2, s = 1, beta = 2))
 
 fct.testthat.runability.common.all.optimization.methods(method = pnbd,
-                                                          clv.data.noholdout = clv.data.cov.no.holdout,
-                                                          expected.message = "replaced by maximum positive value|Gradient not computable after method nlm|Rcgmin|unused control arguments ignored|Gradient not computable|Estimation failed with NA coefs|Hessian could not be derived"
-                                                       )
+                                                        clv.data.noholdout = clv.data.cov.no.holdout,
+                                                        expected.message = "replaced by maximum positive value|Gradient not computable after method nlm|Rcgmin|unused control arguments ignored|Gradient not computable|Estimation failed with NA coefs|Hessian could not be derived"
+)
 
 fct.testthat.runability.common.multiple.optimization.methods(method = pnbd,
-                                                            clv.data.noholdout = clv.data.cov.no.holdout,
-                                                            clv.newdata.nohold = clv.newdata.nohold,
-                                                            clv.newdata.withhold = clv.newdata.withhold,
-                                                            param.names = pnbd.param.names.with.cov)
+                                                             clv.data.noholdout = clv.data.cov.no.holdout,
+                                                             clv.newdata.nohold = clv.newdata.nohold,
+                                                             clv.newdata.withhold = clv.newdata.withhold,
+                                                             param.names = pnbd.param.names.with.cov)
 
 fct.testthat.runability.staticcov.reduce.relevant.covariates.estimation(method = pnbd,
-                                                                          clv.data.holdout = clv.data.cov.holdout)
+                                                                        clv.data.holdout = clv.data.cov.holdout)
 
 # Correlation ---------------------------------------------------------------------------------------------
 context("Runability - PNBD static cov - w/ Correlation")
 
-fct.testthat.staticcov.works.with.cor(method = pnbd,
-                                      clv.data.holdout = clv.data.cov.holdout,
-                                      clv.newdata.nohold = clv.newdata.nohold,
-                                      clv.newdata.withhold = clv.newdata.withhold,
-                                      param.names = pnbd.param.names.no.cov)
+fct.testthat.runability.common.works.with.cor(method = pnbd,
+                                              clv.data.holdout = clv.data.cov.holdout,
+                                              clv.newdata.nohold = clv.newdata.nohold,
+                                              clv.newdata.withhold = clv.newdata.withhold,
+                                              names.params.model = pnbd.param.names.no.cov)
 
-fct.testthat.runability.staticcov.works.with.cor.start.params(method = pnbd,
-                                                              clv.data.holdout = clv.data.cov.holdout,
-                                                              clv.newdata.nohold = clv.newdata.nohold,
-                                                              clv.newdata.withhold = clv.newdata.withhold,
-                                                              param.names = pnbd.param.names.no.cov)
+fct.testthat.runability.common.works.with.cor.start.params(method = pnbd,
+                                                           clv.data.holdout = clv.data.cov.holdout,
+                                                           clv.newdata.nohold = clv.newdata.nohold,
+                                                           clv.newdata.withhold = clv.newdata.withhold,
+                                                           names.params.model = pnbd.param.names.no.cov)
 
 # Interlayers ---------------------------------------------------------------------------------------------
 context("Runability - PNBD static cov - w/ Constraint")
 
-fct.testthat.staticcov.works.with.2.constraints(method = pnbd,
-                                                clv.data.holdout = clv.data.cov.holdout,
-                                                clv.data.no.holdout = clv.data.cov.no.holdout,
-                                                clv.newdata.nohold = clv.newdata.nohold,
-                                                clv.newdata.withhold = clv.newdata.withhold,
-                                                param.names = pnbd.param.names.no.cov)
+fct.testthat.runability.staticcov.works.with.2.constraints(method = pnbd,
+                                                           clv.data.holdout = clv.data.cov.holdout,
+                                                           clv.data.no.holdout = clv.data.cov.no.holdout,
+                                                           clv.newdata.nohold = clv.newdata.nohold,
+                                                           clv.newdata.withhold = clv.newdata.withhold,
+                                                           param.names = pnbd.param.names.no.cov)
 
 fct.testthat.runability.staticcov.works.with.1.constraint.1.free(method = pnbd,
-                                                                  clv.data.holdout = clv.data.cov.holdout,
-                                                                  clv.data.no.holdout = clv.data.cov.no.holdout,
-                                                                  clv.newdata.nohold = clv.newdata.nohold,
-                                                                  clv.newdata.withhold = clv.newdata.withhold,
-                                                                  param.names = pnbd.param.names.no.cov)
+                                                                 clv.data.holdout = clv.data.cov.holdout,
+                                                                 clv.data.no.holdout = clv.data.cov.no.holdout,
+                                                                 clv.newdata.nohold = clv.newdata.nohold,
+                                                                 clv.newdata.withhold = clv.newdata.withhold,
+                                                                 param.names = pnbd.param.names.no.cov)
 
 context("Runability - PNBD static cov - w/ Regularization")
 
@@ -140,15 +140,15 @@ fct.testthat.runability.staticcov.works.with.0.lambdas(method = pnbd,
 context("Runability - PNBD static cov - w/ combinations")
 
 fct.testthat.runability.staticcov.works.with.combined.interlayers.without.cor(method = pnbd,
-                                                                  clv.data.holdout = clv.data.cov.holdout,
-                                                                  clv.data.no.holdout = clv.data.cov.no.holdout,
-                                                                  clv.newdata.nohold = clv.newdata.nohold,
-                                                                  clv.newdata.withhold = clv.newdata.withhold,
-                                                                  param.names = pnbd.param.names.no.cov)
-
-fct.testthat.runability.staticcov.works.with.combined.interlayers.with.cor(method = pnbd,
                                                                               clv.data.holdout = clv.data.cov.holdout,
                                                                               clv.data.no.holdout = clv.data.cov.no.holdout,
                                                                               clv.newdata.nohold = clv.newdata.nohold,
                                                                               clv.newdata.withhold = clv.newdata.withhold,
                                                                               param.names = pnbd.param.names.no.cov)
+
+fct.testthat.runability.staticcov.works.with.combined.interlayers.with.cor(method = pnbd,
+                                                                           clv.data.holdout = clv.data.cov.holdout,
+                                                                           clv.data.no.holdout = clv.data.cov.no.holdout,
+                                                                           clv.newdata.nohold = clv.newdata.nohold,
+                                                                           clv.newdata.withhold = clv.newdata.withhold,
+                                                                           param.names = pnbd.param.names.no.cov)

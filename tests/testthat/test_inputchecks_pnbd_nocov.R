@@ -14,8 +14,6 @@ fct.helper.inputchecks.check.all.no.cov.model(fct.model = pnbd, l.std.args = l.s
 
 context("Inputchecks - pnbd nocov - Model specific")
 
-clv.data.cdnow.no.holdout
-clv.data.cdnow.with.holdout
 
 l.start.params.model <- list(c(alpha=0, beta=1, r=1, s=1),
                             c(alpha=-1, beta=1, r=1, s=1),

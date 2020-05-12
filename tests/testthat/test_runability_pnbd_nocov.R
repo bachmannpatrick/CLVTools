@@ -46,14 +46,27 @@ fct.testthat.runability.nocov.custom.optimx.args(method = pnbd,
 
 fct.testthat.runability.common.all.optimization.methods(method = pnbd,
                                          clv.data.noholdout = clv.data.cdnow.noholdout,
-                                         expected.message = "replaced by maximum positive value|Gradient not computable after method nlm|unused control arguments ignored|Estimation failed with NA coefs|Hessian could not be derived"
-                                         )
+                                         expected.message = "replaced by maximum positive value|Gradient not computable after method nlm|unused control arguments ignored|Estimation failed with NA coefs|Hessian could not be derived")
 
 fct.testthat.runability.common.multiple.optimization.methods(method = pnbd,
                                                         clv.data.noholdout = clv.data.cdnow.noholdout,
                                                         clv.newdata.nohold = clv.newdata.nohold,
                                                         clv.newdata.withhold = clv.newdata.withhold,
                                                         param.names = pnbd.param.names)
+
+fct.testthat.runability.common.works.with.cor(method = pnbd,
+                                              clv.data.holdout = clv.data.cdnow.withholdout,
+                                              clv.newdata.nohold = clv.newdata.nohold,
+                                              clv.newdata.withhold = clv.newdata.withhold,
+                                              names.params.model = pnbd.param.names)
+
+fct.testthat.runability.common.works.with.cor.start.params(method = pnbd,
+                                                           clv.data.holdout = clv.data.cdnow.withholdout,
+                                                           clv.newdata.nohold = clv.newdata.nohold,
+                                                           clv.newdata.withhold = clv.newdata.withhold,
+                                                           names.params.model = pnbd.param.names)
+
+
 
 fct.testthat.runability.nocov.without.spending.data(method = pnbd, data.transactions = cdnow)
 

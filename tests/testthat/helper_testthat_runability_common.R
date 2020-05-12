@@ -51,3 +51,38 @@ fct.testthat.runability.common.multiple.optimization.methods <- function(method,
                              clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
   })
 }
+
+
+fct.testthat.runability.common.works.with.cor <- function(method, clv.data.holdout, clv.newdata.nohold, clv.newdata.withhold, names.params.model){
+  test_that("Works with use.cor=T", {
+    skip_on_cran()
+
+    l.args <- list(clv.data = clv.data.holdout, use.cor=TRUE, verbose=FALSE)
+    expect_silent(p.cor <- do.call(what = method, args = l.args))
+
+    full.names <- c(names.params.model, p.cor@name.correlation.cor)
+    if(is(clv.data.holdout, "clv.data.static.covariates"))
+      full.names <- c(full.names, p.cor@names.prefixed.params.free.life, p.cor@names.prefixed.params.free.trans)
+
+    fct.helper.fitted.all.s3(p.cor, full.names = full.names,
+                             clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
+  })
+}
+
+fct.testthat.runability.common.works.with.cor.start.params <- function(method, clv.data.holdout, clv.newdata.nohold, clv.newdata.withhold, names.params.model){
+  test_that("Works with use.cor=T and start.params", {
+    skip_on_cran()
+    skip_on_covr()
+    skip_on_ci()
+
+    l.args <- list(clv.data = clv.data.holdout, use.cor=TRUE, start.param.cor = 0.0, verbose=FALSE)
+    expect_silent(p.cor <- do.call(what = method, args = l.args))
+
+    full.names <- c(names.params.model, p.cor@name.correlation.cor)
+    if(is(clv.data.holdout, "clv.data.static.covariates"))
+      full.names <- c(full.names, p.cor@names.prefixed.params.free.life, p.cor@names.prefixed.params.free.trans)
+
+    fct.helper.fitted.all.s3(p.cor, full.names = full.names,
+                             clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
+  })
+}
