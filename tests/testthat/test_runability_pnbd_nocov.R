@@ -3,10 +3,11 @@ data("cdnow")
 
 context("Runability - PNBD nocov - Basic runability")
 
-
 expect_silent(clv.data.cdnow.noholdout <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "W"))
 expect_silent(clv.data.cdnow.withholdout <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "W",
                                                     estimation.split = 37))
+
+pnbd.param.names = c("r", "alpha", "s", "beta")
 
 # Newdata clv data object to test plot/predict
 #   Create with new fake data and generally other names
@@ -25,113 +26,50 @@ expect_silent(clv.newdata.withhold <- clvdata(data.transactions = dt.newdata.tra
                                               estimation.split = 37, name.id = "cust.id", name.date = "trans.date",
                                               name.price = NULL))
 
-# Basic runability -------------------------------------------------------------------------------------------------------
+fct.testthat.runability.common.out.of.the.box.no.hold(method = pnbd,
+                                                      clv.data.noholdout = clv.data.cdnow.noholdout,
+                                                      clv.newdata.withhold = clv.newdata.withhold,
+                                                      clv.newdata.nohold = clv.newdata.nohold,
+                                                      param.names = pnbd.param.names)
 
-# Split in holdout and noholdout to skip one on cran
-test_that("Works out-of-the box, without additional params - holdout", {
-  expect_silent(p.hold    <- pnbd(clv.data=clv.data.cdnow.withholdout, verbose=FALSE))
-  fct.helper.fitted.all.s3(clv.fitted = p.hold,     full.names = names(p.hold@clv.model@names.original.params.model),
-                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = FALSE)
-})
+fct.testthat.runability.common.out.of.the.box.with.hold(method = pnbd,
+                                                        clv.data.withholdout = clv.data.cdnow.withholdout,
+                                                        clv.newdata.withhold = clv.newdata.withhold,
+                                                        clv.newdata.nohold = clv.newdata.nohold,
+                                                        param.names = pnbd.param.names)
 
-test_that("Works out-of-the box, without additional params - no holdout", {
-  skip_on_cran()
-  expect_silent(p.no.hold <- pnbd(clv.data=clv.data.cdnow.noholdout, verbose=FALSE))
-  fct.helper.fitted.all.s3(clv.fitted = p.no.hold,  full.names = names(p.no.hold@clv.model@names.original.params.model),
-                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = FALSE)
-})
+fct.testthat.runability.common.custom.model.start.params(method = pnbd, start.params.model = c(r=1, alpha = 2, s = 1, beta = 2), clv.data.cdnow.noholdout, clv.data.cdnow.withholdout)
 
+fct.testthat.runability.nocov.custom.optimx.args(method = pnbd,
+                                                 clv.data.noholdout = clv.data.cdnow.noholdout,
+                                                 clv.data.withholdout = clv.data.cdnow.withholdout)
 
-test_that("Works with custom model.start.params", {
-  skip_on_cran()
-  expect_silent(pnbd(clv.data=clv.data.cdnow.noholdout,   start.params.model = c(r=1, alpha = 2, s = 1, beta = 2), verbose=FALSE))
-  expect_silent(pnbd(clv.data=clv.data.cdnow.withholdout, start.params.model = c(r=1, alpha = 2, s = 1, beta = 2), verbose=FALSE))
-})
+fct.testthat.runability.common.all.optimization.methods(method = pnbd,
+                                                        clv.data.noholdout = clv.data.cdnow.noholdout,
+                                                        expected.message = "replaced by maximum positive value|Gradient not computable after method nlm|unused control arguments ignored|Estimation failed with NA coefs|Hessian could not be derived")
 
+fct.testthat.runability.common.multiple.optimization.methods(method = pnbd,
+                                                             clv.data.noholdout = clv.data.cdnow.noholdout,
+                                                             clv.newdata.nohold = clv.newdata.nohold,
+                                                             clv.newdata.withhold = clv.newdata.withhold,
+                                                             param.names = pnbd.param.names)
 
-test_that("Works with custom optimx.args", {
-  skip_on_cran()
-  # dont do trace, spams the output
-  expect_message(pnbd(clv.data=clv.data.cdnow.noholdout, optimx.args = list(itnmax=40000)))
-  expect_message(pnbd(clv.data=clv.data.cdnow.withholdout, optimx.args = list(itnmax=40000)))
-})
+fct.testthat.runability.common.works.with.cor(method = pnbd,
+                                              clv.data.holdout = clv.data.cdnow.withholdout,
+                                              clv.newdata.nohold = clv.newdata.nohold,
+                                              clv.newdata.withhold = clv.newdata.withhold,
+                                              names.params.model = pnbd.param.names)
 
-
-test_that("Works for all optimx optimization methods", {
-  skip_on_cran()
-  expect_warning(pnbd(clv.data=clv.data.cdnow.noholdout, optimx.args = list(control=list(all.methods=TRUE)), verbose=FALSE),
-                 regexp = "replaced by maximum positive value|Gradient not computable after method nlm|unused control arguments ignored|Estimation failed with NA coefs|Hessian could not be derived", all=TRUE)
-})
-
-
-test_that("Works fully with multiple optimization methods", {
-  skip_on_cran()
-  expect_silent(p.no.hold <- pnbd(clv.data=clv.data.cdnow.noholdout, optimx.args = list(method = c("BFGS", "L-BFGS-B", "Nelder-Mead")), verbose=FALSE))
-  fct.helper.fitted.all.s3(clv.fitted = p.no.hold,  full.names = names(p.no.hold@clv.model@names.original.params.model),
-                           clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
-})
+fct.testthat.runability.common.works.with.cor.start.params(method = pnbd,
+                                                           clv.data.holdout = clv.data.cdnow.withholdout,
+                                                           clv.newdata.nohold = clv.newdata.nohold,
+                                                           clv.newdata.withhold = clv.newdata.withhold,
+                                                           names.params.model = pnbd.param.names)
 
 
 
-test_that("Works without spending data",{
-  skip_on_cran()
-  expect_silent(clv.pnbd.nospending <- pnbd(clvdata(cdnow, name.price = NULL, date.format = "ymd", time.unit = "w", estimation.split = 37),
-                                            verbose = FALSE))
-  # predict still works outof the box
-  expect_silent(predict(clv.pnbd.nospending, verbose=FALSE))
-  # Predict fails if spending should sill be predicted
-  expect_error(predict(clv.pnbd.nospending, predict.spending=TRUE),regexp = "there is no spending data")
-})
+fct.testthat.runability.nocov.without.spending.data(method = pnbd, data.transactions = cdnow)
 
-test_that("No spending fit can predict on newdata that has spending", {
-  skip_on_cran()
-  # No spending fit
-  expect_silent(clv.pnbd.nospending <- pnbd(clvdata(cdnow, name.price = NULL, date.format = "ymd", time.unit = "w", estimation.split = 37),
-                                            verbose = FALSE))
-  # Data with spending
-  expect_silent(clv.cdnow.spending <- clvdata(cdnow, name.price = "Price", date.format = "ymd", time.unit = "w", estimation.split = 37))
-  expect_silent(dt.pred <- predict(clv.pnbd.nospending, newdata=clv.cdnow.spending, verbose=FALSE, predict.spending=TRUE))
-  expect_true(all(c("predicted.Spending","predicted.CLV") %in% colnames(dt.pred)))
-})
+fct.testthat.runability.nocov.predict.newdata.spending(method = pnbd, data.transactions = cdnow)
 
-test_that("Works with hourly data", {
-  skip_on_cran()
-  # Filter out suitable range
-  cdnow.early <- cdnow[Id %in% cdnow[, .(last.trans = max(Date)), by="Id"][last.trans <= "1997-03-01"]$Id]
-  cdnow.early <- cdnow.early[Id %in% cdnow[, .(first.trans = min(Date)), by="Id"][first.trans <= "1997-02-01"]$Id]
-  # can fit
-  expect_silent(pnbd.hours <- pnbd(clvdata(data.transactions = cdnow.early, date.format = "ymd", time.unit = "h",
-                                           estimation.split = 1000), verbose = FALSE, optimx.args=list(itnmax=40000),
-                                   start.params.model = c(r = 0.63177, alpha = 4451.331, s = 0.000002, beta = 0.5166)))
-  # can predict
-  expect_silent( predict(pnbd.hours, verbose=FALSE, predict.spending=TRUE))
-  # can plot
-  expect_silent(plot(pnbd.hours, verbose=FALSE))
-})
-
-# w/ correlation -------------------------------------------------------------------------------------------------------
-# context("Runability - PNBD nocov - w/ correlation")
-# test_that("Without holdout - with correlation", {
-#   skip_on_cran
-#
-#   # expect_silent(pcdnow.c <- pnbd(clv.data=clv.data.cdnow.withholdout, use.cor=TRUE, verbose=FALSE))
-#   # fct.helper.fitted.all.s3(clv.fitted = pcdnow.c,  full.names = c(names(pcdnow.c@clv.model@names.original.params.model),pcdnow.c@name.correlation.cor))
-#
-#   # expect_warning(pcdnow.c <- pnbd(clv.data.cdnow.noholdout, use.cor = TRUE, verbose = FALSE),
-#   #                regexp = "Gradient not computable")
-#   # Vcov does not work but other S3 that do not need vcov() should still work
-#   # .fct.helper.s3.fitted.coef(clv.fitted = pcdnow.c, full.names = c("r", "alpha", "s", "beta", pscc@name.correlation.cor))
-#   # expect_warning(summary(pcdnow.c), regexp = "For some parameters the standard error could not be calculated.")
-#   # .fct.helper.s3.fitted.print(clv.fitted = pcdnow.c)
-#   # .fct.helper.s3.fitted.nobs(clv.fitted = pcdnow.c)
-#   # .fct.helper.s3.fitted.logLik(clv.fitted = pcdnow.c)
-#   # .fct.helper.s3.fitted.plot(clv.fitted = pcdnow.c)
-#   # .fct.helper.s3.fitted.predict(clv.fitted = pcdnow.c)
-# })
-
-# test_that("Works with use.cor=T and start.params", {
-#   skip_on_cran()
-#   expect_message(pnbd(clv.data=clv.data.cdnow.noholdout, use.cor=TRUE, start.param.cor = 0.25, verbose=FALSE))
-#   expect_message(pnbd(clv.data=clv.data.cdnow.withholdout, use.cor=TRUE, start.param.cor = 0.25, verbose=FALSE))
-# })
-
+fct.testthat.runability.nocov.hourly.data(method = pnbd, data.cdnow = cdnow, start.params.model = c(r = 0.63177, alpha = 4451.331, s = 0.000002, beta = 0.5166))
