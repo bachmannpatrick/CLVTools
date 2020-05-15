@@ -14,10 +14,20 @@ expect_silent(clv.data.apparel.with.holdout <- SetStaticCovariates(clv.data = cl
 l.std.args.noholdout   <- list(clv.data=clv.data.apparel.no.holdout)
 l.std.args.withholdout <- list(clv.data=clv.data.apparel.with.holdout)
 
+correct.params = c(alpha=1, beta=1, r=1, s=1)
+param.names = c("alpha", "beta", "r", "s")
 
 # Covariate specific parameters --------------------------------------------------------------------------
-fct.helper.inputchecks.check.all.static.cov.model(fct.model = pnbd, l.std.args = l.std.args.noholdout, name.model = "pnbd staticcov")
-fct.helper.inputchecks.check.all.static.cov.model(fct.model = pnbd, l.std.args = l.std.args.withholdout, name.model = "pnbd staticcov")
+fct.helper.inputchecks.check.all.static.cov.model(fct.model = pnbd,
+                                                  l.std.args = l.std.args.noholdout,
+                                                  name.model = "pnbd staticcov",
+                                                  correct.params = correct.params,
+                                                  param.names = param.names)
+fct.helper.inputchecks.check.all.static.cov.model(fct.model = pnbd,
+                                                  l.std.args = l.std.args.withholdout,
+                                                  name.model = "pnbd staticcov",
+                                                  correct.params = correct.params,
+                                                  param.names = param.names)
 
 context("Inputchecks - pnbd staticcov - Model specific")
 

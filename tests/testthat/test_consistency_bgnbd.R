@@ -1,15 +1,10 @@
-#
 # Tests that BG/NBD models are consistent among themselves
 skip_on_cran()
-
 
 # Consistency
 # nocov vs static cov:
 #   same fit with all covs = 0
 #   same predict with gamma=0
-
-
-
 
 context("Nocov/cov Consistency - BG/NBD - all cov data = 0")
 data("apparelTrans")
@@ -32,14 +27,9 @@ expect_silent(clv.apparel.static <- SetStaticCovariates(clv.apparel,
 expect_silent(b.nocov  <- bgnbd(clv.apparel, verbose = FALSE))
 expect_silent(b.static <- bgnbd(clv.apparel.static, verbose = FALSE))
 
-# test_that("Cov params are insignificant", {
-#   expect_true(all(coef(summary(b.static))[c("life.Gender", "life.Channel", "trans.Gender", "trans.Channel"), 4] > 0.1))
-# })
-
-test_that("Model parameters are nearly the same", {
-  expect_true(all.equal(coef(b.nocov), coef(b.static)[c("r", "alpha", "a", "b")], tolerance = 0.05))
-})
-
+fct.testthat.consistency.cov.data.0.model.params.nearly.same(m.nocov = b.nocov,
+                                                             m.static = b.static,
+                                                             param.names = c("r", "alpha", "a", "b"))
 
 
 context("Nocov/cov Consistency - BG/NBD - cov params = 0")
@@ -56,34 +46,11 @@ expect_silent(b.static@prediction.params.trans[c("Gender", "Channel")] <- 0)
 
 # Actual tests ---------------------------------------------------------------------------------
 
-test_that("Predict yields same results for all models with gamma=0", {
+fct.testthat.consistency.cov.params.0.predict.same(m.nocov = b.nocov,
+                                                   m.static = b.static,
+                                                   has.DERT = FALSE,
+                                                   has.dyncov = FALSE)
 
-  # DERT unequal to DECT because only predict short period!
-
-  # Standard
-  expect_silent(dt.pred.nocov    <- predict(b.nocov, verbose=FALSE))
-  expect_silent(dt.pred.static   <- predict(b.static, verbose=FALSE))
-  expect_true(isTRUE(all.equal(dt.pred.nocov, dt.pred.static)))
-
-  # With prediction.end
-  expect_silent(dt.pred.nocov     <- predict(b.nocov,  verbose=FALSE, prediction.end = 6))
-  expect_silent(dt.pred.static    <- predict(b.static, verbose=FALSE, prediction.end = 6))
-  expect_true(isTRUE(all.equal(dt.pred.nocov, dt.pred.static)))
-
-  # with discount rates
-  expect_silent(dt.pred.nocov     <- predict(b.nocov, verbose=FALSE, continuous.discount.factor = 0.25))
-  expect_silent(dt.pred.static    <- predict(b.static, verbose=FALSE, continuous.discount.factor = 0.25))
-  expect_true(isTRUE(all.equal(dt.pred.nocov, dt.pred.static)))
-})
-
-
-test_that("plot yields same results for all models with gamma=0", {
-  # Prediction end for faster calcs. Should not affect results
-  expect_warning(dt.plot.nocov     <- plot(b.nocov, verbose=FALSE, plot=FALSE, prediction.end = 10), regexp = "full holdout")
-  expect_warning(dt.plot.static    <- plot(b.static, verbose=FALSE, plot=FALSE, prediction.end = 10), regexp = "full holdout")
-
-  # Rename to random names because have different colnames by model
-  data.table::setnames(dt.plot.nocov, c("A", "B", "C"))
-  data.table::setnames(dt.plot.static , c("A", "B", "C"))
-  expect_true(isTRUE(all.equal(dt.plot.nocov, dt.plot.static)))
-})
+fct.testthat.consistency.cov.params.0.plot.same(m.nocov = b.nocov,
+                                                m.static = b.static,
+                                                has.dyncov = FALSE)

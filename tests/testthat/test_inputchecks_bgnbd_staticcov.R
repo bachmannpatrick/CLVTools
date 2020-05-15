@@ -14,24 +14,33 @@ expect_silent(clv.data.apparel.with.holdout <- SetStaticCovariates(clv.data = cl
 l.std.args.noholdout   <- list(clv.data=clv.data.apparel.no.holdout)
 l.std.args.withholdout <- list(clv.data=clv.data.apparel.with.holdout)
 
+correct.params = c(r=1, alpha=3, a=1, b=3)
+param.names = c("r", "alpha", "a", "b")
 
 # Covariate specific parameters --------------------------------------------------------------------------
-fct.helper.inputchecks.check.all.static.cov.model(fct.model = bgnbd, l.std.args = l.std.args.noholdout, name.model = "BGNBD static cov")
-fct.helper.inputchecks.check.all.static.cov.model(fct.model = bgnbd, l.std.args = l.std.args.withholdout, name.model = "BGNBD static cov")
+fct.helper.inputchecks.check.all.static.cov.model(fct.model = bgnbd,
+                                                  l.std.args = l.std.args.noholdout,
+                                                  name.model = "BGNBD static cov",
+                                                  correct.params = correct.params,
+                                                  param.names = param.names)
+fct.helper.inputchecks.check.all.static.cov.model(fct.model = bgnbd,
+                                                  l.std.args = l.std.args.withholdout,
+                                                  name.model = "BGNBD static cov",
+                                                  correct.params = correct.params,
+                                                  param.names = param.names)
 
 context("Inputchecks - BGNBD staticcov - Model specific")
-test_that("Fails for start params <= 0", {
-  expect_error(bgnbd(clv.data.apparel.no.holdout, start.params.model = c(r=1, alpha=0, a=1, b=1)),
-               regexp = "greater")
-  expect_error(bgnbd(clv.data.apparel.no.holdout, start.params.model = c(r=1, alpha=-1, a=1, b=1)),
-               regexp = "greater")
-  expect_error(bgnbd(clv.data.apparel.no.holdout, start.params.model = c(r=0, alpha=1, a=1, b=1)),
-               regexp = "greater")
 
-  expect_error(bgnbd(clv.data.apparel.with.holdout, start.params.model = c(r=1, alpha=0, a=1, b=1)),
-               regexp = "greater")
-  expect_error(bgnbd(clv.data.apparel.with.holdout, start.params.model = c(r=1, alpha=-1, a=1, b=1)),
-               regexp = "greater")
-  expect_error(bgnbd(clv.data.apparel.with.holdout, start.params.model = c(r=0, alpha=1, a=1, b=1)),
-               regexp = "greater")
-})
+l.start.params.model <- list(c(r = 0, alpha = 1, a = 1, b = 1),
+                             c(r = 1, alpha = 0, a = 1, b = 1),
+                             c(r = 1, alpha = 1, a = 0, b = 1),
+                             c(r = 1, alpha = 1, a = 1, b = 0),
+                             c(r = -1, alpha = 1, a = 1, b = 1),
+                             c(r = 1, alpha = -1, a = 1, b = 1),
+                             c(r = 1, alpha = 1, a = -1, b = 1),
+                             c(r = 1, alpha = 1, a = 1, b = -1))
+
+fct.testthat.inputchecks.staticcov.fails.for.start.params.subzero(method = bgnbd,
+                                                                  clv.data.no.holdout = clv.data.apparel.no.holdout,
+                                                                  clv.data.with.holdout = clv.data.apparel.with.holdout,
+                                                                  l.start.params.model = l.start.params.model)

@@ -37,10 +37,10 @@ expect_silent(p.static <- pnbd(clv.apparel.static, verbose = FALSE))
 
 
 
-fct.testthat.consistency.cov.data.0.cov.params.insignificant(p.static = p.static)
+fct.testthat.consistency.cov.data.0.cov.params.insignificant(m.static = p.static)
 
-fct.testthat.consistency.cov.data.0.model.params.nearly.same(p.nocov = p.nocov,
-                                                             p.static = p.static,
+fct.testthat.consistency.cov.data.0.model.params.nearly.same(m.nocov = p.nocov,
+                                                             m.static = p.static,
                                                              param.names = c("r", "alpha", "s","beta"))
 
 fct.testthat.consistency.cov.data.0.same.LL(fct.LL.ind.nocov = pnbd_nocov_LL_ind,
@@ -106,10 +106,10 @@ fct.testthat.consistency.cov.params.0.same.LL(fct.LL.ind.nocov = pnbd_nocov_LL_i
                                               fct.LL.ind.static.cov = pnbd_staticcov_LL_ind,
                                               fitted.nocov = p.nocov, fitted.static.cov = p.static.g0)
 
-fct.testthat.consistency.cov.params.0.predict.same(p.nocov = p.nocov,
-                                                   p.static = p.static.g0,
-                                                   p.dyncov = p.dyncov.g0)
+fct.testthat.consistency.cov.params.0.predict.same(m.nocov = p.nocov,
+                                                   m.static = p.static.g0,
+                                                   m.dyncov = p.dyncov.g0)
 
-fct.testthat.consistency.cov.params.0.plot.same(p.nocov = p.nocov,
-                                                p.static = p.static.g0,
-                                                p.dyncov = p.dyncov.g0)
+fct.testthat.consistency.cov.params.0.plot.same(m.nocov = p.nocov,
+                                                m.static = p.static.g0,
+                                                m.dyncov = p.dyncov.g0)

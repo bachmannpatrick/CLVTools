@@ -1,12 +1,12 @@
-fct.testthat.consistency.cov.data.0.cov.params.insignificant <- function(p.static){
+fct.testthat.consistency.cov.data.0.cov.params.insignificant <- function(m.static){
   test_that("Cov params are insignificant", {
-    expect_true(all(coef(summary(p.static))[c("life.Gender", "life.Channel", "trans.Gender", "trans.Channel"), 4] > 0.1))
+    expect_true(all(coef(summary(m.static))[c("life.Gender", "life.Channel", "trans.Gender", "trans.Channel"), 4] > 0.1))
   })
 }
 
-fct.testthat.consistency.cov.data.0.model.params.nearly.same <- function(p.nocov, p.static, param.names){
+fct.testthat.consistency.cov.data.0.model.params.nearly.same <- function(m.nocov, m.static, param.names){
   test_that("Model parameters are nearly the same", {
-    expect_true(all.equal(coef(p.nocov), coef(p.static)[param.names], tolerance = 0.05))
+    expect_true(all.equal(coef(m.nocov), coef(m.static)[param.names], tolerance = 0.05))
   })
 }
 
@@ -61,54 +61,80 @@ fct.testthat.consistency.cov.params.0.same.LL <- function(fct.LL.ind.nocov, fct.
   })
 }
 
-fct.testthat.consistency.cov.params.0.predict.same <- function(p.nocov, p.static, p.dyncov){
+fct.testthat.consistency.cov.params.0.predict.same <- function(m.nocov, m.static, m.dyncov, has.DERT = TRUE, has.dyncov = TRUE){
   test_that("Predict yields same results for all models with gamma=0", {
 
     # DERT unequal to DECT because only predict short period!
 
     # Standard
-    expect_silent(dt.pred.nocov    <- predict(p.nocov, verbose=FALSE))
-    expect_silent(dt.pred.static   <- predict(p.static, verbose=FALSE))
-    expect_silent(dt.pred.dyncov   <- predict(p.dyncov, verbose=FALSE))
-    expect_silent(data.table::setnames(dt.pred.dyncov, old="DECT",new = "DERT"))
+    expect_silent(dt.pred.nocov    <- predict(m.nocov, verbose=FALSE))
+    expect_silent(dt.pred.static   <- predict(m.static, verbose=FALSE))
+    
+    if(has.dyncov){
+      expect_silent(dt.pred.dyncov   <- predict(m.dyncov, verbose=FALSE))
+      expect_silent(data.table::setnames(dt.pred.dyncov, old="DECT",new = "DERT"))
+    }
+    
     expect_true(isTRUE(all.equal(dt.pred.nocov, dt.pred.static)))
-    expect_true(isTRUE(all.equal(dt.pred.nocov[,  !c("DERT", "predicted.CLV")],
-                                 dt.pred.dyncov[, !c("DERT", "predicted.CLV")])))
 
+    if(has.DERT && has.dyncov){
+      expect_true(isTRUE(all.equal(dt.pred.nocov[,  !c("DERT", "predicted.CLV")], 
+        dt.pred.dyncov[, !c("DERT", "predicted.CLV")])))
+    }
+    
     # With prediction.end
-    expect_silent(dt.pred.nocov     <- predict(p.nocov,  verbose=FALSE, prediction.end = 6))
-    expect_silent(dt.pred.static    <- predict(p.static, verbose=FALSE, prediction.end = 6))
-    expect_silent(dt.pred.dyncov    <- predict(p.dyncov, verbose=FALSE, prediction.end = 6))
-    expect_silent(data.table::setnames(dt.pred.dyncov, old="DECT",new = "DERT"))
+    expect_silent(dt.pred.nocov     <- predict(m.nocov,  verbose=FALSE, prediction.end = 6))
+    expect_silent(dt.pred.static    <- predict(m.static, verbose=FALSE, prediction.end = 6))
+    
+    if(has.dyncov){
+      expect_silent(dt.pred.dyncov    <- predict(m.dyncov, verbose=FALSE, prediction.end = 6))
+      expect_silent(data.table::setnames(dt.pred.dyncov, old="DECT",new = "DERT"))
+    }
+    
     expect_true(isTRUE(all.equal(dt.pred.nocov, dt.pred.static)))
-    expect_true(isTRUE(all.equal(dt.pred.nocov[,  !c("DERT", "predicted.CLV")],
+
+    if(has.DERT && has.dyncov){
+      expect_true(isTRUE(all.equal(dt.pred.nocov[,  !c("DERT", "predicted.CLV")],
                                  dt.pred.dyncov[, !c("DERT", "predicted.CLV")])))
-
-
+    }
+    
     # with discount rates
-    expect_silent(dt.pred.nocov     <- predict(p.nocov, verbose=FALSE, continuous.discount.factor = 0.25))
-    expect_silent(dt.pred.static    <- predict(p.static, verbose=FALSE, continuous.discount.factor = 0.25))
-    expect_silent(dt.pred.dyncov    <- predict(p.dyncov, verbose=FALSE, continuous.discount.factor = 0.25))
-    expect_silent(data.table::setnames(dt.pred.dyncov, old="DECT",new = "DERT"))
+    expect_silent(dt.pred.nocov     <- predict(m.nocov, verbose=FALSE, continuous.discount.factor = 0.25))
+    expect_silent(dt.pred.static    <- predict(m.static, verbose=FALSE, continuous.discount.factor = 0.25))
+
+    if(has.dyncov){
+      expect_silent(dt.pred.dyncov    <- predict(m.dyncov, verbose=FALSE, continuous.discount.factor = 0.25))
+      expect_silent(data.table::setnames(dt.pred.dyncov, old="DECT",new = "DERT"))
+    }
+    
     expect_true(isTRUE(all.equal(dt.pred.nocov, dt.pred.static)))
-    expect_true(isTRUE(all.equal(dt.pred.nocov[,  !c("DERT", "predicted.CLV")],
+
+    if(has.DERT && has.dyncov){
+      expect_true(isTRUE(all.equal(dt.pred.nocov[,  !c("DERT", "predicted.CLV")],
                                  dt.pred.dyncov[, !c("DERT", "predicted.CLV")])))
+    }
+    
   })
 }
 
-fct.testthat.consistency.cov.params.0.plot.same <- function(p.nocov, p.static, p.dyncov){
+fct.testthat.consistency.cov.params.0.plot.same <- function(m.nocov, m.static, m.dyncov, has.dyncov = TRUE){
   test_that("plot yields same results for all models with gamma=0", {
     # Prediction end for faster calcs. Should not affect results
-    expect_warning(dt.plot.nocov     <- plot(p.nocov, verbose=FALSE, plot=FALSE, prediction.end = 10), regexp = "full holdout")
-    expect_warning(dt.plot.static    <- plot(p.static, verbose=FALSE, plot=FALSE, prediction.end = 10), regexp = "full holdout")
-    expect_warning(dt.plot.dyncov    <- plot(p.dyncov, verbose=FALSE, plot=FALSE, prediction.end = 10), regexp = "full holdout")
-
+    expect_warning(dt.plot.nocov     <- plot(m.nocov, verbose=FALSE, plot=FALSE, prediction.end = 10), regexp = "full holdout")
+    expect_warning(dt.plot.static    <- plot(m.static, verbose=FALSE, plot=FALSE, prediction.end = 10), regexp = "full holdout")
+    
+    if(has.dyncov){
+      expect_warning(dt.plot.dyncov    <- plot(m.dyncov, verbose=FALSE, plot=FALSE, prediction.end = 10), regexp = "full holdout")
+    }
+  
     # Rename to random names because have different colnames by model
     data.table::setnames(dt.plot.nocov, c("A", "B", "C"))
     data.table::setnames(dt.plot.static , c("A", "B", "C"))
-    data.table::setnames(dt.plot.dyncov, c("A", "B", "C"))
-    expect_true(isTRUE(all.equal(dt.plot.nocov, dt.plot.static)))
-    expect_true(isTRUE(all.equal(dt.plot.nocov, dt.plot.dyncov)))
-  })
 
+    expect_true(isTRUE(all.equal(dt.plot.nocov, dt.plot.static)))
+    if(has.dyncov){
+      data.table::setnames(dt.plot.dyncov, c("A", "B", "C"))
+      expect_true(isTRUE(all.equal(dt.plot.nocov, dt.plot.dyncov)))
+    }
+  })
 }
