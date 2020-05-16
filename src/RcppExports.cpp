@@ -8,8 +8,8 @@
 using namespace Rcpp;
 
 // bgnbd_nocov_CET
-arma::vec bgnbd_nocov_CET(const double r, const double alpha, const double a, const double b, const double nPeriods, const arma::vec& vX, const arma::vec& vT_x, const arma::vec& vT_cal);
-RcppExport SEXP _CLVTools_bgnbd_nocov_CET(SEXP rSEXP, SEXP alphaSEXP, SEXP aSEXP, SEXP bSEXP, SEXP nPeriodsSEXP, SEXP vXSEXP, SEXP vT_xSEXP, SEXP vT_calSEXP) {
+arma::vec bgnbd_nocov_CET(const double r, const double alpha, const double a, const double b, const double dPeriods, const arma::vec& vX, const arma::vec& vT_x, const arma::vec& vT_cal);
+RcppExport SEXP _CLVTools_bgnbd_nocov_CET(SEXP rSEXP, SEXP alphaSEXP, SEXP aSEXP, SEXP bSEXP, SEXP dPeriodsSEXP, SEXP vXSEXP, SEXP vT_xSEXP, SEXP vT_calSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -17,17 +17,17 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< const double >::type a(aSEXP);
     Rcpp::traits::input_parameter< const double >::type b(bSEXP);
-    Rcpp::traits::input_parameter< const double >::type nPeriods(nPeriodsSEXP);
+    Rcpp::traits::input_parameter< const double >::type dPeriods(dPeriodsSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vX(vXSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vT_x(vT_xSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vT_cal(vT_calSEXP);
-    rcpp_result_gen = Rcpp::wrap(bgnbd_nocov_CET(r, alpha, a, b, nPeriods, vX, vT_x, vT_cal));
+    rcpp_result_gen = Rcpp::wrap(bgnbd_nocov_CET(r, alpha, a, b, dPeriods, vX, vT_x, vT_cal));
     return rcpp_result_gen;
 END_RCPP
 }
 // bgnbd_staticcov_CET
-arma::vec bgnbd_staticcov_CET(const double r, const double alpha, const double a, const double b, const double nPeriods, const arma::vec& vX, const arma::vec& vT_x, const arma::vec& vT_cal, const arma::vec& vCovParams_trans, const arma::vec& vCovParams_life, const arma::mat& mCov_trans, const arma::mat& mCov_life);
-RcppExport SEXP _CLVTools_bgnbd_staticcov_CET(SEXP rSEXP, SEXP alphaSEXP, SEXP aSEXP, SEXP bSEXP, SEXP nPeriodsSEXP, SEXP vXSEXP, SEXP vT_xSEXP, SEXP vT_calSEXP, SEXP vCovParams_transSEXP, SEXP vCovParams_lifeSEXP, SEXP mCov_transSEXP, SEXP mCov_lifeSEXP) {
+arma::vec bgnbd_staticcov_CET(const double r, const double alpha, const double a, const double b, const double dPeriods, const arma::vec& vX, const arma::vec& vT_x, const arma::vec& vT_cal, const arma::vec& vCovParams_trans, const arma::vec& vCovParams_life, const arma::mat& mCov_trans, const arma::mat& mCov_life);
+RcppExport SEXP _CLVTools_bgnbd_staticcov_CET(SEXP rSEXP, SEXP alphaSEXP, SEXP aSEXP, SEXP bSEXP, SEXP dPeriodsSEXP, SEXP vXSEXP, SEXP vT_xSEXP, SEXP vT_calSEXP, SEXP vCovParams_transSEXP, SEXP vCovParams_lifeSEXP, SEXP mCov_transSEXP, SEXP mCov_lifeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -35,7 +35,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< const double >::type a(aSEXP);
     Rcpp::traits::input_parameter< const double >::type b(bSEXP);
-    Rcpp::traits::input_parameter< const double >::type nPeriods(nPeriodsSEXP);
+    Rcpp::traits::input_parameter< const double >::type dPeriods(dPeriodsSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vX(vXSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vT_x(vT_xSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vT_cal(vT_calSEXP);
@@ -43,7 +43,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::vec& >::type vCovParams_life(vCovParams_lifeSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type mCov_trans(mCov_transSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type mCov_life(mCov_lifeSEXP);
-    rcpp_result_gen = Rcpp::wrap(bgnbd_staticcov_CET(r, alpha, a, b, nPeriods, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life));
+    rcpp_result_gen = Rcpp::wrap(bgnbd_staticcov_CET(r, alpha, a, b, dPeriods, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life));
     return rcpp_result_gen;
 END_RCPP
 }

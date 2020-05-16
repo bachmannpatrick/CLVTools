@@ -6,14 +6,14 @@
 \alias{bgnbd_staticcov_CET}
 \title{BG/NBD: Conditional Expected Transactions without covariates}
 \usage{
-bgnbd_nocov_CET(r, alpha, a, b, nPeriods, vX, vT_x, vT_cal)
+bgnbd_nocov_CET(r, alpha, a, b, dPeriods, vX, vT_x, vT_cal)
 
 bgnbd_staticcov_CET(
   r,
   alpha,
   a,
   b,
-  nPeriods,
+  dPeriods,
   vX,
   vT_x,
   vT_cal,
@@ -32,7 +32,7 @@ bgnbd_staticcov_CET(
 
 \item{b}{shape parameter of the Beta distribution of the lifetime process}
 
-\item{nPeriods}{time prediction time frame}
+\item{dPeriods}{time prediction time frame}
 
 \item{vX}{Frequency vector of length n counting the numbers of purchases.}
 

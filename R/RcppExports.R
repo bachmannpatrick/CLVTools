@@ -9,7 +9,7 @@
 #' on a customer's past transaction behavior and the BG/NBD model parameters.
 #'
 #' @template template_params_bgnbd
-#' @param nPeriods time prediction time frame
+#' @param dPeriods time prediction time frame
 #' @template template_params_rcppxtxtcal
 #' @template template_params_rcppcovmatrix
 #' @template template_params_rcppvcovparams
@@ -28,13 +28,13 @@
 NULL
 
 #' @rdname bgnbd_CET
-bgnbd_nocov_CET <- function(r, alpha, a, b, nPeriods, vX, vT_x, vT_cal) {
-    .Call(`_CLVTools_bgnbd_nocov_CET`, r, alpha, a, b, nPeriods, vX, vT_x, vT_cal)
+bgnbd_nocov_CET <- function(r, alpha, a, b, dPeriods, vX, vT_x, vT_cal) {
+    .Call(`_CLVTools_bgnbd_nocov_CET`, r, alpha, a, b, dPeriods, vX, vT_x, vT_cal)
 }
 
 #' @rdname bgnbd_CET
-bgnbd_staticcov_CET <- function(r, alpha, a, b, nPeriods, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life) {
-    .Call(`_CLVTools_bgnbd_staticcov_CET`, r, alpha, a, b, nPeriods, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
+bgnbd_staticcov_CET <- function(r, alpha, a, b, dPeriods, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life) {
+    .Call(`_CLVTools_bgnbd_staticcov_CET`, r, alpha, a, b, dPeriods, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
 }
 
 #' @name bgnbd_LL
