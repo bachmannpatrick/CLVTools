@@ -1,6 +1,9 @@
 # Load required data ---------------------------------------------------------------------------------
 data("cdnow")
 
+context("Correctness - BGNBD nocov - CBS comparison")
+fct.testthat.correctness.nocov.compare.cbs(cdnow = cdnow)
+
 context("Correctness - BGNBD nocov - Recover parameters")
 expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow,
                                    date.format = "ymd",

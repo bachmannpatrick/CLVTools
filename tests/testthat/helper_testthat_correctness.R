@@ -9,7 +9,7 @@ fct.testthat.correctness.nocov.correct.se <- function(method, cdnow, start.param
     # From previous fit
     expect_equal(sqrt(diag(vcov(p.cdnow))), params.nocov.se, tolerance = 0.001)
   })
-} 
+}
 
 fct.testthat.correctness.nocov.correct.coefs <- function(method, cdnow, start.params.model, params.nocov.coef){
    test_that("Cdnow nocov correct coefs", {
@@ -46,7 +46,7 @@ fct.testthat.correctness.nocov.same.as.btyd <- function(clvtools.method, btyd.me
       l.args.btyd.dert <- list(est.params, x=cal.cbs[,"x"], t.x = cal.cbs[,"t.x"], T.cal = cal.cbs[,"T.cal"], d=0.15)
       expect_silent(btyd.dert <- do.call(what = btyd.dert.method, args = l.args.btyd.dert))
     }
-    
+
     l.args.btyd.cet <- list(est.params, x=cal.cbs[,"x"], t.x = cal.cbs[,"t.x"], T.cal = cal.cbs[,"T.cal"], T.star = 10)
     expect_silent(btyd.cet  <- do.call(what = btyd.cet.method, args = l.args.btyd.cet))
     l.args.btyd.palive <- list(est.params, x=cal.cbs[,"x"], t.x = cal.cbs[,"t.x"], T.cal = cal.cbs[,"T.cal"])
@@ -64,6 +64,31 @@ fct.testthat.correctness.nocov.same.as.btyd <- function(clvtools.method, btyd.me
 
     # Expectation: Cannot compare 1vs1 from fitted() output
     # expect_silent(btyd.expect <- BTYD::<model>.Expectation(est.params, t=2))
+  })
+}
+
+fct.testthat.correctness.nocov.compare.cbs <- function(cdnow){
+  test_that("CBS are the same - PNBD vs. BGNBD vs. BTYD", {
+    data(cdnowSummary, package = "BTYD")
+    expect_silent(cal.cbs <- cdnowSummary$cbs)
+
+    clv.data = clvdata(data.transactions = cdnow,
+                       date.format="ymd",
+                       time.unit = "week",
+                       estimation.split = "1997-09-30",
+                       name.id = "Id",
+                       name.date = "Date",
+                       name.price = "Price")
+
+    cbs.pnbd <- pnbd(clv.data = clv.data)@cbs[order("x", "t.x", "T.cal"),c("x", "t.x", "T.cal")]
+    cbs.bgnbd <- bgnbd(clv.data = clv.data)@cbs[order("x", "t.x", "T.cal"),c("x", "t.x", "T.cal")]
+
+    btyd.cbs <- as.data.table(cal.cbs)
+    btyd.cbs <- btyd.cbs[order("x", "t.x", "T.cal"),c("x", "t.x", "T.cal")]
+
+    expect_equivalent(cbs.pnbd, cbs.bgnbd)
+    expect_equivalent(cbs.pnbd, btyd.cbs)
+    expect_equivalent(cbs.bgnbd, btyd.cbs)
   })
 }
 
