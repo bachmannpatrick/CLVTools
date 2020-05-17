@@ -26,6 +26,9 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = F
 #' @details If no start parameters are given, r = 1, alpha = 3, a = 1, b = 3 is used.
 #' All model start parameters are required to be > 0.
 #'
+#' Note that the DERT expression has not been derived (yet) and it consequently is not possible to calculated
+#' values for DERT and CLV.
+#'
 #' \subsection{The BG/NBD model}{
 #' The BG/NBD is an "easy" alternative to the Pareto/NBD model that is easier to implement. The BG/NBD model slight adapts
 #' the behavioral "story" associated with the Pareto/NBD model in order to simplify the implementation. The BG/NBD model uses a beta-geometric and

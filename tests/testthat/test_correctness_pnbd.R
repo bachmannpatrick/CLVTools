@@ -6,15 +6,25 @@ data("cdnow")
 expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "W",
                                    estimation.split = 38))
 
+# Our estimates
 fct.testthat.correctness.nocov.correct.coefs(method = pnbd,
-                                                cdnow = cdnow,
-                                                start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
-                                                params.nocov.coef = c(r=0.55315,   alpha=10.57633,  s=0.60625,   beta=11.67150))
+                                             cdnow = cdnow,
+                                             start.params.model = c(r=1, alpha = 1, s = 1, beta = 1),
+                                             params.nocov.coef = c(r=0.55315,   alpha=10.57633,  s=0.60625,   beta=11.67150),
+                                             LL.nocov = -9594.976)
+
+# As also reported to compare against bgnbd in Fader, Hardie, Lee (2005)
+fct.testthat.correctness.nocov.correct.coefs(method = pnbd,
+                                             cdnow = cdnow,
+                                             start.params.model = c(r=1, alpha = 1, s = 1, beta = 1),
+                                             params.nocov.coef = c(r=0.553,   alpha=10.578,  s=0.606,   beta=11.669),
+                                             LL.nocov = -9595.0)
+
 
 fct.testthat.correctness.nocov.correct.se(method = pnbd,
-                                                cdnow = cdnow,
-                                                start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
-                                                params.nocov.se = c(r=0.0476264, alpha=0.8427222, s=0.1872594, beta=6.2105448))
+                                          cdnow = cdnow,
+                                          start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
+                                          params.nocov.se = c(r=0.0476264, alpha=0.8427222, s=0.1872594, beta=6.2105448))
 
 
 fct.testthat.correctness.nocov.same.as.btyd(clvtools.method = pnbd,

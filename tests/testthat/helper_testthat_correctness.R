@@ -1,6 +1,6 @@
 fct.testthat.correctness.nocov.correct.se <- function(method, cdnow, start.params.model, params.nocov.se)
 {
-   test_that("Cdnow nocov correct SE", {
+  test_that("Cdnow nocov correct SE", {
     expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "w", estimation.split = "1997-09-30"))
 
     l.args <- list(clv.data=clv.cdnow, start.params.model = start.params.model, verbose=FALSE)
@@ -11,8 +11,8 @@ fct.testthat.correctness.nocov.correct.se <- function(method, cdnow, start.param
   })
 }
 
-fct.testthat.correctness.nocov.correct.coefs <- function(method, cdnow, start.params.model, params.nocov.coef){
-   test_that("Cdnow nocov correct coefs", {
+fct.testthat.correctness.nocov.correct.coefs <- function(method, cdnow, start.params.model, params.nocov.coef, LL.nocov){
+  test_that("Cdnow nocov correct coefs", {
     expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "w", estimation.split = "1997-09-30"))
 
     l.args <- list(clv.data=clv.cdnow, start.params.model = start.params.model, verbose=FALSE)
@@ -20,6 +20,7 @@ fct.testthat.correctness.nocov.correct.coefs <- function(method, cdnow, start.pa
 
     # From previous fit
     expect_equal(coef(p.cdnow), params.nocov.coef, tolerance = 0.001)
+    expect_equal(as.numeric(logLik(p.cdnow)), LL.nocov, tolerance = 0.001)
   })
 }
 
@@ -69,22 +70,22 @@ fct.testthat.correctness.nocov.same.as.btyd <- function(clvtools.method, btyd.me
 
 fct.testthat.correctness.nocov.compare.cbs <- function(cdnow){
   test_that("CBS are the same - PNBD vs. BGNBD vs. BTYD", {
-    data(cdnowSummary, package = "BTYD")
+    expect_silent(data(cdnowSummary, package = "BTYD"))
     expect_silent(cal.cbs <- cdnowSummary$cbs)
 
-    clv.data = clvdata(data.transactions = cdnow,
-                       date.format="ymd",
-                       time.unit = "week",
-                       estimation.split = "1997-09-30",
-                       name.id = "Id",
-                       name.date = "Date",
-                       name.price = "Price")
+    expect_silent(clv.data = clvdata(data.transactions = cdnow,
+                                     date.format="ymd",
+                                     time.unit = "week",
+                                     estimation.split = "1997-09-30",
+                                     name.id = "Id",
+                                     name.date = "Date",
+                                     name.price = "Price"))
 
-    cbs.pnbd <- pnbd(clv.data = clv.data)@cbs[order("x", "t.x", "T.cal"),c("x", "t.x", "T.cal")]
-    cbs.bgnbd <- bgnbd(clv.data = clv.data)@cbs[order("x", "t.x", "T.cal"),c("x", "t.x", "T.cal")]
+    expect_silent(cbs.pnbd <- pnbd(clv.data = clv.data, verbose = FALSE)@cbs[order("x", "t.x", "T.cal"),c("x", "t.x", "T.cal")])
+    expect_silent(cbs.bgnbd <- bgnbd(clv.data = clv.data, verbose = FALSE)@cbs[order("x", "t.x", "T.cal"),c("x", "t.x", "T.cal")])
 
-    btyd.cbs <- as.data.table(cal.cbs)
-    btyd.cbs <- btyd.cbs[order("x", "t.x", "T.cal"),c("x", "t.x", "T.cal")]
+    expect_silent(btyd.cbs <- as.data.table(cal.cbs))
+    expect_silent(btyd.cbs <- btyd.cbs[order("x", "t.x", "T.cal"),c("x", "t.x", "T.cal")])
 
     expect_equivalent(cbs.pnbd, cbs.bgnbd)
     expect_equivalent(cbs.pnbd, btyd.cbs)

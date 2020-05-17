@@ -102,8 +102,8 @@ arma::vec bgnbd_staticcov_CET(const double r,
   arma::vec vAlpha_i(n), vA_i(n), vB_i(n);
 
   vAlpha_i = alpha * arma::exp(((mCov_trans * (-1)) * vCovParams_trans));
-  vA_i  = a  * arma::exp(((mCov_life * vCovParams_life)));
-  vB_i  = b  * arma::exp(((mCov_life * vCovParams_life)));
+  vA_i     = a     * arma::exp((mCov_life           * vCovParams_life));
+  vB_i     = b     * arma::exp((mCov_life           * vCovParams_life));
 
   return bgnbd_CET(r, vAlpha_i, vA_i, vB_i, dPeriods, vX, vT_x, vT_cal);
 }

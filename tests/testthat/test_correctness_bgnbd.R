@@ -13,10 +13,20 @@ expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow,
                                    name.date = "Date",
                                    name.price = "Price"))
 
+# Our estimates
 fct.testthat.correctness.nocov.correct.coefs(method = bgnbd,
-                                                cdnow = cdnow,
-                                                start.params.model = c(r=1, alpha = 3, a = 1, b = 3),
-                                                params.nocov.coef = c(r = 0.2425945, alpha = 4.4136019, a = 0.7929199, b = 2.4258881))
+                                             cdnow = cdnow,
+                                             start.params.model = c(r=1, alpha = 3, a = 1, b = 3),
+                                             params.nocov.coef = c(r = 0.2425945, alpha = 4.4136019, a = 0.7929199, b = 2.4258881),
+                                             LL.nocov = -9582.429)
+
+# As reported in Fader, Hardie, Lee (2005)
+fct.testthat.correctness.nocov.correct.coefs(method = bgnbd,
+                                             cdnow = cdnow,
+                                             start.params.model = c(r=1, alpha = 3, a = 1, b = 3),
+                                             params.nocov.coef = c(r = 0.243, alpha = 4.414, a = 0.793, b = 2.426),
+                                             LL.nocov = -9582.4)
+
 
 fct.testthat.correctness.nocov.same.as.btyd(clvtools.method = bgnbd,
                                             btyd.method = BTYD::bgnbd.EstimateParameters,
@@ -58,9 +68,9 @@ expect_silent(clv.apparel.staticcov <- SetStaticCovariates(clv.apparel,
 expect_silent(b.static <- bgnbd(clv.data=clv.apparel.staticcov, verbose=FALSE))
 
 fct.testthat.correctness.staticcov.sorted.covariates(method = bgnbd,
-                                                      clv.apparel = clv.apparel,
-                                                      apparelStaticCov = apparelStaticCov,
-                                                      m.static = b.static)
+                                                     clv.apparel = clv.apparel,
+                                                     apparelStaticCov = apparelStaticCov,
+                                                     m.static = b.static)
 
 # Static cov: predict ---------------------------------------------------------------------------------------
 context("Correctness - BGNBD static cov - predict")

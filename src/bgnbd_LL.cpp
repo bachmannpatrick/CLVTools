@@ -90,9 +90,9 @@ arma::vec bgnbd_nocov_LL_ind(const arma::vec& vLogparams,
 //' @rdname bgnbd_LL
 // [[Rcpp::export]]
 double bgnbd_nocov_LL_sum(const arma::vec& vLogparams,
-                         const arma::vec& vX,
-                         const arma::vec& vT_x,
-                         const arma::vec& vT_cal){
+                          const arma::vec& vX,
+                          const arma::vec& vT_x,
+                          const arma::vec& vT_cal){
 
   arma::vec vLL = bgnbd_nocov_LL_ind(vLogparams,
                                     vX,
@@ -119,8 +119,8 @@ arma::vec bgnbd_staticcov_LL_ind(const arma::vec& vLogparams,
 
   const double r        = exp(vModel_log_params(0));
   const double alpha_0  = exp(vModel_log_params(1));
-  const double a_0        = exp(vModel_log_params(2));
-  const double b_0   = exp(vModel_log_params(3));
+  const double a_0      = exp(vModel_log_params(2));
+  const double b_0      = exp(vModel_log_params(3));
 
   const double n = vX.n_elem;
 
@@ -135,8 +135,8 @@ arma::vec bgnbd_staticcov_LL_ind(const arma::vec& vLogparams,
   arma::vec vAlpha_i(n), vA_i(n), vB_i(n);
 
   vAlpha_i = alpha_0 * arma::exp(((mCov_trans * (-1)) * vTrans_params));
-  vA_i  = a_0  * arma::exp(((mCov_life * vLife_params)));
-  vB_i  = b_0  * arma::exp(((mCov_life * vLife_params)));
+  vA_i     = a_0     * arma::exp(((mCov_life          * vLife_params)));
+  vB_i     = b_0     * arma::exp(((mCov_life          * vLife_params)));
 
   // Calculate LL ----------------------------------------------------
   //    Calculate value for every customer
