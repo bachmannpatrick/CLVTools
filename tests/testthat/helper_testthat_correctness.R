@@ -1,21 +1,31 @@
-fct.testthat.correctness.nocov.correct.coefs.se <- function(method, cdnow, start.params.model, params.nocov.coef, params.nocov.se)
+fct.testthat.correctness.nocov.correct.se <- function(method, cdnow, start.params.model, params.nocov.se)
+{
+  test_that("Cdnow nocov correct SE", {
+    expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "w", estimation.split = "1997-09-30"))
 
-# **TODO: Check vs PAPER!
-test_that("Cdnow nocov correct coefs and SE", {
-  expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "w", estimation.split = "1997-09-30"))
+    l.args <- list(clv.data=clv.cdnow, start.params.model = start.params.model, verbose=FALSE)
+    expect_silent(p.cdnow <- do.call(what = method, args = l.args))
 
-  l.args <- list(clv.data=clv.cdnow, start.params.model = start.params.model, verbose=FALSE)
-  expect_silent(p.cdnow <- do.call(what = method, args = l.args))
+    # From previous fit
+    expect_equal(sqrt(diag(vcov(p.cdnow))), params.nocov.se, tolerance = 0.001)
+  })
+}
 
-  # cdnow.nocov.coef <- c(r = 0.5437, alpha = 10.3242,s = 0.7072, beta = 14.1526)
-  # cdnow.nocov.se   <- c(r =0.0469,  alpha = 0.8281, s = 0.2511, beta = 8.1587)
+fct.testthat.correctness.nocov.correct.coefs <- function(method, cdnow, start.params.model, params.nocov.coef, LL.nocov){
+  test_that("Cdnow nocov correct coefs", {
+    expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "w", estimation.split = "1997-09-30"))
 
-  # From previous fit
-  expect_equal(coef(p.cdnow), params.nocov.coef, tolerance = 0.001)
-  expect_equal(sqrt(diag(vcov(p.cdnow))), params.nocov.se, tolerance = 0.001)
-})
+    l.args <- list(clv.data=clv.cdnow, start.params.model = start.params.model, verbose=FALSE)
+    expect_silent(p.cdnow <- do.call(what = method, args = l.args))
 
-fct.testthat.correctness.nocov.same.as.btyd <- function(clvtools.method, btyd.method, btyd.dert.method, btyd.cet.method, btyd.palive.method, start.params.model, cdnow){
+    # From previous fit
+    expect_equal(coef(p.cdnow), params.nocov.coef, tolerance = 0.001)
+    expect_equal(as.numeric(logLik(p.cdnow)), LL.nocov, tolerance = 0.001)
+  })
+}
+
+
+fct.testthat.correctness.nocov.same.as.btyd <- function(clvtools.method, btyd.method, btyd.dert.method, btyd.cet.method, btyd.palive.method, start.params.model, cdnow, DERT.not.implemented = FALSE){
   test_that("Same results as BTYD", {
     # Fitting
     # From ?BTYD::<model>.cbs.LL()
@@ -29,12 +39,15 @@ fct.testthat.correctness.nocov.same.as.btyd <- function(clvtools.method, btyd.me
     expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "w", estimation.split = "1997-09-30"))
     l.args.clvtools <- list(clv.data=clv.cdnow, start.params.model = start.params.model, verbose=FALSE)
     expect_silent(p.cdnow <- do.call(what = clvtools.method, args = l.args.clvtools))
-    expect_equal(unname(coef(p.cdnow)), est.params)
+    expect_equal(unname(coef(p.cdnow)), est.params, tolerance = 0.0001)
 
 
     # Predicting
-    l.args.btyd.dert <- list(est.params, x=cal.cbs[,"x"], t.x = cal.cbs[,"t.x"], T.cal = cal.cbs[,"T.cal"], d=0.15)
-    expect_silent(btyd.dert <- do.call(what = btyd.dert.method, args = l.args.btyd.dert))
+    if(!DERT.not.implemented){
+      l.args.btyd.dert <- list(est.params, x=cal.cbs[,"x"], t.x = cal.cbs[,"t.x"], T.cal = cal.cbs[,"T.cal"], d=0.15)
+      expect_silent(btyd.dert <- do.call(what = btyd.dert.method, args = l.args.btyd.dert))
+    }
+
     l.args.btyd.cet <- list(est.params, x=cal.cbs[,"x"], t.x = cal.cbs[,"t.x"], T.cal = cal.cbs[,"T.cal"], T.star = 10)
     expect_silent(btyd.cet  <- do.call(what = btyd.cet.method, args = l.args.btyd.cet))
     l.args.btyd.palive <- list(est.params, x=cal.cbs[,"x"], t.x = cal.cbs[,"t.x"], T.cal = cal.cbs[,"T.cal"])
@@ -43,12 +56,40 @@ fct.testthat.correctness.nocov.same.as.btyd <- function(clvtools.method, btyd.me
     # CLVTools
     expect_silent(dt.pred <- predict(p.cdnow, prediction.end = 10, continuous.discount.factor = 0.15, verbose = FALSE))
 
-    expect_equivalent(btyd.dert[dt.pred$Id],   dt.pred$DERT)
-    expect_equivalent(btyd.cet[dt.pred$Id],    dt.pred$CET)
-    expect_equivalent(btyd.palive[dt.pred$Id], dt.pred$PAlive)
+    if(!DERT.not.implemented){
+      expect_equivalent(btyd.dert[dt.pred$Id],   dt.pred$DERT, tolerance = 0.0001)
+    }
+
+    expect_equivalent(btyd.cet[dt.pred$Id],    dt.pred$CET, tolerance = 0.0001)
+    expect_equivalent(btyd.palive[dt.pred$Id], dt.pred$PAlive, tolerance = 0.0001)
 
     # Expectation: Cannot compare 1vs1 from fitted() output
     # expect_silent(btyd.expect <- BTYD::<model>.Expectation(est.params, t=2))
+  })
+}
+
+fct.testthat.correctness.nocov.compare.cbs <- function(cdnow){
+  test_that("CBS are the same - PNBD vs. BGNBD vs. BTYD", {
+    expect_silent(data(cdnowSummary, package = "BTYD"))
+    expect_silent(cal.cbs <- cdnowSummary$cbs)
+
+    expect_silent(clv.data <- clvdata(data.transactions = cdnow,
+                                     date.format="ymd",
+                                     time.unit = "week",
+                                     estimation.split = "1997-09-30",
+                                     name.id = "Id",
+                                     name.date = "Date",
+                                     name.price = "Price"))
+
+    expect_silent(cbs.pnbd <- pnbd(clv.data = clv.data, verbose = FALSE)@cbs[order("x", "t.x", "T.cal"),c("x", "t.x", "T.cal")])
+    expect_silent(cbs.bgnbd <- bgnbd(clv.data = clv.data, verbose = FALSE)@cbs[order("x", "t.x", "T.cal"),c("x", "t.x", "T.cal")])
+
+    expect_silent(btyd.cbs <- as.data.table(cal.cbs))
+    expect_silent(btyd.cbs <- btyd.cbs[order("x", "t.x", "T.cal"),c("x", "t.x", "T.cal")])
+
+    expect_equivalent(cbs.pnbd, cbs.bgnbd)
+    expect_equivalent(cbs.pnbd, btyd.cbs)
+    expect_equivalent(cbs.bgnbd, btyd.cbs)
   })
 }
 
@@ -86,7 +127,7 @@ fct.testthat.correctness.nocov.newdata.fitting.sample.predicting.full.data.equal
   })
 }
 
-fct.testthat.correctness.staticcov.sorted.covariates <- function(method, clv.apparel, apparelStaticCov, p.static = p.static){
+fct.testthat.correctness.staticcov.sorted.covariates <- function(method, clv.apparel, apparelStaticCov, m.static){ # todo: rename p.static
   test_that("Same result for differently sorted covariates", {
     skip_on_cran()
 
@@ -97,14 +138,14 @@ fct.testthat.correctness.staticcov.sorted.covariates <- function(method, clv.app
                                                              data.cov.life = apparelStaticCov.shuffle, data.cov.trans = apparelStaticCov.shuffle))
 
     l.args <- list(clv.data=clv.apparel.shuffle, verbose=FALSE)
-    expect_silent(p.static.shuffle <- do.call(what = method, args = l.args))
+    expect_silent(m.static.shuffle <- do.call(what = method, args = l.args))
 
 
     # All should be exactly the same, except the call and optimx time
     #   replace these
-    expect_silent(p.static.shuffle@call                           <- p.static@call)
-    expect_silent(p.static.shuffle@optimx.estimation.output$xtime <- p.static@optimx.estimation.output$xtime)
-    expect_true(isTRUE(all.equal(p.static.shuffle, p.static)))
+    expect_silent(m.static.shuffle@call                           <- m.static@call)
+    expect_silent(m.static.shuffle@optimx.estimation.output$xtime <- m.static@optimx.estimation.output$xtime)
+    expect_true(isTRUE(all.equal(m.static.shuffle, m.static)))
   })
 }
 
@@ -132,11 +173,11 @@ fct.testthat.correctness.staticcov.fitting.sample.predicting.full.data.equal <- 
 
     # Fit on sample only
     l.args <- list(clv.data = clv.apparel.static.sample, verbose = FALSE)
-    expect_silent(p.sample <- do.call(what = method, args = l.args))
+    expect_silent(m.sample <- do.call(what = method, args = l.args))
 
     # Predictions
-    expect_silent(dt.predict.sample <- predict(p.sample,                                      verbose=FALSE, predict.spending=FALSE,  prediction.end="2007-01-01"))
-    expect_silent(dt.predict.full   <- predict(p.sample, newdata = clv.apparel.static.sample, verbose=FALSE, predict.spending=FALSE,  prediction.end="2007-01-01"))
+    expect_silent(dt.predict.sample <- predict(m.sample,                                      verbose=FALSE, predict.spending=FALSE,  prediction.end="2007-01-01"))
+    expect_silent(dt.predict.full   <- predict(m.sample, newdata = clv.apparel.static.sample, verbose=FALSE, predict.spending=FALSE,  prediction.end="2007-01-01"))
 
     # The sample ones should be the exact same ones in the full
     expect_true(isTRUE(all.equal(dt.predict.sample,
@@ -145,13 +186,13 @@ fct.testthat.correctness.staticcov.fitting.sample.predicting.full.data.equal <- 
   })
 }
 
-fct.testthat.correctness.staticcov.regularization.lambda.0.no.regularization <- function(method, clv.apparel.staticcov, p.static){
+fct.testthat.correctness.staticcov.regularization.lambda.0.no.regularization <- function(method, clv.apparel.staticcov, m.static){
   test_that("Regularization with 0 lambda has the same effect as no regularization", {
     skip_on_cran()
     l.args <- list(clv.data = clv.apparel.staticcov, reg.lambdas = c(trans=0, life=0), verbose = FALSE)
     expect_silent(p.0.reg <- do.call(what = method, args = l.args))
 
-    expect_equal(coef(p.0.reg),          coef(p.static))
-    expect_equal(coef(summary(p.0.reg)), coef(summary(p.static)))
+    expect_equal(coef(p.0.reg),          coef(m.static))
+    expect_equal(coef(summary(p.0.reg)), coef(summary(m.static)))
   })
 }

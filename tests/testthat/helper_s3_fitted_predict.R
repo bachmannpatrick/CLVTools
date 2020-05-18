@@ -1,4 +1,5 @@
-.fct.helper.s3.fitted.predict <- function(clv.fitted, clv.newdata.nohold, clv.newdata.withhold){
+.fct.helper.s3.fitted.predict <- function(clv.fitted, clv.newdata.nohold, clv.newdata.withhold,
+                                          DERT.not.implemented){
 
   # Only for models which were fit with heldout data
   if(clv.fitted@clv.data@has.holdout){
@@ -45,14 +46,16 @@
   })
 
 
-  test_that("Works with discount factor", {
-    skip_on_cran()
-    expect_silent(dt.pred.1 <- predict(clv.fitted, continuous.discount.factor = 0,    prediction.end = 6, verbose=FALSE))
-    expect_silent(dt.pred.2 <- predict(clv.fitted, continuous.discount.factor = 0.06, prediction.end = 6, verbose=FALSE))
-    expect_silent(dt.pred.3 <- predict(clv.fitted, continuous.discount.factor = 0.99, prediction.end = 6, verbose=FALSE))
-    expect_false(isTRUE(all.equal(dt.pred.1, dt.pred.2)))
-    expect_false(isTRUE(all.equal(dt.pred.2, dt.pred.3)))
-  })
+  if(!DERT.not.implemented){
+    test_that("Works with discount factor", {
+      skip_on_cran()
+      expect_silent(dt.pred.1 <- predict(clv.fitted, continuous.discount.factor = 0,    prediction.end = 6, verbose=FALSE))
+      expect_silent(dt.pred.2 <- predict(clv.fitted, continuous.discount.factor = 0.06, prediction.end = 6, verbose=FALSE))
+      expect_silent(dt.pred.3 <- predict(clv.fitted, continuous.discount.factor = 0.99, prediction.end = 6, verbose=FALSE))
+      expect_false(isTRUE(all.equal(dt.pred.1, dt.pred.2)))
+      expect_false(isTRUE(all.equal(dt.pred.2, dt.pred.3)))
+    })
+  }
 
   test_that("Works with different types of prediction.end: number, date, posix, char (short) ",{
     # not checking anything correctness on cran, just run

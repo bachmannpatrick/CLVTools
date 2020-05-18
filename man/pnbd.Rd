@@ -84,10 +84,6 @@ If multiple optimization methods are specified, only the result of the last meth
 \value{
 Depending on the data object on which the model was fit, \code{pnbd} returns either an object of
 class \link[CLVTools:clv.pnbd-class]{clv.pnbd}, \link[CLVTools:clv.pnbd.static.cov-class]{clv.pnbd.static.cov}, or \link[CLVTools:clv.pnbd.dynamic.cov-class]{clv.pnbd.dynamic.cov}.
-
-The function \code{\link[CLVTools:summary.clv.fitted]{summary}} can be used to obtain and print a summary of the results.
-The generic accessor functions \code{coefficients}, \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}},
-\code{logLik}, \code{AIC}, \code{BIC}, and \code{nobs} are available.
 }
 \description{
 Fits Pareto/NBD models on transactional data with and without covariates.
@@ -110,7 +106,7 @@ If no start parameters are given, 1.0 is used for all model parameters and 0.1 f
 The model start parameters are required to be > 0.
 
 \subsection{The Pareto/NBD model}{
-The Pareto/NBD was the first model addressing the issue of modeling customer purchases and
+The Pareto/NBD is the first model addressing the issue of modeling customer purchases and
 attrition simultaneously for non-contractual settings. The model uses a Pareto distribution,
 a combination of an Exponential and a Gamma distribution, to explicitly model customers'
 (unobserved) attrition behavior in addition to customers' purchase process.\cr
@@ -139,7 +135,7 @@ and the corresponding value of at covariate a that time becomes relevant. Time-v
 covariates can affect customer on aggregated level as well as on an individual level:
 In the first case, all customers are affected simultaneously, in the latter case a
 covariate is only relevant for a particular customer. For technical details we refer to
-the paper by Bachmann, Meierer and Näf (2019).
+the paper by Bachmann, Meierer and Näf (2020).
 }
 }
 \note{
@@ -258,26 +254,28 @@ pnbd(clv.data.dyn.cov, reg.lambdas = c(trans=10, life=2))
 
 }
 \references{
-Schmittlein DC, Morrison DG, Colombo R (1987). "Counting Your Customers:
-Who-Are They and What Will They Do Next?" Management Science, 33(1), 1–24.
+Schmittlein DC, Morrison DG, Colombo R (1987). \dQuote{Counting Your Customers:
+Who-Are They and What Will They Do Next?} Management Science, 33(1), 1–24.
 
-Fader PS, Hardie BGS (2005). "A Note on Deriving the Pareto/NBD Model and
-Related Expressions."
+Fader PS, Hardie BGS (2005). \dQuote{A Note on Deriving the Pareto/NBD Model and
+Related Expressions.}
 URL \url{http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf}.
 
-Fader PS, Hardie BG (2007). "Incorporating time-invariant covariates into the
-Pareto/NBD and BG/NBD models."
+Fader PS, Hardie BG (2007). \dQuote{Incorporating time-invariant covariates into the
+Pareto/NBD and BG/NBD models.}
 URL \url{http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf}.
 }
 \seealso{
-\code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object, \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}} and \code{\link[CLVTools:SetDynamicCovariates]{SetDynamicCovariates}}
-to add static or dynamic covariates to an existing clv data object on which then the \code{pnbd} method can be fit
+\code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object, \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}}
+to add static covariates to an existing clv data object.
 
 \code{\link[CLVTools:predict.clv.fitted]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
 
 \code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation as predicted by the fitted model
 
 The generic functions \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:summary.clv.fitted]{summary}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
+
+\code{\link[CLVTools:SetDynamicCovariates]{SetDynamicCovariates}} to add dynamic covariates on which the \code{pnbd} model can be fit.
 
 \code{\link[data.table]{setDTthreads}}, \code{\link[data.table]{getDTthreads}},\code{\link[doParallel]{registerDoParallel}},\code{\link[doFuture]{registerDoFuture}} for setting up parallel execution.
 }

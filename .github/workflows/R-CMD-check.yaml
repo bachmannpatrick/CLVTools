@@ -47,6 +47,7 @@ jobs:
             sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
             sudo -s eval "$sysreqs"
             sudo apt-get install -y qpdf # qpdf needed on ubuntu
+            sudo apt-get install texlive-xetex # for tinytex
 
         - name: Install tinytex for linux (to build vignettes)
           if: runner.os == 'Linux'

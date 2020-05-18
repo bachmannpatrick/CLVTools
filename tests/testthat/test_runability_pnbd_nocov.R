@@ -27,32 +27,32 @@ expect_silent(clv.newdata.withhold <- clvdata(data.transactions = dt.newdata.tra
                                               name.price = NULL))
 
 fct.testthat.runability.common.out.of.the.box.no.hold(method = pnbd,
-                                                        clv.data.noholdout = clv.data.cdnow.noholdout,
+                                                      clv.data.noholdout = clv.data.cdnow.noholdout,
+                                                      clv.newdata.withhold = clv.newdata.withhold,
+                                                      clv.newdata.nohold = clv.newdata.nohold,
+                                                      param.names = pnbd.param.names)
+
+fct.testthat.runability.common.out.of.the.box.with.hold(method = pnbd,
+                                                        clv.data.withholdout = clv.data.cdnow.withholdout,
                                                         clv.newdata.withhold = clv.newdata.withhold,
                                                         clv.newdata.nohold = clv.newdata.nohold,
                                                         param.names = pnbd.param.names)
-
-fct.testthat.runability.common.out.of.the.box.with.hold(method = pnbd,
-                                                          clv.data.withholdout = clv.data.cdnow.withholdout,
-                                                          clv.newdata.withhold = clv.newdata.withhold,
-                                                          clv.newdata.nohold = clv.newdata.nohold,
-                                                          param.names = pnbd.param.names)
 
 fct.testthat.runability.common.custom.model.start.params(method = pnbd, start.params.model = c(r=1, alpha = 2, s = 1, beta = 2), clv.data.cdnow.noholdout, clv.data.cdnow.withholdout)
 
 fct.testthat.runability.nocov.custom.optimx.args(method = pnbd,
-                                         clv.data.noholdout = clv.data.cdnow.noholdout,
-                                         clv.data.withholdout = clv.data.cdnow.withholdout)
+                                                 clv.data.noholdout = clv.data.cdnow.noholdout,
+                                                 clv.data.withholdout = clv.data.cdnow.withholdout)
 
 fct.testthat.runability.common.all.optimization.methods(method = pnbd,
-                                         clv.data.noholdout = clv.data.cdnow.noholdout,
-                                         expected.message = "replaced by maximum positive value|Gradient not computable after method nlm|unused control arguments ignored|Estimation failed with NA coefs|Hessian could not be derived")
+                                                        clv.data.noholdout = clv.data.cdnow.noholdout,
+                                                        expected.message = "replaced by maximum positive value|Gradient not computable after method nlm|unused control arguments ignored|Estimation failed with NA coefs|Hessian could not be derived")
 
 fct.testthat.runability.common.multiple.optimization.methods(method = pnbd,
-                                                        clv.data.noholdout = clv.data.cdnow.noholdout,
-                                                        clv.newdata.nohold = clv.newdata.nohold,
-                                                        clv.newdata.withhold = clv.newdata.withhold,
-                                                        param.names = pnbd.param.names)
+                                                             clv.data.noholdout = clv.data.cdnow.noholdout,
+                                                             clv.newdata.nohold = clv.newdata.nohold,
+                                                             clv.newdata.withhold = clv.newdata.withhold,
+                                                             param.names = pnbd.param.names)
 
 fct.testthat.runability.common.works.with.cor(method = pnbd,
                                               clv.data.holdout = clv.data.cdnow.withholdout,
