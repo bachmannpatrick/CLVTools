@@ -24,5 +24,6 @@ arma::vec ggomnbd_PAlive(const double r,
   vP2 = r * arma::log(vAlpha_i/(vAlpha_i + vT_cal)) + vX % arma::log(1/(vAlpha_i + vT_cal)) + s * arma::log(vBeta_i/(vBeta_i - 1 + exp(b * vT_cal)));
   vP3 = vLL;
 
-  return arma::exp(vP1 + vP2 - vP3);
+  return arma::round(10000*arma::exp(vP1 + vP2 - vP3))/10000;
+
 }
