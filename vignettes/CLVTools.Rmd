@@ -36,7 +36,7 @@ Install the development version from GitHub (using the `devtools` [@devtools] pa
 
 ```{r install-package-GITHUB, eval = FALSE}
 install.packages("devtools")
-devtools::install_github("CLVTools", ref = "master")
+devtools::install_github("bachmannpatrick/CLVTools", ref = "master")
 ```
 
 Load the package
@@ -133,7 +133,7 @@ To extract only the coefficients, we can use `coef()`. To access the confidence 
 coef(est.pnbd)
 #Alternative: oefficients(est.pnbd.obj)
 
-#Extrac the confidence intervals
+#Extract the confidence intervals
 confint(est.pnbd)
 
 ```
@@ -162,7 +162,7 @@ If spending information was provided when initializing the object, `CLVTools` pr
 * predicted spending estimated by a Gamma/Gamma model [@Colombo1999; @Fader2005c] and 
 *  the customer lifetime value (CLV).
 
-If a holdout period is available additionally the true numbers of transactions ("actual.x") and true spending ("actual.spendings") during the holdout period are reported.
+If a holdout period is available additionally the true numbers of transactions ("actual.x") and true spending ("actual.spending") during the holdout period are reported.
 
 To use the parameter estimates on new data (e.g., an other customer cohort), the argument `newdata` optionally allows to provide a new `clvdata` object.
 
@@ -263,13 +263,13 @@ est.pnbd.static <- pnbd(pnbd.static,
                          start.params.trans = c(Gender=0.6, Channel=0.4))
 ```
 
-Analogously, we can estimate the model containing time-varying covariates. We recommend to enable the built-in support for multithreading when estimating more complex models like this. See section [Multitherading](#multithreading).
+Analogously, we can estimate the model containing time-varying covariates. We recommend to enable the built-in support for multithreading when estimating more complex models like this. See section [Multithreading](#multithreading).
 
 ```{r Dyn-cov-estimate, eval=FALSE}
-est.pnbd.static <- pnbd(pnbd.dyn, 
-                         start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
-                         start.params.life = c(Marketing=0.5, Gender=0.6, Channel=0.4),
-                         start.params.trans = c(Marketing=0.5, Gender=0.6, Channel=0.4))
+est.pnbd.dyn <- pnbd(pnbd.dyn, 
+                     start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
+                     start.params.life = c(Marketing=0.5, Gender=0.6, Channel=0.4),
+                     start.params.trans = c(Marketing=0.5, Gender=0.6, Channel=0.4))
 ```
 
 To inspect the estimated model we use `summary()`, however all other commands such as `print()`, `coef()`, `loglike()`, `confint()` and `vcov()` are also available. Now, output contains also parameters for the covariates for both processes. Since covariates are added separately for the purchase and the attrition process, there are also separate model parameters for the two processes. These parameters are directly interpretable as rate elasticity of the corresponding factors: A 1% change in a contextual factor $\bf{X}^{P}$ or $\bf{X}^{L}$ changes the purchase or the attrition rate by $\gamma_{purch}\bf{X}^{P}$ or $\gamma_{life}\bf{X}^{L}$ percent, respectively  [@Gupta1991]. In the example of the apparel retailer, we observe that female customer purchase significantly more (`trans.Gender=1.42576`). Note, that female customers are coded as 1, male customers as 0. Also customers acquired offline (coded as Channel=1), purchase more (`trans.Channel=0.40304`) and stay longer (`life.Channel=0.9343`). Make sure to check the Karush-Kuhn-Tucker optimality conditions of the first and second order [@KKT] (KKT1 and KKT1) before interpreting the parameters. If those criteria are not met, the optimizer has probably not arrived at an optimal solution. If this is the case it is usually a good idea to rerun the estimation using alternative starting values.
@@ -278,6 +278,7 @@ To inspect the estimated model we use `summary()`, however all other commands su
 ```{r Cov-summary}
 summary(est.pnbd.static)
 ```
+
 
 To predict future customer behavior we use `predict()`.  Note that dependent on the model, the predicted metrics may differ. For example, in the case of the Pareto/NBD model with time-varying covariates, instead of DERT, DECT is predicted. DECT only covers a finite time horizon in contrast to DERT. Time-varying covariates must be provided for the entire prediction period. If the data initially provided in the `SetDynamicCovariates()` command does not cover the complete prediction period, the argument `new.data` offers the ability to supply new data for the time-varying covariates in the from of a `clvdata` object.
 
@@ -325,6 +326,7 @@ summary(est.pnbd.constr)
   plan("multisession")
 ```
 To limit the number of parallel processes simultaneously executed, we can specify the number of workers `plan(multisession, workers = 2)`.
+
 
 
 

@@ -12,21 +12,13 @@ setGeneric("ggomnbd", def = function(clv.data, start.params.model=c(), use.cor =
 #' @template template_params_estimate_cov
 #' @template template_param_verbose
 #' @template template_param_dots
+#'
 #' @param use.cor Whether the correlation between the transaction and lifetime process should be estimated.
 #' @param start.param.cor Start parameter for the optimization of the correlation.
-#' @description
-#' Fits GGompertz /NBD models on transactional data with and without covariates.
 #'
+#' @template template_details_paramsggomnbd
 #'
-#' @details
-#' Model parameters for the GGompertz /NBD model are \code{r, alpha, beta, b and s}. \cr
-#' \code{r}: TODO \cr
-#' \code{alpha}: TODO \cr
-#' \code{beta}: TODO \cr
-#' \code{b}: TODO \cr
-#' \code{s}: TODO
-#'
-#' If no start parameters are given, r = 1, alpha = 1, beta = 1, b = 1, s = 1 is used.
+#' @details If no start parameters are given, r = 1, alpha = 1, beta = 1, b = 1, s = 1 is used.
 #' The model start parameters are required to be > 0.
 #'
 #' \subsection{The GGompertz / NBD model}{
@@ -77,15 +69,16 @@ setGeneric("ggomnbd", def = function(clv.data, start.params.model=c(), use.cor =
 #' plot(estimation.ggomnbd)
 #' }
 #' @aliases ggomnbd ggomnbd,clv.data-method
+
 #' @include class_clv_data.R
-#' @rdname ggomnbd
 setMethod("ggomnbd", signature = signature(clv.data="clv.data"), definition = function(clv.data,
                                                                                        start.params.model=c(),
                                                                                        use.cor = FALSE,
                                                                                        start.param.cor=c(),
                                                                                        optimx.args=list(),
                                                                                        verbose=TRUE,...){
-  cl        <- sys.call(1)
+  cl        <- match.call(call = sys.call(-1), expand.dots = TRUE)
+
   obj <- clv.ggomnbd(cl=cl, clv.data=clv.data)
 
   return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
@@ -93,8 +86,11 @@ setMethod("ggomnbd", signature = signature(clv.data="clv.data"), definition = fu
 })
 
 
-#' @include class_clv_data_staticcovariates.R
 #' @rdname ggomnbd
+#' @include class_clv_data_staticcovariates.R
+#' @aliases ggomnbd,clv.data.static.covariates-method
+#' @aliases ggomnbd,clv.data.dynamic.covariates-method
+#' @export
 setMethod("ggomnbd", signature = signature(clv.data="clv.data.static.covariates"), definition = function(clv.data,
                                                                                                        start.params.model=c(),
                                                                                                        use.cor = FALSE,
@@ -105,7 +101,8 @@ setMethod("ggomnbd", signature = signature(clv.data="clv.data.static.covariates"
                                                                                                        start.params.life=c(), start.params.trans=c(),
                                                                                                        names.cov.constr=c(), start.params.constr=c(),
                                                                                                        reg.lambdas = c(), ...){
-  cl        <- sys.call(1)
+  cl        <- match.call(call = sys.call(-1), expand.dots = TRUE)
+
   obj <- clv.ggomnbd.static(cl=cl, clv.data=clv.data)
 
   return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
@@ -119,7 +116,7 @@ setMethod("ggomnbd", signature = signature(clv.data="clv.data.static.covariates"
 
 
 #' @include class_clv_data_dynamiccovariates.R
-#' @rdname ggomnbd
+#' @keywords internal
 setMethod("ggomnbd", signature = signature(clv.data="clv.data.dynamic.covariates"), definition = function(clv.data,
                                                                                                         start.params.model=c(),
                                                                                                         use.cor = FALSE,

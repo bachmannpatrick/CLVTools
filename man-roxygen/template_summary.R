@@ -5,7 +5,7 @@
 #' @param object A fitted CLV model
 #' @param x an object of class \code{"summary.clv.no.covariates"}, usually, a result of a call to \code{summary.clv.no.covariates}.
 #' @param digits the number of significant digits to use when printing.
-#' @param signif.stars logical. If TRUE, ‘significance stars’ are printed for each coefficient.
+#' @param signif.stars logical. If TRUE, \sQuote{significance stars} are printed for each coefficient.
 #' @param ... Ignored for \code{summary}, forwarded to \code{printCoefmat} for \code{print}.
 #' @description
 #'

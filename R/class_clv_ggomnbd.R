@@ -1,6 +1,14 @@
-#' @importFrom methods setClass
+#' @templateVar name_model_full GGompertz/NBD
+#' @templateVar name_class_clvmodel clv.model.ggomnbd.no.cov
+#' @template template_class_clvfittedmodels
+#'
+#' @template template_slot_ggomnbdcbs
+#'
+#' @seealso \link{clv.fitted-class}, \link{clv.model.ggomnbd.no.cov-class}, \link{clv.ggomnbd.static.cov-class}
+#'
 #' @keywords internal
-#' @include class_clv_model_ggomnbd_nocov.R class_clv_fitted.R
+#' @importFrom methods setClass
+#' @include class_clv_model_ggomnbd_nocov.R class_clv_data.R class_clv_fitted.R
 setClass(Class = "clv.ggomnbd", contains = "clv.fitted",
          slots = c(
            cbs = "data.table"),
@@ -16,7 +24,7 @@ setClass(Class = "clv.ggomnbd", contains = "clv.fitted",
 clv.ggomnbd <- function(cl, clv.data){
 
   dt.cbs.ggomnbd <- ggomnbd_cbs(clv.data = clv.data)
-  clv.model <- new("clv.model.ggomnbd.no.cov")
+  clv.model <- clv.model.ggomnbd.no.cov()
 
   # Reuse clv.fitted constructor to ensure proper object creation
   #   a recommended pattern by Martin Morgan on SO
@@ -68,8 +76,5 @@ ggomnbd_cbs <- function(clv.data){
   else
     setcolorder(cbs, c("Id","x","t.x","T.cal", "date.first.actual.trans", "date.last.transaction"))
 
-  # add date of first repeat transaction to cbs as often needed
-  # ??** TODO: Zero repeaters will be NA..?!
-  # cbs[obj@data.repeat.trans, date.first.repeat.trans := Date, mult="first", on="Id"]
   return(cbs)
 }

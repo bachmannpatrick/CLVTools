@@ -1,14 +1,30 @@
-# Class --------------------------------------------------------------------------------------------------------------------------------
-#' @importFrom methods setClass
-#' @include all_generics.R class_clv_model.R
+#' CLV Model functionality for GGompertz/NBD with static covariates
+#'
+#' This class implements the functionalities and model-specific steps which are required
+#' to fit the GGompertz/NBD model with static covariates.
+#'
+#' @keywords internal
+#' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.ggomnbd.no.cov-class}
+#' @seealso Classes using its instance: \link{clv.fitted.static.cov-class},
+#'
+#' @include all_generics.R class_clv_model.R class_clv_model_ggomnbd_nocov.R
 setClass(Class = "clv.model.ggomnbd.static.cov", contains = "clv.model.ggomnbd.no.cov",
          slots = list(start.param.cov = "numeric"),
-         prototype = list(start.param.cov = 1,
-                          # New model defaults
-                          optimx.defaults  = list(method = "L-BFGS-B",
-                                                  itnmax = 3000),
-                          name.model       = "GGompertz NBD Static Covariates"))
+         prototype = list(
+           start.param.cov = numeric()
+         ))
 
+
+#' @importFrom methods new
+clv.model.ggomnbd.static.cov <- function(){
+  return(new("clv.model.ggomnbd.static.cov",
+             clv.model.ggomnbd.no.cov(),
+             name.model = "GGompertz/NBD with Static Covariates",
+             start.param.cov = 1,
+             optimx.defaults = list(method = "L-BFGS-B",
+                                    itnmax = 3000)
+             ))
+}
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
@@ -24,7 +40,7 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
                  start.param.cor=start.param.cor, optimx.args=optimx.args, verbose=verbose)
 
   if(length(list(...)) > 0)
-    warning("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
+    stop("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
 })
 
 # . clv.model.put.estimation.input ------------------------------------------------------------------------------------------------------------

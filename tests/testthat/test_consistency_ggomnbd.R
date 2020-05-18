@@ -1,64 +1,55 @@
-# Tests that GGompertz / NBD models are consistent among themselves
 skip_on_cran()
-skip_on_ci()
-skip_on_covr()
+
+# Consistency
+# nocov vs static cov:
+#   same fit with all covs = 0
+#   same predict with gamma=0
+
+context("Nocov/cov Consistency - BG/NBD - all cov data = 0")
+data("apparelTrans")
+expect_silent(clv.apparel <- clvdata(data.transactions = apparelTrans, date.format = "ymd", time.unit = "w",
+                                     estimation.split = 38))
+
+data("apparelStaticCov")
+# Cannot set all to 0 as requires at least 2 distinct values per cov
+expect_silent(apparelStaticCov.0 <- apparelStaticCov)
+expect_silent(apparelStaticCov.0[, Gender := 0])
+expect_silent(apparelStaticCov.0[1, Gender := 1])
+expect_silent(apparelStaticCov.0[, Channel := 0])
+expect_silent(apparelStaticCov.0[1, Channel := 1])
+expect_silent(clv.apparel.static <- SetStaticCovariates(clv.apparel,
+                                                        data.cov.life = apparelStaticCov.0, data.cov.trans = apparelStaticCov.0,
+                                                        names.cov.life = c("Gender", "Channel"), names.cov.trans = c("Gender", "Channel")))
 
 
-# gamma=0 ------------------------------------------------------------------------------------------------
-context("Consistency - GGompertz / NBD - nocov vs staticcov gamma=0 ")
+# Fit models
+expect_silent(g.nocov  <- ggomnbd(clv.apparel, verbose = FALSE))
+expect_silent(g.static <- ggomnbd(clv.apparel.static, verbose = FALSE))
 
-# . Data to play with ------------------------------------------------------------------------------------
-data("cdnow")
-expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd",
-                                   time.unit = "w", estimation.split = 37))
+fct.testthat.consistency.cov.data.0.model.params.nearly.same(m.nocov = g.nocov,
+                                                             m.static = g.static,
+                                                             param.names = c("r", "alpha", "b", "s", "beta"))
 
-dt.cov.static <- data.table::data.table(Id = unique(cdnow$Id), Gender=c(1, rep(c(1,0), 1178)))
-expect_silent(clv.cdnow.static <- SetStaticCovariates(clv.cdnow,
-                                                      data.cov.life = dt.cov.static, data.cov.trans = dt.cov.static,
-                                                      names.cov.life = "Gender", names.cov.trans = "Gender"))
+context("Nocov/cov Consistency - BG/NBD - cov params = 0")
 
-# Fit nocov model --------------------------------------------------------------------------------------
-expect_silent(p.nocov <- ggomnbd(clv.cdnow, verbose=FALSE))
+# Set parameters ------------------------------------------------------------------------
+# Fake the parameters to be exactly the same and 0 for covariates
+#   Replace model coefs with that from nocov
 
-# Fit staticcov model ----------------------------------------------------------------------------------
-#   Replace coefs with the ones from dyncov, set coefs for covs to 0
-expect_silent(p.staticcov <- ggomnbd(clv.cdnow.static, verbose=FALSE))
-expect_silent(p.staticcov@optimx.estimation.output[1, c("log.r", "log.alpha", "log.beta", "log.b", "log.s",  "life.Gender", "trans.Gender")] <-
-                c(p.nocov@optimx.estimation.output[1, c("log.r", "log.alpha", "log.beta", "log.b", "log.s")], 0,0))
+# static cov
 
+expect_silent(g.static@prediction.params.model[c("r", "alpha", "b", "s", "beta")] <-
+                g.nocov@prediction.params.model[c("r", "alpha", "b", "s", "beta")])
+expect_silent(g.static@prediction.params.life[c("Gender", "Channel")] <- 0)
+expect_silent(g.static@prediction.params.trans[c("Gender", "Channel")] <- 0)
 
-test_that("Predict yields same results for all models with gamma=0", {
-  skip_on_cran()
+# Actual tests ---------------------------------------------------------------------------------
 
-  # DERT unequal to DECT because only predict short period!
+fct.testthat.consistency.cov.params.0.predict.same(m.nocov = g.nocov,
+                                                   m.static = g.static,
+                                                   has.DERT = FALSE,
+                                                   has.dyncov = FALSE)
 
-  # Standard
-  expect_silent(dt.pred.nocov     <- predict(p.nocov, verbose=FALSE))
-  expect_silent(dt.pred.staticcov <- predict(p.staticcov, verbose=FALSE))
-  expect_true(isTRUE(all.equal(dt.pred.nocov, dt.pred.staticcov)))
-
-  # With prediction.end
-  expect_silent(dt.pred.nocov     <- predict(p.nocov, verbose=FALSE, prediction.end = 6))
-  expect_silent(dt.pred.staticcov <- predict(p.staticcov, verbose=FALSE, prediction.end = 6))
-  expect_true(isTRUE(all.equal(dt.pred.nocov, dt.pred.staticcov)))
-
-  # with discount rates
-  expect_silent(dt.pred.nocov     <- predict(p.nocov, verbose=FALSE, continuous.discount.factor = 0.25))
-  expect_silent(dt.pred.staticcov <- predict(p.staticcov, verbose=FALSE, continuous.discount.factor = 0.25))
-  expect_true(isTRUE(all.equal(dt.pred.nocov, dt.pred.staticcov)))
-})
-
-
-test_that("plot yields same results for all models with gamma=0", {
-  skip_on_cran()
-
-  # Prediction end for faster calcs. Should not affect results
-  expect_warning(dt.plot.no        <- plot(p.nocov, verbose=FALSE, plot=FALSE, prediction.end = 10),
-                 regexp = "full holdout")
-  expect_warning(dt.plot.staticcov <- plot(p.staticcov, verbose=FALSE, plot=FALSE, prediction.end = 10),
-                 regexp = "full holdout")
-  # Rename to random names because have different colnames by model
-  data.table::setnames(dt.plot.no, c("A", "B", "C"))
-  data.table::setnames(dt.plot.staticcov, c("A", "B", "C"))
-  expect_true(isTRUE(all.equal(dt.plot.no, dt.plot.staticcov)))
-})
+fct.testthat.consistency.cov.params.0.plot.same(m.nocov = g.nocov,
+                                                m.static = g.static,
+                                                has.dyncov = FALSE)

@@ -20,6 +20,8 @@ businesses (i.e. customers' purchase history).
 }
 \examples{
 
+\donttest{
+
 data("cdnow")
 
 # Create a CLV data object, split data in estimation and holdout sample
@@ -41,6 +43,8 @@ pred.out <- predict(pnbd.cdnow, prediction.end = 10)
 
 # Plot the fitted model to the actual repeat transactions
 plot(pnbd.cdnow)
+
+}
 
 }
 \seealso{

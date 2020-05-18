@@ -33,23 +33,6 @@
   reg.lambdas = c(),
   ...
 )
-
-\S4method{ggomnbd}{clv.data.dynamic.covariates}(
-  clv.data,
-  start.params.model = c(),
-  use.cor = FALSE,
-  start.param.cor = c(),
-  optimx.args = list(),
-  verbose = TRUE,
-  names.cov.life = c(),
-  names.cov.trans = c(),
-  start.params.life = c(),
-  start.params.trans = c(),
-  names.cov.constr = c(),
-  start.params.constr = c(),
-  reg.lambdas = c(),
-  ...
-)
 }
 \arguments{
 \item{clv.data}{The data object on which the model is fitted.}
@@ -91,8 +74,6 @@ The generic accessor functions \code{coefficients}, \code{fitted},
 }
 \description{
 Fits Gamma-Gompertz/NBD models on transactional data with static and without covariates.
-
-Fits GGompertz /NBD models on transactional data with and without covariates.
 }
 \details{
 Model parameters for the GGompertz /NBD model are \code{r, alpha, beta, b and s}. \cr

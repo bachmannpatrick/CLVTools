@@ -20,27 +20,19 @@ l.std.args.withholdout <- list(clv.data=clv.data.apparel.with.holdout)
 #fct.helper.inputchecks.check.all.static.cov.model(fct.model = ggomnbd, l.std.args = l.std.args.withholdout, name.model = "ggomnbd staticcov")
 
 context("Inputchecks - GGompertz / NBD staticcov - Model specific")
-test_that("Fails for start params <= 0", {
 
-  expect_error(ggomnbd(clv.data.apparel.no.holdout, start.params.model = c(r = 0, alpha = 1, beta = 1, b = 1, s = 1)),
-               regexp = "greater")
-  expect_error(ggomnbd(clv.data.apparel.no.holdout, start.params.model = c(r = 1, alpha = 0, beta = 1, b = 1, s = 1)),
-               regexp = "greater")
-  expect_error(ggomnbd(clv.data.apparel.no.holdout, start.params.model = c(r = 1, alpha = 1, beta = 0, b = 1, s = 1)),
-               regexp = "greater")
-  expect_error(ggomnbd(clv.data.apparel.no.holdout, start.params.model = c(r = 1, alpha = 1, beta = 1, b = 0, s = 1)),
-               regexp = "greater")
-  expect_error(ggomnbd(clv.data.apparel.no.holdout, start.params.model = c(r = 1, alpha = 1, beta = 1, b = 1, s = 0)),
-               regexp = "greater")
+l.start.params.model <- list(c(r = 0, alpha = 1, beta = 1, b = 1, s = 1),
+                             c(r = 1, alpha = 0, beta = 1, b = 1, s = 1),
+                             c(r = 1, alpha = 1, beta = 0, b = 1, s = 1),
+                             c(r = 1, alpha = 1, beta = 1, b = 0, s = 1),
+                             c(r = 1, alpha = 1, beta = 1, b = 1, s = 0),
+                             c(r = 0, alpha = 1, beta = 1, b = 1, s = 1),
+                             c(r = 1, alpha = 0, beta = 1, b = 1, s = 1),
+                             c(r = 1, alpha = 1, beta = 0, b = 1, s = 1),
+                             c(r = 1, alpha = 1, beta = 1, b = 0, s = 1),
+                             c(r = 1, alpha = 1, beta = 1, b = 1, s = 0))
 
-  expect_error(ggomnbd(clv.data.apparel.with.holdout, start.params.model = c(r = 0, alpha = 1, beta = 1, b = 1, s = 1)),
-               regexp = "greater")
-  expect_error(ggomnbd(clv.data.apparel.with.holdout, start.params.model = c(r = 1, alpha = 0, beta = 1, b = 1, s = 1)),
-               regexp = "greater")
-  expect_error(ggomnbd(clv.data.apparel.with.holdout, start.params.model = c(r = 1, alpha = 1, beta = 0, b = 1, s = 1)),
-               regexp = "greater")
-  expect_error(ggomnbd(clv.data.apparel.with.holdout, start.params.model = c(r = 1, alpha = 1, beta = 1, b = 0, s = 1)),
-               regexp = "greater")
-  expect_error(ggomnbd(clv.data.apparel.with.holdout, start.params.model = c(r = 1, alpha = 1, beta = 1, b = 1, s = 0)),
-               regexp = "greater")
-})
+fct.testthat.inputchecks.staticcov.fails.for.start.params.subzero(method = ggomnbd,
+                                                                  clv.data.no.holdout = clv.data.apparel.no.holdout,
+                                                                  clv.data.with.holdout = clv.data.apparel.with.holdout,
+                                                                  l.start.params.model = l.start.params.model)

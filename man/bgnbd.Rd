@@ -71,6 +71,9 @@ If multiple optimization methods are specified, only the result of the last meth
 
 \item{reg.lambdas}{Named lambda parameters used for the L2 regularization of the lifetime and the transaction covariate parameters. Lambdas have to be >= 0.}
 }
+\value{
+No value is returned.
+}
 \description{
-Fits BG/NBD models on transactional data with static and without covariates.
+Fits BG/NBD models on transactional data with static and without covariates. Not yet implemented.
 }

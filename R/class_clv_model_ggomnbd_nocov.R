@@ -1,27 +1,42 @@
-# Class --------------------------------------------------------------------------------------------------------------------------------
+#' CLV Model functionality for GGompertz/NBD without covariates
+#'
+#' This class implements the functionalities and model-specific steps which are required
+#' to fit the GGompertz/NBD model without covariates.
+#'
+#' @keywords internal
 #' @importFrom methods setClass
+#' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.ggomnbd.static.cov-class}
+#' @seealso Classes using its instance: \link{clv.fitted-class}
 #' @include all_generics.R class_clv_model.R
 setClass(Class = "clv.model.ggomnbd.no.cov", contains = "clv.model",
          # no additional slots required
          slots = list(),
          # init with model defaults
          prototype = list(
-           name.model                  = "GGompertz NBD Standard",
-           names.original.params.model = c(r="r", alpha="alpha", b="b", s="s", beta="beta"),
-           names.prefixed.params.model = c("log.r","log.alpha", "log.b", "log.s", "log.beta"),
-           start.params.model          = c(r=1, alpha=1, b=1, s=1, beta=1),
-           optimx.defaults = list(method = "L-BFGS-B",
-                                  itnmax  = 5000,
-                                  control = list(
-                                    kkt = TRUE,
-                                    all.methods = FALSE,
-                                    save.failures = TRUE,
-                                    # Do not perform starttests because it checks the scales with max(logpar)-min(logpar)
-                                    #   but all standard start parameters are <= 0, hence there are no logpars what
-                                    #   produces a warning
-                                    starttests = FALSE))
+           name.model                  = character(),
+           names.original.params.model = character(0),
+           names.prefixed.params.model = character(0),
+           start.params.model          = numeric(0),
+           optimx.defaults = list()
          ))
 
+clv.model.ggomnbd.no.cov <- function(){
+  return(new("clv.model.ggomnbd.no.cov",
+                name.model = "GGompertz/NBD Standard",
+                names.original.params.model = c(r="r", alpha="alpha", b="b", s="s", beta="beta"),
+                names.prefixed.params.model = c("log.r","log.alpha", "log.b", "log.s", "log.beta"),
+                start.params.model          = c(r=1, alpha=1, b=1, s=1, beta=1),
+                optimx.defaults = list(method = "L-BFGS-B",
+                                    itnmax  = 5000,
+                                    control = list(
+                                      kkt = TRUE,
+                                      all.methods = FALSE,
+                                      save.failures = TRUE,
+                                      # Do not perform starttests because it checks the scales with max(logpar)-min(logpar)
+                                      #   but all standard start parameters are <= 0, hence there are no logpars what
+                                      #   produces a warning
+                                      starttests = FALSE))))
+}
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
@@ -35,7 +50,7 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
   }
 
   if(length(list(...)) > 0){
-    warning("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
+    stop("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
   }
 
   check_err_msg(err.msg)
@@ -58,6 +73,12 @@ setMethod("clv.model.transform.start.params.model", signature = signature(clv.mo
 setMethod("clv.model.backtransform.estimated.params.model", signature = signature(clv.model="clv.model.ggomnbd.no.cov"), definition = function(clv.model, prefixed.params.model){
   # exp all prefixed params
   return(exp(prefixed.params.model[clv.model@names.prefixed.params.model]))
+})
+
+# . clv.model.process.post.estimation -----------------------------------------------------------------------------------------
+setMethod("clv.model.process.post.estimation", signature = signature(clv.model="clv.model.ggomnbd.no.cov"), definition = function(clv.model, clv.fitted, res.optimx){
+  # No additional step needed (ie store model specific stuff, extra process)
+  return(clv.fitted)
 })
 
 setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.model.ggomnbd.no.cov"), definition = function(clv.model, clv.fitted, verbose){
@@ -116,6 +137,8 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.ggomnbd.no.cov
 
 #' @include all_generics.R
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.ggomnbd.no.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
+  r <- alpha <- b <- s <- beta <- x <- t.x <- T.cal <- PAlive <- DERT <- CET <- period.length <- NULL
+
   # To be sure they are both sorted the same when calling cpp functions
   setkeyv(dt.prediction, "Id")
   setkeyv(clv.fitted@cbs, "Id")
