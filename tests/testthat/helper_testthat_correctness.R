@@ -73,7 +73,7 @@ fct.testthat.correctness.nocov.compare.cbs <- function(cdnow){
     expect_silent(data(cdnowSummary, package = "BTYD"))
     expect_silent(cal.cbs <- cdnowSummary$cbs)
 
-    expect_silent(clv.data = clvdata(data.transactions = cdnow,
+    expect_silent(clv.data <- clvdata(data.transactions = cdnow,
                                      date.format="ymd",
                                      time.unit = "week",
                                      estimation.split = "1997-09-30",
