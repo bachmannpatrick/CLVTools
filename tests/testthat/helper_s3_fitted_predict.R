@@ -1,5 +1,5 @@
 .fct.helper.s3.fitted.predict <- function(clv.fitted, clv.newdata.nohold, clv.newdata.withhold,
-                                          DERT.not.implemented){
+                                          DERT.not.implemented, model.depends.on.price){
 
   # Only for models which were fit with heldout data
   if(clv.fitted@clv.data@has.holdout){
@@ -30,7 +30,10 @@
       expect_silent(pred <- predict(clv.fitted, prediction.end=6, predict.spending = TRUE, verbose=FALSE))
       expect_true("predicted.Spending" %in% colnames(pred))
       expect_silent(pred <- predict(clv.fitted, prediction.end=6, predict.spending = FALSE, verbose=FALSE))
-      expect_false("predicted.Spending" %in% colnames(pred))
+
+      if(!model.depends.on.price){
+        expect_false("predicted.Spending" %in% colnames(pred))
+      }
     })
   }
 
@@ -73,26 +76,27 @@
     }
   })
 
+  if(!model.depends.on.price){
+    test_that("Works with different newdata", {
+      # **TODO: Often still has NA (because estimated params do not work with artificial newdata)
+      # No holdout needs prediction.end
+      expect_silent(dt.pred <- predict(clv.fitted, newdata = clv.newdata.nohold, prediction.end = 25,
+                                       predict.spending = clv.newdata.nohold@has.spending, verbose=FALSE))
+      # expect_false(anyNA(dt.pred))
+      expect_true(all(unique(clv.newdata.nohold@data.transactions$Id) %in% dt.pred$Id))
 
-  test_that("Works with different newdata", {
-    # **TODO: Often still has NA (because estimated params do not work with artificial newdata)
-    # No holdout needs prediction.end
-    expect_silent(dt.pred <- predict(clv.fitted, newdata = clv.newdata.nohold, prediction.end = 25,
-                                     predict.spending = clv.newdata.nohold@has.spending, verbose=FALSE))
-    # expect_false(anyNA(dt.pred))
-    expect_true(all(unique(clv.newdata.nohold@data.transactions$Id) %in% dt.pred$Id))
+      # Holdout needs no prediction end, but do both
+      expect_silent(dt.pred <- predict(clv.fitted, newdata = clv.newdata.withhold, verbose=FALSE,
+                                       predict.spending = clv.newdata.withhold@has.spending))
+      # expect_false(anyNA(dt.pred))
+      expect_true(all(unique(clv.newdata.nohold@data.transactions$Id) %in% dt.pred$Id))
 
-    # Holdout needs no prediction end, but do both
-    expect_silent(dt.pred <- predict(clv.fitted, newdata = clv.newdata.withhold, verbose=FALSE,
-                                     predict.spending = clv.newdata.withhold@has.spending))
-    # expect_false(anyNA(dt.pred))
-    expect_true(all(unique(clv.newdata.nohold@data.transactions$Id) %in% dt.pred$Id))
-
-    expect_silent(dt.pred <- predict(clv.fitted, newdata = clv.newdata.withhold, prediction.end = 10,
-                                     predict.spending = clv.newdata.withhold@has.spending, verbose=FALSE))
-    # expect_false(anyNA(dt.pred))
-    expect_true(all(unique(clv.newdata.nohold@data.transactions$Id) %in% dt.pred$Id))
-  })
+      expect_silent(dt.pred <- predict(clv.fitted, newdata = clv.newdata.withhold, prediction.end = 10,
+                                       predict.spending = clv.newdata.withhold@has.spending, verbose=FALSE))
+      # expect_false(anyNA(dt.pred))
+      expect_true(all(unique(clv.newdata.nohold@data.transactions$Id) %in% dt.pred$Id))
+    })
+  }
 
   # **TODO: Fix date converting
   test_that("Works with different types of prediction.end: number, date, posix, char (long)", {

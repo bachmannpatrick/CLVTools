@@ -1,15 +1,15 @@
-fct.testthat.runability.common.out.of.the.box.no.hold <- function(method, clv.data.noholdout, clv.newdata.withhold, clv.newdata.nohold, param.names, DERT.not.implemented = FALSE) {
+fct.testthat.runability.common.out.of.the.box.no.hold <- function(method, clv.data.noholdout, clv.newdata.withhold, clv.newdata.nohold, param.names, DERT.not.implemented = FALSE, model.depends.on.price = FALSE) {
   test_that("Works out-of-the box, without additional params (no holdout)", {
     l.args.no.hold <- list(clv.data = clv.data.noholdout, verbose=FALSE)
 
     expect_silent(m.no.hold <- do.call(what = method, args = l.args.no.hold))
 
     fct.helper.fitted.all.s3(clv.fitted = m.no.hold,  full.names = param.names,
-                             clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = DERT.not.implemented)
+                             clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = DERT.not.implemented, model.depends.on.price = model.depends.on.price)
   })
 }
 
-fct.testthat.runability.common.out.of.the.box.with.hold <- function(method, clv.data.withholdout, clv.newdata.withhold, clv.newdata.nohold, param.names, DERT.not.implemented = FALSE) {
+fct.testthat.runability.common.out.of.the.box.with.hold <- function(method, clv.data.withholdout, clv.newdata.withhold, clv.newdata.nohold, param.names, DERT.not.implemented = FALSE, model.depends.on.price = FALSE) {
   test_that("Works out-of-the box, without additional params (with holdout)", {
     skip_on_cran()
     l.args.hold <- list(clv.data = clv.data.withholdout, verbose=FALSE)
@@ -17,7 +17,7 @@ fct.testthat.runability.common.out.of.the.box.with.hold <- function(method, clv.
     expect_silent(m.hold    <- do.call(what = method, args = l.args.hold))
 
     fct.helper.fitted.all.s3(clv.fitted = m.hold,  full.names = param.names,
-                             clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = DERT.not.implemented)
+                             clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = DERT.not.implemented, model.depends.on.price = model.depends.on.price)
   })
 }
 

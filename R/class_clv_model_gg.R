@@ -116,6 +116,7 @@ setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.mo
 # . clv.model.expectation --------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
 setMethod("clv.model.expectation", signature(clv.model="clv.model.gg"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
+  dt.expectation.seq[, expectation := 0]
   return(dt.expectation.seq)
 })
 
