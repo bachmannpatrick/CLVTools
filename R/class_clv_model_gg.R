@@ -126,7 +126,7 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.gg"), function
 # .clv.model.predict.clv --------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.gg"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
-  p <- q <- gamma <- x <- Spending <- cbs.x <- cbs.Spending <- DERT <- i.x <- i.Spending <- predicted.Spending <- PAlive <- CET <- DERT <- DECT <- period.length <- NULL
+  p <- q <- gamma <- x <- Spending <- cbs.x <- cbs.Spending <- DERT <- i.x <- i.Spending <- predicted.Spending <- predicted.CLV <- PAlive <- CET <- DERT <- DECT <- period.length <- NULL
 
   # To be sure they are both sorted the same when calling cpp functions
   setkeyv(dt.prediction, "Id")
