@@ -7,12 +7,18 @@ setGeneric("gg", def = function(clv.data, start.params.model=c(), use.cor = FALS
 #' @name gg
 #' @title Gamma/Gamma model - Work In Progress
 #'
-#' @description Fits Gamma/Gamma model on transactional data. Not yet implemented.
-#'
 #' @template template_params_estimate
 #' @template template_params_estimate_cov
 #' @template template_param_verbose
 #' @template template_param_dots
+#'
+#' @description Fits Gamma/Gamma model on transactional data. Not yet implemented.
+#'
+#' @param use.cor (Not yet supported) Whether the correlation between the transaction and lifetime process should be estimated.
+#' @param start.param.cor (Not yet supported) Start parameter for the optimization of the correlation.
+#'
+#' @details If no start parameters are given, p = 1, q = 1, gamma = 1 is used.
+#' All model start parameters are required to be > 0.
 #'
 #' @return No value is returned.
 #'
