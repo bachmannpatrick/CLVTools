@@ -123,7 +123,7 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.ggomnbd.static
 
 #' @include all_generics.R
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.ggomnbd.static.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
-  r <- alpha <- beta <- b <- s <- CET <- PAlive <- DERT <- period.length
+  r <- alpha <- beta <- b <- s <- CET <- PAlive <- DERT <- period.length <- NULL
   # Covariates as matrix, if there is a covariate
   data.cov.mat.life  <- clv.data.get.matrix.data.cov.life(clv.fitted@clv.data)
   data.cov.mat.trans <- clv.data.get.matrix.data.cov.trans(clv.fitted@clv.data)
