@@ -92,6 +92,7 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
 })
 
 #' @include all_generics.R
+#' @importFrom stats integrate
 setMethod("clv.model.expectation", signature(clv.model="clv.model.ggomnbd.static.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
   r <- alpha_i <- beta_i <- b <- s <- t_i <- tau <- NULL
 
@@ -122,6 +123,7 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.ggomnbd.static
 
 #' @include all_generics.R
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.ggomnbd.static.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
+  r <- alpha <- beta <- b <- s <- CET <- PAlive <- DERT <- period.length
   # Covariates as matrix, if there is a covariate
   data.cov.mat.life  <- clv.data.get.matrix.data.cov.life(clv.fitted@clv.data)
   data.cov.mat.trans <- clv.data.get.matrix.data.cov.trans(clv.fitted@clv.data)

@@ -108,6 +108,7 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
 })
 
 #' @include all_generics.R
+#' @importFrom stats integrate
 setMethod("clv.model.expectation", signature(clv.model="clv.model.ggomnbd.no.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
   r <- alpha <- beta <- b <- s <- t_i <- tau <- NULL
   params_i <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
