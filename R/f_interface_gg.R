@@ -21,10 +21,14 @@ setGeneric("gg", def = function(clv.data, start.params.model=c(), use.cor = FALS
 #' All model start parameters are required to be > 0.
 #'
 #' @return No value is returned.
-#'
-#' @include class_clv_data.R
-setMethod("gg", signature = signature(clv.data="clv.data"), def = function(clv.data, start.params.model=c(), use.cor = FALSE, start.param.cor=c(),
-                                                                           optimx.args=list(), verbose=TRUE, ...){
+#' @aliases gg gg,clv.data-method
+#' @include class_clv_data.R class_clv_model_gg.R
+setMethod("gg", signature = signature(clv.data="clv.data"), def = function(clv.data,
+                                                                           start.params.model=c(),
+                                                                           use.cor = FALSE,
+                                                                           start.param.cor=c(),
+                                                                           optimx.args=list(),
+                                                                           verbose=TRUE,...){
   cl <- match.call(call = sys.call(-1), expand.dots = TRUE)
 
   obj <- clv.gg(cl=cl, clv.data=clv.data)
@@ -37,13 +41,15 @@ setMethod("gg", signature = signature(clv.data="clv.data"), def = function(clv.d
 #' @include class_clv_data_staticcovariates.R
 #' @rdname gg
 setMethod("gg", signature = signature(clv.data="clv.data.static.covariates"), definition = function(clv.data,
-                                                                                                         start.params.model=c(),
-                                                                                                         optimx.args=list(),
-                                                                                                         verbose=TRUE,
-                                                                                                         names.cov.life=c(), names.cov.trans=c(),
-                                                                                                         start.params.life=c(), start.params.trans=c(),
-                                                                                                         names.cov.constr=c(), start.params.constr=c(),
-                                                                                                         reg.lambdas = c(), ...){
+                                                                                                    start.params.model=c(),
+                                                                                                    use.cor = FALSE,
+                                                                                                    start.param.cor=c(),
+                                                                                                    optimx.args=list(),
+                                                                                                    verbose=TRUE,
+                                                                                                    names.cov.life=c(), names.cov.trans=c(),
+                                                                                                    start.params.life=c(), start.params.trans=c(),
+                                                                                                    names.cov.constr=c(),start.params.constr=c(),
+                                                                                                    reg.lambdas = c(), ...){
   stop("This model has not yet been implemented!")
 })
 
@@ -52,13 +58,12 @@ setMethod("gg", signature = signature(clv.data="clv.data.static.covariates"), de
 #' @include class_clv_data_dynamiccovariates.R
 #' @rdname gg
 setMethod("gg", signature = signature(clv.data="clv.data.dynamic.covariates"), definition = function(clv.data,
-                                                                                                          start.params.model=c(),
-                                                                                                          optimx.args=list(),
-                                                                                                          verbose=TRUE,
-                                                                                                          names.cov.life=c(), names.cov.trans=c(),
-                                                                                                          start.params.life=c(), start.params.trans=c(),
-                                                                                                          names.cov.constr=c(),start.params.constr=c(),
-                                                                                                          reg.lambdas = c(), ...){
+                                                                                                     start.params.model=c(),
+                                                                                                     use.cor = FALSE,
+                                                                                                     start.param.cor=c(),
+                                                                                                     optimx.args=list(),
+                                                                                                     verbose=TRUE,
+                                                                                                     ...){
   stop("This model cannot be fitted on this type of data!")
 })
 

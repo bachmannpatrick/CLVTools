@@ -2,6 +2,7 @@
 % Please edit documentation in R/f_interface_gg.R
 \name{gg}
 \alias{gg}
+\alias{gg,clv.data-method}
 \alias{gg,clv.data.static.covariates-method}
 \alias{gg,clv.data.dynamic.covariates-method}
 \title{Gamma/Gamma model - Work In Progress}
@@ -19,6 +20,8 @@
 \S4method{gg}{clv.data.static.covariates}(
   clv.data,
   start.params.model = c(),
+  use.cor = FALSE,
+  start.param.cor = c(),
   optimx.args = list(),
   verbose = TRUE,
   names.cov.life = c(),
@@ -34,15 +37,10 @@
 \S4method{gg}{clv.data.dynamic.covariates}(
   clv.data,
   start.params.model = c(),
+  use.cor = FALSE,
+  start.param.cor = c(),
   optimx.args = list(),
   verbose = TRUE,
-  names.cov.life = c(),
-  names.cov.trans = c(),
-  start.params.life = c(),
-  start.params.trans = c(),
-  names.cov.constr = c(),
-  start.params.constr = c(),
-  reg.lambdas = c(),
   ...
 )
 }
@@ -50,6 +48,10 @@
 \item{clv.data}{The data object on which the model is fitted.}
 
 \item{start.params.model}{Named start parameters containing the optimization start parameters for the model without covariates.}
+
+\item{use.cor}{(Not yet supported) Whether the correlation between the transaction and lifetime process should be estimated.}
+
+\item{start.param.cor}{(Not yet supported) Start parameter for the optimization of the correlation.}
 
 \item{optimx.args}{Additional arguments to control the optimization which are forwarded to \code{\link[optimx:optimx]{optimx::optimx}}.
 If multiple optimization methods are specified, only the result of the last method is further processed.}
@@ -77,4 +79,8 @@ No value is returned.
 }
 \description{
 Fits Gamma/Gamma model on transactional data. Not yet implemented.
+}
+\details{
+If no start parameters are given, p = 1, q = 1, gamma = 1 is used.
+All model start parameters are required to be > 0.
 }
