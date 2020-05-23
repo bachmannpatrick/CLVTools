@@ -14,8 +14,6 @@ l.args <- list(clv.data = clv.cdnow, verbose = FALSE)
 # Fit on sample only
 fitted.nocov.sample <- do.call(what = gg, args = l.args)
 
-# Holdout has to start for both on the exact same timepoint (might differ because of different estimation start)
-stopifnot(clv.cdnow.sample@clv.time@timepoint.holdout.start == clv.cdnow@clv.time@timepoint.holdout.start)
 # Prediction.end
 # Predict sample only
 expect_silent(dt.predict.sample <- predict(fitted.nocov.sample, verbose=FALSE,
