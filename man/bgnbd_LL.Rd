@@ -6,7 +6,7 @@
 \alias{bgnbd_nocov_LL_sum}
 \alias{bgnbd_staticcov_LL_ind}
 \alias{bgnbd_staticcov_LL_sum}
-\title{BG/NBD: Log-Likelihood}
+\title{BG/NBD: Log-Likelihood functions}
 \usage{
 bgnbd_nocov_LL_ind(vLogparams, vX, vT_x, vT_cal)
 
@@ -30,10 +30,11 @@ bgnbd_staticcov_LL_sum(vLogparams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 \item{mCov_trans}{Matrix containing the covariates data affecting the transaction process. One column for each covariate.}
 }
 \value{
-Returns the respective LogLikelihood value for the BG/NBD model without covariates.
+Returns the respective Log-Likelihood value(s) for the BG/NBD model
+ with or without covariates.
 }
 \description{
-Calculates the Log-likelihood for the BG/NBD model with and without static covariates.
+Calculates the Log-Likelihood values for the BG/NBD model with and without covariates.
 
 The function \code{bgnbd_nocov_LL_ind} calculates the individual LogLikelihood
 values for each customer for the given parameters.
@@ -41,10 +42,10 @@ values for each customer for the given parameters.
 The function \code{bgnbd_nocov_LL_sum} calculates the LogLikelihood value summed
 across customers for the given parameters.
 
-The function \code{bgnbd_staticcov_LL_ind} calculates the individual Log-Likelihood
+The function \code{bgnbd_staticcov_LL_ind} calculates the individual LogLikelihood
 values for each customer for the given parameters and covariates.
 
-The function \code{bgnbd_staticcov_LL_sum} calculates the individual Log-Likelihood values summed
+The function \code{bgnbd_staticcov_LL_sum} calculates the individual LogLikelihood values summed
 across customers.
 }
 \details{

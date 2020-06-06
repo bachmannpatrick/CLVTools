@@ -99,7 +99,7 @@ arma::vec ggomnbd_CET(const double r,
 //' Returns a vector with the conditional expected transactions for the existing
 //' customers in the GGompertz/NBD model.
 //'
-//' @template template_rcpp_ggomnbd_reference
+//' @template template_references_ggomnbd
 //'
 // [[Rcpp::export]]
 arma::vec ggomnbd_nocov_CET(const arma::vec& vEstimated_params,

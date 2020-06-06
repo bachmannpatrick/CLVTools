@@ -71,7 +71,7 @@ arma::vec ggomnbd_PAlive(const double r,
 //' @return
 //' Returns a vector containing the PAlive for each customer.
 //'
-//' @template template_rcpp_ggomnbd_reference
+//' @template template_references_ggomnbd
 //'
 // [[Rcpp::export]]
 arma::vec ggomnbd_staticcov_PAlive(const arma::vec& vEstimated_params,
@@ -125,7 +125,7 @@ arma::vec ggomnbd_staticcov_PAlive(const arma::vec& vEstimated_params,
 //' @return
 //' Returns a vector containing the PAlive for each customer.
 //'
-//' @template template_rcpp_ggomnbd_reference
+//' @template template_references_ggomnbd
 //'
 // [[Rcpp::export]]
 arma::vec ggomnbd_nocov_PAlive(const arma::vec& vEstimated_params,

@@ -5,22 +5,9 @@
 
 //' @name pnbd_LL
 //'
-//' @title Pareto/NBD: Log-Likelihood
-//'
-//' @description
-//' Calculates the Log-Likelihood values for the Pareto/NBD model with and without covariates.
-//'
-//' The function \code{pnbd_nocov_LL_ind} calculates the individual LogLikelihood
-//' values for each customer for the given parameters.
-//'
-//' The function \code{pnbd_nocov_LL_sum} calculates the LogLikelihood value summed
-//' across customers for the given parameters.
-//'
-//' The function \code{pnbd_staticcov_LL_ind} calculates the individual LogLikelihood
-//' values for each customer for the given parameters and covariates.
-//'
-//' The function \code{pnbd_staticcov_LL_sum} calculates the individual LogLikelihood values summed
-//' across customers.
+//' @templateVar name_model_full Pareto/NBD
+//' @templateVar name_model_short pnbd
+//' @template template_titledescriptionreturn_LL
 //'
 //' @param vLogparams vector with the Pareto/NBD model parameters log scaled. See Details.
 //' @template template_params_rcppxtxtcal
@@ -44,10 +31,6 @@
 //' @templateVar name_params_cov_life vParams
 //' @templateVar name_params_cov_trans vParams
 //' @template template_details_rcppcovmatrix
-//'
-//' @return
-//'  Returns the respective Log-Likelihood value(s) for the Pareto/NBD model
-//'  with or without covariates.
 //'
 //' @template template_references_pnbd
 //'

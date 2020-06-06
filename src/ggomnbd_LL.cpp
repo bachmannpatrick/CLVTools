@@ -13,7 +13,6 @@ const arma::vec * gpvX=0, * gpvAlpha_i=0, * gpvBeta_i=0; //will point to vectors
 
   double r_glob=0, b_glob=0, s_glob=0;//parameters extracted from passed vector
 
-  //integrand<-function(y){(y+alpha_i[i])^-(r+cbs$x[i])*(beta_i[i]+exp(b*y)-1)^-(s+1)*exp(b*y)}
   double integrationFunction (double x, void * params)
   {
     return  std::pow(x + (*gpvAlpha_i)(globI),  -(r_glob + (*gpvX)(globI)))
@@ -23,7 +22,52 @@ const arma::vec * gpvX=0, * gpvAlpha_i=0, * gpvBeta_i=0; //will point to vectors
 }
 
 
+//' Ideally, the starting parameters for r and s represent your best guess
+//' concerning the heterogeneity of customers in their buy and die rate.
+//' \code{vParams} is vector with the GGompertz/NBD model parameters at log scale
+//' (\code{r, alpha_0, b, s, beta_0}), followed by the parameters for the lifetime
+//' covariate at original scale (\code{mCov_life}) and then followed by the parameters
+//' for the transaction covariate at original scale \code{mCov_trans}.
+//' \code{r, alpha_0, b, s, beta_0} are the log()-ed model parameters used for
+//' estimation, in this order.\cr
+//' \code{s}: shape parameter of the Gamma distribution for the lifetime process.
+//' The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.\cr
+//' \code{beta}: scale parameter for the Gamma distribution for the lifetime process.\cr
+//' \code{b:} scale parameter of the Gompertz distribution (constant across customers).\cr
+//' \code{r:} shape parameter of the Gamma distribution of the purchase process.
+//' The smaller \code{r}, the stronger the heterogeneity of the pruchase process.\cr
 
+
+
+//' @name ggomnbd_LL
+//'
+//' @templateVar name_model_full GGompertz/NBD
+//' @templateVar name_model_short ggomnbd
+//' @template template_titledescriptionreturn_LL
+//'
+//' @param vLogparams vector with the GGompertz/NBD model parameters log scaled. See Details.
+//' @param vParams vector with the parameters for the GGompertz/NBD model and the static covariates. See Details.
+//' @template template_params_rcppxtxtcal
+//' @template template_params_rcppcovmatrix
+//'
+//' @details
+//'
+//' \code{r, alpha_0, b, s, beta_0} are the log()-ed model parameters used for
+//' estimation, in this order.\cr
+//' \code{s}: shape parameter of the Gamma distribution for the lifetime process.
+//' The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.\cr
+//' \code{beta}: scale parameter for the Gamma distribution for the lifetime process.\cr
+//' \code{b:} scale parameter of the Gompertz distribution (constant across customers).\cr
+//' \code{r:} shape parameter of the Gamma distribution of the purchase process.
+//' The smaller \code{r}, the stronger the heterogeneity of the pruchase process.\cr
+//' \code{alpha}: scale parameter of the Gamma distribution of the purchase process.\cr
+//'
+//' @templateVar name_params_cov_life vParams
+//' @templateVar name_params_cov_trans vParams
+//' @template template_details_rcppcovmatrix
+//'
+//' @template template_references_ggomnbd
+//'
 arma::vec ggomnbd_LL_ind(const double r,
                          const double b,
                          const double s,
@@ -88,15 +132,13 @@ arma::vec ggomnbd_LL_ind(const double r,
   vL1 += r * (arma::log(vAlpha_i) - arma::log(vAlpha_i + vT_cal)) + vX % (0.0-arma::log(vAlpha_i + vT_cal)) + s * (arma::log(vBeta_i)-arma::log(vBeta_i-1.0 + arma::exp(b*vT_cal))) ;
   vL2 += std::log(b) + r *arma::log(vAlpha_i) + log(s) + s * arma::log(vBeta_i) +arma::log(vIntegrals);
 
-
-  // ll<-exp(l1)+exp(l2)
   //create result and store it in vector passed by ref
   arma::vec vLL = arma::log(arma::exp(vL1) + arma::exp(vL2));
 
   return(vLL);
 }
 
-//' @rdname ggomnbd_nocov_LL_sum
+//' @rdname ggomnbd_LL
 // [[Rcpp::export]]
 arma::vec ggomnbd_nocov_LL_ind(const arma::vec& vLogparams,
                                const arma::vec& vX,
@@ -122,55 +164,20 @@ arma::vec ggomnbd_nocov_LL_ind(const arma::vec& vLogparams,
   // Calculate LL ---------------------------------------------------
   //    Calculate value for every customer
   //    Sum of all customers' LL value
-  //
+
   arma::vec vLL = ggomnbd_LL_ind(r, b, s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal);
   return(vLL);
 }
 
 
-//' @title GGompertz/NBD: LogLikelihood without covariates
-//'
-//' @description
-//'
-//' The function \code{ggomnbd_nocov_LL_ind} calculates the individual LogLikelihood
-//' values for each customer for the given parameters.
-//'
-//' The function \code{ggomnbd_nocov_LL_sum} calculates the LogLikelihood value summed
-//' across customers for the given parameters.
-//'
-//' @param vLogparams vector with the GGompertz/NBD model parameters at log scale
-//' @template template_params_rcppxtxtcal
-//'
-//' @details
-//' \code{r, alpha_0, b, s, beta_0} are the log()-ed model parameters used for
-//' estimation, in this order.\cr
-//' \code{s}: shape parameter of the Gamma distribution for the lifetime process.
-//' The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.\cr
-//' \code{beta}: scale parameter for the Gamma distribution for the lifetime process.\cr
-//' \code{b:} scale parameter of the Gompertz distribution (constant across customers).\cr
-//' \code{r:} shape parameter of the Gamma distribution of the purchase process.
-//' The smaller \code{r}, the stronger the heterogeneity of the pruchase process.\cr
-//' \code{alpha}: scale parameter of the Gamma distribution of the purchase process.\cr
-//'
-//'
-//' Ideally, the starting parameters for r and s represent your best guess
-//' concerning the heterogeneity of customers in their buy and die rate.
-//'
-//'@return
-//'  Returns the respective LogLikelihood value for the GGompertz/NBD Model without covariates.
-//'
-//'@template template_rcpp_ggomnbd_reference
-//'
+//' @rdname ggompnbd_LL
 // [[Rcpp::export]]
 double ggomnbd_nocov_LL_sum(const arma::vec& vLogparams,
                             const arma::vec& vX,
                             const arma::vec& vT_x,
                             const arma::vec& vT_cal){
 
-  // arma::vec ggomnbd_nocov_LL_ind(const arma::vec& vLogparams,
-  //                             const arma::vec& vX,
-  //                             const arma::vec& vT_x,
-  //                             const arma::vec& vT_cal);
+
   arma::vec vLL = ggomnbd_nocov_LL_ind(vLogparams,
                                        vX,
                                        vT_x,
@@ -182,43 +189,8 @@ double ggomnbd_nocov_LL_sum(const arma::vec& vLogparams,
 
 
 
-//' @title GGompertz/NBD: LogLikelihood with static covariates
-//'
-//' @description
-//' GGompertz/NBD with Static Covariates:
-//'
-//' The function \code{ggomnbd_staticcov_LL_ind} calculates the individual LogLikelihood
-//' values for each customer for the given parameters and covariates.
-//'
-//' The function \code{ggomnbd_staticcov_LL_sum} calculates the individual LogLikelihood values summed
-//' across customers.
-//'
-//' @param vParams vector with the parameters for the GGompertz/NBD model and the static covariates. See Details.
-//' @template template_params_rcppxtxtcal
-//' @template template_params_rcppcovmatrix
-//'
-//' @details
-//' \code{vParams} is vector with the GGompertz/NBD model parameters at log scale,
-//' followed by the parameters for the lifetime covariate at original scale and then
-//' followed by the parameters for the transaction covariate at original scale
-//'
-//' \code{mCov_life} is a matrix containing the covariates data of
-//' the time-invariant covariates that affect the lifetime process.
-//' Each column represents a different covariate. For every column, a gamma parameter
-//' needs to added to \code{vParams} at the respective position.
-//'
-//' \code{mCov_trans} is a matrix containing the covariates data of
-//' the time-invariant covariates that affect the transaction process.
-//' Each column represents a different covariate. For every column, a gamma parameter
-//' needs to added to \code{vParams} at the respective position.
-//'
-//'
-//'@return
-//'  Returns the respective LogLikelihood value for the GGompertz/NBD model with static covariates.
-//'
-//'@references
-//' TODO
-//'
+
+//' @rdname ggomnbd_LL
 // [[Rcpp::export]]
 arma::vec ggomnbd_staticcov_LL_ind(const arma::vec& vParams,
                                    const arma::vec& vX,
@@ -262,67 +234,13 @@ arma::vec ggomnbd_staticcov_LL_ind(const arma::vec& vParams,
   // Calculate LL --------------------------------------------------
   //    Calculate value for every customer
   //    Sum of all customers' LL value
-  // arma::vec ggomnbd_LL_ind(const double r,
-  //                       const double b,
-  //                       const double s,
-  //                       const arma::vec & vAlpha_i,
-  //                       const arma::vec & vBeta_i,
-  //                       const arma::vec & vX,
-  //                       const arma::vec & vT_x,
-  //                       const arma::vec & vT_cal);
   return(ggomnbd_LL_ind(r,b,s,vAlpha_i,vBeta_i,vX,vT_x,vT_cal));
 }
 
-//' @name ggomnbd_staticcov_LL_sum
-//' @title GGompertz/NBD: LogLikelihood with static covariates
-//'
-//' @description
-//'
-//' The function \code{ggomnbd_staticcov_LL_ind} calculates the individual LogLikelihood
-//' values for each customer for the given parameters.
-//'
-//' The function \code{ggomnbd_staticcov_LL_sum} calculates the LogLikelihood value summed
-//' across customers for the given parameters.
-//'
-//' @param vParams vector with the parameters for the GGompertz/NBD model and for the static
-//' covariates. See Details.
-//' @template template_params_rcppxtxtcal
-//' @template template_params_rcppcovmatrix
-//'
-//' @details
-//'
-//' \code{vParams} is vector with the GGompertz/NBD model parameters at log scale
-//' (\code{r, alpha_0, b, s, beta_0}), followed by the parameters for the lifetime
-//' covariate at original scale (\code{mCov_life}) and then followed by the parameters
-//' for the transaction covariate at original scale \code{mCov_trans}.
-//' \code{r, alpha_0, b, s, beta_0} are the log()-ed model parameters used for
-//' estimation, in this order.\cr
-//' \code{s}: shape parameter of the Gamma distribution for the lifetime process.
-//' The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.\cr
-//' \code{beta}: scale parameter for the Gamma distribution for the lifetime process.\cr
-//' \code{b:} scale parameter of the Gompertz distribution (constant across customers).\cr
-//' \code{r:} shape parameter of the Gamma distribution of the purchase process.
-//' The smaller \code{r}, the stronger the heterogeneity of the pruchase process.\cr
-//' \code{alpha}: scale parameter of the Gamma distribution of the purchase process.\cr
-//' \code{mCov_life}: parameters for the covariates affecting the lifetime process.\cr
-//' \code{mCov_trans}: parameters for the covariates affecting the transaction process.
 
-//'
-//' \code{mCov_trans} is a matrix containing the covariates data of
-//' the time-invariant covariates that affect the transaction process.
-//' Each column represents a different covariate. For every column, a gamma parameter
-//' needs to added to \code{vParams} at the respective position.
-//'
-//' \code{mCov_life} is a matrix containing the covariates data of
-//' the time-invariant covariates that affect the lifetime process.
-//' Each column represents a different covariate. For every column, a gamma parameter
-//' needs to added to \code{vParams} at the respective position.
-//'
-//'@return
-//'  Returns the respective LogLikelihood value for the GGompertz/NBD model with static covariates.
-//'
-//'@template template_rcpp_ggomnbd_reference
-//'
+
+
+//' @rdname ggomnbd_LL
 // [[Rcpp::export]]
 double ggomnbd_staticcov_LL_sum(const arma::vec& vParams,
                                 const arma::vec& vX,

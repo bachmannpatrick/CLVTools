@@ -6,7 +6,7 @@
 \alias{pnbd_nocov_LL_sum}
 \alias{pnbd_staticcov_LL_ind}
 \alias{pnbd_staticcov_LL_sum}
-\title{Pareto/NBD: Log-Likelihood}
+\title{Pareto/NBD: Log-Likelihood functions}
 \usage{
 pnbd_nocov_LL_ind(vLogparams, vX, vT_x, vT_cal)
 

@@ -5,22 +5,10 @@
 arma::vec beta_ratio(const arma::vec& a, const arma::vec& b, const arma::vec& x, const arma::vec& y);
 
 //' @name bgnbd_LL
-//' @title BG/NBD: Log-Likelihood
 //'
-//' @description
-//' Calculates the Log-likelihood for the BG/NBD model with and without static covariates.
-//'
-//' The function \code{bgnbd_nocov_LL_ind} calculates the individual LogLikelihood
-//' values for each customer for the given parameters.
-//'
-//' The function \code{bgnbd_nocov_LL_sum} calculates the LogLikelihood value summed
-//' across customers for the given parameters.
-//'
-//' The function \code{bgnbd_staticcov_LL_ind} calculates the individual Log-Likelihood
-//' values for each customer for the given parameters and covariates.
-//'
-//' The function \code{bgnbd_staticcov_LL_sum} calculates the individual Log-Likelihood values summed
-//' across customers.
+//' @templateVar name_model_full BG/NBD
+//' @templateVar name_model_short bgnbd
+//' @template template_titledescriptionreturn_LL
 //'
 //' @param vLogparams vector with the BG/NBD model parameters log scaled
 //' @template template_params_rcppxtxtcal
@@ -35,9 +23,6 @@ arma::vec beta_ratio(const arma::vec& a, const arma::vec& b, const arma::vec& x,
 //' @templateVar name_params_cov_life vLogparams
 //' @templateVar name_params_cov_trans vLogparams
 //' @template template_details_rcppcovmatrix
-//'
-//' @return
-//'  Returns the respective LogLikelihood value for the BG/NBD model without covariates.
 //'
 //' @template template_references_bgnbd
 //'
