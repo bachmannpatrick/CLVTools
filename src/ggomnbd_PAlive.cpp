@@ -17,8 +17,7 @@ arma::vec ggomnbd_PAlive(const double r,
   // ggomnbd_LL_ind(r,b,s,vAlpha_i,vBeta_i,vX,vT_x, vT_cal):
   arma::vec vLL = ggomnbd_LL_ind(r, b ,s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal);
 
-  arma::vec vP1(n), vP2(n), vP3(n), vOnes(n);
-  vOnes.fill(1);
+  arma::vec vP1(n), vP2(n), vP3(n);
 
   vP1 = arma::lgamma(r + vX) - lgamma(r);
   vP2 = r * arma::log(vAlpha_i/(vAlpha_i + vT_cal)) + vX % arma::log(1/(vAlpha_i + vT_cal)) + s * arma::log(vBeta_i/(vBeta_i - 1 + exp(b * vT_cal)));

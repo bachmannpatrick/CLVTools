@@ -13,8 +13,7 @@ setClass(Class = "clv.ggomnbd", contains = "clv.fitted",
          slots = c(
            cbs = "data.table"),
 
-         # Prototype is labeled not useful anymore,
-         # but still recommended by Hadley / Bioc
+         # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
          prototype = list(
            cbs = data.table()))
 
