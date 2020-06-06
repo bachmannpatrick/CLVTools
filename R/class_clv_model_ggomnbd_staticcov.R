@@ -11,7 +11,7 @@
 setClass(Class = "clv.model.ggomnbd.static.cov", contains = "clv.model.ggomnbd.no.cov",
          slots = list(start.param.cov = "numeric"),
          prototype = list(
-           start.param.cov = numeric()
+           start.param.cov = numeric(0)
          ))
 
 
@@ -40,7 +40,7 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
                  start.param.cor=start.param.cor, optimx.args=optimx.args, verbose=verbose)
 
   if(length(list(...)) > 0)
-    stop("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
+    check_err_msg("Any further parameters passed in ... are ignored because they are not needed by this model.")
 })
 
 # . clv.model.put.estimation.input ------------------------------------------------------------------------------------------------------------
@@ -97,11 +97,11 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.ggomnbd.static
   r <- alpha_i <- beta_i <- b <- s <- t_i <- tau <- NULL
 
   params_i <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
-  params_i[, r := clv.fitted@prediction.params.model[["r"]]]
+  params_i[, r       := clv.fitted@prediction.params.model[["r"]]]
   params_i[, alpha_i := clv.fitted@prediction.params.model[["alpha"]] * exp( -clv.data.get.matrix.data.cov.trans(clv.fitted@clv.data) %*% clv.fitted@prediction.params.trans)]
   params_i[, beta_i  := clv.fitted@prediction.params.model[["beta"]]  * exp( -clv.data.get.matrix.data.cov.life(clv.fitted@clv.data)  %*% clv.fitted@prediction.params.life)]
-  params_i[, b := clv.fitted@prediction.params.model[["b"]]]
-  params_i[, s := clv.fitted@prediction.params.model[["s"]]]
+  params_i[, b       := clv.fitted@prediction.params.model[["b"]]]
+  params_i[, s       := clv.fitted@prediction.params.model[["s"]]]
 
   fct.ggomnbd.expectation <- function(r, alpha_i, beta_i, b, s, t_i){
 

@@ -44,7 +44,7 @@ setGeneric("ggomnbd", def = function(clv.data, start.params.model=c(), use.cor =
 #' clv.data.cdnow <- clvdata(cdnow, date.format = "ymd",
 #'                             time.unit = "w", estimation.split = 37)
 #'
-#' # Fit standard BG/NBD model
+#' # Fit standard GGompertzNBD model
 #' ggomnbd(clv.data.cdnow)
 #'
 #' # Give initial guesses for the Model parameters

@@ -11,9 +11,8 @@
 setClass(Class = "clv.model.ggomnbd.no.cov", contains = "clv.model",
          # no additional slots required
          slots = list(),
-         # init with model defaults
          prototype = list(
-           name.model                  = character(),
+           name.model                  = character(0),
            names.original.params.model = character(0),
            names.prefixed.params.model = character(0),
            start.params.model          = numeric(0),
@@ -22,11 +21,11 @@ setClass(Class = "clv.model.ggomnbd.no.cov", contains = "clv.model",
 
 clv.model.ggomnbd.no.cov <- function(){
   return(new("clv.model.ggomnbd.no.cov",
-                name.model = "GGompertz/NBD Standard",
-                names.original.params.model = c(r="r", alpha="alpha", b="b", s="s", beta="beta"),
-                names.prefixed.params.model = c("log.r","log.alpha", "log.b", "log.s", "log.beta"),
-                start.params.model          = c(r=1, alpha=1, b=1, s=1, beta=1),
-                optimx.defaults = list(method = "L-BFGS-B",
+             name.model = "GGompertz/NBD Standard",
+             names.original.params.model = c(r="r", alpha="alpha", b="b", s="s", beta="beta"),
+             names.prefixed.params.model = c("log.r","log.alpha", "log.b", "log.s", "log.beta"),
+             start.params.model          = c(r=1, alpha=1, b=1, s=1, beta=1),
+             optimx.defaults = list(method = "L-BFGS-B",
                                     itnmax  = 5000,
                                     control = list(
                                       kkt = TRUE,
@@ -50,7 +49,7 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
   }
 
   if(length(list(...)) > 0){
-    stop("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
+    err.msg <- c(err.msg, "Any further parameters passed in ... are ignored because they are not needed by this model.")
   }
 
   check_err_msg(err.msg)
@@ -111,12 +110,13 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
 #' @importFrom stats integrate
 setMethod("clv.model.expectation", signature(clv.model="clv.model.ggomnbd.no.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
   r <- alpha <- beta <- b <- s <- t_i <- tau <- NULL
+
   params_i <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
-  params_i[, r := clv.fitted@prediction.params.model[["r"]]]
+  params_i[, r     := clv.fitted@prediction.params.model[["r"]]]
   params_i[, alpha := clv.fitted@prediction.params.model[["alpha"]]]
-  params_i[, beta := clv.fitted@prediction.params.model[["beta"]]]
-  params_i[, b := clv.fitted@prediction.params.model[["b"]]]
-  params_i[, s := clv.fitted@prediction.params.model[["s"]]]
+  params_i[, beta  := clv.fitted@prediction.params.model[["beta"]]]
+  params_i[, b     := clv.fitted@prediction.params.model[["b"]]]
+  params_i[, s     := clv.fitted@prediction.params.model[["s"]]]
 
   fct.ggomnbd.expectation <- function(r, alpha, beta, b, s, t_i){
 
@@ -147,7 +147,7 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.ggomnbd.no.cov
   predict.number.of.periods <- dt.prediction[1, period.length]
 
   # Add CET
-  dt.prediction[, CET := ggomnbd_nocov_CET(clv.fitted@prediction.params.model,
+  dt.prediction[, CET := ggomnbd_nocov_CET(vEstimated_params = clv.fitted@prediction.params.model,
                                            dPrediction_period = predict.number.of.periods,
                                            vX = clv.fitted@cbs[, x],
                                            vT_x = clv.fitted@cbs[, t.x],
@@ -156,10 +156,9 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.ggomnbd.no.cov
 
   # Add PAlive
   dt.prediction[, PAlive := ggomnbd_nocov_PAlive(vEstimated_params = clv.fitted@prediction.params.model,
-                                               vX = clv.fitted@cbs[, x],
-                                               vT_x = clv.fitted@cbs[, t.x],
-                                               vT_cal = clv.fitted@cbs[, T.cal]
-                                               )]
+                                                 vX = clv.fitted@cbs[, x],
+                                                 vT_x = clv.fitted@cbs[, t.x],
+                                                 vT_cal = clv.fitted@cbs[, T.cal])]
   # Add DERT
   dt.prediction[, DERT := 0]
 
