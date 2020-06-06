@@ -51,17 +51,17 @@ The function \code{pnbd_staticcov_LL_sum} calculates the individual LogLikelihoo
 across customers.
 }
 \details{
-\code{r, alpha_0, s, beta_0} are the model parameters used for estimation.\cr
+\code{vParams} is vector with the Pareto/NBD model parameters at log scale,
+followed by the parameters for the lifetime covariates at original scale and then
+followed by the parameters for the transaction covariates at original scale
+
+\code{vLogparams} is a vector with model parameters \code{r, alpha_0, s, beta_0} at log-scale, in this order.\cr
 s: shape parameter of the Gamma distribution for the lifetime process.
 The smaller s, the stronger the heterogeneity of customer lifetimes. \cr
 beta: scale parameter for the Gamma distribution for the lifetime process. \cr
 r: shape parameter of the Gamma distribution of the purchase process.
 The smaller r, the stronger the heterogeneity of the purchase process.\cr
 alpha: scale parameter of the Gamma distribution of the purchase process.
-
-\code{vParams} is vector with the Pareto/NBD model parameters at log scale,
-followed by the parameters for the lifetime covariates at original scale and then
-followed by the parameters for the transaction covariates at original scale
 
 \code{mCov_trans} is a matrix containing the covariates data of
 the time-invariant covariates that affect the transaction process.

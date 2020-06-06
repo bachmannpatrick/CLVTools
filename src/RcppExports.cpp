@@ -76,34 +76,34 @@ BEGIN_RCPP
 END_RCPP
 }
 // bgnbd_staticcov_LL_ind
-arma::vec bgnbd_staticcov_LL_ind(const arma::vec& vLogparams, const arma::vec& vX, const arma::vec& vT_x, const arma::vec& vT_cal, const arma::mat& mCov_life, const arma::mat& mCov_trans);
-RcppExport SEXP _CLVTools_bgnbd_staticcov_LL_ind(SEXP vLogparamsSEXP, SEXP vXSEXP, SEXP vT_xSEXP, SEXP vT_calSEXP, SEXP mCov_lifeSEXP, SEXP mCov_transSEXP) {
+arma::vec bgnbd_staticcov_LL_ind(const arma::vec& vParams, const arma::vec& vX, const arma::vec& vT_x, const arma::vec& vT_cal, const arma::mat& mCov_life, const arma::mat& mCov_trans);
+RcppExport SEXP _CLVTools_bgnbd_staticcov_LL_ind(SEXP vParamsSEXP, SEXP vXSEXP, SEXP vT_xSEXP, SEXP vT_calSEXP, SEXP mCov_lifeSEXP, SEXP mCov_transSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type vLogparams(vLogparamsSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type vParams(vParamsSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vX(vXSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vT_x(vT_xSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vT_cal(vT_calSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type mCov_life(mCov_lifeSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type mCov_trans(mCov_transSEXP);
-    rcpp_result_gen = Rcpp::wrap(bgnbd_staticcov_LL_ind(vLogparams, vX, vT_x, vT_cal, mCov_life, mCov_trans));
+    rcpp_result_gen = Rcpp::wrap(bgnbd_staticcov_LL_ind(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans));
     return rcpp_result_gen;
 END_RCPP
 }
 // bgnbd_staticcov_LL_sum
-double bgnbd_staticcov_LL_sum(const arma::vec& vLogparams, const arma::vec& vX, const arma::vec& vT_x, const arma::vec& vT_cal, const arma::mat& mCov_life, const arma::mat& mCov_trans);
-RcppExport SEXP _CLVTools_bgnbd_staticcov_LL_sum(SEXP vLogparamsSEXP, SEXP vXSEXP, SEXP vT_xSEXP, SEXP vT_calSEXP, SEXP mCov_lifeSEXP, SEXP mCov_transSEXP) {
+double bgnbd_staticcov_LL_sum(const arma::vec& vParams, const arma::vec& vX, const arma::vec& vT_x, const arma::vec& vT_cal, const arma::mat& mCov_life, const arma::mat& mCov_trans);
+RcppExport SEXP _CLVTools_bgnbd_staticcov_LL_sum(SEXP vParamsSEXP, SEXP vXSEXP, SEXP vT_xSEXP, SEXP vT_calSEXP, SEXP mCov_lifeSEXP, SEXP mCov_transSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type vLogparams(vLogparamsSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type vParams(vParamsSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vX(vXSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vT_x(vT_xSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vT_cal(vT_calSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type mCov_life(mCov_lifeSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type mCov_trans(mCov_transSEXP);
-    rcpp_result_gen = Rcpp::wrap(bgnbd_staticcov_LL_sum(vLogparams, vX, vT_x, vT_cal, mCov_life, mCov_trans));
+    rcpp_result_gen = Rcpp::wrap(bgnbd_staticcov_LL_sum(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans));
     return rcpp_result_gen;
 END_RCPP
 }

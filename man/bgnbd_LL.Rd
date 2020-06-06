@@ -12,9 +12,9 @@ bgnbd_nocov_LL_ind(vLogparams, vX, vT_x, vT_cal)
 
 bgnbd_nocov_LL_sum(vLogparams, vX, vT_x, vT_cal)
 
-bgnbd_staticcov_LL_ind(vLogparams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
+bgnbd_staticcov_LL_ind(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 
-bgnbd_staticcov_LL_sum(vLogparams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
+bgnbd_staticcov_LL_sum(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
 \arguments{
 \item{vLogparams}{vector with the BG/NBD model parameters log scaled}
@@ -49,15 +49,18 @@ The function \code{bgnbd_staticcov_LL_sum} calculates the individual LogLikeliho
 across customers.
 }
 \details{
-\code{vLogparams} is vector with the BG/NBD model parameters at log scale,
-followed by the parameters for the lifetime covariate at original scale and then
-followed by the parameters for the transaction covariate at original scale.
+\code{vParams} is vector with the BG/NBD model parameters at log scale,
+followed by the parameters for the lifetime covariates at original scale and then
+followed by the parameters for the transaction covariates at original scale
 
 Model parameters for the BG/NBD model are \code{r, alpha, a, and b}. \cr
 \code{r}: shape parameter of the Gamma distribution of the purchase process. \cr
 \code{alpha}: scale parameter of the Gamma distribution of the purchase process. \cr
 \code{a}: shape parameter of the Beta distribution of the dropout process.\cr
 \code{b}: shape parameter of the Beta distribution of the dropout process.
+
+\code{vLogparams} is a vector with model parameters
+\code{r, alpha_0, b, s, beta_0} at log-scale, in this order.\cr
 
 \code{mCov_trans} is a matrix containing the covariates data of
 the time-invariant covariates that affect the transaction process.

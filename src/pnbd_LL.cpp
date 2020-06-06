@@ -7,16 +7,14 @@
 //'
 //' @templateVar name_model_full Pareto/NBD
 //' @templateVar name_model_short pnbd
-//' @template template_titledescriptionreturn_LL
+//' @template template_titledescriptionreturndetails_LL
 //'
 //' @param vLogparams vector with the Pareto/NBD model parameters log scaled. See Details.
 //' @template template_params_rcppxtxtcal
 //' @param vParams vector with the parameters for the Pareto/NBD model and the static covariates. See Details.
 //' @template template_params_rcppcovmatrix
 //'
-//' @details
-//'
-//' \code{r, alpha_0, s, beta_0} are the model parameters used for estimation.\cr
+//' @details \code{vLogparams} is a vector with model parameters \code{r, alpha_0, s, beta_0} at log-scale, in this order.\cr
 //' s: shape parameter of the Gamma distribution for the lifetime process.
 //' The smaller s, the stronger the heterogeneity of customer lifetimes. \cr
 //' beta: scale parameter for the Gamma distribution for the lifetime process. \cr
@@ -24,9 +22,6 @@
 //' The smaller r, the stronger the heterogeneity of the purchase process.\cr
 //' alpha: scale parameter of the Gamma distribution of the purchase process.
 //'
-//' \code{vParams} is vector with the Pareto/NBD model parameters at log scale,
-//' followed by the parameters for the lifetime covariates at original scale and then
-//' followed by the parameters for the transaction covariates at original scale
 //'
 //' @templateVar name_params_cov_life vParams
 //' @templateVar name_params_cov_trans vParams

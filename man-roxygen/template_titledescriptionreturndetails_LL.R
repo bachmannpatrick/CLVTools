@@ -16,6 +16,10 @@
 #' The function \code{<%=name_model_short%>_staticcov_LL_sum} calculates the individual LogLikelihood values summed
 #' across customers.
 #'
+#' @details \code{vParams} is vector with the <%=name_model_full %> model parameters at log scale,
+#' followed by the parameters for the lifetime covariates at original scale and then
+#' followed by the parameters for the transaction covariates at original scale
+#'
 #' @return
 #'  Returns the respective Log-Likelihood value(s) for the <%=name_model_full %> model
 #'  with or without covariates.

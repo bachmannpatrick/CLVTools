@@ -41,17 +41,16 @@ bgnbd_staticcov_CET <- function(r, alpha, a, b, dPeriods, vX, vT_x, vT_cal, vCov
 #'
 #' @templateVar name_model_full BG/NBD
 #' @templateVar name_model_short bgnbd
-#' @template template_titledescriptionreturn_LL
+#' @template template_titledescriptionreturndetails_LL
 #'
 #' @param vLogparams vector with the BG/NBD model parameters log scaled
 #' @template template_params_rcppxtxtcal
 #' @template template_params_rcppcovmatrix
 #'
-#' @details
-#' \code{vLogparams} is vector with the BG/NBD model parameters at log scale,
-#' followed by the parameters for the lifetime covariate at original scale and then
-#' followed by the parameters for the transaction covariate at original scale.
 #' @template template_details_paramsbgnbd
+#'
+#' @details \code{vLogparams} is a vector with model parameters
+#' \code{r, alpha_0, b, s, beta_0} at log-scale, in this order.\cr
 #'
 #' @templateVar name_params_cov_life vLogparams
 #' @templateVar name_params_cov_trans vLogparams
@@ -72,13 +71,13 @@ bgnbd_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal) {
 }
 
 #' @rdname bgnbd_LL
-bgnbd_staticcov_LL_ind <- function(vLogparams, vX, vT_x, vT_cal, mCov_life, mCov_trans) {
-    .Call(`_CLVTools_bgnbd_staticcov_LL_ind`, vLogparams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
+bgnbd_staticcov_LL_ind <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans) {
+    .Call(`_CLVTools_bgnbd_staticcov_LL_ind`, vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
 
 #' @rdname bgnbd_LL
-bgnbd_staticcov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal, mCov_life, mCov_trans) {
-    .Call(`_CLVTools_bgnbd_staticcov_LL_sum`, vLogparams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
+bgnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans) {
+    .Call(`_CLVTools_bgnbd_staticcov_LL_sum`, vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
 
 #' @name bgnbd_PAlive
@@ -204,44 +203,22 @@ ggomnbd_staticcov_CET <- function(vEstimated_params, dPrediction_period, vX, vT_
     .Call(`_CLVTools_ggomnbd_staticcov_CET`, vEstimated_params, dPrediction_period, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans)
 }
 
-#' Ideally, the starting parameters for r and s represent your best guess
-#' concerning the heterogeneity of customers in their buy and die rate.
-#' \code{vParams} is vector with the GGompertz/NBD model parameters at log scale
-#' (\code{r, alpha_0, b, s, beta_0}), followed by the parameters for the lifetime
-#' covariate at original scale (\code{mCov_life}) and then followed by the parameters
-#' for the transaction covariate at original scale \code{mCov_trans}.
-#' \code{r, alpha_0, b, s, beta_0} are the log()-ed model parameters used for
-#' estimation, in this order.\cr
-#' \code{s}: shape parameter of the Gamma distribution for the lifetime process.
-#' The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.\cr
-#' \code{beta}: scale parameter for the Gamma distribution for the lifetime process.\cr
-#' \code{b:} scale parameter of the Gompertz distribution (constant across customers).\cr
-#' \code{r:} shape parameter of the Gamma distribution of the purchase process.
-#' The smaller \code{r}, the stronger the heterogeneity of the pruchase process.\cr
-NULL
-
 #' @name ggomnbd_LL
 #'
 #' @templateVar name_model_full GGompertz/NBD
 #' @templateVar name_model_short ggomnbd
-#' @template template_titledescriptionreturn_LL
+#' @template template_titledescriptionreturndetails_LL
 #'
 #' @param vLogparams vector with the GGompertz/NBD model parameters log scaled. See Details.
 #' @param vParams vector with the parameters for the GGompertz/NBD model and the static covariates. See Details.
+#'
 #' @template template_params_rcppxtxtcal
 #' @template template_params_rcppcovmatrix
 #'
-#' @details
+#' @details \code{vLogparams} is a vector with model parameters
+#' \code{r, alpha_0, b, s, beta_0} at log-scale, in this order.\cr
 #'
-#' \code{r, alpha_0, b, s, beta_0} are the log()-ed model parameters used for
-#' estimation, in this order.\cr
-#' \code{s}: shape parameter of the Gamma distribution for the lifetime process.
-#' The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.\cr
-#' \code{beta}: scale parameter for the Gamma distribution for the lifetime process.\cr
-#' \code{b:} scale parameter of the Gompertz distribution (constant across customers).\cr
-#' \code{r:} shape parameter of the Gamma distribution of the purchase process.
-#' The smaller \code{r}, the stronger the heterogeneity of the pruchase process.\cr
-#' \code{alpha}: scale parameter of the Gamma distribution of the purchase process.\cr
+#' @template template_details_paramsggomnbd
 #'
 #' @templateVar name_params_cov_life vParams
 #' @templateVar name_params_cov_trans vParams
@@ -256,7 +233,7 @@ ggomnbd_nocov_LL_ind <- function(vLogparams, vX, vT_x, vT_cal) {
     .Call(`_CLVTools_ggomnbd_nocov_LL_ind`, vLogparams, vX, vT_x, vT_cal)
 }
 
-#' @rdname ggompnbd_LL
+#' @rdname ggomnbd_LL
 ggomnbd_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal) {
     .Call(`_CLVTools_ggomnbd_nocov_LL_sum`, vLogparams, vX, vT_x, vT_cal)
 }
@@ -439,16 +416,14 @@ pnbd_staticcov_DERT <- function(vEstimated_params, continuous_discount_factor, v
 #'
 #' @templateVar name_model_full Pareto/NBD
 #' @templateVar name_model_short pnbd
-#' @template template_titledescriptionreturn_LL
+#' @template template_titledescriptionreturndetails_LL
 #'
 #' @param vLogparams vector with the Pareto/NBD model parameters log scaled. See Details.
 #' @template template_params_rcppxtxtcal
 #' @param vParams vector with the parameters for the Pareto/NBD model and the static covariates. See Details.
 #' @template template_params_rcppcovmatrix
 #'
-#' @details
-#'
-#' \code{r, alpha_0, s, beta_0} are the model parameters used for estimation.\cr
+#' @details \code{vLogparams} is a vector with model parameters \code{r, alpha_0, s, beta_0} at log-scale, in this order.\cr
 #' s: shape parameter of the Gamma distribution for the lifetime process.
 #' The smaller s, the stronger the heterogeneity of customer lifetimes. \cr
 #' beta: scale parameter for the Gamma distribution for the lifetime process. \cr
@@ -456,9 +431,6 @@ pnbd_staticcov_DERT <- function(vEstimated_params, continuous_discount_factor, v
 #' The smaller r, the stronger the heterogeneity of the purchase process.\cr
 #' alpha: scale parameter of the Gamma distribution of the purchase process.
 #'
-#' \code{vParams} is vector with the Pareto/NBD model parameters at log scale,
-#' followed by the parameters for the lifetime covariates at original scale and then
-#' followed by the parameters for the transaction covariates at original scale
 #'
 #' @templateVar name_params_cov_life vParams
 #' @templateVar name_params_cov_trans vParams

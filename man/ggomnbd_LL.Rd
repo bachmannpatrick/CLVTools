@@ -3,11 +3,14 @@
 \name{ggomnbd_LL}
 \alias{ggomnbd_LL}
 \alias{ggomnbd_nocov_LL_ind}
+\alias{ggomnbd_nocov_LL_sum}
 \alias{ggomnbd_staticcov_LL_ind}
 \alias{ggomnbd_staticcov_LL_sum}
 \title{GGompertz/NBD: Log-Likelihood functions}
 \usage{
 ggomnbd_nocov_LL_ind(vLogparams, vX, vT_x, vT_cal)
+
+ggomnbd_nocov_LL_sum(vLogparams, vX, vT_x, vT_cal)
 
 ggomnbd_staticcov_LL_ind(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 
@@ -48,15 +51,21 @@ The function \code{ggomnbd_staticcov_LL_sum} calculates the individual LogLikeli
 across customers.
 }
 \details{
-\code{r, alpha_0, b, s, beta_0} are the log()-ed model parameters used for
-estimation, in this order.\cr
-\code{s}: shape parameter of the Gamma distribution for the lifetime process.
-The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.\cr
-\code{beta}: scale parameter for the Gamma distribution for the lifetime process.\cr
-\code{b:} scale parameter of the Gompertz distribution (constant across customers).\cr
-\code{r:} shape parameter of the Gamma distribution of the purchase process.
-The smaller \code{r}, the stronger the heterogeneity of the pruchase process.\cr
+\code{vParams} is vector with the GGompertz/NBD model parameters at log scale,
+followed by the parameters for the lifetime covariates at original scale and then
+followed by the parameters for the transaction covariates at original scale
+
+\code{vLogparams} is a vector with model parameters
+\code{r, alpha_0, b, s, beta_0} at log-scale, in this order.\cr
+
+Model parameters for the GGompertz /NBD model are \code{r, alpha, beta, b and s}. \cr
+\code{r}: shape parameter of the Gamma distribution of the purchase process.
+The smaller \code{r}, the stronger the heterogeneity of the purchase process.\cr
 \code{alpha}: scale parameter of the Gamma distribution of the purchase process.\cr
+\code{beta}: scale parameter for the Gamma distribution for the lifetime process.\cr
+\code{b}: scale parameter of the Gompertz distribution (constant across customers).\cr
+\code{s}: shape parameter of the Gamma distribution for the lifetime process.
+The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.
 
 \code{mCov_trans} is a matrix containing the covariates data of
 the time-invariant covariates that affect the transaction process.

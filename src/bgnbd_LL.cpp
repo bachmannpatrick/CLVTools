@@ -8,16 +8,15 @@ arma::vec beta_ratio(const arma::vec& a, const arma::vec& b, const arma::vec& x,
 //'
 //' @templateVar name_model_full BG/NBD
 //' @templateVar name_model_short bgnbd
-//' @template template_titledescriptionreturn_LL
+//' @template template_titledescriptionreturndetails_LL
 //'
 //' @param vLogparams vector with the BG/NBD model parameters log scaled
 //' @template template_params_rcppxtxtcal
 //' @template template_params_rcppcovmatrix
 //'
-//' @details
-//' \code{vLogparams} is vector with the BG/NBD model parameters at log scale,
-//' followed by the parameters for the lifetime covariate at original scale and then
-//' followed by the parameters for the transaction covariate at original scale.
+//' @details \code{vLogparams} is a vector with model parameters
+//' \code{r, alpha_0, b, s, beta_0} at log-scale, in this order.\cr
+//'
 //' @template template_details_paramsbgnbd
 //'
 //' @templateVar name_params_cov_life vLogparams
@@ -89,7 +88,7 @@ double bgnbd_nocov_LL_sum(const arma::vec& vLogparams,
 
 //' @rdname bgnbd_LL
 // [[Rcpp::export]]
-arma::vec bgnbd_staticcov_LL_ind(const arma::vec& vLogparams,
+arma::vec bgnbd_staticcov_LL_ind(const arma::vec& vParams,
                                  const arma::vec& vX,
                                  const arma::vec& vT_x,
                                  const arma::vec& vT_cal,
@@ -98,9 +97,9 @@ arma::vec bgnbd_staticcov_LL_ind(const arma::vec& vLogparams,
   const double no_cov_life  = mCov_life.n_cols;
   const double no_cov_trans = mCov_trans.n_cols;
 
-  const arma::vec vModel_log_params = vLogparams.subvec(0,3);  // elements 0,1,2,3 = 4 params
-  const arma::vec vLife_params      = vLogparams.subvec(4              , 4+no_cov_life                - 1);
-  const arma::vec vTrans_params     = vLogparams.subvec(4 + no_cov_life, 4+no_cov_life + no_cov_trans - 1);
+  const arma::vec vModel_log_params = vParams.subvec(0,3);  // elements 0,1,2,3 = 4 params
+  const arma::vec vLife_params      = vParams.subvec(4              , 4+no_cov_life                - 1);
+  const arma::vec vTrans_params     = vParams.subvec(4 + no_cov_life, 4+no_cov_life + no_cov_trans - 1);
 
   const double r        = exp(vModel_log_params(0));
   const double alpha_0  = exp(vModel_log_params(1));
@@ -132,13 +131,13 @@ arma::vec bgnbd_staticcov_LL_ind(const arma::vec& vLogparams,
 
 //' @rdname bgnbd_LL
 // [[Rcpp::export]]
-double bgnbd_staticcov_LL_sum(const arma::vec& vLogparams,
+double bgnbd_staticcov_LL_sum(const arma::vec& vParams,
                               const arma::vec& vX,
                               const arma::vec& vT_x,
                               const arma::vec& vT_cal,
                               const arma::mat& mCov_life,
                               const arma::mat& mCov_trans){
-  arma::vec vLL = bgnbd_staticcov_LL_ind(vLogparams,
+  arma::vec vLL = bgnbd_staticcov_LL_ind(vParams,
                                          vX,
                                          vT_x,
                                          vT_cal,
