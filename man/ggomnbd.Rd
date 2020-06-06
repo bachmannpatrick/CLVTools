@@ -96,7 +96,7 @@ data("cdnow")
 clv.data.cdnow <- clvdata(cdnow, date.format = "ymd",
                             time.unit = "w", estimation.split = 37)
 
-# Fit standard BG/NBD model
+# Fit standard GGompertzNBD model
 ggomnbd(clv.data.cdnow)
 
 # Give initial guesses for the Model parameters

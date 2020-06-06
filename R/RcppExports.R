@@ -87,6 +87,45 @@ ggomnbd_nocov_CET <- function(vEstimated_params, dPrediction_period, vX, vT_x, v
     .Call(`_CLVTools_ggomnbd_nocov_CET`, vEstimated_params, dPrediction_period, vX, vT_x, vT_cal)
 }
 
+ggomnbd_staticcov_CET <- function(vEstimated_params, dPrediction_period, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans) {
+    .Call(`_CLVTools_ggomnbd_staticcov_CET`, vEstimated_params, dPrediction_period, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans)
+}
+
+#' @name ggomnbd_staticcov_LL_sum
+#' @title GGompertz/NBD: LogLikelihood with static covariates
+#'
+#' @description
+#'
+#' The function \code{ggomnbd_staticcov_LL_ind} calculates the individual LogLikelihood
+#' values for each customer for the given parameters.
+#'
+#' The function \code{ggomnbd_staticcov_LL_sum} calculates the LogLikelihood value summed
+#' across customers for the given parameters.
+#'
+#' @param vParams vector with the parameters for the GGompertz/NBD model and for the static
+#' covariates. See Details.
+#' @template template_params_rcppxtxtcal
+#' @template template_params_rcppcovmatrix
+#'
+#' @details
+#'
+#' \code{vParams} is vector with the GGompertz/NBD model parameters at log scale
+#' (\code{r, alpha_0, b, s, beta_0}), followed by the parameters for the lifetime
+#' covariate at original scale (\code{mCov_life}) and then followed by the parameters
+#' for the transaction covariate at original scale \code{mCov_trans}.
+#' \code{r, alpha_0, b, s, beta_0} are the log()-ed model parameters used for
+#' estimation, in this order.\cr
+#' \code{s}: shape parameter of the Gamma distribution for the lifetime process.
+#' The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.\cr
+#' \code{beta}: scale parameter for the Gamma distribution for the lifetime process.\cr
+#' \code{b:} scale parameter of the Gompertz distribution (constant across customers).\cr
+#' \code{r:} shape parameter of the Gamma distribution of the purchase process.
+#' The smaller \code{r}, the stronger the heterogeneity of the pruchase process.\cr
+#' \code{alpha}: scale parameter of the Gamma distribution of the purchase process.\cr
+#' \code{mCov_life}: parameters for the covariates affecting the lifetime process.\cr
+#' \code{mCov_trans}: parameters for the covariates affecting the transaction process.
+NULL
+
 #' @rdname ggomnbd_nocov_LL_sum
 ggomnbd_nocov_LL_ind <- function(vLogparams, vX, vT_x, vT_cal) {
     .Call(`_CLVTools_ggomnbd_nocov_LL_ind`, vLogparams, vX, vT_x, vT_cal)
@@ -129,36 +168,6 @@ ggomnbd_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal) {
     .Call(`_CLVTools_ggomnbd_nocov_LL_sum`, vLogparams, vX, vT_x, vT_cal)
 }
 
-#' GGompertz/NBD: PAlive without Covariates
-#'
-#' Calculates the probability of a customer being alive (PAlive) at the
-#' end of the calibration period in the GGompertz/NBD model
-#'
-#' @template template_params_rcpp_ggomnbd_estimatedparams
-#' @template template_params_rcppxtxtcal
-#'
-#' @details
-#' \code{r, alpha_0, b, s, beta_0} are the log()-ed model parameters used for
-#' estimation, in this order.\cr
-#' \code{s}: shape parameter of the Gamma distribution for the lifetime process. The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.\cr
-#' \code{beta}: scale parameter for the Gamma distribution for the lifetime process.\cr
-#' \code{b:} scale parameter of the Gompertz distribution (constant across customers).\cr
-#' \code{r:} shape parameter of the Gamma distribution of the purchase process. The smaller \code{r}, the stronger the heterogeneity of the pruchase process.\cr
-#' \code{alpha}: scale parameter of the Gamma distribution of the purchase process.\cr
-#'
-#' @return
-#' Returns a vector containing the PAlive for each customer.
-#'
-#' @template template_rcpp_ggomnbd_reference
-#'
-ggomnbd_nocov_PAlive <- function(vEstimated_params, vX, vT_x, vT_cal) {
-    .Call(`_CLVTools_ggomnbd_nocov_PAlive`, vEstimated_params, vX, vT_x, vT_cal)
-}
-
-ggomnbd_staticcov_CET <- function(vEstimated_params, dPrediction_period, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans) {
-    .Call(`_CLVTools_ggomnbd_staticcov_CET`, vEstimated_params, dPrediction_period, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans)
-}
-
 #' @title GGompertz/NBD: LogLikelihood with static covariates
 #'
 #' @description
@@ -199,41 +208,6 @@ ggomnbd_staticcov_CET <- function(vEstimated_params, dPrediction_period, vX, vT_
 ggomnbd_staticcov_LL_ind <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans) {
     .Call(`_CLVTools_ggomnbd_staticcov_LL_ind`, vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
-
-#' @name ggomnbd_staticcov_LL_sum
-#' @title GGompertz/NBD: LogLikelihood with static covariates
-#'
-#' @description
-#'
-#' The function \code{ggomnbd_staticcov_LL_ind} calculates the individual LogLikelihood
-#' values for each customer for the given parameters.
-#'
-#' The function \code{ggomnbd_staticcov_LL_sum} calculates the LogLikelihood value summed
-#' across customers for the given parameters.
-#'
-#' @param vParams vector with the parameters for the GGompertz/NBD model and for the static
-#' covariates. See Details.
-#' @template template_params_rcppxtxtcal
-#' @template template_params_rcppcovmatrix
-#'
-#' @details
-#'
-#' \code{vParams} is vector with the GGompertz/NBD model parameters at log scale
-#' (\code{r, alpha_0, b, s, beta_0}), followed by the parameters for the lifetime
-#' covariate at original scale (\code{mCov_life}) and then followed by the parameters
-#' for the transaction covariate at original scale \code{mCov_trans}.
-#' \code{r, alpha_0, b, s, beta_0} are the log()-ed model parameters used for
-#' estimation, in this order.\cr
-#' \code{s}: shape parameter of the Gamma distribution for the lifetime process.
-#' The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.\cr
-#' \code{beta}: scale parameter for the Gamma distribution for the lifetime process.\cr
-#' \code{b:} scale parameter of the Gompertz distribution (constant across customers).\cr
-#' \code{r:} shape parameter of the Gamma distribution of the purchase process.
-#' The smaller \code{r}, the stronger the heterogeneity of the pruchase process.\cr
-#' \code{alpha}: scale parameter of the Gamma distribution of the purchase process.\cr
-#' \code{mCov_life}: parameters for the covariates affecting the lifetime process.\cr
-#' \code{mCov_trans}: parameters for the covariates affecting the transaction process.
-NULL
 
 #'
 #' \code{mCov_trans} is a matrix containing the covariates data of
@@ -301,6 +275,32 @@ ggomnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_
 #'
 ggomnbd_staticcov_PAlive <- function(vEstimated_params, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans) {
     .Call(`_CLVTools_ggomnbd_staticcov_PAlive`, vEstimated_params, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans)
+}
+
+#' GGompertz/NBD: PAlive without Covariates
+#'
+#' Calculates the probability of a customer being alive (PAlive) at the
+#' end of the calibration period in the GGompertz/NBD model
+#'
+#' @template template_params_rcpp_ggomnbd_estimatedparams
+#' @template template_params_rcppxtxtcal
+#'
+#' @details
+#' \code{r, alpha_0, b, s, beta_0} are the log()-ed model parameters used for
+#' estimation, in this order.\cr
+#' \code{s}: shape parameter of the Gamma distribution for the lifetime process. The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.\cr
+#' \code{beta}: scale parameter for the Gamma distribution for the lifetime process.\cr
+#' \code{b:} scale parameter of the Gompertz distribution (constant across customers).\cr
+#' \code{r:} shape parameter of the Gamma distribution of the purchase process. The smaller \code{r}, the stronger the heterogeneity of the pruchase process.\cr
+#' \code{alpha}: scale parameter of the Gamma distribution of the purchase process.\cr
+#'
+#' @return
+#' Returns a vector containing the PAlive for each customer.
+#'
+#' @template template_rcpp_ggomnbd_reference
+#'
+ggomnbd_nocov_PAlive <- function(vEstimated_params, vX, vT_x, vT_cal) {
+    .Call(`_CLVTools_ggomnbd_nocov_PAlive`, vEstimated_params, vX, vT_x, vT_cal)
 }
 
 #' @name pnbd_CET
