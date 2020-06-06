@@ -5,7 +5,7 @@ skip_on_cran()
 #   same fit with all covs = 0
 #   same predict with gamma=0
 
-context("Nocov/cov Consistency - BG/NBD - all cov data = 0")
+context("Nocov/cov Consistency - GGompertz/NBD - all cov data = 0")
 data("apparelTrans")
 expect_silent(clv.apparel <- clvdata(data.transactions = apparelTrans, date.format = "ymd", time.unit = "w",
                                      estimation.split = 38))
@@ -30,7 +30,7 @@ fct.testthat.consistency.cov.data.0.model.params.nearly.same(m.nocov = g.nocov,
                                                              m.static = g.static,
                                                              param.names = c("r", "alpha", "b", "s", "beta"))
 
-context("Nocov/cov Consistency - BG/NBD - cov params = 0")
+context("Nocov/cov Consistency - GGompertz/NBD - cov params = 0")
 
 # Set parameters ------------------------------------------------------------------------
 # Fake the parameters to be exactly the same and 0 for covariates
