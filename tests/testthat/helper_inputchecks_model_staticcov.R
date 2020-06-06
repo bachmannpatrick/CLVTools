@@ -204,12 +204,12 @@
 }
 
 
-fct.helper.inputchecks.check.all.static.cov.model <- function(fct.model, l.std.args, name.model){
+fct.helper.inputchecks.check.all.static.cov.model <- function(fct.model, l.std.args, name.model, correct.params, param.names){
 
   context(paste0("Inputchecks - ", name.model," - Parameter start.params.model"))
   .fct.helper.inputchecks.startparamsmodel(fct.model = fct.model, l.std.args = l.std.args,
-                                           correct.params = c(alpha=1, beta=1, r=1, s=1),
-                                           names.params = c("alpha", "beta", "r", "s"))
+                                           correct.params = correct.params,
+                                           names.params = param.names)
 
   context(paste0("Inputchecks - ", name.model," - Parameter use.cor"))
   .fct.helper.inputchecks.usecor(fct.model = fct.model, l.std.args = l.std.args,

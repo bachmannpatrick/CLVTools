@@ -4,10 +4,10 @@
 #' to fit the Pareto/NBD model without covariates.
 #'
 #' @keywords internal
-#' @importFrom methods setClass
 #' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.pnbd.static.cov-class}, \link{clv.model.pnbd.dynamic.cov-class}
 #' @seealso Classes using its instance: \link{clv.fitted-class}
 #' @include all_generics.R class_clv_model.R
+#' @importFrom methods setClass
 setClass(Class = "clv.model.pnbd.no.cov", contains = "clv.model",
          # no additional slots for pnbd base model
 
@@ -81,7 +81,6 @@ setMethod("clv.model.backtransform.estimated.params.model", signature = signatur
 # .clv.model.prepare.optimx.args --------------------------------------------------------------------------------------------------------
 #' @importFrom utils modifyList
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
-  # Also model optimization settings should go here
 
   # Only add LL function args, everything else is prepared already, incl. start parameters
   optimx.args <- modifyList(prepared.optimx.args,
@@ -100,7 +99,7 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
 })
 
 # . clv.model.process.post.estimation -----------------------------------------------------------------------------------------
-setMethod("clv.model.process.post.estimation", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, res.optimx){
+setMethod("clv.model.process.post.estimation", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, res.optimx){
   # No additional step needed (ie store model specific stuff, extra process)
   return(clv.fitted)
 })

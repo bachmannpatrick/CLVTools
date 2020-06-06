@@ -35,7 +35,6 @@ fct.testthat.runability.nocov.predict.newdata.spending <- function(method, data.
   })
 }
 
-
 fct.testthat.runability.nocov.hourly.data <- function(method, data.cdnow, start.params.model){
   test_that("Works with hourly data", {
     skip_on_cran()

@@ -30,7 +30,7 @@ pnbd_staticcov_PAlive(
 
 \item{vCovParams_trans}{Vector of estimated parameters for the transaction covariates.}
 
-\item{vCovParams_life}{Vector of estimated parameters for the dropout covariates.}
+\item{vCovParams_life}{Vector of estimated parameters for the lifetime covariates.}
 
 \item{mCov_trans}{Matrix containing the covariates data affecting the transaction process. One column for each covariate.}
 
@@ -65,7 +65,14 @@ Each column represents a different covariate. For every column a gamma parameter
 needs to added to \code{vCovParams_life} at the respective position.
 }
 \references{
-Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
- Pareto/NBD Model and Related Expressions.", Web.
- \url{http://www.brucehardie.com/notes/008/}.
+Schmittlein DC, Morrison DG, Colombo R (1987). \dQuote{Counting Your Customers:
+Who-Are They and What Will They Do Next?} Management Science, 33(1), 1–24.
+
+Fader PS, Hardie BGS (2005). \dQuote{A Note on Deriving the Pareto/NBD Model and
+Related Expressions.}
+URL \url{http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf}.
+
+Fader PS, Hardie BG (2007). \dQuote{Incorporating time-invariant covariates into the
+Pareto/NBD and BG/NBD models.}
+URL \url{http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf}.
 }

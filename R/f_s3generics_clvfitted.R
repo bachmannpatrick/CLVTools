@@ -83,7 +83,7 @@ coef.clv.fitted <- function(object, ...){
 #' Next, because some parameters may be transformed for the purpose of restricting their value during
 #' the log-likelihood estimation, the variance estimates are adapted to
 #' be comparable to the reported coefficient estimates.
-#' If the result is not positive definite, \link[Matrix:nearPD]{nearPD} is used
+#' If the result is not positive definite, \link[Matrix:nearPD]{Matrix::nearPD} is used
 #' with standard settings to find the nearest positive definite matrix.
 #'
 #' If multiple estimation methods were used, the Hessian of the last method is used.
@@ -94,7 +94,7 @@ coef.clv.fitted <- function(object, ...){
 #'
 # @references  Jeff's "Note on p-values"
 #'
-#' @seealso \link[MASS]{ginv}, \link[Matrix]{nearPD}
+#' @seealso \link[MASS:ginv]{MASS::ginv}, \link[Matrix:nearPD]{Matrix::nearPD}
 #'
 #'
 #' @importFrom stats vcov
@@ -317,7 +317,7 @@ print.summary.clv.fitted <- function(x, digits=max(3L, getOption("digits")-3L),
 
 
 
-#' @template template_summary
+#' @template template_summary_clvfitted
 #' @order 1
 #' @importFrom stats coef vcov AIC BIC logLik pnorm
 #' @importFrom utils tail

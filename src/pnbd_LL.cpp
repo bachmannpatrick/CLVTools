@@ -41,24 +41,15 @@
 //' followed by the parameters for the lifetime covariates at original scale and then
 //' followed by the parameters for the transaction covariates at original scale
 //'
-//' \code{mCov_life} is a matrix containing the covariates data of
-//' the time-invariant covariates that affect the lifetime process.
-//' Each column represents a different covariate. For every column, a gamma parameter
-//' needs to added to \code{vParams} at the respective position.
+//' @templateVar name_params_cov_life vParams
+//' @templateVar name_params_cov_trans vParams
+//' @template template_details_rcppcovmatrix
 //'
-//' \code{mCov_trans} is a matrix containing the covariates data of
-//' the time-invariant covariates that affect the transaction process.
-//' Each column represents a different covariate. For every column, a gamma parameter
-//' needs to added to \code{vParams} at the respective position.
-//'
-//'@return
+//' @return
 //'  Returns the respective Log-Likelihood value(s) for the Pareto/NBD model
 //'  with or without covariates.
 //'
-//'@references
-//'  Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
-//'  Pareto/NBD Model and Related Expressions.", Web.
-//'  \url{http://www.brucehardie.com/notes/008/}.
+//' @template template_references_pnbd
 //'
 //Individual pnbd LL. No cov and staticcov differ by the individual vAlpha_i and vBeta_i which are different
 // for each customer depending on the covariate.
