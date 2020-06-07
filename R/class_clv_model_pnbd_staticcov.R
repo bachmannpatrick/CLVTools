@@ -48,7 +48,7 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
 
               # Nothing model-specific to check about all other user inputs
               # Nothing to return
-})
+            })
 
 # . clv.model.put.estimation.input ------------------------------------------------------------------------------------------------------------
 #   Use pnbd.no.cov methods, dont need to overwrite
@@ -89,9 +89,12 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
                                         vX      = clv.fitted@cbs$x,
                                         vT_x    = clv.fitted@cbs$t.x,
                                         vT_cal  = clv.fitted@cbs$T.cal,
-                                        # Covariate data, as matrix!
-                                        mCov_life  = clv.data.get.matrix.data.cov.life(clv.fitted@clv.data),
-                                        mCov_trans = clv.data.get.matrix.data.cov.trans(clv.fitted@clv.data)))
+
+                                        mCov_life  = clv.data.get.matrix.data.cov.life(clv.data = clv.fitted@clv.data, correct.row.names=clv.fitted@cbs$Id,
+                                                                                       correct.col.names=clv.data.get.names.cov.life(clv.fitted@clv.data)),
+                                        mCov_trans = clv.data.get.matrix.data.cov.trans(clv.data = clv.fitted@clv.data, correct.row.names=clv.fitted@cbs$Id,
+                                                                                        correct.col.names=clv.data.get.names.cov.trans(clv.fitted@clv.data))),
+                                      keep.null = TRUE)
             return(optimx.args)
           })
 
@@ -122,19 +125,14 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.static.co
   # cran silence
   period.length <- CET <- i.CET <- x <- t.x <- T.cal <- PAlive <- i.PAlive <- i.DERT <- DERT <- NULL
 
-  # Covariates as matrix, if there is a covariate
-  data.cov.mat.life  <- clv.data.get.matrix.data.cov.life(clv.fitted@clv.data)
-  data.cov.mat.trans <- clv.data.get.matrix.data.cov.trans(clv.fitted@clv.data)
-
-  # **TODO:Check that matrices have same order as cbs?? (stopifnot(all(rownames() == cbs$Id))?)
-
-  # Read out from table
   predict.number.of.periods <- dt.prediction[1, period.length]
-
 
   # To ensure sorting, do everything in a single table
   dt.result <- copy(clv.fitted@cbs[, c("Id", "x", "t.x", "T.cal")])
-
+  data.cov.mat.life  <- clv.data.get.matrix.data.cov.life(clv.data = clv.fitted@clv.data, correct.row.names=dt.result$Id,
+                                                          correct.col.names=names(clv.fitted@prediction.params.life))
+  data.cov.mat.trans <- clv.data.get.matrix.data.cov.trans(clv.data = clv.fitted@clv.data, correct.row.names=dt.result$Id,
+                                                           correct.col.names=names(clv.fitted@prediction.params.trans))
 
   # Add CET
   dt.result[, CET :=  pnbd_staticcov_CET(r       = clv.fitted@prediction.params.model[["r"]],
@@ -193,14 +191,18 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.static.co
 
   #calculate alpha_i, beta_i
   params_i <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
+  m.cov.data.life  <- clv.data.get.matrix.data.cov.life(clv.data=clv.fitted@clv.data, correct.row.names=params_i$Id,
+                                                        correct.col.names=names(clv.fitted@prediction.params.life))
+  m.cov.data.trans <- clv.data.get.matrix.data.cov.trans(clv.data=clv.fitted@clv.data, correct.row.names=params_i$Id,
+                                                         correct.col.names=names(clv.fitted@prediction.params.trans))
 
   # all params exactly the same for all customers as there are no covariates
   params_i[, r       := clv.fitted@prediction.params.model[["r"]]]
   params_i[, s       := clv.fitted@prediction.params.model[["s"]]]
 
   # Alpha is for trans, beta for live!
-  params_i[, alpha_i := clv.fitted@prediction.params.model[["alpha"]] * exp( -clv.data.get.matrix.data.cov.trans(clv.fitted@clv.data) %*% clv.fitted@prediction.params.trans)]
-  params_i[, beta_i  := clv.fitted@prediction.params.model[["beta"]]  * exp( -clv.data.get.matrix.data.cov.life(clv.fitted@clv.data)  %*% clv.fitted@prediction.params.life)]
+  params_i[, alpha_i := clv.fitted@prediction.params.model[["alpha"]] * exp( -m.cov.data.trans %*% clv.fitted@prediction.params.trans)]
+  params_i[, beta_i  := clv.fitted@prediction.params.model[["beta"]]  * exp( -m.cov.data.life  %*% clv.fitted@prediction.params.life)]
 
 
   # To caluclate expectation at point t for customers alive in t, given in params_i.t

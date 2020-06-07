@@ -18,8 +18,8 @@ clv.model.bgnbd.static.cov <- function(){
              name.model = "BG/NBD with Static Covariates",
              start.param.cov = 1,
              optimx.defaults = list(method="L-BFGS-B",
-                  itnmax = 3000)
-             ))
+                                    itnmax = 3000)
+  ))
 }
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
@@ -69,9 +69,10 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
                                  vX     = clv.fitted@cbs$x,
                                  vT_x   = clv.fitted@cbs$t.x,
                                  vT_cal = clv.fitted@cbs$T.cal,
-                                 # Covariate data, as matrix!
-                                 mCov_life  = clv.data.get.matrix.data.cov.life(clv.fitted@clv.data),
-                                 mCov_trans = clv.data.get.matrix.data.cov.trans(clv.fitted@clv.data),
+                                 mCov_life  = clv.data.get.matrix.data.cov.life(clv.data = clv.fitted@clv.data, correct.row.names=clv.fitted@cbs$Id,
+                                                                                correct.col.names=clv.data.get.names.cov.life(clv.fitted@clv.data)),
+                                 mCov_trans = clv.data.get.matrix.data.cov.trans(clv.data = clv.fitted@clv.data, correct.row.names=clv.fitted@cbs$Id,
+                                                                                 correct.col.names=clv.data.get.names.cov.trans(clv.fitted@clv.data)),
                                  # parameter ordering for the callLL interlayer
                                  LL.params.names.ordered = c(clv.model@names.prefixed.params.model,
                                                              clv.fitted@names.prefixed.params.after.constr.life,
@@ -87,12 +88,16 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.static.c
   r <- alpha_i <- a_i <- b_i <- date.first.repeat.trans<- date.first.actual.trans <- T.cal <- t_i<- period.first.trans<-NULL
 
   params_i <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
+  m.cov.data.life  <- clv.data.get.matrix.data.cov.life(clv.data=clv.fitted@clv.data, correct.row.names=params_i$Id,
+                                                        correct.col.names=names(clv.fitted@prediction.params.life))
+  m.cov.data.trans <- clv.data.get.matrix.data.cov.trans(clv.data=clv.fitted@clv.data, correct.row.names=params_i$Id,
+                                                         correct.col.names=names(clv.fitted@prediction.params.trans))
 
   # Alpha is for trans, a and b for live!
   params_i[, r       := clv.fitted@prediction.params.model[["r"]]]
-  params_i[, alpha_i := clv.fitted@prediction.params.model[["alpha"]] * exp( -clv.data.get.matrix.data.cov.trans(clv.fitted@clv.data) %*% clv.fitted@prediction.params.trans)]
-  params_i[, a_i     := clv.fitted@prediction.params.model[["a"]]     * exp(  clv.data.get.matrix.data.cov.life(clv.fitted@clv.data)  %*% clv.fitted@prediction.params.life)]
-  params_i[, b_i     := clv.fitted@prediction.params.model[["b"]]     * exp(  clv.data.get.matrix.data.cov.life(clv.fitted@clv.data)  %*% clv.fitted@prediction.params.life)]
+  params_i[, alpha_i := clv.fitted@prediction.params.model[["alpha"]] * exp( -m.cov.data.trans  %*% clv.fitted@prediction.params.trans)]
+  params_i[, a_i     := clv.fitted@prediction.params.model[["a"]]     * exp(  m.cov.data.life   %*% clv.fitted@prediction.params.life)]
+  params_i[, b_i     := clv.fitted@prediction.params.model[["b"]]     * exp(  m.cov.data.life   %*% clv.fitted@prediction.params.life)]
 
   fct.bgnbd.expectation <- function(params_i.t){
     term1 <- params_i.t[,(a_i + b_i - 1)/(a_i - 1)]
@@ -110,45 +115,49 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.static.c
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgnbd.static.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
   r <- alpha <- a <- b <- period.length <- CET <- PAlive <- x <- t.x <- T.cal <- DERT <- NULL
 
-  # To be sure they are both sorted the same when calling cpp functions
-  setkeyv(dt.prediction, "Id")
-  setkeyv(clv.fitted@cbs, "Id")
-
-  # Covariates as matrix, if there is a covariate
-  data.cov.mat.life  <- clv.data.get.matrix.data.cov.life(clv.fitted@clv.data)
-  data.cov.mat.trans <- clv.data.get.matrix.data.cov.trans(clv.fitted@clv.data)
-
   predict.number.of.periods <- dt.prediction[1, period.length]
 
+  # To ensure sorting, do everything in a single table
+  dt.result <- copy(clv.fitted@cbs[, c("Id", "x", "t.x", "T.cal")])
+  data.cov.mat.life  <- clv.data.get.matrix.data.cov.life(clv.data = clv.fitted@clv.data, correct.row.names=dt.result$Id,
+                                                          correct.col.names=names(clv.fitted@prediction.params.life))
+  data.cov.mat.trans <- clv.data.get.matrix.data.cov.trans(clv.data = clv.fitted@clv.data, correct.row.names=dt.result$Id,
+                                                           correct.col.names=names(clv.fitted@prediction.params.trans))
+
   # Add CET
-  dt.prediction[, CET := bgnbd_staticcov_CET(r     = clv.fitted@prediction.params.model[["r"]],
-                                             alpha = clv.fitted@prediction.params.model[["alpha"]],
-                                             a     = clv.fitted@prediction.params.model[["a"]],
-                                             b     = clv.fitted@prediction.params.model[["b"]],
-                                             dPeriods = predict.number.of.periods,
-                                             vX     = clv.fitted@cbs$x,
-                                             vT_x   = clv.fitted@cbs$t.x,
-                                             vT_cal = clv.fitted@cbs$T.cal,
-                                             vCovParams_trans = clv.fitted@prediction.params.trans,
-                                             vCovParams_life  = clv.fitted@prediction.params.life,
-                                             mCov_trans  = data.cov.mat.trans,
-                                             mCov_life   = data.cov.mat.life)]
+  dt.result[, CET := bgnbd_staticcov_CET(r     = clv.fitted@prediction.params.model[["r"]],
+                                         alpha = clv.fitted@prediction.params.model[["alpha"]],
+                                         a     = clv.fitted@prediction.params.model[["a"]],
+                                         b     = clv.fitted@prediction.params.model[["b"]],
+                                         dPeriods = predict.number.of.periods,
+                                         vX     = x,
+                                         vT_x   = t.x,
+                                         vT_cal = T.cal,
+                                         vCovParams_trans = clv.fitted@prediction.params.trans,
+                                         vCovParams_life  = clv.fitted@prediction.params.life,
+                                         mCov_trans  = data.cov.mat.trans,
+                                         mCov_life   = data.cov.mat.life)]
 
 
   # Add PAlive
-  dt.prediction[, PAlive := bgnbd_staticcov_PAlive(r     = clv.fitted@prediction.params.model[["r"]],
-                                                   alpha = clv.fitted@prediction.params.model[["alpha"]],
-                                                   a     = clv.fitted@prediction.params.model[["a"]],
-                                                   b     = clv.fitted@prediction.params.model[["b"]],
-                                                   vX     = clv.fitted@cbs[, x],
-                                                   vT_x   = clv.fitted@cbs[, t.x],
-                                                   vT_cal = clv.fitted@cbs[, T.cal],
-                                                   vCovParams_trans = clv.fitted@prediction.params.trans,
-                                                   vCovParams_life  = clv.fitted@prediction.params.life,
-                                                   mCov_trans = data.cov.mat.trans,
-                                                   mCov_life  = data.cov.mat.life)]
+  dt.result[, PAlive := bgnbd_staticcov_PAlive(r     = clv.fitted@prediction.params.model[["r"]],
+                                               alpha = clv.fitted@prediction.params.model[["alpha"]],
+                                               a     = clv.fitted@prediction.params.model[["a"]],
+                                               b     = clv.fitted@prediction.params.model[["b"]],
+                                               vX     = x,
+                                               vT_x   = t.x,
+                                               vT_cal = T.cal,
+                                               vCovParams_trans = clv.fitted@prediction.params.trans,
+                                               vCovParams_life  = clv.fitted@prediction.params.life,
+                                               mCov_trans = data.cov.mat.trans,
+                                               mCov_life  = data.cov.mat.life)]
   # Add DERT
-  dt.prediction[, DERT := 0]
+  dt.result[, DERT := 0]
+
+  # Add results to prediction table, by matching Id
+  dt.prediction[dt.result, CET    := i.CET,    on = "Id"]
+  dt.prediction[dt.result, PAlive := i.PAlive, on = "Id"]
+  dt.prediction[dt.result, DERT   := i.DERT,   on = "Id"]
 
   return(dt.prediction)
 })
