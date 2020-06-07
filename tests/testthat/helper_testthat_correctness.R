@@ -30,7 +30,7 @@ fct.testthat.correctness.nocov.same.as.btyd <- function(clvtools.method, btyd.me
   test_that("Same results as BTYD", {
     # Fitting
     # From ?BTYD::<model>.cbs.LL()
-    data(cdnowSummary, package = "BTYD")
+    data("cdnowSummary", package = "BTYD")
     expect_silent(cal.cbs <- cdnowSummary$cbs)
     expect_silent(startingparams <- unname(start.params.model))
     l.args.btyd <- list(cal.cbs, startingparams)

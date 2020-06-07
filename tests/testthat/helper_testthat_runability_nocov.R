@@ -11,13 +11,13 @@ fct.testthat.runability.nocov.custom.optimx.args <- function(method, clv.data.no
 fct.testthat.runability.nocov.without.spending.data <- function(method, data.transactions){
   test_that("Works without spending data",{
     skip_on_cran()
-    l.args <- list(clvdata(data.transactions = cdnow, name.price = NULL, date.format = "ymd", time.unit = "w", estimation.split = 37),
+    l.args <- list(clvdata(data.transactions = data.transactions, name.price = NULL, date.format = "ymd", time.unit = "w", estimation.split = 37),
                  verbose = FALSE)
     expect_silent(clv.nospending <- do.call(what = method, args = l.args))
-    # predict still works outof the box
+    # predict still works out of the box
     expect_silent(predict(clv.nospending, verbose=FALSE))
     # predict fails if spending should sill be predicted
-    expect_error(predict(clv.nospending, predict.spending=TRUE),regexp = "there is no spending data")
+    expect_error(predict(clv.nospending, predict.spending=TRUE), regexp = "there is no spending data")
   })
 }
 
