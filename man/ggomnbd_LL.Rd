@@ -17,7 +17,7 @@ ggomnbd_staticcov_LL_ind(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 ggomnbd_staticcov_LL_sum(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
 \arguments{
-\item{vLogparams}{vector with the GGompertz/NBD model parameters log scaled. See Details.}
+\item{vLogparams}{vector with the GGompertz/NBD model parameters at log scale. See Details.}
 
 \item{vX}{Frequency vector of length n counting the numbers of purchases.}
 
@@ -25,7 +25,7 @@ ggomnbd_staticcov_LL_sum(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 
 \item{vT_cal}{Vector of length n indicating the total number of periods of observation.}
 
-\item{vParams}{vector with the parameters for the GGompertz/NBD model and the static covariates. See Details.}
+\item{vParams}{vector with the parameters for the GGompertz/NBD model at loc scale and the static covariates at origina scale. See Details.}
 
 \item{mCov_life}{Matrix containing the covariates data affecting the lifetime process. One column for each covariate.}
 
@@ -51,12 +51,11 @@ The function \code{ggomnbd_staticcov_LL_sum} calculates the individual LogLikeli
 across customers.
 }
 \details{
+\code{vLogparams} is a vector with model parameters \code{r, alpha_0, b, s, beta_0} at log-scale, in this order.
+
 \code{vParams} is vector with the GGompertz/NBD model parameters at log scale,
 followed by the parameters for the lifetime covariates at original scale and then
 followed by the parameters for the transaction covariates at original scale
-
-\code{vLogparams} is a vector with model parameters
-\code{r, alpha_0, b, s, beta_0} at log-scale, in this order.\cr
 
 Model parameters for the GGompertz /NBD model are \code{r, alpha, beta, b and s}. \cr
 \code{r}: shape parameter of the Gamma distribution of the purchase process.

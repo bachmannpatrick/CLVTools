@@ -15,14 +15,12 @@
 //' \item{\code{pnbd_staticcov_DERT}}{ Discounted expected residual transactions for the Pareto/NBD model with static covariates}
 //' }
 //'
-//' @template template_params_rcppestimatedparams
+//' @template template_params_pnbd
 //' @template template_params_rcppxtxtcal
 //' @template template_params_rcppcovmatrix
 //' @template template_params_rcppvcovparams
 //' @param continuous_discount_factor continuous discount factor to use
 //'
-//' @templateVar name_params_pnbd vEstimated_params
-//' @template template_details_paramspnbd
 //'
 //' @templateVar name_params_cov_life vCovParams_life
 //' @templateVar name_params_cov_trans vCovParams_trans

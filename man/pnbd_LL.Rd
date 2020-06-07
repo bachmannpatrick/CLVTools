@@ -17,7 +17,7 @@ pnbd_staticcov_LL_ind(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 pnbd_staticcov_LL_sum(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
 \arguments{
-\item{vLogparams}{vector with the Pareto/NBD model parameters log scaled. See Details.}
+\item{vLogparams}{vector with the Pareto/NBD model parameters at log scale. See Details.}
 
 \item{vX}{Frequency vector of length n counting the numbers of purchases.}
 
@@ -25,7 +25,7 @@ pnbd_staticcov_LL_sum(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 
 \item{vT_cal}{Vector of length n indicating the total number of periods of observation.}
 
-\item{vParams}{vector with the parameters for the Pareto/NBD model and the static covariates. See Details.}
+\item{vParams}{vector with the parameters for the Pareto/NBD model at loc scale and the static covariates at origina scale. See Details.}
 
 \item{mCov_life}{Matrix containing the covariates data affecting the lifetime process. One column for each covariate.}
 
@@ -51,17 +51,11 @@ The function \code{pnbd_staticcov_LL_sum} calculates the individual LogLikelihoo
 across customers.
 }
 \details{
+\code{vLogparams} is a vector with model parameters \code{r, alpha_0, s, beta_0} at log-scale, in this order.
+
 \code{vParams} is vector with the Pareto/NBD model parameters at log scale,
 followed by the parameters for the lifetime covariates at original scale and then
 followed by the parameters for the transaction covariates at original scale
-
-\code{vLogparams} is a vector with model parameters \code{r, alpha_0, s, beta_0} at log-scale, in this order.\cr
-s: shape parameter of the Gamma distribution for the lifetime process.
-The smaller s, the stronger the heterogeneity of customer lifetimes. \cr
-beta: scale parameter for the Gamma distribution for the lifetime process. \cr
-r: shape parameter of the Gamma distribution of the purchase process.
-The smaller r, the stronger the heterogeneity of the purchase process.\cr
-alpha: scale parameter of the Gamma distribution of the purchase process.
 
 \code{mCov_trans} is a matrix containing the covariates data of
 the time-invariant covariates that affect the transaction process.

@@ -22,24 +22,15 @@ const arma::vec * gpvX=0, * gpvAlpha_i=0, * gpvBeta_i=0; //will point to vectors
 }
 
 
-
-
 //' @name ggomnbd_LL
 //'
 //' @templateVar name_model_full GGompertz/NBD
 //' @templateVar name_model_short ggomnbd
-//' @template template_titledescriptionreturndetails_LL
-//'
-//' @param vLogparams vector with the GGompertz/NBD model parameters log scaled. See Details.
-//' @param vParams vector with the parameters for the GGompertz/NBD model and the static covariates. See Details.
+//' @templateVar model_params_ordered r, alpha_0, b, s, beta_0
+//' @template template_titleparamsdescriptionreturndetails_LL
 //'
 //' @template template_params_rcppxtxtcal
 //' @template template_params_rcppcovmatrix
-//'
-//' @details \code{vLogparams} is a vector with model parameters
-//' \code{r, alpha_0, b, s, beta_0} at log-scale, in this order.\cr
-//'
-//' @template template_details_paramsggomnbd
 //'
 //' @templateVar name_params_cov_life vParams
 //' @templateVar name_params_cov_trans vParams

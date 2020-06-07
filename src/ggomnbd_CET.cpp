@@ -23,7 +23,24 @@ const arma::vec * gpvBeta_i=0; //will point to vectors to avoid copying
   }
 }
 
-
+//' @name ggomnbd_CET
+//'
+//' @templateVar name_model_full GGompertz/NBD
+//' @templateVar name_model_short ggomnbd
+//' @template template_titledescriptionreturn_CET
+//'
+//' @template template_params_ggomnbd
+//' @template template_params_rcppperiods
+//' @template template_params_rcppxtxtcal
+//' @template template_params_rcppcovmatrix
+//' @template template_params_rcppvcovparams
+//'
+//' @templateVar name_params_cov_life vCovParams_life
+//' @templateVar name_params_cov_trans vCovParams_trans
+//' @template template_details_rcppcovmatrix
+//'
+//' @template template_references_ggomnbd
+//'
 arma::vec ggomnbd_CET(const double r,
                       const double b,
                       const double s,
@@ -69,37 +86,7 @@ arma::vec ggomnbd_CET(const double r,
 }
 
 
-
-//' GGompertz/NBD: Conditional Expected Transactions without Covariates
-//'
-//' @description
-//' Calculates the expected number of transactions in a given time period based
-//' on a customers past transaction behavior and the GGompertz/NBD model parameters.
-//'
-//' @template template_params_rcpp_ggomnbd_estimatedparams
-//' @template template_params_rcppxtxtcal
-//' @param dPrediction_period time prediction time frame
-//'
-//' @details
-//'
-//' \code{vEstimated_params}
-//' s: shape parameter of the Gamma distribution for the lifetime process.\cr
-//' The smaller s, the stronger the heterogeneity of customer lifetimes. \cr
-//' beta: scale parameter for the Gamma distribution for the lifetime process. \cr
-//' b: scale parameter of the Gompertz distribution (constant across customers). \cr
-//' r: shape parameter of the Gamma distribution of the purchase process.
-//' The smaller r, the stronger the heterogeneity of the pruchase process.\cr
-//' alpha: scale parameter of the Gamma distribution of the purchase process.
-//'
-//' \code{dPrediction_period} is the duration over which the prediction is made.
-//'  Usually this is the duration of the holdout period.
-//'
-//'@return
-//' Returns a vector with the conditional expected transactions for the existing
-//' customers in the GGompertz/NBD model.
-//'
-//' @template template_references_ggomnbd
-//'
+//' @rdname ggomnbd_CET
 // [[Rcpp::export]]
 arma::vec ggomnbd_nocov_CET(const double r,
                             const double alpha_0,

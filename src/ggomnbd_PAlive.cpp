@@ -33,7 +33,7 @@ arma::vec ggomnbd_PAlive(const double r,
 //' Calculates the probability of a customer being alive (PAlive) at the
 //' end of the calibration period.
 //'
-//' @template template_params_rcpp_ggomnbd_estimatedparams
+//' @template template_params_ggomnbd
 //' @template template_params_rcppxtxtcal
 //' @template template_params_rcppcovmatrix
 //' @template template_params_rcppvcovparams
@@ -51,7 +51,7 @@ arma::vec ggomnbd_PAlive(const double r,
 //' \code{beta}: scale parameter for the Gamma distribution for the lifetime process.\cr
 //' \code{b:} scale parameter of the Gompertz distribution (constant across customers).\cr
 //' \code{r:} shape parameter of the Gamma distribution of the purchase process.
-//' The smaller \code{r}, the stronger the heterogeneity of the pruchase process.\cr
+//' The smaller \code{r}, the stronger the heterogeneity of the purchase process.\cr
 //' \code{alpha}: scale parameter of the Gamma distribution of the purchase process.\cr
 //' \code{mCov_life}: parameters for the covariates affecting the lifetime process.\cr
 //' \code{mCov_trans}: parameters for the covariates affecting the transaction process.
@@ -104,7 +104,7 @@ arma::vec ggomnbd_staticcov_PAlive(const double r,
 //' Calculates the probability of a customer being alive (PAlive) at the
 //' end of the calibration period in the GGompertz/NBD model
 //'
-//' @template template_params_rcpp_ggomnbd_estimatedparams
+//' @template template_params_ggomnbd
 //' @template template_params_rcppxtxtcal
 //'
 //' @details
@@ -113,7 +113,7 @@ arma::vec ggomnbd_staticcov_PAlive(const double r,
 //' \code{s}: shape parameter of the Gamma distribution for the lifetime process. The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.\cr
 //' \code{beta}: scale parameter for the Gamma distribution for the lifetime process.\cr
 //' \code{b:} scale parameter of the Gompertz distribution (constant across customers).\cr
-//' \code{r:} shape parameter of the Gamma distribution of the purchase process. The smaller \code{r}, the stronger the heterogeneity of the pruchase process.\cr
+//' \code{r:} shape parameter of the Gamma distribution of the purchase process. The smaller \code{r}, the stronger the heterogeneity of the purchase process.\cr
 //' \code{alpha}: scale parameter of the Gamma distribution of the purchase process.\cr
 //'
 //' @return

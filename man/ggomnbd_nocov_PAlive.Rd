@@ -4,10 +4,20 @@
 \alias{ggomnbd_nocov_PAlive}
 \title{GGompertz/NBD: PAlive without Covariates}
 \usage{
-ggomnbd_nocov_PAlive(vEstimated_params, vX, vT_x, vT_cal)
+ggomnbd_nocov_PAlive(r, alpha_0, b, s, beta_0, vX, vT_x, vT_cal)
 }
 \arguments{
-\item{vEstimated_params}{Vector with the GGompertz/NBD model parameters at original scale.}
+\item{r}{shape parameter of the Gamma distribution of the purchase process.
+The smaller r, the stronger the heterogeneity of the purchase process.}
+
+\item{alpha_0}{scale parameter of the Gamma distribution of the purchase process.}
+
+\item{b}{scale parameter of the Gompertz distribution (constant across customers)}
+
+\item{s}{shape parameter of the Gamma distribution for the lifetime process
+The smaller s, the stronger the heterogeneity of customer lifetimes.}
+
+\item{beta_0}{scale parameter for the Gamma distribution for the lifetime process}
 
 \item{vX}{Frequency vector of length n counting the numbers of purchases.}
 
@@ -28,6 +38,6 @@ estimation, in this order.\cr
 \code{s}: shape parameter of the Gamma distribution for the lifetime process. The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.\cr
 \code{beta}: scale parameter for the Gamma distribution for the lifetime process.\cr
 \code{b:} scale parameter of the Gompertz distribution (constant across customers).\cr
-\code{r:} shape parameter of the Gamma distribution of the purchase process. The smaller \code{r}, the stronger the heterogeneity of the pruchase process.\cr
+\code{r:} shape parameter of the Gamma distribution of the purchase process. The smaller \code{r}, the stronger the heterogeneity of the purchase process.\cr
 \code{alpha}: scale parameter of the Gamma distribution of the purchase process.\cr
 }

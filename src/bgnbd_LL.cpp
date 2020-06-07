@@ -4,20 +4,16 @@
 
 arma::vec beta_ratio(const arma::vec& a, const arma::vec& b, const arma::vec& x, const arma::vec& y);
 
+
 //' @name bgnbd_LL
 //'
 //' @templateVar name_model_full BG/NBD
 //' @templateVar name_model_short bgnbd
-//' @template template_titledescriptionreturndetails_LL
+//' @templateVar model_params_ordered r, alpha_0, a, b
+//' @template template_titleparamsdescriptionreturndetails_LL
 //'
-//' @param vLogparams vector with the BG/NBD model parameters log scaled
 //' @template template_params_rcppxtxtcal
 //' @template template_params_rcppcovmatrix
-//'
-//' @details \code{vLogparams} is a vector with model parameters
-//' \code{r, alpha_0, b, s, beta_0} at log-scale, in this order.\cr
-//'
-//' @template template_details_paramsbgnbd
 //'
 //' @templateVar name_params_cov_life vLogparams
 //' @templateVar name_params_cov_trans vLogparams
