@@ -1,9 +1,6 @@
-#' CLV Model functionality for GGompertz/NBD with static covariates
+#' @templateVar name_model_full GGompertz/NBD
+#' @template template_class_clvmodelstaticcov
 #'
-#' This class implements the functionalities and model-specific steps which are required
-#' to fit the GGompertz/NBD model with static covariates.
-#'
-#' @keywords internal
 #' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.ggomnbd.no.cov-class}
 #' @seealso Classes using its instance: \link{clv.fitted.static.cov-class},
 #'

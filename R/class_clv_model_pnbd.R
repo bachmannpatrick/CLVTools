@@ -1,7 +1,5 @@
-#' CLV Model functionality for PNBD without covariates
-#'
-#' This class implements the functionalities and model-specific steps which are required
-#' to fit the Pareto/NBD model without covariates.
+#' @templateVar name_model_full Pareto/NBD
+#' @template template_class_clvmodelnocov
 #'
 #' @keywords internal
 #' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.pnbd.static.cov-class}, \link{clv.model.pnbd.dynamic.cov-class}
@@ -13,7 +11,7 @@ setClass(Class = "clv.model.pnbd.no.cov", contains = "clv.model",
 
          # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
          prototype = list(
-           name.model                  = character(),
+           name.model                  = character(0),
 
            names.original.params.model = character(0),
            names.prefixed.params.model = character(0),
@@ -72,7 +70,6 @@ setMethod("clv.model.transform.start.params.model", signature = signature(clv.mo
 })
 
 # .clv.model.backtransform.estimated.params.model --------------------------------------------------------------------------------------------------------
-#' @importFrom stats setNames
 setMethod("clv.model.backtransform.estimated.params.model", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, prefixed.params.model){
   # exp all prefixed params
   return(exp(prefixed.params.model[clv.model@names.prefixed.params.model]))

@@ -1,9 +1,6 @@
-#' CLV Model functionality for PNBD with static covariates
+#' @templateVar name_model_full Pareto/NBD
+#' @template template_class_clvmodelstaticcov
 #'
-#' This class implements the functionalities and model-specific steps which are required
-#' to fit the Pareto/NBD model with static covariates.
-#'
-#' @keywords internal
 #' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.pnbd.no.cov-class}, \link{clv.model.pnbd.dynamic.cov-class}
 #' @seealso Classes using its instance: \link{clv.fitted.static.cov-class},
 #'
@@ -14,7 +11,7 @@ setClass(Class = "clv.model.pnbd.static.cov", contains = "clv.model.pnbd.no.cov"
 
          # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
          prototype = list(
-           start.param.cov = numeric()))
+           start.param.cov = numeric(0)))
 
 
 #' @importFrom methods new

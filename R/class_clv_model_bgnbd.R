@@ -1,9 +1,6 @@
-#' CLV Model functionality for BG/NBD without covariates
+#' @templateVar name_model_full BG/NBD
+#' @template template_class_clvmodelnocov
 #'
-#' This class implements the functionalities and model-specific steps which are required
-#' to fit the BG/NBD model without covariates.
-#'
-#' @keywords internal
 #' @importFrom methods setClass
 #' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.bgnbd.static.cov-class}
 #' @seealso Classes using its instance: \link{clv.fitted-class}
@@ -11,7 +8,7 @@
 setClass(Class = "clv.model.bgnbd.no.cov", contains = "clv.model",
          slots = list(),
          prototype = list(
-           name.model = character(),
+           name.model = character(0),
            names.original.params.model = character(0),
            names.prefixed.params.model = character(0),
            start.params.model = numeric(0)
@@ -66,7 +63,6 @@ setMethod("clv.model.transform.start.params.model", signature = signature(clv.mo
 })
 
 # .clv.model.backtransform.estimated.params.model --------------------------------------------------------------------------------------------------------
-#' @importFrom stats setNames
 setMethod("clv.model.backtransform.estimated.params.model", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, prefixed.params.model){
   # exp all prefixed params
   return(exp(prefixed.params.model[clv.model@names.prefixed.params.model]))

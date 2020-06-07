@@ -1,9 +1,6 @@
-#' CLV Model functionality for GGompertz/NBD without covariates
+#' @templateVar name_model_full GGompertz/NBD
+#' @template template_class_clvmodelnocov
 #'
-#' This class implements the functionalities and model-specific steps which are required
-#' to fit the GGompertz/NBD model without covariates.
-#'
-#' @keywords internal
 #' @importFrom methods setClass
 #' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.ggomnbd.static.cov-class}
 #' @seealso Classes using its instance: \link{clv.fitted-class}
