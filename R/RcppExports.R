@@ -8,12 +8,10 @@
 #' @template template_titledescriptionreturn_CET
 #'
 #' @template template_params_bgnbd
-#'
 #' @template template_params_rcppperiods
 #' @template template_params_rcppxtxtcal
 #' @template template_params_rcppcovmatrix
 #' @template template_params_rcppvcovparams
-#'
 #'
 #' @templateVar name_params_cov_life vCovParams_life
 #' @templateVar name_params_cov_trans vCovParams_trans
@@ -42,8 +40,6 @@ bgnbd_staticcov_CET <- function(r, alpha, a, b, dPeriods, vX, vT_x, vT_cal, vCov
 #'
 #' @template template_params_rcppxtxtcal
 #' @template template_params_rcppcovmatrix
-#'
-#' @template template_details_paramsbgnbd
 #'
 #' @templateVar name_params_cov_life vLogparams
 #' @templateVar name_params_cov_trans vLogparams
@@ -74,23 +70,19 @@ bgnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_tr
 }
 
 #' @name bgnbd_PAlive
-#' @title BG/NBD: Probability of being alive
 #'
-#' @description
-#' Calculates the probability of a customer being alive at the end of the calibration period.
+#' @templateVar name_model_full BG/NBD
+#' @templateVar name_model_short bgnbd
+#' @template template_titledescriptionreturn_palive
 #'
 #' @template template_params_bgnbd
 #' @template template_params_rcppxtxtcal
 #' @template template_params_rcppcovmatrix
 #' @template template_params_rcppvcovparams
 #'
-#'
 #' @templateVar name_params_cov_life vCovParams_life
 #' @templateVar name_params_cov_trans vCovParams_trans
 #' @template template_details_rcppcovmatrix
-#'
-#' @return
-#' Returns a vector containing the PAlive for each customer.
 #'
 #' @template template_references_bgnbd
 #'
@@ -164,17 +156,15 @@ gg_LL <- function(vLogparams, vX, vM_x) {
 #' @templateVar name_model_short ggomnbd
 #' @template template_titledescriptionreturn_CET
 #'
-#' @template template_params_rcppperiods
 #' @template template_params_ggomnbd
+#' @template template_params_rcppperiods
 #' @template template_params_rcppxtxtcal
 #' @template template_params_rcppcovmatrix
 #' @template template_params_rcppvcovparams
 #'
-#'
 #' @templateVar name_params_cov_life vCovParams_life
 #' @templateVar name_params_cov_trans vCovParams_trans
 #' @template template_details_rcppcovmatrix
-#'
 #'
 #' @template template_references_ggomnbd
 #'
@@ -199,8 +189,6 @@ ggomnbd_staticcov_CET <- function(r, alpha_0, b, s, beta_0, dPeriods, vX, vT_x, 
 #'
 #' @template template_params_rcppxtxtcal
 #' @template template_params_rcppcovmatrix
-#'
-#' @template template_details_paramsggomnbd
 #'
 #' @templateVar name_params_cov_life vParams
 #' @templateVar name_params_cov_trans vParams
@@ -229,6 +217,25 @@ ggomnbd_staticcov_LL_ind <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_
 ggomnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans) {
     .Call(`_CLVTools_ggomnbd_staticcov_LL_sum`, vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
+
+#' @name ggomnbd_PAlive
+#'
+#' @templateVar name_model_full GGompertz/NBD
+#' @templateVar name_model_short ggomnbd
+#' @template template_titledescriptionreturn_palive
+#'
+#' @template template_params_ggomnbd
+#' @template template_params_rcppxtxtcal
+#' @template template_params_rcppcovmatrix
+#' @template template_params_rcppvcovparams
+#'
+#' @templateVar name_params_cov_life vCovParams_life
+#' @templateVar name_params_cov_trans vCovParams_trans
+#' @template template_details_rcppcovmatrix
+#'
+#' @template template_references_ggomnbd
+#'
+NULL
 
 #' @title GGompertz/NBD: PAlive with Static Covariates
 #'
@@ -415,33 +422,20 @@ pnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_tra
 
 #' @name pnbd_PAlive
 #'
-#' @title Pareto/NBD: Probability of Being Alive
-#'
-#' @description
-#' Calculates the probability of a customer being alive at the end of the calibration period.
-#'
-#' \itemize{
-#' \item{\code{pnbd_nocov_PAlive}}{ P(alive) for the Pareto/NBD model without covariates}
-#' \item{\code{pnbd_staticcov_PAlive}}{ P(alive) for the Pareto/NBD model with static covariates}
-#' }
-#'
+#' @templateVar name_model_full Pareto/NBD
+#' @templateVar name_model_short pnbd
+#' @template template_titledescriptionreturn_palive
 #'
 #' @template template_params_pnbd
 #' @template template_params_rcppxtxtcal
 #' @template template_params_rcppcovmatrix
 #' @template template_params_rcppvcovparams
 #'
-#'
 #' @templateVar name_params_cov_life vCovParams_life
 #' @templateVar name_params_cov_trans vCovParams_trans
 #' @template template_details_rcppcovmatrix
 #'
-#'
-#'
-#'@return
-#'Returns a vector with the PAlive for each customer.
-#'
-#'@template template_references_pnbd
+#' @template template_references_pnbd
 #'
 NULL
 

@@ -2,6 +2,23 @@
 #include <math.h>
 #include "ggomnbd_LL.h"
 
+//' @name ggomnbd_PAlive
+//'
+//' @templateVar name_model_full GGompertz/NBD
+//' @templateVar name_model_short ggomnbd
+//' @template template_titledescriptionreturn_palive
+//'
+//' @template template_params_ggomnbd
+//' @template template_params_rcppxtxtcal
+//' @template template_params_rcppcovmatrix
+//' @template template_params_rcppvcovparams
+//'
+//' @templateVar name_params_cov_life vCovParams_life
+//' @templateVar name_params_cov_trans vCovParams_trans
+//' @template template_details_rcppcovmatrix
+//'
+//' @template template_references_ggomnbd
+//'
 arma::vec ggomnbd_PAlive(const double r,
                          const double b,
                          const double s,

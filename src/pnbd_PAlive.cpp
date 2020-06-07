@@ -7,33 +7,20 @@
 
 //' @name pnbd_PAlive
 //'
-//' @title Pareto/NBD: Probability of Being Alive
-//'
-//' @description
-//' Calculates the probability of a customer being alive at the end of the calibration period.
-//'
-//' \itemize{
-//' \item{\code{pnbd_nocov_PAlive}}{ P(alive) for the Pareto/NBD model without covariates}
-//' \item{\code{pnbd_staticcov_PAlive}}{ P(alive) for the Pareto/NBD model with static covariates}
-//' }
-//'
+//' @templateVar name_model_full Pareto/NBD
+//' @templateVar name_model_short pnbd
+//' @template template_titledescriptionreturn_palive
 //'
 //' @template template_params_pnbd
 //' @template template_params_rcppxtxtcal
 //' @template template_params_rcppcovmatrix
 //' @template template_params_rcppvcovparams
 //'
-//'
 //' @templateVar name_params_cov_life vCovParams_life
 //' @templateVar name_params_cov_trans vCovParams_trans
 //' @template template_details_rcppcovmatrix
 //'
-//'
-//'
-//'@return
-//'Returns a vector with the PAlive for each customer.
-//'
-//'@template template_references_pnbd
+//' @template template_references_pnbd
 //'
 arma::vec pnbd_PAlive( const double r,
                        const double s,
@@ -156,12 +143,8 @@ arma::vec pnbd_staticcov_PAlive(const double r,
   // Build alpha and beta --------------------------------------------
   //  Static covariates: Different alpha/beta for every customer
 
-  const double n = vX.n_elem;
-
-  arma::vec vAlpha_i(n), vBeta_i(n);
-
-  vAlpha_i = alpha_0 * arma::exp(((mCov_trans * (-1)) * vCovParams_trans));
-  vBeta_i  = beta_0  * arma::exp(((mCov_life  * (-1)) * vCovParams_life));
+  const arma::vec vAlpha_i = alpha_0 * arma::exp(((mCov_trans * (-1)) * vCovParams_trans));
+  const arma::vec vBeta_i  = beta_0  * arma::exp(((mCov_life  * (-1)) * vCovParams_life));
 
   // Calculate PAlive -------------------------------------------------
   return pnbd_PAlive(r,

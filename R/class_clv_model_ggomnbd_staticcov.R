@@ -113,7 +113,7 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.ggomnbd.static
   }
 
   fct.expectation <- function(params_i.t){
-    return(params_i.t[,.(res = fct.ggomnbd.expectation(r = r, alpha_i = alpha_i, beta_i = beta_i, b = b, s = s, t_i = t_i)), by="Id"]$res)
+    return(params_i.t[, list(res = fct.ggomnbd.expectation(r = r, alpha_i = alpha_i, beta_i = beta_i, b = b, s = s, t_i = t_i)), by="Id"]$res)
   }
 
   return(DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,

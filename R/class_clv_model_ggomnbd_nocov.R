@@ -129,7 +129,7 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.ggomnbd.no.cov
   }
 
   fct.expectation <- function(params_i.t){
-    return(params_i.t[,.(res = fct.ggomnbd.expectation(r = r, alpha = alpha, beta = beta, b = b, s = s, t_i = t_i)), by="Id"]$res)
+    return(params_i.t[,list(res = fct.ggomnbd.expectation(r = r, alpha = alpha, beta = beta, b = b, s = s, t_i = t_i)), by="Id"]$res)
   }
 
   return(DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
@@ -160,10 +160,10 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.ggomnbd.no.cov
 
   # Add PAlive
   dt.prediction[, PAlive := ggomnbd_nocov_PAlive(r       = clv.fitted@prediction.params.model[["r"]],
-                                                 alpha_0 = clv.fitted@prediction.params.model[["alpha_0"]],
+                                                 alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
                                                  b       = clv.fitted@prediction.params.model[["b"]],
                                                  s       = clv.fitted@prediction.params.model[["s"]],
-                                                 beta_0  = clv.fitted@prediction.params.model[["beta_0"]],
+                                                 beta_0  = clv.fitted@prediction.params.model[["beta"]],
                                                  vX      = clv.fitted@cbs[, x],
                                                  vT_x    = clv.fitted@cbs[, t.x],
                                                  vT_cal  = clv.fitted@cbs[, T.cal])]

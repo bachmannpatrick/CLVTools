@@ -57,12 +57,6 @@ across customers.
 followed by the parameters for the lifetime covariates at original scale and then
 followed by the parameters for the transaction covariates at original scale
 
-Model parameters for the BG/NBD model are \code{r, alpha, a, and b}. \cr
-\code{r}: shape parameter of the Gamma distribution of the purchase process. \cr
-\code{alpha}: scale parameter of the Gamma distribution of the purchase process. \cr
-\code{a}: shape parameter of the Beta distribution of the dropout process.\cr
-\code{b}: shape parameter of the Beta distribution of the dropout process.
-
 \code{mCov_trans} is a matrix containing the covariates data of
 the time-invariant covariates that affect the transaction process.
 Each column represents a different covariate. For every column a gamma parameter

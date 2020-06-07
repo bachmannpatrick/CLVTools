@@ -49,7 +49,8 @@ pnbd_staticcov_PAlive(
 Returns a vector with the PAlive for each customer.
 }
 \description{
-Calculates the probability of a customer being alive at the end of the calibration period.
+Calculates the probability of a customer being alive at the end of the calibration period,
+based on a customer's past transaction behavior and the Pareto/NBD model parameters.
 
 \itemize{
 \item{\code{pnbd_nocov_PAlive}}{ P(alive) for the Pareto/NBD model without covariates}
