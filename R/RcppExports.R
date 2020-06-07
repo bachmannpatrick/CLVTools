@@ -2,14 +2,14 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #' @name bgnbd_CET
-#' @title BG/NBD: Conditional Expected Transactions without covariates
 #'
-#' @description
-#' Calculates the expected number of transactions in a given time period based
-#' on a customer's past transaction behavior and the BG/NBD model parameters.
+#' @templateVar name_model_full BG/NBD
+#' @templateVar name_model_short bgnbd
+#' @template template_titledescriptionreturn_CET
 #'
 #' @template template_params_bgnbd
-#' @param dPeriods time prediction time frame
+#'
+#' @template template_params_rcppperiods
 #' @template template_params_rcppxtxtcal
 #' @template template_params_rcppcovmatrix
 #' @template template_params_rcppvcovparams
@@ -18,10 +18,6 @@
 #' @templateVar name_params_cov_life vCovParams_life
 #' @templateVar name_params_cov_trans vCovParams_trans
 #' @template template_details_rcppcovmatrix
-#'
-#' @return
-#' Returns a vector with the conditional expected transactions for the existing
-#' customers in the BG/NBD model.
 #'
 #' @template template_references_bgnbd
 #'
@@ -47,10 +43,10 @@ bgnbd_staticcov_CET <- function(r, alpha, a, b, dPeriods, vX, vT_x, vT_cal, vCov
 #' @template template_params_rcppxtxtcal
 #' @template template_params_rcppcovmatrix
 #'
-#' @template template_details_paramsbgnbd
-#'
 #' @details \code{vLogparams} is a vector with model parameters
 #' \code{r, alpha_0, b, s, beta_0} at log-scale, in this order.\cr
+#'
+#' @template template_details_paramsbgnbd
 #'
 #' @templateVar name_params_cov_life vLogparams
 #' @templateVar name_params_cov_trans vLogparams
@@ -165,42 +161,36 @@ gg_LL <- function(vLogparams, vX, vM_x) {
     .Call(`_CLVTools_gg_LL`, vLogparams, vX, vM_x)
 }
 
-#' GGompertz/NBD: Conditional Expected Transactions without Covariates
+#' @name ggomnbd_CET
 #'
-#' @description
-#' Calculates the expected number of transactions in a given time period based
-#' on a customers past transaction behavior and the GGompertz/NBD model parameters.
+#' @templateVar name_model_full GGompertz/NBD
+#' @templateVar name_model_short ggomnbd
+#' @template template_titledescriptionreturn_CET
 #'
-#' @template template_params_rcpp_ggomnbd_estimatedparams
+#' @template template_params_rcppperiods
+#' @template template_params_ggomnbd
 #' @template template_params_rcppxtxtcal
-#' @param dPrediction_period time prediction time frame
+#' @template template_params_rcppcovmatrix
+#' @template template_params_rcppvcovparams
 #'
-#' @details
 #'
-#' \code{vEstimated_params}
-#' s: shape parameter of the Gamma distribution for the lifetime process.\cr
-#' The smaller s, the stronger the heterogeneity of customer lifetimes. \cr
-#' beta: scale parameter for the Gamma distribution for the lifetime process. \cr
-#' b: scale parameter of the Gompertz distribution (constant across customers). \cr
-#' r: shape parameter of the Gamma distribution of the purchase process.
-#' The smaller r, the stronger the heterogeneity of the pruchase process.\cr
-#' alpha: scale parameter of the Gamma distribution of the purchase process.
+#' @templateVar name_params_cov_life vCovParams_life
+#' @templateVar name_params_cov_trans vCovParams_trans
+#' @template template_details_rcppcovmatrix
 #'
-#' \code{dPrediction_period} is the duration over which the prediction is made.
-#'  Usually this is the duration of the holdout period.
-#'
-#'@return
-#' Returns a vector with the conditional expected transactions for the existing
-#' customers in the GGompertz/NBD model.
 #'
 #' @template template_references_ggomnbd
 #'
-ggomnbd_nocov_CET <- function(vEstimated_params, dPrediction_period, vX, vT_x, vT_cal) {
-    .Call(`_CLVTools_ggomnbd_nocov_CET`, vEstimated_params, dPrediction_period, vX, vT_x, vT_cal)
+NULL
+
+#' @rdname ggomnbd_CET
+ggomnbd_nocov_CET <- function(r, alpha_0, b, s, beta_0, dPeriods, vX, vT_x, vT_cal) {
+    .Call(`_CLVTools_ggomnbd_nocov_CET`, r, alpha_0, b, s, beta_0, dPeriods, vX, vT_x, vT_cal)
 }
 
-ggomnbd_staticcov_CET <- function(vEstimated_params, dPrediction_period, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans) {
-    .Call(`_CLVTools_ggomnbd_staticcov_CET`, vEstimated_params, dPrediction_period, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans)
+#' @rdname ggomnbd_CET
+ggomnbd_staticcov_CET <- function(r, alpha_0, b, s, beta_0, dPeriods, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans) {
+    .Call(`_CLVTools_ggomnbd_staticcov_CET`, r, alpha_0, b, s, beta_0, dPeriods, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans)
 }
 
 #' @name ggomnbd_LL
@@ -254,7 +244,7 @@ ggomnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_
 #' Calculates the probability of a customer being alive (PAlive) at the
 #' end of the calibration period.
 #'
-#' @template template_params_rcpp_ggomnbd_estimatedparams
+#' @template template_params_ggomnbd
 #' @template template_params_rcppxtxtcal
 #' @template template_params_rcppcovmatrix
 #' @template template_params_rcppvcovparams
@@ -272,7 +262,7 @@ ggomnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_
 #' \code{beta}: scale parameter for the Gamma distribution for the lifetime process.\cr
 #' \code{b:} scale parameter of the Gompertz distribution (constant across customers).\cr
 #' \code{r:} shape parameter of the Gamma distribution of the purchase process.
-#' The smaller \code{r}, the stronger the heterogeneity of the pruchase process.\cr
+#' The smaller \code{r}, the stronger the heterogeneity of the purchase process.\cr
 #' \code{alpha}: scale parameter of the Gamma distribution of the purchase process.\cr
 #' \code{mCov_life}: parameters for the covariates affecting the lifetime process.\cr
 #' \code{mCov_trans}: parameters for the covariates affecting the transaction process.
@@ -292,8 +282,8 @@ ggomnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_
 #'
 #' @template template_references_ggomnbd
 #'
-ggomnbd_staticcov_PAlive <- function(vEstimated_params, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans) {
-    .Call(`_CLVTools_ggomnbd_staticcov_PAlive`, vEstimated_params, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans)
+ggomnbd_staticcov_PAlive <- function(r, alpha_0, b, s, beta_0, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans) {
+    .Call(`_CLVTools_ggomnbd_staticcov_PAlive`, r, alpha_0, b, s, beta_0, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans)
 }
 
 #' GGompertz/NBD: PAlive without Covariates
@@ -301,7 +291,7 @@ ggomnbd_staticcov_PAlive <- function(vEstimated_params, vX, vT_x, vT_cal, vCovPa
 #' Calculates the probability of a customer being alive (PAlive) at the
 #' end of the calibration period in the GGompertz/NBD model
 #'
-#' @template template_params_rcpp_ggomnbd_estimatedparams
+#' @template template_params_ggomnbd
 #' @template template_params_rcppxtxtcal
 #'
 #' @details
@@ -310,7 +300,7 @@ ggomnbd_staticcov_PAlive <- function(vEstimated_params, vX, vT_x, vT_cal, vCovPa
 #' \code{s}: shape parameter of the Gamma distribution for the lifetime process. The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.\cr
 #' \code{beta}: scale parameter for the Gamma distribution for the lifetime process.\cr
 #' \code{b:} scale parameter of the Gompertz distribution (constant across customers).\cr
-#' \code{r:} shape parameter of the Gamma distribution of the purchase process. The smaller \code{r}, the stronger the heterogeneity of the pruchase process.\cr
+#' \code{r:} shape parameter of the Gamma distribution of the purchase process. The smaller \code{r}, the stronger the heterogeneity of the purchase process.\cr
 #' \code{alpha}: scale parameter of the Gamma distribution of the purchase process.\cr
 #'
 #' @return
@@ -318,27 +308,18 @@ ggomnbd_staticcov_PAlive <- function(vEstimated_params, vX, vT_x, vT_cal, vCovPa
 #'
 #' @template template_references_ggomnbd
 #'
-ggomnbd_nocov_PAlive <- function(vEstimated_params, vX, vT_x, vT_cal) {
-    .Call(`_CLVTools_ggomnbd_nocov_PAlive`, vEstimated_params, vX, vT_x, vT_cal)
+ggomnbd_nocov_PAlive <- function(r, alpha_0, b, s, beta_0, vX, vT_x, vT_cal) {
+    .Call(`_CLVTools_ggomnbd_nocov_PAlive`, r, alpha_0, b, s, beta_0, vX, vT_x, vT_cal)
 }
 
 #' @name pnbd_CET
-#' @keywords internal
 #'
-#' @title Pareto/NBD: Conditional Expected Transactions
-#'
-#' @description
-#' Calculates the expected number of transactions in a given time period based
-#' on a customer's past transaction behavior and the Pareto/NBD model parameters.
-#'
-#' \itemize{
-#' \item{\code{pnbd_nocov_CET}}{ Conditional Expected Transactions without covariates}
-#' \item{\code{pnbd_staticcov_CET}}{ Conditional Expected Transactions with static covariates}
-#' }
-#'
+#' @templateVar name_model_full Pareto/NBD
+#' @templateVar name_model_short pnbd
+#' @template template_titledescriptionreturn_CET
 #'
 #' @template template_params_rcppestimatedparams
-#' @param dPrediction_period time prediction time frame
+#' @template template_params_rcppperiods
 #' @template template_params_rcppxtxtcal
 #' @template template_params_rcppcovmatrix
 #' @template template_params_rcppvcovparams
@@ -350,23 +331,18 @@ ggomnbd_nocov_PAlive <- function(vEstimated_params, vX, vT_x, vT_cal) {
 #' @templateVar name_params_cov_trans vCovParams_trans
 #' @template template_details_rcppcovmatrix
 #'
-#'
-#'@return
-#' Returns a vector containing the conditional expected transactions for the existing
-#' customers in the Pareto/NBD model.
-#'
-#'@template template_references_pnbd
+#' @template template_references_pnbd
 #'
 NULL
 
 #' @rdname pnbd_CET
-pnbd_nocov_CET <- function(vEstimated_params, dPrediction_period, vX, vT_x, vT_cal) {
-    .Call(`_CLVTools_pnbd_nocov_CET`, vEstimated_params, dPrediction_period, vX, vT_x, vT_cal)
+pnbd_nocov_CET <- function(r, alpha_0, s, beta_0, dPeriods, vX, vT_x, vT_cal) {
+    .Call(`_CLVTools_pnbd_nocov_CET`, r, alpha_0, s, beta_0, dPeriods, vX, vT_x, vT_cal)
 }
 
 #' @rdname pnbd_CET
-pnbd_staticcov_CET <- function(vEstimated_params, dPrediction_period, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life) {
-    .Call(`_CLVTools_pnbd_staticcov_CET`, vEstimated_params, dPrediction_period, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
+pnbd_staticcov_CET <- function(r, alpha_0, s, beta_0, dPeriods, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life) {
+    .Call(`_CLVTools_pnbd_staticcov_CET`, r, alpha_0, s, beta_0, dPeriods, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
 }
 
 #' @name pnbd_DERT
@@ -403,13 +379,13 @@ pnbd_staticcov_CET <- function(vEstimated_params, dPrediction_period, vX, vT_x, 
 NULL
 
 #' @rdname pnbd_DERT
-pnbd_nocov_DERT <- function(vEstimated_params, continuous_discount_factor, vX, vT_x, vT_cal) {
-    .Call(`_CLVTools_pnbd_nocov_DERT`, vEstimated_params, continuous_discount_factor, vX, vT_x, vT_cal)
+pnbd_nocov_DERT <- function(r, alpha_0, s, beta_0, continuous_discount_factor, vX, vT_x, vT_cal) {
+    .Call(`_CLVTools_pnbd_nocov_DERT`, r, alpha_0, s, beta_0, continuous_discount_factor, vX, vT_x, vT_cal)
 }
 
 #' @rdname pnbd_DERT
-pnbd_staticcov_DERT <- function(vEstimated_params, continuous_discount_factor, vX, vT_x, vT_cal, mCov_life, mCov_trans, vCovParams_life, vCovParams_trans) {
-    .Call(`_CLVTools_pnbd_staticcov_DERT`, vEstimated_params, continuous_discount_factor, vX, vT_x, vT_cal, mCov_life, mCov_trans, vCovParams_life, vCovParams_trans)
+pnbd_staticcov_DERT <- function(r, alpha_0, s, beta_0, continuous_discount_factor, vX, vT_x, vT_cal, mCov_life, mCov_trans, vCovParams_life, vCovParams_trans) {
+    .Call(`_CLVTools_pnbd_staticcov_DERT`, r, alpha_0, s, beta_0, continuous_discount_factor, vX, vT_x, vT_cal, mCov_life, mCov_trans, vCovParams_life, vCovParams_trans)
 }
 
 #' @name pnbd_LL
@@ -495,12 +471,12 @@ pnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_tra
 NULL
 
 #' @rdname pnbd_PAlive
-pnbd_nocov_PAlive <- function(vEstimated_params, vX, vT_x, vT_cal) {
-    .Call(`_CLVTools_pnbd_nocov_PAlive`, vEstimated_params, vX, vT_x, vT_cal)
+pnbd_nocov_PAlive <- function(r, alpha_0, s, beta_0, vX, vT_x, vT_cal) {
+    .Call(`_CLVTools_pnbd_nocov_PAlive`, r, alpha_0, s, beta_0, vX, vT_x, vT_cal)
 }
 
 #' @rdname pnbd_PAlive
-pnbd_staticcov_PAlive <- function(vEstimated_params, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life) {
-    .Call(`_CLVTools_pnbd_staticcov_PAlive`, vEstimated_params, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
+pnbd_staticcov_PAlive <- function(r, alpha_0, s, beta_0, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life) {
+    .Call(`_CLVTools_pnbd_staticcov_PAlive`, r, alpha_0, s, beta_0, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
 }
 
