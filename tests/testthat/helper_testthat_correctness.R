@@ -30,7 +30,7 @@ fct.testthat.correctness.nocov.same.as.btyd <- function(clvtools.method, btyd.me
   test_that("Same results as BTYD", {
     # Fitting
     # From ?BTYD::<model>.cbs.LL()
-    data("cdnowSummary", package = "BTYD")
+    data("cdnowSummary", package = "BTYD", envir = environment())
     expect_silent(cal.cbs <- cdnowSummary$cbs)
     expect_silent(startingparams <- unname(start.params.model))
     l.args.btyd <- list(cal.cbs, startingparams)
@@ -72,7 +72,7 @@ fct.testthat.correctness.nocov.same.as.btyd <- function(clvtools.method, btyd.me
 fct.testthat.correctness.nocov.compare.cbs <- function(cdnow){
   test_that("CBS are the same - PNBD vs. BGNBD vs. BTYD", {
 
-    expect_silent(data(cdnowSummary, package = "BTYD"))
+    data(cdnowSummary, package = "BTYD", envir = environment())
     expect_silent(cal.cbs <- cdnowSummary$cbs)
 
     expect_silent(clv.data <- clvdata(data.transactions = cdnow,

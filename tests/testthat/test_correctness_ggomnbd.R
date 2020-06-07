@@ -14,10 +14,12 @@ expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow,
                                    name.date = "Date",
                                    name.price = "Price"))
 
+# ** CROSS check with paper!
 fct.testthat.correctness.nocov.correct.coefs(method = ggomnbd,
                                              cdnow = cdnow,
                                              start.params.model = c(r = 0.5, alpha = 2, b = 0.5, s = 0.5, beta = 0.5),
-                                             params.nocov.coef = c(r = 0.553, alpha = 10.578, b = 0.0002, s = 0.603, beta = 0.0026))
+                                             params.nocov.coef = c(r = 0.553, alpha = 10.578, b = 0.0002, s = 0.603, beta = 0.0026),
+                                             LL.nocov = -9377.94)
 
 # No reliable data available for comparison. Paper information is not sufficient
 #fct.testthat.correctness.nocov.correct.se(method = ggomnbd,
