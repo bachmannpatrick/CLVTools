@@ -67,3 +67,7 @@ the time-invariant covariates that affect the lifetime process.
 Each column represents a different covariate. For every column a gamma parameter
 needs to added to \code{vParams} at the respective position.
 }
+\references{
+Bemmaor AC, Glady N (2011). \dQuote{Modeling Purchasing Behavior with Sudden “Death”: A Flexible Customer
+Lifetime Model} Management Science, 58(5), 1012-1021.
+}

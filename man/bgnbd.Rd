@@ -2,9 +2,9 @@
 % Please edit documentation in R/f_interface_bgnbd.R
 \name{bgnbd}
 \alias{bgnbd}
+\alias{bgnbd,clv.data.dynamic.covariates-method}
 \alias{bgnbd,clv.data-method}
 \alias{bgnbd,clv.data.static.covariates-method}
-\alias{bgnbd,clv.data.dynamic.covariates-method}
 \title{BG/NBD models}
 \usage{
 \S4method{bgnbd}{clv.data}(
@@ -105,7 +105,7 @@ bgnbd(clv.data.apparel)
 
 # Give initial guesses for the Model parameters
 bgnbd(clv.data.apparel,
-     start.params.model = c(r=0.5, alpha=15, s=0.5, beta=10))
+     start.params.model = c(r=0.5, alpha=15, a = 2, b=5))
 
 
 # pass additional parameters to the optimizer (optimx)
@@ -128,7 +128,7 @@ predict(apparel.bgnbd)
 predict(apparel.bgnbd, prediction.end = 15)
 }
 \donttest{
- # To estimate the bgnbd model with static covariates,
+# To estimate the bgnbd model with static covariates,
 #   add static covariates to the data
 data("apparelStaticCov")
 clv.data.static.cov <-

@@ -20,7 +20,7 @@ setGeneric("ggomnbd", def = function(clv.data, start.params.model=c(), optimx.ar
 #' The model start parameters are required to be > 0.
 #'
 #' \subsection{The GGompertz / NBD model}{
-#' TODO
+#' **TODO
 #' }
 #'
 #' @return
@@ -36,13 +36,18 @@ setGeneric("ggomnbd", def = function(clv.data, start.params.model=c(), optimx.ar
 #' @seealso \code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation as predicted by the fitted model
 #' @seealso The generic functions \code{\link[CLVTools:summary.clv.fitted]{summary}} and \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
 #'
+#' @template template_references_ggomnbd
+#'
+#' @templateVar vec_startparams_model c(r=0.5, alpha=15, b=5, beta=10, s=0.5)
 #' @templateVar name_model_short ggomnbd
 #' @template template_examples_nocovmodelinterface
 #' @templateVar name_model_short ggomnbd
 #' @template template_examples_staticcovmodelinterface
-#'
+NULL
+
+
 #' @include class_clv_data.R
-#' @export
+#' @rdname ggomnbd
 setMethod("ggomnbd", signature = signature(clv.data="clv.data"), definition = function(clv.data,
                                                                                        start.params.model=c(),
                                                                                        optimx.args=list(),
@@ -58,15 +63,14 @@ setMethod("ggomnbd", signature = signature(clv.data="clv.data"), definition = fu
 
 #' @rdname ggomnbd
 #' @include class_clv_data_staticcovariates.R
-#' @export
 setMethod("ggomnbd", signature = signature(clv.data="clv.data.static.covariates"), definition = function(clv.data,
-                                                                                                       start.params.model=c(),
-                                                                                                       optimx.args=list(),
-                                                                                                       verbose=TRUE,
-                                                                                                       names.cov.life=c(), names.cov.trans=c(),
-                                                                                                       start.params.life=c(), start.params.trans=c(),
-                                                                                                       names.cov.constr=c(), start.params.constr=c(),
-                                                                                                       reg.lambdas = c(), ...){
+                                                                                                         start.params.model=c(),
+                                                                                                         optimx.args=list(),
+                                                                                                         verbose=TRUE,
+                                                                                                         names.cov.life=c(), names.cov.trans=c(),
+                                                                                                         start.params.life=c(), start.params.trans=c(),
+                                                                                                         names.cov.constr=c(), start.params.constr=c(),
+                                                                                                         reg.lambdas = c(), ...){
   cl  <- match.call(call = sys.call(-1), expand.dots = TRUE)
 
   obj <- clv.ggomnbd.static(cl=cl, clv.data=clv.data)
@@ -86,13 +90,13 @@ setMethod("ggomnbd", signature = signature(clv.data="clv.data.static.covariates"
 #' @include class_clv_data_dynamiccovariates.R
 #' @keywords internal
 setMethod("ggomnbd", signature = signature(clv.data="clv.data.dynamic.covariates"), definition = function(clv.data,
-                                                                                                        start.params.model=c(),
-                                                                                                        optimx.args=list(),
-                                                                                                        verbose=TRUE,
-                                                                                                        names.cov.life=c(), names.cov.trans=c(),
-                                                                                                        start.params.life=c(), start.params.trans=c(),
-                                                                                                        names.cov.constr=c(),start.params.constr=c(),
-                                                                                                        reg.lambdas = c(), ...){
+                                                                                                          start.params.model=c(),
+                                                                                                          optimx.args=list(),
+                                                                                                          verbose=TRUE,
+                                                                                                          names.cov.life=c(), names.cov.trans=c(),
+                                                                                                          start.params.life=c(), start.params.trans=c(),
+                                                                                                          names.cov.constr=c(),start.params.constr=c(),
+                                                                                                          reg.lambdas = c(), ...){
   stop("This model cannot be fitted on this type of data!")
 })
 

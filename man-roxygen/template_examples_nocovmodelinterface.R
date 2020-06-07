@@ -8,7 +8,7 @@
 #'
 #' # Give initial guesses for the Model parameters
 #' <%=name_model_short%>(clv.data.apparel,
-#'      start.params.model = c(r=0.5, alpha=15, s=0.5, beta=10))
+#'      start.params.model = <%=vec_startparams_model%>)
 #'
 #'
 #' # pass additional parameters to the optimizer (optimx)

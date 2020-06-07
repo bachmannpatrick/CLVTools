@@ -3,6 +3,7 @@
 \name{ggomnbd}
 \alias{ggomnbd}
 \alias{ggomnbd,clv.data.dynamic.covariates-method}
+\alias{ggomnbd,clv.data-method}
 \alias{ggomnbd,clv.data.static.covariates-method}
 \title{Gamma-Gompertz/NBD models}
 \usage{
@@ -80,7 +81,7 @@ If no start parameters are given, r = 1, alpha = 1, beta = 1, b = 1, s = 1 is us
 The model start parameters are required to be > 0.
 
 \subsection{The GGompertz / NBD model}{
-TODO
+**TODO
 }
 }
 \examples{
@@ -94,7 +95,7 @@ ggomnbd(clv.data.apparel)
 
 # Give initial guesses for the Model parameters
 ggomnbd(clv.data.apparel,
-     start.params.model = c(r=0.5, alpha=15, s=0.5, beta=10))
+     start.params.model = c(r=0.5, alpha=15, b=5, beta=10, s=0.5))
 
 
 # pass additional parameters to the optimizer (optimx)
@@ -117,7 +118,7 @@ predict(apparel.ggomnbd)
 predict(apparel.ggomnbd, prediction.end = 15)
 }
 \donttest{
- # To estimate the ggomnbd model with static covariates,
+# To estimate the ggomnbd model with static covariates,
 #   add static covariates to the data
 data("apparelStaticCov")
 clv.data.static.cov <-
@@ -145,6 +146,10 @@ ggomnbd(clv.data.static.cov, names.cov.constr = "Gender",
 # keep all trans covariates as is
 ggomnbd(clv.data.static.cov, names.cov.life = c("Channel"))
 }
+}
+\references{
+Bemmaor AC, Glady N (2011). \dQuote{Modeling Purchasing Behavior with Sudden “Death”: A Flexible Customer
+Lifetime Model} Management Science, 58(5), 1012-1021.
 }
 \seealso{
 \code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object

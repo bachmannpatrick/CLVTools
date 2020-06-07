@@ -190,7 +190,7 @@ predict(apparel.pnbd, prediction.end = 15)
 # Estimate correlation as well
 pnbd(clv.data.apparel, use.cor = TRUE)
 \donttest{
- # To estimate the pnbd model with static covariates,
+# To estimate the pnbd model with static covariates,
 #   add static covariates to the data
 data("apparelStaticCov")
 clv.data.static.cov <-

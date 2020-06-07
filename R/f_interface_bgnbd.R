@@ -5,6 +5,8 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), optimx.args
 
 
 #' @name bgnbd
+#' @aliases bgnbd,clv.data.dynamic.covariates-method
+#'
 #' @title BG/NBD models
 #'
 #' @template template_params_estimate
@@ -54,17 +56,19 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), optimx.args
 #' @template template_references_bgnbd
 #'
 #' @templateVar name_model_short bgnbd
+#' @templateVar vec_startparams_model c(r=0.5, alpha=15, a = 2, b=5)
 #' @template template_examples_nocovmodelinterface
 #' @templateVar name_model_short bgnbd
 #' @template template_examples_staticcovmodelinterface
-#'
-#' @aliases bgnbd bgnbd,clv.data-method
-#' @include class_clv_data.R class_clv_model_bgnbd.R
-#' @export
+NULL
+
+
+#' @rdname bgnbd
+#' @include class_clv_data.R
 setMethod("bgnbd", signature = signature(clv.data="clv.data"), definition = function(clv.data,
-                                                                                    start.params.model=c(),
-                                                                                    optimx.args=list(),
-                                                                                    verbose=TRUE,...){
+                                                                                     start.params.model=c(),
+                                                                                     optimx.args=list(),
+                                                                                     verbose=TRUE,...){
   cl <- match.call(call = sys.call(-1), expand.dots = TRUE)
 
   obj <- clv.bgnbd(cl=cl, clv.data=clv.data)
@@ -75,17 +79,14 @@ setMethod("bgnbd", signature = signature(clv.data="clv.data"), definition = func
 
 #' @rdname bgnbd
 #' @include class_clv_data_staticcovariates.R
-#' @aliases bgnbd,clv.data.static.covariates-method
-#' @aliases bgnbd,clv.data.dynamic.covariates-method
-#' @export
 setMethod("bgnbd", signature = signature(clv.data="clv.data.static.covariates"), definition = function(clv.data,
-                                                                                                      start.params.model=c(),
-                                                                                                      optimx.args=list(),
-                                                                                                      verbose=TRUE,
-                                                                                                      names.cov.life=c(), names.cov.trans=c(),
-                                                                                                      start.params.life=c(), start.params.trans=c(),
-                                                                                                      names.cov.constr=c(),start.params.constr=c(),
-                                                                                                      reg.lambdas = c(), ...){
+                                                                                                       start.params.model=c(),
+                                                                                                       optimx.args=list(),
+                                                                                                       verbose=TRUE,
+                                                                                                       names.cov.life=c(), names.cov.trans=c(),
+                                                                                                       start.params.life=c(), start.params.trans=c(),
+                                                                                                       names.cov.constr=c(),start.params.constr=c(),
+                                                                                                       reg.lambdas = c(), ...){
 
   cl <- match.call(call = sys.call(-1), expand.dots = TRUE)
 
@@ -99,6 +100,7 @@ setMethod("bgnbd", signature = signature(clv.data="clv.data.static.covariates"),
                                            names.cov.constr=names.cov.constr,start.params.constr=start.params.constr,
                                            reg.lambdas = reg.lambdas, ...))
 })
+
 
 #' @include class_clv_data_dynamiccovariates.R
 #' @keywords internal

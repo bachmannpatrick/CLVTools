@@ -94,6 +94,7 @@
 #' @template template_references_pnbd
 #'
 #' @templateVar name_model_short pnbd
+#' @templateVar vec_startparams_model c(r=0.5, alpha=15, s=0.5, beta=10)
 #' @template template_examples_nocovmodelinterface
 #' @examples
 #' # Estimate correlation as well
@@ -145,11 +146,11 @@ setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FA
 #' @include class_clv_data.R
 #' @rdname pnbd
 setMethod("pnbd", signature = signature(clv.data="clv.data"), definition = function(clv.data,
-                                                                                        start.params.model=c(),
-                                                                                        use.cor = FALSE,
-                                                                                        start.param.cor=c(),
-                                                                                        optimx.args=list(),
-                                                                                        verbose=TRUE,...){
+                                                                                    start.params.model=c(),
+                                                                                    use.cor = FALSE,
+                                                                                    start.param.cor=c(),
+                                                                                    optimx.args=list(),
+                                                                                    verbose=TRUE,...){
 
   cl  <- match.call(call = sys.call(-1), expand.dots = TRUE)
 
@@ -190,15 +191,15 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.static.covariates"), 
 #' @include class_clv_data_dynamiccovariates.R
 #' @rdname pnbd
 setMethod("pnbd", signature = signature(clv.data="clv.data.dynamic.covariates"), definition = function(clv.data,
-                                                                                                        start.params.model=c(),
-                                                                                                        use.cor = FALSE,
-                                                                                                        start.param.cor=c(),
-                                                                                                        optimx.args=list(),
-                                                                                                        verbose=TRUE,
-                                                                                                        names.cov.life=c(), names.cov.trans=c(),
-                                                                                                        start.params.life=c(), start.params.trans=c(),
-                                                                                                        names.cov.constr=c(),start.params.constr=c(),
-                                                                                                        reg.lambdas = c(), ...){
+                                                                                                       start.params.model=c(),
+                                                                                                       use.cor = FALSE,
+                                                                                                       start.param.cor=c(),
+                                                                                                       optimx.args=list(),
+                                                                                                       verbose=TRUE,
+                                                                                                       names.cov.life=c(), names.cov.trans=c(),
+                                                                                                       start.params.life=c(), start.params.trans=c(),
+                                                                                                       names.cov.constr=c(),start.params.constr=c(),
+                                                                                                       reg.lambdas = c(), ...){
 
   cl  <- match.call(call = sys.call(-1), expand.dots = TRUE)
 
