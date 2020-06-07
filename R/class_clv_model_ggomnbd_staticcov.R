@@ -23,16 +23,16 @@ clv.model.ggomnbd.static.cov <- function(){
              start.param.cov = 1,
              optimx.defaults = list(method = "L-BFGS-B",
                                     itnmax = 3000)
-             ))
+  ))
 }
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
 setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.ggomnbd.static.cov"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose,
-                                                                                                                                 names.cov.life, names.cov.trans,
-                                                                                                                                 start.params.life, start.params.trans,
-                                                                                                                                 names.cov.constr,start.params.constr,
-                                                                                                                                 reg.lambdas, ...){
+                                                                                                                                   names.cov.life, names.cov.trans,
+                                                                                                                                   start.params.life, start.params.trans,
+                                                                                                                                   names.cov.constr,start.params.constr,
+                                                                                                                                   reg.lambdas, ...){
 
   # Check start.params.model in ggomnbd.no.cov function
   #   but with no cov specific inputs only
@@ -69,7 +69,7 @@ setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.mo
 })
 
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.ggomnbd.static.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
-  # Do not call the no.cov function as the LL is different
+  # Do not call the no.cov function because the LL is different
 
   # Everything to call the LL function
   optimx.args <- modifyList(prepared.optimx.args,
@@ -83,8 +83,7 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
                                  mCov_life  = clv.data.get.matrix.data.cov.life(clv.fitted@clv.data),
                                  mCov_trans = clv.data.get.matrix.data.cov.trans(clv.fitted@clv.data),
                                  # parameter ordering for the callLL interlayer
-                                 #** TODO: Hardcode from cpp interface
-                                 LL.params.names.ordered = c(clv.model@names.prefixed.params.model,
+                                 LL.params.names.ordered = c(c(log.r = "log.r",log.alpha =  "log.alpha", log.b = "log.b", log.s = "log.s", log.beta = "log.beta"),
                                                              clv.fitted@names.prefixed.params.after.constr.life,
                                                              clv.fitted@names.prefixed.params.after.constr.trans),
                                  keep.null = TRUE))
@@ -135,33 +134,35 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.ggomnbd.static
 
   predict.number.of.periods <- dt.prediction[1, period.length]
 
-  # Put params together in single vec
-  estimated.params <- c(r = clv.fitted@prediction.params.model[["r"]], alpha = clv.fitted@prediction.params.model[["alpha"]],
-                        b = clv.fitted@prediction.params.model[["b"]],
-                        s = clv.fitted@prediction.params.model[["s"]], beta  = clv.fitted@prediction.params.model[["beta"]])
-
-
   # Add CET
-  dt.prediction[, CET :=  ggomnbd_staticcov_CET(vEstimated_params  = estimated.params,
-                                             dPrediction_period = predict.number.of.periods,
-                                             vX     = clv.fitted@cbs$x,
-                                             vT_x   = clv.fitted@cbs$t.x,
-                                             vT_cal = clv.fitted@cbs$T.cal,
-                                             vCovParams_trans = clv.fitted@prediction.params.trans,
-                                             vCovParams_life  = clv.fitted@prediction.params.life,
-                                             mCov_life   = data.cov.mat.life,
-                                             mCov_trans  = data.cov.mat.trans
+  dt.prediction[, CET :=  ggomnbd_staticcov_CET(r       = clv.fitted@prediction.params.model[["r"]],
+                                                alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+                                                b       = clv.fitted@prediction.params.model[["b"]],
+                                                s       = clv.fitted@prediction.params.model[["s"]],
+                                                beta_0  = clv.fitted@prediction.params.model[["beta"]],
+                                                dPrediction_period = predict.number.of.periods,
+                                                vX      = clv.fitted@cbs$x,
+                                                vT_x    = clv.fitted@cbs$t.x,
+                                                vT_cal  = clv.fitted@cbs$T.cal,
+                                                vCovParams_trans = clv.fitted@prediction.params.trans,
+                                                vCovParams_life  = clv.fitted@prediction.params.life,
+                                                mCov_life  = data.cov.mat.life,
+                                                mCov_trans = data.cov.mat.trans
   )]
 
   # Add PAlive
-  dt.prediction[, PAlive := ggomnbd_staticcov_PAlive(vEstimated_params = estimated.params,
-                                                  vX     = clv.fitted@cbs$x,
-                                                  vT_x   = clv.fitted@cbs$t.x,
-                                                  vT_cal = clv.fitted@cbs$T.cal,
-                                                  vCovParams_trans = clv.fitted@prediction.params.trans,
-                                                  vCovParams_life  = clv.fitted@prediction.params.life,
-                                                  mCov_life  = data.cov.mat.life,
-                                                  mCov_trans = data.cov.mat.trans)]
+  dt.prediction[, PAlive := ggomnbd_staticcov_PAlive(r       = clv.fitted@prediction.params.model[["r"]],
+                                                     alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+                                                     b       = clv.fitted@prediction.params.model[["b"]],
+                                                     s       = clv.fitted@prediction.params.model[["s"]],
+                                                     beta_0  = clv.fitted@prediction.params.model[["beta"]],
+                                                     vX      = clv.fitted@cbs$x,
+                                                     vT_x    = clv.fitted@cbs$t.x,
+                                                     vT_cal  = clv.fitted@cbs$T.cal,
+                                                     vCovParams_trans = clv.fitted@prediction.params.trans,
+                                                     vCovParams_life  = clv.fitted@prediction.params.life,
+                                                     mCov_life  = data.cov.mat.life,
+                                                     mCov_trans = data.cov.mat.trans)]
 
   # Add DERT
   dt.prediction[, DERT := 0]

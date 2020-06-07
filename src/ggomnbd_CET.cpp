@@ -19,24 +19,23 @@ const arma::vec * gpvBeta_i=0; //will point to vectors to avoid copying
   // integrand<-function(omega){omega*exp(b*omega)*(beta_i[i]+exp(b*omega)-1)^-(s+1)}
   double integrationFunction (double omega, void * params)
   {
-    return omega * std::exp(globB * omega) * std::pow( (*gpvBeta_i)(globI) + std::exp(globB * omega) - 1.0, -(globS+1.0) )
-    ;
+    return omega * std::exp(globB * omega) * std::pow( (*gpvBeta_i)(globI) + std::exp(globB * omega) - 1.0, -(globS+1.0) );
   }
 }
 
 
 arma::vec ggomnbd_CET(const double r,
-                   const double b,
-                   const double s,
-                   const double dPrediction_period,
-                   const arma::vec& vX,
-                   const arma::vec& vT_x,
-                   const arma::vec& vT_cal,
-                   // Do not pass vAlpha and vBeta by ref as will be modified
-                   arma::vec vAlpha_i,
-                   arma::vec vBeta_i,
-                   const arma::vec& vPAlive)
-{
+                      const double b,
+                      const double s,
+                      const double dPeriods,
+                      const arma::vec& vX,
+                      const arma::vec& vT_x,
+                      const arma::vec& vT_cal,
+                      // Do not pass vAlpha and vBeta by ref because they will be modified
+                      arma::vec vAlpha_i,
+                      arma::vec vBeta_i,
+                      const arma::vec& vPAlive){
+
   const unsigned int n = vX.n_elem;
 
   // b, s are defined in the scope of this file
@@ -58,13 +57,13 @@ arma::vec ggomnbd_CET(const double r,
   integrand.params = NULL;
 
   for(globI = 0; globI<n; globI++){
-    gsl_integration_qags(&integrand, 0, dPrediction_period, 1.0e-8, 1.0e-8, 0, workspace, &res, &err);
+    gsl_integration_qags(&integrand, 0, dPeriods, 1.0e-8, 1.0e-8, 0, workspace, &res, &err);
     vIntegrals(globI) = res;
   }
 
   arma::vec vP1 = vPAlive % ((r+vX) / (vAlpha_i));
-  arma::vec vP2 = arma::pow( vBeta_i / (vBeta_i + std::exp(b* dPrediction_period) - 1.0 ), s );
-  arma::vec vP3 = dPrediction_period + b * s * (arma::pow(vBeta_i, s) % vIntegrals);
+  arma::vec vP2 = arma::pow( vBeta_i / (vBeta_i + std::exp(b* dPeriods) - 1.0 ), s );
+  arma::vec vP3 = dPeriods + b * s * (arma::pow(vBeta_i, s) % vIntegrals);
 
   return( vP1 % vP2 % vP3);
 }
@@ -102,8 +101,12 @@ arma::vec ggomnbd_CET(const double r,
 //' @template template_references_ggomnbd
 //'
 // [[Rcpp::export]]
-arma::vec ggomnbd_nocov_CET(const arma::vec& vEstimated_params,
-                            const double dPrediction_period,
+arma::vec ggomnbd_nocov_CET(const double r,
+                            const double alpha_0,
+                            const double b,
+                            const double s,
+                            const double beta_0,
+                            const double dPeriods,
                             const arma::vec& vX,
                             const arma::vec& vT_x,
                             const arma::vec& vT_cal){
@@ -111,14 +114,6 @@ arma::vec ggomnbd_nocov_CET(const arma::vec& vEstimated_params,
 
   // Build alpha and beta --------------------------------------------------------
   //    No covariates: Same alphas, betas for every customer
-  // c("log.r","log.alpha", "log.b", "log.s", "log.beta")
-  const double r       = vEstimated_params(0);
-  const double alpha_0 = vEstimated_params(1);
-  const double b       = vEstimated_params(2);
-  const double s       = vEstimated_params(3);
-  const double beta_0  = vEstimated_params(4);
-
-
   const double n = vX.n_elem;
   arma::vec vAlpha_i(n), vBeta_i(n);
 
@@ -127,20 +122,22 @@ arma::vec ggomnbd_nocov_CET(const arma::vec& vEstimated_params,
 
 
   // Calculate PAlive -------------------------------------------------------------
-  // ggomnbd_PAlive(r,s,b,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
-  const arma::vec vPAlive = ggomnbd_PAlive(r,s,b,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
+  const arma::vec vPAlive = ggomnbd_PAlive(r,b,s,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
 
 
   // Calculate CET ----------------------------------------------------------------
-  // ggomnbd_CET(r,b,s,dPrediction_period,vX,vT_x,vT_cal,vAlpha_i, vBeta_i,vPAlive);
-  return(ggomnbd_CET(r,b,s,dPrediction_period,vX,vT_x,vT_cal,vAlpha_i, vBeta_i,vPAlive));
+  return(ggomnbd_CET(r,b,s,dPeriods,vX,vT_x,vT_cal,vAlpha_i, vBeta_i,vPAlive));
 }
 
 
-
+//' @rdname ggomnbd_CET
 // [[Rcpp::export]]
-arma::vec ggomnbd_staticcov_CET(const arma::vec& vEstimated_params,
-                                const double dPrediction_period,
+arma::vec ggomnbd_staticcov_CET(const double r,
+                                const double alpha_0,
+                                const double b,
+                                const double s,
+                                const double beta_0,
+                                const double dPeriods,
                                 const arma::vec& vX,
                                 const arma::vec& vT_x,
                                 const arma::vec& vT_cal,
@@ -148,16 +145,6 @@ arma::vec ggomnbd_staticcov_CET(const arma::vec& vEstimated_params,
                                 const arma::vec& vCovParams_life,
                                 const arma::mat& mCov_life,
                                 const arma::mat& mCov_trans){
-
-  // Build alpha and beta --------------------------------------------------------
-  //    No covariates: Same alphas, betas for every customer
-  // c("log.r","log.alpha", "log.b", "log.s", "log.beta")
-  const double r       = vEstimated_params(0);
-  const double alpha_0 = vEstimated_params(1);
-  const double b       = vEstimated_params(2);
-  const double s       = vEstimated_params(3);
-  const double beta_0  = vEstimated_params(4);
-
 
   // Build alpha and beta -------------------------------------------
   //    With static covariates: alpha and beta different per customer
@@ -169,10 +156,8 @@ arma::vec ggomnbd_staticcov_CET(const arma::vec& vEstimated_params,
   const arma::vec vBeta_i  = beta_0  * arma::exp(((mCov_life  * (-1)) * vCovParams_life));
 
   // Calculate PAlive -------------------------------------------------------------
-  // ggomnbd_PAlive(r,s,b,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
-  const arma::vec vPAlive = ggomnbd_PAlive(r,s,b,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
+  const arma::vec vPAlive = ggomnbd_PAlive(r,b,s,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
 
   // Calculate CET -----------------------------------------------------------------
-  // ggomnbd_CET(r,b,s,dPrediction_period,vX,vT_x,vT_cal,vAlpha_i, vBeta_i,vPAlive);
-  return(ggomnbd_CET(r,b,s,dPrediction_period,vX,vT_x,vT_cal,vAlpha_i, vBeta_i, vPAlive));
+  return(ggomnbd_CET(r,b,s,dPeriods,vX,vT_x,vT_cal,vAlpha_i, vBeta_i, vPAlive));
 }

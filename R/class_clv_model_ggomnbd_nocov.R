@@ -147,18 +147,26 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.ggomnbd.no.cov
   predict.number.of.periods <- dt.prediction[1, period.length]
 
   # Add CET
-  dt.prediction[, CET := ggomnbd_nocov_CET(vEstimated_params = clv.fitted@prediction.params.model,
+  dt.prediction[, CET := ggomnbd_nocov_CET(r       = clv.fitted@prediction.params.model[["r"]],
+                                           alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+                                           b       = clv.fitted@prediction.params.model[["b"]],
+                                           s       = clv.fitted@prediction.params.model[["s"]],
+                                           beta_0  = clv.fitted@prediction.params.model[["beta"]],
                                            dPrediction_period = predict.number.of.periods,
-                                           vX = clv.fitted@cbs[, x],
-                                           vT_x = clv.fitted@cbs[, t.x],
-                                           vT_cal = clv.fitted@cbs[, T.cal])]
+                                           vX      = clv.fitted@cbs[, x],
+                                           vT_x    = clv.fitted@cbs[, t.x],
+                                           vT_cal  = clv.fitted@cbs[, T.cal])]
 
 
   # Add PAlive
-  dt.prediction[, PAlive := ggomnbd_nocov_PAlive(vEstimated_params = clv.fitted@prediction.params.model,
-                                                 vX = clv.fitted@cbs[, x],
-                                                 vT_x = clv.fitted@cbs[, t.x],
-                                                 vT_cal = clv.fitted@cbs[, T.cal])]
+  dt.prediction[, PAlive := ggomnbd_nocov_PAlive(r       = clv.fitted@prediction.params.model[["r"]],
+                                                 alpha_0 = clv.fitted@prediction.params.model[["alpha_0"]],
+                                                 b       = clv.fitted@prediction.params.model[["b"]],
+                                                 s       = clv.fitted@prediction.params.model[["s"]],
+                                                 beta_0  = clv.fitted@prediction.params.model[["beta_0"]],
+                                                 vX      = clv.fitted@cbs[, x],
+                                                 vT_x    = clv.fitted@cbs[, t.x],
+                                                 vT_cal  = clv.fitted@cbs[, T.cal])]
   # Add DERT
   dt.prediction[, DERT := 0]
 

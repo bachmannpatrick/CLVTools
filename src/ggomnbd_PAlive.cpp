@@ -3,18 +3,17 @@
 #include "ggomnbd_LL.h"
 
 arma::vec ggomnbd_PAlive(const double r,
-                      const double s,
-                      const double b,
-                      const arma::vec& vX,
-                      const arma::vec& vT_x,
-                      const arma::vec& vT_cal,
-                      const arma::vec& vAlpha_i,
-                      const arma::vec& vBeta_i){
+                         const double b,
+                         const double s,
+                         const arma::vec& vX,
+                         const arma::vec& vT_x,
+                         const arma::vec& vT_cal,
+                         const arma::vec& vAlpha_i,
+                         const arma::vec& vBeta_i){
 
   const unsigned int n = vX.n_elem;
 
   // Individual LL values -------------------------------------------------
-  // ggomnbd_LL_ind(r,b,s,vAlpha_i,vBeta_i,vX,vT_x, vT_cal):
   arma::vec vLL = ggomnbd_LL_ind(r, b ,s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal);
 
   arma::vec vP1(n), vP2(n), vP3(n);
@@ -73,7 +72,11 @@ arma::vec ggomnbd_PAlive(const double r,
 //' @template template_references_ggomnbd
 //'
 // [[Rcpp::export]]
-arma::vec ggomnbd_staticcov_PAlive(const arma::vec& vEstimated_params,
+arma::vec ggomnbd_staticcov_PAlive(const double r,
+                                   const double alpha_0,
+                                   const double b,
+                                   const double s,
+                                   const double beta_0,
                                    const arma::vec& vX,
                                    const arma::vec& vT_x,
                                    const arma::vec& vT_cal,
@@ -81,13 +84,6 @@ arma::vec ggomnbd_staticcov_PAlive(const arma::vec& vEstimated_params,
                                    const arma::vec& vCovParams_life,
                                    const arma::mat& mCov_life,
                                    const arma::mat& mCov_trans){
-
-  // Extract params -------------------------------------------------
-  const double r       = vEstimated_params(0);
-  const double alpha_0 = vEstimated_params(1);
-  const double b       = vEstimated_params(2);
-  const double s       = vEstimated_params(3);
-  const double beta_0  = vEstimated_params(4);
 
   // Build alpha and beta -------------------------------------------
   //    With static covariates: alpha and beta different per customer
@@ -99,8 +95,7 @@ arma::vec ggomnbd_staticcov_PAlive(const arma::vec& vEstimated_params,
   const arma::vec vBeta_i  = beta_0  * arma::exp(((mCov_life  * (-1)) * vCovParams_life));
 
   // Calculate PAlive ------------------------------------------------
-  // arma::vec ggomnbd_PAlive(r,s,b,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
-  return ggomnbd_PAlive(r,s,b,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
+  return ggomnbd_PAlive(r,b,s,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
 }
 
 
@@ -127,7 +122,11 @@ arma::vec ggomnbd_staticcov_PAlive(const arma::vec& vEstimated_params,
 //' @template template_references_ggomnbd
 //'
 // [[Rcpp::export]]
-arma::vec ggomnbd_nocov_PAlive(const arma::vec& vEstimated_params,
+arma::vec ggomnbd_nocov_PAlive(const double r,
+                               const double alpha_0,
+                               const double b,
+                               const double s,
+                               const double beta_0,
                                const arma::vec& vX,
                                const arma::vec& vT_x,
                                const arma::vec& vT_cal){
@@ -135,11 +134,6 @@ arma::vec ggomnbd_nocov_PAlive(const arma::vec& vEstimated_params,
 
   // Build alpha and beta --------------------------------------------------------
   //    No covariates: Same alphas, betas for every customer
-  const double r       = vEstimated_params(0);
-  const double alpha_0 = vEstimated_params(1);
-  const double b       = vEstimated_params(2);
-  const double s       = vEstimated_params(3);
-  const double beta_0  = vEstimated_params(4);
   const double n = vX.n_elem;
 
   arma::vec vAlpha_i(n), vBeta_i(n);
@@ -149,6 +143,5 @@ arma::vec ggomnbd_nocov_PAlive(const arma::vec& vEstimated_params,
 
 
   // Calculate PAlive -------------------------------------------------------------
-  // arma::vec ggomnbd_PAlive(r,s,b,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
-  return ggomnbd_PAlive(r,s,b,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
+  return ggomnbd_PAlive(r,b,s,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
 }
