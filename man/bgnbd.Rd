@@ -10,8 +10,6 @@
 \S4method{bgnbd}{clv.data}(
   clv.data,
   start.params.model = c(),
-  use.cor = FALSE,
-  start.param.cor = c(),
   optimx.args = list(),
   verbose = TRUE,
   ...
@@ -20,8 +18,6 @@
 \S4method{bgnbd}{clv.data.static.covariates}(
   clv.data,
   start.params.model = c(),
-  use.cor = FALSE,
-  start.param.cor = c(),
   optimx.args = list(),
   verbose = TRUE,
   names.cov.life = c(),
@@ -38,10 +34,6 @@
 \item{clv.data}{The data object on which the model is fitted.}
 
 \item{start.params.model}{Named start parameters containing the optimization start parameters for the model without covariates.}
-
-\item{use.cor}{(Not yet supported) Whether the correlation between the transaction and lifetime process should be estimated.}
-
-\item{start.param.cor}{(Not yet supported) Start parameter for the optimization of the correlation.}
 
 \item{optimx.args}{Additional arguments to control the optimization which are forwarded to \code{\link[optimx:optimx]{optimx::optimx}}.
 If multiple optimization methods are specified, only the result of the last method is further processed.}
@@ -104,34 +96,65 @@ the technical note by Fader and Hardie (2007).
 }
 \examples{
 \donttest{
-data("cdnow")
-clv.data.cdnow <- clvdata(cdnow, date.format = "ymd",
-                          time.unit = "w", estimation.split = 37)
+data("apparelTrans")
+clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
+                            time.unit = "w", estimation.split = 40)
 
-# Fit standard BG/NBD model
-bgnbd(clv.data.cdnow)
+# Fit standard bgnbd model
+bgnbd(clv.data.apparel)
 
 # Give initial guesses for the Model parameters
-bgnbd(clv.data.cdnow,
-      start.params.model = c(r=1.1, alpha=3.4, a=1, b=3))
+bgnbd(clv.data.apparel,
+     start.params.model = c(r=0.5, alpha=15, s=0.5, beta=10))
 
 
 # pass additional parameters to the optimizer (optimx)
 #    Use Nelder-Mead as optimization method and print
 #    detailed information about the optimization process
-cdnow.bgnbd <- bgnbd(clv.data.cdnow,
+apparel.bgnbd <- bgnbd(clv.data.apparel,
                      optimx.args = list(method="Nelder-Mead",
                                         control=list(trace=6)))
 
 # estimated coefs
-coef(cdnow.bgnbd)
+coef(apparel.bgnbd)
 
 # summary of the fitted model
-summary(cdnow.bgnbd)
+summary(apparel.bgnbd)
 
-dt.pred.bgnbd <- predict(cdnow.bgnbd, prediction.end = "2011-12-31")
+# predict CLV etc for holdout period
+predict(apparel.bgnbd)
 
-plot(cdnow.bgnbd)
+# predict CLV etc for the next 15 periods
+predict(apparel.bgnbd, prediction.end = 15)
+}
+\donttest{
+ # To estimate the bgnbd model with static covariates,
+#   add static covariates to the data
+data("apparelStaticCov")
+clv.data.static.cov <-
+ SetStaticCovariates(clv.data.apparel,
+                     data.cov.life = apparelStaticCov,
+                     names.cov.life = c("Gender", "Channel"),
+                     data.cov.trans = apparelStaticCov,
+                     names.cov.trans = c("Gender", "Channel"))
+
+# Fit bgnbd with static covariates
+bgnbd(clv.data.static.cov)
+
+# Give initial guesses for both covariate parameters
+bgnbd(clv.data.static.cov, start.params.trans = c(Gender=0.75, Channel=0.7),
+                   start.params.life  = c(Gender=0.5, Channel=0.5))
+
+# Use regularization
+bgnbd(clv.data.static.cov, reg.lambdas = c(trans = 5, life=5))
+
+# Force the same coefficient to be used for both covariates
+bgnbd(clv.data.static.cov, names.cov.constr = "Gender",
+                   start.params.constr = c(Gender=0.5))
+
+# Fit model only with the Channel covariate for life but
+# keep all trans covariates as is
+bgnbd(clv.data.static.cov, names.cov.life = c("Channel"))
 }
 }
 \references{

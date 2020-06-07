@@ -93,78 +93,20 @@
 #'
 #' @template template_references_pnbd
 #'
+#' @templateVar name_model_short pnbd
+#' @template template_examples_nocovmodelinterface
 #' @examples
-#' \donttest{
-#'
-#' data("apparelTrans")
-#' clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
-#'                             time.unit = "w", estimation.split = 40)
-#'
-#' # Fit standard PNBD model
-#' pnbd(clv.data.apparel)
-#'
-#' # Give initial guesses for the Model parameters
-#' pnbd(clv.data.apparel,
-#'      start.params.model = c(r=0.5, alpha=15, s=0.5, beta=10))
-#'
 #' # Estimate correlation as well
 #' pnbd(clv.data.apparel, use.cor = TRUE)
-#'
-#' # pass additional parameters to the optimizer (optimx)
-#' #    Use Nelder-Mead as optimization method and print
-#' #    detailed information about the optimization process
-#' apparel.pnbd <- pnbd(clv.data.apparel,
-#'                      optimx.args = list(method="Nelder-Mead",
-#'                                         control=list(trace=6)))
-#'
-#' # estimated coefs
-#' coef(apparel.pnbd)
-#'
-#' # summary of the fitted model
-#' summary(apparel.pnbd)
-#'
-#' # predict CLV etc for holdout period
-#' predict(apparel.pnbd)
-#'
-#' # predict CLV etc for the next 15 periods
-#' predict(apparel.pnbd, prediction.end = 15)
-#'
-#'
-#' # To estimate the PNBD model with static covariates,
-#' #   add static covariates to the data
-#' data("apparelStaticCov")
-#' clv.data.static.cov <-
-#'  SetStaticCovariates(clv.data.apparel,
-#'                      data.cov.life = apparelStaticCov,
-#'                      names.cov.life = c("Gender", "Channel"),
-#'                      data.cov.trans = apparelStaticCov,
-#'                      names.cov.trans = c("Gender", "Channel"))
-#'
-#' # Fit PNBD with static covariates
-#' pnbd(clv.data.static.cov)
-#'
-#' # Give initial guesses for both covariate parameters
-#' pnbd(clv.data.static.cov, start.params.trans = c(Gender=0.75, Channel=0.7),
-#'                    start.params.life  = c(Gender=0.5, Channel=0.5))
-#'
-#' # Use regularization
-#' pnbd(clv.data.static.cov, reg.lambdas = c(trans = 5, life=5))
-#'
-#' # Force the same coefficient to be used for both covariates
-#' pnbd(clv.data.static.cov, names.cov.constr = "Gender",
-#'                    start.params.constr = c(Gender=0.5))
-#'
-#' # Fit model only with the Channel covariate for life but
-#' # keep all trans covariates as is
-#' pnbd(clv.data.static.cov, names.cov.life = c("Channel"))
-#'
-#'
-#'
+#' @templateVar name_model_short pnbd
+#' @template template_examples_staticcovmodelinterface
+#' @examples
 #' # Add dynamic covariates data to the data object
 #  # To estimate the PNBD model with dynamic covariates,
 #' #   add dynamic covariates to the data
-#' data("apparelDynCov")
+#' \donttest{
 #' \dontrun{
+#' data("apparelDynCov")
 #' clv.data.dyn.cov <-
 #'   SetDynamicCovariates(clv.data = clv.data.apparel,
 #'                        data.cov.life = apparelDynCov,
@@ -188,8 +130,6 @@
 #' #  static covariate are available
 #' pnbd(clv.data.dyn.cov, reg.lambdas = c(trans=10, life=2))
 #' }
-#'
-#'
 #' }
 #'
 NULL

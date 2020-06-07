@@ -2,16 +2,13 @@
 % Please edit documentation in R/f_interface_ggomnbd.R
 \name{ggomnbd}
 \alias{ggomnbd}
-\alias{ggomnbd,clv.data-method}
-\alias{ggomnbd,clv.data.static.covariates-method}
 \alias{ggomnbd,clv.data.dynamic.covariates-method}
+\alias{ggomnbd,clv.data.static.covariates-method}
 \title{Gamma-Gompertz/NBD models}
 \usage{
 \S4method{ggomnbd}{clv.data}(
   clv.data,
   start.params.model = c(),
-  use.cor = FALSE,
-  start.param.cor = c(),
   optimx.args = list(),
   verbose = TRUE,
   ...
@@ -20,8 +17,6 @@
 \S4method{ggomnbd}{clv.data.static.covariates}(
   clv.data,
   start.params.model = c(),
-  use.cor = FALSE,
-  start.param.cor = c(),
   optimx.args = list(),
   verbose = TRUE,
   names.cov.life = c(),
@@ -38,10 +33,6 @@
 \item{clv.data}{The data object on which the model is fitted.}
 
 \item{start.params.model}{Named start parameters containing the optimization start parameters for the model without covariates.}
-
-\item{use.cor}{Whether the correlation between the transaction and lifetime process should be estimated.}
-
-\item{start.param.cor}{Start parameter for the optimization of the correlation.}
 
 \item{optimx.args}{Additional arguments to control the optimization which are forwarded to \code{\link[optimx:optimx]{optimx::optimx}}.
 If multiple optimization methods are specified, only the result of the last method is further processed.}
@@ -94,33 +85,65 @@ TODO
 }
 \examples{
 \donttest{
-data("cdnow")
-clv.data.cdnow <- clvdata(cdnow, date.format = "ymd",
-                            time.unit = "w", estimation.split = 37)
+data("apparelTrans")
+clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
+                            time.unit = "w", estimation.split = 40)
 
-# Fit standard GGompertzNBD model
-ggomnbd(clv.data.cdnow)
+# Fit standard ggomnbd model
+ggomnbd(clv.data.apparel)
 
 # Give initial guesses for the Model parameters
-ggomnbd(clv.data.cdnow,
-     start.params.model = c(r=1, alpha=1, beta=1, b=1, s=1))
+ggomnbd(clv.data.apparel,
+     start.params.model = c(r=0.5, alpha=15, s=0.5, beta=10))
 
 
 # pass additional parameters to the optimizer (optimx)
 #    Use Nelder-Mead as optimization method and print
 #    detailed information about the optimization process
-estimation.ggomnbd <- ggomnbd(clv.data = clv.data.cdnow,
-                                  start.params.model = c(r = 1, alpha = 1, beta = 1, b = 1, s = 1))
+apparel.ggomnbd <- ggomnbd(clv.data.apparel,
+                     optimx.args = list(method="Nelder-Mead",
+                                        control=list(trace=6)))
 
 # estimated coefs
-coef(estimation.ggomnbd)
+coef(apparel.ggomnbd)
 
 # summary of the fitted model
-summary(estimation.ggomnbd)
+summary(apparel.ggomnbd)
 
-predict.ggomnbd <- predict(estimation.ggomnbd, prediction.end = "2011-12-31")
+# predict CLV etc for holdout period
+predict(apparel.ggomnbd)
 
-plot(estimation.ggomnbd)
+# predict CLV etc for the next 15 periods
+predict(apparel.ggomnbd, prediction.end = 15)
+}
+\donttest{
+ # To estimate the ggomnbd model with static covariates,
+#   add static covariates to the data
+data("apparelStaticCov")
+clv.data.static.cov <-
+ SetStaticCovariates(clv.data.apparel,
+                     data.cov.life = apparelStaticCov,
+                     names.cov.life = c("Gender", "Channel"),
+                     data.cov.trans = apparelStaticCov,
+                     names.cov.trans = c("Gender", "Channel"))
+
+# Fit ggomnbd with static covariates
+ggomnbd(clv.data.static.cov)
+
+# Give initial guesses for both covariate parameters
+ggomnbd(clv.data.static.cov, start.params.trans = c(Gender=0.75, Channel=0.7),
+                   start.params.life  = c(Gender=0.5, Channel=0.5))
+
+# Use regularization
+ggomnbd(clv.data.static.cov, reg.lambdas = c(trans = 5, life=5))
+
+# Force the same coefficient to be used for both covariates
+ggomnbd(clv.data.static.cov, names.cov.constr = "Gender",
+                   start.params.constr = c(Gender=0.5))
+
+# Fit model only with the Channel covariate for life but
+# keep all trans covariates as is
+ggomnbd(clv.data.static.cov, names.cov.life = c("Channel"))
 }
 }
 \seealso{

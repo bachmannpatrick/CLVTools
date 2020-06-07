@@ -1,10 +1,11 @@
 #' @exportMethod ggomnbd
-setGeneric("ggomnbd", def = function(clv.data, start.params.model=c(), use.cor = FALSE, start.param.cor=c(),
-                                     optimx.args=list(), verbose=TRUE, ...)
+setGeneric("ggomnbd", def = function(clv.data, start.params.model=c(), optimx.args=list(), verbose=TRUE, ...)
   standardGeneric("ggomnbd"))
 
 
 #' @name ggomnbd
+#' @aliases ggomnbd,clv.data.dynamic.covariates-method
+#'
 #' @title Gamma-Gompertz/NBD models
 #'
 #' @description Fits Gamma-Gompertz/NBD models on transactional data with static and without covariates.
@@ -12,9 +13,6 @@ setGeneric("ggomnbd", def = function(clv.data, start.params.model=c(), use.cor =
 #' @template template_params_estimate_cov
 #' @template template_param_verbose
 #' @template template_param_dots
-#'
-#' @param use.cor Whether the correlation between the transaction and lifetime process should be estimated.
-#' @param start.param.cor Start parameter for the optimization of the correlation.
 #'
 #' @template template_details_paramsggomnbd
 #'
@@ -38,75 +36,45 @@ setGeneric("ggomnbd", def = function(clv.data, start.params.model=c(), use.cor =
 #' @seealso \code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation as predicted by the fitted model
 #' @seealso The generic functions \code{\link[CLVTools:summary.clv.fitted]{summary}} and \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
 #'
-#' @examples
-#' \donttest{
-#' data("cdnow")
-#' clv.data.cdnow <- clvdata(cdnow, date.format = "ymd",
-#'                             time.unit = "w", estimation.split = 37)
+#' @templateVar name_model_short ggomnbd
+#' @template template_examples_nocovmodelinterface
+#' @templateVar name_model_short ggomnbd
+#' @template template_examples_staticcovmodelinterface
 #'
-#' # Fit standard GGompertzNBD model
-#' ggomnbd(clv.data.cdnow)
-#'
-#' # Give initial guesses for the Model parameters
-#' ggomnbd(clv.data.cdnow,
-#'      start.params.model = c(r=1, alpha=1, beta=1, b=1, s=1))
-#'
-#'
-#' # pass additional parameters to the optimizer (optimx)
-#' #    Use Nelder-Mead as optimization method and print
-#' #    detailed information about the optimization process
-#' estimation.ggomnbd <- ggomnbd(clv.data = clv.data.cdnow,
-#'                                   start.params.model = c(r = 1, alpha = 1, beta = 1, b = 1, s = 1))
-#'
-#' # estimated coefs
-#' coef(estimation.ggomnbd)
-#'
-#' # summary of the fitted model
-#' summary(estimation.ggomnbd)
-#'
-#' predict.ggomnbd <- predict(estimation.ggomnbd, prediction.end = "2011-12-31")
-#'
-#' plot(estimation.ggomnbd)
-#' }
-#' @aliases ggomnbd ggomnbd,clv.data-method
-
 #' @include class_clv_data.R
+#' @export
 setMethod("ggomnbd", signature = signature(clv.data="clv.data"), definition = function(clv.data,
                                                                                        start.params.model=c(),
-                                                                                       use.cor = FALSE,
-                                                                                       start.param.cor=c(),
                                                                                        optimx.args=list(),
                                                                                        verbose=TRUE,...){
-  cl        <- match.call(call = sys.call(-1), expand.dots = TRUE)
+  cl  <- match.call(call = sys.call(-1), expand.dots = TRUE)
 
   obj <- clv.ggomnbd(cl=cl, clv.data=clv.data)
 
-  return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
-                                           start.param.cor = start.param.cor, optimx.args = optimx.args, verbose=verbose, ...))
+  return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = FALSE,
+                                           start.param.cor = c(), optimx.args = optimx.args, verbose=verbose, ...))
 })
 
 
 #' @rdname ggomnbd
 #' @include class_clv_data_staticcovariates.R
-#' @aliases ggomnbd,clv.data.static.covariates-method
-#' @aliases ggomnbd,clv.data.dynamic.covariates-method
 #' @export
 setMethod("ggomnbd", signature = signature(clv.data="clv.data.static.covariates"), definition = function(clv.data,
                                                                                                        start.params.model=c(),
-                                                                                                       use.cor = FALSE,
-                                                                                                       start.param.cor = c(),
                                                                                                        optimx.args=list(),
                                                                                                        verbose=TRUE,
                                                                                                        names.cov.life=c(), names.cov.trans=c(),
                                                                                                        start.params.life=c(), start.params.trans=c(),
                                                                                                        names.cov.constr=c(), start.params.constr=c(),
                                                                                                        reg.lambdas = c(), ...){
-  cl        <- match.call(call = sys.call(-1), expand.dots = TRUE)
+  cl  <- match.call(call = sys.call(-1), expand.dots = TRUE)
 
   obj <- clv.ggomnbd.static(cl=cl, clv.data=clv.data)
 
-  return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
-                                           start.param.cor = start.param.cor, optimx.args = optimx.args, verbose=verbose,
+  return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model,
+                                           use.cor = FALSE,
+                                           start.param.cor = c(),
+                                           optimx.args = optimx.args, verbose=verbose,
                                            names.cov.life=names.cov.life, names.cov.trans=names.cov.trans,
                                            start.params.life=start.params.life, start.params.trans=start.params.trans,
                                            names.cov.constr=names.cov.constr,start.params.constr=start.params.constr,
@@ -119,8 +87,6 @@ setMethod("ggomnbd", signature = signature(clv.data="clv.data.static.covariates"
 #' @keywords internal
 setMethod("ggomnbd", signature = signature(clv.data="clv.data.dynamic.covariates"), definition = function(clv.data,
                                                                                                         start.params.model=c(),
-                                                                                                        use.cor = FALSE,
-                                                                                                        start.param.cor = c(),
                                                                                                         optimx.args=list(),
                                                                                                         verbose=TRUE,
                                                                                                         names.cov.life=c(), names.cov.trans=c(),
