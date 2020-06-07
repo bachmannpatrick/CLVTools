@@ -7,8 +7,15 @@ expect_silent(clv.data.cdnow.with.holdout <- clvdata(cdnow, date.format = "ymd",
 l.std.args.noholdout <- list(clv.data=clv.data.cdnow.no.holdout)
 l.std.args.withholdout <- list(clv.data=clv.data.cdnow.with.holdout)
 
+# Parameter clv.data ------------------------------------------------------------------------------------
+fct.helper.inputchecks.check.all.no.cov.model(fct.model = ggomnbd, l.std.args = l.std.args.noholdout,
+                                              start.params.model = c(alpha=1, beta=1, r=1, b=1, s=1), name.model="GGompertz/NBD nocov")
+fct.helper.inputchecks.check.all.no.cov.model(fct.model = ggomnbd, l.std.args = l.std.args.withholdout,
+                                              start.params.model = c(alpha=1, beta=1, r=1, b=1, s=1), name.model="GGompertz/NBD nocov")
 
-context("Checkinputs - GGompertz/NBD nocov - Model specific")
+
+
+context("Inputchecks - GGompertz/NBD nocov - Model specific")
 
 l.start.params.model <- list(c(r = 0, alpha = 1, beta = 1, b = 1, s = 1),
                              c(r = 1, alpha = 0, beta = 1, b = 1, s = 1),

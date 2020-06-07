@@ -29,6 +29,14 @@ fct.helper.inputchecks.check.all.static.cov.model(fct.model = pnbd,
                                                   correct.params = correct.params,
                                                   param.names = param.names)
 
+context(paste0("Inputchecks - pnbd staticcov - Parameter use.cor"))
+.fct.helper.inputchecks.usecor(fct.model = pnbd, l.std.args = l.std.args.noholdout,   correct.param = TRUE)
+.fct.helper.inputchecks.usecor(fct.model = pnbd, l.std.args = l.std.args.withholdout, correct.param = TRUE)
+
+context(paste0("Inputchecks - pnbd staticcov - Parameter start.param.cor"))
+.fct.helper.inputchecks.startparamcor(fct.model = pnbd, l.std.args = l.std.args.noholdout,   correct.param = 0.5)
+.fct.helper.inputchecks.startparamcor(fct.model = pnbd, l.std.args = l.std.args.withholdout, correct.param = 0.5)
+
 context("Inputchecks - pnbd staticcov - Model specific")
 
 l.start.params.model <- list(c(alpha=0, beta=1, r=1, s=1),

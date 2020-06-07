@@ -8,10 +8,12 @@ l.std.args.noholdout <- list(clv.data=clv.data.cdnow.no.holdout)
 l.std.args.withholdout <- list(clv.data=clv.data.cdnow.with.holdout)
 
 # Parameter clv.data ------------------------------------------------------------------------------------
-fct.helper.inputchecks.check.all.no.cov.model(fct.model = bgnbd, l.std.args = l.std.args.noholdout,   name.model="bgnbd nocov")
-fct.helper.inputchecks.check.all.no.cov.model(fct.model = bgnbd, l.std.args = l.std.args.withholdout, name.model="bgnbd nocov")
+fct.helper.inputchecks.check.all.no.cov.model(fct.model = bgnbd, l.std.args = l.std.args.noholdout,
+                                              start.params.model = c(alpha=1, a=1, r=1, b=1), name.model="BGNBD nocov")
+fct.helper.inputchecks.check.all.no.cov.model(fct.model = bgnbd, l.std.args = l.std.args.withholdout,
+                                              start.params.model = c(alpha=1, a=1, r=1, b=1), name.model="BGNBD nocov")
 
-context("Checkinputs - BGNBD nocov - Model specific")
+context("Inputchecks - BGNBD nocov - Model specific")
 
 l.start.params.model <- list(c(r = 0, alpha = 1, a = 1, b = 1),
                              c(r = 1, alpha = 0, a = 1, b = 1),

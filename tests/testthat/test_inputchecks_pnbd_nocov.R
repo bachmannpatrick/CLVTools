@@ -9,8 +9,20 @@ l.std.args.withholdout <- list(clv.data=clv.data.cdnow.with.holdout)
 
 
 # Parameter clv.data ------------------------------------------------------------------------------------
-fct.helper.inputchecks.check.all.no.cov.model(fct.model = pnbd, l.std.args = l.std.args.noholdout,   name.model="pnbd nocov")
-fct.helper.inputchecks.check.all.no.cov.model(fct.model = pnbd, l.std.args = l.std.args.withholdout, name.model="pnbd nocov")
+fct.helper.inputchecks.check.all.no.cov.model(fct.model = pnbd, l.std.args = l.std.args.noholdout,
+                                              start.params.model = c(alpha=1, beta=1, r=1, s=1), name.model="pnbd nocov")
+fct.helper.inputchecks.check.all.no.cov.model(fct.model = pnbd, l.std.args = l.std.args.withholdout,
+                                              start.params.model = c(alpha=1, beta=1, r=1, s=1), name.model="pnbd nocov")
+
+
+context(paste0("Inputchecks - pnbd nocov - Parameter use.cor"))
+.fct.helper.inputchecks.usecor(fct.model = pnbd, l.std.args = l.std.args.noholdout,   correct.param = TRUE)
+.fct.helper.inputchecks.usecor(fct.model = pnbd, l.std.args = l.std.args.withholdout, correct.param = TRUE)
+
+context(paste0("Inputchecks - pnbd nocov - Parameter start.param.cor"))
+.fct.helper.inputchecks.startparamcor(fct.model = pnbd, l.std.args = l.std.args.noholdout,   correct.param = 0.5)
+.fct.helper.inputchecks.startparamcor(fct.model = pnbd, l.std.args = l.std.args.withholdout, correct.param = 0.5)
+
 
 context("Inputchecks - pnbd nocov - Model specific")
 

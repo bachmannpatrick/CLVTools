@@ -205,20 +205,12 @@
 
 
 # Check all params ----------------------------------------------------
-fct.helper.inputchecks.check.all.no.cov.model <- function(fct.model, l.std.args, name.model){
+fct.helper.inputchecks.check.all.no.cov.model <- function(fct.model, l.std.args, name.model, start.params.model){
 
   context(paste0("Inputchecks - ", name.model," - Parameter start.params.model"))
   .fct.helper.inputchecks.startparamsmodel(fct.model = fct.model, l.std.args = l.std.args,
-                                           correct.params = c(alpha=1, beta=1, r=1, s=1),
-                                           names.params = c("alpha", "beta", "r", "s"))
-
-
-  context(paste0("Inputchecks - ", name.model," - Parameter use.cor"))
-  .fct.helper.inputchecks.usecor(fct.model = fct.model, l.std.args = l.std.args,
-                                 correct.param = TRUE)
-
-  context(paste0("Inputchecks - ", name.model," - Parameter start.param.cor"))
-  .fct.helper.inputchecks.startparamcor(fct.model, l.std.args, correct.param = 0.5)
+                                           correct.params = start.params.model,
+                                           names.params = names(start.params.model))
 
   context(paste0("Inputchecks - ", name.model," - Parameter optimx.args"))
   .fct.helper.inputchecks.optimxargs(fct.model, l.std.args)

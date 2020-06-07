@@ -211,13 +211,6 @@ fct.helper.inputchecks.check.all.static.cov.model <- function(fct.model, l.std.a
                                            correct.params = correct.params,
                                            names.params = param.names)
 
-  context(paste0("Inputchecks - ", name.model," - Parameter use.cor"))
-  .fct.helper.inputchecks.usecor(fct.model = fct.model, l.std.args = l.std.args,
-                                 correct.param = TRUE)
-
-  context(paste0("Inputchecks - ", name.model," - Parameter start.param.cor"))
-  .fct.helper.inputchecks.startparamcor(fct.model, l.std.args, correct.param = 0.5)
-
   context(paste0("Inputchecks - ", name.model," - Parameter optimx.args"))
   .fct.helper.inputchecks.optimxargs(fct.model, l.std.args)
 
