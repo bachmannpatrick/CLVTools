@@ -96,9 +96,10 @@
 #' @templateVar name_model_short pnbd
 #' @templateVar vec_startparams_model c(r=0.5, alpha=15, s=0.5, beta=10)
 #' @template template_examples_nocovmodelinterface
-#' @examples
+#' @examples \donttest{
 #' # Estimate correlation as well
 #' pnbd(clv.data.apparel, use.cor = TRUE)
+#' }
 #' @templateVar name_model_short pnbd
 #' @template template_examples_staticcovmodelinterface
 #' @examples

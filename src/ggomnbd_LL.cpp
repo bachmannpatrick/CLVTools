@@ -86,20 +86,8 @@ arma::vec ggomnbd_LL_ind(const double r,
     vIntegrals(globI) = res;
   }
 
-  arma::vec vL1(n), vL2(n);
-
-  // **TODO: by now has arma::lgamma
-  //calculate in 2 parts:
-  // loop for gamma functions which are not in arma::
-  // rest of calculation is in arma:: -> use for vectorized speed
-  double tmp;
-  const double r_lgamma = lgamma(r);
-  for( unsigned int i=0; i<n; i++){
-    tmp = lgamma(r + vX(i)) - r_lgamma;
-    vL1(i) = tmp;
-    vL2(i) = tmp;
-  }
-
+  arma::vec vL1 = arma::lgamma(r + vX) - lgamma(r);
+  arma::vec vL2 = arma::lgamma(r + vX) - lgamma(r);
 
   vL1 += r * (arma::log(vAlpha_i) - arma::log(vAlpha_i + vT_cal)) + vX % (0.0-arma::log(vAlpha_i + vT_cal)) + s * (arma::log(vBeta_i)-arma::log(vBeta_i-1.0 + arma::exp(b*vT_cal))) ;
   vL2 += std::log(b) + r *arma::log(vAlpha_i) + log(s) + s * arma::log(vBeta_i) +arma::log(vIntegrals);

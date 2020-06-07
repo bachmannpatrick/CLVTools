@@ -44,50 +44,7 @@ arma::vec ggomnbd_PAlive(const double r,
 }
 
 
-//' @title GGompertz/NBD: PAlive with Static Covariates
-//'
-//' @description
-//' Calculates the probability of a customer being alive (PAlive) at the
-//' end of the calibration period.
-//'
-//' @template template_params_ggomnbd
-//' @template template_params_rcppxtxtcal
-//' @template template_params_rcppcovmatrix
-//' @template template_params_rcppvcovparams
-//'
-//' @details
-//' \code{vEstimated_params} is vector with the five estimated model parameters of the
-//' GGompertz/NBD model parameters at original scale (\code{r, alpha_0, b, s, beta_0}),
-//' followed by the parameters for the lifetime covariate at original scale (\code{mCov_life})
-//' and then followed by the parameters for the transaction covariate at original scale
-//' \code{mCov_trans}.\cr
-//' \code{r, alpha_0, b, s, beta_0} are the log()-ed model parameters
-//' used for estimation, in this order.\cr
-//' \code{s}: shape parameter of the Gamma distribution for the lifetime process.
-//' The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.\cr
-//' \code{beta}: scale parameter for the Gamma distribution for the lifetime process.\cr
-//' \code{b:} scale parameter of the Gompertz distribution (constant across customers).\cr
-//' \code{r:} shape parameter of the Gamma distribution of the purchase process.
-//' The smaller \code{r}, the stronger the heterogeneity of the purchase process.\cr
-//' \code{alpha}: scale parameter of the Gamma distribution of the purchase process.\cr
-//' \code{mCov_life}: parameters for the covariates affecting the lifetime process.\cr
-//' \code{mCov_trans}: parameters for the covariates affecting the transaction process.
-//'
-//' \code{mCov_trans} is a matrix containing the covariates data of
-//' the time-invariant covariates that affect the transaction process.
-//' Each column represents a different covariate. For every column a gamma parameter
-//' needs to added to \code{vCovParams_trans} at the respective position.
-//'
-//' \code{mCov_life} is a matrix containing the covariates data of
-//' the time-invariant covariates that affect the lifetime process.
-//' Each column represents a different covariate. For every column a gamma parameter
-//' needs to added to \code{vCovParams_life} at the respective position.
-//'
-//' @return
-//' Returns a vector containing the PAlive for each customer.
-//'
-//' @template template_references_ggomnbd
-//'
+//' @rdname ggomnbd_PAlive
 // [[Rcpp::export]]
 arma::vec ggomnbd_staticcov_PAlive(const double r,
                                    const double alpha_0,
@@ -116,28 +73,7 @@ arma::vec ggomnbd_staticcov_PAlive(const double r,
 }
 
 
-//' GGompertz/NBD: PAlive without Covariates
-//'
-//' Calculates the probability of a customer being alive (PAlive) at the
-//' end of the calibration period in the GGompertz/NBD model
-//'
-//' @template template_params_ggomnbd
-//' @template template_params_rcppxtxtcal
-//'
-//' @details
-//' \code{r, alpha_0, b, s, beta_0} are the log()-ed model parameters used for
-//' estimation, in this order.\cr
-//' \code{s}: shape parameter of the Gamma distribution for the lifetime process. The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.\cr
-//' \code{beta}: scale parameter for the Gamma distribution for the lifetime process.\cr
-//' \code{b:} scale parameter of the Gompertz distribution (constant across customers).\cr
-//' \code{r:} shape parameter of the Gamma distribution of the purchase process. The smaller \code{r}, the stronger the heterogeneity of the purchase process.\cr
-//' \code{alpha}: scale parameter of the Gamma distribution of the purchase process.\cr
-//'
-//' @return
-//' Returns a vector containing the PAlive for each customer.
-//'
-//' @template template_references_ggomnbd
-//'
+//' @rdname ggomnbd_PAlive
 // [[Rcpp::export]]
 arma::vec ggomnbd_nocov_PAlive(const double r,
                                const double alpha_0,

@@ -187,8 +187,10 @@ predict(apparel.pnbd)
 # predict CLV etc for the next 15 periods
 predict(apparel.pnbd, prediction.end = 15)
 }
+\donttest{
 # Estimate correlation as well
 pnbd(clv.data.apparel, use.cor = TRUE)
+}
 \donttest{
 # To estimate the pnbd model with static covariates,
 #   add static covariates to the data

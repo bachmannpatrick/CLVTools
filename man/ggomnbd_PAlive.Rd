@@ -2,19 +2,39 @@
 % Please edit documentation in R/RcppExports.R
 \name{ggomnbd_PAlive}
 \alias{ggomnbd_PAlive}
+\alias{ggomnbd_staticcov_PAlive}
+\alias{ggomnbd_nocov_PAlive}
 \title{GGompertz/NBD: Probability of Being Alive}
+\usage{
+ggomnbd_staticcov_PAlive(
+  r,
+  alpha_0,
+  b,
+  s,
+  beta_0,
+  vX,
+  vT_x,
+  vT_cal,
+  vCovParams_trans,
+  vCovParams_life,
+  mCov_life,
+  mCov_trans
+)
+
+ggomnbd_nocov_PAlive(r, alpha_0, b, s, beta_0, vX, vT_x, vT_cal)
+}
 \arguments{
-\item{s}{shape parameter of the Gamma distribution for the lifetime process
-The smaller s, the stronger the heterogeneity of customer lifetimes.}
-
-\item{beta_0}{scale parameter for the Gamma distribution for the lifetime process}
-
-\item{b}{scale parameter of the Gompertz distribution (constant across customers)}
-
 \item{r}{shape parameter of the Gamma distribution of the purchase process.
 The smaller r, the stronger the heterogeneity of the purchase process.}
 
 \item{alpha_0}{scale parameter of the Gamma distribution of the purchase process.}
+
+\item{b}{scale parameter of the Gompertz distribution (constant across customers)}
+
+\item{s}{shape parameter of the Gamma distribution for the lifetime process
+The smaller s, the stronger the heterogeneity of customer lifetimes.}
+
+\item{beta_0}{scale parameter for the Gamma distribution for the lifetime process}
 
 \item{vX}{Frequency vector of length n counting the numbers of purchases.}
 
@@ -22,13 +42,13 @@ The smaller r, the stronger the heterogeneity of the purchase process.}
 
 \item{vT_cal}{Vector of length n indicating the total number of periods of observation.}
 
-\item{mCov_trans}{Matrix containing the covariates data affecting the transaction process. One column for each covariate.}
-
-\item{mCov_life}{Matrix containing the covariates data affecting the lifetime process. One column for each covariate.}
-
 \item{vCovParams_trans}{Vector of estimated parameters for the transaction covariates.}
 
 \item{vCovParams_life}{Vector of estimated parameters for the lifetime covariates.}
+
+\item{mCov_life}{Matrix containing the covariates data affecting the lifetime process. One column for each covariate.}
+
+\item{mCov_trans}{Matrix containing the covariates data affecting the transaction process. One column for each covariate.}
 }
 \value{
 Returns a vector with the PAlive for each customer.
