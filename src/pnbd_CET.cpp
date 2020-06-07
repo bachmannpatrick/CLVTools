@@ -5,22 +5,13 @@
 #include "pnbd_PAlive.h"
 
 //' @name pnbd_CET
-//' @keywords internal
 //'
-//' @title Pareto/NBD: Conditional Expected Transactions
-//'
-//' @description
-//' Calculates the expected number of transactions in a given time period based
-//' on a customer's past transaction behavior and the Pareto/NBD model parameters.
-//'
-//' \itemize{
-//' \item{\code{pnbd_nocov_CET}}{ Conditional Expected Transactions without covariates}
-//' \item{\code{pnbd_staticcov_CET}}{ Conditional Expected Transactions with static covariates}
-//' }
-//'
+//' @templateVar name_model_full Pareto/NBD
+//' @templateVar name_model_short pnbd
+//' @template template_titledescriptionreturn_CET
 //'
 //' @template template_params_rcppestimatedparams
-//' @param dPrediction_period time prediction time frame
+//' @template template_params_rcppperiods
 //' @template template_params_rcppxtxtcal
 //' @template template_params_rcppcovmatrix
 //' @template template_params_rcppvcovparams
@@ -32,31 +23,20 @@
 //' @templateVar name_params_cov_trans vCovParams_trans
 //' @template template_details_rcppcovmatrix
 //'
+//' @template template_references_pnbd
 //'
-//'@return
-//' Returns a vector containing the conditional expected transactions for the existing
-//' customers in the Pareto/NBD model.
-//'
-//'@template template_references_pnbd
-//'
-arma::vec pnbd_CET(const arma::vec& vEstimated_model_params,
-                   const double dPrediction_period,
+arma::vec pnbd_CET(const double r,
+                   const double s,
+                   const double dPeriods,
                    const arma::vec& vX,
                    const arma::vec& vT_cal,
                    const arma::vec& vAlpha_i,
                    const arma::vec& vBeta_i,
                    const arma::vec& vPAlive){
 
-  const double r = vEstimated_model_params(0);
-  // const double alpha_0 = vEstimated_params(1);
-  const double s = vEstimated_model_params(2);
-  // const double beta_0 = vEstimated_params(3);
-
-  arma::vec vP1, vP2, vP3;
-
-  vP1 = (r + vX) % (vBeta_i + vT_cal) / ((vAlpha_i + vT_cal) * (s-1));
-  vP2 = (1 - arma::pow((vBeta_i + vT_cal) / (vBeta_i + vT_cal + dPrediction_period), (s-1)));
-  vP3 = vPAlive;
+  const arma::vec vP1 = (r + vX) % (vBeta_i + vT_cal) / ((vAlpha_i + vT_cal) * (s-1));
+  const arma::vec vP2 = (1 - arma::pow((vBeta_i + vT_cal) / (vBeta_i + vT_cal + dPeriods), (s-1)));
+  const arma::vec vP3 = vPAlive;
 
   // eval is needed as evaluation could be delayed!
   return (vP1 % vP2 % vP3).eval();
@@ -66,8 +46,11 @@ arma::vec pnbd_CET(const arma::vec& vEstimated_model_params,
 
 //' @rdname pnbd_CET
 // [[Rcpp::export]]
-arma::vec pnbd_nocov_CET(const arma::vec& vEstimated_params,
-                         const double dPrediction_period,
+arma::vec pnbd_nocov_CET(const double r,
+                         const double alpha_0,
+                         const double s,
+                         const double beta_0,
+                         const double dPeriods,
                          const arma::vec& vX,
                          const arma::vec& vT_x,
                          const arma::vec& vT_cal){
@@ -75,10 +58,6 @@ arma::vec pnbd_nocov_CET(const arma::vec& vEstimated_params,
   // Build alpha and beta --------------------------------------------------------
   //    No covariates: Same alphas, betas for every customer
   const double n = vX.n_elem;
-  // const double r       = vEstimated_params(0);
-  const double alpha_0 = vEstimated_params(1);
-  // const double s       = vEstimated_params(2);
-  const double beta_0  = vEstimated_params(3);
 
   arma::vec vAlpha_i(n), vBeta_i(n);
 
@@ -87,14 +66,15 @@ arma::vec pnbd_nocov_CET(const arma::vec& vEstimated_params,
 
 
   // Calculate PAlive -------------------------------------------------------------
-  const arma::vec vPAlive = pnbd_PAlive(vEstimated_params, vX,
-                                        vT_x, vT_cal,
+  const arma::vec vPAlive = pnbd_PAlive(r, s,
+                                        vX, vT_x, vT_cal,
                                         vAlpha_i, vBeta_i);
 
 
   // Calculate CET -----------------------------------------------------------------
-  return(pnbd_CET(vEstimated_params,
-                  dPrediction_period,
+  return(pnbd_CET(r,
+                  s,
+                  dPeriods,
                   vX, vT_cal,
                   vAlpha_i, vBeta_i,
                   vPAlive));
@@ -106,8 +86,11 @@ arma::vec pnbd_nocov_CET(const arma::vec& vEstimated_params,
 
 //' @rdname pnbd_CET
 // [[Rcpp::export]]
-arma::vec pnbd_staticcov_CET(const arma::vec& vEstimated_params,
-                             const double dPrediction_period,
+arma::vec pnbd_staticcov_CET(const double r,
+                             const double alpha_0,
+                             const double s,
+                             const double beta_0,
+                             const double dPeriods,
                              const arma::vec& vX,
                              const arma::vec& vT_x,
                              const arma::vec& vT_cal,
@@ -133,26 +116,21 @@ arma::vec pnbd_staticcov_CET(const arma::vec& vEstimated_params,
 
   const double n = vX.n_elem;
 
-  // const double r       = vEstimated_params(0);
-  const double alpha_0 = vEstimated_params(1);
-  // const double s       = vEstimated_params(2);
-  const double beta_0  = vEstimated_params(3);
-
   arma::vec vAlpha_i(n), vBeta_i(n);
 
   vAlpha_i = alpha_0 * arma::exp(((mCov_trans * (-1)) * vCovParams_trans));
-  vBeta_i  = beta_0  * arma::exp(((mCov_life     * (-1)) * vCovParams_life));
+  vBeta_i  = beta_0  * arma::exp(((mCov_life  * (-1)) * vCovParams_life));
 
 
   // Calculate PAlive -------------------------------------------------------------
-  const arma::vec vPAlive = pnbd_PAlive(vEstimated_params, vX,
-                                        vT_x, vT_cal,
+  const arma::vec vPAlive = pnbd_PAlive(r, s,
+                                        vX, vT_x, vT_cal,
                                         vAlpha_i, vBeta_i);
 
 
   // Calculate CET -----------------------------------------------------------------
-  return(pnbd_CET(vEstimated_params,
-                  dPrediction_period,
+  return(pnbd_CET(r, s,
+                  dPeriods,
                   vX, vT_cal,
                   vAlpha_i, vBeta_i,
                   vPAlive));

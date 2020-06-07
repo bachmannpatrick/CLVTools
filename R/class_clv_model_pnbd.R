@@ -217,30 +217,35 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.no.cov"),
 
   predict.number.of.periods <- dt.prediction[1, period.length]
 
-  # Put params together in single vec
-  estimated.params <- c(r = clv.fitted@prediction.params.model[["r"]], alpha = clv.fitted@prediction.params.model[["alpha"]],
-                        s = clv.fitted@prediction.params.model[["s"]], beta  = clv.fitted@prediction.params.model[["beta"]])
-
 
   # To ensure sorting, do everything in a single table
   dt.result <- copy(clv.fitted@cbs[, c("Id", "x", "t.x", "T.cal")])
 
 
   # Add CET
-  dt.result[, CET :=  pnbd_nocov_CET(vEstimated_params = estimated.params,
-                                     dPrediction_period = predict.number.of.periods,
+  dt.result[, CET :=  pnbd_nocov_CET(r       = clv.fitted@prediction.params.model[["r"]],
+                                     alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+                                     s       = clv.fitted@prediction.params.model[["s"]],
+                                     beta_0  = clv.fitted@prediction.params.model[["beta"]],
+                                     dPeriods = predict.number.of.periods,
                                      vX     = x,
                                      vT_x   = t.x,
                                      vT_cal = T.cal)]
 
   # Add PAlive
-  dt.result[, PAlive := pnbd_nocov_PAlive(vEstimated_params = estimated.params,
+  dt.result[, PAlive := pnbd_nocov_PAlive(r       = clv.fitted@prediction.params.model[["r"]],
+                                          alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+                                          s       = clv.fitted@prediction.params.model[["s"]],
+                                          beta_0  = clv.fitted@prediction.params.model[["beta"]],
                                           vX     = x,
                                           vT_x   = t.x,
                                           vT_cal = T.cal)]
 
   # Add DERT
-  dt.result[, DERT := pnbd_nocov_DERT(vEstimated_params = estimated.params,
+  dt.result[, DERT := pnbd_nocov_DERT(r       = clv.fitted@prediction.params.model[["r"]],
+                                      alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+                                      s       = clv.fitted@prediction.params.model[["s"]],
+                                      beta_0  = clv.fitted@prediction.params.model[["beta"]],
                                       continuous_discount_factor = continuous.discount.factor,
                                       vX     = x,
                                       vT_x   = t.x,

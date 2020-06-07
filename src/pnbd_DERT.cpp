@@ -72,18 +72,16 @@ arma::vec pnbd_DERT_ind(const double r,
 
 //' @rdname pnbd_DERT
 // [[Rcpp::export]]
-arma::vec pnbd_nocov_DERT(const arma::vec& vEstimated_params,
+arma::vec pnbd_nocov_DERT(const double r,
+                          const double alpha_0,
+                          const double s,
+                          const double beta_0,
                           const double continuous_discount_factor,
                           const arma::vec& vX,
                           const arma::vec& vT_x,
                           const arma::vec& vT_cal){
 
   const double n = vX.n_elem;
-
-  const double r       = vEstimated_params(0);
-  const double alpha_0 = vEstimated_params(1);
-  const double s       = vEstimated_params(2);
-  const double beta_0  = vEstimated_params(3);
 
 
   // Build alpha and beta -------------------------------------------
@@ -104,7 +102,10 @@ arma::vec pnbd_nocov_DERT(const arma::vec& vEstimated_params,
 
 //' @rdname pnbd_DERT
 // [[Rcpp::export]]
-arma::vec pnbd_staticcov_DERT(const arma::vec& vEstimated_params,
+arma::vec pnbd_staticcov_DERT(const double r,
+                              const double alpha_0,
+                              const double s,
+                              const double beta_0,
                               const double continuous_discount_factor,
                               const arma::vec& vX,
                               const arma::vec& vT_x,
@@ -116,11 +117,6 @@ arma::vec pnbd_staticcov_DERT(const arma::vec& vEstimated_params,
 
   // Build alpha and beta --------------------------------------------
   //    No covariates: Same alphas, betas for every customer
-
-  const double r       = vEstimated_params(0);
-  const double alpha_0 = vEstimated_params(1);
-  const double s       = vEstimated_params(2);
-  const double beta_0  = vEstimated_params(3);
 
   arma::vec vAlpha_i = alpha_0 * arma::exp(((mCov_trans * (-1)) * vCovParams_trans));
   arma::vec vBeta_i  = beta_0  * arma::exp(((mCov_life  * (-1)) * vCovParams_life));

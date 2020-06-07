@@ -134,18 +134,17 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.static.co
   # Read out from table
   predict.number.of.periods <- dt.prediction[1, period.length]
 
-  # Put params together in single vec
-  estimated.params <- c(r = clv.fitted@prediction.params.model[["r"]], alpha = clv.fitted@prediction.params.model[["alpha"]],
-                        s = clv.fitted@prediction.params.model[["s"]], beta  = clv.fitted@prediction.params.model[["beta"]])
-
 
   # To ensure sorting, do everything in a single table
   dt.result <- copy(clv.fitted@cbs[, c("Id", "x", "t.x", "T.cal")])
 
 
   # Add CET
-  dt.result[, CET :=  pnbd_staticcov_CET(vEstimated_params  = estimated.params,
-                                         dPrediction_period = predict.number.of.periods,
+  dt.result[, CET :=  pnbd_staticcov_CET(r       = clv.fitted@prediction.params.model[["r"]],
+                                         alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+                                         s       = clv.fitted@prediction.params.model[["s"]],
+                                         beta_0  = clv.fitted@prediction.params.model[["beta"]],
+                                         dPeriods = predict.number.of.periods,
                                          vX     = x,
                                          vT_x   = t.x,
                                          vT_cal = T.cal,
@@ -155,7 +154,10 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.static.co
                                          mCov_life   = data.cov.mat.life)]
 
   # Add PAlive
-  dt.result[, PAlive := pnbd_staticcov_PAlive(vEstimated_params = estimated.params,
+  dt.result[, PAlive := pnbd_staticcov_PAlive(r       = clv.fitted@prediction.params.model[["r"]],
+                                              alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+                                              s       = clv.fitted@prediction.params.model[["s"]],
+                                              beta_0  = clv.fitted@prediction.params.model[["beta"]],
                                               vX     = x,
                                               vT_x   = t.x,
                                               vT_cal = T.cal,
@@ -165,7 +167,10 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.static.co
                                               mCov_life  = data.cov.mat.life)]
 
   # Add DERT
-  dt.result[, DERT := pnbd_staticcov_DERT(vEstimated_params = estimated.params,
+  dt.result[, DERT := pnbd_staticcov_DERT(r       = clv.fitted@prediction.params.model[["r"]],
+                                          alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+                                          s       = clv.fitted@prediction.params.model[["s"]],
+                                          beta_0  = clv.fitted@prediction.params.model[["beta"]],
                                           continuous_discount_factor = continuous.discount.factor,
                                           vX     = x,
                                           vT_x   = t.x,
