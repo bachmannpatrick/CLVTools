@@ -19,8 +19,12 @@ setGeneric("ggomnbd", def = function(clv.data, start.params.model=c(), optimx.ar
 #' @details If no start parameters are given, r = 1, alpha = 1, beta = 1, b = 1, s = 1 is used.
 #' The model start parameters are required to be > 0.
 #'
-#' \subsection{The GGompertz / NBD model}{
-#' **TODO
+#' \subsection{The GGompertz/NBD model}{
+#' There are two key differences of the gamma/Gompertz/NBD (GGompertz/NBD) model compared to the relative to the well-known Pareto/NBD
+#' model: (i) its probability density function can exhibit a mode at zero or an interior mode, and (ii) it can be skewed 
+#' to the right or to the left. Therefore, the GGompertz/NBD model is more flexible than the Pareto/NBD model.
+#' According to Bemmaor and Glady (2012) can indicate substantial differences in expected residual lifetimes compared to the Pareto/NBD. 
+#' The GGompertz/NBD tends to be appropriate when ﬁrms are reputed and their offerings are differentiated.
 #' }
 #'
 #' @return
