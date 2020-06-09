@@ -1,4 +1,4 @@
-fct.testthat.runability.common.out.of.the.box.no.hold <- function(method, clv.data.noholdout, clv.newdata.withhold, clv.newdata.nohold, param.names, DERT.not.implemented = FALSE) {
+fct.testthat.runability.common.out.of.the.box.no.hold <- function(method, clv.data.noholdout, clv.newdata.withhold, clv.newdata.nohold, param.names, DERT.not.implemented) {
   test_that("Works out-of-the box, without additional params (no holdout)", {
     l.args.no.hold <- list(clv.data = clv.data.noholdout, verbose=FALSE)
 
@@ -9,7 +9,7 @@ fct.testthat.runability.common.out.of.the.box.no.hold <- function(method, clv.da
   })
 }
 
-fct.testthat.runability.common.out.of.the.box.with.hold <- function(method, clv.data.withholdout, clv.newdata.withhold, clv.newdata.nohold, param.names, DERT.not.implemented = FALSE) {
+fct.testthat.runability.common.out.of.the.box.with.hold <- function(method, clv.data.withholdout, clv.newdata.withhold, clv.newdata.nohold, param.names, DERT.not.implemented) {
   test_that("Works out-of-the box, without additional params (with holdout)", {
     skip_on_cran()
     l.args.hold <- list(clv.data = clv.data.withholdout, verbose=FALSE)
@@ -41,13 +41,14 @@ fct.testthat.runability.common.all.optimization.methods <- function(method, clv.
   })
 }
 
-fct.testthat.runability.common.multiple.optimization.methods <- function(method, clv.data.noholdout, clv.newdata.nohold, clv.newdata.withhold, param.names){
+fct.testthat.runability.common.multiple.optimization.methods <- function(method, clv.data.noholdout, clv.newdata.nohold, clv.newdata.withhold, param.names,
+                                                                         DERT.not.implemented){
   test_that("Works fully with multiple optimization methods", {
     skip_on_cran()
     l.args <- list(clv.data = clv.data.noholdout, optimx.args = list(method = c("BFGS", "L-BFGS-B", "Nelder-Mead")), verbose=FALSE)
 
     expect_silent(m.no.hold <- do.call(what = method, args = l.args))
-    fct.helper.fitted.all.s3(clv.fitted = m.no.hold,  full.names = param.names,
+    fct.helper.fitted.all.s3(clv.fitted = m.no.hold,  full.names = param.names, DERT.not.implemented = DERT.not.implemented,
                              clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
   })
 }
