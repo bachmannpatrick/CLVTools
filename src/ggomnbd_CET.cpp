@@ -1,6 +1,7 @@
 #include <RcppArmadillo.h>
 #include <math.h>
 #include "ggomnbd_PAlive.h"
+#include <gsl/gsl_errno.h>
 #include <gsl/gsl_integration.h>
 
 
@@ -52,6 +53,8 @@ arma::vec ggomnbd_CET(const double r,
                       arma::vec vAlpha_i,
                       arma::vec vBeta_i,
                       const arma::vec& vPAlive){
+  // Do not abort in case of error
+  gsl_set_error_handler_off();
 
   const unsigned int n = vX.n_elem;
 

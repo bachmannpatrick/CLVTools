@@ -1,4 +1,5 @@
 #include <RcppArmadillo.h>
+#include <gsl/gsl_errno.h>
 #include <gsl/gsl_integration.h>
 
 
@@ -46,6 +47,8 @@ arma::vec ggomnbd_LL_ind(const double r,
                          const arma::vec & vX,
                          const arma::vec & vT_x,
                          const arma::vec & vT_cal){
+  // Do not abort in case of error
+  gsl_set_error_handler_off();
 
   const unsigned int n = vX.n_elem;
 
