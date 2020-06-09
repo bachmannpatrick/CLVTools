@@ -208,7 +208,7 @@ fct.testthat.correctness <- function(name.model, method, data.cdnow, data.appare
 
 
   # Static cov
-  expect_silent(clv.apparel <- clvdata(data.transactions = apparelTrans, date.format = "ymd", time.unit = "W", estimation.split = 52))
+  expect_silent(clv.apparel <- clvdata(data.transactions = data.apparelTrans, date.format = "ymd", time.unit = "W", estimation.split = 52))
   expect_silent(clv.apparel.staticcov <- SetStaticCovariates(clv.apparel,
                                                              names.cov.life = c("Gender", "Channel"), names.cov.trans = c("Gender", "Channel"),
                                                              data.cov.life = data.apparelStaticCov, data.cov.trans = data.apparelStaticCov))

@@ -91,11 +91,11 @@ fct.testthat.runability.nocov <- function(name.model, method, cdnow, param.names
   # Common tests ------------------------------------------------------------------------------------------------------------
   fct.testthat.runability.common.out.of.the.box.no.hold(method = method, clv.data.noholdout = clv.data.cdnow.noholdout,
                                                         clv.newdata.withhold = clv.newdata.withhold, clv.newdata.nohold = clv.newdata.nohold,
-                                                        param.names = param.names, DERT.not.implemented = !has.DERT)
+                                                        full.param.names = param.names, DERT.not.implemented = !has.DERT)
 
   # fct.testthat.runability.common.out.of.the.box.with.hold(method = method, clv.data.withholdout = clv.data.cdnow.withholdout,
   #                                                         clv.newdata.withhold = clv.newdata.withhold, clv.newdata.nohold = clv.newdata.nohold,
-  #                                                         param.names = param.names, DERT.not.implemented = !has.DERT)
+  #                                                         full.param.names = param.names, DERT.not.implemented = !has.DERT)
   #
   # fct.testthat.runability.common.custom.model.start.params(method = method, start.params.model = start.params.model,
   #                                                         clv.data.noholdout = clv.data.cdnow.noholdout, clv.data.withholdout = clv.data.cdnow.withholdout)

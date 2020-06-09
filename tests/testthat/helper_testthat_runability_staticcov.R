@@ -211,7 +211,7 @@ fct.testthat.runability.staticcov <- function(name.model, method, start.params.m
   set.seed(0xcaffe) # hipster seed
   expect_silent(dt.newdata.trans <- data.table::rbindlist(lapply(paste0(LETTERS,1:100,sep=""), function(cid){
     data.table::data.table(cust.id = cid,
-                           trans.date = seq.Date(from = as.Date(apparelTrans[, min(Date)]), to = as.Date(apparelTrans[, max(Date)]),
+                           trans.date = seq.Date(from = as.Date(data.apparelTrans[, min(Date)]), to = as.Date(data.apparelTrans[, max(Date)]),
                                                  length.out = sample.int(n=5, size = 1, replace=FALSE)))
   })))
   expect_silent(dt.newdata.trans[, trans.date := format(trans.date, "%Y:%d:%m")])
