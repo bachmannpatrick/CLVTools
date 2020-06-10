@@ -145,9 +145,11 @@ fct.testthat.consistency <- function(name.model, method, has.dyncov, data.appare
   expect_silent(fitted.nocov       <- do.call(method, list(clv.data = clv.apparel, verbose = FALSE)))
   expect_silent(fitted.static.cov0 <- do.call(method, list(clv.data = clv.apparel.static.cov0, verbose = FALSE)))
 
-  fct.testthat.consistency.cov.data.0.cov.params.insignificant(fitted.static.cov0 = fitted.static.cov0)
-  fct.testthat.consistency.cov.data.0.model.params.nearly.same(fitted.nocov = fitted.nocov, fitted.static.cov0 = fitted.static.cov0,
-                                                               param.names = param.names)
+  # **TODO: remove or enable?
+  # fct.testthat.consistency.cov.data.0.cov.params.insignificant(fitted.static.cov0 = fitted.static.cov0)
+  # fct.testthat.consistency.cov.data.0.model.params.nearly.same(fitted.nocov = fitted.nocov, fitted.static.cov0 = fitted.static.cov0,
+  #                                                              param.names = param.names)
+
   fct.testthat.consistency.cov.data.0.same.LL(fitted.nocov = fitted.nocov, fitted.static.cov0 = fitted.static.cov0,
                                               fct.LL.ind.nocov = fct.LL.ind.nocov, fct.LL.ind.static.cov = fct.LL.ind.static.cov)
 
