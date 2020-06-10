@@ -127,12 +127,14 @@ fct.testthat.runability.nocov <- function(name.model, method, cdnow,
                                                   clv.data.holdout = clv.data.cdnow.withholdout,
                                                   clv.newdata.nohold = clv.newdata.nohold,
                                                   clv.newdata.withhold = clv.newdata.withhold,
+                                                  DERT.not.implemented = !has.DERT,
                                                   names.params.model = names(start.params.model))
 
     fct.testthat.runability.common.works.with.cor.start.params(method = method,
                                                                clv.data.holdout = clv.data.cdnow.withholdout,
                                                                clv.newdata.nohold = clv.newdata.nohold,
                                                                clv.newdata.withhold = clv.newdata.withhold,
+                                                               DERT.not.implemented = !has.DERT,
                                                                names.params.model = names(start.params.model))
   }
 }
