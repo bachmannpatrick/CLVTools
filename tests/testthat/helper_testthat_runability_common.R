@@ -54,7 +54,8 @@ fct.testthat.runability.common.multiple.optimization.methods <- function(method,
 }
 
 
-fct.testthat.runability.common.works.with.cor <- function(method, clv.data.holdout, clv.newdata.nohold, clv.newdata.withhold, names.params.model){
+fct.testthat.runability.common.works.with.cor <- function(method, clv.data.holdout, clv.newdata.nohold, clv.newdata.withhold,
+                                                          names.params.model, DERT.not.implemented){
   test_that("Works with use.cor=T", {
     skip_on_cran()
 
@@ -65,16 +66,15 @@ fct.testthat.runability.common.works.with.cor <- function(method, clv.data.holdo
     if(is(clv.data.holdout, "clv.data.static.covariates"))
       full.names <- c(full.names, m.cor@names.prefixed.params.free.life, m.cor@names.prefixed.params.free.trans)
 
-    fct.helper.fitted.all.s3(m.cor, full.names = full.names,
+    fct.helper.fitted.all.s3(m.cor, full.names = full.names, DERT.not.implemented = DERT.not.implemented,
                              clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
   })
 }
 
-fct.testthat.runability.common.works.with.cor.start.params <- function(method, clv.data.holdout, clv.newdata.nohold, clv.newdata.withhold, names.params.model){
+fct.testthat.runability.common.works.with.cor.start.params <- function(method, clv.data.holdout, clv.newdata.nohold, clv.newdata.withhold,
+                                                                       names.params.model, DERT.not.implemented = DERT.not.implemented){
   test_that("Works with use.cor=T and start.params", {
     skip_on_cran()
-    skip_on_covr()
-    skip_on_ci()
 
     l.args <- list(clv.data = clv.data.holdout, use.cor=TRUE, start.param.cor = 0.0, verbose=FALSE)
     expect_silent(m.cor <- do.call(what = method, args = l.args))
@@ -83,7 +83,7 @@ fct.testthat.runability.common.works.with.cor.start.params <- function(method, c
     if(is(clv.data.holdout, "clv.data.static.covariates"))
       full.names <- c(full.names, m.cor@names.prefixed.params.free.life, m.cor@names.prefixed.params.free.trans)
 
-    fct.helper.fitted.all.s3(m.cor, full.names = full.names,
+    fct.helper.fitted.all.s3(m.cor, full.names = full.names, DERT.not.implemented = DERT.not.implemented,
                              clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
   })
 }

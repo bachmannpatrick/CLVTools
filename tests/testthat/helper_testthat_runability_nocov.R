@@ -55,10 +55,11 @@ fct.testthat.runability.nocov.hourly.data <- function(method, data.cdnow, start.
 
 
 
-fct.testthat.runability.nocov <- function(name.model, method, cdnow, param.names,
+fct.testthat.runability.nocov <- function(name.model, method, cdnow,
                                           has.DERT, has.cor,
                                           start.params.model,
                                           failed.optimization.methods.expected.message, custom.optimx.args){
+
 
   context(paste0("Runability - ",name.model," nocov - Basic runability"))
 
@@ -87,18 +88,18 @@ fct.testthat.runability.nocov <- function(name.model, method, cdnow, param.names
                                                 name.price = NULL))
 
 
-
   # Common tests ------------------------------------------------------------------------------------------------------------
+  param.names <- names(start.params.model)
   fct.testthat.runability.common.out.of.the.box.no.hold(method = method, clv.data.noholdout = clv.data.cdnow.noholdout,
                                                         clv.newdata.withhold = clv.newdata.withhold, clv.newdata.nohold = clv.newdata.nohold,
                                                         full.param.names = param.names, DERT.not.implemented = !has.DERT)
 
-  # fct.testthat.runability.common.out.of.the.box.with.hold(method = method, clv.data.withholdout = clv.data.cdnow.withholdout,
-  #                                                         clv.newdata.withhold = clv.newdata.withhold, clv.newdata.nohold = clv.newdata.nohold,
-  #                                                         full.param.names = param.names, DERT.not.implemented = !has.DERT)
+  fct.testthat.runability.common.out.of.the.box.with.hold(method = method, clv.data.withholdout = clv.data.cdnow.withholdout,
+                                                          clv.newdata.withhold = clv.newdata.withhold, clv.newdata.nohold = clv.newdata.nohold,
+                                                          full.param.names = param.names, DERT.not.implemented = !has.DERT)
   #
-  # fct.testthat.runability.common.custom.model.start.params(method = method, start.params.model = start.params.model,
-  #                                                         clv.data.noholdout = clv.data.cdnow.noholdout, clv.data.withholdout = clv.data.cdnow.withholdout)
+  fct.testthat.runability.common.custom.model.start.params(method = method, start.params.model = start.params.model,
+                                                          clv.data.noholdout = clv.data.cdnow.noholdout, clv.data.withholdout = clv.data.cdnow.withholdout)
 
   # fct.testthat.runability.common.all.optimization.methods(method = method, clv.data.noholdout = clv.data.cdnow.noholdout,
   #                                                         expected.message = failed.optimization.methods.expected.message)
@@ -111,15 +112,15 @@ fct.testthat.runability.nocov <- function(name.model, method, cdnow, param.names
 
 
   # Nocov tests ------------------------------------------------------------------------------------------------------------
-  # fct.testthat.runability.nocov.custom.optimx.args(method = method, optimx.args = custom.optimx.args,
-  #                                                  clv.data.noholdout = clv.data.cdnow.noholdout, clv.data.withholdout = clv.data.cdnow.withholdout)
-  #
-  # fct.testthat.runability.nocov.without.spending.data(method = method, data.transactions = cdnow)
-  #
-  # fct.testthat.runability.nocov.predict.newdata.spending(method = method, data.transactions = cdnow)
-  #
-  # fct.testthat.runability.nocov.hourly.data(method = method, data.cdnow = cdnow)
-  #
+  fct.testthat.runability.nocov.custom.optimx.args(method = method, optimx.args = custom.optimx.args,
+                                                   clv.data.noholdout = clv.data.cdnow.noholdout, clv.data.withholdout = clv.data.cdnow.withholdout)
+
+  fct.testthat.runability.nocov.without.spending.data(method = method, data.transactions = cdnow)
+
+  fct.testthat.runability.nocov.predict.newdata.spending(method = method, data.transactions = cdnow)
+
+  fct.testthat.runability.nocov.hourly.data(method = method, data.cdnow = cdnow)
+
 
   if(has.cor){
     fct.testthat.runability.common.works.with.cor(method = method,

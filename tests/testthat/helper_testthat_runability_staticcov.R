@@ -99,8 +99,6 @@ fct.testthat.runability.staticcov.works.with.0.lambdas <- function(method, clv.d
                                                                    param.names.model, DERT.not.implemented){
   test_that("Works with 0 regularization lambdas", {
     skip_on_cran()
-    skip_on_covr()
-    skip_on_ci()
 
     l.args.holdout <- list(clv.data = clv.data.holdout,   reg.lambdas = c(trans=0, life=0),verbose=FALSE)
     l.args.no.holdout <- list(clv.data = clv.data.no.holdout,reg.lambdas = c(trans=0, life=0),verbose=FALSE)
@@ -141,8 +139,6 @@ fct.testthat.runability.staticcov.works.with.combined.interlayers.with.cor <- fu
   test_that("Works with combined interlayers (with correlation)", {
     # Try all combinations of interlayers
     skip_on_cran()
-    skip_on_covr()
-    skip_on_ci()
 
     l.args.holdout.1 = list(clv.data = clv.data.holdout, use.cor = TRUE, names.cov.constr = c("Gender", "Channel"),verbose=FALSE)
     l.args.no.holdout.1 = list(clv.data = clv.data.no.holdout, use.cor = TRUE, names.cov.constr = c("Gender", "Channel"), verbose=FALSE)
@@ -269,12 +265,14 @@ fct.testthat.runability.staticcov <- function(name.model, method, start.params.m
     context(paste0("Runability - ",name.model," static cov - w/ Correlation"))
 
     fct.testthat.runability.common.works.with.cor(method = method,
+                                                  DERT.not.implemented = !has.DERT,
                                                   clv.data.holdout = clv.data.cov.holdout,
                                                   clv.newdata.nohold = clv.newdata.nohold,
                                                   clv.newdata.withhold = clv.newdata.withhold,
                                                   names.params.model = names(start.params.model))
 
     fct.testthat.runability.common.works.with.cor.start.params(method = method,
+                                                               DERT.not.implemented = !has.DERT,
                                                                clv.data.holdout = clv.data.cov.holdout,
                                                                clv.newdata.nohold = clv.newdata.nohold,
                                                                clv.newdata.withhold = clv.newdata.withhold,

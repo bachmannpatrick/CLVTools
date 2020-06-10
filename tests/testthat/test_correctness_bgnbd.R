@@ -10,10 +10,6 @@ fct.testthat.correctness(name.model = "BG/NBD", method=bgnbd, data.cdnow=cdnow,
                          correct.LL.nocov = -9582.429)
 
 
-# **TODO
-# context("Correctness - BGNBD nocov - CBS comparison")
-# fct.testthat.correctness.nocov.compare.cbs.vs.btyd(cdnow = cdnow)
-
 
 context("Correctness - BGNBD nocov - Recover parameters")
 # As reported in Fader, Hardie, Lee (2005)

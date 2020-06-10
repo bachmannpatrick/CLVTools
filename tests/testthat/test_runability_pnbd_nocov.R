@@ -2,7 +2,6 @@ data("cdnow")
 
 
 fct.testthat.runability.nocov(name.model = "PNBD", method = pnbd, cdnow=cdnow,
-                              param.names = c("r", "alpha", "beta", "s"),
                               has.DERT = TRUE, has.cor = TRUE,
                               start.params.model = c(r = 1.23, alpha = 2.34, beta = 0.999, s = 0.678),
                               custom.optimx.args = list(itnmax=40000),

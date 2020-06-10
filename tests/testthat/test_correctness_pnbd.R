@@ -29,9 +29,10 @@ fct.testthat.correctness.nocov.same.as.btyd(clvtools.method = pnbd,
                                             btyd.dert.method = BTYD::pnbd.DERT,
                                             btyd.cet.method = BTYD::pnbd.ConditionalExpectedTransactions,
                                             btyd.palive.method = BTYD::pnbd.PAlive,
-                                            start.params.model = c(r=0.5, alpha = 6, s = 0.9, beta = 8), cdnow = cdnow)
+                                            start.params.model = c(r=0.5, alpha = 6, s = 0.9, beta = 8),
+                                            cdnow = cdnow)
 
-# **TODO: compare CBS vs BTYD
-# context("Correctness - BGNBD nocov - CBS comparison")
-# fct.testthat.correctness.nocov.compare.cbs.vs.btyd(cdnow = cdnow)
+
+# ** Static cov??
+# **DYNCOV??
 
