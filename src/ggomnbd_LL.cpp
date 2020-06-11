@@ -1,25 +1,65 @@
 #include <RcppArmadillo.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_integration.h>
+#include "ggomnbd_LL.h"
+
+arma::vec ggomnbd_integrate(const double r,
+                            const double b,
+                            const double s,
+                            const arma::vec& vAlpha_i,
+                            const arma::vec& vBeta_i,
+                            const arma::vec& vX,
+                            double (*const p_integrationFunction)(double, void*),
+                            const arma::vec& vLower,
+                            const arma::vec& vUpper){
+  // Do not abort in case of error
+  gsl_set_error_handler_off();
+
+  gsl_integration_workspace *workspace
+    = gsl_integration_workspace_alloc (1000);
+
+  gsl_function integrand;
+  integrand.function = p_integrationFunction;
 
 
-// INTEGRATION WORKAROUND
-// anonymous namespace to only make this variables availale in this translation unit
-// the variables and functions defined here outside of the ggomnbd_PAlive function scope
-// are needed during integration
-namespace{
+  struct integration_params params_i;
+  params_i.r = r;
+  params_i.b = b;
+  params_i.s = s;
 
-const arma::vec * gpvX=0, * gpvAlpha_i=0, * gpvBeta_i=0; //will point to vectors to avoid copying
-  unsigned int globI=0; //to loop throught the vectors while integrating
+  // Calculate integral for each customer
+  double res, err;
+  const unsigned int n = vAlpha_i.n_elem;
+  arma::vec vRes(n);
+  for(int i = 0; i<n; i++){
+    // These differ per customer
+    params_i.alpha_i = vAlpha_i(i);
+    params_i.beta_i  = vBeta_i(i);
+    params_i.x_i = vX(i);
 
-  double r_glob=0, b_glob=0, s_glob=0;//parameters extracted from passed vector
+    integrand.params = &params_i;
 
-  double integrationFunction (double x, void * params)
-  {
-    return  std::pow(x + (*gpvAlpha_i)(globI),  -(r_glob + (*gpvX)(globI)))
-    * std::pow((*gpvBeta_i)(globI) + std::exp( b_glob * x) - 1.0 , -(s_glob + 1.0))
-    * std::exp(b_glob * x);
+    gsl_integration_qags(&integrand, vLower(i), vUpper(i), 1.0e-8, 1.0e-8, 0, workspace, &res, &err);
+    vRes(i) = res;
   }
+
+  return(vRes);
+}
+
+
+double ggomnbd_LL_integrand(double y, void * p_params){
+  struct integration_params * params = (struct integration_params*)p_params;
+
+  const double r = (params -> r);
+  const double b = (params -> b);
+  const double s = (params -> s);
+  const double beta_i = (params -> beta_i);
+  const double alpha_i = (params -> alpha_i);
+  const double x_i = (params -> x_i);
+
+  return  std::pow(y + alpha_i,  -(r + x_i))
+  * std::pow(beta_i + std::exp( b * y) - 1.0 , -(s + 1.0))
+  * std::exp(b * y);
 }
 
 
@@ -42,47 +82,23 @@ const arma::vec * gpvX=0, * gpvAlpha_i=0, * gpvBeta_i=0; //will point to vectors
 arma::vec ggomnbd_LL_ind(const double r,
                          const double b,
                          const double s,
-                         const arma::vec & vAlpha_i,
-                         const arma::vec & vBeta_i,
-                         const arma::vec & vX,
-                         const arma::vec & vT_x,
-                         const arma::vec & vT_cal){
-  // Do not abort in case of error
-  gsl_set_error_handler_off();
-
-  const unsigned int n = vX.n_elem;
-
-  //set pointers to vecs for the integration workaround
-  gpvX = &vX;
-  gpvAlpha_i = &vAlpha_i;
-  gpvBeta_i = &vBeta_i;
-
-  //set the params for the integration workaround
-  r_glob = r;
-  b_glob = b;
-  s_glob = s;
-
-  arma::vec vIntegrals(n);
-  double res, err;
-
-  gsl_integration_workspace *workspace
-    = gsl_integration_workspace_alloc (1000);
-
-  gsl_function integrand;
-  integrand.function = &integrationFunction;
-  integrand.params = NULL;
-
-  for(globI = 0; globI<n; globI++){
-    gsl_integration_qags(&integrand, vT_x(globI), vT_cal(globI), 1.0e-8, 1.0e-8, 0, workspace, &res, &err);
-    vIntegrals(globI) = res;
-  }
+                         const arma::vec& vAlpha_i,
+                         const arma::vec& vBeta_i,
+                         const arma::vec& vX,
+                         const arma::vec& vT_x,
+                         const arma::vec& vT_cal){
 
   arma::vec vL1 = arma::lgamma(r + vX) - lgamma(r);
   arma::vec vL2 = arma::lgamma(r + vX) - lgamma(r);
 
   vL1 += r * (arma::log(vAlpha_i) - arma::log(vAlpha_i + vT_cal)) + vX % (0.0-arma::log(vAlpha_i + vT_cal)) + s * (arma::log(vBeta_i)-arma::log(vBeta_i-1.0 + arma::exp(b*vT_cal))) ;
-  vL2 += std::log(b) + r *arma::log(vAlpha_i) + log(s) + s * arma::log(vBeta_i) +arma::log(vIntegrals);
+  vL2 += std::log(b) + r *arma::log(vAlpha_i) + log(s) + s * arma::log(vBeta_i);
 
+  const arma::vec vIntegrals = ggomnbd_integrate(r, b, s, vAlpha_i, vBeta_i,
+                                                 vX,
+                                                 &ggomnbd_LL_integrand,
+                                                 vT_x, vT_cal);
+  vL2 += arma::log(vIntegrals);
 
   // Calculate LL ---------------------------------------------------------------------------
   // arma::vec vLL = arma::log(arma::exp(vL1) + arma::exp(vL2));
@@ -120,12 +136,7 @@ arma::vec ggomnbd_nocov_LL_ind(const arma::vec& vLogparams,
   vAlpha_i.fill(alpha_0);
   vBeta_i.fill(beta_0);
 
-  // Calculate LL ---------------------------------------------------
-  //    Calculate value for every customer
-  //    Sum of all customers' LL value
-
-  arma::vec vLL = ggomnbd_LL_ind(r, b, s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal);
-  return(vLL);
+  return(ggomnbd_LL_ind(r, b, s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal));
 }
 
 
@@ -189,10 +200,6 @@ arma::vec ggomnbd_staticcov_LL_ind(const arma::vec& vParams,
   const arma::vec vAlpha_i = alpha_0 * arma::exp(((mCov_trans * (-1)) * vTrans_params));
   const arma::vec vBeta_i  = beta_0  * arma::exp(((mCov_life  * (-1)) * vLife_params));
 
-
-  // Calculate LL --------------------------------------------------
-  //    Calculate value for every customer
-  //    Sum of all customers' LL value
   return(ggomnbd_LL_ind(r,b,s,vAlpha_i,vBeta_i,vX,vT_x,vT_cal));
 }
 

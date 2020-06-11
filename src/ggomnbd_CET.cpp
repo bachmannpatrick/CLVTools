@@ -1,28 +1,20 @@
 #include <RcppArmadillo.h>
 #include <math.h>
+#include "ggomnbd_LL.h"
 #include "ggomnbd_PAlive.h"
-#include <gsl/gsl_errno.h>
-#include <gsl/gsl_integration.h>
 
 
 
-//INTEGRATION WORKAROUND
-//anonymous namespace to only make this variables availale in this translation unit
-//the variables and functions defined here outside of the ggomnbd_PAlive function scope
-//are needed during integration
-namespace{
+// integrand<-function(omega){omega*exp(b*omega)*(beta_i[i]+exp(b*omega)-1)^-(s+1)}
+double ggomnbd_CET_integrand(double omega, void * p_params){
+  struct integration_params * params = (struct integration_params*)p_params;
+  const double b = (params -> b);
+  const double s = (params -> s);
+  const double beta_i = (params -> beta_i);
 
-const arma::vec * gpvBeta_i=0; //will point to vectors to avoid copying
-  unsigned int globI=0; //to loop throught the vectors while integrating
-
-  double globB=0, globS=0;//parameters extracted from passed vector
-
-  // integrand<-function(omega){omega*exp(b*omega)*(beta_i[i]+exp(b*omega)-1)^-(s+1)}
-  double integrationFunction (double omega, void * params)
-  {
-    return omega * std::exp(globB * omega) * std::pow( (*gpvBeta_i)(globI) + std::exp(globB * omega) - 1.0, -(globS+1.0) );
-  }
+  return(omega * std::exp(b * omega) * std::pow(beta_i + std::exp(b * omega) - 1.0, -(s+1.0) ) );
 }
+
 
 //' @name ggomnbd_CET
 //'
@@ -51,41 +43,51 @@ arma::vec ggomnbd_CET(const double r,
                       const arma::vec& vT_cal,
                       // Do not pass vAlpha and vBeta by ref because they will be modified
                       arma::vec vAlpha_i,
-                      arma::vec vBeta_i,
-                      const arma::vec& vPAlive){
-  // Do not abort in case of error
-  gsl_set_error_handler_off();
+                      arma::vec vBeta_i){
 
-  const unsigned int n = vX.n_elem;
+  // Calculate PAlive -------------------------------------------------------------
+  const arma::vec vPAlive = ggomnbd_PAlive(r,b,s,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
 
-  // b, s are defined in the scope of this file
-  globB = b;
-  globS = s;
-  gpvBeta_i = &vBeta_i;
+  // const unsigned int n = vAlpha_i.n_elem;
+  // arma::vec vPeriods(n);
+  // vPeriods.fill(dPeriods);
+
+  // vAlpha_i += vX;
+  // vBeta_i += arma::exp(b * vT_cal) - 1.0;
+  //
+  // arma::vec vExpectation(n);
+  // arma::vec vAlpha_tmp(1), vBeta_tmp(1), vPeriods_tmp(1);
+  // double r_star;
+  // for(int i = 0; i<n; i++){
+  //
+  //   vAlpha_tmp(0) = vAlpha_i(i);
+  //   vBeta_tmp(0) = vBeta_i(i);
+  //   r_star = r + vX(i);
+  //   vPeriods_tmp(0) = dPeriods;
+  //   vExpectation(i) = ggomnbd_expectation(r_star, b, s, vAlpha_tmp, vBeta_tmp, vPeriods_tmp)(0);
+  // }
+  //
+  // return(vPAlive % vExpectation);
 
   vAlpha_i += vX;
   vBeta_i += arma::exp(b * vT_cal) - 1.0;
 
-  arma::vec vIntegrals(n);
-  double res, err;
+  const arma::vec vLower(vBeta_i.n_elem, arma::fill::zeros);
+  arma::vec vUpper(vBeta_i.n_elem);
+  vUpper.fill(dPeriods);
+  const arma::vec vIntegrals = ggomnbd_integrate(r, b, s, vAlpha_i, vBeta_i,
+                                                 vX,
+                                                 &ggomnbd_CET_integrand,
+                                                 vLower,
+                                                 vUpper);
 
-  gsl_integration_workspace *workspace
-    = gsl_integration_workspace_alloc (1000);
-
-  gsl_function integrand;
-  integrand.function = &integrationFunction;
-  integrand.params = NULL;
-
-  for(globI = 0; globI<n; globI++){
-    gsl_integration_qags(&integrand, 0, dPeriods, 1.0e-8, 1.0e-8, 0, workspace, &res, &err);
-    vIntegrals(globI) = res;
-  }
-
+  // From Matlab code:
+  // gg_xt_cum_up(i)=p_i(i).*rstar./astar.*  (((betastar./(betastar+exp(bg*t)-1)).^sg).*t+bg.*sg.*betastar.^sg.*intgup_h(i));
   arma::vec vP1 = vPAlive % ((r+vX) / (vAlpha_i));
-  arma::vec vP2 = arma::pow( vBeta_i / (vBeta_i + std::exp(b* dPeriods) - 1.0 ), s );
-  arma::vec vP3 = dPeriods + b * s * (arma::pow(vBeta_i, s) % vIntegrals);
+  arma::vec vP2 = arma::pow( vBeta_i / (vBeta_i + std::exp(b* dPeriods) - 1.0 ), s ) * dPeriods;
+  arma::vec vP3 = b * s * arma::pow(vBeta_i, s) % vIntegrals;
 
-  return( vP1 % vP2 % vP3);
+  return( vP1 % (vP2 + vP3));
 }
 
 
@@ -110,13 +112,7 @@ arma::vec ggomnbd_nocov_CET(const double r,
   vAlpha_i.fill(alpha_0);
   vBeta_i.fill( beta_0);
 
-
-  // Calculate PAlive -------------------------------------------------------------
-  const arma::vec vPAlive = ggomnbd_PAlive(r,b,s,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
-
-
-  // Calculate CET ----------------------------------------------------------------
-  return(ggomnbd_CET(r,b,s,dPeriods,vX,vT_x,vT_cal,vAlpha_i, vBeta_i,vPAlive));
+  return(ggomnbd_CET(r,b,s,dPeriods,vX,vT_x,vT_cal,vAlpha_i, vBeta_i));
 }
 
 
@@ -145,9 +141,5 @@ arma::vec ggomnbd_staticcov_CET(const double r,
   const arma::vec vAlpha_i = alpha_0 * arma::exp(((mCov_trans * (-1)) * vCovParams_trans));
   const arma::vec vBeta_i  = beta_0  * arma::exp(((mCov_life  * (-1)) * vCovParams_life));
 
-  // Calculate PAlive -------------------------------------------------------------
-  const arma::vec vPAlive = ggomnbd_PAlive(r,b,s,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
-
-  // Calculate CET -----------------------------------------------------------------
-  return(ggomnbd_CET(r,b,s,dPeriods,vX,vT_x,vT_cal,vAlpha_i, vBeta_i, vPAlive));
+  return(ggomnbd_CET(r,b,s,dPeriods,vX,vT_x,vT_cal,vAlpha_i, vBeta_i));
 }
