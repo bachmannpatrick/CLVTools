@@ -247,6 +247,35 @@ ggomnbd_nocov_PAlive <- function(r, alpha_0, b, s, beta_0, vX, vT_x, vT_cal) {
     .Call(`_CLVTools_ggomnbd_nocov_PAlive`, r, alpha_0, b, s, beta_0, vX, vT_x, vT_cal)
 }
 
+#' @name ggomnbd_expectation
+#' @title GGompertz/NBD: Unconditional Expectation
+#'
+#' @description Computes the expected number of repeat transactions in the interval (0, vT_i]
+#' for a randomly selected customer, where 0 is defined as the point when the customer came alive.
+#'
+#' @template template_params_ggomnbd
+#' @param vT_i Number of periods since the customer came alive
+#' @template template_params_rcppcovmatrix
+#' @template template_params_rcppvcovparams
+#'
+#' @templateVar name_params_cov_life vCovParams_life
+#' @templateVar name_params_cov_trans vCovParams_trans
+#' @template template_details_rcppcovmatrix
+#'
+#' @template template_references_ggomnbd
+#'
+NULL
+
+#' @rdname ggomnbd_expectation
+ggomnbd_nocov_expectation <- function(r, alpha_0, b, s, beta_0, vT_i) {
+    .Call(`_CLVTools_ggomnbd_nocov_expectation`, r, alpha_0, b, s, beta_0, vT_i)
+}
+
+#' @rdname ggomnbd_expectation
+ggomnbd_staticcov_expectation <- function(r, alpha_0, b, s, beta_0, vT_i, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans) {
+    .Call(`_CLVTools_ggomnbd_staticcov_expectation`, r, alpha_0, b, s, beta_0, vT_i, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans)
+}
+
 #' @name pnbd_CET
 #'
 #' @templateVar name_model_full Pareto/NBD

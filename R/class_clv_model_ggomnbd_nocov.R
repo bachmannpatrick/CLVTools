@@ -108,24 +108,14 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.ggomnbd.no.cov
   r <- alpha <- beta <- b <- s <- t_i <- tau <- NULL
 
   params_i <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
-  params_i[, r     := clv.fitted@prediction.params.model[["r"]]]
-  params_i[, alpha := clv.fitted@prediction.params.model[["alpha"]]]
-  params_i[, beta  := clv.fitted@prediction.params.model[["beta"]]]
-  params_i[, b     := clv.fitted@prediction.params.model[["b"]]]
-  params_i[, s     := clv.fitted@prediction.params.model[["s"]]]
-
-  fct.ggomnbd.expectation <- function(r, alpha, beta, b, s, t_i){
-
-    term1 <- (r / alpha)
-    term2 <- ((beta / (beta+exp(b*t_i)-1) )^s) *(t_i)
-    term3 <- b * s * (beta^s)
-    term4 <- integrate(f = function(tau){tau * exp(b*tau) * ((beta + exp(b*tau) - 1)^(-(s+1)))}, lower = 0, upper = t_i)$value
-
-    return(term1 * (term2 + (term3 * term4)))
-  }
 
   fct.expectation <- function(params_i.t){
-    return(params_i.t[, list(res = fct.ggomnbd.expectation(r = r, alpha = alpha, beta = beta, b = b, s = s, t_i = t_i)), by="Id"]$res)
+    return(drop(ggomnbd_nocov_expectation(r       = clv.fitted@prediction.params.model[["r"]],
+                                          alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+                                          beta_0  = clv.fitted@prediction.params.model[["beta"]],
+                                          b       = clv.fitted@prediction.params.model[["b"]],
+                                          s       = clv.fitted@prediction.params.model[["s"]],
+                                          vT_i = params_i.t$t_i)))
   }
 
   return(DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
@@ -134,7 +124,7 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.ggomnbd.no.cov
 
 #' @include all_generics.R
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.ggomnbd.no.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
-  r <- alpha <- b <- s <- beta <- x <- t.x <- T.cal <- PAlive <- DERT <- CET <- period.length <- NULL
+  r <- alpha <- b <- s <- beta <- x <- t.x <- T.cal <- PAlive <- i.PAlive <- DERT <- i.DERT <- CET <- i.CET <- period.length <- NULL
 
   predict.number.of.periods <- dt.prediction[1, period.length]
 

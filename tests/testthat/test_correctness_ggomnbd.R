@@ -30,3 +30,88 @@ fct.testthat.correctness.nocov.correct.coefs(method = ggomnbd,
 #                                           params.nocov.se = c(r = 0.049, alpha = 0.949, b = 0.0000, s = 0.039, beta = 0.0004))
 
 
+context("Correctness - GGompertz/NBD nocov - Expectation")
+
+test_that("Same result as previously existing R implementation", {
+  expect_silent(clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
+                                            time.unit = "w", estimation.split = 40))
+  expect_silent(clv.ggomnbd <- ggomnbd(clv.data.apparel, verbose = FALSE))
+
+
+  # Bemmaor and Glady: Implementing in Matlab paper, p.7
+  # intg(i,j)=quadgk(@(tau)tau.*exp(bg.*tau).*(betag+exp(bg*tau)-1).^-(sg+1),0,t);
+  # gg_xt_cum(i,j)=rg./ag. * (((betag./(betag+exp(bg*t)-1)).^sg).*t+bg.*sg.*betag.^sg.*intg(i,j));
+
+  fct.ggomnbd.expectation <- function(r, alpha, beta, b, s, t_i){
+    term1 <- (r / alpha)
+    term2 <- ((beta / (beta+exp(b*t_i)-1) )^s) *(t_i)
+    term3 <- b * s * (beta^s)
+    term4 <- integrate(f = function(tau){tau * exp(b*tau) * ((beta + exp(b*tau) - 1)^(-(s+1)))},
+                       lower = 0, upper = t_i,
+                       rel.tol = 1e-8, abs.tol = 1e-8)$value
+
+    return(term1 * (term2 + (term3 * term4)))
+  }
+
+  vec_t_i <- 0:50
+
+
+  # Nocov
+  expect_silent(expectation_R <- sapply(vec_t_i, fct.ggomnbd.expectation,
+                                        r     = clv.ggomnbd@prediction.params.model[["r"]],
+                                        alpha = clv.ggomnbd@prediction.params.model[["alpha"]],
+                                        beta  = clv.ggomnbd@prediction.params.model[["beta"]],
+                                        b     = clv.ggomnbd@prediction.params.model[["b"]],
+                                        s     = clv.ggomnbd@prediction.params.model[["s"]]))
+
+  expect_silent(expectation_Rcpp <- ggomnbd_nocov_expectation(r       = clv.ggomnbd@prediction.params.model[["r"]],
+                                                              alpha_0 = clv.ggomnbd@prediction.params.model[["alpha"]],
+                                                              beta_0  = clv.ggomnbd@prediction.params.model[["beta"]],
+                                                              b       = clv.ggomnbd@prediction.params.model[["b"]],
+                                                              s       = clv.ggomnbd@prediction.params.model[["s"]],
+                                                              vT_i = vec_t_i))
+  expect_equal(expectation_R, drop(expectation_Rcpp))
+
+
+
+
+  # Static cov
+  expect_silent(clv.data.static.cov <- SetStaticCovariates(clv.data.apparel,
+                                                           data.cov.life = apparelStaticCov,names.cov.life = c("Gender", "Channel"),
+                                                           data.cov.trans = apparelStaticCov,names.cov.trans = c("Gender", "Channel")))
+  expect_silent(clv.ggomnbd <- ggomnbd(clv.data.static.cov, verbose = FALSE))
+
+
+  m.cov.data.life  <- clv.data.get.matrix.data.cov.life(clv.data=clv.ggomnbd@clv.data, correct.row.names=clv.ggomnbd@cbs$Id,
+                                                        correct.col.names=names(clv.ggomnbd@prediction.params.life))
+  m.cov.data.trans <- clv.data.get.matrix.data.cov.trans(clv.data=clv.ggomnbd@clv.data, correct.row.names=clv.ggomnbd@cbs$Id,
+                                                         correct.col.names=names(clv.ggomnbd@prediction.params.trans))
+  alpha_i <- clv.ggomnbd@prediction.params.model[["alpha"]] * exp( -m.cov.data.trans %*% clv.ggomnbd@prediction.params.trans)
+  beta_i  <- clv.ggomnbd@prediction.params.model[["beta"]]  * exp( -m.cov.data.life  %*% clv.ggomnbd@prediction.params.life)
+
+  expect_silent(expectation_R <- sapply(seq(vec_t_i), function(i){
+    fct.ggomnbd.expectation(r     = clv.ggomnbd@prediction.params.model[["r"]],
+                            alpha = alpha_i[i],
+                            beta  = beta_i[i],
+                            b     = clv.ggomnbd@prediction.params.model[["b"]],
+                            s     = clv.ggomnbd@prediction.params.model[["s"]],
+                            t_i = vec_t_i[i])}))
+
+
+  expect_silent(expectation_Rcpp <- CLVTools:::ggomnbd_staticcov_expectation(r       = clv.ggomnbd@prediction.params.model[["r"]],
+                                                                  alpha_0 = clv.ggomnbd@prediction.params.model[["alpha"]],
+                                                                  b       = clv.ggomnbd@prediction.params.model[["b"]],
+                                                                  s       = clv.ggomnbd@prediction.params.model[["s"]],
+                                                                  beta_0  = clv.ggomnbd@prediction.params.model[["beta"]],
+                                                                  vT_i    = vec_t_i,
+                                                                  vCovParams_trans = clv.ggomnbd@prediction.params.trans,
+                                                                  vCovParams_life  = clv.ggomnbd@prediction.params.life,
+                                                                  mCov_life  = m.cov.data.life[seq_along(vec_t_i), ],
+                                                                  mCov_trans = m.cov.data.trans[seq_along(vec_t_i), ]))
+
+  # Differences were verified to stem from numerical integration
+  expect_equal(expectation_R, drop(expectation_Rcpp), tolerance = 1e-4)
+})
+
+
+

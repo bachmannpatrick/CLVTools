@@ -132,7 +132,7 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.no.cov")
 # .clv.model.predict.clv --------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgnbd.no.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
-  r <- alpha <- a <- b <- period.length <- CET <- x <- t.x <- T.cal <- PAlive <- DERT <- NULL
+  r <- alpha <- a <- b <- period.length <- CET <- PAlive <- DERT <- i.CET <- i.PAlive <- i.DERT <- x <- t.x <- T.cal <- NULL
 
   predict.number.of.periods <- dt.prediction[1, period.length]
 
