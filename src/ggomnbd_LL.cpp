@@ -62,18 +62,6 @@ arma::vec ggomnbd_LL_ind(const double r,
   b_glob = b;
   s_glob = s;
 
-
-  const double below = pow(vT_x.max() + vAlpha_i.max(), -(r + vX.max()) ) * pow(vBeta_i.max() + exp(b*vT_x.max())-1.0, -(s+1.0))  * exp(b*vT_x.min()) ;
-  const double above = pow(vT_x.min() + vAlpha_i.min(), -(r + vX.max()) ) * pow(vBeta_i.min() + exp(b*vT_x.min())-1.0, -(s+1.0))  * exp(b*vT_x.max()) ;
-
-
-  //   //** TODO ** Zero or just very small??
-  if( below == 0.0)//< 0.00001 )
-    Rcpp::Rcout<<"Log of the integral might diverge; Lower Boundary = 0 "<<std::endl;
-
-  if( above > pow(10,200) )
-    Rcpp::Rcout<<"Log of the integral might diverge; Upper Boundary ="<<above<<std::endl;
-
   arma::vec vIntegrals(n);
   double res, err;
 
@@ -95,8 +83,16 @@ arma::vec ggomnbd_LL_ind(const double r,
   vL1 += r * (arma::log(vAlpha_i) - arma::log(vAlpha_i + vT_cal)) + vX % (0.0-arma::log(vAlpha_i + vT_cal)) + s * (arma::log(vBeta_i)-arma::log(vBeta_i-1.0 + arma::exp(b*vT_cal))) ;
   vL2 += std::log(b) + r *arma::log(vAlpha_i) + log(s) + s * arma::log(vBeta_i) +arma::log(vIntegrals);
 
-  //create result and store it in vector passed by ref
-  arma::vec vLL = arma::log(arma::exp(vL1) + arma::exp(vL2));
+
+  // Calculate LL ---------------------------------------------------------------------------
+  // arma::vec vLL = arma::log(arma::exp(vL1) + arma::exp(vL2));
+  // For numerical stability rewrite
+  //  log(exp(a) + exp(b))
+  //            as
+  //  max(a,b) + log(exp(a-max(a,b)) + exp(b-max(a,b)))
+
+  const arma::vec vMaxPart = arma::max(vL1, vL2);
+  const arma::vec vLL = vMaxPart + arma::log(arma::exp(vL1 - vMaxPart) + exp(vL2 - vMaxPart));
 
   return(vLL);
 }
