@@ -2,6 +2,7 @@
 #include <math.h>
 #include "ggomnbd_LL.h"
 #include "ggomnbd_PAlive.h"
+#include "ggomnbd_expectation.h"
 
 
 
@@ -41,53 +42,31 @@ arma::vec ggomnbd_CET(const double r,
                       const arma::vec& vX,
                       const arma::vec& vT_x,
                       const arma::vec& vT_cal,
-                      // Do not pass vAlpha and vBeta by ref because they will be modified
-                      arma::vec vAlpha_i,
-                      arma::vec vBeta_i){
+                      const arma::vec& vAlpha_i,
+                      const arma::vec& vBeta_i){
 
-  // Calculate PAlive -------------------------------------------------------------
+  // Expectation is Formula 20: PAlive()*Expectation()
+  //
+  //  with
+  //    r *    = r + x
+  //    alpha* = alpha + Tcal
+  //    beta*  = beta + exp(b*Tcal) - 1
+  //    t_i    = dPeriods
+
+
   const arma::vec vPAlive = ggomnbd_PAlive(r,b,s,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
 
-  // const unsigned int n = vAlpha_i.n_elem;
-  // arma::vec vPeriods(n);
-  // vPeriods.fill(dPeriods);
+  const arma::vec vRStar     = r + vX;
+  const arma::vec vAlphaStar = vAlpha_i + vX;
+  const arma::vec vBetaStar  = vBeta_i + arma::exp(b * vT_cal) - 1.0;
 
-  // vAlpha_i += vX;
-  // vBeta_i += arma::exp(b * vT_cal) - 1.0;
-  //
-  // arma::vec vExpectation(n);
-  // arma::vec vAlpha_tmp(1), vBeta_tmp(1), vPeriods_tmp(1);
-  // double r_star;
-  // for(int i = 0; i<n; i++){
-  //
-  //   vAlpha_tmp(0) = vAlpha_i(i);
-  //   vBeta_tmp(0) = vBeta_i(i);
-  //   r_star = r + vX(i);
-  //   vPeriods_tmp(0) = dPeriods;
-  //   vExpectation(i) = ggomnbd_expectation(r_star, b, s, vAlpha_tmp, vBeta_tmp, vPeriods_tmp)(0);
-  // }
-  //
-  // return(vPAlive % vExpectation);
+  arma::vec vPeriods(vX.n_elem);
+  vPeriods.fill(dPeriods);
 
-  vAlpha_i += vX;
-  vBeta_i += arma::exp(b * vT_cal) - 1.0;
+  const arma::vec vExpectation = ggomnbd_expectation(b, s, vRStar, vAlphaStar, vBetaStar, vPeriods);
 
-  const arma::vec vLower(vBeta_i.n_elem, arma::fill::zeros);
-  arma::vec vUpper(vBeta_i.n_elem);
-  vUpper.fill(dPeriods);
-  const arma::vec vIntegrals = ggomnbd_integrate(r, b, s, vAlpha_i, vBeta_i,
-                                                 vX,
-                                                 &ggomnbd_CET_integrand,
-                                                 vLower,
-                                                 vUpper);
 
-  // From Matlab code:
-  // gg_xt_cum_up(i)=p_i(i).*rstar./astar.*  (((betastar./(betastar+exp(bg*t)-1)).^sg).*t+bg.*sg.*betastar.^sg.*intgup_h(i));
-  arma::vec vP1 = vPAlive % ((r+vX) / (vAlpha_i));
-  arma::vec vP2 = arma::pow( vBeta_i / (vBeta_i + std::exp(b* dPeriods) - 1.0 ), s ) * dPeriods;
-  arma::vec vP3 = b * s * arma::pow(vBeta_i, s) % vIntegrals;
-
-  return( vP1 % (vP2 + vP3));
+  return(vPAlive % vExpectation);
 }
 
 

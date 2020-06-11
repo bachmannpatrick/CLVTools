@@ -28,16 +28,11 @@ arma::vec ggomnbd_PAlive(const double r,
                          const arma::vec& vAlpha_i,
                          const arma::vec& vBeta_i){
 
-  const unsigned int n = vX.n_elem;
-
-  // Individual LL values -------------------------------------------------
   arma::vec vLL = ggomnbd_LL_ind(r, b ,s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal);
 
-  arma::vec vP1(n), vP2(n), vP3(n);
-
-  vP1 = arma::lgamma(r + vX) - lgamma(r);
-  vP2 = r * arma::log(vAlpha_i/(vAlpha_i + vT_cal)) + vX % arma::log(1/(vAlpha_i + vT_cal)) + s * arma::log(vBeta_i/(vBeta_i - 1 + exp(b * vT_cal)));
-  vP3 = vLL;
+  const arma::vec vP1 = arma::lgamma(r + vX) - lgamma(r);
+  const arma::vec vP2 = r * arma::log(vAlpha_i/(vAlpha_i + vT_cal)) + vX % arma::log(1/(vAlpha_i + vT_cal)) + s * arma::log(vBeta_i/(vBeta_i - 1 + exp(b * vT_cal)));
+  const arma::vec vP3 = vLL;
 
   return arma::round(10000*arma::exp(vP1 + vP2 - vP3))/10000;
 

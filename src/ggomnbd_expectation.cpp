@@ -31,21 +31,23 @@ double ggomnbd_expectation_integrand(double tau, void * p_params){
 //'
 //' @template template_references_ggomnbd
 //'
-arma::vec ggomnbd_expectation(const double r,
-                              const double b,
+arma::vec ggomnbd_expectation(const double b,
                               const double s,
+                              // Pass r as vector because needed for CET
+                              const arma::vec& vR,
                               const arma::vec& vAlpha_i,
                               const arma::vec& vBeta_i,
                               const arma::vec& vT_i){
 
-  const arma::vec vF1 = (r / vAlpha_i);
+  const arma::vec vF1 = (vR / vAlpha_i);
   const arma::vec vF2 = arma::pow(vBeta_i / (vBeta_i + arma::exp(b * vT_i)-1), s) % (vT_i);
   const arma::vec vF3 = b * s * arma::pow(vBeta_i, s);
 
 
-  // vX is needed in LL but not expectation integral. Pass zeros (= vLower).
+  // r and vX are needed in LL but not in the expectation integral.
+  //  Pass zeros (= vLower)
   const arma::vec vLower(vBeta_i.n_elem, arma::fill::zeros);
-  const arma::vec vF4 = ggomnbd_integrate(r, b, s, vAlpha_i, vBeta_i,
+  const arma::vec vF4 = ggomnbd_integrate(0, b, s, vAlpha_i, vBeta_i,
                                           vLower, //instead of vX, only zeros
                                           &ggomnbd_expectation_integrand,
                                           vLower,
@@ -65,14 +67,15 @@ arma::vec ggomnbd_nocov_expectation(const double r,
 
   // Build alpha and beta --------------------------------------------------------
   const double n = vT_i.n_elem;
-  arma::vec vAlpha_i(n), vBeta_i(n);
+  arma::vec vAlpha_i(n), vBeta_i(n), vR(n);
 
   vAlpha_i.fill(alpha_0);
   vBeta_i.fill( beta_0);
+  vR.fill(r);
 
-  return(ggomnbd_expectation(r,
-                             b,
+  return(ggomnbd_expectation(b,
                              s,
+                             vR,
                              vAlpha_i,
                              vBeta_i,
                              vT_i));
@@ -99,10 +102,12 @@ arma::vec ggomnbd_staticcov_expectation(const double r,
 
   const arma::vec vAlpha_i = alpha_0 * arma::exp(((mCov_trans * (-1)) * vCovParams_trans));
   const arma::vec vBeta_i  = beta_0  * arma::exp(((mCov_life  * (-1)) * vCovParams_life));
+  arma::vec vR(vAlpha_i.n_elem);
+  vR.fill(r);
 
-  return(ggomnbd_expectation(r,
-                             b,
+  return(ggomnbd_expectation(b,
                              s,
+                             vR,
                              vAlpha_i,
                              vBeta_i,
                              vT_i));
