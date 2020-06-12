@@ -1,5 +1,5 @@
 #' @importFrom utils txtProgressBar setTxtProgressBar
-pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
+pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose, only.return.input.to.expectation=FALSE){
   # cran silence
   expectation <- exp.gX.P <- i.exp.gX.P <- exp.gX.L <- d_omega <- i.d_omega <- NULL
   i <- Ai <- Bi <- Ci <- Di <- Dbar_i <- Bbar_i <- period.num <- d1 <- NULL
@@ -82,10 +82,13 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
   dt.ABCD[      , Dbar_i := (Dbar_i - exp.gX.L) + exp.gX.L * (-d_omega - (i-2))]
   dt.ABCD[i == 1, Dbar_i := 0]
 
-  # **TEST: Dbar_i == Bbar_i if covariates data & parameters are the same! (or gamma=0)
+
+  if(only.return.input.to.expectation){
+    return(dt.ABCD)
+  }
 
   # Do expectation -----------------------------------------------------------------------------------------------
-  # For every date in the expectation table, calculate the expectation separatley
+  # For every date in the expectation table, calculate the expectation separately
 
   if(verbose){
     progress.bar <- txtProgressBar(max = max.period.no, style = 3)

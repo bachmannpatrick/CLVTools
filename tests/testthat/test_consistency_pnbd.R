@@ -19,26 +19,6 @@ expect_silent(clv.apparel <- clvdata(data.transactions = apparelTrans, date.form
 expect_silent(p.nocov     <- pnbd(clv.apparel, verbose = FALSE))
 
 
-
-fct.helper.quickfit.dyncov <- function(data.apparelTrans, data.apparelDynCov){
-  # Create dyncov model, quickly
-  expect_silent(clv.apparel <- clvdata(data.transactions = apparelTrans, date.format = "ymd",
-                                       time.unit = "w",estimation.split = 38))
-  expect_message(clv.apparel.dyn  <- SetDynamicCovariates(clv.apparel,name.id = "Id",name.date = "Cov.Date",
-                                                          data.cov.life  = apparelDynCov,names.cov.life = c("Marketing", "Gender", "Channel"),
-                                                          data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel")),
-                 regexp = "cut off")
-
-  expect_warning(p.dyncov <- pnbd(clv.apparel.dyn, start.params.model = c(r=1, alpha=3, s=1, beta=3),
-                                  optimx.args = list(method="Nelder-Mead", # NelderMead verifies nothing = faster
-                                                     hessian=FALSE, # no hessian
-                                                     control=list(kkt=FALSE, # kkt takes forever
-                                                                  reltol = 1000)),
-                                  verbose = FALSE),
-                 regexp = "Hessian")
-  return(p.dyncov)
-}
-
 p.dyncov.g0 <- fct.helper.quickfit.dyncov(data.apparelTrans = apparelTrans, data.apparelDynCov = apparelDynCov)
 
 # Dyncov: Set parameters ------------------------------------------------------------------------

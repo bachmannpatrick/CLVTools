@@ -1,5 +1,4 @@
-fct.testthat.correctness.nocov.correct.se <- function(method, cdnow, start.params.model, params.nocov.se)
-{
+fct.testthat.correctness.nocov.correct.se <- function(method, cdnow, start.params.model, params.nocov.se){
   test_that("Cdnow nocov correct SE", {
     expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "w", estimation.split = "1997-09-30"))
 

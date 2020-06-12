@@ -1,6 +1,7 @@
 data("cdnow")
 data("apparelTrans")
 data("apparelStaticCov")
+data("apparelDynCov")
 
 # Correct coefs are our estimates
 fct.testthat.correctness(name.model = "PNBD", method=pnbd, data.cdnow=cdnow,
@@ -33,8 +34,11 @@ fct.testthat.correctness.nocov.same.as.btyd(clvtools.method = pnbd,
                                             cdnow = cdnow)
 
 
+
+fct.testthat.correctness.dyncov(data.apparelTrans=apparelTrans, data.apparelDynCov=apparelDynCov)
+
+
 # ** Static cov??
-# **DYNCOV??
 
 # *** Fit Dyncov (in helper function) + test that CET = 0 with prediction.end = 0 or prediction.end = holdout.start
 # ** test with different prediction.ends that k is correctly caught
