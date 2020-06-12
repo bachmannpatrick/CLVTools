@@ -22,11 +22,12 @@
   })
 
   test_that("No NAs", {
+    # ** TODO: Really?
     expect_false(anyNA(res.coef))
   })
 
-# model specific: coef() same as exp(coef(optimx))
-# model specific: test that coef() really use last row of optimx result, not any other
+  # model specific: coef() same as exp(coef(optimx))
+  # model specific: test that coef() really use last row of optimx result, not any other
 }
 
 .fct.helper.s3.fitted.vcov <- function(clv.fitted, full.names){
@@ -67,10 +68,10 @@
     expect_false(isTRUE(all.equal(ci.90,ci.70,check.attributes=FALSE)))
 
     # Rightly named, all same
-    expect_equal(rownames(ci.99), full.names)
-    expect_equal(rownames(ci.99), rownames(ci.95))
-    expect_equal(rownames(ci.95), rownames(ci.90))
-    expect_equal(rownames(ci.90), rownames(ci.70))
+    expect_setequal(rownames(ci.99), full.names)
+    expect_setequal(rownames(ci.99), rownames(ci.95))
+    expect_setequal(rownames(ci.95), rownames(ci.90))
+    expect_setequal(rownames(ci.90), rownames(ci.70))
 
     # Also title label correct
     expect_equal(colnames(ci.95), c("2.5 %", "97.5 %"))
@@ -84,14 +85,14 @@
       expect_equal(rownames(confint(clv.fitted, parm = p)), expected = p)
     # Multiple
     p <- full.names[1:3]
-    expect_equal(rownames(confint(clv.fitted, parm = p)), expected = p)
+    expect_setequal(rownames(confint(clv.fitted, parm = p)), expected = p)
     p <- full.names[1:2]
-    expect_equal(rownames(confint(clv.fitted, parm = p)), expected = p)
+    expect_setequal(rownames(confint(clv.fitted, parm = p)), expected = p)
     # All - excplicitely
     p <- full.names
-    expect_equal(rownames(confint(clv.fitted, parm = p)), expected = p)
+    expect_setequal(rownames(confint(clv.fitted, parm = p)), expected = p)
     # All - implicitely (ie none given)
-    expect_equal(rownames(confint(clv.fitted)), expected = p)
+    expect_setequal(rownames(confint(clv.fitted)), expected = p)
   })
 
   test_that("Confint works with integer param", {
@@ -100,16 +101,16 @@
     expect_equal(rownames(confint(clv.fitted, parm = 2)), expected = p[2])
     expect_equal(rownames(confint(clv.fitted, parm = 4)), expected = p[4])
     # Sequence
-    expect_equal(rownames(confint(clv.fitted, parm = 1:3)), expected = p[1:3])
-    expect_equal(rownames(confint(clv.fitted, parm =c(1,2,4))), expected = p[c(1,2,4)])
+    expect_setequal(rownames(confint(clv.fitted, parm = 1:3)), expected = p[1:3])
+    expect_setequal(rownames(confint(clv.fitted, parm =c(1,2,4))), expected = p[c(1,2,4)])
     # All - excplicitely
-    expect_equal(rownames(confint(clv.fitted, parm = seq(length(p)))), expected = p)
+    expect_setequal(rownames(confint(clv.fitted, parm = seq(length(p)))), expected = p)
     # All - implicitely (ie none given)
-    expect_equal(rownames(confint(clv.fitted)), expected = p)
+    expect_setequal(rownames(confint(clv.fitted)), expected = p)
 
     # Minus removes
-    expect_equal(rownames(confint(clv.fitted, parm = -2)), expected = p[-2])
-    expect_equal(rownames(confint(clv.fitted, parm = -c(2,4))), expected = p[-c(2,4)])
+    expect_setequal(rownames(confint(clv.fitted, parm = -2)), expected = p[-2])
+    expect_setequal(rownames(confint(clv.fitted, parm = -c(2,4))), expected = p[-c(2,4)])
     # Remove all
     expect_null(rownames(confint(clv.fitted, parm = -seq(length(p)))))
   })
@@ -210,7 +211,7 @@
 }
 
 fct.helper.fitted.all.s3 <- function(clv.fitted, clv.newdata, full.names, clv.newdata.nohold, clv.newdata.withhold,
-                                     DERT.not.implemented = FALSE){ #, name.model){
+                                     DERT.not.implemented){ #, name.model){
 
   .fct.helper.s3.fitted.coef(clv.fitted = clv.fitted, full.names = full.names)
 
@@ -238,8 +239,3 @@ fct.helper.fitted.all.s3 <- function(clv.fitted, clv.newdata, full.names, clv.ne
 # plot with predict.end=NULL same as predict.end=holdout.end and predict.end=holdout.period.in.tu
 # correct that label = model name same as no label
 #  names(vcov()) = names(coef(summary)) = names(coef()) with and without correlation
-
-
-
-
-

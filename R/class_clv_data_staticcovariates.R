@@ -46,24 +46,45 @@ clv.data.static.covariates <- function(no.cov.obj, data.cov.life, data.cov.trans
   # Do not call the clv.data constructor function because it would require taking the clv.data object apart to pass
   #   it as single arguments
   return(new("clv.data.static.covariates",
-                 copy(no.cov.obj), # copy construct on deep copy of no cov data
+             copy(no.cov.obj), # copy construct on deep copy of no cov data
 
-                 name = "CLV Transaction Data with Static Covariates",
+             name = "CLV Transaction Data with Static Covariates",
 
-                 names.cov.data.life  = names.cov.data.life,
-                 names.cov.data.trans = names.cov.data.trans,
+             names.cov.data.life  = names.cov.data.life,
+             names.cov.data.trans = names.cov.data.trans,
 
-                 data.cov.life  = data.cov.life,
-                 data.cov.trans = data.cov.trans))
+             data.cov.life  = data.cov.life,
+             data.cov.trans = data.cov.trans))
 }
 
+clv.data.get.matrix.data.cov.life <- function(clv.data, correct.col.names, correct.row.names){
+  # .SD returns copy, can use setDF without modifying the original data
+  m.cov.data.life <- data.matrix(setDF(clv.data@data.cov.life[, .SD, .SDcols=clv.data@names.cov.data.life],
+                                       rownames = clv.data@data.cov.life$Id))
 
-clv.data.get.matrix.data.cov.life <- function(clv.data){
-  return(data.matrix(clv.data@data.cov.life[, .SD, .SDcols=clv.data@names.cov.data.life]))
+  if(!all(rownames(m.cov.data.life) == correct.row.names))
+    stop("Covariate data (life) rows are not sorted correctly. Please file a bug!")
+
+  if(!all(colnames(m.cov.data.life) == correct.col.names))
+    stop("Covariate data (life) cols are not sorted correctly. Please file a bug!")
+
+  return(m.cov.data.life)
 }
 
-clv.data.get.matrix.data.cov.trans <- function(clv.data){
-  return(data.matrix(clv.data@data.cov.trans[, .SD, .SDcols=clv.data@names.cov.data.trans]))
+# Returns matrix of transaction cov data
+#   with cols sorted same as in vector names.cov.data.trans
+clv.data.get.matrix.data.cov.trans <- function(clv.data, correct.col.names, correct.row.names){
+  # .SD returns copy, can use setDF without modifying the original data
+  m.cov.data.trans <- data.matrix(setDF(clv.data@data.cov.trans[, .SD, .SDcols=clv.data@names.cov.data.trans],
+                                        rownames = clv.data@data.cov.trans$Id))
+
+  if(!all(rownames(m.cov.data.trans) == correct.row.names))
+    stop("Covariate data (trans) rows are not sorted correctly. Please file a bug!")
+
+  if(!all(colnames(m.cov.data.trans) == correct.col.names))
+    stop("Covariate data (trans) columns are not sorted correctly. Please file a bug!")
+
+  return(m.cov.data.trans)
 }
 
 clv.data.get.names.cov.life <- function(clv.data){

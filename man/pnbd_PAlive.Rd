@@ -6,10 +6,13 @@
 \alias{pnbd_staticcov_PAlive}
 \title{Pareto/NBD: Probability of Being Alive}
 \usage{
-pnbd_nocov_PAlive(vEstimated_params, vX, vT_x, vT_cal)
+pnbd_nocov_PAlive(r, alpha_0, s, beta_0, vX, vT_x, vT_cal)
 
 pnbd_staticcov_PAlive(
-  vEstimated_params,
+  r,
+  alpha_0,
+  s,
+  beta_0,
   vX,
   vT_x,
   vT_cal,
@@ -20,7 +23,13 @@ pnbd_staticcov_PAlive(
 )
 }
 \arguments{
-\item{vEstimated_params}{Vector with the Pareto/NBD model parameters at original scale.}
+\item{r}{shape parameter of the Gamma distribution of the purchase process. The smaller r, the stronger the heterogeneity of the purchase process}
+
+\item{alpha_0}{scale parameter of the Gamma distribution of the purchase process}
+
+\item{s}{shape parameter of the Gamma distribution for the lifetime process. The smaller s, the stronger the heterogeneity of customer lifetimes}
+
+\item{beta_0}{scale parameter for the Gamma distribution for the lifetime process.}
 
 \item{vX}{Frequency vector of length n counting the numbers of purchases.}
 
@@ -40,7 +49,8 @@ pnbd_staticcov_PAlive(
 Returns a vector with the PAlive for each customer.
 }
 \description{
-Calculates the probability of a customer being alive at the end of the calibration period.
+Calculates the probability of a customer being alive at the end of the calibration period,
+based on a customer's past transaction behavior and the Pareto/NBD model parameters.
 
 \itemize{
 \item{\code{pnbd_nocov_PAlive}}{ P(alive) for the Pareto/NBD model without covariates}
@@ -48,12 +58,6 @@ Calculates the probability of a customer being alive at the end of the calibrati
 }
 }
 \details{
-\code{vEstimated_params} vector with the estimated parameters in original scale
-for the Pareto/NBD model, namely (r, alpha, s, beta). \cr
-r and alpha: unobserved parameters that describe the NBD transaction process. \cr
-s and beta: unobserved parameters that describe the pareto
-(exponential gamma) lifetime process.
-
 \code{mCov_trans} is a matrix containing the covariates data of
 the time-invariant covariates that affect the transaction process.
 Each column represents a different covariate. For every column a gamma parameter

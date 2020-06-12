@@ -7,5 +7,5 @@
 #'
 #' Inherits from \code{clv.fitted.static.cov} in order to execute all steps required for fitting a model
 #' with static covariates and it contains an instance of class \code{<%=name_class_clvmodel%>} which
-#' provides the required <%=name_model_full%> (static covariates) specific functionalities. 
-#' 
+#' provides the required <%=name_model_full%> (static covariates) specific functionalities.
+#'
