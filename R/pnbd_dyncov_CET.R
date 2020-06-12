@@ -52,9 +52,9 @@ pnbd_dyncov_CET <- function(clv.fitted, predict.number.of.periods, prediction.en
     dt.ABCD[i == 1,
             S := ((Ai*(T.cal *s + 1 / Ci*(Dbar_i+beta_0)) + Bbar_i*(s-1)) / ((Dbar_i+beta_0+Ci* T.cal   )^s)) -
               ((Ai*((T.cal+t)*s + 1 / Ci*(Dbar_i+beta_0)) + Bbar_i*(s-1)) / ( Dbar_i+beta_0+Ci*(T.cal+t))^s)]
-
   }
 
+  # To test correctness of intermediate results
   if(only.return.input.to.CET){
     return(dt.ABCD)
   }

@@ -40,9 +40,8 @@ fct.testthat.correctness.dyncov(data.apparelTrans=apparelTrans, data.apparelDynC
 
 # ** Static cov??
 
-# *** Fit Dyncov (in helper function) + test that CET = 0 with prediction.end = 0 or prediction.end = holdout.start
 # ** test with different prediction.ends that k is correctly caught
 # document that prediction is from estimation.end until (incl) prediction.end
-#
+# **casually check once whether the results for kttt>=1 are really different from kttt>=2
 
 
