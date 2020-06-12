@@ -34,9 +34,6 @@ jobs:
 
           # If on a release branch (name starts with 'release'),
           #   run all tests, including lengthy ones marked with skip_on_ci()
-          print(Sys.getenv("GITHUB_REF"))
-          print(Sys.getenv("GITHUB_BASE_REF"))
-          print(Sys.getenv("GITHUB_HEAD_REF"))
           if(grepl(pattern = "^release", x = Sys.getenv("GITHUB_HEAD_REF"))){
             Sys.setenv(CI="")
             print("On release branch: Run all tests")
