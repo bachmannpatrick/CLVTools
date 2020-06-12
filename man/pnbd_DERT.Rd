@@ -7,7 +7,10 @@
 \title{Pareto/NBD: Discounted Expected Residual Transactions}
 \usage{
 pnbd_nocov_DERT(
-  vEstimated_params,
+  r,
+  alpha_0,
+  s,
+  beta_0,
   continuous_discount_factor,
   vX,
   vT_x,
@@ -15,7 +18,10 @@ pnbd_nocov_DERT(
 )
 
 pnbd_staticcov_DERT(
-  vEstimated_params,
+  r,
+  alpha_0,
+  s,
+  beta_0,
   continuous_discount_factor,
   vX,
   vT_x,
@@ -27,7 +33,13 @@ pnbd_staticcov_DERT(
 )
 }
 \arguments{
-\item{vEstimated_params}{Vector with the Pareto/NBD model parameters at original scale.}
+\item{r}{shape parameter of the Gamma distribution of the purchase process. The smaller r, the stronger the heterogeneity of the purchase process}
+
+\item{alpha_0}{scale parameter of the Gamma distribution of the purchase process}
+
+\item{s}{shape parameter of the Gamma distribution for the lifetime process. The smaller s, the stronger the heterogeneity of customer lifetimes}
+
+\item{beta_0}{scale parameter for the Gamma distribution for the lifetime process.}
 
 \item{continuous_discount_factor}{continuous discount factor to use}
 
@@ -57,12 +69,6 @@ Calculates the discounted expected residual transactions.
 }
 }
 \details{
-\code{vEstimated_params} vector with the estimated parameters in original scale
-for the Pareto/NBD model, namely (r, alpha, s, beta). \cr
-r and alpha: unobserved parameters that describe the NBD transaction process. \cr
-s and beta: unobserved parameters that describe the pareto
-(exponential gamma) lifetime process.
-
 \code{mCov_trans} is a matrix containing the covariates data of
 the time-invariant covariates that affect the transaction process.
 Each column represents a different covariate. For every column a gamma parameter

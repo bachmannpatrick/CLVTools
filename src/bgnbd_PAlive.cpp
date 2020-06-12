@@ -3,23 +3,19 @@
 #include "clv_vectorized.h"
 
 //' @name bgnbd_PAlive
-//' @title BG/NBD: Probability of being alive
 //'
-//' @description
-//' Calculates the probability of a customer being alive at the end of the calibration period.
+//' @templateVar name_model_full BG/NBD
+//' @templateVar name_model_short bgnbd
+//' @template template_titledescriptionreturn_palive
 //'
 //' @template template_params_bgnbd
 //' @template template_params_rcppxtxtcal
 //' @template template_params_rcppcovmatrix
 //' @template template_params_rcppvcovparams
 //'
-//'
 //' @templateVar name_params_cov_life vCovParams_life
 //' @templateVar name_params_cov_trans vCovParams_trans
 //' @template template_details_rcppcovmatrix
-//'
-//' @return
-//' Returns a vector containing the PAlive for each customer.
 //'
 //' @template template_references_bgnbd
 //'

@@ -1,11 +1,12 @@
 #' @exportMethod bgnbd
-setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = FALSE, start.param.cor=c(),
-                                  optimx.args=list(), verbose=TRUE, ...)
+setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), optimx.args=list(), verbose=TRUE, ...)
   standardGeneric("bgnbd"))
 
 
 
 #' @name bgnbd
+#' @aliases bgnbd,clv.data.dynamic.covariates-method
+#'
 #' @title BG/NBD models
 #'
 #' @template template_params_estimate
@@ -16,9 +17,6 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = F
 #'
 #' @description
 #' Fits BG/NBD models on transactional data without and with static covariates.
-#'
-#' @param use.cor (Not yet supported) Whether the correlation between the transaction and lifetime process should be estimated.
-#' @param start.param.cor (Not yet supported) Start parameter for the optimization of the correlation.
 #'
 #'
 #' @template template_details_paramsbgnbd
@@ -57,75 +55,45 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = F
 #'
 #' @template template_references_bgnbd
 #'
-#' @examples
-#' \donttest{
-#' data("cdnow")
-#' clv.data.cdnow <- clvdata(cdnow, date.format = "ymd",
-#'                           time.unit = "w", estimation.split = 37)
-#'
-#' # Fit standard BG/NBD model
-#' bgnbd(clv.data.cdnow)
-#'
-#' # Give initial guesses for the Model parameters
-#' bgnbd(clv.data.cdnow,
-#'       start.params.model = c(r=1.1, alpha=3.4, a=1, b=3))
-#'
-#'
-#' # pass additional parameters to the optimizer (optimx)
-#' #    Use Nelder-Mead as optimization method and print
-#' #    detailed information about the optimization process
-#' cdnow.bgnbd <- bgnbd(clv.data.cdnow,
-#'                      optimx.args = list(method="Nelder-Mead",
-#'                                         control=list(trace=6)))
-#'
-#' # estimated coefs
-#' coef(cdnow.bgnbd)
-#'
-#' # summary of the fitted model
-#' summary(cdnow.bgnbd)
-#'
-#' dt.pred.bgnbd <- predict(cdnow.bgnbd, prediction.end = "2011-12-31")
-#'
-#' plot(cdnow.bgnbd)
-#' }
-#' @aliases bgnbd bgnbd,clv.data-method
-#' @include class_clv_data.R class_clv_model_bgnbd.R
-#' @export
+#' @templateVar name_model_short bgnbd
+#' @templateVar vec_startparams_model c(r=0.5, alpha=15, a = 2, b=5)
+#' @template template_examples_nocovmodelinterface
+#' @templateVar name_model_short bgnbd
+#' @template template_examples_staticcovmodelinterface
+NULL
+
+
+#' @rdname bgnbd
+#' @include class_clv_data.R
 setMethod("bgnbd", signature = signature(clv.data="clv.data"), definition = function(clv.data,
-                                                                                    start.params.model=c(),
-                                                                                    use.cor = FALSE,
-                                                                                    start.param.cor=c(),
-                                                                                    optimx.args=list(),
-                                                                                    verbose=TRUE,...){
+                                                                                     start.params.model=c(),
+                                                                                     optimx.args=list(),
+                                                                                     verbose=TRUE,...){
   cl <- match.call(call = sys.call(-1), expand.dots = TRUE)
 
   obj <- clv.bgnbd(cl=cl, clv.data=clv.data)
 
-  return(clv.template.controlflow.estimate(clv.fitted = obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
-                                           start.param.cor = start.param.cor, optimx.args = optimx.args, verbose=verbose, ...))
+  return(clv.template.controlflow.estimate(clv.fitted = obj, cl=cl, start.params.model = start.params.model, use.cor = FALSE,
+                                           start.param.cor = c(), optimx.args = optimx.args, verbose=verbose, ...))
 })
 
 #' @rdname bgnbd
 #' @include class_clv_data_staticcovariates.R
-#' @aliases bgnbd,clv.data.static.covariates-method
-#' @aliases bgnbd,clv.data.dynamic.covariates-method
-#' @export
 setMethod("bgnbd", signature = signature(clv.data="clv.data.static.covariates"), definition = function(clv.data,
-                                                                                                      start.params.model=c(),
-                                                                                                      use.cor = FALSE,
-                                                                                                      start.param.cor=c(),
-                                                                                                      optimx.args=list(),
-                                                                                                      verbose=TRUE,
-                                                                                                      names.cov.life=c(), names.cov.trans=c(),
-                                                                                                      start.params.life=c(), start.params.trans=c(),
-                                                                                                      names.cov.constr=c(),start.params.constr=c(),
-                                                                                                      reg.lambdas = c(), ...){
+                                                                                                       start.params.model=c(),
+                                                                                                       optimx.args=list(),
+                                                                                                       verbose=TRUE,
+                                                                                                       names.cov.life=c(), names.cov.trans=c(),
+                                                                                                       start.params.life=c(), start.params.trans=c(),
+                                                                                                       names.cov.constr=c(),start.params.constr=c(),
+                                                                                                       reg.lambdas = c(), ...){
 
   cl <- match.call(call = sys.call(-1), expand.dots = TRUE)
 
   obj <- clv.bgnbd.static.cov(cl=cl, clv.data=clv.data)
 
-  return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor, start.param.cor = start.param.cor,
+  return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model,
+                                           use.cor = FALSE, start.param.cor = c(),
                                            optimx.args = optimx.args, verbose=verbose,
                                            names.cov.life=names.cov.life, names.cov.trans=names.cov.trans,
                                            start.params.life=start.params.life, start.params.trans=start.params.trans,
@@ -133,12 +101,11 @@ setMethod("bgnbd", signature = signature(clv.data="clv.data.static.covariates"),
                                            reg.lambdas = reg.lambdas, ...))
 })
 
+
 #' @include class_clv_data_dynamiccovariates.R
 #' @keywords internal
 setMethod("bgnbd", signature = signature(clv.data="clv.data.dynamic.covariates"), definition = function(clv.data,
                                                                                                         start.params.model=c(),
-                                                                                                        use.cor = FALSE,
-                                                                                                        start.param.cor=c(),
                                                                                                         optimx.args=list(),
                                                                                                         verbose=TRUE,
                                                                                                         ...){

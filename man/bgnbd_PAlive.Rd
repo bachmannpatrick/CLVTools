@@ -4,7 +4,7 @@
 \alias{bgnbd_PAlive}
 \alias{bgnbd_nocov_PAlive}
 \alias{bgnbd_staticcov_PAlive}
-\title{BG/NBD: Probability of being alive}
+\title{BG/NBD: Probability of Being Alive}
 \usage{
 bgnbd_nocov_PAlive(r, alpha, a, b, vX, vT_x, vT_cal)
 
@@ -46,10 +46,16 @@ bgnbd_staticcov_PAlive(
 \item{mCov_life}{Matrix containing the covariates data affecting the lifetime process. One column for each covariate.}
 }
 \value{
-Returns a vector containing the PAlive for each customer.
+Returns a vector with the PAlive for each customer.
 }
 \description{
-Calculates the probability of a customer being alive at the end of the calibration period.
+Calculates the probability of a customer being alive at the end of the calibration period,
+based on a customer's past transaction behavior and the BG/NBD model parameters.
+
+\itemize{
+\item{\code{bgnbd_nocov_PAlive}}{ P(alive) for the BG/NBD model without covariates}
+\item{\code{bgnbd_staticcov_PAlive}}{ P(alive) for the BG/NBD model with static covariates}
+}
 }
 \details{
 \code{mCov_trans} is a matrix containing the covariates data of

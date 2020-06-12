@@ -4,7 +4,7 @@
 \alias{bgnbd_CET}
 \alias{bgnbd_nocov_CET}
 \alias{bgnbd_staticcov_CET}
-\title{BG/NBD: Conditional Expected Transactions without covariates}
+\title{BG/NBD: Conditional Expected Transactions}
 \usage{
 bgnbd_nocov_CET(r, alpha, a, b, dPeriods, vX, vT_x, vT_cal)
 
@@ -32,7 +32,7 @@ bgnbd_staticcov_CET(
 
 \item{b}{shape parameter of the Beta distribution of the lifetime process}
 
-\item{dPeriods}{time prediction time frame}
+\item{dPeriods}{number of periods to predict}
 
 \item{vX}{Frequency vector of length n counting the numbers of purchases.}
 
@@ -49,12 +49,17 @@ bgnbd_staticcov_CET(
 \item{mCov_life}{Matrix containing the covariates data affecting the lifetime process. One column for each covariate.}
 }
 \value{
-Returns a vector with the conditional expected transactions for the existing
+Returns a vector containing the conditional expected transactions for the existing
 customers in the BG/NBD model.
 }
 \description{
 Calculates the expected number of transactions in a given time period based
 on a customer's past transaction behavior and the BG/NBD model parameters.
+
+\itemize{
+\item{\code{bgnbd_nocov_CET}}{ Conditional Expected Transactions without covariates}
+\item{\code{bgnbd_staticcov_CET}}{ Conditional Expected Transactions with static covariates}
+}
 }
 \details{
 \code{mCov_trans} is a matrix containing the covariates data of

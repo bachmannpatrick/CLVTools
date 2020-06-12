@@ -1,7 +1,5 @@
-#' CLV Model functionality for PNBD without covariates
-#'
-#' This class implements the functionalities and model-specific steps which are required
-#' to fit the Pareto/NBD model without covariates.
+#' @templateVar name_model_full Pareto/NBD
+#' @template template_class_clvmodelnocov
 #'
 #' @keywords internal
 #' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.pnbd.static.cov-class}, \link{clv.model.pnbd.dynamic.cov-class}
@@ -13,7 +11,7 @@ setClass(Class = "clv.model.pnbd.no.cov", contains = "clv.model",
 
          # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
          prototype = list(
-           name.model                  = character(),
+           name.model                  = character(0),
 
            names.original.params.model = character(0),
            names.prefixed.params.model = character(0),
@@ -72,7 +70,6 @@ setMethod("clv.model.transform.start.params.model", signature = signature(clv.mo
 })
 
 # .clv.model.backtransform.estimated.params.model --------------------------------------------------------------------------------------------------------
-#' @importFrom stats setNames
 setMethod("clv.model.backtransform.estimated.params.model", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, prefixed.params.model){
   # exp all prefixed params
   return(exp(prefixed.params.model[clv.model@names.prefixed.params.model]))
@@ -217,30 +214,35 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.no.cov"),
 
   predict.number.of.periods <- dt.prediction[1, period.length]
 
-  # Put params together in single vec
-  estimated.params <- c(r = clv.fitted@prediction.params.model[["r"]], alpha = clv.fitted@prediction.params.model[["alpha"]],
-                        s = clv.fitted@prediction.params.model[["s"]], beta  = clv.fitted@prediction.params.model[["beta"]])
-
 
   # To ensure sorting, do everything in a single table
   dt.result <- copy(clv.fitted@cbs[, c("Id", "x", "t.x", "T.cal")])
 
 
   # Add CET
-  dt.result[, CET :=  pnbd_nocov_CET(vEstimated_params = estimated.params,
-                                     dPrediction_period = predict.number.of.periods,
+  dt.result[, CET :=  pnbd_nocov_CET(r       = clv.fitted@prediction.params.model[["r"]],
+                                     alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+                                     s       = clv.fitted@prediction.params.model[["s"]],
+                                     beta_0  = clv.fitted@prediction.params.model[["beta"]],
+                                     dPeriods = predict.number.of.periods,
                                      vX     = x,
                                      vT_x   = t.x,
                                      vT_cal = T.cal)]
 
   # Add PAlive
-  dt.result[, PAlive := pnbd_nocov_PAlive(vEstimated_params = estimated.params,
+  dt.result[, PAlive := pnbd_nocov_PAlive(r       = clv.fitted@prediction.params.model[["r"]],
+                                          alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+                                          s       = clv.fitted@prediction.params.model[["s"]],
+                                          beta_0  = clv.fitted@prediction.params.model[["beta"]],
                                           vX     = x,
                                           vT_x   = t.x,
                                           vT_cal = T.cal)]
 
   # Add DERT
-  dt.result[, DERT := pnbd_nocov_DERT(vEstimated_params = estimated.params,
+  dt.result[, DERT := pnbd_nocov_DERT(r       = clv.fitted@prediction.params.model[["r"]],
+                                      alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+                                      s       = clv.fitted@prediction.params.model[["s"]],
+                                      beta_0  = clv.fitted@prediction.params.model[["beta"]],
                                       continuous_discount_factor = continuous.discount.factor,
                                       vX     = x,
                                       vT_x   = t.x,
