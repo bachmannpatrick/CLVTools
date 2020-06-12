@@ -3,26 +3,20 @@
 #include "clv_vectorized.h"
 
 //' @name bgnbd_CET
-//' @title BG/NBD: Conditional Expected Transactions without covariates
 //'
-//' @description
-//' Calculates the expected number of transactions in a given time period based
-//' on a customer's past transaction behavior and the BG/NBD model parameters.
+//' @templateVar name_model_full BG/NBD
+//' @templateVar name_model_short bgnbd
+//' @template template_titledescriptionreturn_CET
 //'
 //' @template template_params_bgnbd
-//' @param dPeriods time prediction time frame
+//' @template template_params_rcppperiods
 //' @template template_params_rcppxtxtcal
 //' @template template_params_rcppcovmatrix
 //' @template template_params_rcppvcovparams
 //'
-//'
 //' @templateVar name_params_cov_life vCovParams_life
 //' @templateVar name_params_cov_trans vCovParams_trans
 //' @template template_details_rcppcovmatrix
-//'
-//' @return
-//' Returns a vector with the conditional expected transactions for the existing
-//' customers in the BG/NBD model.
 //'
 //' @template template_references_bgnbd
 //'

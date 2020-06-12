@@ -6,18 +6,18 @@
 \alias{bgnbd_nocov_LL_sum}
 \alias{bgnbd_staticcov_LL_ind}
 \alias{bgnbd_staticcov_LL_sum}
-\title{BG/NBD: Log-Likelihood}
+\title{BG/NBD: Log-Likelihood functions}
 \usage{
 bgnbd_nocov_LL_ind(vLogparams, vX, vT_x, vT_cal)
 
 bgnbd_nocov_LL_sum(vLogparams, vX, vT_x, vT_cal)
 
-bgnbd_staticcov_LL_ind(vLogparams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
+bgnbd_staticcov_LL_ind(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 
-bgnbd_staticcov_LL_sum(vLogparams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
+bgnbd_staticcov_LL_sum(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
 \arguments{
-\item{vLogparams}{vector with the BG/NBD model parameters log scaled}
+\item{vLogparams}{vector with the BG/NBD model parameters at log scale. See Details.}
 
 \item{vX}{Frequency vector of length n counting the numbers of purchases.}
 
@@ -25,15 +25,18 @@ bgnbd_staticcov_LL_sum(vLogparams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 
 \item{vT_cal}{Vector of length n indicating the total number of periods of observation.}
 
+\item{vParams}{vector with the parameters for the BG/NBD model at loc scale and the static covariates at origina scale. See Details.}
+
 \item{mCov_life}{Matrix containing the covariates data affecting the lifetime process. One column for each covariate.}
 
 \item{mCov_trans}{Matrix containing the covariates data affecting the transaction process. One column for each covariate.}
 }
 \value{
-Returns the respective LogLikelihood value for the BG/NBD model without covariates.
+Returns the respective Log-Likelihood value(s) for the BG/NBD model
+ with or without covariates.
 }
 \description{
-Calculates the Log-likelihood for the BG/NBD model with and without static covariates.
+Calculates the Log-Likelihood values for the BG/NBD model with and without covariates.
 
 The function \code{bgnbd_nocov_LL_ind} calculates the individual LogLikelihood
 values for each customer for the given parameters.
@@ -41,22 +44,18 @@ values for each customer for the given parameters.
 The function \code{bgnbd_nocov_LL_sum} calculates the LogLikelihood value summed
 across customers for the given parameters.
 
-The function \code{bgnbd_staticcov_LL_ind} calculates the individual Log-Likelihood
+The function \code{bgnbd_staticcov_LL_ind} calculates the individual LogLikelihood
 values for each customer for the given parameters and covariates.
 
-The function \code{bgnbd_staticcov_LL_sum} calculates the individual Log-Likelihood values summed
+The function \code{bgnbd_staticcov_LL_sum} calculates the individual LogLikelihood values summed
 across customers.
 }
 \details{
-\code{vLogparams} is vector with the BG/NBD model parameters at log scale,
-followed by the parameters for the lifetime covariate at original scale and then
-followed by the parameters for the transaction covariate at original scale.
+\code{vLogparams} is a vector with model parameters \code{r, alpha_0, a, b} at log-scale, in this order.
 
-Model parameters for the BG/NBD model are \code{r, alpha, a, and b}. \cr
-\code{r}: shape parameter of the Gamma distribution of the purchase process. \cr
-\code{alpha}: scale parameter of the Gamma distribution of the purchase process. \cr
-\code{a}: shape parameter of the Beta distribution of the dropout process.\cr
-\code{b}: shape parameter of the Beta distribution of the dropout process.
+\code{vParams} is vector with the BG/NBD model parameters at log scale,
+followed by the parameters for the lifetime covariates at original scale and then
+followed by the parameters for the transaction covariates at original scale
 
 \code{mCov_trans} is a matrix containing the covariates data of
 the time-invariant covariates that affect the transaction process.

@@ -1,9 +1,6 @@
-#' CLV Model functionality for BG/NBD without covariates
+#' @templateVar name_model_full BG/NBD
+#' @template template_class_clvmodelnocov
 #'
-#' This class implements the functionalities and model-specific steps which are required
-#' to fit the BG/NBD model without covariates.
-#'
-#' @keywords internal
 #' @importFrom methods setClass
 #' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.bgnbd.static.cov-class}
 #' @seealso Classes using its instance: \link{clv.fitted-class}
@@ -11,7 +8,7 @@
 setClass(Class = "clv.model.bgnbd.no.cov", contains = "clv.model",
          slots = list(),
          prototype = list(
-           name.model = character(),
+           name.model = character(0),
            names.original.params.model = character(0),
            names.prefixed.params.model = character(0),
            start.params.model = numeric(0)
@@ -66,7 +63,6 @@ setMethod("clv.model.transform.start.params.model", signature = signature(clv.mo
 })
 
 # .clv.model.backtransform.estimated.params.model --------------------------------------------------------------------------------------------------------
-#' @importFrom stats setNames
 setMethod("clv.model.backtransform.estimated.params.model", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, prefixed.params.model){
   # exp all prefixed params
   return(exp(prefixed.params.model[clv.model@names.prefixed.params.model]))
@@ -136,35 +132,39 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.no.cov")
 # .clv.model.predict.clv --------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
 setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgnbd.no.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
-  r <- alpha <- a <- b <- period.length <- CET <- x <- t.x <- T.cal <- PAlive <- DERT <- NULL
-
-  # To be sure they are both sorted the same when calling cpp functions
-  setkeyv(dt.prediction, "Id")
-  setkeyv(clv.fitted@cbs, "Id")
+  r <- alpha <- a <- b <- period.length <- CET <- PAlive <- DERT <- i.CET <- i.PAlive <- i.DERT <- x <- t.x <- T.cal <- NULL
 
   predict.number.of.periods <- dt.prediction[1, period.length]
 
+  # To ensure sorting, do everything in a single table
+  dt.result <- copy(clv.fitted@cbs[, c("Id", "x", "t.x", "T.cal")])
+
   # Add CET
-  dt.prediction[, CET := bgnbd_nocov_CET(r = clv.fitted@prediction.params.model[["r"]],
-                                         alpha = clv.fitted@prediction.params.model[["alpha"]],
-                                         a = clv.fitted@prediction.params.model[["a"]],
-                                         b = clv.fitted@prediction.params.model[["b"]],
-                                         dPeriods = predict.number.of.periods,
-                                         vX = clv.fitted@cbs[, x],
-                                         vT_x = clv.fitted@cbs[, t.x],
-                                         vT_cal = clv.fitted@cbs[, T.cal])]
+  dt.result[, CET := bgnbd_nocov_CET(r     = clv.fitted@prediction.params.model[["r"]],
+                                     alpha = clv.fitted@prediction.params.model[["alpha"]],
+                                     a     = clv.fitted@prediction.params.model[["a"]],
+                                     b     = clv.fitted@prediction.params.model[["b"]],
+                                     dPeriods = predict.number.of.periods,
+                                     vX = x,
+                                     vT_x = t.x,
+                                     vT_cal = T.cal)]
 
 
   # Add PAlive
-  dt.prediction[, PAlive := bgnbd_nocov_PAlive(r = clv.fitted@prediction.params.model[["r"]],
-                                               alpha = clv.fitted@prediction.params.model[["alpha"]],
-                                               a = clv.fitted@prediction.params.model[["a"]],
-                                               b = clv.fitted@prediction.params.model[["b"]],
-                                               vX = clv.fitted@cbs[, x],
-                                               vT_x = clv.fitted@cbs[, t.x],
-                                               vT_cal = clv.fitted@cbs[, T.cal])]
+  dt.result[, PAlive := bgnbd_nocov_PAlive(r     = clv.fitted@prediction.params.model[["r"]],
+                                           alpha = clv.fitted@prediction.params.model[["alpha"]],
+                                           a     = clv.fitted@prediction.params.model[["a"]],
+                                           b     = clv.fitted@prediction.params.model[["b"]],
+                                           vX = x,
+                                           vT_x = t.x,
+                                           vT_cal = T.cal)]
   # Add DERT
-  dt.prediction[, DERT := 0]
+  dt.result[, DERT := 0]
+
+  # Add results to prediction table, by matching Id
+  dt.prediction[dt.result, CET    := i.CET,    on = "Id"]
+  dt.prediction[dt.result, PAlive := i.PAlive, on = "Id"]
+  dt.prediction[dt.result, DERT   := i.DERT,   on = "Id"]
 
   return(dt.prediction)
 })
