@@ -39,14 +39,11 @@ clv.template.controlflow.predict <- function(clv.fitted, prediction.end, predict
   #   tp.prediction.end: End of prediction period which includes this timepoint
   #   prediction.length: Length of period for which predictions should be made, in number of periods
 
-  # Could be viewed as part of input checks
-  #   but the end of the prediction period cannot be determined until after newdata is set
+  # Whether the prediction.end is valid after conversion is done in
+  #   clv.time.get.prediction.table(). Cannot be done before because
+  #   the end of the prediction period cannot be determined until after newdata is set
   dt.prediction.time.table <- clv.time.get.prediction.table(clv.time = clv.fitted@clv.data@clv.time,
                                                             user.prediction.end = prediction.end)
-
-  # **CHECK THAT period.first >= period.last
-  # prediction.table should still be able to be built with period.last<period.first
-  # "The prediction period /prediction.end needs to end after the end of the estimation period"
 
   # Add information to prediction table
   dt.prediction <- cbind(dt.prediction, dt.prediction.time.table)
