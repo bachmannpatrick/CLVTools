@@ -2,6 +2,8 @@
 fct.testthat.runability.staticcov.custom.model.covariate.start.params <- function(method, clv.data.holdout, clv.data.no.holdout, start.params.model){
   test_that("Works with custom model and covariate start parameters", {
     skip_on_cran()
+    skip_on_ci()
+    skip_on_covr()
     l.args.holdout <- list(clv.data = clv.data.holdout,    start.params.model = start.params.model,
                            start.params.life = c(Gender = 1, Channel=0.4), start.params.trans = c(Gender=1, Channel=2), verbose = FALSE)
     l.args.no.holdout <- list(clv.data = clv.data.no.holdout, start.params.model = start.params.model,
@@ -40,6 +42,8 @@ fct.testthat.runability.staticcov.works.with.2.constraints <- function(method, c
                                                                        param.names.model, DERT.not.implemented){
   test_that("Works with 2 constraints", {
     skip_on_cran()
+    skip_on_ci()
+    skip_on_covr()
 
     l.args.holdout <- list(clv.data = clv.data.holdout, names.cov.constr = c("Gender", "Channel"),verbose=FALSE)
     l.args.no.holdout <- list(clv.data = clv.data.no.holdout,   names.cov.constr = c("Gender", "Channel"),verbose=FALSE)
@@ -99,6 +103,8 @@ fct.testthat.runability.staticcov.works.with.0.lambdas <- function(method, clv.d
                                                                    param.names.model, DERT.not.implemented){
   test_that("Works with 0 regularization lambdas", {
     skip_on_cran()
+    skip_on_ci()
+    skip_on_covr()
 
     l.args.holdout <- list(clv.data = clv.data.holdout,   reg.lambdas = c(trans=0, life=0),verbose=FALSE)
     l.args.no.holdout <- list(clv.data = clv.data.no.holdout,reg.lambdas = c(trans=0, life=0),verbose=FALSE)
@@ -117,6 +123,8 @@ fct.testthat.runability.staticcov.works.with.combined.interlayers.without.cor <-
   test_that("Works with combined interlayers (without correlation)", {
     # Try all combinations of interlayers
     skip_on_cran()
+    skip_on_ci()
+    skip_on_covr()
 
     l.args.holdout <- list(clv.data = clv.data.holdout, names.cov.constr = c("Gender", "Channel"), reg.lambdas = c(trans=10, life=10),verbose=FALSE)
     l.args.no.holdout <- list(clv.data = clv.data.no.holdout, names.cov.constr = c("Gender", "Channel"), reg.lambdas = c(trans=10, life=10),verbose=FALSE)
@@ -139,6 +147,8 @@ fct.testthat.runability.staticcov.works.with.combined.interlayers.with.cor <- fu
   test_that("Works with combined interlayers (with correlation)", {
     # Try all combinations of interlayers
     skip_on_cran()
+    skip_on_ci()
+    skip_on_covr()
 
     l.args.holdout.1 = list(clv.data = clv.data.holdout, use.cor = TRUE, names.cov.constr = c("Gender", "Channel"),verbose=FALSE)
     l.args.no.holdout.1 = list(clv.data = clv.data.no.holdout, use.cor = TRUE, names.cov.constr = c("Gender", "Channel"), verbose=FALSE)
