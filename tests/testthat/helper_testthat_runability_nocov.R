@@ -1,6 +1,8 @@
 fct.testthat.runability.nocov.custom.optimx.args <- function(method, clv.data.noholdout, clv.data.withholdout, optimx.args){
   test_that("Works with custom optimx.args", {
     skip_on_cran()
+    skip_on_ci()
+    skip_on_covr()
     l.args.no.hold <- list(clv.data = clv.data.noholdout, optimx.args = optimx.args)
     l.args.hold <- list(clv.data = clv.data.withholdout, optimx.args = optimx.args)
     expect_message(do.call(what = method, args = l.args.no.hold))
@@ -11,6 +13,8 @@ fct.testthat.runability.nocov.custom.optimx.args <- function(method, clv.data.no
 fct.testthat.runability.nocov.without.spending.data <- function(method, data.transactions){
   test_that("Works without spending data",{
     skip_on_cran()
+    skip_on_ci()
+    skip_on_covr()
     l.args <- list(clvdata(data.transactions = data.transactions, name.price = NULL, date.format = "ymd", time.unit = "w", estimation.split = 37),
                  verbose = FALSE)
     expect_silent(clv.nospending <- do.call(what = method, args = l.args))
@@ -24,6 +28,8 @@ fct.testthat.runability.nocov.without.spending.data <- function(method, data.tra
 fct.testthat.runability.nocov.predict.newdata.spending <- function(method, data.transactions){
   test_that("No spending fit can predict on newdata that has spending", {
     skip_on_cran()
+    skip_on_ci()
+    skip_on_covr()
     l.args <- list(clvdata(data.transactions = data.transactions, name.price = NULL, date.format = "ymd", time.unit = "w", estimation.split = 37),
                    verbose = FALSE)
     # No spending fit
