@@ -182,12 +182,12 @@ arma::vec ggomnbd_staticcov_LL_ind(const arma::vec& vParams,
   const double s       = exp(vParams(3));
   const double beta_0  = exp(vParams(4));
 
-  const int no_model_params = 5;
+  const int num_model_params = 5;
   const double num_cov_life  = mCov_life.n_cols;
   const double num_cov_trans = mCov_trans.n_cols;
 
-  const arma::vec vLife_params      = vParams.subvec(no_model_params              ,  no_model_params+num_cov_life                 - 1);
-  const arma::vec vTrans_params     = vParams.subvec(no_model_params + num_cov_life, no_model_params+num_cov_life + num_cov_trans - 1);
+  const arma::vec vLife_params      = vParams.subvec(num_model_params              ,  num_model_params+num_cov_life                 - 1);
+  const arma::vec vTrans_params     = vParams.subvec(num_model_params + num_cov_life, num_model_params+num_cov_life + num_cov_trans - 1);
 
 
 
