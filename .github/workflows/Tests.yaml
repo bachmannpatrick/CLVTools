@@ -31,6 +31,16 @@ jobs:
         run: |
           library(testthat)
           library(devtools)
+
+          # If on a release branch (name starts with 'release'),
+          #   run all tests, including lengthy ones marked with skip_on_ci()
+          if(grepl(pattern = "^release", x = Sys.getenv("GITHUB_HEAD_REF"))){
+            Sys.setenv(CI="")
+            print("On release branch: Run all tests")
+          }else{
+            print("Not on release branch: Dont run all tests (skip_on_ci())")
+          }
+
           reporter <- RstudioReporter$new() # has to be defined outside capture.output to still print
           capture.output(devtools::test(reporter = reporter, stop_on_failure=TRUE, stop_on_warning=TRUE))
         shell: Rscript {0}
