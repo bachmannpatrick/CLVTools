@@ -39,7 +39,7 @@ arma::vec pnbd_PAlive( const double r,
                                     vT_cal);
 
   const arma::vec vF1 = arma::lgamma(r+vX) - std::lgamma(r) + r * (arma::log(vAlpha_i) - arma::log(vAlpha_i + vT_cal)) +
-    vX % (-arma::log(vAlpha_i + vT_cal)) + s*(arma::log(vBeta_i) - arma::log(vBeta_i+vT_cal+vT_x));
+    vX % (-arma::log(vAlpha_i + vT_cal)) + s*(arma::log(vBeta_i) - arma::log(vBeta_i+vT_cal));
 
   const arma::vec vLogPAlive = vF1 - vLL;
 
