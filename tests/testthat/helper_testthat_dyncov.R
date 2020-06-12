@@ -112,12 +112,50 @@ fct.testthat.correctness.dyncov.expectation <- function(data.apparelTrans, data.
 fct.testthat.correctness.dyncov.LL <- function(){
   # clv.dyncov <- fct.helper.load.fitted.dyncov()
   # pnbd_dyncov_LL(c(log.r=1, log.alpha=0, log.s=1.23, log.beta = 2.344, life.Channel=1, life.Gender=1, life.Marketing = 1, trans.Channel =1, trans.Gender = 1, trans.Marketing = 1), clv.fitted = clv.dyncov)
-
   #
+}
+
+fct.testthat.correctness.dyncov.CET <- function(data.apparelTrans, data.apparelDynCov){
+  # For constant covariates (ie static)
+  data.apparelDynCov <- copy(data.apparelDynCov)
+  # Set static cov by Id
+  data.apparelDynCov[, Marketing := sample(x = c(0, 1), size = 1), by="Id"]
+  data.apparelDynCov[, Gender    := sample(x = c(0, 1), size = 1), by="Id"]
+  data.apparelDynCov[, Channel   := sample(x = c(0, 1), size = 1), by="Id"]
+
+  clv.dyncov <- fct.helper.load.fitted.dyncov()
+  clv.dyncov@clv.data@data.cov.life  <- copy(data.apparelDynCov)
+  clv.dyncov@clv.data@data.cov.trans <- copy(data.apparelDynCov)
+  clv.dyncov@prediction.params.life  <- c(Marketing = 1.23, Gender = 0.678, Channel = 2.34)
+  clv.dyncov@prediction.params.trans <- c(Marketing = 0.999, Gender = 0.111, Channel = 2.222)
+
+
+  dt.prediction.time.table <- clv.time.get.prediction.table(clv.time = clv.dyncov@clv.data@clv.time,
+                                                            user.prediction.end = NULL)
+  dt.CET <- CLVTools:::pnbd_dyncov_CET(clv.fitted = clv.dyncov, predict.number.of.periods = dt.prediction.time.table[1, period.length],
+                                       prediction.end.date = dt.prediction.time.table[1, period.last],
+                                       only.return.input.to.CET = TRUE)
+
+  test_that("For static cov, Ai=static, Ci=static", {
+    expect_true(dt.CET[, .(num_ai = uniqueN(Ai)), by = "Id"][, all(num_ai == 1)])
+    expect_true(dt.CET[, .(num_ci = uniqueN(Ci)), by = "Id"][, all(num_ci == 1)])
+  })
+
+  test_that("For static cov, Dbar_i = 0", {
+    expect_true(dt.CET[, isTRUE(all.equal(Dbar_i, rep(0, .N)))])
+  })
+
+  test_that("For static cov, Bbar_i=-T*A", {
+    expect_true(dt.CET[, isTRUE(all.equal(Bbar_i, -T.cal*Ai)), by="Id"][, all(V1 == TRUE)])
+  })
+
 }
 
 fct.testthat.correctness.dyncov <- function(data.apparelTrans, data.apparelDynCov){
 
   context("Correctness - PNBD dyncov - Expectation")
   fct.testthat.correctness.dyncov.expectation(data.apparelTrans = data.apparelTrans, data.apparelDynCov = data.apparelDynCov)
+
+  context("Correctness - PNBD dyncov - CET")
+  fct.testthat.correctness.dyncov.CET(data.apparelTrans = data.apparelTrans, data.apparelDynCov = data.apparelDynCov)
 }

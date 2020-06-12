@@ -1,4 +1,4 @@
-pnbd_dyncov_CET <- function(clv.fitted, predict.number.of.periods, prediction.end.date){
+pnbd_dyncov_CET <- function(clv.fitted, predict.number.of.periods, prediction.end.date, only.return.input.to.CET=FALSE){
 
   i <- S <- Ai <- T.cal <- Ci <- Dbar_i <- Bbar_i <- bT_i <- DkT <- i.DkT <- Bksum <- i.Bksum <- palive <- i.palive <- NULL
   i.S <- F1 <- x <- Id <- F2 <- i.F2.noS <- CET <- NULL
@@ -36,6 +36,10 @@ pnbd_dyncov_CET <- function(clv.fitted, predict.number.of.periods, prediction.en
           S:= ((Ai*( bT_i    *s + 1/Ci*(Dbar_i+beta_0)) + Bbar_i*(s-1)) / ((Dbar_i+beta_0+Ci* bT_i    )^s)) -
             ((Ai*((T.cal+t)*s + 1/Ci*(Dbar_i+beta_0)) + Bbar_i*(s-1)) / ((Dbar_i+beta_0+Ci*(T.cal+t))^s))]
 
+  if(only.return.input.to.CET){
+    return(dt.ABCD)
+  }
+
   dt.S <- dt.ABCD[, list(S = sum(S)), keyby="Id"]
 
   # PAlive ------------------------------------------------------------------------------------------
@@ -46,7 +50,7 @@ pnbd_dyncov_CET <- function(clv.fitted, predict.number.of.periods, prediction.en
 
   # Merge data in single table by Id
   dt.result <- clv.fitted@cbs[, c("Id","x", "t.x", "T.cal")]
-  dt.result[clv.fitted@LL.data, DkT := i.DkT, on="Id"]
+  dt.result[clv.fitted@LL.data, DkT   := i.DkT, on="Id"]
   dt.result[clv.fitted@LL.data, Bksum := i.Bksum, on="Id"]
   dt.result[dt.palive, palive := i.palive, on="Id"]
   dt.result[dt.S, S := i.S, on="Id"]
