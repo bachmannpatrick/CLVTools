@@ -82,7 +82,6 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose){
   dt.ABCD[      , Dbar_i := (Dbar_i - exp.gX.L) + exp.gX.L * (-d_omega - (i-2))]
   dt.ABCD[i == 1, Dbar_i := 0]
 
-  # **TEST: Dbar_i == Bbar_i if covariates data & parameters are the same! (or gamma=0)
 
   # Do expectation -----------------------------------------------------------------------------------------------
   # For every date in the expectation table, calculate the expectation separatley
