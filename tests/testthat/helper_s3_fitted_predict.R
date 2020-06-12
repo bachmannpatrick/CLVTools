@@ -39,7 +39,9 @@
     expect_true(dt.pred[, data.table::uniqueN(Id)] == clv.fitted@clv.data@data.transactions[, data.table::uniqueN(Id)])
     # all ids in predictions
     expect_true(nrow(data.table::fsetdiff(clv.fitted@clv.data@data.transactions[, "Id"], dt.pred[, "Id"]))==0)
-    expect_true(nrow(dt.pred[PAlive < 0 | PAlive > 1]) == 0)
+    # May fail because of numerical tolerance issues
+    expect_true(nrow(dt.pred[PAlive < 0 - sqrt(.Machine$double.eps) | PAlive > 1 + sqrt(.Machine$double.eps)]) == 0)
+
     #   all columns > 0
     expect_true(dt.pred[, all(.SD >= 0 | is.na(.SD))])
     expect_true(all(c("Id", "CET", "DERT", "PAlive") %in% colnames(dt.pred)))
