@@ -544,14 +544,75 @@ test_that("Cov dates start and end correct for start on and end on period begin"
 
 })
 
-# Is not allowed because never used. Also when predicting minum of 3 periods required.
-# test_that("Correctly works for single period", {
-#   # days
-#   dt.cov.seq.d <- clv.time.sequence.of.covariate.timepoints(clv.time = clv.t.days,
-#                                                             tp.start = lubridate::ymd("2018-01-1"),
-#                                                             tp.end = lubridate::ymd("2019-12-26"))
-#   expect_true(all(dt.cov.seq.d$Cov.Date) == seq.Date(from=lubridate::ymd("2018-01-10"),
-#                                                      to=lubridate::ymd("2019-01-26"),
-#                                                      by="1 day"))
+
+test_that("Correctly works for single period", {
+  # days
+  dt.cov.seq.d <- clv.time.sequence.of.covariate.timepoints(clv.time = clv.t.days,
+                                                            tp.start = lubridate::ymd("2018-01-1"),
+                                                            tp.end = lubridate::ymd("2019-12-26"))
+  expect_true(all(dt.cov.seq.d$Cov.Date) == seq.Date(from=lubridate::ymd("2018-01-10"),
+                                                     to=lubridate::ymd("2019-01-26"),
+                                                     by="1 day"))
+})
+
+
+
+# clv.time.get.prediction.table --------------------------------------------------------------------------------
+context("Correctness - clv.time - get.prediction.table")
+
+# ** prediction table:
+#   - period.first is always holdout.start
+#   - period length is num periods between period.first and period.last
+#   - period.last > period.first
+#   - period.last = prediction.end in date
+#   - prediction.length is same as prediction.end in numeric
+#   - input check: prediction.end >= 0, prediction.end >= holdout.start
+#   - check its usage in newdata
+# **casually check once whether the results for kttt>=1 are really different from kttt>=2
+
+
+fct.verify.valid.prediction.table <- function(dt.prediction.table, clv.time){
+  expect_true(nrow(dt.prediction.table) == 1)
+  expect_true(dt.prediction.table[, period.first] == clv.time@timepoint.holdout.start)
+  expect_true(dt.prediction.table[, period.first > period.last])
+  expect_true(dt.prediction.table[, period.length] ==
+                clv.time.interval.in.number.tu(clv.time=clv.time,
+                                               interv=interval(start = dt.prediction.table[, period.first],
+                                                               end = dt.prediction.table[, period.last] +
+                                                                 clv.time.epsilon(clv.time=clv.time))))
+}
+
+# test_that("valid prediction table for prediction.end as date", {
+#   # holdout.start, holdout+eps, 1 period, 1.5 periods, 2 periods, 10 periods
+#   clv.time.get.prediction.table(clv.time = clv.t.hours, user.prediction.end = lubridate::ymdHMS())
 # })
+
+test_that("valid prediction table for prediction.end as numeric", {
+  t.hours <-clv.time.set.sample.periods(clv.t.hours, user.estimation.end = NULL, tp.first.transaction =tp.first,
+                              tp.last.transaction = tp.last)
+
+  # 0, partial, 1 period, 1.5 periods, 2 periods, 10 periods
+  fct.verify.valid.prediction.table(clv.time.get.prediction.table(clv.time = t.hours,
+                                                                  user.prediction.end = 0))
+  fct.verify.valid.prediction.table(clv.time.get.prediction.table(clv.time = t.hours,
+                                                                  user.prediction.end = 0.1))
+  fct.verify.valid.prediction.table(clv.time.get.prediction.table(clv.time = t.hours,
+                                                                  user.prediction.end = 1))
+  fct.verify.valid.prediction.table(clv.time.get.prediction.table(clv.time = t.hours,
+                                                                  user.prediction.end = 1.5))
+  fct.verify.valid.prediction.table(clv.time.get.prediction.table(clv.time = t.hours,
+                                                                  user.prediction.end = 2))
+  fct.verify.valid.prediction.table(clv.time.get.prediction.table(clv.time = t.hours,
+                                                                  user.prediction.end = 10))
+})
+
+# test_that("stop for prediction end before holdout.start", {
+#   clv.time.get.prediction.table(clv.time = clv.t.hours, user.prediction.end = lubridate::ymdHMS())
+# })
+
+
+
+
+
+
 

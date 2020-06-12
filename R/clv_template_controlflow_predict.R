@@ -43,6 +43,11 @@ clv.template.controlflow.predict <- function(clv.fitted, prediction.end, predict
   #   but the end of the prediction period cannot be determined until after newdata is set
   dt.prediction.time.table <- clv.time.get.prediction.table(clv.time = clv.fitted@clv.data@clv.time,
                                                             user.prediction.end = prediction.end)
+
+  # **CHECK THAT period.first >= period.last
+  # prediction.table should still be able to be built with period.last<period.first
+  # "The prediction period /prediction.end needs to end after the end of the estimation period"
+
   # Add information to prediction table
   dt.prediction <- cbind(dt.prediction, dt.prediction.time.table)
 
@@ -57,8 +62,9 @@ clv.template.controlflow.predict <- function(clv.fitted, prediction.end, predict
 
 
   # Need at least > 2 time units to predict
-  if(prediction.period.length <= 2)
-    stop("The end of the prediction needs to be at least 3 periods after the end of the estimation period!", call. = FALSE)
+  # if(prediction.period.length <= 2)
+  # ***Minimum of 1 period?
+  #   stop("The end of the prediction needs to be at least 3 periods after the end of the estimation period!", call. = FALSE)
 
 
 

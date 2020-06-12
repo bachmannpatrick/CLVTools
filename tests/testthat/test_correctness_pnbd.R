@@ -36,3 +36,9 @@ fct.testthat.correctness.nocov.same.as.btyd(clvtools.method = pnbd,
 # ** Static cov??
 # **DYNCOV??
 
+# *** Fit Dyncov (in helper function) + test that CET = 0 with prediction.end = 0 or prediction.end = holdout.start
+# ** test with different prediction.ends that k is correctly caught
+# document that prediction is from estimation.end until (incl) prediction.end
+#
+
+
