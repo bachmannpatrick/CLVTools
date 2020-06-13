@@ -188,6 +188,14 @@ fct.testthat.correctness.common.newdata.same.predicting.fitting <- function(clv.
   })
 }
 
+fct.testthat.correctness.CET.0.for.no.prediction.period <- function(clv.fitted){
+  test_that("CET = 0 for no prediction period", {
+    skip_on_cran()
+    expect_silent(dt.pred <- predict(clv.fitted, verbose = FALSE, prediction.end = 0))
+    expect_true(dt.pred[, isTRUE(all.equal(CET, rep(0, .N)))])
+  })
+}
+
 
 fct.testthat.correctness.staticcov.fitting.sample.predicting.full.data.equal <- function(method, apparelTrans, apparelStaticCov, clv.apparel.staticcov){
   test_that("Fitting with sample but predicting full data yields same results as predicting sample only", {
@@ -251,7 +259,6 @@ fct.testthat.correctness <- function(name.model, method, data.cdnow, data.appare
 
 
   context(paste0("Correctness - ",name.model," nocov - CBS comparison"))
-
   fct.testthat.correctness.nocov.compare.cbs.vs.btyd(method = method, cdnow = data.cdnow)
 
   context(paste0("Correctness - ",name.model," nocov - Recover parameters"))
@@ -260,6 +267,7 @@ fct.testthat.correctness <- function(name.model, method, data.cdnow, data.appare
 
   context(paste0("Correctness - ",name.model," nocov - predict"))
   fct.testthat.correctness.common.newdata.same.predicting.fitting(clv.fitted = obj.fitted, clv.newdata = clv.cdnow)
+  fct.testthat.correctness.CET.0.for.no.prediction.period(clv.fitted = obj.fitted)
 
   fct.testthat.correctness.nocov.newdata.fitting.sample.predicting.full.data.equal(method = method, cdnow = data.cdnow, clv.cdnow = clv.cdnow)
 
@@ -270,6 +278,7 @@ fct.testthat.correctness <- function(name.model, method, data.cdnow, data.appare
                                                               apparelStaticCov = data.apparelStaticCov, m.fitted.static = obj.fitted.static)
 
   context(paste0("Correctness - ",name.model," static cov - predict"))
+  fct.testthat.correctness.CET.0.for.no.prediction.period(clv.fitted = obj.fitted.static)
   fct.testthat.correctness.staticcov.fitting.sample.predicting.full.data.equal(method = method, apparelTrans = data.apparelTrans,
                                                                                clv.apparel.staticcov = clv.apparel.staticcov,
                                                                                apparelStaticCov = data.apparelStaticCov)
