@@ -72,7 +72,7 @@ test_that("No (NULL) estimation split results in last transaction = estimation e
   expect_equal(t.days@holdout.period.in.tu, 0)
 
   expect_silent(t.weeks <- clv.time.set.sample.periods(clv.t.weeks, user.estimation.end = NULL, tp.first.transaction =tp.first,
-                                                      tp.last.transaction = tp.last))
+                                                       tp.last.transaction = tp.last))
   expect_equal(t.weeks@timepoint.estimation.end, tp.last)
   expect_equal(t.weeks@timepoint.holdout.start, tp.last)
   expect_equal(t.weeks@timepoint.holdout.end, tp.last)
@@ -94,7 +94,7 @@ test_that("estimation split numeric results in estimation end = this many period
 
   # POSIX
   expect_silent(t.hours <- clv.time.set.sample.periods(clv.t.hours, user.estimation.end = 41*7*24, tp.first.transaction =tp.first.posix,
-                                                      tp.last.transaction = tp.last.posix))
+                                                       tp.last.transaction = tp.last.posix))
   expect_equal(t.hours@timepoint.estimation.end, tp.first.posix+lubridate::period(41*7*24, "hours"))
   expect_equal(t.hours@estimation.period.in.tu, 41*7*24)
   expect_equal(t.hours@timepoint.holdout.start, t.hours@timepoint.estimation.end+1L)
@@ -133,12 +133,12 @@ test_that("Warn if numeric estimation implies partial periods", {
   expect_equal(t.weeks@estimation.period.in.tu, 287)
 
   expect_warning(t.weeks <- clv.time.set.sample.periods(clv.t.weeks, user.estimation.end = 41.5, tp.first.transaction =tp.first,
-                                                       tp.last.transaction = tp.last),
+                                                        tp.last.transaction = tp.last),
                  regexp = "partial periods")
   expect_equal(t.weeks@estimation.period.in.tu, 41)
 
   expect_warning(t.years <- clv.time.set.sample.periods(clv.t.years, user.estimation.end = 1.5, tp.first.transaction =tp.first,
-                                                       tp.last.transaction = tp.last),
+                                                        tp.last.transaction = tp.last),
                  regexp = "partial periods")
   expect_equal(t.years@estimation.period.in.tu, 1)
 })
@@ -155,7 +155,7 @@ test_that("estimation split Date results in estimation end = on this date", {
 
   # POSIX - but split with Date (ymd by user)
   expect_silent(t.hours <- clv.time.set.sample.periods(clv.t.hours, user.estimation.end = tp.split, tp.first.transaction = tp.first.posix,
-                                                      tp.last.transaction = tp.last.posix))
+                                                       tp.last.transaction = tp.last.posix))
   expect_equal(t.hours@timepoint.estimation.end, tp.split.posix) # Split same Date but as posix
   expect_equal(t.hours@estimation.period.in.tu, time_length(interval(start = tp.first.posix, end = tp.split.posix), "hours"))
   expect_equal(t.hours@timepoint.holdout.start, t.hours@timepoint.estimation.end+1L)
@@ -170,7 +170,7 @@ test_that("estimation split Date results in estimation end = on this date", {
   expect_equal(t.days@timepoint.holdout.end, tp.last)
 
   expect_silent(t.weeks <- clv.time.set.sample.periods(clv.t.weeks, user.estimation.end = tp.split, tp.first.transaction =tp.first,
-                                                      tp.last.transaction = tp.last))
+                                                       tp.last.transaction = tp.last))
   expect_equal(t.weeks@timepoint.estimation.end, tp.split)
   expect_equal(t.weeks@estimation.period.in.tu, time_length(interval(start = tp.first, end = tp.split), "weeks"))
   expect_equal(t.weeks@timepoint.holdout.start, t.weeks@timepoint.estimation.end+1L)
@@ -382,7 +382,7 @@ test_that("floor date works when setting the estimation period",{
   expect_equal(t.days@timepoint.estimation.start, tp.first)
 
   expect_silent(t.weeks <- clv.time.set.sample.periods(clv.t.weeks, user.estimation.end = NULL, tp.first.transaction =tp.first,
-                                                      tp.last.transaction = tp.last))
+                                                       tp.last.transaction = tp.last))
   expect_equal(t.weeks@timepoint.estimation.start, tp.first)
 
   expect_silent(t.years <- clv.time.set.sample.periods(clv.t.years, user.estimation.end = NULL, tp.first.transaction =tp.first,
@@ -402,8 +402,8 @@ test_that("Cov dates start and end correct for start off and end off period begi
   tp.cov.end <- lubridate::ymd("2019-01-25") #Thu
   # days
   dt.cov.seq.d <- clv.time.sequence.of.covariate.timepoints(clv.time = clv.t.days,
-                                            tp.start = tp.cov.start,
-                                            tp.end = tp.cov.end)
+                                                            tp.start = tp.cov.start,
+                                                            tp.end = tp.cov.end)
   expect_true(dt.cov.seq.d[, min(Cov.Date)] == lubridate::ymd("2018-01-11"))
   expect_true(dt.cov.seq.d[, max(Cov.Date)] == lubridate::ymd("2019-01-25"))
 
@@ -432,8 +432,8 @@ test_that("Cov dates start and end correct for start on and end off period begin
                                                             tp.start = lubridate::ymd("2018-01-10"),
                                                             tp.end = lubridate::ymd("2018-01-26"))
   expect_true(all(dt.cov.seq.d$Cov.Date == seq.Date(from=lubridate::ymd("2018-01-10"),
-                                                     to=lubridate::ymd("2018-01-26"),
-                                                     by="1 day")))
+                                                    to=lubridate::ymd("2018-01-26"),
+                                                    by="1 day")))
   expect_true(dt.cov.seq.d[, min(Cov.Date)] == lubridate::ymd("2018-01-10"))
   expect_true(dt.cov.seq.d[, max(Cov.Date)] == lubridate::ymd("2018-01-26"))
 
@@ -443,10 +443,10 @@ test_that("Cov dates start and end correct for start on and end off period begin
                                                                                            timepoint = lubridate::ymd("2018-01-10")),
                                                             tp.end = lubridate::ymd("2018-02-01")) # Thu
   expect_true(all(dt.cov.seq.d$Cov.Date == seq.Date(from=clv.time.floor.date(clv.time = clv.t.weeks,
-                                                                              timepoint = lubridate::ymd("2018-01-10")),
-                                                     to=clv.time.floor.date(clv.time = clv.t.weeks,
-                                                                            timepoint = lubridate::ymd("2018-02-01")), #Thu
-                                                     by="1 week")))
+                                                                             timepoint = lubridate::ymd("2018-01-10")),
+                                                    to=clv.time.floor.date(clv.time = clv.t.weeks,
+                                                                           timepoint = lubridate::ymd("2018-02-01")), #Thu
+                                                    by="1 week")))
 
   expect_true(dt.cov.seq.d[, min(Cov.Date)] == clv.time.floor.date(clv.time = clv.t.weeks,
                                                                    timepoint = lubridate::ymd("2018-01-10")))
@@ -458,8 +458,8 @@ test_that("Cov dates start and end correct for start on and end off period begin
                                                             tp.start = lubridate::ymd("2018-01-01"),
                                                             tp.end = lubridate::ymd("2020-06-06"))
   expect_true(all(dt.cov.seq.d$Cov.Date == seq.Date(from=lubridate::ymd("2018-01-01"),
-                                                     to=lubridate::ymd("2020-01-01"),
-                                                     by="1 years")))
+                                                    to=lubridate::ymd("2020-01-01"),
+                                                    by="1 years")))
 
   expect_true(dt.cov.seq.d[, min(Cov.Date)] == lubridate::ymd("2018-01-01"))
   expect_true(dt.cov.seq.d[, max(Cov.Date)] == lubridate::ymd("2020-01-01"))
@@ -472,8 +472,8 @@ test_that("Cov dates start and end correct for start off and end on period begin
                                                             tp.start = lubridate::ymd("2018-01-10"),
                                                             tp.end = lubridate::ymd("2018-01-26"))
   expect_true(all(dt.cov.seq.d$Cov.Date == seq.Date(from=lubridate::ymd("2018-01-10"),
-                                                     to=lubridate::ymd("2018-01-26"),
-                                                     by="1 day")))
+                                                    to=lubridate::ymd("2018-01-26"),
+                                                    by="1 day")))
 
   expect_true(dt.cov.seq.d[, min(Cov.Date)] == lubridate::ymd("2018-01-10"))
   expect_true(dt.cov.seq.d[, max(Cov.Date)] == lubridate::ymd("2018-01-26"))
@@ -485,9 +485,9 @@ test_that("Cov dates start and end correct for start off and end on period begin
                                                                                          timepoint = lubridate::ymd("2018-01-25")))
   expect_true(all(dt.cov.seq.d$Cov.Date == seq.Date(from=clv.time.floor.date(clv.time = clv.t.weeks,
                                                                              timepoint = lubridate::ymd("2018-01-04")),
-                                                     to = clv.time.floor.date(clv.time = clv.t.weeks,
-                                                                              timepoint = lubridate::ymd("2018-01-25")),
-                                                     by="1 week")))
+                                                    to = clv.time.floor.date(clv.time = clv.t.weeks,
+                                                                             timepoint = lubridate::ymd("2018-01-25")),
+                                                    by="1 week")))
 
   expect_true(dt.cov.seq.d[, min(Cov.Date)] == clv.time.floor.date(clv.time = clv.t.weeks,
                                                                    timepoint = lubridate::ymd("2018-01-04")))
@@ -499,8 +499,8 @@ test_that("Cov dates start and end correct for start off and end on period begin
                                                             tp.start = lubridate::ymd("2018-06-06"),
                                                             tp.end = lubridate::ymd("2020-01-01"))
   expect_true(all(dt.cov.seq.d$Cov.Date == seq.Date(from=lubridate::ymd("2018-01-01"),
-                                                     to=lubridate::ymd("2020-01-01"),
-                                                     by="1 years")))
+                                                    to=lubridate::ymd("2020-01-01"),
+                                                    by="1 years")))
   expect_true(dt.cov.seq.d[, min(Cov.Date)] == lubridate::ymd("2018-01-01"))
   expect_true(dt.cov.seq.d[, max(Cov.Date)] == lubridate::ymd("2020-01-01"))
 
@@ -513,8 +513,8 @@ test_that("Cov dates start and end correct for start on and end on period begin"
                                                             tp.start = lubridate::ymd("2018-01-10"),
                                                             tp.end = lubridate::ymd("2019-12-26"))
   expect_true(all(dt.cov.seq.d$Cov.Date == seq.Date(from=lubridate::ymd("2018-01-10"),
-                                                     to=lubridate::ymd("2019-12-26"),
-                                                     by="1 day")))
+                                                    to=lubridate::ymd("2019-12-26"),
+                                                    by="1 day")))
   expect_true(dt.cov.seq.d[, min(Cov.Date)] == lubridate::ymd("2018-01-10"))
   expect_true(dt.cov.seq.d[, max(Cov.Date)] == lubridate::ymd("2019-12-26"))
 
@@ -523,10 +523,10 @@ test_that("Cov dates start and end correct for start on and end on period begin"
                                                             tp.start = lubridate::ymd("2018-01-11"),
                                                             tp.end = lubridate::ymd("2018-01-25"))
   expect_true(all(dt.cov.seq.d$Cov.Date == seq.Date(from=clv.time.floor.date(clv.time = clv.t.weeks,
-                                                                              timepoint = lubridate::ymd("2018-01-11")), #Thu
-                                                     to = clv.time.floor.date(clv.time = clv.t.weeks,
-                                                                              timepoint = lubridate::ymd("2018-01-25")), #Thu
-                                                     by="1 week")))
+                                                                             timepoint = lubridate::ymd("2018-01-11")), #Thu
+                                                    to = clv.time.floor.date(clv.time = clv.t.weeks,
+                                                                             timepoint = lubridate::ymd("2018-01-25")), #Thu
+                                                    by="1 week")))
   expect_true(dt.cov.seq.d[, min(Cov.Date)] == clv.time.floor.date(clv.time = clv.t.weeks,
                                                                    timepoint = lubridate::ymd("2018-01-11")))
   expect_true(dt.cov.seq.d[, max(Cov.Date)] == clv.time.floor.date(clv.time = clv.t.weeks,
@@ -537,82 +537,38 @@ test_that("Cov dates start and end correct for start on and end on period begin"
                                                             tp.start = lubridate::ymd("2018-01-01"),
                                                             tp.end = lubridate::ymd("2020-01-01"))
   expect_true(all(dt.cov.seq.d$Cov.Date == seq.Date(from=lubridate::ymd("2018-01-01"),
-                                                     to=lubridate::ymd("2020-01-01"),
-                                                     by="1 years")))
+                                                    to=lubridate::ymd("2020-01-01"),
+                                                    by="1 years")))
   expect_true(dt.cov.seq.d[, min(Cov.Date)] == lubridate::ymd("2018-01-01"))
   expect_true(dt.cov.seq.d[, max(Cov.Date)] == lubridate::ymd("2020-01-01"))
 
 })
 
 
-test_that("Correctly works for single period", {
-  # days
-  dt.cov.seq.d <- clv.time.sequence.of.covariate.timepoints(clv.time = clv.t.days,
-                                                            tp.start = lubridate::ymd("2018-01-1"),
-                                                            tp.end = lubridate::ymd("2019-12-26"))
-  expect_true(all(dt.cov.seq.d$Cov.Date) == seq.Date(from=lubridate::ymd("2018-01-10"),
-                                                     to=lubridate::ymd("2019-01-26"),
-                                                     by="1 day"))
-})
+# test_that("Correctly works for single period", {
+#   # days
+#   dt.cov.seq.d <- clv.time.sequence.of.covariate.timepoints(clv.time = clv.t.days,
+#                                                             tp.start = lubridate::ymd("2018-01-1"),
+#                                                             tp.end = lubridate::ymd("2019-12-26"))
+#   expect_true(all(dt.cov.seq.d$Cov.Date == seq.Date(from=lubridate::ymd("2018-01-10"),
+#                                                      to=lubridate::ymd("2019-12-26"),
+#                                                      by="1 day")))
+# })
 
 
 
 # clv.time.get.prediction.table --------------------------------------------------------------------------------
 context("Correctness - clv.time - get.prediction.table")
 
-# ** prediction table:
-#   - period.first is always holdout.start
-#   - period length is num periods between period.first and period.last
-#   - period.last > period.first
-#   - period.last = prediction.end in date
-#   - prediction.length is same as prediction.end in numeric
-#   - input check: prediction.end >= 0, prediction.end >= holdout.start
-#   - check its usage in newdata
-# **casually check once whether the results for kttt>=1 are really different from kttt>=2
+# - check its usage in newdata
+# - generally check that prediction.end=0 -> CET=0
 
-
-fct.verify.valid.prediction.table <- function(dt.prediction.table, clv.time){
-  expect_true(nrow(dt.prediction.table) == 1)
-  expect_true(dt.prediction.table[, period.first] == clv.time@timepoint.holdout.start)
-  expect_true(dt.prediction.table[, period.first > period.last])
-  expect_true(dt.prediction.table[, period.length] ==
-                clv.time.interval.in.number.tu(clv.time=clv.time,
-                                               interv=interval(start = dt.prediction.table[, period.first],
-                                                               end = dt.prediction.table[, period.last] +
-                                                                 clv.time.epsilon(clv.time=clv.time))))
+for(clv.t in c(fct.helper.clv.time.create.test.objects(with.holdout = TRUE),
+               fct.helper.clv.time.create.test.objects(with.holdout = FALSE))){
+  fct.testthat.correctness.clvtime.prediction.table.valid.for.numeric.end(clv.t)
+  fct.testthat.correctness.clvtime.prediction.table.valid.for.date.end(clv.t)
+  fct.testthat.correctness.clvtime.prediction.table.correct.for.0.length.period(clv.t)
+  fct.testthat.correctness.clvtime.prediction.table.stop.for.prediction.end.before.estimation.end(clv.t)
 }
-
-# test_that("valid prediction table for prediction.end as date", {
-#   # holdout.start, holdout+eps, 1 period, 1.5 periods, 2 periods, 10 periods
-#   clv.time.get.prediction.table(clv.time = clv.t.hours, user.prediction.end = lubridate::ymdHMS())
-# })
-
-test_that("valid prediction table for prediction.end as numeric", {
-  t.hours <-clv.time.set.sample.periods(clv.t.hours, user.estimation.end = NULL, tp.first.transaction =tp.first,
-                              tp.last.transaction = tp.last)
-
-  # 0, partial, 1 period, 1.5 periods, 2 periods, 10 periods
-  fct.verify.valid.prediction.table(clv.time.get.prediction.table(clv.time = t.hours,
-                                                                  user.prediction.end = 0))
-  fct.verify.valid.prediction.table(clv.time.get.prediction.table(clv.time = t.hours,
-                                                                  user.prediction.end = 0.1))
-  fct.verify.valid.prediction.table(clv.time.get.prediction.table(clv.time = t.hours,
-                                                                  user.prediction.end = 1))
-  fct.verify.valid.prediction.table(clv.time.get.prediction.table(clv.time = t.hours,
-                                                                  user.prediction.end = 1.5))
-  fct.verify.valid.prediction.table(clv.time.get.prediction.table(clv.time = t.hours,
-                                                                  user.prediction.end = 2))
-  fct.verify.valid.prediction.table(clv.time.get.prediction.table(clv.time = t.hours,
-                                                                  user.prediction.end = 10))
-})
-
-# test_that("stop for prediction end before holdout.start", {
-#   clv.time.get.prediction.table(clv.time = clv.t.hours, user.prediction.end = lubridate::ymdHMS())
-# })
-
-
-
-
-
 
 

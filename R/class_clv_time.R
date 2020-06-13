@@ -273,6 +273,18 @@ clv.time.expectation.periods <- function(clv.time, user.tp.end){
 }
 
 
+# Prediction table
+#   period.first: First tp belonging to prediction period. First possible point after estimation.end.
+#   period.last: Last tp belonging to prediction period.
+#   period.length: Total length of prediction period, including period.first and period.last
+#
+#   Table for length 0 prediction period:
+#     period.length = 0
+#     For this to hold, period.first = period.last.
+#     Because no prediction period exists, period.first has to be on estimation.end. If it was on +epsilon,
+#       the prediction period was already > 0 length
+#     Therefore, period.first = period.last = estimation.end
+#
 #' @include class_clv_time.R
 #' @importFrom lubridate interval
 clv.time.get.prediction.table <- function(clv.time, user.prediction.end){
@@ -318,7 +330,7 @@ clv.time.get.prediction.table <- function(clv.time, user.prediction.end){
     if(period.length == 0){
       period.first <- period.last <- clv.time@timepoint.estimation.end
     }else{
-      period.first <- clv.time@timepoint.holdout.start
+      period.first <- clv.time@timepoint.estimation.end + clv.time.epsilon(clv.time = clv.time)
     }
 
     if(period.length < 0 | period.last < period.first){
