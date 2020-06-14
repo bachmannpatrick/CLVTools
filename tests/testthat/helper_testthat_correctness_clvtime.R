@@ -167,6 +167,94 @@ fct.testthat.correctness.clvtime.set.sample.periods.warn.partial.period <- funct
 }
 
 
+fct.testthat.correctness.clvtime.set.sample.periods.stop.estimation.period.less.1.period <- function(clv.t.hours, clv.t.days,
+                                                                                                     clv.t.weeks, clv.t.years){
+
+  for(clv.t in list(clv.t.hours, clv.t.days, clv.t.weeks, clv.t.years)){
+    tp.first <- fct.helper.clv.time.correct.datetype("2018-01-01", clv.t)
+    tp.last  <- fct.helper.clv.time.correct.datetype("2025-06-15", clv.t)
+    # Numeric
+    expect_error(clv.time.set.sample.periods(clv.t,
+                                             user.estimation.end  = 0,
+                                             tp.first.transaction = tp.first,
+                                             tp.last.transaction  = tp.last),
+                 regexp = "1 time.unit after")
+    expect_error(clv.time.set.sample.periods(clv.t,
+                                             user.estimation.end  = -3,
+                                             tp.first.transaction = tp.first,
+                                             tp.last.transaction  = tp.last),
+                 regexp = "1 time.unit after")
+    # Date
+    expect_error(clv.time.set.sample.periods(clv.t,
+                                             user.estimation.end  = tp.first,
+                                             tp.first.transaction = tp.first,
+                                             tp.last.transaction  = tp.last),
+                 regexp = "1 time.unit after")
+    expect_error(clv.time.set.sample.periods(clv.t,
+                                             user.estimation.end  = tp.first-lubridate::days(1),
+                                             tp.first.transaction = tp.first,
+                                             tp.last.transaction  = tp.last),
+                 regexp = "1 time.unit after")
+  }
+
+  expect_error(clv.time.set.sample.periods(clv.time = clv.t.hours,
+                                           user.estimation.end  = "2018-01-01 00:35:49",
+                                           tp.first.transaction = fct.helper.clv.time.correct.datetype("2018-01-01", clv.t.hours),
+                                           tp.last.transaction  = fct.helper.clv.time.correct.datetype("2025-06-15", clv.t.hours)),
+              regexp = "1 time.unit after")
+  expect_error(clv.time.set.sample.periods(clv.time = clv.t.days,
+                                           user.estimation.end  = "2018-01-01",
+                                           tp.first.transaction = fct.helper.clv.time.correct.datetype("2018-01-01", clv.t.days),
+                                           tp.last.transaction  = fct.helper.clv.time.correct.datetype("2025-06-15", clv.t.days)),
+               regexp = "1 time.unit after")
+  expect_error(clv.time.set.sample.periods(clv.time = clv.t.weeks,
+                                           user.estimation.end  = "2018-01-03", # Wed
+                                           tp.first.transaction = fct.helper.clv.time.correct.datetype("2018-01-01", clv.t.weeks), # Mon
+                                           tp.last.transaction  = fct.helper.clv.time.correct.datetype("2025-06-15", clv.t.weeks)),
+               regexp = "1 time.unit after")
+  expect_error(clv.time.set.sample.periods(clv.time = clv.t.years,
+                                           user.estimation.end  = "2018-12-31",
+                                           tp.first.transaction = fct.helper.clv.time.correct.datetype("2018-01-01", clv.t.years),
+                                           tp.last.transaction  = fct.helper.clv.time.correct.datetype("2025-06-15", clv.t.years)),
+               regexp = "1 time.unit after")
+}
+
+
+fct.testthat.correctness.clvtime.set.sample.periods.stop.holdout.length.less.2.period <- function(clv.t.hours, clv.t.days,
+                                                                                                     clv.t.weeks, clv.t.years){
+  for(clv.t in list(clv.t.hours, clv.t.days, clv.t.weeks, clv.t.years)){
+    tp.first <- fct.helper.clv.time.correct.datetype("2018-01-01", clv.t)
+    tp.last  <- fct.helper.clv.time.correct.datetype("2025-06-15", clv.t)
+    expect_error(clv.time.set.sample.periods(clv.t,
+                                             user.estimation.end  = tp.last-lubridate::hours(1),
+                                             tp.first.transaction = tp.first,
+                                             tp.last.transaction  = tp.last),
+                 regexp = "2 periods before")
+  }
+
+  expect_error(clv.time.set.sample.periods(clv.time = clv.t.hours,
+                                           user.estimation.end  = "2025-06-14 22:40:11",
+                                           tp.first.transaction = fct.helper.clv.time.correct.datetype("2018-01-01", clv.t.hours),
+                                           tp.last.transaction  = fct.helper.clv.time.correct.datetype("2025-06-15", clv.t.hours)),
+               regexp = "2 periods before")
+  expect_error(clv.time.set.sample.periods(clv.time = clv.t.days,
+                                           user.estimation.end  = "2025-06-14",
+                                           tp.first.transaction = fct.helper.clv.time.correct.datetype("2018-01-01", clv.t.days),
+                                           tp.last.transaction  = fct.helper.clv.time.correct.datetype("2025-06-15", clv.t.days)),
+               regexp = "2 periods before")
+  expect_error(clv.time.set.sample.periods(clv.time = clv.t.weeks,
+                                           user.estimation.end  = "2025-06-11", # Wed
+                                           tp.first.transaction = fct.helper.clv.time.correct.datetype("2018-01-01", clv.t.weeks),
+                                           tp.last.transaction  = fct.helper.clv.time.correct.datetype("2025-06-13", clv.t.weeks)),# Fr
+               regexp = "2 periods before")
+  expect_error(clv.time.set.sample.periods(clv.time = clv.t.years,
+                                           user.estimation.end  = "2025-01-01",
+                                           tp.first.transaction = fct.helper.clv.time.correct.datetype("2018-01-01", clv.t.years),
+                                           tp.last.transaction  = fct.helper.clv.time.correct.datetype("2025-06-15", clv.t.years)),
+               regexp = "2 periods before")
+}
+
+
 fct.testthat.correctness.clvtime.set.sample.periods.date.estimation.end <- function(clv.t){
   test_that("estimation split Date results in estimation end = on this date", {
     tp.first <- fct.helper.clv.time.correct.datetype("2018-01-01", clv.t)
@@ -184,8 +272,8 @@ fct.testthat.correctness.clvtime.set.sample.periods.date.estimation.end <- funct
       expect_equal(clv.t@timepoint.estimation.end, as.POSIXct.POSIXlt(as.POSIXlt.Date(tp.split), tz = "UTC"))
     }else{
       expect_silent(clv.t <- clv.time.set.sample.periods(clv.t, user.estimation.end = tp.split,
-                                                         tp.first.transaction =tp.first,
-                                                         tp.last.transaction = tp.last))
+                                                         tp.first.transaction = tp.first,
+                                                         tp.last.transaction =  tp.last))
       expect_equal(clv.t@timepoint.estimation.end, tp.split)
     }
 
@@ -195,38 +283,76 @@ fct.testthat.correctness.clvtime.set.sample.periods.date.estimation.end <- funct
   })
 }
 
-# **TODO** Does this not miss some tests?
-# fct.testthat.correctness.clvtime.set.sample.periods.posixct.estimation.end <- function(clv.t){
-#   test_that("estimation split POSIXct results in estimation end = on this date", {
-#     # Split on
-#     tp.first.posix <- lubridate::ymd("2018-01-01", tz="UTC")
-#     tp.last.posix  <- lubridate::ymd("2019-06-15", tz="UTC")
-#
-#     # Midnight
-#     expect_silent(t.hours <- clv.time.set.sample.periods(clv.t.hours, user.estimation.end = lubridate::ymd_hms("2018-05-01 00:00:00"),
-#                                                          tp.first.transaction = tp.first.posix, tp.last.transaction = tp.last.posix))
-#     expect_equal(t.hours@timepoint.estimation.end, lubridate::ymd("2018-05-01", tz="UTC"))
-#     expect_equal(t.hours@estimation.period.in.tu, time_length(interval(start = tp.first.posix, end = lubridate::ymd("2018-05-01", tz="UTC")), "hours"))
-#     expect_equal(t.hours@timepoint.holdout.start, t.hours@timepoint.estimation.end+1L)
-#     expect_equal(t.hours@timepoint.holdout.end, tp.last.posix)
-#
-#     # with hour
-#     expect_silent(t.hours <- clv.time.set.sample.periods(clv.t.hours, user.estimation.end = lubridate::ymd_hms("2018-05-01 14:00:00"),
-#                                                          tp.first.transaction = tp.first.posix, tp.last.transaction = tp.last.posix))
-#     expect_equal(t.hours@timepoint.estimation.end, lubridate::ymd_hms("2018-05-01 14:00:00"))
-#     expect_equal(t.hours@estimation.period.in.tu, time_length(interval(start = tp.first.posix, end = lubridate::ymd_hms("2018-05-01 14:00:00")), "hours"))
-#     expect_equal(t.hours@timepoint.holdout.start, t.hours@timepoint.estimation.end+1L)
-#     expect_equal(t.hours@timepoint.holdout.end, tp.last.posix)
-#
-#     # halfhour
-#     expect_silent(t.hours <- clv.time.set.sample.periods(clv.t.hours, user.estimation.end = lubridate::ymd_hms("2018-05-01 14:35:43"),
-#                                                          tp.first.transaction = tp.first.posix, tp.last.transaction = tp.last.posix))
-#     expect_equal(t.hours@timepoint.estimation.end, lubridate::ymd_hms("2018-05-01 14:35:43"))
-#     expect_equal(t.hours@estimation.period.in.tu, time_length(interval(start = tp.first.posix, end = lubridate::ymd_hms("2018-05-01 14:35:43")), "hours"))
-#     expect_equal(t.hours@timepoint.holdout.start, t.hours@timepoint.estimation.end+1L)
-#     expect_equal(t.hours@timepoint.holdout.end, tp.last.posix)
-#   })
-# }
+
+
+
+fct.testthat.correctness.clvtime.set.sample.periods.posixct.estimation.end <- function(clv.t){
+  test_that("estimation split POSIXct results in estimation end = on this date", {
+    tp.first <- fct.helper.clv.time.correct.datetype("2018-01-01", clv.t)
+    tp.last  <- fct.helper.clv.time.correct.datetype("2025-06-15", clv.t)
+    tp.split <- lubridate::ymd_hms("2019-07-19 15:36:19")
+
+    period.type <- fct.helper.clv.time.period.type(clv.t)
+
+    if(is(clv.t, "clv.time.datetime")){
+      expect_silent(clv.t <- clv.time.set.sample.periods(clv.t,
+                                                         user.estimation.end  = tp.split,
+                                                         tp.first.transaction = tp.first,
+                                                         tp.last.transaction  = tp.last))
+
+      expect_equal(clv.t@timepoint.estimation.end, tp.split)
+      expect_equal(clv.t@estimation.period.in.tu, time_length(interval(start = tp.first, end = tp.split), period.type))
+    }else{
+      # Date transactions - but split with POSIXct (given by user)
+      expect_message(clv.t <- clv.time.set.sample.periods(clv.t,
+                                                          user.estimation.end  = tp.split,
+                                                          tp.first.transaction = tp.first,
+                                                          tp.last.transaction  = tp.last),
+                     regexp = "is ignored")
+      # Split same but as Date
+      expect_equal(clv.t@timepoint.estimation.end, as.Date(tp.split))
+      expect_equal(clv.t@estimation.period.in.tu, time_length(interval(start = tp.first,
+                                                                       end = as.Date(tp.split)), period.type))
+    }
+
+    expect_equal(clv.t@timepoint.holdout.start, clv.t@timepoint.estimation.end+1L)
+    expect_equal(clv.t@timepoint.holdout.end, tp.last)
+  })
+}
+
+
+fct.testthat.correctness.clvtime.set.sample.periods.char.estimation.end <- function(clv.t){
+  test_that("estimation split char results in estimation end = on this date", {
+    tp.first <- fct.helper.clv.time.correct.datetype("2018-01-01", clv.t)
+    tp.last  <- fct.helper.clv.time.correct.datetype("2025-06-15", clv.t)
+    period.type <- fct.helper.clv.time.period.type(clv.t)
+
+    if(is(clv.t, "clv.time.datetime")){
+      tp.split <- "2019-07-19 15:36:19"
+      expect_silent(clv.t <- clv.time.set.sample.periods(clv.t,
+                                                         user.estimation.end  = tp.split,
+                                                         tp.first.transaction = tp.first,
+                                                         tp.last.transaction  = tp.last))
+
+      expect_equal(clv.t@timepoint.estimation.end, lubridate::ymd_hms(tp.split))
+      expect_equal(clv.t@estimation.period.in.tu, time_length(interval(start = tp.first,
+                                                                       end = lubridate::ymd_hms(tp.split)), period.type))
+    }else{
+      tp.split <- "2019-07-19"
+      expect_silent(clv.t <- clv.time.set.sample.periods(clv.t,
+                                                         user.estimation.end  = tp.split,
+                                                         tp.first.transaction = tp.first,
+                                                         tp.last.transaction  = tp.last))
+      # Split same but as Date
+      expect_equal(clv.t@timepoint.estimation.end, lubridate::ymd(tp.split))
+      expect_equal(clv.t@estimation.period.in.tu, time_length(interval(start = tp.first,
+                                                                       end = lubridate::ymd(tp.split)), period.type))
+    }
+
+    expect_equal(clv.t@timepoint.holdout.start, clv.t@timepoint.estimation.end+1L)
+    expect_equal(clv.t@timepoint.holdout.end, tp.last)
+  })
+}
 
 
 # convert.user.input.to.timepoint -------------------------------------------------------------------------------------

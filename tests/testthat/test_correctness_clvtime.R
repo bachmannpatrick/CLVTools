@@ -1,8 +1,6 @@
 # clv.time.epsilon --------------------------------------------------------------------------------
 context("Correctness - clv.time - epsilon")
 
-# names.clv.t.datetime <- "clv.t.hours"
-# names.clv.t.date <- c("clv.t.days", "clv.t.weeks", "clv.t.months")
 
 for(clv.t in c(fct.helper.clv.time.create.test.objects(with.holdout = FALSE),
                fct.helper.clv.time.create.test.objects(with.holdout = TRUE))){
@@ -16,25 +14,27 @@ for(clv.t in c(fct.helper.clv.time.create.test.objects(with.holdout = FALSE),
 
 # set.sample.periods --------------------------------------------------------------------------------
 context("Correctness - clv.time - set.sample.periods")
-
 for(clv.t in list(clv.time.hours(time.format="ymd HMS"),
                   clv.time.days( time.format="ymd"),
                   clv.time.weeks(time.format="ymd"),
                   clv.time.years(time.format="ymd"))){
-
   fct.testthat.correctness.clvtime.set.sample.periods.estimation.start(clv.t)
   fct.testthat.correctness.clvtime.set.sample.periods.no.estimation.end(clv.t)
   fct.testthat.correctness.clvtime.set.sample.periods.numeric.estimation.end(clv.t)
   fct.testthat.correctness.clvtime.set.sample.periods.date.estimation.end(clv.t)
+  fct.testthat.correctness.clvtime.set.sample.periods.posixct.estimation.end(clv.t)
+  fct.testthat.correctness.clvtime.set.sample.periods.char.estimation.end(clv.t)
   fct.testthat.correctness.clvtime.set.sample.periods.warn.partial.period(clv.t)
-  # fct.testthat.correctness.clvtime.set.sample.periods.posixct.estimation.end(clv.t)
 }
+fct.testthat.correctness.clvtime.set.sample.periods.stop.estimation.period.less.1.period(clv.t.hours = clv.time.hours(time.format="ymd HMS") ,
+                                                                                         clv.t.days  = clv.time.days(time.format="ymd"),
+                                                                                         clv.t.weeks = clv.time.weeks(time.format="ymd"),
+                                                                                         clv.t.years = clv.time.years(time.format="ymd"))
 
-# **tests:
-# if date on last transaction date??")
-# parse chars, with / withouth time
-# same results with transaction data posixct in different TZs
-# same results with transaction data posixct in mixed TZs
+fct.testthat.correctness.clvtime.set.sample.periods.stop.holdout.length.less.2.period(clv.t.hours = clv.time.hours(time.format="ymd HMS") ,
+                                                                                      clv.t.days  = clv.time.days(time.format="ymd"),
+                                                                                      clv.t.weeks = clv.time.weeks(time.format="ymd"),
+                                                                                      clv.t.years = clv.time.years(time.format="ymd"))
 
 # convert.user.input.to.timepoint --------------------------------------------------------------------------------
 context("Correctness - clv.time - convert.user.input.to.timepoint")
@@ -107,7 +107,6 @@ for(holdout in c(TRUE, FALSE)){
 
 # clv.time.get.prediction.table --------------------------------------------------------------------------------
 context("Correctness - clv.time - get.prediction.table")
-
 # - check its usage in newdata
 
 for(clv.t in c(fct.helper.clv.time.create.test.objects(with.holdout = TRUE),
