@@ -132,9 +132,9 @@ fct.testthat.correctness.dyncov.CET <- function(data.apparelTrans, data.apparelD
 
   dt.prediction.time.table <- clv.time.get.prediction.table(clv.time = clv.dyncov@clv.data@clv.time,
                                                             user.prediction.end = NULL)
-  dt.CET <- CLVTools:::pnbd_dyncov_CET(clv.fitted = clv.dyncov, predict.number.of.periods = dt.prediction.time.table[1, period.length],
-                                       prediction.end.date = dt.prediction.time.table[1, period.last],
-                                       only.return.input.to.CET = TRUE)
+  dt.CET <- pnbd_dyncov_CET(clv.fitted = clv.dyncov, predict.number.of.periods = dt.prediction.time.table[1, period.length],
+                            prediction.end.date = dt.prediction.time.table[1, period.last],
+                            only.return.input.to.CET = TRUE)
 
   test_that("For static cov, Ai=static, Ci=static", {
     expect_true(dt.CET[, .(num_ai = uniqueN(Ai)), by = "Id"][, all(num_ai == 1)])
@@ -147,6 +147,15 @@ fct.testthat.correctness.dyncov.CET <- function(data.apparelTrans, data.apparelD
 
   test_that("For static cov, Bbar_i=-T*A", {
     expect_true(dt.CET[, isTRUE(all.equal(Bbar_i, -T.cal*Ai)), by="Id"][, all(V1 == TRUE)])
+  })
+
+  test_that("CET = 0 for prediction period = 0", {
+    clv.dyncov@prediction.params.model["s"] <- 1.5 # s=1 fails mathematically
+    dt.CET.0 <- pnbd_dyncov_CET(clv.fitted = clv.dyncov,
+                                predict.number.of.periods = 0,
+                                prediction.end.date = clv.dyncov@clv.data@clv.time@timepoint.holdout.start,
+                                only.return.input.to.CET = FALSE)
+    expect_true(dt.CET.0[, all(CET == 0)])
   })
 
 }

@@ -273,6 +273,18 @@ clv.time.expectation.periods <- function(clv.time, user.tp.end){
 }
 
 
+# Prediction table
+#   period.first: First tp belonging to prediction period. First possible point after estimation.end.
+#   period.last: Last tp belonging to prediction period.
+#   period.length: Total length of prediction period, including period.first and period.last
+#
+#   Table for length 0 prediction period:
+#     period.length = 0
+#     For this to hold, period.first = period.last.
+#     Because no prediction period exists, period.first has to be on estimation.end. If it was on +epsilon,
+#       the prediction period was already > 0 length
+#     Therefore, period.first = period.last = estimation.end
+#
 #' @include class_clv_time.R
 #' @importFrom lubridate interval
 clv.time.get.prediction.table <- function(clv.time, user.prediction.end){
@@ -311,6 +323,25 @@ clv.time.get.prediction.table <- function(clv.time, user.prediction.end){
   #                as.numeric(as.period(interval(start = ymd("2019-06-12"), end = ymd("2019-06-28"))), "week") = 2.285
   #
 
+  fct.make.prediction.table <- function(period.last, period.length){
+    # If there is no prediction period:
+    #   - period.last is estimation.end
+    #   - there is no period.first (ie no first timepoint of the prediction period)
+    if(period.length == 0){
+      period.first <- period.last <- clv.time@timepoint.estimation.end
+    }else{
+      period.first <- clv.time@timepoint.estimation.end + clv.time.epsilon(clv.time = clv.time)
+    }
+
+    if(period.length < 0 | period.last < period.first){
+      stop("The prediction period need to end after the estimation period!")
+    }
+
+    return(data.table(period.first  = period.first,
+                      period.last   = period.last,
+                      period.length = period.length))
+  }
+
   # Prediction end given:
   #   Timepoint: Until and including this point. Length can be inferred from this.
   #   Numeric: This many periods. Due to limitations in lubridate's periods (and the Date class which
@@ -331,14 +362,13 @@ clv.time.get.prediction.table <- function(clv.time, user.prediction.end){
 
 
     # As explained above, estimation.end has to be used as the start of the interval
-    #   to correctly count the numer of periods which are [estimation.end+1TP, prediction.end.date]
+    #   to correctly count the number of periods which are [estimation.end+1TP, prediction.end.date]
     number.of.time.units <- clv.time.interval.in.number.tu(clv.time=clv.time,
                                                            interv=interval(start = clv.time@timepoint.estimation.end,
                                                                            end   = prediction.end.date))
 
-    return(data.table(period.first = clv.time@timepoint.holdout.start,
-                      period.last  = prediction.end.date,
-                      period.length=number.of.time.units))
+    return(fct.make.prediction.table(period.last = prediction.end.date,
+                                     period.length = number.of.time.units))
 
   }else{
 
@@ -363,9 +393,8 @@ clv.time.get.prediction.table <- function(clv.time, user.prediction.end){
       clv.time.number.timeunits.to.timeperiod(clv.time = clv.time,
                                               user.number.periods = number.of.time.units)
 
-    return(data.table(period.first = clv.time@timepoint.holdout.start,
-                      period.last  = prediction.end.date,
-                      period.length=number.of.time.units))
+    return(fct.make.prediction.table(period.last = prediction.end.date,
+                                     period.length = number.of.time.units))
   }
 }
 

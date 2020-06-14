@@ -11,7 +11,7 @@ fct.testthat.correctness(name.model = "BG/NBD", method=bgnbd, data.cdnow=cdnow,
 
 
 
-context("Correctness - BGNBD nocov - Recover parameters")
+context("Correctness - BG/NBD nocov - Recover parameters")
 # As reported in Fader, Hardie, Lee (2005)
 fct.testthat.correctness.nocov.correct.coefs(method = bgnbd,
                                              cdnow = cdnow,

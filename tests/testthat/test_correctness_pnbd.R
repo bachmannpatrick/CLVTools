@@ -40,3 +40,8 @@ fct.testthat.correctness.dyncov(data.apparelTrans=apparelTrans, data.apparelDynC
 
 # ** Static cov??
 
+# ** test with different prediction.ends that k is correctly caught
+# document that prediction is from estimation.end until (incl) prediction.end
+# **casually check once whether the results for kttt>=1 are really different from kttt>=2
+
+

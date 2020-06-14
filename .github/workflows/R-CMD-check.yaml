@@ -1,5 +1,10 @@
 name: R-CMD-check
-on: push
+on:
+  push:
+    branches:
+      - '*'
+      - '!master' # run on every branch except master
+
 # CMD checks on win, mac, ubuntu
 jobs:
   R-CMD-check:
