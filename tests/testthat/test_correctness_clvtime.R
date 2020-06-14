@@ -83,52 +83,14 @@ for(clv.t in c(fct.helper.clv.time.create.test.objects(with.holdout = FALSE),
 
 # floor.date --------------------------------------------------------------------------------
 context("Correctness - clv.time - floor.date")
-
-test_that("floor date rounds down", {
-  # *** TODO: HOURS***
-  # Dates
-  # Days stay same
-  expect_equal(clv.time.floor.date(clv.t.days, timepoint = lubridate::ymd("2019-01-01")),
-               lubridate::ymd("2019-01-01")) # Mon
-  expect_equal(clv.time.floor.date(clv.t.days, timepoint = lubridate::ymd("2019-01-03")),
-               lubridate::ymd("2019-01-03")) # Thu
-  expect_equal(clv.time.floor.date(clv.t.days, timepoint = lubridate::ymd("2019-01-06")),
-               lubridate::ymd("2019-01-06")) #Sun
-
-  # weeks go to start of week which depends on locale.
-  # however wday() always has to be 1 because defined as first day of week
-  expect_equal(clv.time.floor.date(clv.t.weeks, timepoint = lubridate::ymd("2019-01-03")),
-               lubridate::floor_date(lubridate::ymd("2019-01-03"), "weeks"))
-  expect_equal(lubridate::wday(clv.time.floor.date(clv.t.weeks, timepoint = lubridate::ymd("2019-01-05"))),
-               1)
-
-  # years go to 1.1
-  expect_equal(clv.time.floor.date(clv.t.years, timepoint = lubridate::ymd("2019-01-03")),
-               lubridate::ymd("2019-01-01"))
-  expect_equal(clv.time.floor.date(clv.t.years, timepoint = lubridate::ymd("2019-06-06")),
-               lubridate::ymd("2019-01-01"))
-  expect_equal(clv.time.floor.date(clv.t.years, timepoint = lubridate::ymd("2019-12-31")),
-               lubridate::ymd("2019-01-01"))
-  expect_equal(clv.time.floor.date(clv.t.years, timepoint = lubridate::ymd("2018-10-28")),
-               lubridate::ymd("2018-01-01"))
-})
-
-test_that("floor date stays when already correct", {
-
-  expect_equal(clv.time.floor.date(clv.t.days, timepoint = lubridate::ymd("2018-01-01")),
-               lubridate::ymd("2018-01-01"))
-  expect_equal(clv.time.floor.date(clv.t.days, timepoint = lubridate::ymd("2019-06-13")),
-               lubridate::ymd("2019-06-13"))
-
-  # unclear which day of week is first (**maybe test 7 days?)
-
-  expect_equal(clv.time.floor.date(clv.t.years, timepoint = lubridate::ymd("2018-01-01")),
-               lubridate::ymd("2018-01-01"))
-  expect_equal(clv.time.floor.date(clv.t.years, timepoint = lubridate::ymd("2019-01-01")),
-               lubridate::ymd("2019-01-01"))
-})
-
-
+for(holdout in c(TRUE, FALSE)){
+  l.clv.t <- fct.helper.clv.time.create.test.objects(with.holdout = holdout)
+  fct.testthat.correctness.clvtime.floor.date.rounds.down(clv.t.days  = l.clv.t[["clv.t.days"]],
+                                                          clv.t.weeks = l.clv.t[["clv.t.weeks"]],
+                                                          clv.t.years = l.clv.t[["clv.t.years"]])
+  fct.testthat.correctness.clvtime.floor.date.stays.when.correct(clv.t.days  = l.clv.t[["clv.t.days"]],
+                                                                 clv.t.years = l.clv.t[["clv.t.years"]])
+}
 
 
 
@@ -136,154 +98,16 @@ test_that("floor date stays when already correct", {
 context("Correctness - clv.time - sequence.of.covariate.timepoints")
 
 # expect_that difference to end is never >= 1 time.unit
-
-test_that("Cov dates start and end correct for start off and end off period begin", {
-  tp.cov.start <- lubridate::ymd("2018-01-11") #Thu
-  tp.cov.end <- lubridate::ymd("2019-01-25") #Thu
-  # days
-  dt.cov.seq.d <- clv.time.sequence.of.covariate.timepoints(clv.time = clv.t.days,
-                                                            tp.start = tp.cov.start,
-                                                            tp.end = tp.cov.end)
-  expect_true(dt.cov.seq.d[, min(Cov.Date)] == lubridate::ymd("2018-01-11"))
-  expect_true(dt.cov.seq.d[, max(Cov.Date)] == lubridate::ymd("2019-01-25"))
-
-  # weeks
-  dt.cov.seq.d <- clv.time.sequence.of.covariate.timepoints(clv.time = clv.t.weeks,
-                                                            tp.start = tp.cov.start,
-                                                            tp.end = tp.cov.end)
-  expect_true(dt.cov.seq.d[, min(Cov.Date)] == clv.time.floor.date(clv.time = clv.t.weeks,
-                                                                   timepoint = tp.cov.start))
-  expect_true(dt.cov.seq.d[, max(Cov.Date)] == clv.time.floor.date(clv.time = clv.t.weeks,
-                                                                   timepoint = tp.cov.end))
-
-  # years
-  dt.cov.seq.d <- clv.time.sequence.of.covariate.timepoints(clv.time = clv.t.years,
-                                                            tp.start = lubridate::ymd("2012-06-06"),
-                                                            tp.end = lubridate::ymd("2021-12-31"))
-  expect_true(dt.cov.seq.d[, min(Cov.Date)] == lubridate::ymd("2012-01-01"))
-  expect_true(dt.cov.seq.d[, max(Cov.Date)] == lubridate::ymd("2021-01-01"))
-})
-
-
-test_that("Cov dates start and end correct for start on and end off period begin", {
-
-  # days
-  dt.cov.seq.d <- clv.time.sequence.of.covariate.timepoints(clv.time = clv.t.days,
-                                                            tp.start = lubridate::ymd("2018-01-10"),
-                                                            tp.end = lubridate::ymd("2018-01-26"))
-  expect_true(all(dt.cov.seq.d$Cov.Date == seq.Date(from=lubridate::ymd("2018-01-10"),
-                                                    to=lubridate::ymd("2018-01-26"),
-                                                    by="1 day")))
-  expect_true(dt.cov.seq.d[, min(Cov.Date)] == lubridate::ymd("2018-01-10"))
-  expect_true(dt.cov.seq.d[, max(Cov.Date)] == lubridate::ymd("2018-01-26"))
-
-  # weeks
-  dt.cov.seq.d <- clv.time.sequence.of.covariate.timepoints(clv.time = clv.t.weeks,
-                                                            tp.start = clv.time.floor.date(clv.time = clv.t.weeks,
-                                                                                           timepoint = lubridate::ymd("2018-01-10")),
-                                                            tp.end = lubridate::ymd("2018-02-01")) # Thu
-  expect_true(all(dt.cov.seq.d$Cov.Date == seq.Date(from=clv.time.floor.date(clv.time = clv.t.weeks,
-                                                                             timepoint = lubridate::ymd("2018-01-10")),
-                                                    to=clv.time.floor.date(clv.time = clv.t.weeks,
-                                                                           timepoint = lubridate::ymd("2018-02-01")), #Thu
-                                                    by="1 week")))
-
-  expect_true(dt.cov.seq.d[, min(Cov.Date)] == clv.time.floor.date(clv.time = clv.t.weeks,
-                                                                   timepoint = lubridate::ymd("2018-01-10")))
-  expect_true(dt.cov.seq.d[, max(Cov.Date)] == clv.time.floor.date(clv.time = clv.t.weeks,
-                                                                   timepoint = lubridate::ymd("2018-02-01")))
-
-  # years
-  dt.cov.seq.d <- clv.time.sequence.of.covariate.timepoints(clv.time = clv.t.years,
-                                                            tp.start = lubridate::ymd("2018-01-01"),
-                                                            tp.end = lubridate::ymd("2020-06-06"))
-  expect_true(all(dt.cov.seq.d$Cov.Date == seq.Date(from=lubridate::ymd("2018-01-01"),
-                                                    to=lubridate::ymd("2020-01-01"),
-                                                    by="1 years")))
-
-  expect_true(dt.cov.seq.d[, min(Cov.Date)] == lubridate::ymd("2018-01-01"))
-  expect_true(dt.cov.seq.d[, max(Cov.Date)] == lubridate::ymd("2020-01-01"))
-})
-
-test_that("Cov dates start and end correct for start off and end on period begin", {
-
-  # days
-  dt.cov.seq.d <- clv.time.sequence.of.covariate.timepoints(clv.time = clv.t.days,
-                                                            tp.start = lubridate::ymd("2018-01-10"),
-                                                            tp.end = lubridate::ymd("2018-01-26"))
-  expect_true(all(dt.cov.seq.d$Cov.Date == seq.Date(from=lubridate::ymd("2018-01-10"),
-                                                    to=lubridate::ymd("2018-01-26"),
-                                                    by="1 day")))
-
-  expect_true(dt.cov.seq.d[, min(Cov.Date)] == lubridate::ymd("2018-01-10"))
-  expect_true(dt.cov.seq.d[, max(Cov.Date)] == lubridate::ymd("2018-01-26"))
-
-  # weeks
-  dt.cov.seq.d <- clv.time.sequence.of.covariate.timepoints(clv.time = clv.t.weeks,
-                                                            tp.start = lubridate::ymd("2018-01-04"),
-                                                            tp.end = clv.time.floor.date(clv.time = clv.t.weeks,
-                                                                                         timepoint = lubridate::ymd("2018-01-25")))
-  expect_true(all(dt.cov.seq.d$Cov.Date == seq.Date(from=clv.time.floor.date(clv.time = clv.t.weeks,
-                                                                             timepoint = lubridate::ymd("2018-01-04")),
-                                                    to = clv.time.floor.date(clv.time = clv.t.weeks,
-                                                                             timepoint = lubridate::ymd("2018-01-25")),
-                                                    by="1 week")))
-
-  expect_true(dt.cov.seq.d[, min(Cov.Date)] == clv.time.floor.date(clv.time = clv.t.weeks,
-                                                                   timepoint = lubridate::ymd("2018-01-04")))
-  expect_true(dt.cov.seq.d[, max(Cov.Date)] == clv.time.floor.date(clv.time = clv.t.weeks,
-                                                                   timepoint = lubridate::ymd("2018-01-25")))
-
-  # years
-  dt.cov.seq.d <- clv.time.sequence.of.covariate.timepoints(clv.time = clv.t.years,
-                                                            tp.start = lubridate::ymd("2018-06-06"),
-                                                            tp.end = lubridate::ymd("2020-01-01"))
-  expect_true(all(dt.cov.seq.d$Cov.Date == seq.Date(from=lubridate::ymd("2018-01-01"),
-                                                    to=lubridate::ymd("2020-01-01"),
-                                                    by="1 years")))
-  expect_true(dt.cov.seq.d[, min(Cov.Date)] == lubridate::ymd("2018-01-01"))
-  expect_true(dt.cov.seq.d[, max(Cov.Date)] == lubridate::ymd("2020-01-01"))
-
-})
-
-test_that("Cov dates start and end correct for start on and end on period begin", {
-
-  # days
-  dt.cov.seq.d <- clv.time.sequence.of.covariate.timepoints(clv.time = clv.t.days,
-                                                            tp.start = lubridate::ymd("2018-01-10"),
-                                                            tp.end = lubridate::ymd("2019-12-26"))
-  expect_true(all(dt.cov.seq.d$Cov.Date == seq.Date(from=lubridate::ymd("2018-01-10"),
-                                                    to=lubridate::ymd("2019-12-26"),
-                                                    by="1 day")))
-  expect_true(dt.cov.seq.d[, min(Cov.Date)] == lubridate::ymd("2018-01-10"))
-  expect_true(dt.cov.seq.d[, max(Cov.Date)] == lubridate::ymd("2019-12-26"))
-
-  # weeks
-  dt.cov.seq.d <- clv.time.sequence.of.covariate.timepoints(clv.time = clv.t.weeks,
-                                                            tp.start = lubridate::ymd("2018-01-11"),
-                                                            tp.end = lubridate::ymd("2018-01-25"))
-  expect_true(all(dt.cov.seq.d$Cov.Date == seq.Date(from=clv.time.floor.date(clv.time = clv.t.weeks,
-                                                                             timepoint = lubridate::ymd("2018-01-11")), #Thu
-                                                    to = clv.time.floor.date(clv.time = clv.t.weeks,
-                                                                             timepoint = lubridate::ymd("2018-01-25")), #Thu
-                                                    by="1 week")))
-  expect_true(dt.cov.seq.d[, min(Cov.Date)] == clv.time.floor.date(clv.time = clv.t.weeks,
-                                                                   timepoint = lubridate::ymd("2018-01-11")))
-  expect_true(dt.cov.seq.d[, max(Cov.Date)] == clv.time.floor.date(clv.time = clv.t.weeks,
-                                                                   timepoint = lubridate::ymd("2018-01-25")))
-
-  # years
-  dt.cov.seq.d <- clv.time.sequence.of.covariate.timepoints(clv.time = clv.t.years,
-                                                            tp.start = lubridate::ymd("2018-01-01"),
-                                                            tp.end = lubridate::ymd("2020-01-01"))
-  expect_true(all(dt.cov.seq.d$Cov.Date == seq.Date(from=lubridate::ymd("2018-01-01"),
-                                                    to=lubridate::ymd("2020-01-01"),
-                                                    by="1 years")))
-  expect_true(dt.cov.seq.d[, min(Cov.Date)] == lubridate::ymd("2018-01-01"))
-  expect_true(dt.cov.seq.d[, max(Cov.Date)] == lubridate::ymd("2020-01-01"))
-
-})
-
+for(holdout in c(TRUE, FALSE)){
+  l.clv.t <- fct.helper.clv.time.create.test.objects(with.holdout = holdout)
+  clv.t.days  <- l.clv.t[["clv.t.days"]]
+  clv.t.weeks <- l.clv.t[["clv.t.weeks"]]
+  clv.t.years <- l.clv.t[["clv.t.years"]]
+  fct.testthat.correctness.clvtime.sequence.of.covariate.tp.start.end.correct.start.off.end.off.period(clv.t.days=clv.t.days, clv.t.weeks=clv.t.weeks, clv.t.years=clv.t.years)
+  fct.testthat.correctness.clvtime.sequence.of.covariate.tp.start.end.correct.start.on.end.off.period(clv.t.days=clv.t.days, clv.t.weeks=clv.t.weeks, clv.t.years=clv.t.years)
+  fct.testthat.correctness.clvtime.sequence.of.covariate.tp.start.end.correct.start.off.end.on.period(clv.t.days=clv.t.days, clv.t.weeks=clv.t.weeks, clv.t.years=clv.t.years)
+  fct.testthat.correctness.clvtime.sequence.of.covariate.tp.start.end.correct.start.on.end.on.period(clv.t.days=clv.t.days, clv.t.weeks=clv.t.weeks, clv.t.years=clv.t.years)
+}
 
 # test_that("Correctly works for single period", {
 #   # days
@@ -294,7 +118,6 @@ test_that("Cov dates start and end correct for start on and end on period begin"
 #                                                      to=lubridate::ymd("2019-12-26"),
 #                                                      by="1 day")))
 # })
-
 
 
 # clv.time.get.prediction.table --------------------------------------------------------------------------------
