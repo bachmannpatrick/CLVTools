@@ -9,6 +9,14 @@ fct.helper.clv.time.period.type <- function(clv.t){
   return(period.type)
 }
 
+fct.helper.clv.time.correct.datetype <- function(date.char, clv.t){
+  d <- lubridate::ymd(date.char)
+  if(is(clv.t, "clv.time.datetime")){
+    d <- as.POSIXct.POSIXlt(as.POSIXlt.Date(d), tz = "UTC")
+  }
+  return(d)
+}
+
 fct.helper.clv.time.create.test.objects <- function(with.holdout){
   expect_silent(clv.t.hours <- clv.time.hours(time.format="ymd HMS"))
   expect_silent(clv.t.days  <- clv.time.days( time.format="ymd"))
@@ -83,16 +91,25 @@ fct.testthat.correctness.clvtime.epsilon.correct.length.datetime <- function(clv
 
 
 # set.sample.periods ---------------------------------------------------------------------------------------------
+fct.testthat.correctness.clvtime.set.sample.periods.estimation.start <- function(clv.t){
+  test_that("Estimation start is first transaction", {
+    tp.first <- fct.helper.clv.time.correct.datetype("2018-01-01", clv.t)
+    tp.last  <- fct.helper.clv.time.correct.datetype("2019-06-15", clv.t)
+
+    expect_silent(clv.t <- clv.time.set.sample.periods(clv.t, user.estimation.end = NULL,
+                                                       tp.first.transaction = tp.first,
+                                                       tp.last.transaction = tp.last))
+    expect_equal(clv.t@timepoint.estimation.start, tp.first)
+
+  })
+}
+
 fct.testthat.correctness.clvtime.set.sample.periods.no.estimation.end <- function(clv.t){
 
   # **last transaction or time period where last transaction is inside?
   test_that("No (NULL) estimation split results in last transaction = estimation end & no holdout", {
-    tp.first <- as.Date("2018-01-01")
-    tp.last  <- as.Date("2019-06-15")
-    if(is(clv.t, "clv.time.datetime")){
-      tp.first <- as.POSIXct.POSIXlt(as.POSIXlt.Date(tp.first), tz = "UTC")
-      tp.last  <- as.POSIXct.POSIXlt(as.POSIXlt.Date(tp.last), tz = "UTC")
-    }
+    tp.first <- fct.helper.clv.time.correct.datetype("2018-01-01", clv.t)
+    tp.last  <- fct.helper.clv.time.correct.datetype("2019-06-15", clv.t)
 
     # Dates
     expect_silent(clv.t <- clv.time.set.sample.periods(clv.t, user.estimation.end = NULL, tp.first.transaction = tp.first,
@@ -105,12 +122,8 @@ fct.testthat.correctness.clvtime.set.sample.periods.no.estimation.end <- functio
 }
 fct.testthat.correctness.clvtime.set.sample.periods.numeric.estimation.end <- function(clv.t){
   test_that("estimation split numeric results in estimation end = this many periods", {
-    tp.first <- as.Date("2018-01-01")
-    tp.last  <- as.Date("2025-06-15")
-    if(is(clv.t, "clv.time.datetime")){
-      tp.first <- as.POSIXct.POSIXlt(as.POSIXlt.Date(tp.first), tz = "UTC")
-      tp.last  <- as.POSIXct.POSIXlt(as.POSIXlt.Date(tp.last), tz = "UTC")
-    }
+    tp.first <- fct.helper.clv.time.correct.datetype("2018-01-01", clv.t)
+    tp.last  <- fct.helper.clv.time.correct.datetype("2025-06-15", clv.t)
 
     period.type <- fct.helper.clv.time.period.type(clv.t)
 
@@ -134,12 +147,8 @@ fct.testthat.correctness.clvtime.set.sample.periods.numeric.estimation.end <- fu
 
 fct.testthat.correctness.clvtime.set.sample.periods.warn.partial.period <- function(clv.t){
   test_that("Warn if numeric estimation implies partial periods", {
-    tp.first <- as.Date("2018-01-01")
-    tp.last  <- as.Date("2025-06-15")
-    if(is(clv.t, "clv.time.datetime")){
-      tp.first <- as.POSIXct.POSIXlt(as.POSIXlt.Date(tp.first), tz = "UTC")
-      tp.last  <- as.POSIXct.POSIXlt(as.POSIXlt.Date(tp.last), tz = "UTC")
-    }
+    tp.first <- fct.helper.clv.time.correct.datetype("2018-01-01", clv.t)
+    tp.last  <- fct.helper.clv.time.correct.datetype("2025-06-15", clv.t)
 
     splitting.end <- switch(class(clv.t),
                             "clv.time.hours" = 6888.5,
@@ -160,17 +169,14 @@ fct.testthat.correctness.clvtime.set.sample.periods.warn.partial.period <- funct
 
 fct.testthat.correctness.clvtime.set.sample.periods.date.estimation.end <- function(clv.t){
   test_that("estimation split Date results in estimation end = on this date", {
-    tp.first <- as.Date("2018-01-01")
+    tp.first <- fct.helper.clv.time.correct.datetype("2018-01-01", clv.t)
+    tp.last  <- fct.helper.clv.time.correct.datetype("2025-06-15", clv.t)
     tp.split <- as.Date("2019-07-19")
-    tp.last  <- as.Date("2025-06-15")
 
     period.type <- fct.helper.clv.time.period.type(clv.t)
 
     if(is(clv.t, "clv.time.datetime")){
       # POSIX dates in transactions - but split with Date (ymd by user)
-      tp.first <- as.POSIXct.POSIXlt(as.POSIXlt.Date(tp.first), tz = "UTC")
-      tp.last  <- as.POSIXct.POSIXlt(as.POSIXlt.Date(tp.last), tz = "UTC")
-
       expect_silent(clv.t <- clv.time.set.sample.periods(clv.t, user.estimation.end = tp.split,
                                                          tp.first.transaction = tp.first,
                                                          tp.last.transaction = tp.last))
@@ -317,10 +323,17 @@ fct.testthat.correctness.clvtime.number.to.time.periods <- function(clv.t){
 
 
 # floor.date -----------------------------------------------------------------------------------------------------
-fct.testthat.correctness.clvtime.floor.date.rounds.down <- function(clv.t.days, clv.t.weeks, clv.t.years){
+fct.testthat.correctness.clvtime.floor.date.rounds.down <- function(clv.t.hours, clv.t.days, clv.t.weeks, clv.t.years){
   test_that("floor date rounds down", {
-    # *** TODO: HOURS***
-    # Dates
+    # Hours
+    expect_equal(clv.time.floor.date(clv.t.hours, timepoint = lubridate::ymd_hms("2019-01-01 00:35:50")),
+                 lubridate::ymd_hms("2019-01-01 00:00:00"))
+    expect_equal(clv.time.floor.date(clv.t.hours, timepoint = lubridate::ymd_hms("2019-05-12 23:59:59")),
+                 lubridate::ymd_hms("2019-05-12 23:00:00"))
+    expect_equal(clv.time.floor.date(clv.t.hours, timepoint = lubridate::ymd_hms("2019-05-12 15:00:01")),
+                 lubridate::ymd_hms("2019-05-12 15:00:00"))
+
+
     # Days stay same
     expect_equal(clv.time.floor.date(clv.t.days, timepoint = lubridate::ymd("2019-01-01")),
                  lubridate::ymd("2019-01-01")) # Mon
@@ -349,9 +362,14 @@ fct.testthat.correctness.clvtime.floor.date.rounds.down <- function(clv.t.days, 
 }
 
 
-fct.testthat.correctness.clvtime.floor.date.stays.when.correct <- function(clv.t.days, clv.t.years){
-  # **TODO: Hours**
+fct.testthat.correctness.clvtime.floor.date.stays.when.correct <- function(clv.t.hours, clv.t.days, clv.t.years){
+
   test_that("floor date stays when already correct", {
+    # Hours
+    expect_equal(clv.time.floor.date(clv.t.hours, timepoint = lubridate::ymd_hms("2019-01-01 00:00:00")),
+                 lubridate::ymd_hms("2019-01-01 00:00:00"))
+    expect_equal(clv.time.floor.date(clv.t.hours, timepoint = lubridate::ymd_hms("2019-06-18 15:00:00")),
+                 lubridate::ymd_hms("2019-06-18 15:00:00"))
 
     expect_equal(clv.time.floor.date(clv.t.days, timepoint = lubridate::ymd("2018-01-01")),
                  lubridate::ymd("2018-01-01"))

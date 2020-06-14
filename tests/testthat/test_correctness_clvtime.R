@@ -22,33 +22,16 @@ for(clv.t in list(clv.time.hours(time.format="ymd HMS"),
                   clv.time.weeks(time.format="ymd"),
                   clv.time.years(time.format="ymd"))){
 
+  fct.testthat.correctness.clvtime.set.sample.periods.estimation.start(clv.t)
   fct.testthat.correctness.clvtime.set.sample.periods.no.estimation.end(clv.t)
   fct.testthat.correctness.clvtime.set.sample.periods.numeric.estimation.end(clv.t)
-  fct.testthat.correctness.clvtime.set.sample.periods.warn.partial.period(clv.t)
   fct.testthat.correctness.clvtime.set.sample.periods.date.estimation.end(clv.t)
+  fct.testthat.correctness.clvtime.set.sample.periods.warn.partial.period(clv.t)
   # fct.testthat.correctness.clvtime.set.sample.periods.posixct.estimation.end(clv.t)
 }
-# **TODO: Test that estimation.start is correct
 
-# test_that("floor date works when setting the estimation period",{
-#   tp.first <- as.Date("2018-01-01")
-#   tp.last  <- as.Date("2019-06-15")
-#
-#   expect_silent(t.days <- clv.time.set.sample.periods(clv.t.days, user.estimation.end = NULL, tp.first.transaction =tp.first,
-#                                                       tp.last.transaction = tp.last))
-#   expect_equal(t.days@timepoint.estimation.start, tp.first)
-#
-#   expect_silent(t.weeks <- clv.time.set.sample.periods(clv.t.weeks, user.estimation.end = NULL, tp.first.transaction =tp.first,
-#                                                        tp.last.transaction = tp.last))
-#   expect_equal(t.weeks@timepoint.estimation.start, tp.first)
-#
-#   expect_silent(t.years <- clv.time.set.sample.periods(clv.t.years, user.estimation.end = NULL, tp.first.transaction =tp.first,
-#                                                        tp.last.transaction = tp.last))
-#   expect_equal(t.years@timepoint.estimation.start, tp.first)
-# })
-
-
-# test_that("** what if date on last transaction date??")
+# **tests:
+# if date on last transaction date??")
 # parse chars, with / withouth time
 # same results with transaction data posixct in different TZs
 # same results with transaction data posixct in mixed TZs
@@ -85,10 +68,12 @@ for(clv.t in c(fct.helper.clv.time.create.test.objects(with.holdout = FALSE),
 context("Correctness - clv.time - floor.date")
 for(holdout in c(TRUE, FALSE)){
   l.clv.t <- fct.helper.clv.time.create.test.objects(with.holdout = holdout)
-  fct.testthat.correctness.clvtime.floor.date.rounds.down(clv.t.days  = l.clv.t[["clv.t.days"]],
+  fct.testthat.correctness.clvtime.floor.date.rounds.down(clv.t.hours = l.clv.t[["clv.t.hours"]],
+                                                          clv.t.days  = l.clv.t[["clv.t.days"]],
                                                           clv.t.weeks = l.clv.t[["clv.t.weeks"]],
                                                           clv.t.years = l.clv.t[["clv.t.years"]])
-  fct.testthat.correctness.clvtime.floor.date.stays.when.correct(clv.t.days  = l.clv.t[["clv.t.days"]],
+  fct.testthat.correctness.clvtime.floor.date.stays.when.correct(clv.t.hours = l.clv.t[["clv.t.hours"]],
+                                                                 clv.t.days  = l.clv.t[["clv.t.days"]],
                                                                  clv.t.years = l.clv.t[["clv.t.years"]])
 }
 
@@ -124,7 +109,6 @@ for(holdout in c(TRUE, FALSE)){
 context("Correctness - clv.time - get.prediction.table")
 
 # - check its usage in newdata
-# - generally check that prediction.end=0 -> CET=0
 
 for(clv.t in c(fct.helper.clv.time.create.test.objects(with.holdout = TRUE),
                fct.helper.clv.time.create.test.objects(with.holdout = FALSE))){
