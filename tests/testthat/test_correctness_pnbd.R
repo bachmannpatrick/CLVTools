@@ -33,6 +33,20 @@ fct.testthat.correctness.nocov.same.as.btyd(clvtools.method = pnbd,
                                             cdnow = cdnow)
 
 
+context("Correctness - PNBD nocov - PAlive")
+
+test_that("Can calculate numerically stable PAlive that produced NaNs in previous implementation and in BTYD", {
+
+  vX     <- c(221,       254,      161,      204)
+  vT_x   <- c(103.42857, 97.14286, 94.71429, 98.57143)
+  vT_cal <- c(103.57143, 97.28571, 98.00000, 99.42857)
+
+  expect_silent(palive <- pnbd_nocov_PAlive(r = 0.5143, alpha_0 = 2.8845, s = 0.2856, beta_0 = 14.1087,
+                                            vX = vX, vT_x = vT_x, vT_cal = vT_cal))
+
+  expect_false(any(!is.finite(palive)))
+})
+
+
 # ** Static cov??
-# **DYNCOV??
 
