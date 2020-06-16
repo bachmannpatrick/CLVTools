@@ -1,6 +1,7 @@
 data("cdnow")
 data("apparelTrans")
 data("apparelStaticCov")
+data("apparelDynCov")
 
 # Correct coefs are our estimates
 fct.testthat.correctness(name.model = "PNBD", method=pnbd, data.cdnow=cdnow,
@@ -33,6 +34,7 @@ fct.testthat.correctness.nocov.same.as.btyd(clvtools.method = pnbd,
                                             cdnow = cdnow)
 
 
+
 context("Correctness - PNBD nocov - PAlive")
 
 test_that("Can calculate numerically stable PAlive that produced NaNs in previous implementation and in BTYD", {
@@ -48,5 +50,8 @@ test_that("Can calculate numerically stable PAlive that produced NaNs in previou
 })
 
 
+fct.testthat.correctness.dyncov(data.apparelTrans=apparelTrans, data.apparelDynCov=apparelDynCov)
+
 # ** Static cov??
+
 

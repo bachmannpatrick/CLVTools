@@ -44,17 +44,13 @@ test_that("Fails if prediction.end before fitting end", {
   # (different with holdout?)
 
   # Negative number
-  expect_error(predict(pnbd.cdnow, prediction.end = -1), regexp = "after the end of the estimation")
-  expect_error(predict(pnbd.cdnow, prediction.end = -10), regexp = "after the end of the estimation")
-  expect_error(predict(pnbd.cdnow, prediction.end = -5), regexp = "after the end of the estimation")
-  # zero
-  expect_error(predict(pnbd.cdnow, prediction.end = 0), regexp = "after the end of the estimation")
+  expect_error(predict(pnbd.cdnow, prediction.end = -1), regexp = "after the estimation period")
+  expect_error(predict(pnbd.cdnow, prediction.end = -10), regexp = "after the estimation period")
+  expect_error(predict(pnbd.cdnow, prediction.end = -5), regexp = "after the estimation period")
 
   # Date before
-  expect_error(predict(pnbd.cdnow, prediction.end = pnbd.cdnow@clv.data@clv.time@timepoint.estimation.end - lubridate::days(1)), regexp = "after the end of the estimation")
-  expect_error(predict(pnbd.cdnow, prediction.end = pnbd.cdnow@clv.data@clv.time@timepoint.estimation.end - lubridate::days(10)), regexp = "after the end of the estimation")
-  # Date on
-  expect_error(predict(pnbd.cdnow, prediction.end = pnbd.cdnow@clv.data@clv.time@timepoint.estimation.end), regexp = "after the end of the estimation")
+  expect_error(predict(pnbd.cdnow, prediction.end = pnbd.cdnow@clv.data@clv.time@timepoint.estimation.end - lubridate::days(1)), regexp = "after the estimation period")
+  expect_error(predict(pnbd.cdnow, prediction.end = pnbd.cdnow@clv.data@clv.time@timepoint.estimation.end - lubridate::days(10)), regexp = "after the estimation period")
 })
 
 

@@ -169,21 +169,3 @@
 #   expect_equal(predict(res.orig, prediction.end=10), predict(res.diff.sort, prediction.end=10))
 # })
 #
-# test_that("Same results with differently sorted covariates data",{
-#   skip_on_cran()
-#   data.diff.sort <- apparelDemographics[sample.int(n=nrow(apparelDemographics), replace = FALSE),]
-#
-#   obj <- clvdata(data.transactions = apparelTrans, date.format = "ymd",time.unit = "w")
-#
-#   pnbd.static.cov.obj <- SetStaticCovariates(obj,data.cov.life = apparelDemographics, data.cov.trans = apparelDemographics,
-#                                              names.cov.life = "Gender", names.cov.trans = "Gender", name.id = "Id")
-#   pnbd.static.cov.obj.diff.sort <- SetStaticCovariates(obj,data.cov.life = data.diff.sort, data.cov.trans = data.diff.sort,
-#                                                        names.cov.life = "Gender", names.cov.trans = "Gender", name.id = "Id")
-#
-#   res.orig      <- pnbd(pnbd.static.cov.obj)
-#   res.diff.sort <- pnbd(pnbd.static.cov.obj.diff.sort)
-#
-#   expect_equal(coef(res.orig), coef(res.diff.sort))
-#   expect_equal(coef(summary(res.orig)), coef(summary(res.diff.sort)))
-#   expect_equal(predict(res.orig, prediction.end = 10), predict(res.diff.sort, prediction.end = 10))
-# })

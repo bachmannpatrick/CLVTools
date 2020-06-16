@@ -1,4 +1,4 @@
-pnbd_dyncov_CET <- function(clv.fitted, predict.number.of.periods, prediction.end.date){
+pnbd_dyncov_CET <- function(clv.fitted, predict.number.of.periods, prediction.end.date, only.return.input.to.CET=FALSE){
 
   i <- S <- Ai <- T.cal <- Ci <- Dbar_i <- Bbar_i <- bT_i <- DkT <- i.DkT <- Bksum <- i.Bksum <- palive <- i.palive <- NULL
   i.S <- F1 <- x <- Id <- F2 <- i.F2.noS <- CET <- NULL
@@ -21,20 +21,43 @@ pnbd_dyncov_CET <- function(clv.fitted, predict.number.of.periods, prediction.en
   dt.ABCD <- pnbd_dyncov_ABCD(clv.fitted = clv.fitted, prediction.end.date = prediction.end.date)
 
   # S ------------------------------------------------------------------------------------------
-  dt.ABCD[i == 1,
-          S := ((Ai*(T.cal*s     + 1 / Ci*(Dbar_i+beta_0)) + Bbar_i*(s-1)) / ((Dbar_i+beta_0+Ci*T.cal)^s)) -
-            ((Ai*((T.cal+d)*s + 1 / Ci*(Dbar_i+beta_0)) + Bbar_i*(s-1)) / (Dbar_i+beta_0+Ci*(T.cal+d))^s)]
+  # Distinguish cases depending on the number of covariates that are active during the prediction
+  #   kTTt==1: Single expression, also save in S as it is added at the same place
+  #   kTTt>=2: Sum of S
+  #   kTTt is the number of active covariates from holdout.start until
+  #     i here is the covariate number for covariates in the prediction period (seq(N) by=Id from Cov.Date>=floor(estimation.end))
+  #       because all customers' Cov.Dates start at floor(estimation.end), their i is also the same (and at least 1)
+
+  kTTt <- dt.ABCD[, max(i)]
+
+  if(kTTt >= 2){
+
+    dt.ABCD[i == 1,
+            S := ((Ai*(T.cal*s  + 1 / Ci*(Dbar_i+beta_0)) + Bbar_i*(s-1)) / ((Dbar_i+beta_0+Ci*T.cal)^s)) -
+              ((Ai*((T.cal+d)*s + 1 / Ci*(Dbar_i+beta_0)) + Bbar_i*(s-1)) / (Dbar_i+beta_0+Ci*(T.cal+d))^s)]
 
 
-  dt.ABCD[i>1, bT_i := T.cal+d+(i-2)]
-  dt.ABCD[i > 1, # also do for i==max(i), subsetting is presumably slower
-          S:= ((Ai*( bT_i   *s + 1/Ci*(Dbar_i+beta_0)) + Bbar_i*(s-1)) / (Dbar_i+beta_0+Ci* bT_i   )^s) -
-            ((Ai*((bT_i+1)*s + 1/Ci*(Dbar_i+beta_0)) + Bbar_i*(s-1)) / (Dbar_i+beta_0+Ci*(bT_i+1))^s)]
+    # ** What if i == 2? Is then overwritten?
+    dt.ABCD[i > 1, bT_i := T.cal+d+(i-2)]
 
-  # **ASK JEFF: how is t defined vs i? Should t==i in this case? Apparently not always the case
-  dt.ABCD[i == max(i),
-          S:= ((Ai*( bT_i    *s + 1/Ci*(Dbar_i+beta_0)) + Bbar_i*(s-1)) / ((Dbar_i+beta_0+Ci* bT_i    )^s)) -
-            ((Ai*((T.cal+t)*s + 1/Ci*(Dbar_i+beta_0)) + Bbar_i*(s-1)) / ((Dbar_i+beta_0+Ci*(T.cal+t))^s))]
+    dt.ABCD[i > 1, # also do for i==max(i), subsetting to !max(i) is presumably slower
+            S:= ((Ai*( bT_i *s + 1/Ci*(Dbar_i+beta_0)) + Bbar_i*(s-1)) / (Dbar_i+beta_0+Ci* bT_i   )^s) -
+              ((Ai*((bT_i+1)*s + 1/Ci*(Dbar_i+beta_0)) + Bbar_i*(s-1)) / (Dbar_i+beta_0+Ci*(bT_i+1))^s)]
+
+    dt.ABCD[i == max(i),
+            S:= ((Ai*( bT_i  *s + 1/Ci*(Dbar_i+beta_0)) + Bbar_i*(s-1)) / ((Dbar_i+beta_0+Ci* bT_i    )^s)) -
+              ((Ai*((T.cal+t)*s + 1/Ci*(Dbar_i+beta_0)) + Bbar_i*(s-1)) / ((Dbar_i+beta_0+Ci*(T.cal+t))^s))]
+
+  }else{
+    dt.ABCD[i == 1,
+            S := ((Ai*(T.cal *s + 1 / Ci*(Dbar_i+beta_0)) + Bbar_i*(s-1)) / ((Dbar_i+beta_0+Ci* T.cal   )^s)) -
+              ((Ai*((T.cal+t)*s + 1 / Ci*(Dbar_i+beta_0)) + Bbar_i*(s-1)) / ( Dbar_i+beta_0+Ci*(T.cal+t))^s)]
+  }
+
+  # To test correctness of intermediate results
+  if(only.return.input.to.CET){
+    return(dt.ABCD)
+  }
 
   dt.S <- dt.ABCD[, list(S = sum(S)), keyby="Id"]
 
@@ -46,7 +69,7 @@ pnbd_dyncov_CET <- function(clv.fitted, predict.number.of.periods, prediction.en
 
   # Merge data in single table by Id
   dt.result <- clv.fitted@cbs[, c("Id","x", "t.x", "T.cal")]
-  dt.result[clv.fitted@LL.data, DkT := i.DkT, on="Id"]
+  dt.result[clv.fitted@LL.data, DkT   := i.DkT, on="Id"]
   dt.result[clv.fitted@LL.data, Bksum := i.Bksum, on="Id"]
   dt.result[dt.palive, palive := i.palive, on="Id"]
   dt.result[dt.S, S := i.S, on="Id"]
@@ -56,6 +79,8 @@ pnbd_dyncov_CET <- function(clv.fitted, predict.number.of.periods, prediction.en
   dt.result[, F1 := ((r+x) * (beta_0+DkT)^s)   /  ((Bksum + alpha_0) * (s-1))]
   # F2
   dt.F2.noS <- dt.ABCD[i == max(i), list(Id, F2.noS = ((Bbar_i + Ai*(T.cal+t) )*(s-1)) / (Dbar_i + Ci*(T.cal+t) + beta_0)^s)]
+
+  # S is different for kTTt==1 and kTTt>=2
   dt.result[dt.F2.noS, F2 := i.F2.noS + S, on = "Id"]
 
   dt.result[, CET :=  palive * F1 * F2]

@@ -26,9 +26,12 @@ fct.testthat.runability.dynamiccov.plot.has.0.repeat.transactions.expectations <
 
 fct.testthat.runability.dynamiccov.predict.works <- function(clv.fitted){
   test_that("Predict works", {
-    # Only check whether the expectation runs through,
-    #   with as few as possible periods (from estimation.end)
-    expect_silent(predict(clv.fitted, prediction.end = 5, verbose=FALSE))
+    # Works for partial prediction.end which only touch 1 cov period
+    stopifnot(is(clv.fitted@clv.data@clv.time, "clv.time.weeks"))
+    for(d.end in as.character(seq(from=clv.fitted@clv.data@clv.time@timepoint.estimation.end,
+                                  length.out = 8, by="1 day"))){
+      expect_silent(predict(clv.fitted, prediction.end = d.end, verbose=FALSE))
+    }
   })
 }
 
