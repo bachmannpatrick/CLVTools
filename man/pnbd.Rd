@@ -141,15 +141,15 @@ the paper by Bachmann, Meierer and Näf (2020).
 \note{
 Fitting the Pareto/NBD model with dynamic covariates is for the most part implemented using \code{data.table} and to a smaller part further
 parallelized with the \code{foreach} package. Registering a
-parallel backend with \code{\link[doFuture:doFuture]{doFuture}} or \code{\link[doParallel:doParallel]{doParallel}} before fitting the
+parallel backend with \code{\link[doFuture]{doFuture}} or \code{\link[doParallel]{doParallel}} before fitting the
 models allows to take advantage of this. If no parallel backend is set up, the \code{foreach} package gives a friendly reminder that
 it is executed sequentially. In case this is desired but no warning should be given, a parallel backend in sequential mode
 can be set up, for example package \code{doFuture} with \code{\link[future:plan]{plan("sequential")}}.
 
 The part executed with \code{foreach} also heavily relies on \code{data.table} which is natively parallelized already. When setting up
 the parallel backend, great care should be taken to reduce the overhead from this nested parallelism as otherwise it can \emph{increase} runtime.
-See \code{\link[data.table:setDTthreads]{setDTthreads}}, \code{\link[data.table:getDTthreads]{getDTthreads}},
-and \code{\link[future:plan]{plan}} for information on how to do this.
+See \code{\link[data.table]{setDTthreads}}, \code{\link[data.table]{getDTthreads}},
+and \code{\link[future]{plan}} for information on how to do this.
 
 The Pareto/NBD model with dynamic covariates can currently not be fit with data that has a temporal resolution
 of less than one day (data that was built with time unit \code{hours}).

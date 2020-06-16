@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "clv_vectorized.h"
-
+#include "pnbd_LL_ind.h"
 
 //' @name pnbd_PAlive
 //'
@@ -28,56 +28,22 @@ arma::vec pnbd_PAlive( const double r,
                        const arma::vec& vT_x,
                        const arma::vec& vT_cal,
                        const arma::vec& vAlpha_i,
-                       const arma::vec& vBeta_i)
-{
+                       const arma::vec& vBeta_i){
 
-  arma::vec vF1(vX), vF2(vX), vA(vX);
-  arma::uvec uvAlphaGEBeta = find(vAlpha_i >= vBeta_i);
-  arma::uvec uvAlphaSBeta = find(vAlpha_i < vBeta_i);
+  const arma::vec vLL = pnbd_LL_ind(r,
+                                    s,
+                                    vAlpha_i,
+                                    vBeta_i,
+                                    vX,
+                                    vT_x,
+                                    vT_cal);
 
-  arma::vec vSplus1(vX);
-  vSplus1.fill(s + 1);
+  const arma::vec vF1 = arma::lgamma(r+vX) - std::lgamma(r) + r * (arma::log(vAlpha_i) - arma::log(vAlpha_i + vT_cal)) +
+    vX % (-arma::log(vAlpha_i + vT_cal)) + s*(arma::log(vBeta_i) - arma::log(vBeta_i+vT_cal));
 
+  const arma::vec vLogPAlive = vF1 - vLL;
 
-
-  // vAlpha_i < vBeta_i
-  vF1(uvAlphaGEBeta) = clv::vec_hyp2F1(r + s + vX(uvAlphaGEBeta),
-      vSplus1(uvAlphaGEBeta),
-      r + s + vX(uvAlphaGEBeta) + 1,
-      (vAlpha_i(uvAlphaGEBeta) - vBeta_i(uvAlphaGEBeta))/
-        (vAlpha_i(uvAlphaGEBeta) + vT_x(uvAlphaGEBeta)));
-
-  vF2(uvAlphaGEBeta) = clv::vec_hyp2F1(r + s + vX(uvAlphaGEBeta),
-      vSplus1(uvAlphaGEBeta),
-      r + s + vX(uvAlphaGEBeta) + 1,
-      (vAlpha_i(uvAlphaGEBeta) - vBeta_i(uvAlphaGEBeta)) /
-        (vAlpha_i(uvAlphaGEBeta) + vT_cal(uvAlphaGEBeta)));
-
-  vA(uvAlphaGEBeta) = (vF1(uvAlphaGEBeta) / clv::vec_pow(vAlpha_i(uvAlphaGEBeta) + vT_x(uvAlphaGEBeta), r + s + vX(uvAlphaGEBeta)))
-    - (vF2(uvAlphaGEBeta) / clv::vec_pow(vAlpha_i(uvAlphaGEBeta) + vT_cal(uvAlphaGEBeta), r + s + vX(uvAlphaGEBeta)));
-
-
-  // vAlpha_i < vBeta_i
-  vF1(uvAlphaSBeta) = clv::vec_hyp2F1(r + s + vX(uvAlphaSBeta),
-      r + vX(uvAlphaSBeta),
-      r + s + vX(uvAlphaSBeta) + 1,
-      (vBeta_i(uvAlphaSBeta) - vAlpha_i(uvAlphaSBeta))/
-        (vBeta_i(uvAlphaSBeta) + vT_x(uvAlphaSBeta)));
-
-  vF2(uvAlphaSBeta) = clv::vec_hyp2F1(r + s + vX(uvAlphaSBeta),
-      r + vX(uvAlphaSBeta),
-      r + s + vX(uvAlphaSBeta) + 1,
-      (vBeta_i(uvAlphaSBeta) - vAlpha_i(uvAlphaSBeta))/
-        (vBeta_i(uvAlphaSBeta) + vT_cal(uvAlphaSBeta)));
-
-  vA(uvAlphaSBeta) = (vF1(uvAlphaSBeta) / clv::vec_pow(vBeta_i(uvAlphaSBeta) + vT_x(uvAlphaSBeta), r + s + vX(uvAlphaSBeta))) -
-    (vF2(uvAlphaSBeta) / clv::vec_pow(vBeta_i(uvAlphaSBeta) + vT_cal(uvAlphaSBeta), r + s + vX(uvAlphaSBeta)));
-
-
-  return 1/(1  + (s / (r+s+vX)
-                    % clv::vec_pow(vAlpha_i + vT_cal, r + vX)
-                    % arma::pow(vBeta_i + vT_cal, s)
-                    % vA));
+  return(arma::exp(vLogPAlive));
 }
 
 
