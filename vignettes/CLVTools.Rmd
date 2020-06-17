@@ -245,7 +245,7 @@ apparelDynCov
 To add the covariates to an initialized `clvdata` object the commands `SetStaticCovariates()` and `SetDynamicCovariates()` are available. The two commands are mutually exclusive. The argument `clv.data` specifies the initialized object and the argument `data.cov.life` respectively `data.cov.trans` specifies the data source for the covariates for the attrition and the purchase process. Covariates are added separately for the purchase and the attrition process. Therefore if a covariate should affect both processes it has to be added in both arguments: `data.cov.life` *and* `data.cov.trans`. The arguments `names.cov.life` and `names.cov.trans` specify the column names of the covariates for the two processes. In our example, we use the same covariates for both processes. Accordingly, we specify the time-invariant covariates "Gender" and "Channel" as follows:
 
 ```{r Cov-setStatic}
-pnbd.static<- SetStaticCovariates(clv.data = clv.apparel, 
+clv.static<- SetStaticCovariates(clv.data = clv.apparel, 
                                       data.cov.life = apparelStaticCov, 
                                       data.cov.trans = apparelStaticCov,
                                       names.cov.life = c("Gender", "Channel"), 
@@ -256,7 +256,7 @@ pnbd.static<- SetStaticCovariates(clv.data = clv.apparel,
 To specify the time-varying contextual factors for seasonal patterns and direct marketing, we use the following:
 
 ```{r Cov-setDynamic, eval=FALSE, message=FALSE, warning=TRUE}
-pnbd.dyn <- SetDynamicCovariates(clv.data = clv.apparel, 
+clv.dyn <- SetDynamicCovariates(clv.data = clv.apparel, 
                                      data.cov.life = apparelDynCov,
                                      data.cov.trans = apparelDynCov, 
                                      names.cov.life = c("Marketing", "Gender", "Channel"), 
@@ -270,7 +270,7 @@ In order to include time-invariant covariates in a time-varying model, they may 
 Once the covariates are added to the model the estimation process is almost identical to the standard model without covariates. The only difference is that the provided object now data for contains either time-invariant or time-varying covariates and the option to define start parameters for the covariates of both processes using the arguments `start.params.life` and `start.params.trans`. If not set, the staring values are set to 1. To define starting parameters for the covariates, the name of the corresponding factor has to be used. For example in the case of time-invariant covariates:
 
 ```{r Static-cov-estimate, message=TRUE, warning=FALSE}
-est.pnbd.static <- pnbd(pnbd.static, 
+est.pnbd.static <- pnbd(clv.static, 
                          start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
                          start.params.life = c(Gender=0.6, Channel=0.4),
                          start.params.trans = c(Gender=0.6, Channel=0.4))
@@ -279,7 +279,7 @@ est.pnbd.static <- pnbd(pnbd.static,
 Analogously, we can estimate the model containing time-varying covariates. We recommend to enable the built-in support for multithreading when estimating more complex models like this. See section [Multithreading](#multithreading).
 
 ```{r Dyn-cov-estimate, eval=FALSE}
-est.pnbd.dyn <- pnbd(pnbd.dyn, 
+est.pnbd.dyn <- pnbd(clv.dyn, 
                      start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
                      start.params.life = c(Marketing=0.5, Gender=0.6, Channel=0.4),
                      start.params.trans = c(Marketing=0.5, Gender=0.6, Channel=0.4))
@@ -315,7 +315,7 @@ The parameter `Cor(life,trans)` is added to the parameter estimates that may be 
 To enable regularization for the covariates, we use the following command:
 
 ```{r reg-advOptions,}
-est.pnbd.reg <- pnbd(pnbd.static, 
+est.pnbd.reg <- pnbd(clv.static, 
                          start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
                          reg.lambdas = c(trans=100, life=100))
 summary(est.pnbd.reg)
@@ -323,7 +323,7 @@ summary(est.pnbd.reg)
 To constrain "Gender" to have the same effect on both processes we use the following command. Note, that the output now only contains one parameter for "Gender" as it is constrained to be the same for both processes.
 
 ```{r constr-advOptions,}
-est.pnbd.constr <- pnbd(pnbd.static, 
+est.pnbd.constr <- pnbd(clv.static, 
                          start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
                          start.params.constr = c(Gender=0.6),
                          names.cov.constr=c("Gender"))
