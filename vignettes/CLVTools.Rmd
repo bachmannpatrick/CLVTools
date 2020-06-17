@@ -109,11 +109,9 @@ If we assign starting parameters and additional arguments for the optimizer we u
 est.pnbd <- pnbd(clv.data = clv.apparel, 
                      start.params.model = c(r=1, alpha = 2, s = 1, beta = 2), 
                      optimx.args = list(control=list(trace=5),
-                                       method="Nelder-Mead", 
-                                       upper=NULL, 
-                                       lower=NULL))
+                                       method="Nelder-Mead" 
+                                       ))
 ```
-
 
 Parameter estimates may be reported by either printing the estimated object (i.e. `est.pnbd`) directly in the console or by calling `summary(est.pnbd)` to get a more detailed report including the likelihood value as well as AIC and BIC. Alternatively parameters may be directly extracted using `coef(est.pnbd)`. Also `loglik()`, `confint()` and `vcov()` are available to directly access the Loglikelihood value, confidence intervals for the parameters and to calculate the Variance-Covariance Matrix for the fitted model. For the standard Pareto/NBD model, we get 4 parameters $r, \alpha, s$ and $\beta$.  where $r,\alpha$ represent the shape and scale parameter of the gamma distribution that determines the purchase rate and $s,\beta$ of the attrition rate across individual customers. $r/\alpha$ can be interpreted as the mean purchase and $s/\beta$ as the mean attrition rate. A significance level is provided for each parameter estimates. In the case of the apparelTrans dataset we observe a an average purchase rate of $r/\alpha=0.147$ transactions and an average attrition rate of $s/\beta=0.031$ per customer per week. KKT 1 and 2 indicate the Karush-Kuhn-Tucker optimality conditions of the first and second order [@KKT]. If those criteria are not met, the optimizer has probably not arrived at an optimal solution. If this is the case it is usually a good idea to rerun the estimation using alternative starting values.
 
@@ -148,6 +146,21 @@ vcov(est.pnbd)
 
 ```
 
+As an alternative to the Pareto/NBD model `CLVTools` features the BG/NBD model [@Fader2005c] and the GGomp/NBD [@Bemmaor2012a]. To use the alternative models replace `pnbd()` by the corresponding model-command. Note that he naming and number of model parameters is dependent on the model. Consult the manual for more details on the individual models.
+
+|Command| Model | Covariates| 
+|---|---|---|---|---|
+| pnbd()   |Pareto/NBD|  time-invariant & time-varying  |
+| bgnbd()  |BG/NBD   	| time-invariant  | 
+| ggomnbd() |GGom/NBD   | time-invariant  |
+
+To estimate the GGom/NBD model we apply the `ggomnbd()`to the `clv.apparel` object. The GGom/NBD model is more flexible than the Pareto/NBD model, however it sometimes is challanging to optimize. Note that in this particular case providing start parameters is essential to arrive at an optimal solution (i.e. `kkt1: TRUE` and `kkt2: TRUE`).
+```{r estimate-ggomnbd, eval=FALSE}
+est.ggomnbd <- ggomnbd(clv.data = clv.apparel, 
+                     start.params.model = c(r=0.7, alpha=5, b=0.005,  s=0.02, beta=0.001), 
+                     optimx.args = list(control=list(trace=5),
+                                       method="Nelder-Mead"))
+```
 
 ## Predicting Customer Behavior
 
