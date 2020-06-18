@@ -65,7 +65,7 @@ fct.testthat.consistency.cov.params.0.same.LL <- function(fct.LL.ind.nocov, fct.
   })
 }
 
-fct.testthat.consistency.cov.params.0.predict.same <- function(fitted.nocov, fitted.cov.g0, is.dyncov){ #, m.dyncov, has.DERT = TRUE, has.dyncov = TRUE){
+fct.testthat.consistency.cov.params.0.predict.same <- function(fitted.nocov, fitted.cov.g0, is.dyncov){
   test_that("Predict yields same results for all models with gamma=0", {
 
     fct.compare.prediction.result <- function(dt.pred.nocov, dt.pred.cov){
