@@ -74,7 +74,7 @@
 #'
 #' The part executed with \code{foreach} also heavily relies on \code{data.table} which is natively parallelized already. When setting up
 #' the parallel backend, great care should be taken to reduce the overhead from this nested parallelism as otherwise it can \emph{increase} runtime.
-#' See \code{\link[data.table]{setDTthreads}}, \code{\link[data.table]{getDTthreads}},
+#' See \code{\link[data.table:openmp-utils]{setDTthreads}}, \code{\link[data.table:openmp-utils]{getDTthreads}},
 #' and \code{\link[future]{plan}} for information on how to do this.
 #'
 #' The Pareto/NBD model with dynamic covariates can currently not be fit with data that has a temporal resolution
@@ -89,7 +89,7 @@
 #' @template template_clvfitted_seealso
 #' @seealso \code{\link[CLVTools:SetDynamicCovariates]{SetDynamicCovariates}} to add dynamic covariates on which the \code{pnbd} model can be fit.
 #'
-#' @seealso \code{\link[data.table]{setDTthreads}}, \code{\link[data.table]{getDTthreads}},\code{\link[doParallel]{registerDoParallel}},\code{\link[doFuture]{registerDoFuture}} for setting up parallel execution.
+#' @seealso \code{\link[data.table:openmp-utils]{setDTthreads}}, \code{\link[data.table:openmp-utils]{getDTthreads}},\code{\link[doParallel:registerDoParallel]{registerDoParallel}},\code{\link[doFuture]{registerDoFuture}} for setting up parallel execution.
 #'
 #' @template template_references_pnbd
 #'
