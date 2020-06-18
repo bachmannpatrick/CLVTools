@@ -50,6 +50,8 @@ test_that("Can calculate numerically stable PAlive that produced NaNs in previou
 })
 
 
+
+# Dyncov ---------------------------------------------------------------------------------------
 fct.testthat.correctness.dyncov(data.apparelTrans=apparelTrans, data.apparelDynCov=apparelDynCov)
 
 # ** Static cov??
