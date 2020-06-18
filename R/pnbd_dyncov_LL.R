@@ -11,7 +11,7 @@ pnbd_dyncov_LL_ind <- function(params, clv.fitted){
 }
 
 #' @importFrom foreach foreach %dopar%
-pnbd_dyncov_LL <- function(params, clv.fitted){
+pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=FALSE){
   # cran silence
   Num.Walk <- AuxTrans <- Di.Max.Walk <- adj.Max.Walk <- Di.adj.Walk1 <- adj.Walk1 <- A1T <- x <- A1sum <- AuxTrans <- transaction.cov.dyn <- Id <- Bjsum <- Bksum <- AkT <- NULL
   adj.transaction.cov.dyn <- dT <- d <- B1 <- t.x <- BT <- a1 <- akt <- aT <- T.cal <- C1T <- CkT <- adj.lifetime.cov.dyn <- D1 <- DT <- DkT <- b1 <- bkT <- bT <- a1T <- NULL
@@ -390,10 +390,16 @@ pnbd_dyncov_LL <- function(params, clv.fitted){
   }
 
 
-  cbsdata <- data.table(Id=cbs$Id,LL=cbs$LL, Akprod=exp(cbs$A1sum), Bksum=cbs$Bksum, DkT=cbs$DkT, Z=cbs$F2)
-  setkey(cbsdata,"Id")
-
-  return(cbsdata)
+  if(!return.all.intermediate.results){
+    cbsdata <- data.table(Id=cbs$Id,LL=cbs$LL, Akprod=exp(cbs$A1sum), Bksum=cbs$Bksum, DkT=cbs$DkT, Z=cbs$F2)
+    setkey(cbsdata,"Id")
+    return(cbsdata)
+  }else{
+    cbs[, Akprod := exp(A1sum)]
+    cbs[, Z      := F2]
+    setkeyv(cbs, "Id")
+    return(cbs)
+  }
 }
 
 
