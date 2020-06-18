@@ -67,7 +67,7 @@
 #' @note
 #' Fitting the Pareto/NBD model with dynamic covariates is for the most part implemented using \code{data.table} and to a smaller part further
 #' parallelized with the \code{foreach} package. Registering a
-#' parallel backend with \code{\link[doFuture]{doFuture}} or \code{\link[doParallel]{doParallel}} before fitting the
+#' parallel backend with \code{\link[doFuture]{doFuture}} or \code{\link[doParallel:doParallel-package]{doParallel}} before fitting the
 #' models allows to take advantage of this. If no parallel backend is set up, the \code{foreach} package gives a friendly reminder that
 #' it is executed sequentially. In case this is desired but no warning should be given, a parallel backend in sequential mode
 #' can be set up, for example package \code{doFuture} with \code{\link[future:plan]{plan("sequential")}}.
