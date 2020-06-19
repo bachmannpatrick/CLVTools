@@ -18,7 +18,7 @@ setGeneric(name = "predict")
 setGeneric("clv.controlflow.estimate.check.inputs", def=function(clv.fitted,  start.params.model, use.cor, start.param.cor, optimx.args, verbose,...)
   standardGeneric("clv.controlflow.estimate.check.inputs"))
 
-setGeneric("clv.controlflow.estimate.put.inputs", def=function(clv.fitted, cl, use.cor, ...)
+setGeneric("clv.controlflow.estimate.put.inputs", def=function(clv.fitted, cl, use.cor, verbose, ...)
   standardGeneric("clv.controlflow.estimate.put.inputs"))
 
 setGeneric("clv.controlflow.estimate.generate.start.params", def=function(clv.fitted, start.params.model,start.param.cor,verbose,...)
@@ -66,8 +66,11 @@ setGeneric("clv.model.check.input.args", def = function(clv.model, clv.fitted, s
   standardGeneric("clv.model.check.input.args"))
 
 # Store additional arguments potentially given in estimate
-setGeneric("clv.model.put.estimation.input", def = function(clv.model, clv.fitted, verbose, ...)
+setGeneric("clv.model.put.estimation.input", def = function(clv.model, use.cor)
   standardGeneric("clv.model.put.estimation.input"))
+
+setGeneric(name="clv.model.generate.start.params", def=function(clv.model)
+  standardGeneric("clv.model.generate.start.params"))
 
 # Finish the arguments to optimx with model specific arguments (mostly LL)
 setGeneric(name="clv.model.prepare.optimx.args", def=function(clv.model, clv.fitted, prepared.optimx.args,...)
@@ -84,6 +87,15 @@ setGeneric(name="clv.model.backtransform.estimated.params.model", def=function(c
 # ie post.estimation.steps
 setGeneric(name="clv.model.process.post.estimation", def=function(clv.model, clv.fitted, res.optimx)
   standardGeneric("clv.model.process.post.estimation"))
+
+# .. Correlation ---------------------------------------------------------------------------------
+# Whether the model in general supports life/trans correlation
+setGeneric(name="clv.model.supports.correlation", def = function(clv.model)
+  standardGeneric("clv.model.supports.correlation"))
+
+# Whether this fit used correlation
+setGeneric(name="clv.model.estimation.used.correlation", def = function(clv.model)
+  standardGeneric("clv.model.estimation.used.correlation"))
 
 setGeneric(name="clv.model.m.to.cor", def = function(clv.model, prefixed.params.model, param.m)
   standardGeneric("clv.model.m.to.cor"))

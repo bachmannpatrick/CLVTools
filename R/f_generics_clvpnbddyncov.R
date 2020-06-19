@@ -46,3 +46,26 @@ setMethod("clv.controlflow.estimate.generate.start.params", signature = signatur
   # Continue with ordinary start parameter generation process
   return(callNextMethod())
 })
+
+
+# . clv.model.put.estimation.input ------------------------------------------------------------------------------------------------
+#' @importFrom methods callNextMethod
+#'
+
+setMethod(f = "clv.controlflow.estimate.put.inputs", signature = signature(clv.model="clv.pnbd.dynamic.cov"), definition = function(clv.fitted, cl, verbose, ...){
+  # Create walks - they are specific to the pnbd dyncov model
+  clv.fitted <- callNextMethod()
+
+  if(verbose)
+    message("Creating walks...")
+
+  l.walks <- pnbd_dyncov_makewalks(clv.data = clv.fitted@clv.data)
+
+  if(verbose)
+    message("Walks created.")
+
+  clv.fitted@data.walks.life  = l.walks[["data.walks.life"]]
+  clv.fitted@data.walks.trans = l.walks[["data.walks.trans"]]
+
+  return(clv.fitted)
+})

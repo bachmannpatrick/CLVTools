@@ -49,19 +49,8 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv
 })
 
 # . clv.controlflow.estimate.put.inputs ------------------------------------------------------------------------
-setMethod("clv.controlflow.estimate.put.inputs", signature =  signature(clv.fitted="clv.fitted"), definition = function(clv.fitted, cl, use.cor, ...){
-
+setMethod("clv.controlflow.estimate.put.inputs", signature =  signature(clv.fitted="clv.fitted"), definition = function(clv.fitted, cl, verbose, ...){
   clv.fitted@call <- cl
-
-  # Should correlation be calculated? -----------------------------------------------------------------
-  if(use.cor){
-    # Using correlation
-    clv.fitted@estimation.used.correlation <- TRUE
-  }else{
-    # No correlation
-    clv.fitted@estimation.used.correlation <- FALSE
-  }
-
   return(clv.fitted)
 })
 
@@ -128,7 +117,6 @@ setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(
   #   This could be handled by default parameters or with missing there,
   #   but passing them with "False" is much cleaner
 
-
   optimx.args <- modifyList(optimx.args, list(use.interlayer.constr        = FALSE,
                                               names.original.params.constr = character(0),
                                               names.prefixed.params.constr = character(0),
@@ -142,14 +130,23 @@ setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(
 
 
   # Everything to call the correlation layer
-  optimx.args <- modifyList(optimx.args, list(use.cor                   = clv.fitted@estimation.used.correlation,
-                                              name.prefixed.cor.param.m = clv.fitted@name.prefixed.cor.param.m,
+  # Default is no correlation
+  optimx.args <- modifyList(optimx.args, list(use.cor                   = FALSE,
+                                              name.prefixed.cor.param.m = character(0),
                                               # By default, always check the bounds of param m
                                               check.param.m.bounds      = TRUE),
                             keep.null = TRUE)
 
   # Correlation interlayer ---------------------------------------------------------------------
-  if(clv.fitted@estimation.used.correlation){
+  # Only turn on if needed
+  if(clv.model.estimation.used.correlation(clv.fitted@clv.model)){
+
+    optimx.args <- modifyList(optimx.args, list(use.cor                   = TRUE,
+                                                name.prefixed.cor.param.m = clv.fitted@clv.model@name.prefixed.cor.param.m,
+                                                # By default, always check the bounds of param m
+                                                check.param.m.bounds      = TRUE),
+                              keep.null = TRUE)
+
     # Use NM as default if correlation is estimated because the interlayer may return Inf
     #   if the params are out-of-bound
     optimx.args <- modifyList(optimx.args, list(method = "Nelder-Mead"))

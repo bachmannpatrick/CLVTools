@@ -29,25 +29,6 @@ clv.model.pnbd.dynamic.cov <- function(){
 
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
-# . clv.model.put.estimation.input ------------------------------------------------------------------------------------------------
-#' @importFrom methods callNextMethod
-setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, verbose, ...){
-  # Create walks - they are specific to the pnbd dyncov model
-
-  if(verbose)
-    message("Creating walks...")
-
-  l.walks <- pnbd_dyncov_makewalks(clv.data = clv.fitted@clv.data)
-
-  if(verbose)
-    message("Walks created.")
-
-  clv.fitted@data.walks.life  = l.walks[["data.walks.life"]]
-  clv.fitted@data.walks.trans = l.walks[["data.walks.trans"]]
-
-  return(callNextMethod())
-})
-
 
 # Override static cov implementation
 # . clv.model.prepare.optimx.args ------------------------------------------------------------------------------------------------
