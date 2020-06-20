@@ -137,11 +137,11 @@ fct.testthat.correctness.dyncov.LL <- function(data.apparelDynCov){
     params.model <- c(log.r=1, log.alpha=0, log.s=1.23, log.beta = 2.344)
 
     # Gamma=0 ------------------------------------------------------------------------------------------------
-    expect_silent(LL.out.gamma.0 <- pnbd_dyncov_LL(params = c(params.model,
-                                                              life.Channel  = 0, life.Gender  = 0, life.Marketing  = 0,
-                                                              trans.Channel = 0, trans.Gender = 0, trans.Marketing = 0),
-                                                   clv.fitted = clv.dyncov,
-                                                   return.all.intermediate.results = TRUE))
+    LL.out.gamma.0 <- pnbd_dyncov_LL(params = c(params.model,
+                                                life.Channel  = 0, life.Gender  = 0, life.Marketing  = 0,
+                                                trans.Channel = 0, trans.Gender = 0, trans.Marketing = 0),
+                                     clv.fitted = clv.dyncov,
+                                     return.all.intermediate.results = TRUE)
 
     fct.verify.LL.intermediate.results(LL.out = LL.out.gamma.0, A = exp(0), C = exp(0))
     # Same LL values as nocov
@@ -161,11 +161,11 @@ fct.testthat.correctness.dyncov.LL <- function(data.apparelDynCov){
     clv.dyncov@data.walks.life  <- copy(l.walks$data.walks.life)
     clv.dyncov@data.walks.trans <- copy(l.walks$data.walks.trans)
 
-    expect_silent(LL.out.static.cov <- pnbd_dyncov_LL(params = c(params.model,
-                                                                 life.Channel  = 0.123, life.Gender  = 0.678, life.Marketing  = 1.234,
-                                                                 trans.Channel = 0.111, trans.Gender = 2.222, trans.Marketing = 1.756),
-                                                      clv.fitted = clv.dyncov,
-                                                      return.all.intermediate.results = TRUE))
+    LL.out.static.cov <- pnbd_dyncov_LL(params = c(params.model,
+                                                   life.Channel  = 0.123, life.Gender  = 0.678, life.Marketing  = 1.234,
+                                                   trans.Channel = 0.111, trans.Gender = 2.222, trans.Marketing = 1.756),
+                                        clv.fitted = clv.dyncov,
+                                        return.all.intermediate.results = TRUE)
 
     dt.A <- clv.data.dyn@data.cov.trans[, .(A=head(exp(0.111*Channel+2.222*Gender+1.756*Marketing), 1)), keyby="Id"]
     dt.C <- clv.data.dyn@data.cov.life[,  .(C=head(exp(0.123*Channel+0.678*Gender+1.234*Marketing), 1)), keyby="Id"]

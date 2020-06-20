@@ -69,8 +69,8 @@ setGeneric("clv.model.check.input.args", def = function(clv.model, clv.fitted, s
 setGeneric("clv.model.put.estimation.input", def = function(clv.model, use.cor)
   standardGeneric("clv.model.put.estimation.input"))
 
-setGeneric(name="clv.model.generate.start.params", def=function(clv.model)
-  standardGeneric("clv.model.generate.start.params"))
+setGeneric(name="clv.model.generate.start.param.cor", def = function(clv.model, start.param.cor, transformed.start.params.model)
+  standardGeneric("clv.model.generate.start.param.cor"))
 
 # Finish the arguments to optimx with model specific arguments (mostly LL)
 setGeneric(name="clv.model.prepare.optimx.args", def=function(clv.model, clv.fitted, prepared.optimx.args,...)
@@ -96,6 +96,9 @@ setGeneric(name="clv.model.supports.correlation", def = function(clv.model)
 # Whether this fit used correlation
 setGeneric(name="clv.model.estimation.used.correlation", def = function(clv.model)
   standardGeneric("clv.model.estimation.used.correlation"))
+
+setGeneric(name="clv.model.coef.add.correlation", def = function(clv.model, last.row.optimx.coef, original.scale.params)
+  standardGeneric("clv.model.coef.add.correlation"))
 
 setGeneric(name="clv.model.m.to.cor", def = function(clv.model, prefixed.params.model, param.m)
   standardGeneric("clv.model.m.to.cor"))

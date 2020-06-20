@@ -55,14 +55,9 @@ coef.clv.fitted <- function(object, ...){
   original.scale.params <- original.scale.model.params
 
   # Correlation param ---------------------------------------------------------------------------------------
-  if(object@estimation.used.correlation){
-    last.row.optimx.coef   <- tail(coef(object@optimx.estimation.output),n=1)
-    param.m                <- last.row.optimx.coef[1, object@name.prefixed.cor.param.m, drop=TRUE]
-    param.cor              <- clv.model.m.to.cor(clv.model = object@clv.model, prefixed.params.model=prefixed.params.model,
-                                                 param.m = param.m)
-    names(param.cor)       <- object@name.correlation.cor
-    original.scale.params  <- c(original.scale.params, param.cor)
-  }
+  original.scale.params <- clv.model.coef.add.correlation(clv.model = object@clv.model,
+                                                          last.row.optimx.coef = last.row.optimx.coef,
+                                                          original.scale.params = original.scale.params)
 
   return(original.scale.params)
 }
@@ -154,9 +149,9 @@ vcov.clv.fitted <- function(object, ...){
   # prefixed names to replace with original names
   names.prefixed.all <- object@clv.model@names.prefixed.params.model
   names.original.all <- object@clv.model@names.original.params.model
-  if(object@estimation.used.correlation){
-    names.prefixed.all <- c(names.prefixed.all, object@name.prefixed.cor.param.m)
-    names.original.all <- c(names.original.all, object@name.correlation.cor)
+  if(clv.model.estimation.used.correlation(object@clv.model)){
+    names.prefixed.all <- c(names.prefixed.all, object@clv.model@name.prefixed.cor.param.m)
+    names.original.all <- c(names.original.all, object@clv.model@name.correlation.cor)
   }
 
   # position of these prefixed names
@@ -230,9 +225,11 @@ print.clv.fitted <- function(x, digits = max(3L, getOption("digits") - 3L), ...)
   cat("KKT1:", last.row.optimx$kkt1, "\n")
   cat("KKT2:", last.row.optimx$kkt2, "\n")
 
-  cat("\n")
-  cat("Used Options:\n")
-  cat("Correlation:    ", x@estimation.used.correlation, "\n")
+  if(clv.model.supports.correlation(x@clv.model)){
+    cat("\n")
+    cat("Used Options:\n")
+    cat("Correlation:    ", x@clv.model@estimation.used.correlation, "\n")
+  }
 
   invisible(x)
 }
@@ -384,7 +381,9 @@ summary.clv.fitted <- function(object, ...){
   res$method <- rownames(last.row.optimx)
 
   # Additional options: Correlation ------------------------------------------------
-  res$additional.options <- list("Correlation"=object@estimation.used.correlation)
+  if(clv.model.supports.correlation(clv.model = object@clv.model)){
+    res$additional.options <- list("Correlation"=object@clv.model@estimation.used.correlation)
+  }
 
   return(res)
 }

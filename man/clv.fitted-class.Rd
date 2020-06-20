@@ -26,12 +26,6 @@ Created from an existing clv.data and clv.model object (or subclasses thereof).
 
 \item{\code{prediction.params.model}}{Numeric vector of the model parameters, set and used solely when predicting. Named after model parameters in original scale and derived from \code{coef()}.}
 
-\item{\code{estimation.used.correlation}}{Single boolean whether the correlation was estimated.}
-
-\item{\code{name.prefixed.cor.param.m}}{Single character vector of the internal name used for the correlation parameter during optimization.}
-
-\item{\code{name.correlation.cor}}{Single character vector of the external name used for the correlation parameter.}
-
 \item{\code{optimx.estimation.output}}{A single object of class \code{optimx} as returned from method \code{optimx::optimx} after optimizing the log-likelihood fitting the model.}
 
 \item{\code{optimx.hessian}}{Single matrix that is the hessian extracted from the last row of the optimization output stored in the slot \code{optimx.estimation.output}.}

@@ -59,38 +59,19 @@ setMethod("clv.controlflow.estimate.put.inputs", signature =  signature(clv.fitt
 setMethod("clv.controlflow.estimate.generate.start.params", signature = signature(clv.fitted="clv.fitted"), definition = function(clv.fitted, start.params.model,start.param.cor,verbose,...){
 
   # Model params
-  if(is.null(start.params.model))
+  if(is.null(start.params.model)){
     untransformed.start.params.model <- setNames(clv.fitted@clv.model@start.params.model, clv.fitted@clv.model@names.original.params.model)
-  else
+  }else{
     untransformed.start.params.model <- start.params.model[clv.fitted@clv.model@names.original.params.model] # ensure order
+  }
 
   transformed.start.params.model <- clv.model.transform.start.params.model(clv.model = clv.fitted@clv.model,
                                                                            original.start.params.model = untransformed.start.params.model)
   names(transformed.start.params.model) <- clv.fitted@clv.model@names.prefixed.params.model
 
+  transformed.start.params.model <- clv.model.generate.start.param.cor(clv.model=clv.fitted@clv.model, start.param.cor=start.param.cor, transformed.start.params=transformed.start.params.model)
 
-  start.params <- transformed.start.params.model
-
-  # Correlation param m
-  if(clv.fitted@estimation.used.correlation){
-
-    # Transform correlation to param m
-    #   do model-specific transformation with the generated and transformed model parameters
-    if(is.null(start.param.cor)){
-      # Use cor=0 if none given
-      start.param.cor.param.m <- clv.model.cor.to.m(clv.model=clv.fitted@clv.model, prefixed.params.model=transformed.start.params.model,
-                                                    param.cor = 0)
-    }else{
-      start.param.cor.param.m <- clv.model.cor.to.m(clv.model=clv.fitted@clv.model, prefixed.params.model=transformed.start.params.model,
-                                                    param.cor = start.param.cor)
-    }
-
-    # Name and add to all start params
-    names(start.param.cor.param.m) <- clv.fitted@name.prefixed.cor.param.m
-    start.params <- c(start.params, start.param.cor.param.m)
-  }
-
-  return(start.params)
+  return(transformed.start.params.model)
 })
 
 

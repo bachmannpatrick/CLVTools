@@ -35,7 +35,44 @@ setMethod("clv.model.put.estimation.input", signature = signature(clv.model="clv
   return(clv.model)
 })
 
-# setMethod("clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.supports.correlation"), def = function(){
-#   s
-# })
+
+setMethod(f = "clv.model.coef.add.correlation", signature = signature(clv.model="clv.model.supports.correlation"), definition = function(clv.model, last.row.optimx.coef, original.scale.params){
+  if(clv.model@estimation.used.correlation){
+    prefixed.params.model  <- last.row.optimx.coef[1, clv.model@names.prefixed.params.model, drop=TRUE]
+    param.m                <- last.row.optimx.coef[1, clv.model@name.prefixed.cor.param.m,   drop=TRUE]
+    param.cor              <- clv.model.m.to.cor(clv.model = clv.model,
+                                                 prefixed.params.model = prefixed.params.model,
+                                                 param.m = param.m)
+    names(param.cor)       <- clv.model@name.correlation.cor
+    original.scale.params  <- c(original.scale.params, param.cor)
+  }
+  return(original.scale.params)
+})
+
+# function(clv.model, start.param.cor, transformed.start.params)
+setMethod(f = "clv.model.generate.start.param.cor", signature = signature(clv.model="clv.model.supports.correlation"), definition = function(clv.model, start.param.cor, transformed.start.params.model){
+
+  # Correlation param m
+  if(clv.model@estimation.used.correlation){
+
+    # Transform correlation to param m
+    #   do model-specific transformation with the generated and transformed model parameters
+    if(is.null(start.param.cor)){
+      # Use cor=0 if none given
+      start.param.cor.param.m <- clv.model.cor.to.m(clv.model=clv.model,
+                                                    prefixed.params.model=transformed.start.params.model,
+                                                    param.cor = 0)
+    }else{
+      start.param.cor.param.m <- clv.model.cor.to.m(clv.model=clv.model,
+                                                    prefixed.params.model=transformed.start.params.model,
+                                                    param.cor = start.param.cor)
+    }
+
+    # Name and add to all start params
+    names(start.param.cor.param.m) <- clv.model@name.prefixed.cor.param.m
+    transformed.start.params.model <- c(transformed.start.params.model, start.param.cor.param.m)
+  }
+
+  return(transformed.start.params.model)
+})
 

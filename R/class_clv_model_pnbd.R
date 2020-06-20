@@ -162,7 +162,7 @@ setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv
                                                         ncol = length(clv.model@names.prefixed.params.model))
 
   # If correlation, add the transformations for each parameter vs correlation param.m
-  if(clv.fitted@estimation.used.correlation){
+  if(clv.model@estimation.used.correlation){
     # This is same as m.to.cor
     cor.phi <- function(param.m, a, r, s, b){
       return(param.m * (sqrt(r)/(1+a)) * (a/(1+a))^r * (sqrt(s)/(1+b)) * (b/(1+b))^s)
@@ -171,7 +171,7 @@ setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv
     r <- exp(prefixed.params["log.r"])
     b <- exp(prefixed.params["log.beta"])
     s <- exp(prefixed.params["log.s"])
-    param.m <- prefixed.params[clv.fitted@name.prefixed.cor.param.m]
+    param.m <- prefixed.params[clv.model@name.prefixed.cor.param.m]
 
     # eq 2
     phi_dloga <- cor.phi(param.m=param.m, a=a, r=r, b=b, s=s) * (r - ((a*(1+r))/(1+a)))
@@ -185,12 +185,12 @@ setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv
     phi_dlogm <- (sqrt(r)/(1+a)) * (a/(1+a))^r * (sqrt(s)/(1+b)) * (b/(1+b))^s
 
     # Add to transformation matrix on last line only! (not aswell on the last column)
-    m.diag[clv.fitted@name.prefixed.cor.param.m, "log.alpha"] <- phi_dloga
-    m.diag[clv.fitted@name.prefixed.cor.param.m, "log.r"]     <- phi_dlogr
-    m.diag[clv.fitted@name.prefixed.cor.param.m, "log.beta"]  <- phi_dlogb
-    m.diag[clv.fitted@name.prefixed.cor.param.m, "log.s"]     <- phi_dlogs
-    m.diag[clv.fitted@name.prefixed.cor.param.m,
-           clv.fitted@name.prefixed.cor.param.m]              <- phi_dlogm
+    m.diag[clv.model@name.prefixed.cor.param.m, "log.alpha"] <- phi_dloga
+    m.diag[clv.model@name.prefixed.cor.param.m, "log.r"]     <- phi_dlogr
+    m.diag[clv.model@name.prefixed.cor.param.m, "log.beta"]  <- phi_dlogb
+    m.diag[clv.model@name.prefixed.cor.param.m, "log.s"]     <- phi_dlogs
+    m.diag[clv.model@name.prefixed.cor.param.m,
+           clv.model@name.prefixed.cor.param.m]              <- phi_dlogm
   }
 
   return(m.diag)
