@@ -2,11 +2,11 @@
 #' @template template_class_clvmodelnocov
 #'
 #' @keywords internal
-#' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.pnbd.static.cov-class}, \link{clv.model.pnbd.dynamic.cov-class}
-#' @seealso Classes using its instance: \link{clv.fitted-class}
-#' @include all_generics.R class_clv_model_supportscorrelation.R
+#' @seealso Other clv model classes \linkS4class{clv.model}, \linkS4class{clv.model.pnbd.static.cov}, \linkS4class{clv.model.pnbd.dynamic.cov}
+#' @seealso Classes using its instance: \linkS4class{clv.fitted}
+#' @include all_generics.R class_clv_model_withcorrelation.R
 #' @importFrom methods setClass
-setClass(Class = "clv.model.pnbd.no.cov", contains = "clv.model.supports.correlation",
+setClass(Class = "clv.model.pnbd.no.cov", contains = "clv.model.with.correlation",
          # no additional slots for pnbd base model
 
          # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc

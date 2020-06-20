@@ -4,7 +4,7 @@
 #' @seealso Other clv model classes \linkS4class{clv.model}, \linkS4class{clv.model.bgnbd.no.cov}
 #' @seealso Classes using its instance: \linkS4class{clv.fitted.static.cov}
 #'
-#' @include all_generics.R class_clv_model.R class_clv_model_bgnbd.R
+#' @include all_generics.R class_clv_model_bgnbd.R
 setClass(Class = "clv.model.bgnbd.static.cov", contains = "clv.model.bgnbd.no.cov",
          slots = list(start.param.cov = "numeric"),
          prototype = list(

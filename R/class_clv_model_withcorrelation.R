@@ -1,7 +1,20 @@
+#' CLV Model providing life-trans correlation related functionalities
+#'
+#' @description
+#' This class serves as a parent class to other clv.model classes and provides the functionality needed
+#' to fit a model with correlation between the lifetime and transaction process.
+#'
 #' @slot estimation.used.correlation Single boolean whether the correlation was estimated.
 #' @slot name.prefixed.cor.param.m Single character vector of the internal name used for the correlation parameter during optimization.
 #' @slot name.correlation.cor Single character vector of the external name used for the correlation parameter.
-setClass(Class = "clv.model.supports.correlation", contains = c("clv.model", "VIRTUAL"),
+#'
+#' @seealso Parent class \linkS4class{clv.model}
+#' @seealso CLV model subclasses  \linkS4class{clv.model.pnbd.no.cov}, \linkS4class{clv.model.pnbd.static.cov}, \linkS4class{clv.model.pnbd.dynamic.cov}
+#'
+#' @keywords internal
+#' @importFrom methods setClass
+#' @include all_generics.R
+setClass(Class = "clv.model.with.correlation", contains = c("clv.model", "VIRTUAL"),
          slots = list(
            estimation.used.correlation  = "logical",
            name.prefixed.cor.param.m    = "character",
@@ -14,16 +27,16 @@ setClass(Class = "clv.model.supports.correlation", contains = c("clv.model", "VI
            name.correlation.cor        = "Cor(life,trans)"))
 
 
-setMethod("clv.model.supports.correlation", signature = signature(clv.model="clv.model.supports.correlation"), def = function(clv.model){
+setMethod("clv.model.supports.correlation", signature = signature(clv.model="clv.model.with.correlation"), def = function(clv.model){
   return(TRUE)
 })
 
-setMethod("clv.model.estimation.used.correlation", signature = signature(clv.model="clv.model.supports.correlation"), def = function(clv.model){
+setMethod("clv.model.estimation.used.correlation", signature = signature(clv.model="clv.model.with.correlation"), def = function(clv.model){
   return(clv.model@estimation.used.correlation)
 })
 
 
-setMethod("clv.model.put.estimation.input", signature = signature(clv.model="clv.model.supports.correlation"), def = function(clv.model, use.cor){
+setMethod("clv.model.put.estimation.input", signature = signature(clv.model="clv.model.with.correlation"), def = function(clv.model, use.cor){
 
   # Should correlation be calculated? -----------------------------------------------------------------
   if(use.cor){
@@ -36,7 +49,7 @@ setMethod("clv.model.put.estimation.input", signature = signature(clv.model="clv
 })
 
 
-setMethod(f = "clv.model.coef.add.correlation", signature = signature(clv.model="clv.model.supports.correlation"), definition = function(clv.model, last.row.optimx.coef, original.scale.params){
+setMethod(f = "clv.model.coef.add.correlation", signature = signature(clv.model="clv.model.with.correlation"), definition = function(clv.model, last.row.optimx.coef, original.scale.params){
   if(clv.model@estimation.used.correlation){
     prefixed.params.model  <- last.row.optimx.coef[1, clv.model@names.prefixed.params.model, drop=TRUE]
     param.m                <- last.row.optimx.coef[1, clv.model@name.prefixed.cor.param.m,   drop=TRUE]
@@ -50,7 +63,7 @@ setMethod(f = "clv.model.coef.add.correlation", signature = signature(clv.model=
 })
 
 # function(clv.model, start.param.cor, transformed.start.params)
-setMethod(f = "clv.model.generate.start.param.cor", signature = signature(clv.model="clv.model.supports.correlation"), definition = function(clv.model, start.param.cor, transformed.start.params.model){
+setMethod(f = "clv.model.generate.start.param.cor", signature = signature(clv.model="clv.model.with.correlation"), definition = function(clv.model, start.param.cor, transformed.start.params.model){
 
   # Correlation param m
   if(clv.model@estimation.used.correlation){
