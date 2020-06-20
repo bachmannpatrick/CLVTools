@@ -46,12 +46,15 @@ clv.model.pnbd.no.cov <- function(){
 
 # .clv.model.check.input.args -----------------------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...){
+  err.msg <- c()
   # Have to be > 0 as will be logged
   if(any(start.params.model <= 0))
-    check_err_msg(err.msg = "Please provide only model start parameters greater than 0 as they will be log()-ed for the optimization!")
+    err.msg <- c(err.msg, "Please provide only model start parameters greater than 0 as they will be log()-ed for the optimization!")
 
-  if(length(list(...)) > 0)
-    stop("Any additional parameters passed in ... are not needed!", call. = FALSE)
+  err.msg <- c(err.msg, .check_user_data_single_boolean(b=use.cor, var.name ="use.cor"))
+  err.msg <- c(err.msg, check_user_data_startparamcorm(start.param.cor=start.param.cor, use.cor=use.cor))
+
+  check_err_msg(err.msg)
 })
 
 
@@ -77,7 +80,7 @@ setMethod("clv.model.backtransform.estimated.params.model", signature = signatur
 
 # .clv.model.prepare.optimx.args --------------------------------------------------------------------------------------------------------
 #' @importFrom utils modifyList
-setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
+setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args){
 
   # Only add LL function args, everything else is prepared already, incl. start parameters
   optimx.args <- modifyList(prepared.optimx.args,

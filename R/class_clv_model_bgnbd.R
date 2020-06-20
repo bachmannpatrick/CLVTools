@@ -35,17 +35,7 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
     err.msg <- c(err.msg, "Please provide only model start parameters greater than 0 as they will be log()-ed for the optimization!")
   }
 
-
-  if(use.cor){
-    err.msg <- c(err.msg, "Correlation is not supported for the BG/NBD model")
-  }
-
-  if(length(list(...)) > 0){
-    stop("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
-  }
-
   check_err_msg(err.msg)
-
 })
 
 
@@ -70,7 +60,7 @@ setMethod("clv.model.backtransform.estimated.params.model", signature = signatur
 })
 
 # .clv.model.prepare.optimx.args --------------------------------------------------------------------------------------------------------
-setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
+setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args){
 
   # Only add LL function args, everything else is prepared already, incl. start parameters
   optimx.args <- modifyList(prepared.optimx.args,

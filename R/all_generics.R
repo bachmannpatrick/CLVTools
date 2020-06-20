@@ -21,7 +21,7 @@ setGeneric("clv.controlflow.estimate.check.inputs", def=function(clv.fitted,  st
 setGeneric("clv.controlflow.estimate.put.inputs", def=function(clv.fitted, cl, use.cor, verbose, ...)
   standardGeneric("clv.controlflow.estimate.put.inputs"))
 
-setGeneric("clv.controlflow.estimate.generate.start.params", def=function(clv.fitted, start.params.model,start.param.cor,verbose,...)
+setGeneric("clv.controlflow.estimate.generate.start.params", def=function(clv.fitted, start.params.model, verbose,...)
   standardGeneric("clv.controlflow.estimate.generate.start.params"))
 
 setGeneric("clv.controlflow.estimate.prepare.optimx.args", def=function(clv.fitted, start.params.all)
@@ -66,14 +66,14 @@ setGeneric("clv.model.check.input.args", def = function(clv.model, clv.fitted, s
   standardGeneric("clv.model.check.input.args"))
 
 # Store additional arguments potentially given in estimate
-setGeneric("clv.model.put.estimation.input", def = function(clv.model, use.cor)
+setGeneric("clv.model.put.estimation.input", def = function(clv.model, ...)
   standardGeneric("clv.model.put.estimation.input"))
 
 setGeneric(name="clv.model.generate.start.param.cor", def = function(clv.model, start.param.cor, transformed.start.params.model)
   standardGeneric("clv.model.generate.start.param.cor"))
 
 # Finish the arguments to optimx with model specific arguments (mostly LL)
-setGeneric(name="clv.model.prepare.optimx.args", def=function(clv.model, clv.fitted, prepared.optimx.args,...)
+setGeneric(name="clv.model.prepare.optimx.args", def=function(clv.model, clv.fitted, prepared.optimx.args)
   standardGeneric("clv.model.prepare.optimx.args"))
 
 # Transform standard or user given start params to optimizer (prefixed) scale

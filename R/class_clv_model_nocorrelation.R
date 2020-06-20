@@ -22,7 +22,7 @@ setMethod("clv.model.estimation.used.correlation", signature = signature(clv.mod
 })
 
 # Nothing to store additionally
-setMethod("clv.model.put.estimation.input", signature = signature(clv.model="clv.model.no.correlation"), def = function(clv.model, use.cor){
+setMethod("clv.model.put.estimation.input", signature = signature(clv.model="clv.model.no.correlation"), def = function(clv.model, use.cor, ...){
   return(clv.model)
 })
 

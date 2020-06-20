@@ -57,7 +57,7 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
 })
 
 # . clv.model.put.estimation.input -----------------------------------------------------------------------------
-setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model"), definition = function(clv.model, use.cor){
+setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model"), definition = function(clv.model, use.cor, ...){
   # Example: do nothing
   # return(clv.model)
   stop("The method clv.model.put.estimation.input has not been implemented by this model!")
@@ -79,7 +79,7 @@ setMethod("clv.model.backtransform.estimated.params.model", signature = signatur
 })
 
 # . clv.model.prepare.optimx.args -----------------------------------------------------------------------------
-setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
+setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, prepared.optimx.args){
   stop("The method clv.model.prepare.optimx.args has not been implemented by this model!")
 })
 

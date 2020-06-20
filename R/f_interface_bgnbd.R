@@ -69,12 +69,15 @@ setMethod("bgnbd", signature = signature(clv.data="clv.data"), definition = func
                                                                                      start.params.model=c(),
                                                                                      optimx.args=list(),
                                                                                      verbose=TRUE,...){
+
+  check_err_msg(check_user_data_emptyellipsis(...))
+
   cl <- match.call(call = sys.call(-1), expand.dots = TRUE)
 
   obj <- clv.bgnbd(cl=cl, clv.data=clv.data)
 
-  return(clv.template.controlflow.estimate(clv.fitted = obj, cl=cl, start.params.model = start.params.model, use.cor = FALSE,
-                                           start.param.cor = c(), optimx.args = optimx.args, verbose=verbose, ...))
+  return(clv.template.controlflow.estimate(clv.fitted = obj, cl=cl, start.params.model = start.params.model,
+                                           optimx.args = optimx.args, verbose=verbose))
 })
 
 #' @rdname bgnbd
@@ -88,17 +91,18 @@ setMethod("bgnbd", signature = signature(clv.data="clv.data.static.covariates"),
                                                                                                        names.cov.constr=c(),start.params.constr=c(),
                                                                                                        reg.lambdas = c(), ...){
 
+  check_err_msg(check_user_data_emptyellipsis(...))
+
   cl <- match.call(call = sys.call(-1), expand.dots = TRUE)
 
   obj <- clv.bgnbd.static.cov(cl=cl, clv.data=clv.data)
 
   return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model,
-                                           use.cor = FALSE, start.param.cor = c(),
                                            optimx.args = optimx.args, verbose=verbose,
                                            names.cov.life=names.cov.life, names.cov.trans=names.cov.trans,
                                            start.params.life=start.params.life, start.params.trans=start.params.trans,
                                            names.cov.constr=names.cov.constr,start.params.constr=start.params.constr,
-                                           reg.lambdas = reg.lambdas, ...))
+                                           reg.lambdas = reg.lambdas))
 })
 
 

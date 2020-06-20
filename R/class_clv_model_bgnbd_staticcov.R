@@ -34,9 +34,6 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
   #   but with no cov specific inputs only
   callNextMethod(clv.model=clv.model, clv.fitted=clv.fitted, start.params.model=start.params.model, use.cor=use.cor,
                  start.param.cor=start.param.cor, optimx.args=optimx.args, verbose=verbose)
-
-  if(length(list(...)) > 0)
-    stop("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
 })
 
 # . clv.model.put.estimation.input ------------------------------------------------------------------------------------------------------------
@@ -58,7 +55,7 @@ setMethod(f = "clv.model.backtransform.estimated.params.cov", signature = signat
 })
 
 # . clv.model.prepare.optimx.args -----------------------------------------------------------------------------------------------------
-setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.bgnbd.static.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
+setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.bgnbd.static.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args){
   # Do not call the no.cov function as the LL is different
 
   # Everything to call the LL function

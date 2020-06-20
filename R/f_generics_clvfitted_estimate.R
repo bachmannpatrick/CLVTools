@@ -1,5 +1,5 @@
 # . clv.controlflow.estimate.check.inputs ------------------------------------------------------------------------
-setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv.fitted="clv.fitted"), definition = function(clv.fitted,  start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...){
+setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv.fitted="clv.fitted"), definition = function(clv.fitted,  start.params.model, optimx.args, verbose, ...){
 
   l.args <- list(...)
 
@@ -13,8 +13,7 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv
 
   # Check cor input
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name ="verbose"))
-  err.msg <- c(err.msg, .check_user_data_single_boolean(b=use.cor, var.name ="use.cor"))
-  err.msg <- c(err.msg, check_user_data_startparamcorm(start.param.cor=start.param.cor, use.cor=use.cor))
+
   # Check additional optimx args
   err.msg <- c(err.msg, check_user_data_optimxargs(optimx.args=optimx.args))
   check_err_msg(err.msg)
@@ -56,7 +55,7 @@ setMethod("clv.controlflow.estimate.put.inputs", signature =  signature(clv.fitt
 
 
 # . clv.controlflow.estimate.generate.start.params ------------------------------------------------------------------------
-setMethod("clv.controlflow.estimate.generate.start.params", signature = signature(clv.fitted="clv.fitted"), definition = function(clv.fitted, start.params.model,start.param.cor,verbose,...){
+setMethod("clv.controlflow.estimate.generate.start.params", signature = signature(clv.fitted="clv.fitted"), definition = function(clv.fitted, start.params.model, verbose, start.param.cor, ...){
 
   # Model params
   if(is.null(start.params.model)){
@@ -69,7 +68,10 @@ setMethod("clv.controlflow.estimate.generate.start.params", signature = signatur
                                                                            original.start.params.model = untransformed.start.params.model)
   names(transformed.start.params.model) <- clv.fitted@clv.model@names.prefixed.params.model
 
-  transformed.start.params.model <- clv.model.generate.start.param.cor(clv.model=clv.fitted@clv.model, start.param.cor=start.param.cor, transformed.start.params=transformed.start.params.model)
+  if(clv.model.supports.correlation(clv.fitted@clv.model)){
+    # If the model supports correlation, start.param.cor is passed, otherwise not
+    transformed.start.params.model <- clv.model.generate.start.param.cor(clv.model=clv.fitted@clv.model, start.param.cor=start.param.cor, transformed.start.params=transformed.start.params.model)
+  }
 
   return(transformed.start.params.model)
 })

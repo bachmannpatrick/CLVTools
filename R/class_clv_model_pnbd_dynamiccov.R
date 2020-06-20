@@ -35,7 +35,7 @@ clv.model.pnbd.dynamic.cov <- function(){
 # . clv.model.prepare.optimx.args ------------------------------------------------------------------------------------------------
 #' @importFrom utils modifyList
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.pnbd.dynamic.cov"),
-          definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
+          definition = function(clv.model, clv.fitted, prepared.optimx.args){
 
             # Do not call the no.cov function because the LL is different
             x <- t.x <- T.cal <- NULL

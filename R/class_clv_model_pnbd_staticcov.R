@@ -43,9 +43,6 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
               callNextMethod(clv.model=clv.model, clv.fitted=clv.fitted, start.params.model=start.params.model, use.cor=use.cor,
                              start.param.cor=start.param.cor, optimx.args=optimx.args, verbose=verbose)
 
-              if(length(list(...)) > 0)
-                stop("Any additional parameters passed in ... are not needed!", call. = FALSE)
-
               # Nothing model-specific to check about all other user inputs
               # Nothing to return
             })
@@ -71,7 +68,7 @@ setMethod(f = "clv.model.backtransform.estimated.params.cov", signature = signat
 # . clv.model.prepare.optimx.args -----------------------------------------------------------------------------------------------------
 #' @importFrom utils modifyList
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.pnbd.static.cov"),
-          definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
+          definition = function(clv.model, clv.fitted, prepared.optimx.args){
 
             # Do not call the no.cov function as the LL is different
 

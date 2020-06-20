@@ -130,7 +130,7 @@ setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitte
 
 # . clv.controlflow.estimate.generate.start.params ------------------------------------------------------------------------------
 setMethod("clv.controlflow.estimate.generate.start.params", signature = signature(clv.fitted="clv.fitted.static.cov"),
-          # original signature: clv.fitted, start.params.model,start.param.cor,
+          # original signature: clv.fitted, start.params.model
           definition = function(clv.fitted,
                                 start.params.model,
                                 start.param.cor,

@@ -46,12 +46,7 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
     err.msg <- c(err.msg, "Please provide only model start parameters greater than 0 as they will be log()-ed for the optimization!")
   }
 
-  if(length(list(...)) > 0){
-    err.msg <- c(err.msg, "Any further parameters passed in ... are ignored because they are not needed by this model.")
-  }
-
   check_err_msg(err.msg)
-
 })
 
 # setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model.ggomnbd.no.cov"), definition = function(clv.model, clv.fitted, verbose, ...){
@@ -84,7 +79,7 @@ setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.mo
   return(clv.fitted)
 })
 
-setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.ggomnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
+setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.ggomnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args){
   # Also model optimization settings should go here
 
   # Only add LL function args, everything else is prepared already, incl. start parameters

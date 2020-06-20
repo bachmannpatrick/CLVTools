@@ -36,7 +36,7 @@ setMethod("clv.model.estimation.used.correlation", signature = signature(clv.mod
 })
 
 
-setMethod("clv.model.put.estimation.input", signature = signature(clv.model="clv.model.with.correlation"), def = function(clv.model, use.cor){
+setMethod("clv.model.put.estimation.input", signature = signature(clv.model="clv.model.with.correlation"), def = function(clv.model, use.cor, ...){
 
   # Should correlation be calculated? -----------------------------------------------------------------
   if(use.cor){
