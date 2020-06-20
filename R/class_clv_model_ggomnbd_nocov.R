@@ -1,10 +1,11 @@
 #' @templateVar name_model_full GGompertz/NBD
 #' @template template_class_clvmodelnocov
 #'
-#' @importFrom methods setClass
-#' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.ggomnbd.static.cov-class}
-#' @seealso Classes using its instance: \link{clv.fitted-class}
+#' @seealso Other clv model classes \linkS4class{clv.model}, \linkS4class{clv.model.ggomnbd.static.cov}
+#' @seealso Classes using its instance: \linkS4class{clv.fitted}
+#'
 #' @include all_generics.R class_clv_model_nocorrelation.R
+#' @importFrom methods setClass
 setClass(Class = "clv.model.ggomnbd.no.cov", contains = "clv.model.no.correlation",
          # no additional slots required
          slots = list(),

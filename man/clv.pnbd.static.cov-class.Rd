@@ -22,6 +22,6 @@ and as defined by the Pareto/NBD model.}
 }}
 
 \seealso{
-\link{clv.fitted.static.cov-class}, \link{clv.model.pnbd.static.cov-class}, \link{clv.pnbd-class}, \link{clv.pnbd.dynamic.cov-class}
+\linkS4class{clv.fitted.static.cov}, \linkS4class{clv.model.pnbd.static.cov}, \linkS4class{clv.pnbd}, \linkS4class{clv.pnbd.dynamic.cov}
 }
 \keyword{internal}

@@ -1,3 +1,15 @@
+#' CLV Model without support for life-trans correlation
+#'
+#' @description
+#' This class serves as a parent class to other clv.model classes that cannot be fit with correlation between the
+#' lifetime and transaction process.
+#'
+#' @seealso Parent class \linkS4class{clv.model}
+#' @seealso CLV model subclasses  \linkS4class{clv.model.bgnbd.no.cov}, \linkS4class{clv.model.ggomnbd.no.cov}
+#'
+#' @keywords internal
+#' @importFrom methods setClass
+#' @include all_generics.R
 setClass(Class = "clv.model.no.correlation", contains = c("clv.model", "VIRTUAL"))
 
 

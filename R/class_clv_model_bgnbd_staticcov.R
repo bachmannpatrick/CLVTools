@@ -1,8 +1,8 @@
 #' @templateVar name_model_full BG/NBD
 #' @template template_class_clvmodelstaticcov
 #'
-#' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.bgnbd.no.cov-class}
-#' @seealso Classes using its instance: \link{clv.fitted.static.cov-class},
+#' @seealso Other clv model classes \linkS4class{clv.model}, \linkS4class{clv.model.bgnbd.no.cov}
+#' @seealso Classes using its instance: \linkS4class{clv.fitted.static.cov}
 #'
 #' @include all_generics.R class_clv_model.R class_clv_model_bgnbd.R
 setClass(Class = "clv.model.bgnbd.static.cov", contains = "clv.model.bgnbd.no.cov",

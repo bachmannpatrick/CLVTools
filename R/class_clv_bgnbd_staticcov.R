@@ -4,7 +4,7 @@
 #'
 #' @template template_slot_bgnbdcbs
 #'
-#' @seealso \link{clv.fitted.static.cov-class}, \link{clv.model.bgnbd.static.cov-class}, \link{clv.bgnbd-class}
+#' @seealso \linkS4class{clv.fitted.static.cov}, \linkS4class{clv.model.bgnbd.static.cov}, \linkS4class{clv.bgnbd}
 #'
 #' @keywords internal
 #' @importFrom methods setClass

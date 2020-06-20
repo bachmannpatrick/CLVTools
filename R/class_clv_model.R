@@ -14,10 +14,11 @@
 #' @slot start.params.model numeric vector of default values at original scale that should be used for the LL optimization if the user does not provide start parameters. Named with names.original.params.model.
 #' @slot optimx.defaults list of default arguments for calling \code{\link[optimx]{optimx}} with \code{do.call}. Named after the respective arguments in optimx.
 #'
-#' @seealso CLV model subclasses  \link{clv.model.pnbd.no.cov-class}, \link{clv.model.pnbd.static.cov-class}, \link{clv.model.pnbd.dynamic.cov-class}
-#' @seealso Class using its instances: \link{clv.fitted-class}
+#' @seealso CLV model subclasses with and without support for fitting with correlation \linkS4class{clv.model.with.correlation}, \linkS4class{clv.model.no.correlation}
+#' @seealso Class using its instances: \linkS4class{clv.fitted}
 #'
 #' @keywords internal
+#' @include all_generics.R
 #' @importFrom methods setClass
 setClass(Class = "clv.model", contains = "VIRTUAL",
          slots = list(

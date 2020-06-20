@@ -97,6 +97,7 @@ setGeneric(name="clv.model.supports.correlation", def = function(clv.model)
 setGeneric(name="clv.model.estimation.used.correlation", def = function(clv.model)
   standardGeneric("clv.model.estimation.used.correlation"))
 
+# Adds the correlation parameter to a given vector of params after reading it from the optimx results
 setGeneric(name="clv.model.coef.add.correlation", def = function(clv.model, last.row.optimx.coef, original.scale.params)
   standardGeneric("clv.model.coef.add.correlation"))
 
