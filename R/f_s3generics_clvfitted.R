@@ -138,6 +138,7 @@ vcov.clv.fitted <- function(object, ...){
 
   # Naming and sorting
   #   Sorting:  Correct because directly from optimx hessian and for delta.diag from coef(optimx)
+  # **TODO: This might not hold if covs are transformed as well, ie need to replace their names as well (but currently covs are not transformed in any model)
   #   Naming:   Has to match coef(). model + cor: original
   #                                  any cov:     leave prefixed
   #             Change the names of model+cor to display name because
@@ -305,9 +306,10 @@ print.summary.clv.fitted <- function(x, digits=max(3L, getOption("digits")-3L),
                        "Method" = x$method))
 
   # Correlation ------------------------------------------------------------
-  cat("\nUsed Options:")
-  .print.list(nsmall=nsmall,
-              l = x$additional.options)
+  if(length(x$additional.options)>0){
+    cat("\nUsed Options:")
+    .print.list(nsmall=nsmall, l = x$additional.options)
+  }
 
   return(invisible(x))
 }
@@ -383,6 +385,8 @@ summary.clv.fitted <- function(object, ...){
   # Additional options: Correlation ------------------------------------------------
   if(clv.model.supports.correlation(clv.model = object@clv.model)){
     res$additional.options <- list("Correlation"=object@clv.model@estimation.used.correlation)
+  }else{
+    res$additional.options <- list()
   }
 
   return(res)
