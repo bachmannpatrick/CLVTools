@@ -170,7 +170,7 @@ Once the model parameters are estimated, we are able to predict future customer 
 * "probability of a customer being alive" (PAlive) at the end of the estimation period and
 * "discounted expected residual transactions" (DERT) for every customer, which is the total number of transactions for the residual lifetime of a customer discounted to the end of the estimation period. 
 
-If spending information was provided when initializing the object, `CLVTools` provides prediction for 
+If spending information was provided when initializing the `clvdata`-object, `CLVTools` provides prediction for 
  
 * predicted spending estimated by a Gamma/Gamma model [@Colombo1999; @Fader2005c] and 
 *  the customer lifetime value (CLV).
@@ -199,7 +199,7 @@ predict(est.pnbd, prediction.end = "2006-05-08")
 
 
 ## Model Plotting
-`clvdata` objects may be plotted using the `plot()` command. Similar to `summary()`, the output of `plot()` adapts on the current modeling step. It provides a descriptive plot of the actual transactional data if the model has not yet been fitted. Once the model has been estimated, `plot()` provides an aggregated incremental tracking plot of the actual data and the model based on the estimated parameters. The time-span for the plot may be altered using the `prediction.end` argument by providing either a duration or an end date. By default the plot is generated for the entire time-span of the provided dataset specified in the `clvdata()` command. The dashed line indicates the end of the estimation period. Alternatively cumulative actual and expected transactions can be plotted by setting `cumulative` to `TRUE`. The argument `transactions` disable for plotting actual transactions (`transactions=FALSE`). For further plotting options see the documentation
+`clvdata` objects may be plotted using the `plot()` command. Similar to `summary()`, the output of `plot()` adapts to the current modeling step. It provides a descriptive plot of the actual transactional data if the model has not yet been fitted. Once the model has been estimated, `plot()` provides an aggregated incremental tracking plot of the actual data and the model based on the estimated parameters. The time-span for the plot may be altered using the `prediction.end` argument by providing either a duration or an end date. By default the plot is generated for the entire time-span of the provided dataset specified in the `clvdata()` command. The dashed line indicates the end of the estimation period. Alternatively cumulative actual and expected transactions can be plotted by setting `cumulative` to `TRUE`. The argument `transactions` disable for plotting actual transactions (`transactions=FALSE`). For further plotting options see the documentation
 
 plot(x, prediction.end = NULL, cumulative = FALSE,
   transactions = TRUE, label = NULL, plot = TRUE, verbose = TRUE,
