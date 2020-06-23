@@ -9,7 +9,7 @@ Output from fitting the Pareto/NBD model on data with dynamic covariates. It con
 estimation result and is returned to the user to use it as input to other methods such as
 to make predictions or plot the unconditional expectation.
 
-Inherits from \code{clv.fitted.dynamic.cov} in order to execute all steps required for fitting a model
+Inherits from \code{clv.fitted.transactions.dynamic.cov} in order to execute all steps required for fitting a model
 with dynamic covariates and it contains an instance of class \code{clv.model.pnbd.dynamic.cov} which
 provides the required Pareto/NBD (dynamic covariates) specific functionalities.
 }
@@ -22,6 +22,6 @@ and as defined by the Pareto/NBD model.}
 }}
 
 \seealso{
-\linkS4class{clv.fitted.dynamic.cov}, \linkS4class{clv.model.pnbd.dynamic.cov}, \linkS4class{clv.pnbd}, \linkS4class{clv.pnbd.static.cov}
+\linkS4class{clv.fitted.transactions.dynamic.cov}, \linkS4class{clv.model.pnbd.dynamic.cov}, \linkS4class{clv.pnbd}, \linkS4class{clv.pnbd.static.cov}
 }
 \keyword{internal}

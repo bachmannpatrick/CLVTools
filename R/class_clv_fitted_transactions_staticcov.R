@@ -19,7 +19,7 @@
 #' @slot prediction.params.life Numeric vector of the lifetime covariate parameters, set and used solely when predicting. Named after lifetime covariates and derived from \code{coef()}.
 #' @slot prediction.params.trans Numeric vector of the transaction covariate parameters, set and used solely when predicting. Named after transaction covariates and derived from \code{coef()}.
 #'
-#' @seealso \code{\link[CLVTools:clv.fitted-class]{clv.fitted}}, \code{\link[CLVTools:clv.fitted.dynamic.cov-class]{clv.fitted.dynamic.cov}}
+#' @seealso \code{\link[CLVTools:clv.fitted-class]{clv.fitted}}, \code{\link[CLVTools:clv.fitted.transactions.dynamic.cov-class]{clv.fitted.transactions.dynamic.cov}}
 #'
 #' @importFrom methods setClass
 #' @keywords internal

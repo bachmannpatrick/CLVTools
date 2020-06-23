@@ -15,7 +15,7 @@ setMethod("clv.controlflow.estimate.generate.start.params", signature = signatur
   # This has to be done here, and cannot be done in the model.prepare.optimx.args function
   #   because there the original estimation input is unknown
   #   ie it is not known if the user actually did supply start params or not
-  #   Also, doing it as part of clv.fitted.dynamic.cov is not possible because the model
+  #   Also, doing it as part of clv.fitted.transactions.dynamic.cov is not possible because the model
   #     to call (ie pnbd()) is unknown
 
   if(is.null(start.params.model)){

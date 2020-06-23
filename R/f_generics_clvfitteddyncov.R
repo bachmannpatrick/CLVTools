@@ -1,5 +1,5 @@
 # . clv.controlflow.plot.check.inputs ------------------------------------------------------------------------
-setMethod("clv.controlflow.plot.check.inputs", signature(obj="clv.fitted.dynamic.cov"), function (obj, prediction.end, cumulative, plot, label.line, verbose) {
+setMethod("clv.controlflow.plot.check.inputs", signature(obj="clv.fitted.transactions.dynamic.cov"), function (obj, prediction.end, cumulative, plot, label.line, verbose) {
   period.until <- Cov.Date <- NULL
 
   # No nocov /staticcov checks (no need to call super method)
@@ -19,7 +19,7 @@ setMethod("clv.controlflow.plot.check.inputs", signature(obj="clv.fitted.dynamic
 
 # . clv.controlflow.check.newdata ------------------------------------------------------------------------
 #' @importFrom methods callNextMethod
-setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.dynamic.cov"), definition = function(clv.fitted, user.newdata, prediction.end){
+setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.transactions.dynamic.cov"), definition = function(clv.fitted, user.newdata, prediction.end){
   # Do static cov (and hence also nocov) inputchecks first for newdata
   callNextMethod()
 
@@ -50,7 +50,7 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.dyna
 
 # . clv.controlflow.predict.check.inputs ------------------------------------------------------------------------
 #' @importFrom methods callNextMethod
-setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.fitted="clv.fitted.dynamic.cov"), function(clv.fitted, prediction.end, continuous.discount.factor, predict.spending, verbose){
+setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.fitted="clv.fitted.transactions.dynamic.cov"), function(clv.fitted, prediction.end, continuous.discount.factor, predict.spending, verbose){
   # Do static cov (and hence also nocov) inputchecks first
   #   After this, newdata is basically ok
   callNextMethod()

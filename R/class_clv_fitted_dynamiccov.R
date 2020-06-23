@@ -11,11 +11,11 @@
 #' @importFrom methods setClass
 #' @include all_generics.R class_clv_data_dynamiccovariates.R class_clv_fitted_transactions_staticcov.R class_clv_fitted.R
 #' @keywords internal
-setClass(Class = "clv.fitted.dynamic.cov", contains = "clv.fitted.transactions.static.cov")
+setClass(Class = "clv.fitted.transactions.dynamic.cov", contains = "clv.fitted.transactions.static.cov")
 
 
 #' @importFrom methods new
-clv.fitted.dynamic.cov <- function(cl, clv.model, clv.data){
-  return(new("clv.fitted.dynamic.cov",
+clv.fitted.transactions.dynamic.cov <- function(cl, clv.model, clv.data){
+  return(new("clv.fitted.transactions.dynamic.cov",
              clv.fitted.transactions.static.cov(cl=cl, clv.model=clv.model, clv.data=clv.data)))
 }

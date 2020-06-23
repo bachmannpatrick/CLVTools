@@ -47,6 +47,6 @@ Also used to perform steps during the estimation process that are specific to st
 }}
 
 \seealso{
-\code{\link[CLVTools:clv.fitted-class]{clv.fitted}}, \code{\link[CLVTools:clv.fitted.dynamic.cov-class]{clv.fitted.dynamic.cov}}
+\code{\link[CLVTools:clv.fitted-class]{clv.fitted}}, \code{\link[CLVTools:clv.fitted.transactions.dynamic.cov-class]{clv.fitted.transactions.dynamic.cov}}
 }
 \keyword{internal}

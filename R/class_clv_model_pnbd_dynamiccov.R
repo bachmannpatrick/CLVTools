@@ -5,7 +5,7 @@
 #'
 #' @keywords internal
 #' @seealso Other clv model classes \linkS4class{clv.model}, \linkS4class{clv.model.pnbd.no.cov}, \linkS4class{clv.model.pnbd.static.cov}
-#' @seealso Classes using its instance: \linkS4class{clv.fitted.dynamic.cov}
+#' @seealso Classes using its instance: \linkS4class{clv.fitted.transactions.dynamic.cov}
 #'
 #' @include all_generics.R class_clv_model_pnbd_staticcov.R
 setClass(Class = "clv.model.pnbd.dynamic.cov", contains = "clv.model.pnbd.static.cov")
