@@ -4,12 +4,12 @@
 #'
 #' @template template_slot_ggomnbdcbs
 #'
-#' @seealso \linkS4class{clv.fitted}, \linkS4class{clv.model.ggomnbd.no.cov}, \linkS4class{clv.ggomnbd.static.cov}
+#' @seealso \linkS4class{clv.fitted}, \linkS4class{clv.fitted.transactions}, \linkS4class{clv.model.ggomnbd.no.cov}, \linkS4class{clv.ggomnbd.static.cov}
 #'
 #' @keywords internal
 #' @importFrom methods setClass
-#' @include class_clv_model_ggomnbd_nocov.R class_clv_data.R class_clv_fitted.R
-setClass(Class = "clv.ggomnbd", contains = "clv.fitted",
+#' @include class_clv_model_ggomnbd_nocov.R class_clv_data.R class_clv_fitted_transactions.R
+setClass(Class = "clv.ggomnbd", contains = "clv.fitted.transactions",
          slots = c(
            cbs = "data.table"),
 
@@ -28,7 +28,7 @@ clv.ggomnbd <- function(cl, clv.data){
   # Reuse clv.fitted constructor to ensure proper object creation
   #   a recommended pattern by Martin Morgan on SO
   return(new("clv.ggomnbd",
-             clv.fitted(cl=cl, clv.model=clv.model, clv.data=clv.data),
+             clv.fitted.transactions(cl=cl, clv.model=clv.model, clv.data=clv.data),
              cbs = dt.cbs.ggomnbd))
 }
 

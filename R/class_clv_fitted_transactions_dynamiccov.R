@@ -9,7 +9,7 @@
 #' @seealso \code{\link[CLVTools:clv.fitted-class]{clv.fitted}}, \code{\link[CLVTools:clv.fitted.transactions.static.cov-class]{clv.fitted.transactions.static.cov}}
 #'
 #' @importFrom methods setClass
-#' @include all_generics.R class_clv_data_dynamiccovariates.R class_clv_fitted_transactions_staticcov.R class_clv_fitted.R
+#' @include all_generics.R class_clv_data_dynamiccovariates.R class_clv_fitted_transactions_staticcov.R class_clv_fitted_transactions.R
 #' @keywords internal
 setClass(Class = "clv.fitted.transactions.dynamic.cov", contains = "clv.fitted.transactions.static.cov")
 

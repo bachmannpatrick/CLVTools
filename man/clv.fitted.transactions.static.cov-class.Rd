@@ -10,7 +10,7 @@
 \S4method{show}{clv.fitted.transactions.static.cov}(object)
 }
 \description{
-Extends the class \code{clv.fitted} with slots to accommodate the various additional
+Extends the class \code{clv.fitted.transactions} with slots to accommodate the various additional
 optimization options that can be used for covariates models.
 Also used to perform steps during the estimation process that are specific to static covariates models.
 }
@@ -47,6 +47,6 @@ Also used to perform steps during the estimation process that are specific to st
 }}
 
 \seealso{
-\code{\link[CLVTools:clv.fitted-class]{clv.fitted}}, \code{\link[CLVTools:clv.fitted.transactions.dynamic.cov-class]{clv.fitted.transactions.dynamic.cov}}
+\linkS4class{clv.fitted}, \linkS4class{clv.fitted.transactions}, \linkS4class{clv.fitted.transactions.dynamic.cov}
 }
 \keyword{internal}

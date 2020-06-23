@@ -1,6 +1,6 @@
 #' Fitted CLV Model with Static covariates
 #'
-#' Extends the class \code{clv.fitted} with slots to accommodate the various additional
+#' Extends the class \code{clv.fitted.transactions} with slots to accommodate the various additional
 #' optimization options that can be used for covariates models.
 #' Also used to perform steps during the estimation process that are specific to static covariates models.
 #'
@@ -19,12 +19,12 @@
 #' @slot prediction.params.life Numeric vector of the lifetime covariate parameters, set and used solely when predicting. Named after lifetime covariates and derived from \code{coef()}.
 #' @slot prediction.params.trans Numeric vector of the transaction covariate parameters, set and used solely when predicting. Named after transaction covariates and derived from \code{coef()}.
 #'
-#' @seealso \code{\link[CLVTools:clv.fitted-class]{clv.fitted}}, \code{\link[CLVTools:clv.fitted.transactions.dynamic.cov-class]{clv.fitted.transactions.dynamic.cov}}
+#' @seealso \linkS4class{clv.fitted}, \linkS4class{clv.fitted.transactions}, \linkS4class{clv.fitted.transactions.dynamic.cov}
 #'
 #' @importFrom methods setClass
 #' @keywords internal
-#' @include class_clv_fitted.R
-setClass(Class = "clv.fitted.transactions.static.cov", contains = "clv.fitted",
+#' @include class_clv_fitted_transactions.R
+setClass(Class = "clv.fitted.transactions.static.cov", contains = "clv.fitted.transactions",
          slots = c(
                    estimation.used.constraints = "logical",
 
@@ -79,7 +79,7 @@ setClass(Class = "clv.fitted.transactions.static.cov", contains = "clv.fitted",
 #' @importFrom methods new
 clv.fitted.transactions.static.cov <- function(cl, clv.model, clv.data){
   return(new("clv.fitted.transactions.static.cov",
-             clv.fitted(cl = cl, clv.model = clv.model, clv.data = clv.data)))
+             clv.fitted.transactions(cl = cl, clv.model = clv.model, clv.data = clv.data)))
 }
 
 

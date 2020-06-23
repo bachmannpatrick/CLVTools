@@ -4,12 +4,12 @@
 #'
 #' @template template_slot_bgnbdcbs
 #'
-#' @seealso \linkS4class{clv.fitted}, \linkS4class{clv.model.bgnbd.no.cov}, \linkS4class{clv.bgnbd.static.cov}
+#' @seealso \linkS4class{clv.fitted}, \linkS4class{clv.fitted.transactions}, \linkS4class{clv.model.bgnbd.no.cov}, \linkS4class{clv.bgnbd.static.cov}
 #'
 #' @keywords internal
 #' @importFrom methods setClass
-#' @include class_clv_model_bgnbd.R class_clv_data.R class_clv_fitted.R
-setClass(Class = "clv.bgnbd", contains = "clv.fitted",
+#' @include class_clv_model_bgnbd.R class_clv_data.R class_clv_fitted_transactions.R
+setClass(Class = "clv.bgnbd", contains = "clv.fitted.transactions",
          slots = c(
            cbs = "data.table"),
 
@@ -24,7 +24,7 @@ clv.bgnbd <- function(cl, clv.data){
   clv.model    <- clv.model.bgnbd.no.cov()
 
   return(new("clv.bgnbd",
-             clv.fitted(cl=cl, clv.model=clv.model, clv.data=clv.data),
+             clv.fitted.transactions(cl=cl, clv.model=clv.model, clv.data=clv.data),
              cbs = dt.cbs.bgnbd))
 }
 

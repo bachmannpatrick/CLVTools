@@ -4,12 +4,12 @@
 #'
 #' @template template_slot_pnbdcbs
 #'
-#' @seealso \linkS4class{clv.fitted}, \linkS4class{clv.model.pnbd.no.cov}, \linkS4class{clv.pnbd.static.cov}, \linkS4class{clv.pnbd.dynamic.cov}
+#' @seealso \linkS4class{clv.fitted.transactions}, \linkS4class{clv.model.pnbd.no.cov}, \linkS4class{clv.pnbd.static.cov}, \linkS4class{clv.pnbd.dynamic.cov}
 #'
 #' @keywords internal
 #' @importFrom methods setClass
-#' @include class_clv_model_pnbd.R class_clv_data.R class_clv_fitted.R
-setClass(Class = "clv.pnbd", contains = "clv.fitted",
+#' @include class_clv_model_pnbd.R class_clv_data.R class_clv_fitted_transactions.R
+setClass(Class = "clv.pnbd", contains = "clv.fitted.transactions",
          slots = c(
            cbs = "data.table"),
 
@@ -27,7 +27,7 @@ clv.pnbd <- function(cl, clv.data){
   clv.model   <- clv.model.pnbd.no.cov()
 
   return(new("clv.pnbd",
-             clv.fitted(cl=cl, clv.model=clv.model, clv.data=clv.data),
+             clv.fitted.transactions(cl=cl, clv.model=clv.model, clv.data=clv.data),
              cbs = dt.cbs.pnbd))
 }
 

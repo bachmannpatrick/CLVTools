@@ -53,6 +53,7 @@ Collate:
     'class_clv_data.R'
     'class_clv_model.R'
     'class_clv_fitted.R'
+    'class_clv_fitted_transactions.R'
     'class_clv_model_nocorrelation.R'
     'class_clv_model_bgnbd.R'
     'class_clv_bgnbd.R'

@@ -24,7 +24,7 @@ setOldClass("optimx")
 #' @importFrom methods setClass
 #' @keywords internal
 #' @include class_clv_model.R class_clv_data.R
-setClass(Class = "clv.fitted", # contains = "VIRTUAL",
+setClass(Class = "clv.fitted", contains = "VIRTUAL",
          slots = c(
            call      = "language",
            clv.model = "clv.model",
@@ -45,12 +45,3 @@ setClass(Class = "clv.fitted", # contains = "VIRTUAL",
            optimx.hessian           = matrix(data = numeric(0))))
 
 
-#' @importFrom methods new
-clv.fitted <- function(cl, clv.model, clv.data){
-
-  # Deep copy of clv.data if ever modified by reference later on
-  return(new("clv.fitted",
-             call      = cl,
-             clv.model = clv.model,
-             clv.data  = copy(clv.data)))
-}
