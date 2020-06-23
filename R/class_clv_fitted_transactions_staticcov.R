@@ -24,7 +24,7 @@
 #' @importFrom methods setClass
 #' @keywords internal
 #' @include class_clv_fitted.R
-setClass(Class = "clv.fitted.static.cov", contains = "clv.fitted",
+setClass(Class = "clv.fitted.transactions.static.cov", contains = "clv.fitted",
          slots = c(
                    estimation.used.constraints = "logical",
 
@@ -77,8 +77,8 @@ setClass(Class = "clv.fitted.static.cov", contains = "clv.fitted",
 
 
 #' @importFrom methods new
-clv.fitted.static.cov <- function(cl, clv.model, clv.data){
-  return(new("clv.fitted.static.cov",
+clv.fitted.transactions.static.cov <- function(cl, clv.model, clv.data){
+  return(new("clv.fitted.transactions.static.cov",
              clv.fitted(cl = cl, clv.model = clv.model, clv.data = clv.data)))
 }
 

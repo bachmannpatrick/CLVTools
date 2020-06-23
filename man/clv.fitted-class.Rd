@@ -32,6 +32,6 @@ Created from an existing clv.data and clv.model object (or subclasses thereof).
 }}
 
 \seealso{
-\code{\link[CLVTools:clv.fitted.static.cov-class]{clv.fitted.static.cov}}, \code{\link[CLVTools:clv.fitted.dynamic.cov-class]{clv.fitted.dynamic.cov}}
+\code{\link[CLVTools:clv.fitted.transactions.static.cov-class]{clv.fitted.transactions.static.cov}}, \code{\link[CLVTools:clv.fitted.dynamic.cov-class]{clv.fitted.dynamic.cov}}
 }
 \keyword{internal}

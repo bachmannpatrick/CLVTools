@@ -19,7 +19,7 @@ setOldClass("optimx")
 #' @slot optimx.estimation.output A single object of class \code{optimx} as returned from method \code{optimx::optimx} after optimizing the log-likelihood fitting the model.
 #' @slot optimx.hessian Single matrix that is the hessian extracted from the last row of the optimization output stored in the slot \code{optimx.estimation.output}.
 #'
-#' @seealso \code{\link[CLVTools:clv.fitted.static.cov-class]{clv.fitted.static.cov}}, \code{\link[CLVTools:clv.fitted.dynamic.cov-class]{clv.fitted.dynamic.cov}}
+#' @seealso \code{\link[CLVTools:clv.fitted.transactions.static.cov-class]{clv.fitted.transactions.static.cov}}, \code{\link[CLVTools:clv.fitted.dynamic.cov-class]{clv.fitted.dynamic.cov}}
 #'
 #' @importFrom methods setClass
 #' @keywords internal

@@ -3,13 +3,13 @@
 %   R/f_s3generics_clvfitted_staticcov.R
 \name{summary.clv.fitted}
 \alias{summary.clv.fitted}
-\alias{summary.clv.fitted.static.cov}
+\alias{summary.clv.fitted.transactions.static.cov}
 \alias{print.summary.clv.fitted}
 \title{Summarizing a fitted CLV model}
 \usage{
 \method{summary}{clv.fitted}(object, ...)
 
-\method{summary}{clv.fitted.static.cov}(object, ...)
+\method{summary}{clv.fitted.transactions.static.cov}(object, ...)
 
 \method{print}{summary.clv.fitted}(
   x,

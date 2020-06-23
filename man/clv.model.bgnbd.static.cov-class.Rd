@@ -11,6 +11,6 @@ to fit the BG/NBD model with static covariates.
 \seealso{
 Other clv model classes \linkS4class{clv.model}, \linkS4class{clv.model.bgnbd.no.cov}
 
-Classes using its instance: \linkS4class{clv.fitted.static.cov}
+Classes using its instance: \linkS4class{clv.fitted.transactions.static.cov}
 }
 \keyword{internal}
