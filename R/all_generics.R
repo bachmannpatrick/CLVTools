@@ -45,7 +45,7 @@ setGeneric("clv.controlflow.check.newdata", def = function(clv.fitted, user.newd
 
 
 # . Plot ----------------------------------------------------------------------------------------------------
-#function(clv.fitted, prediction.end, data.dyn.cov.life, data.dyn.cov.trans,...)
+# clv.controlflow.plot.check.inputs is needed for fitted.dyncov models only to check dyncov length
 setGeneric("clv.controlflow.plot.check.inputs", def = function(obj, prediction.end, cumulative, plot, label.line, verbose)
   standardGeneric("clv.controlflow.plot.check.inputs"))
 
