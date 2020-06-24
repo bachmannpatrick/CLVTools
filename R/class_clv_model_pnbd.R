@@ -6,18 +6,7 @@
 #' @seealso Classes using its instance: \linkS4class{clv.fitted}
 #' @include all_generics.R class_clv_model_withcorrelation.R
 #' @importFrom methods setClass
-setClass(Class = "clv.model.pnbd.no.cov", contains = "clv.model.with.correlation",
-         # no additional slots for pnbd base model
-
-         # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
-         prototype = list(
-           name.model                  = character(0),
-
-           names.original.params.model = character(0),
-           names.prefixed.params.model = character(0),
-           start.params.model          = numeric(0),
-
-           optimx.defaults = list()))
+setClass(Class = "clv.model.pnbd.no.cov", contains = "clv.model.with.correlation")
 
 
 #' @importFrom methods new

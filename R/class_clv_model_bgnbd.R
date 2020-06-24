@@ -6,14 +6,7 @@
 #' @seealso Classes using its instance: \linkS4class{clv.fitted}
 #'
 #' @include all_generics.R class_clv_model_nocorrelation.R
-setClass(Class = "clv.model.bgnbd.no.cov", contains = "clv.model.no.correlation",
-         slots = list(),
-         prototype = list(
-           name.model = character(0),
-           names.original.params.model = character(0),
-           names.prefixed.params.model = character(0),
-           start.params.model = numeric(0)
-         ))
+setClass(Class = "clv.model.bgnbd.no.cov", contains = "clv.model.no.correlation")
 
 #' @importFrom methods new
 clv.model.bgnbd.no.cov <- function(){

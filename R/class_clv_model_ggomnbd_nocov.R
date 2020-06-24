@@ -6,16 +6,7 @@
 #'
 #' @include all_generics.R class_clv_model_nocorrelation.R
 #' @importFrom methods setClass
-setClass(Class = "clv.model.ggomnbd.no.cov", contains = "clv.model.no.correlation",
-         # no additional slots required
-         slots = list(),
-         prototype = list(
-           name.model                  = character(0),
-           names.original.params.model = character(0),
-           names.prefixed.params.model = character(0),
-           start.params.model          = numeric(0),
-           optimx.defaults = list()
-         ))
+setClass(Class = "clv.model.ggomnbd.no.cov", contains = "clv.model.no.correlation")
 
 clv.model.ggomnbd.no.cov <- function(){
   return(new("clv.model.ggomnbd.no.cov",
