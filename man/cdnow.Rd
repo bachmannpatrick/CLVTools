@@ -3,7 +3,7 @@
 \docType{data}
 \name{cdnow}
 \alias{cdnow}
-\title{CDnow dataset}
+\title{CDNOW dataset}
 \format{
 A \code{data.table} with 6696 rows and 4 variables:
 \describe{

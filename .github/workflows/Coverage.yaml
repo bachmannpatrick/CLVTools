@@ -28,5 +28,16 @@ jobs:
 
       - name: Test coverage
         # run: covr::codecov() # uploads to codecov.io
-        run: covr::package_coverage(type = "tests", quiet = FALSE)
+        run: |
+
+          # If on a release branch (name starts with 'release'),
+          #   run all tests, including lengthy ones marked with skip_on_ci/skip_on_covr()
+          if(grepl(pattern = "^release", x = Sys.getenv("GITHUB_HEAD_REF"))){
+            Sys.setenv(R_COVR="")
+            print("On release branch: Run all coverage tests (setting R_COVR='')")
+          }else{
+            print("Not on release branch: Dont run all tests (skip_on_covr())")
+          }
+
+          covr::package_coverage(type = "tests", quiet = FALSE)
         shell: Rscript {0}

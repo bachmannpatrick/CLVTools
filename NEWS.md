@@ -1,3 +1,11 @@
+# CLVTools 0.6.0
+
+### NEW FEATURES
+* Beta-Geometric/NBD (BG/NBD) model to predict repeat transactions without and with static covariates
+* Gamma-Gompertz (GGompertz) model to predict repeat transactions without and with static covariates
+* Predictions are now possible for all periods >= 0 whereas before a minimum of 2 periods was required
+
+
 # CLVTools 0.5.0
 * Initial release of the CLVTools package
 

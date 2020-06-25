@@ -12,6 +12,7 @@ fct.testthat.correctness.nocov.correct.se <- function(method, cdnow, start.param
 
 fct.testthat.correctness.nocov.correct.coefs <- function(method, cdnow, start.params.model, params.nocov.coef, LL.nocov){
   test_that("Cdnow nocov correct coefs", {
+    skip_on_cran()
     expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "w", estimation.split = "1997-09-30"))
 
     l.args <- list(clv.data=clv.cdnow, start.params.model = start.params.model, verbose=FALSE)
@@ -71,6 +72,7 @@ fct.testthat.correctness.nocov.same.as.btyd <- function(clvtools.method, btyd.me
 fct.testthat.correctness.nocov.compare.cbs.vs.btyd <- function(method, cdnow){
   # cdnow has to be fit exactly as in BTYD example
   test_that("CBS is the same as BTYD", { # are the same - PNBD vs. BGNBD vs. BTYD", {
+    skip_on_cran()
 
     data(cdnowSummary, package = "BTYD", envir = environment())
     expect_silent(cal.cbs <- cdnowSummary$cbs)

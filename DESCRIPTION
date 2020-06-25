@@ -1,7 +1,7 @@
 Package: CLVTools
 Title: Tools for Customer Lifetime Value Estimation
 Version: 0.6.0
-Date: 2020-05-05
+Date: 2020-06-22
 Authors@R: c(
     person(given="Patrick", family="Bachmann",    email = "patrick.bachmann@business.uzh.ch", role = c("cre","aut")),
     person(given="Jeffrey", family="Naef",        email = "naef@stat.math.ethz.ch",role = "aut"),
@@ -18,7 +18,7 @@ Description: Probabilistic latent customer attrition models (also known as "buy-
     (Pareto/Negative-Binomial-Distribution), the BG/NBD mode (Beta-Gamma/Negative-Binomial-Distribution) and the GGom/NBD 
     (Gamma-Gompertz/Negative-Binomial-Distribution) for the purchase and the attrition processes as well as the Gamma/Gamma model 
     for the spending process. For reference to the Pareto/NBD model, see Schmittlein DC, Morrison DG, Colombo R (1987) <doi:10.1287/mnsc.33.1.1>, 
-    for the BG/NBD model, see Fader PS, Hardie BG, Lee K (2005) <doi:10.1287/mksc.l040.0098> and for the GGomp/NBD model see Bemmaor AC, Glady N (2012) 
+    for the BG/NBD model, see Fader PS, Hardie BG, Lee K (2005) <doi:10.1287/mksc.1040.0098> and for the GGom/NBD model see Bemmaor AC, Glady N (2012) 
     <doi:10.1287/mnsc.1110.1461>. For reference to the Gamma/Gamma model, see Fader PS, Hardie BG, Lee K (2005) <doi:10.1509/jmkr.2005.42.4.415>.
 Imports:
     data.table (>= 1.12.0),
@@ -28,7 +28,6 @@ Imports:
     Matrix (>= 1.2-17), 
     MASS,
     optimx (>= 2019-12.02),
-    Rcpp (>= 0.12.12),
     stats,
     utils
 Suggests:
@@ -36,6 +35,7 @@ Suggests:
     covr,
     doFuture, 
     doParallel,
+    future,
     knitr,
     rmarkdown,
     testthat
@@ -44,7 +44,7 @@ URL: https://github.com/bachmannpatrick/CLVTools
 BugReports: https://github.com/bachmannpatrick/CLVTools/issues
 NeedsCompilation: yes
 SystemRequirements: C++11
-LinkingTo: Rcpp, RcppArmadillo (>= 0.9.500.2.0), RcppGSL (>= 0.3.7)
+LinkingTo: Rcpp(>= 0.12.12), RcppArmadillo (>= 0.9.500.2.0), RcppGSL (>= 0.3.7)
 LazyLoad: yes
 Encoding: UTF-8
 Collate: 

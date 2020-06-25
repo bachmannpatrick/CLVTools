@@ -6,7 +6,9 @@ output:
 
 [![R CMD checks](https://github.com/bachmannpatrick/CLVTools/workflows/R-CMD-check/badge.svg?branch=development)](https://github.com/bachmannpatrick/CLVTools/actions)
 [![Tests](https://github.com/bachmannpatrick/CLVTools/workflows/testthat-tests/badge.svg?branch=development)](https://github.com/bachmannpatrick/CLVTools/actions)
-[![Downloads](https://cranlogs.r-pkg.org/badges/CLVTools)](https://cran.r-project.org/package=CLVTools)
+[![CRAN Status](http://www.r-pkg.org/badges/version/CLVTools)](https://cran.r-project.org/package=CLVTools)
+[![Repo Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![CRAN Downloads](https://cranlogs.r-pkg.org/badges/CLVTools)](https://cran.r-project.org/package=CLVTools)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
@@ -46,7 +48,7 @@ In future versions of **CLVTools** the following models are added. See [GitHub I
 
 (8) Standard BG/BB model (Fader, Hardie, & Shang 2010)
 
-(9) Gamma/Gamma model for estimating customer speding (Colombo & Jiang 1999; Fader, Hardie & Lee 2005; Fader & Hardie 2013)
+(9) Gamma/Gamma model to estimate customer spending (Colombo & Jiang 1999; Fader, Hardie & Lee 2005; Fader & Hardie 2013)
 
 
 In addition the framework features a system of layers between the optimizer and the log-likelihood function to allow the flexible addition of model extensions during the model fitting process. Currently these layers include:
@@ -77,7 +79,7 @@ Note that the package depends on RcppArmadillo and RcppGSL which will likely req
 ## A Minimal Example
 For detailed instructions and all available options and model variations see the [Walkthrough](https://www.clvtools.com/articles/CLVTools.html) and the [manual](https://www.clvtools.com/reference/index.html).
 
-Start by loadin the package:
+Start by loading the package:
 ```{r load-library}
 library("CLVTools")
 ```
@@ -90,7 +92,7 @@ data("apparelTrans")
 apparelTrans
 ```
 
-Before we estimate a model, we are required to initialize a data object using the `clvdata()` command. The data object contains the prepared transactional data and is later used as input for model fitting. Additionaly we sepecify options for the date and time units, estimation duration and variable names (see [Walkthrough](https://www.clvtools.com/articles/CLVTools.html) for details). Make sure to store the generated object in a variable, e.g. in our example `clv.apparel`.
+Before we estimate a model, we are required to initialize a data object using the `clvdata()` command. The data object contains the prepared transactional data and is later used as input for model fitting. Additionally we specify options for the date and time units, estimation duration and variable names (see [Walkthrough](https://www.clvtools.com/articles/CLVTools.html) for details). Make sure to store the generated object in a variable, e.g. in our example `clv.apparel`.
 
 ```{r load-CreateObj}
 clv.apparel <- clvdata(apparelTrans,  
@@ -109,7 +111,7 @@ est.pnbd <- pnbd(clv.data = clv.apparel)
 est.pnbd
 ```
 
-You can allways use `summary()` to get details on CLVTools object (also before they are estimated):
+You can always use `summary()` to get details on CLVTools object (also before they are estimated):
 
 ```{r param-summary}
 #Full detailed summary of the parameter estimates

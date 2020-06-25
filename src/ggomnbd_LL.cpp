@@ -29,9 +29,9 @@ arma::vec ggomnbd_integrate(const double r,
 
   // Calculate integral for each customer
   double res, err;
-  const unsigned int n = vAlpha_i.n_elem;
+  const arma::uword n = vAlpha_i.n_elem;
   arma::vec vRes(n);
-  for(int i = 0; i<n; i++){
+  for(arma::uword i = 0; i<n; i++){
     // These differ per customer
     params_i.alpha_i = vAlpha_i(i);
     params_i.beta_i  = vBeta_i(i);

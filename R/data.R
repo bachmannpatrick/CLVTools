@@ -1,4 +1,4 @@
-#' @title CDnow dataset
+#' @title CDNOW dataset
 #' @description
 #' A dataset containing the entire purchase history up to the end of June 1998
 #' of the cohort of 23,570 individuals who made their first-ever purchase at CDNOW in the first quarter

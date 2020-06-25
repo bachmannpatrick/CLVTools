@@ -58,12 +58,6 @@ clv.template.controlflow.predict <- function(clv.fitted, prediction.end, predict
             clv.fitted@clv.data@clv.time@name.time.unit,").")
 
 
-  # Need at least > 2 time units to predict
-  # if(prediction.period.length <= 2)
-  # ***Minimum of 1 period?
-  #   stop("The end of the prediction needs to be at least 3 periods after the end of the estimation period!", call. = FALSE)
-
-
 
   # Model prediction -------------------------------------------------------------------------------------
   dt.prediction <- clv.model.predict.clv(clv.model = clv.fitted@clv.model, clv.fitted = clv.fitted,

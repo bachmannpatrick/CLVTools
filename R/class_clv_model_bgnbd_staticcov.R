@@ -36,7 +36,7 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
                  start.param.cor=start.param.cor, optimx.args=optimx.args, verbose=verbose)
 
   if(length(list(...)) > 0)
-    stop("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
+    stop("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE)
 })
 
 # . clv.model.put.estimation.input ------------------------------------------------------------------------------------------------------------
