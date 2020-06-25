@@ -157,10 +157,10 @@ fct.testthat.runability.staticcov.works.with.combined.interlayers.with.cor <- fu
     expect_silent(p.hold <- do.call(what = method, args = l.args.holdout.1))
     expect_silent(p.no.hold <- do.call(what = method, args = l.args.no.holdout.1))
 
-    fct.helper.fitted.all.s3(p.hold,    full.names = c(model.param.names,  p.hold@name.correlation.cor, p.hold@names.prefixed.params.constr),
+    fct.helper.fitted.all.s3(p.hold,    full.names = c(model.param.names,  p.hold@clv.model@name.correlation.cor, p.hold@names.prefixed.params.constr),
                              clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold,
                              DERT.not.implemented = DERT.not.implemented)
-    fct.helper.fitted.all.s3(p.no.hold, full.names = c(model.param.names, p.no.hold@name.correlation.cor, p.no.hold@names.prefixed.params.constr),
+    fct.helper.fitted.all.s3(p.no.hold, full.names = c(model.param.names, p.no.hold@clv.model@name.correlation.cor, p.no.hold@names.prefixed.params.constr),
                              clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold,
                              DERT.not.implemented = DERT.not.implemented)
 
@@ -171,9 +171,9 @@ fct.testthat.runability.staticcov.works.with.combined.interlayers.with.cor <- fu
     expect_silent(p.hold    <- do.call(what = method, args = l.args.holdout.2))
     expect_silent(p.no.hold <- do.call(what = method, args = l.args.no.holdout.2))
 
-    fct.helper.fitted.all.s3(p.hold,    full.names = c(model.param.names,  p.hold@name.correlation.cor, p.hold@names.prefixed.params.free.life, p.hold@names.prefixed.params.free.trans),
+    fct.helper.fitted.all.s3(p.hold,    full.names = c(model.param.names,  p.hold@clv.model@name.correlation.cor, p.hold@names.prefixed.params.free.life, p.hold@names.prefixed.params.free.trans),
                              clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = DERT.not.implemented)
-    fct.helper.fitted.all.s3(p.no.hold, full.names = c(model.param.names, p.no.hold@name.correlation.cor, p.no.hold@names.prefixed.params.free.life, p.no.hold@names.prefixed.params.free.trans),
+    fct.helper.fitted.all.s3(p.no.hold, full.names = c(model.param.names, p.no.hold@clv.model@name.correlation.cor, p.no.hold@names.prefixed.params.free.life, p.no.hold@names.prefixed.params.free.trans),
                              clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = DERT.not.implemented)
 
     l.args.holdout.3 <- list(clv.data = clv.data.holdout, use.cor = TRUE, names.cov.constr = c("Gender", "Channel"),reg.lambdas = c(trans=10, life=10),verbose=FALSE)
@@ -183,10 +183,10 @@ fct.testthat.runability.staticcov.works.with.combined.interlayers.with.cor <- fu
     expect_silent(p.hold    <- do.call(what = method, args = l.args.holdout.3))
     expect_silent(p.no.hold <- do.call(what = method, args = l.args.no.holdout.3))
 
-    fct.helper.fitted.all.s3(p.hold,    full.names = c(model.param.names, p.hold@name.correlation.cor, p.hold@names.prefixed.params.constr),
+    fct.helper.fitted.all.s3(p.hold,    full.names = c(model.param.names, p.hold@clv.model@name.correlation.cor, p.hold@names.prefixed.params.constr),
                              clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold,
                              DERT.not.implemented = DERT.not.implemented)
-    fct.helper.fitted.all.s3(p.no.hold, full.names = c(model.param.names, p.no.hold@name.correlation.cor, p.no.hold@names.prefixed.params.constr),
+    fct.helper.fitted.all.s3(p.no.hold, full.names = c(model.param.names, p.no.hold@clv.model@name.correlation.cor, p.no.hold@names.prefixed.params.constr),
                              clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold,
                              DERT.not.implemented = DERT.not.implemented)
   })

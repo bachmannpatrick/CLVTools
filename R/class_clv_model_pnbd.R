@@ -2,11 +2,11 @@
 #' @template template_class_clvmodelnocov
 #'
 #' @keywords internal
-#' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.pnbd.static.cov-class}, \link{clv.model.pnbd.dynamic.cov-class}
-#' @seealso Classes using its instance: \link{clv.fitted-class}
-#' @include all_generics.R class_clv_model.R
+#' @seealso Other clv model classes \linkS4class{clv.model}, \linkS4class{clv.model.pnbd.static.cov}, \linkS4class{clv.model.pnbd.dynamic.cov}
+#' @seealso Classes using its instance: \linkS4class{clv.fitted}
+#' @include all_generics.R class_clv_model_withcorrelation.R
 #' @importFrom methods setClass
-setClass(Class = "clv.model.pnbd.no.cov", contains = "clv.model",
+setClass(Class = "clv.model.pnbd.no.cov", contains = "clv.model.with.correlation",
          # no additional slots for pnbd base model
 
          # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
@@ -46,20 +46,23 @@ clv.model.pnbd.no.cov <- function(){
 
 # .clv.model.check.input.args -----------------------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...){
+  err.msg <- c()
   # Have to be > 0 as will be logged
   if(any(start.params.model <= 0))
-    check_err_msg(err.msg = "Please provide only model start parameters greater than 0 as they will be log()-ed for the optimization!")
+    err.msg <- c(err.msg, "Please provide only model start parameters greater than 0 as they will be log()-ed for the optimization!")
 
-  if(length(list(...)) > 0)
-    stop("Any additional parameters passed in ... are not needed!", call. = FALSE)
+  err.msg <- c(err.msg, .check_user_data_single_boolean(b=use.cor, var.name ="use.cor"))
+  err.msg <- c(err.msg, check_user_data_startparamcorm(start.param.cor=start.param.cor, use.cor=use.cor))
+
+  check_err_msg(err.msg)
 })
 
 
 # .clv.model.put.estimation.input --------------------------------------------------------------------------------------------------------
-setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, verbose, ...){
-  # nothing to put specifically for this model
-  return(clv.fitted)
-})
+# setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, verbose, ...){
+#   # nothing to put specifically for this model
+#   return(clv.model)
+# })
 
 # .clv.model.transform.start.params.model --------------------------------------------------------------------------------------------------------
 #' @importFrom stats setNames
@@ -77,7 +80,7 @@ setMethod("clv.model.backtransform.estimated.params.model", signature = signatur
 
 # .clv.model.prepare.optimx.args --------------------------------------------------------------------------------------------------------
 #' @importFrom utils modifyList
-setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
+setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args){
 
   # Only add LL function args, everything else is prepared already, incl. start parameters
   optimx.args <- modifyList(prepared.optimx.args,
@@ -162,7 +165,7 @@ setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv
                                                         ncol = length(clv.model@names.prefixed.params.model))
 
   # If correlation, add the transformations for each parameter vs correlation param.m
-  if(clv.fitted@estimation.used.correlation){
+  if(clv.model@estimation.used.correlation){
     # This is same as m.to.cor
     cor.phi <- function(param.m, a, r, s, b){
       return(param.m * (sqrt(r)/(1+a)) * (a/(1+a))^r * (sqrt(s)/(1+b)) * (b/(1+b))^s)
@@ -171,7 +174,7 @@ setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv
     r <- exp(prefixed.params["log.r"])
     b <- exp(prefixed.params["log.beta"])
     s <- exp(prefixed.params["log.s"])
-    param.m <- prefixed.params[clv.fitted@name.prefixed.cor.param.m]
+    param.m <- prefixed.params[clv.model@name.prefixed.cor.param.m]
 
     # eq 2
     phi_dloga <- cor.phi(param.m=param.m, a=a, r=r, b=b, s=s) * (r - ((a*(1+r))/(1+a)))
@@ -185,12 +188,12 @@ setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv
     phi_dlogm <- (sqrt(r)/(1+a)) * (a/(1+a))^r * (sqrt(s)/(1+b)) * (b/(1+b))^s
 
     # Add to transformation matrix on last line only! (not aswell on the last column)
-    m.diag[clv.fitted@name.prefixed.cor.param.m, "log.alpha"] <- phi_dloga
-    m.diag[clv.fitted@name.prefixed.cor.param.m, "log.r"]     <- phi_dlogr
-    m.diag[clv.fitted@name.prefixed.cor.param.m, "log.beta"]  <- phi_dlogb
-    m.diag[clv.fitted@name.prefixed.cor.param.m, "log.s"]     <- phi_dlogs
-    m.diag[clv.fitted@name.prefixed.cor.param.m,
-           clv.fitted@name.prefixed.cor.param.m]              <- phi_dlogm
+    m.diag[clv.model@name.prefixed.cor.param.m, "log.alpha"] <- phi_dloga
+    m.diag[clv.model@name.prefixed.cor.param.m, "log.r"]     <- phi_dlogr
+    m.diag[clv.model@name.prefixed.cor.param.m, "log.beta"]  <- phi_dlogb
+    m.diag[clv.model@name.prefixed.cor.param.m, "log.s"]     <- phi_dlogs
+    m.diag[clv.model@name.prefixed.cor.param.m,
+           clv.model@name.prefixed.cor.param.m]              <- phi_dlogm
   }
 
   return(m.diag)

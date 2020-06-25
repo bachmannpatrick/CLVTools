@@ -153,12 +153,14 @@ setMethod("pnbd", signature = signature(clv.data="clv.data"), definition = funct
                                                                                     optimx.args=list(),
                                                                                     verbose=TRUE,...){
 
+  check_err_msg(check_user_data_emptyellipsis(...))
+
   cl  <- match.call(call = sys.call(-1), expand.dots = TRUE)
 
   obj <- clv.pnbd(cl=cl, clv.data=clv.data)
 
   return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
-                                           start.param.cor = start.param.cor, optimx.args = optimx.args, verbose=verbose, ...))
+                                           start.param.cor = start.param.cor, optimx.args = optimx.args, verbose=verbose))
 })
 
 #' @include class_clv_data_staticcovariates.R
@@ -174,6 +176,8 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.static.covariates"), 
                                                                                                       names.cov.constr=c(),start.params.constr=c(),
                                                                                                       reg.lambdas = c(), ...){
 
+  check_err_msg(check_user_data_emptyellipsis(...))
+
   cl  <- match.call(call = sys.call(-1), expand.dots = TRUE)
 
   obj <- clv.pnbd.static.cov(cl=cl, clv.data=clv.data)
@@ -184,7 +188,7 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.static.covariates"), 
                                            names.cov.life=names.cov.life, names.cov.trans=names.cov.trans,
                                            start.params.life=start.params.life, start.params.trans=start.params.trans,
                                            names.cov.constr=names.cov.constr,start.params.constr=start.params.constr,
-                                           reg.lambdas = reg.lambdas, ...))
+                                           reg.lambdas = reg.lambdas))
 })
 
 
@@ -202,6 +206,8 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.dynamic.covariates"),
                                                                                                        names.cov.constr=c(),start.params.constr=c(),
                                                                                                        reg.lambdas = c(), ...){
 
+  check_err_msg(check_user_data_emptyellipsis(...))
+
   cl  <- match.call(call = sys.call(-1), expand.dots = TRUE)
 
   obj <- clv.pnbd.dynamic.cov(cl = cl, clv.data=clv.data)
@@ -215,6 +221,6 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.dynamic.covariates"),
                                            names.cov.life=names.cov.life, names.cov.trans=names.cov.trans,
                                            start.params.life=start.params.life, start.params.trans=start.params.trans,
                                            names.cov.constr=names.cov.constr,start.params.constr=start.params.constr,
-                                           reg.lambdas = reg.lambdas, ...))
+                                           reg.lambdas = reg.lambdas))
 })
 

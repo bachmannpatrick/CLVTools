@@ -1,5 +1,5 @@
 # . clv.controlflow.estimate.check.inputs ------------------------------------------------------------------------
-setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv.fitted="clv.fitted"), definition = function(clv.fitted,  start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...){
+setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv.fitted="clv.fitted"), definition = function(clv.fitted,  start.params.model, optimx.args, verbose, ...){
 
   l.args <- list(...)
 
@@ -13,8 +13,7 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv
 
   # Check cor input
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name ="verbose"))
-  err.msg <- c(err.msg, .check_user_data_single_boolean(b=use.cor, var.name ="use.cor"))
-  err.msg <- c(err.msg, check_user_data_startparamcorm(start.param.cor=start.param.cor, use.cor=use.cor))
+
   # Check additional optimx args
   err.msg <- c(err.msg, check_user_data_optimxargs(optimx.args=optimx.args))
   check_err_msg(err.msg)
@@ -49,59 +48,32 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv
 })
 
 # . clv.controlflow.estimate.put.inputs ------------------------------------------------------------------------
-setMethod("clv.controlflow.estimate.put.inputs", signature =  signature(clv.fitted="clv.fitted"), definition = function(clv.fitted, cl, use.cor, ...){
-
+setMethod("clv.controlflow.estimate.put.inputs", signature =  signature(clv.fitted="clv.fitted"), definition = function(clv.fitted, cl, verbose, ...){
   clv.fitted@call <- cl
-
-  # Should correlation be calculated? -----------------------------------------------------------------
-  if(use.cor){
-    # Using correlation
-    clv.fitted@estimation.used.correlation <- TRUE
-  }else{
-    # No correlation
-    clv.fitted@estimation.used.correlation <- FALSE
-  }
-
   return(clv.fitted)
 })
 
 
 # . clv.controlflow.estimate.generate.start.params ------------------------------------------------------------------------
-setMethod("clv.controlflow.estimate.generate.start.params", signature = signature(clv.fitted="clv.fitted"), definition = function(clv.fitted, start.params.model,start.param.cor,verbose,...){
+setMethod("clv.controlflow.estimate.generate.start.params", signature = signature(clv.fitted="clv.fitted"), definition = function(clv.fitted, start.params.model, verbose, start.param.cor, ...){
 
   # Model params
-  if(is.null(start.params.model))
+  if(is.null(start.params.model)){
     untransformed.start.params.model <- setNames(clv.fitted@clv.model@start.params.model, clv.fitted@clv.model@names.original.params.model)
-  else
+  }else{
     untransformed.start.params.model <- start.params.model[clv.fitted@clv.model@names.original.params.model] # ensure order
+  }
 
   transformed.start.params.model <- clv.model.transform.start.params.model(clv.model = clv.fitted@clv.model,
                                                                            original.start.params.model = untransformed.start.params.model)
   names(transformed.start.params.model) <- clv.fitted@clv.model@names.prefixed.params.model
 
-
-  start.params <- transformed.start.params.model
-
-  # Correlation param m
-  if(clv.fitted@estimation.used.correlation){
-
-    # Transform correlation to param m
-    #   do model-specific transformation with the generated and transformed model parameters
-    if(is.null(start.param.cor)){
-      # Use cor=0 if none given
-      start.param.cor.param.m <- clv.model.cor.to.m(clv.model=clv.fitted@clv.model, prefixed.params.model=transformed.start.params.model,
-                                                    param.cor = 0)
-    }else{
-      start.param.cor.param.m <- clv.model.cor.to.m(clv.model=clv.fitted@clv.model, prefixed.params.model=transformed.start.params.model,
-                                                    param.cor = start.param.cor)
-    }
-
-    # Name and add to all start params
-    names(start.param.cor.param.m) <- clv.fitted@name.prefixed.cor.param.m
-    start.params <- c(start.params, start.param.cor.param.m)
+  if(clv.model.supports.correlation(clv.fitted@clv.model)){
+    # If the model supports correlation, start.param.cor is passed, otherwise not
+    transformed.start.params.model <- clv.model.generate.start.param.cor(clv.model=clv.fitted@clv.model, start.param.cor=start.param.cor, transformed.start.params=transformed.start.params.model)
   }
 
-  return(start.params)
+  return(transformed.start.params.model)
 })
 
 
@@ -128,7 +100,6 @@ setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(
   #   This could be handled by default parameters or with missing there,
   #   but passing them with "False" is much cleaner
 
-
   optimx.args <- modifyList(optimx.args, list(use.interlayer.constr        = FALSE,
                                               names.original.params.constr = character(0),
                                               names.prefixed.params.constr = character(0),
@@ -142,14 +113,23 @@ setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(
 
 
   # Everything to call the correlation layer
-  optimx.args <- modifyList(optimx.args, list(use.cor                   = clv.fitted@estimation.used.correlation,
-                                              name.prefixed.cor.param.m = clv.fitted@name.prefixed.cor.param.m,
+  # Default is no correlation
+  optimx.args <- modifyList(optimx.args, list(use.cor                   = FALSE,
+                                              name.prefixed.cor.param.m = character(0),
                                               # By default, always check the bounds of param m
                                               check.param.m.bounds      = TRUE),
                             keep.null = TRUE)
 
   # Correlation interlayer ---------------------------------------------------------------------
-  if(clv.fitted@estimation.used.correlation){
+  # Only turn on if needed
+  if(clv.model.estimation.used.correlation(clv.fitted@clv.model)){
+
+    optimx.args <- modifyList(optimx.args, list(use.cor                   = TRUE,
+                                                name.prefixed.cor.param.m = clv.fitted@clv.model@name.prefixed.cor.param.m,
+                                                # By default, always check the bounds of param m
+                                                check.param.m.bounds      = TRUE),
+                              keep.null = TRUE)
+
     # Use NM as default if correlation is estimated because the interlayer may return Inf
     #   if the params are out-of-bound
     optimx.args <- modifyList(optimx.args, list(method = "Nelder-Mead"))

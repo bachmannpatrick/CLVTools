@@ -9,8 +9,8 @@ This class implements the functionalities and model-specific steps which are req
 to fit the GGompertz/NBD model without covariates.
 }
 \seealso{
-Other clv model classes \link{clv.model-class}, \link{clv.model.ggomnbd.static.cov-class}
+Other clv model classes \linkS4class{clv.model}, \linkS4class{clv.model.ggomnbd.static.cov}
 
-Classes using its instance: \link{clv.fitted-class}
+Classes using its instance: \linkS4class{clv.fitted}
 }
 \keyword{internal}

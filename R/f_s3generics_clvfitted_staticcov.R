@@ -101,11 +101,12 @@ coef.clv.fitted.static.cov <- function(object, ...){
   #   append correlation param, if exists and should be returned. If not included here, it is removed from nocov param vec
   names.original.named.prefixed.all <- names(original.scale.coef.model)
 
-  if(object@estimation.used.correlation)
+  if(clv.model.estimation.used.correlation(clv.model = object@clv.model)){
     names(names.original.named.prefixed.all) <- c(object@clv.model@names.prefixed.params.model,
-                                                  object@name.prefixed.cor.param.m)
-  else
+                                                  object@clv.model@name.prefixed.cor.param.m)
+  }else{
     names(names.original.named.prefixed.all) <- object@clv.model@names.prefixed.params.model
+  }
 
   # Content + prefixed names for covs
   names.original.named.prefixed.all <- c(names.original.named.prefixed.all,

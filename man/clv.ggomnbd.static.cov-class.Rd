@@ -22,6 +22,6 @@ and as defined by the GGompertz/NBD model.}
 }}
 
 \seealso{
-\link{clv.fitted.static.cov-class}, \link{clv.model.ggomnbd.static.cov-class}, \link{clv.ggomnbd-class}
+\linkS4class{clv.fitted.static.cov}, \linkS4class{clv.model.ggomnbd.static.cov}, \linkS4class{clv.ggomnbd}
 }
 \keyword{internal}

@@ -4,9 +4,10 @@
 #' to fit the Pareto/NBD model with dynamic covariates.
 #'
 #' @keywords internal
-#' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.pnbd.no.cov-class}, \link{clv.model.pnbd.static.cov-class}
-#' @seealso Classes using its instance: \link{clv.fitted.dynamic.cov-class},
-#' @include all_generics.R class_clv_model.R class_clv_model_pnbd.R class_clv_model_pnbd_staticcov.R
+#' @seealso Other clv model classes \linkS4class{clv.model}, \linkS4class{clv.model.pnbd.no.cov}, \linkS4class{clv.model.pnbd.static.cov}
+#' @seealso Classes using its instance: \linkS4class{clv.fitted.dynamic.cov}
+#'
+#' @include all_generics.R class_clv_model_pnbd_staticcov.R
 setClass(Class = "clv.model.pnbd.dynamic.cov", contains = "clv.model.pnbd.static.cov")
 
 
@@ -29,31 +30,12 @@ clv.model.pnbd.dynamic.cov <- function(){
 
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
-# . clv.model.put.estimation.input ------------------------------------------------------------------------------------------------
-#' @importFrom methods callNextMethod
-setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, verbose, ...){
-  # Create walks - they are specific to the pnbd dyncov model
-
-  if(verbose)
-    message("Creating walks...")
-
-  l.walks <- pnbd_dyncov_makewalks(clv.data = clv.fitted@clv.data)
-
-  if(verbose)
-    message("Walks created.")
-
-  clv.fitted@data.walks.life  = l.walks[["data.walks.life"]]
-  clv.fitted@data.walks.trans = l.walks[["data.walks.trans"]]
-
-  return(callNextMethod())
-})
-
 
 # Override static cov implementation
 # . clv.model.prepare.optimx.args ------------------------------------------------------------------------------------------------
 #' @importFrom utils modifyList
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.pnbd.dynamic.cov"),
-          definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
+          definition = function(clv.model, clv.fitted, prepared.optimx.args){
 
             # Do not call the no.cov function because the LL is different
             x <- t.x <- T.cal <- NULL

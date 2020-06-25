@@ -4,7 +4,7 @@
 #'
 #' @template template_slot_pnbdcbs
 #'
-#' @seealso \link{clv.fitted-class}, \link{clv.model.pnbd.no.cov-class}, \link{clv.pnbd.static.cov-class}, \link{clv.pnbd.dynamic.cov-class}
+#' @seealso \linkS4class{clv.fitted}, \linkS4class{clv.model.pnbd.no.cov}, \linkS4class{clv.pnbd.static.cov}, \linkS4class{clv.pnbd.dynamic.cov}
 #'
 #' @keywords internal
 #' @importFrom methods setClass

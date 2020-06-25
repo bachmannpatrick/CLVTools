@@ -2,10 +2,11 @@
 #' @template template_class_clvmodelnocov
 #'
 #' @importFrom methods setClass
-#' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.bgnbd.static.cov-class}
-#' @seealso Classes using its instance: \link{clv.fitted-class}
-#' @include all_generics.R class_clv_model.R
-setClass(Class = "clv.model.bgnbd.no.cov", contains = "clv.model",
+#' @seealso Other clv model classes \linkS4class{clv.model}, \linkS4class{clv.model.bgnbd.static.cov}
+#' @seealso Classes using its instance: \linkS4class{clv.fitted}
+#'
+#' @include all_generics.R class_clv_model_nocorrelation.R
+setClass(Class = "clv.model.bgnbd.no.cov", contains = "clv.model.no.correlation",
          slots = list(),
          prototype = list(
            name.model = character(0),
@@ -34,25 +35,15 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
     err.msg <- c(err.msg, "Please provide only model start parameters greater than 0 as they will be log()-ed for the optimization!")
   }
 
-
-  if(use.cor){
-    err.msg <- c(err.msg, "Correlation is not supported for the BG/NBD model")
-  }
-
-  if(length(list(...)) > 0){
-    stop("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE)
-  }
-
   check_err_msg(err.msg)
-
 })
 
 
 # .clv.model.put.estimation.input --------------------------------------------------------------------------------------------------------
-setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, verbose, ...){
-  # nothing to put specifically for this model
-  return(clv.fitted)
-})
+# setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, verbose, ...){
+#   # nothing to put specifically for this model
+#   return(clv.model)
+# })
 
 # .clv.model.transform.start.params.model --------------------------------------------------------------------------------------------------------
 #' @importFrom stats setNames
@@ -69,7 +60,7 @@ setMethod("clv.model.backtransform.estimated.params.model", signature = signatur
 })
 
 # .clv.model.prepare.optimx.args --------------------------------------------------------------------------------------------------------
-setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
+setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args){
 
   # Only add LL function args, everything else is prepared already, incl. start parameters
   optimx.args <- modifyList(prepared.optimx.args,

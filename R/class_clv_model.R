@@ -14,10 +14,11 @@
 #' @slot start.params.model numeric vector of default values at original scale that should be used for the LL optimization if the user does not provide start parameters. Named with \code{names.original.params.model}.
 #' @slot optimx.defaults list of default arguments for calling \code{\link[optimx]{optimx}} with \code{do.call}. Named after the respective arguments in optimx.
 #'
-#' @seealso CLV model subclasses  \link{clv.model.pnbd.no.cov-class}, \link{clv.model.pnbd.static.cov-class}, \link{clv.model.pnbd.dynamic.cov-class}
-#' @seealso Class using its instances: \link{clv.fitted-class}
+#' @seealso CLV model subclasses with and without support for fitting with correlation \linkS4class{clv.model.with.correlation}, \linkS4class{clv.model.no.correlation}
+#' @seealso Class using its instances: \linkS4class{clv.fitted}
 #'
 #' @keywords internal
+#' @include all_generics.R
 #' @importFrom methods setClass
 setClass(Class = "clv.model", contains = "VIRTUAL",
          slots = list(
@@ -56,9 +57,9 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
 })
 
 # . clv.model.put.estimation.input -----------------------------------------------------------------------------
-setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, verbose, ...){
+setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model"), definition = function(clv.model, use.cor, ...){
   # Example: do nothing
-  # return(clv.fitted)
+  # return(clv.model)
   stop("The method clv.model.put.estimation.input has not been implemented by this model!")
 })
 
@@ -78,7 +79,7 @@ setMethod("clv.model.backtransform.estimated.params.model", signature = signatur
 })
 
 # . clv.model.prepare.optimx.args -----------------------------------------------------------------------------
-setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
+setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, prepared.optimx.args){
   stop("The method clv.model.prepare.optimx.args has not been implemented by this model!")
 })
 

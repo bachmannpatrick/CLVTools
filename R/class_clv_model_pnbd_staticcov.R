@@ -1,10 +1,10 @@
 #' @templateVar name_model_full Pareto/NBD
 #' @template template_class_clvmodelstaticcov
 #'
-#' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.pnbd.no.cov-class}, \link{clv.model.pnbd.dynamic.cov-class}
-#' @seealso Classes using its instance: \link{clv.fitted.static.cov-class},
+#' @seealso Other clv model classes \linkS4class{clv.model}, \linkS4class{clv.model.pnbd.no.cov}, \linkS4class{clv.model.pnbd.dynamic.cov}
+#' @seealso Classes using its instance: \linkS4class{clv.fitted.static.cov}
 #'
-#' @include all_generics.R class_clv_model.R class_clv_model_pnbd.R
+#' @include all_generics.R class_clv_model_pnbd.R
 setClass(Class = "clv.model.pnbd.static.cov", contains = "clv.model.pnbd.no.cov",
          slots = list(
            start.param.cov = "numeric"),
@@ -43,9 +43,6 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
               callNextMethod(clv.model=clv.model, clv.fitted=clv.fitted, start.params.model=start.params.model, use.cor=use.cor,
                              start.param.cor=start.param.cor, optimx.args=optimx.args, verbose=verbose)
 
-              if(length(list(...)) > 0)
-                stop("Any additional parameters passed in ... are not needed!", call. = FALSE)
-
               # Nothing model-specific to check about all other user inputs
               # Nothing to return
             })
@@ -71,7 +68,7 @@ setMethod(f = "clv.model.backtransform.estimated.params.cov", signature = signat
 # . clv.model.prepare.optimx.args -----------------------------------------------------------------------------------------------------
 #' @importFrom utils modifyList
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.pnbd.static.cov"),
-          definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
+          definition = function(clv.model, clv.fitted, prepared.optimx.args){
 
             # Do not call the no.cov function as the LL is different
 

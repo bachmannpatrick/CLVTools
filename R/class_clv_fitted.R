@@ -16,9 +16,6 @@ setOldClass("optimx")
 #' @slot clv.model Single object of (sub-) class \code{clv.model} that determines model-specific behavior.
 #' @slot clv.data Single object of (sub-) class \code{clv.data} that contains the data and temporal information to fit the model to.
 #' @slot prediction.params.model Numeric vector of the model parameters, set and used solely when predicting. Named after model parameters in original scale and derived from \code{coef()}.
-#' @slot estimation.used.correlation Single boolean whether the correlation was estimated.
-#' @slot name.prefixed.cor.param.m Single character vector of the internal name used for the correlation parameter during optimization.
-#' @slot name.correlation.cor Single character vector of the external name used for the correlation parameter.
 #' @slot optimx.estimation.output A single object of class \code{optimx} as returned from method \code{optimx::optimx} after optimizing the log-likelihood fitting the model.
 #' @slot optimx.hessian Single matrix that is the hessian extracted from the last row of the optimization output stored in the slot \code{optimx.estimation.output}.
 #'
@@ -35,10 +32,6 @@ setClass(Class = "clv.fitted", # contains = "VIRTUAL",
 
            prediction.params.model = "numeric",
 
-           estimation.used.correlation  = "logical",
-           name.prefixed.cor.param.m    = "character",
-           name.correlation.cor         = "character",
-
            # Can save optimx result as optimx class because setOldClass (optimx) is
            #  done before
            optimx.estimation.output = "optimx",
@@ -47,10 +40,6 @@ setClass(Class = "clv.fitted", # contains = "VIRTUAL",
          # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
          prototype = list(
            prediction.params.model = numeric(0),
-
-           estimation.used.correlation = logical(0),
-           name.prefixed.cor.param.m   = character(0),
-           name.correlation.cor        = character(0),
 
            optimx.estimation.output = structure(data.frame(), class="optimx"),
            optimx.hessian           = matrix(data = numeric(0))))
@@ -63,8 +52,5 @@ clv.fitted <- function(cl, clv.model, clv.data){
   return(new("clv.fitted",
              call      = cl,
              clv.model = clv.model,
-             clv.data  = copy(clv.data),
-
-             name.prefixed.cor.param.m   = "correlation.param.m",
-             name.correlation.cor        = "Cor(life,trans)"))
+             clv.data  = copy(clv.data)))
 }

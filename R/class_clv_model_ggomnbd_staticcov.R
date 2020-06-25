@@ -1,10 +1,10 @@
 #' @templateVar name_model_full GGompertz/NBD
 #' @template template_class_clvmodelstaticcov
 #'
-#' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.ggomnbd.no.cov-class}
-#' @seealso Classes using its instance: \link{clv.fitted.static.cov-class},
+#' @seealso Other clv model classes \linkS4class{clv.model}, \linkS4class{clv.model.ggomnbd.no.cov}
+#' @seealso Classes using its instance: \linkS4class{clv.fitted.static.cov}
 #'
-#' @include all_generics.R class_clv_model.R class_clv_model_ggomnbd_nocov.R
+#' @include all_generics.R class_clv_model_ggomnbd_nocov.R
 setClass(Class = "clv.model.ggomnbd.static.cov", contains = "clv.model.ggomnbd.no.cov",
          slots = list(start.param.cov = "numeric"),
          prototype = list(
@@ -36,9 +36,6 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
   #   but with no cov specific inputs only
   callNextMethod(clv.model=clv.model, clv.fitted=clv.fitted, start.params.model=start.params.model, use.cor=use.cor,
                  start.param.cor=start.param.cor, optimx.args=optimx.args, verbose=verbose)
-
-  if(length(list(...)) > 0)
-    check_err_msg("Any further parameters passed in ... are ignored because they are not needed by this model.")
 })
 
 # . clv.model.put.estimation.input ------------------------------------------------------------------------------------------------------------
@@ -64,7 +61,7 @@ setMethod(f = "clv.model.backtransform.estimated.params.cov", signature = signat
 
 
 # . clv.model.prepare.optimx.args -----------------------------------------------------------------------------------------------------
-setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.ggomnbd.static.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
+setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.ggomnbd.static.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args){
   # Do not call the no.cov function because the LL is different
 
   # Everything to call the LL function

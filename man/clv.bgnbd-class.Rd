@@ -22,6 +22,6 @@ and as defined by the BG/NBD model.}
 }}
 
 \seealso{
-\link{clv.fitted-class}, \link{clv.model.bgnbd.no.cov-class}, \link{clv.bgnbd.static.cov-class}
+\linkS4class{clv.fitted}, \linkS4class{clv.model.bgnbd.no.cov}, \linkS4class{clv.bgnbd.static.cov}
 }
 \keyword{internal}
