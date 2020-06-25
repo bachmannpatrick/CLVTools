@@ -25,7 +25,7 @@ bgnbd_staticcov_LL_sum(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 
 \item{vT_cal}{Vector of length n indicating the total number of periods of observation.}
 
-\item{vParams}{vector with the parameters for the BG/NBD model at loc scale and the static covariates at original scale. See Details.}
+\item{vParams}{vector with the parameters for the BG/NBD model at log scale and the static covariates at original scale. See Details.}
 
 \item{mCov_life}{Matrix containing the covariates data affecting the lifetime process. One column for each covariate.}
 

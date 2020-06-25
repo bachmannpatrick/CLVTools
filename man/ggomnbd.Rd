@@ -5,7 +5,7 @@
 \alias{ggomnbd,clv.data.dynamic.covariates-method}
 \alias{ggomnbd,clv.data-method}
 \alias{ggomnbd,clv.data.static.covariates-method}
-\title{Gamma-Gompertz/NBD models}
+\title{Gamma-Gompertz/NBD model}
 \usage{
 \S4method{ggomnbd}{clv.data}(
   clv.data,
@@ -80,12 +80,12 @@ The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.
 If no start parameters are given, r = 1, alpha = 1, beta = 1, b = 1, s = 1 is used.
 The model start parameters are required to be > 0.
 
-\subsection{The GGompertz/NBD model}{
-There are two key differences of the gamma/Gompertz/NBD (GGompertz/NBD) model compared to the relative to the well-known Pareto/NBD
+\subsection{The Gamma-Gompertz/NBD model}{
+There are two key differences of the gamma/Gompertz/NBD (GGom/NBD) model compared to the relative to the well-known Pareto/NBD
 model: (i) its probability density function can exhibit a mode at zero or an interior mode, and (ii) it can be skewed
-to the right or to the left. Therefore, the GGompertz/NBD model is more flexible than the Pareto/NBD model.
+to the right or to the left. Therefore, the GGom/NBD model is more flexible than the Pareto/NBD model.
 According to Bemmaor and Glady (2012) can indicate substantial differences in expected residual lifetimes compared to the Pareto/NBD.
-The GGompertz/NBD tends to be appropriate when firms are reputed and their offerings are differentiated.
+The GGom/NBD tends to be appropriate when firms are reputed and their offerings are differentiated.
 }
 }
 \examples{

@@ -6,6 +6,9 @@ output:
 
 [![R CMD checks](https://github.com/bachmannpatrick/CLVTools/workflows/R-CMD-check/badge.svg?branch=development)](https://github.com/bachmannpatrick/CLVTools/actions)
 [![Tests](https://github.com/bachmannpatrick/CLVTools/workflows/testthat-tests/badge.svg?branch=development)](https://github.com/bachmannpatrick/CLVTools/actions)
+[![CRAN Status](http://www.r-pkg.org/badges/version/CLVTools)](https://cran.r-project.org/package=CLVTools)
+[![Repo Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![CRAN Downloads](https://cranlogs.r-pkg.org/badges/CLVTools)](https://cran.r-project.org/package=CLVTools)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
@@ -33,17 +36,19 @@ Currently, CLVTools implements the following probabilistic models:
 
 (3) Pareto/NBD model with **time-varying** contextual factors (Bachmann, Meierer & Näf 2020)
 
-In future versions of **CLVTools** the following models are added. See [GitHub Issues](https://github.com/bachmannpatrick/CLVTools/projects) for a time-line.
-
 (4) Standard BG/NBD model (Fader, Hardie, & Lee 2005)
 
 (5) BG/NBD model with **time-invariant** contextual factors (Fader & Hardie 2007)
 
-(6) Standard Gamma/Gompertz/NBD (Bemmaor & Glady 2012) 
+(6) Standard Gamma/Gompertz/NBD (Bemmaor & Glady 2012)
 
 (7) Gamma/Gompertz/NBD model with **time-invariant** contextual factors (Näf, Bachmann & Meierer 2020)
 
+In future versions of **CLVTools** the following models are added. See [GitHub Issues](https://github.com/bachmannpatrick/CLVTools/projects) for a time-line.
+
 (8) Standard BG/BB model (Fader, Hardie, & Shang 2010)
+
+(9) Gamma/Gamma model to estimate customer spending (Colombo & Jiang 1999; Fader, Hardie & Lee 2005; Fader & Hardie 2013)
 
 
 In addition the framework features a system of layers between the optimizer and the log-likelihood function to allow the flexible addition of model extensions during the model fitting process. Currently these layers include:
@@ -70,6 +75,69 @@ devtools::install_github("bachmannpatrick/CLVTools", ref = "development")
 
 Note that the package depends on RcppArmadillo and RcppGSL which will likely require additional setup steps in order to compile and install the CLVTools package from source.
 
+
+## A Minimal Example
+For detailed instructions and all available options and model variations see the [Walkthrough](https://www.clvtools.com/articles/CLVTools.html) and the [manual](https://www.clvtools.com/reference/index.html).
+
+Start by loading the package:
+```{r load-library}
+library("CLVTools")
+```
+
+
+As Input data `CLVTools` requires customers' transaction history. Every transaction record consists of a purchase date and customer ID.
+
+```{r load-data}
+data("apparelTrans")
+apparelTrans
+```
+
+Before we estimate a model, we are required to initialize a data object using the `clvdata()` command. The data object contains the prepared transactional data and is later used as input for model fitting. Additionally we specify options for the date and time units, estimation duration and variable names (see [Walkthrough](https://www.clvtools.com/articles/CLVTools.html) for details). Make sure to store the generated object in a variable, e.g. in our example `clv.apparel`.
+
+```{r load-CreateObj}
+clv.apparel <- clvdata(apparelTrans,  
+                       date.format="ymd", 
+                       time.unit = "week",
+                       estimation.split = 40,
+                       name.id = "Id",
+                       name.date = "Date",
+                       name.price = "Price")
+```
+
+To estimate the first probabilistic latent attrition model we start with the standard Pareto/NBD model and therefore use the command `pnbd()` to fit the model and estimate model parameters. Other models such as the BG/NBD model (`bgnbd()`) and the GGomp/NBD (`ggomnbd()`) are available.
+
+```{r estimate-model}
+est.pnbd <- pnbd(clv.data = clv.apparel)
+est.pnbd
+```
+
+You can always use `summary()` to get details on CLVTools object (also before they are estimated):
+
+```{r param-summary}
+#Full detailed summary of the parameter estimates
+summary(est.pnbd)
+```
+
+Once the model parameters are estimated, we are able to predict future customer behavior on an individual level. To do so, we use `predict()` on the object with the estimated parameters (i.e. `est.pnbd`). In general, probabilistic customer attrition model predict three expected characteristics for every customer:
+
+* "conditional expected transactions" (CET), which is the number of transactions to expect form a customer during the prediction period,
+* "probability of a customer being alive" (PAlive) at the end of the estimation period and
+* "discounted expected residual transactions" (DERT) for every customer, which is the total number of transactions for the residual lifetime of a customer discounted to the end of the estimation period. 
+
+If spending information was provided when initializing the clvdata-object, also "customer lifetime value" (CLV) is predicted.
+
+```{r predict-model}
+results <- predict(est.pnbd)
+print(results)
+
+```
+
+`clvdata` objects may be plotted using the `plot()` command. Similar to `summary()`, the output of `plot()` adapts to the current modeling step.
+
+```{r plot-model, fig.height=4.40, fig.width=9}
+plot(est.pnbd)
+
+```
 
 ## Contributions
 

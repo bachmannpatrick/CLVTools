@@ -11,7 +11,7 @@
 #' @slot name.model Name of the model as it should be displayed
 #' @slot names.original.params.model character vector that defines the names of the model parameters as they should be reported
 #' @slot names.prefixed.params.model character vector that defines the names of the model parameters as they are named during LL optimization
-#' @slot start.params.model numeric vector of default values at original scale that should be used for the LL optimization if the user does not provide start parameters. Named with names.original.params.model.
+#' @slot start.params.model numeric vector of default values at original scale that should be used for the LL optimization if the user does not provide start parameters. Named with \code{names.original.params.model}.
 #' @slot optimx.defaults list of default arguments for calling \code{\link[optimx]{optimx}} with \code{do.call}. Named after the respective arguments in optimx.
 #'
 #' @seealso CLV model subclasses with and without support for fitting with correlation \linkS4class{clv.model.with.correlation}, \linkS4class{clv.model.no.correlation}
@@ -52,7 +52,7 @@ setClass(Class = "clv.model", contains = "VIRTUAL",
 setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...){
   # Example:
   # if(length(list(...)) > 0)
-  #   stop("Any further parameters passed in ... are not needed for this model.", call. = FALSE, immediate. = TRUE)
+  #   stop("Any further parameters passed in ... are not needed for this model.", call. = FALSE)
   stop("The method clv.model.check.input.args has not been implemented by this model!")
 })
 

@@ -1,3 +1,4 @@
+skip_on_cran()
 data("apparelTrans")
 data("apparelStaticCov")
 

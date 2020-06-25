@@ -68,6 +68,7 @@ fct.testthat.runability.common.works.with.cor <- function(method, clv.data.holdo
   test_that("Works with use.cor=T", {
     skip_on_cran()
     skip_on_ci()
+    skip_on_covr()
 
     l.args <- list(clv.data = clv.data.holdout, use.cor=TRUE, verbose=FALSE)
     expect_silent(m.cor <- do.call(what = method, args = l.args))

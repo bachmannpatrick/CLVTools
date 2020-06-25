@@ -13,6 +13,7 @@ fct.helper.test.runability.clv.data.summary <- function(clv.data){
   })
 
   test_that("summary prints",{
+    skip_on_cran()
     expect_output(print(summary(clv.data)))
   })
 }
@@ -20,18 +21,22 @@ fct.helper.test.runability.clv.data.summary <- function(clv.data){
 
 fct.helper.test.runability.clv.data.plot <- function(clv.data){
   test_that("plot, no options", {
+    skip_on_cran()
     expect_message(plot(clv.data), regexp = "Plotting")
   })
 
   test_that("plot, cumulative = FALSE", {
+    skip_on_cran()
     expect_message(plot(clv.data, cumulative=FALSE), regexp = "Plotting")
   })
 
   test_that("plot, cumulative = TRUE", {
+    skip_on_cran()
     expect_message(plot(clv.data, cumulative=TRUE), regexp = "Plotting")
   })
 
   test_that("plot, plot = FALSE, repeat trans = 0", {
+    skip_on_cran()
     expect_message(dt.plot <- plot(clv.data, plot=FALSE), regexp = "Plotting")
     expect_s3_class(dt.plot, "data.table")
     expect_true(isTRUE(all.equal(unlist(dt.plot[period.until == min(period.until), 2]),
@@ -39,10 +44,12 @@ fct.helper.test.runability.clv.data.plot <- function(clv.data){
   })
 
   test_that("plot, verbose = TRUE", {
+    skip_on_cran()
     expect_message(plot(clv.data, verbose=TRUE), regexp = "Plotting")
   })
 
   test_that("plot, verbose = FALSE", {
+    skip_on_cran()
     expect_silent(plot(clv.data, verbose=FALSE))
   })
 

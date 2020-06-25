@@ -1,3 +1,4 @@
+skip_on_cran()
 data("cdnow")
 
 context("Inputchecks - clvfitted - plot")
