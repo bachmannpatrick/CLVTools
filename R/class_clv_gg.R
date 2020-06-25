@@ -27,7 +27,7 @@ gg_cbs <- function(clv.data){
   #     x:        Number of repeat transactions := Number of actual transactions - 1
   #     Spending: Average (mean) spending per transaction (of all transactions, not only repeat)
 
-  trans.dt <- clv.data@data.transactions[Date <= clv.data@clv.time@timepoint.estimation.end]
+  trans.dt <- clv.data.get.transactions.in.estimation.period(clv.data = clv.data)
 
   cbs <- trans.dt[ , list(x         =.N,
                           Spending  = mean(Price, na.rm=TRUE)),

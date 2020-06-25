@@ -106,7 +106,7 @@ plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FA
     x@clv.data <- copy(newdata)
 
     # Do model dependent steps of adding newdata
-    x <- clv.model.put.newdata(clv.model = x@clv.model, clv.fitted=x, verbose=verbose)
+    x <- clv.model.process.newdata(clv.model = x@clv.model, clv.fitted=x, verbose=verbose)
   }
 
 
@@ -283,7 +283,7 @@ setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.fitt
 })
 
 
-#' @include class_clv_fitted.R
 #' @exportMethod plot
+#' @include class_clv_fitted.R
 #' @rdname plot.clv.fitted
 setMethod("plot", signature(x="clv.fitted"), definition = plot.clv.fitted)

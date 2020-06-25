@@ -87,9 +87,9 @@ setMethod(f = "clv.model.process.post.estimation", signature = signature(clv.mod
 })
 
 
-# . clv.model.put.newdata ------------------------------------------------------------------------------------------------
+# . clv.model.process.newdata ------------------------------------------------------------------------------------------------
 #' @importFrom methods callNextMethod
-setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, verbose){
+setMethod(f = "clv.model.process.newdata", signature = signature(clv.model = "clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, verbose){
   # do nocov preparations (new cbs only)
   clv.fitted <- callNextMethod()
 
@@ -126,13 +126,13 @@ setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.mo
 })
 
 
-# . clv.model.predict.clv ------------------------------------------------------------------------------------------------
-setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.dynamic.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
+# . clv.model.predict ------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict", signature(clv.model="clv.model.pnbd.dynamic.cov"), function(clv.model, clv.fitted, dt.predictions, verbose, continuous.discount.factor, ...){
 
   period.length <- period.last <- CET <- i.CET <- PAlive <- i.palive <-  DECT <- i.DECT <-  NULL
 
-  predict.number.of.periods <- dt.prediction[1, period.length]
-  tp.period.last <- dt.prediction[1, period.last]
+  predict.number.of.periods <- dt.predictions[1, period.length]
+  tp.period.last <- dt.predictions[1, period.last]
 
   if(verbose)
     message("Predicting for dyn cov model....")
@@ -140,14 +140,14 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.dynamic.c
 
   # Palive
   dt.palive <- pnbd_dyncov_palive(clv.fitted=clv.fitted)
-  dt.prediction[dt.palive, PAlive := i.palive, on="Id"]
+  dt.predictions[dt.palive, PAlive := i.palive, on="Id"]
 
 
   # CET
   dt.cet <- pnbd_dyncov_CET(clv.fitted = clv.fitted,
                             predict.number.of.periods = predict.number.of.periods,
                             prediction.end.date       = tp.period.last)
-  dt.prediction[dt.cet, CET := i.CET, on="Id"]
+  dt.predictions[dt.cet, CET := i.CET, on="Id"]
 
 
   # DECT
@@ -156,14 +156,14 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.dynamic.c
                                 predict.number.of.periods  = predict.number.of.periods,
                                 prediction.end.date        = tp.period.last,
                                 continuous.discount.factor = continuous.discount.factor)
-    dt.prediction[dt.dect, DECT :=i.DECT, on="Id"]
+    dt.predictions[dt.dect, DECT :=i.DECT, on="Id"]
   }else{
     # If the discount factor is zero, the results correspond to CET
     #   DECT crashes for discount.factor = 0
-    dt.prediction[, DECT := CET]
+    dt.predictions[, DECT := CET]
   }
 
-  return(dt.prediction)
+  return(dt.predictions)
 })
 
 

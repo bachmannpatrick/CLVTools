@@ -1,4 +1,7 @@
+#' Fitted CLV Transaction Model without covariates
+#'
 #' @include class_clv_fitted.R
+#' @keywords internal
 setClass(Class = "clv.fitted.transactions", contains = "clv.fitted")
 
 

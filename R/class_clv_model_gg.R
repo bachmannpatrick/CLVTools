@@ -72,6 +72,37 @@ setMethod("clv.model.process.post.estimation", signature = signature(clv.model="
   return(clv.fitted)
 })
 
+# clv.model.process.newdata --------------------------------------------------------------------------------------------------------
+setMethod(f = "clv.model.process.newdata", signature = signature(clv.model = "clv.model.gg"), definition = function(clv.model, clv.fitted, verbose){
+
+  # clv.data in clv.fitted is already replaced with newdata here
+  # Only need to redo cbs if new data is given
+
+  clv.fitted@cbs <- gg_cbs(clv.data = clv.fitted@clv.data)
+  return(clv.fitted)
+})
+
+
+
+# .clv.model.predict -------------------------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict", signature(clv.model="clv.model.gg"), function(clv.model, clv.fitted, dt.predictions, verbose, ...){
+  cbs.x <- cbs.Spending <- i.Spending <- i.x <- NULL
+
+  p     <- clv.fitted@prediction.params.model[["p"]]
+  q     <- clv.fitted@prediction.params.model[["q"]]
+  gamma <- clv.fitted@prediction.params.model[["gamma"]]
+
+  # Predict spending
+  #   add data from cbs by Id to ensure matching
+  dt.predictions[clv.fitted@cbs, cbs.x := i.x,               on="Id"]
+  dt.predictions[clv.fitted@cbs, cbs.Spending := i.Spending, on="Id"]
+  dt.predictions[, predicted.Spending := (gamma + cbs.Spending * cbs.x) * p/(p * cbs.x + q - 1)]
+  dt.predictions[, cbs.x        := NULL]
+  dt.predictions[, cbs.Spending := NULL]
+
+  return(dt.predictions)
+})
+
 
 # .clv.model.vcov.jacobi.diag --------------------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv.model.gg"), definition = function(clv.model, clv.fitted, prefixed.params){

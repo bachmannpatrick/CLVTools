@@ -68,6 +68,17 @@ clv.data.has.spending <- function(clv.data){
   return(clv.data@has.spending)
 }
 
+clv.data.get.transactions.in.estimation.period <- function(clv.data){
+  Date <- NULL
+  return(clv.data@data.transactions[Date <= clv.data@clv.time@timepoint.estimation.end])
+}
+
+clv.data.get.transactions.in.holdout.period <- function(clv.data){
+  # **TODO: Remove or implement clean
+  stopifnot(clv.data.has.holdout(clv.data))
+  Date <- NULL
+  return(clv.data@data.transactions[Date >= clv.data@clv.time@timepoint.holdout.start])
+}
 
 clv.data.make.repeat.transactions <- function(dt.transactions){
   Date <- previous <- NULL
@@ -116,7 +127,7 @@ clv.data.mean.interpurchase.times <- function(clv.data, dt.transactions){
   Id <- num.trans <- Date <- NULL
 
   num.transactions <- dt.transactions[, list(num.trans = .N), by="Id"]
-  
+
   return(rbindlist(list(
     # 1 Transaction = NA
     dt.transactions[Id %in% num.transactions[num.trans == 1,Id], list(interp.time = NA_real_, Id)],

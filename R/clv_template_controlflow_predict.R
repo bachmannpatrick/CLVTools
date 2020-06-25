@@ -1,186 +1,65 @@
 #' @importFrom stats predict
-#' @importFrom methods extends
-#' @include all_generics.R
-clv.template.controlflow.predict <- function(clv.fitted, prediction.end, predict.spending, continuous.discount.factor, verbose, user.newdata){
-  Id <- Date <- Price <- DERT <- DECT <- actual.spending <- actual.x <- predicted.CLV <- predicted.Spending <- NULL # cran silence
-  period.first <- period.last <- period.length <- cbs.x <- i.x <- cbs.Spending <- i.Spending <- NULL
-  i.actual.x <- i.actual.spending <- NULL
+clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, ...){
 
+  # ***TODO: For development purposes only: All additional args have to be named!
+  l.elipsis <- list(...)
+  if(length(l.elipsis)>0){
+    names.ellipsis.args <- names(list(...))
+    stopifnot(!is.null(names.ellipsis.args))
+    stopifnot(all(nchar(names(list(...)))>0))
+  }
 
-  # Process Newdata ----------------------------------------------------------------------------------------------
+  # Process Newdata -------------------------------------------------------------------------------------
   # Because many of the following steps refer to the data stored in the fitted model,
   #   it first is replaced with newdata before any other steps are done
   if(!is.null(user.newdata)){
     # check newdata
-    clv.controlflow.check.newdata(clv.fitted = clv.fitted, user.newdata = user.newdata, prediction.end=prediction.end)
+    clv.controlflow.check.newdata(clv.fitted = clv.fitted, user.newdata = user.newdata, ...)
 
     # Replace data in model with newdata
     #   Deep copy to not change user input
     clv.fitted@clv.data <- copy(user.newdata)
 
     # Do model dependent steps of adding newdata
-    clv.fitted <- clv.model.put.newdata(clv.model = clv.fitted@clv.model, clv.fitted=clv.fitted, verbose=verbose)
+    clv.fitted <- clv.model.process.newdata(clv.model = clv.fitted@clv.model, clv.fitted=clv.fitted, verbose=verbose)
   }
 
 
   # Input checks ----------------------------------------------------------------------------------------
   #   Only after newdata replaced clv.data stored in clv.fitted because inputchecks use clv.fitted@clv.data
-  clv.controlflow.predict.check.inputs(clv.fitted=clv.fitted, prediction.end=prediction.end, predict.spending=predict.spending,
-                                       continuous.discount.factor=continuous.discount.factor,
-                                       verbose=verbose)
+  clv.controlflow.predict.check.inputs(clv.fitted=clv.fitted, verbose=verbose, ...)
 
+  # Prediction result table -----------------------------------------------------------------------------
+  dt.predictions <- clv.controlflow.predict.build.result.table(clv.fitted=clv.fitted, verbose=verbose, ...)
 
+  # Model prediction ------------------------------------------------------------------------------------
+  dt.predictions <- clv.model.predict(clv.model = clv.fitted@clv.model, clv.fitted = clv.fitted,
+                                      dt.predictions = dt.predictions, verbose = verbose, ...)
+  setkeyv(dt.predictions, "Id")
 
-  # Prediction result table ------------------------------------------------------------------------------
-  dt.prediction <- copy(clv.fitted@cbs[, "Id"])
+  # Actuals ---------------------------------------------------------------------------------------------¨
+  has.actuals    <- clv.controlflow.predict.get.has.actuals(clv.fitted, dt.predictions = dt.predictions)
+  dt.predictions <- clv.controlflow.predict.add.actuals(clv.fitted = clv.fitted, dt.predictions = dt.predictions,
+                                                        has.actuals = has.actuals, verbose = verbose, ...)
 
-  # Add information about range of prediction period
-  #   tp.prediction.start: Start of prediction, including this timepoint
-  #   tp.prediction.end: End of prediction period which includes this timepoint
-  #   prediction.length: Length of period for which predictions should be made, in number of periods
+  # post.process / add any additional steps -------------------------------------------------------------
+  # set col order etc
+  dt.predictions <- clv.controlflow.predict.post.process.prediction.table(clv.fitted = clv.fitted,
+                                                                          has.actuals = has.actuals,
+                                                                          dt.predictions = dt.predictions,
+                                                                          verbose = verbose, ...)
 
-  # Whether the prediction.end is valid after conversion is done in
-  #   clv.time.get.prediction.table(). Cannot be done before because
-  #   the end of the prediction period cannot be determined until after newdata is set
-  dt.prediction.time.table <- clv.time.get.prediction.table(clv.time = clv.fitted@clv.data@clv.time,
-                                                            user.prediction.end = prediction.end)
-
-  # Add information to prediction table
-  dt.prediction <- cbind(dt.prediction, dt.prediction.time.table)
-
-  timepoint.prediction.first <- dt.prediction[1, period.first]
-  timepoint.prediction.last  <- dt.prediction[1, period.last]
-  prediction.period.length   <- dt.prediction[1, period.length]
-
-  if(verbose)
-    message("Predicting from ", timepoint.prediction.first, " until (incl.) ",
-            timepoint.prediction.last, " (", format(prediction.period.length, digits = 4, nsmall=2)," ",
-            clv.fitted@clv.data@clv.time@name.time.unit,").")
-
-
-  # Need at least > 2 time units to predict
-  # if(prediction.period.length <= 2)
-  # ***Minimum of 1 period?
-  #   stop("The end of the prediction needs to be at least 3 periods after the end of the estimation period!", call. = FALSE)
-
-
-
-  # Model prediction -------------------------------------------------------------------------------------
-  dt.prediction <- clv.model.predict.clv(clv.model = clv.fitted@clv.model, clv.fitted = clv.fitted,
-                                         dt.prediction = dt.prediction,
-                                         continuous.discount.factor = continuous.discount.factor,
-                                         verbose = verbose)
-  setkeyv(dt.prediction, "Id")
-
-
-
-
-  # Actuals data -------------------------------------------------------------------------------------------
-  #   Only if:
-  #       - there is a holdout
-  #       - the prediction is not beyond holdout
-  #
-  #   Data until prediction end
-  #     actual.x:         number of transactions
-  #     actual.spending:  $
-
-  has.actuals <- clv.data.has.holdout(clv.fitted@clv.data) & (timepoint.prediction.last <= clv.fitted@clv.data@clv.time@timepoint.holdout.end)
-  if(has.actuals)
-  {
-    # only what is in prediction period!
-
-    if(clv.data.has.spending(clv.fitted@clv.data)){
-      dt.actuals    <- clv.fitted@clv.data@data.transactions[between(x = Date,
-                                                                 lower = timepoint.prediction.first,
-                                                                 upper = timepoint.prediction.last,
-                                                                 incbounds = TRUE),
-                                                         list(actual.x        = .N,
-                                                              actual.spending = sum(Price)),
-                                                         by="Id"]
-    }else{
-      # No Spending
-      dt.actuals    <- clv.fitted@clv.data@data.transactions[between(x = Date,
-                                                                 lower = timepoint.prediction.first,
-                                                                 upper = timepoint.prediction.last,
-                                                                 incbounds = TRUE),
-                                                         list(actual.x        = .N,
-                                                              actual.spending = 0),
-                                                         by="Id"]
-    }
-
-
-    # add actuals to prediction
-    setkeyv(dt.actuals, "Id")
-    dt.prediction[dt.actuals,             actual.x  := i.actual.x,  on="Id"]
-    dt.prediction[is.na(actual.x),        actual.x  := 0]
-    dt.prediction[dt.actuals,             actual.spending := i.actual.spending, on="Id"]
-    dt.prediction[is.na(actual.spending), actual.spending := 0]
-  }
-
-
-  # Predict spending ---------------------------------------------------------------------------
-  #   Estimate a GG model for this
-  #   CLV: DERT * Spending
-  #  Input checks already checked whether there is spending data in clv.data
-  if(predict.spending){
-
-    # Optimize GG LL
-    results <- optimx(par    = c(p=log(1),q=log(1),gamma=log(1)), # will be exp()ed in gg_LL
-                      fn     = gg_LL,
-                      vX     = clv.fitted@cbs$x,
-                      vM_x   = clv.fitted@cbs$Spending,
-                      upper  = c(log(10000),log(10000),log(10000)),
-                      lower  = c(log(0),log(0),log(0)),
-                      method = "L-BFGS-B",
-                      control=list(trace = 0,
-                                   # Do not perform starttests because it checks the scales with max(logpar)-min(logpar)
-                                   #   but all standard start parameters are <= 0, hence there are no logpars what
-                                   #   produces a warning
-                                   starttests = FALSE,
-                                   maxit=3000))
-    p     <- exp(coef(results)[1,"p"])
-    q     <- exp(coef(results)[1,"q"])
-    gamma <- exp(coef(results)[1,"gamma"])
-
-    # Predict spending
-    #   add data from cbs by Id to ensure matching
-    dt.prediction[clv.fitted@cbs, cbs.x := i.x, on="Id"]
-    dt.prediction[clv.fitted@cbs, cbs.Spending := i.Spending, on="Id"]
-    dt.prediction[, predicted.Spending := (gamma + cbs.Spending * cbs.x) * p/(p * cbs.x + q - 1)]
-    dt.prediction[, cbs.x        := NULL]
-    dt.prediction[, cbs.Spending := NULL]
-
-    # Calculate CLV
-    if("DERT" %in% colnames(dt.prediction))
-      dt.prediction[, predicted.CLV := DERT * predicted.Spending]
-    if("DECT" %in% colnames(dt.prediction))
-      dt.prediction[, predicted.CLV := DECT * predicted.Spending]
-  }
-
-
-
-  # Present cols in desired order ------------------------------------------------------------
-  cols <- c("Id", "period.first", "period.last", "period.length")
-  if(has.actuals)
-    cols <- c(cols, c("actual.x", "actual.spending"))
-
-  if("DERT" %in% colnames(dt.prediction))
-    cols <- c(cols, "PAlive", "CET", "DERT")
-  if("DECT" %in% colnames(dt.prediction))
-    cols <- c(cols, "PAlive", "CET", "DECT")
-
-  if(predict.spending)
-    cols <- c(cols, c("predicted.Spending", "predicted.CLV"))
-  setcolorder(dt.prediction, cols)
 
   # data.table does not print when returned because it is returned directly after last [:=]
   # " if a := is used inside a function with no DT[] before the end of the function, then the next
   #   time DT or print(DT) is typed at the prompt, nothing will be printed. A repeated DT or print(DT)
   #   will print. To avoid this: include a DT[] after the last := in your function."
-  dt.prediction[]
+  dt.predictions[]
 
-  return(dt.prediction)
+
+  return(dt.predictions)
 }
+
 
 
 
@@ -312,9 +191,7 @@ clv.template.controlflow.predict <- function(clv.fitted, prediction.end, predict
 #' @export
 predict.clv.fitted <- function(object, newdata=NULL, prediction.end=NULL, predict.spending=clv.data.has.spending(object@clv.data),
                                continuous.discount.factor=0.1, verbose=TRUE, ...){
-  # stop if unnecessary input, user does not know what is doing
-  if(length(list(...))>0)
-    stop("Any additional parameters passed in ... are not needed!", call. = FALSE)
+  check_err_msg(check_user_data_emptyellipsis())
 
   clv.template.controlflow.predict(clv.fitted=object, prediction.end=prediction.end, predict.spending=predict.spending,
                                    continuous.discount.factor=continuous.discount.factor, verbose=verbose, user.newdata=newdata)

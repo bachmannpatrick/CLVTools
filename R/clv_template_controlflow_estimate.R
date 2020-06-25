@@ -4,7 +4,7 @@ clv.template.controlflow.estimate <- function(clv.fitted,
                                               optimx.args,
                                               verbose,
                                               ...){
-  # For development purposes only: All additional args have to be named!
+  # ***TODO: For development purposes only: All additional args have to be named!
   l.elipsis <- list(...)
   if(length(l.elipsis)>0){
     names.ellipsis.args <- names(list(...))

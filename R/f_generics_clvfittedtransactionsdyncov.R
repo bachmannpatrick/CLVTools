@@ -19,7 +19,7 @@ setMethod("clv.controlflow.plot.check.inputs", signature(obj="clv.fitted.transac
 
 # . clv.controlflow.check.newdata ------------------------------------------------------------------------
 #' @importFrom methods callNextMethod
-setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.transactions.dynamic.cov"), definition = function(clv.fitted, user.newdata, prediction.end){
+setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.transactions.dynamic.cov"), definition = function(clv.fitted, user.newdata, prediction.end, ...){
   # Do static cov (and hence also nocov) inputchecks first for newdata
   callNextMethod()
 
@@ -34,11 +34,11 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.tran
   #   Convert prediction.end already for this
   #   newdata will replace existing data therefore check its cov
   #     Also clv.time in newdata has to be used for conversion of prediction.end
-  dt.prediction <- clv.time.get.prediction.table(clv.time = user.newdata@clv.time,
+  dt.predictions <- clv.time.get.prediction.table(clv.time = user.newdata@clv.time,
                                                  user.prediction.end = prediction.end)
 
   tp.last.required.cov.period <- clv.time.floor.date(clv.time = user.newdata@clv.time,
-                                                     timepoint = dt.prediction[1, period.last])
+                                                     timepoint = dt.predictions[1, period.last])
 
   # only need to check one cov data, guaranteed that both are same length
   if(tp.last.required.cov.period > user.newdata@data.cov.trans[, max(Cov.Date)])
@@ -50,7 +50,7 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.tran
 
 # . clv.controlflow.predict.check.inputs ------------------------------------------------------------------------
 #' @importFrom methods callNextMethod
-setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.fitted="clv.fitted.transactions.dynamic.cov"), function(clv.fitted, prediction.end, continuous.discount.factor, predict.spending, verbose){
+setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.fitted="clv.fitted.transactions.dynamic.cov"), function(clv.fitted, verbose, prediction.end, continuous.discount.factor, predict.spending, ...){
   # Do static cov (and hence also nocov) inputchecks first
   #   After this, newdata is basically ok
   callNextMethod()
@@ -61,10 +61,10 @@ setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.
 
   # Check that dyncov covariate is long enough for prediction end
   #   Convert prediction.end already for this
-  dt.prediction <- clv.time.get.prediction.table(clv.time = clv.fitted@clv.data@clv.time,
+  dt.predictions <- clv.time.get.prediction.table(clv.time = clv.fitted@clv.data@clv.time,
                                                  user.prediction.end = prediction.end)
   tp.last.required.cov.period <- clv.time.floor.date(clv.time = clv.fitted@clv.data@clv.time,
-                                                     timepoint = dt.prediction[1, period.last])
+                                                     timepoint = dt.predictions[1, period.last])
 
   # only need to check one cov data, guaranteed that both are same length
   if(tp.last.required.cov.period > clv.fitted@clv.data@data.cov.trans[, max(Cov.Date)])

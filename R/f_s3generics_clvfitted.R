@@ -214,7 +214,7 @@ confint.clv.fitted <- function(object, parm, level = 0.95, ...){
 #' @include class_clv_fitted.R
 print.clv.fitted <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
   # Short print similar to lm
-  # Only print the main model coefs
+
   cat(x@clv.model@name.model, " Model\n")
 
   cat("\nCall:\n", paste(deparse(x@call), sep = "\n", collapse = "\n"), "\n", sep = "")

@@ -46,7 +46,7 @@ ggomnbd_cbs <- function(clv.data){
   #     Spending: Average (mean) spending per transaction (of all transactions, not only repeat)
   #
   #     All time is expressed in time units
-  trans.dt <- clv.data@data.transactions[Date <= clv.data@clv.time@timepoint.estimation.end]
+  trans.dt <- clv.data.get.transactions.in.estimation.period(clv.data = clv.data)
 
   #Initial cbs, for every Id a row
   if(clv.data@has.spending){

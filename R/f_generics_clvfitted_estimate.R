@@ -42,7 +42,7 @@ setMethod("clv.controlflow.estimate.generate.start.params", signature = signatur
 
   if(clv.model.supports.correlation(clv.fitted@clv.model)){
     # If the model supports correlation, start.param.cor is passed, otherwise not
-    transformed.start.params.model <- clv.model.generate.start.param.cor(clv.model=clv.fitted@clv.model, start.param.cor=start.param.cor, transformed.start.params=transformed.start.params.model)
+    transformed.start.params.model <- clv.model.generate.start.param.cor(clv.model=clv.fitted@clv.model, start.param.cor=start.param.cor, transformed.start.params.model=transformed.start.params.model)
   }
 
   return(transformed.start.params.model)

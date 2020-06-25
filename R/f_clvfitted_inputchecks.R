@@ -272,7 +272,7 @@ check_user_data_emptyellipsis <- function(...){
 
   err.msg <- c()
   if(length(list(...)) > 0)
-    err.msg <- c(err.msg, "Any further parameters passed in ... are ignored because they are not needed by this model.")
+    err.msg <- c(err.msg, "Any further parameters passed in ... are ignored because they are not needed.")
     # stop("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
 
   return(err.msg)

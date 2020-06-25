@@ -64,15 +64,12 @@ plot.clv.data <- function(x, prediction.end=NULL, cumulative=FALSE, plot=TRUE, v
 
   # Check inputs ------------------------------------------------------------------------------------------------------
   err.msg <- c()
+  err.msg <- c(err.msg, check_user_data_emptyellipsis(...))
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=cumulative, var.name="cumulative"))
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=plot, var.name="plot"))
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
   err.msg <- c(err.msg, check_user_data_predictionend(clv.fitted=x, prediction.end=prediction.end))
   check_err_msg(err.msg)
-
-  if(length(list(...))>0){
-    stop("Any additional parameters passed in ... are not needed!", call. = FALSE)
-  }
 
 
   # Define time period to plot -----------------------------------------------------------------------------------------

@@ -46,7 +46,7 @@ pnbd_cbs <- function(clv.data){
   #
   #     All time is expressed in time units
 
-  trans.dt <- clv.data@data.transactions[Date <= clv.data@clv.time@timepoint.estimation.end]
+  trans.dt <- clv.data.get.transactions.in.estimation.period(clv.data = clv.data)
 
   #Initial cbs, for every Id a row
   if(clv.data.has.spending(clv.data)){

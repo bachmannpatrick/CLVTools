@@ -188,8 +188,8 @@ setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv
   return(m.diag)
 })
 
-# .clv.model.put.newdata --------------------------------------------------------------------------------------------------------
-setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, verbose){
+# clv.model.process.newdata --------------------------------------------------------------------------------------------------------
+setMethod(f = "clv.model.process.newdata", signature = signature(clv.model = "clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, verbose){
 
   # clv.data in clv.fitted is already replaced with newdata here
   # Only need to redo cbs if new data is given
@@ -199,12 +199,12 @@ setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.mo
 })
 
 
-# .clv.model.predict.clv --------------------------------------------------------------------------------------------------------
-setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
+# clv.model.predict --------------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict", signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, dt.predictions, verbose, continuous.discount.factor, ...){
   period.length <- Id <- x <- t.x <- T.cal <-  PAlive <- i.PAlive <- CET <- i.CET <- DERT <- i.DERT <- NULL # cran silence
 
 
-  predict.number.of.periods <- dt.prediction[1, period.length]
+  predict.number.of.periods <- dt.predictions[1, period.length]
 
 
   # To ensure sorting, do everything in a single table
@@ -241,11 +241,11 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.no.cov"),
                                       vT_cal = T.cal)]
 
   # Add results to prediction table, by matching Id
-  dt.prediction[dt.result, CET    := i.CET,    on = "Id"]
-  dt.prediction[dt.result, PAlive := i.PAlive, on = "Id"]
-  dt.prediction[dt.result, DERT   := i.DERT,   on = "Id"]
+  dt.predictions[dt.result, CET    := i.CET,    on = "Id"]
+  dt.predictions[dt.result, PAlive := i.PAlive, on = "Id"]
+  dt.predictions[dt.result, DERT   := i.DERT,   on = "Id"]
 
-  return(dt.prediction)
+  return(dt.predictions)
 })
 
 # . clv.model.expectation --------------------------------------------------------------------------------------------------------

@@ -108,11 +108,11 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.static.c
                        fct.expectation = fct.bgnbd.expectation, clv.time = clv.fitted@clv.data@clv.time))
 })
 
-# . clv.model.predict.clv -----------------------------------------------------------------------------------------------------
-setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgnbd.static.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
+# . clv.model.predict -----------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict", signature(clv.model="clv.model.bgnbd.static.cov"), function(clv.model, clv.fitted, dt.predictions, verbose, continuous.discount.factor, ...){
   r <- alpha <- a <- b <- period.length <- CET <- PAlive <- DERT <- i.CET <- i.PAlive <- i.DERT <- x <- t.x <- T.cal <- NULL
 
-  predict.number.of.periods <- dt.prediction[1, period.length]
+  predict.number.of.periods <- dt.predictions[1, period.length]
 
   # To ensure sorting, do everything in a single table
   dt.result <- copy(clv.fitted@cbs[, c("Id", "x", "t.x", "T.cal")])
@@ -152,11 +152,11 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgnbd.static.c
   dt.result[, DERT := 0]
 
   # Add results to prediction table, by matching Id
-  dt.prediction[dt.result, CET    := i.CET,    on = "Id"]
-  dt.prediction[dt.result, PAlive := i.PAlive, on = "Id"]
-  dt.prediction[dt.result, DERT   := i.DERT,   on = "Id"]
+  dt.predictions[dt.result, CET    := i.CET,    on = "Id"]
+  dt.predictions[dt.result, PAlive := i.PAlive, on = "Id"]
+  dt.predictions[dt.result, DERT   := i.DERT,   on = "Id"]
 
-  return(dt.prediction)
+  return(dt.predictions)
 })
 
 

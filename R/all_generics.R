@@ -32,15 +32,29 @@ setGeneric("clv.controlflow.estimate.process.post.estimation", def=function(clv.
 
 
 # . Predict -----------------------------------------------------------------------------------------------
-setGeneric("clv.controlflow.predict.check.inputs", def = function(clv.fitted, prediction.end, continuous.discount.factor, predict.spending, verbose)
+setGeneric("clv.controlflow.predict.check.inputs", def = function(clv.fitted, verbose, ...)
   standardGeneric("clv.controlflow.predict.check.inputs"))
 
 setGeneric("clv.controlflow.predict.set.prediction.params", def = function(clv.fitted)
   standardGeneric("clv.controlflow.predict.set.prediction.params"))
 
+setGeneric("clv.controlflow.predict.build.result.table", def = function(clv.fitted, verbose, ...)
+  standardGeneric("clv.controlflow.predict.build.result.table"))
+
+setGeneric(name = "clv.controlflow.predict.get.has.actuals", def = function(clv.fitted, dt.predictions)
+  standardGeneric("clv.controlflow.predict.get.has.actuals"))
+
+setGeneric(name = "clv.controlflow.predict.add.actuals", def = function(clv.fitted, dt.predictions, has.actuals, verbose, ...)
+  standardGeneric("clv.controlflow.predict.add.actuals"))
+
+setGeneric(name = "clv.controlflow.predict.post.process.prediction.table", def = function(clv.fitted, dt.predictions, has.actuals, verbose, ...)
+  standardGeneric("clv.controlflow.predict.post.process.prediction.table"))
+
+
+
 # .. Newdata: replace data in existing model -----------------------------------------------------------------
 # For plot and predict
-setGeneric("clv.controlflow.check.newdata", def = function(clv.fitted, user.newdata, prediction.end)
+setGeneric("clv.controlflow.check.newdata", def = function(clv.fitted, user.newdata, ...)
   standardGeneric("clv.controlflow.check.newdata"))
 
 
@@ -109,9 +123,8 @@ setGeneric(name="clv.model.cor.to.m", def = function(clv.model, prefixed.params.
 
 # .. Predict ----------------------------------------------------------------------------------------------------------------------
 # Predict clv per model
-
-setGeneric(name = "clv.model.predict.clv", def = function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose)
-  standardGeneric("clv.model.predict.clv"))
+setGeneric(name = "clv.model.predict", def = function(clv.model, clv.fitted, dt.predictions, verbose, ...)
+  standardGeneric("clv.model.predict"))
 
 setGeneric(name = "clv.model.expectation", def = function(clv.model, clv.fitted, dt.expectation.seq, verbose)
   standardGeneric("clv.model.expectation"))
@@ -123,8 +136,8 @@ setGeneric(name="clv.model.vcov.jacobi.diag", def=function(clv.model, clv.fitted
 
 # .. Newdata ---------------------------------------------------------------------------------------------------------------
 # Do the steps necessary to integrate user newdata in the fitted model (ie do cbs etc)
-setGeneric(name="clv.model.put.newdata", def=function(clv.model, clv.fitted, user.newdata, verbose)
-  standardGeneric("clv.model.put.newdata"))
+setGeneric(name="clv.model.process.newdata", def=function(clv.model, clv.fitted, user.newdata, verbose)
+  standardGeneric("clv.model.process.newdata"))
 
 
 
