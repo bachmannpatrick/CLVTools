@@ -13,7 +13,7 @@ context("Correctness - clvdata - estimation.split")
 
 #
 test_that("Different estimation.split formats result in same split - data in Dates", {
-
+  skip_on_cran()
   cdnow.date <- data.table::copy(cdnow)
   cdnow.date[, Date := as.Date(Date)]
 
@@ -91,6 +91,7 @@ test_that("Different estimation.split formats result in same split - data in POS
 
 
 test_that("Different estimation.split formats result in same split - data in char", {
+  skip_on_cran()
 
   cdnow.char <- data.table::copy(cdnow)
   cdnow.char[, Date := as.character(Date)]
@@ -157,6 +158,7 @@ test_that("Different units with same split results in same dates", {
 context("Correctness - clvdata - data.transactions")
 
 test_that("Same result for differently sorted transactions", {
+  skip_on_cran()
   cdnow.shuffle   <- data.table::copy(cdnow)[sample.int(n = nrow(cdnow)), ]
 
   expect_silent(data.normal  <- clvdata(cdnow,         date.format = "ymd", time.unit = "w"))
@@ -247,6 +249,7 @@ test_that("Transaction data was properly copied", {
 context("Correctness - clvdata - aggregate.transactions")
 
 test_that("Only one transaction per timepoint and Id exits (date)", {
+  skip_on_cran()
   expect_silent(dt.trans <- data.table(Id =   c("1", "1", "1", "2", "2", "2"),
                                        Date = c(lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-01"),
                                                 lubridate::ymd("2019-06-01"), lubridate::ymd("2019-06-01"), lubridate::ymd("2019-06-02"))))
@@ -258,6 +261,7 @@ test_that("Only one transaction per timepoint and Id exits (date)", {
 })
 
 test_that("Only one transaction per timepoint and Id exits (posix)", {
+  skip_on_cran()
   expect_silent(dt.trans <- data.table(Id =   c("1", "1", "1", "2", "2", "2"),
                                        Date = c(lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-01"),
                                                 lubridate::ymd("2019-06-01"), lubridate::ymd("2019-06-01"), lubridate::ymd("2019-06-02"))))

@@ -1,3 +1,4 @@
+skip_on_cran()
 data("cdnow")
 data("apparelTrans")
 data("apparelStaticCov")
@@ -44,22 +45,19 @@ test_that("Fails if prediction.end before fitting end", {
   # (different with holdout?)
 
   # Negative number
-  expect_error(predict(pnbd.cdnow, prediction.end = -1), regexp = "after the end of the estimation")
-  expect_error(predict(pnbd.cdnow, prediction.end = -10), regexp = "after the end of the estimation")
-  expect_error(predict(pnbd.cdnow, prediction.end = -5), regexp = "after the end of the estimation")
-  # zero
-  expect_error(predict(pnbd.cdnow, prediction.end = 0), regexp = "after the end of the estimation")
+  expect_error(predict(pnbd.cdnow, prediction.end = -1), regexp = "after the estimation period")
+  expect_error(predict(pnbd.cdnow, prediction.end = -10), regexp = "after the estimation period")
+  expect_error(predict(pnbd.cdnow, prediction.end = -5), regexp = "after the estimation period")
 
   # Date before
-  expect_error(predict(pnbd.cdnow, prediction.end = pnbd.cdnow@clv.data@clv.time@timepoint.estimation.end - lubridate::days(1)), regexp = "after the end of the estimation")
-  expect_error(predict(pnbd.cdnow, prediction.end = pnbd.cdnow@clv.data@clv.time@timepoint.estimation.end - lubridate::days(10)), regexp = "after the end of the estimation")
-  # Date on
-  expect_error(predict(pnbd.cdnow, prediction.end = pnbd.cdnow@clv.data@clv.time@timepoint.estimation.end), regexp = "after the end of the estimation")
+  expect_error(predict(pnbd.cdnow, prediction.end = pnbd.cdnow@clv.data@clv.time@timepoint.estimation.end - lubridate::days(1)), regexp = "after the estimation period")
+  expect_error(predict(pnbd.cdnow, prediction.end = pnbd.cdnow@clv.data@clv.time@timepoint.estimation.end - lubridate::days(10)), regexp = "after the estimation period")
 })
 
 
 # **TODO: Prediction end as not date/numeric/char (= same tests as for plot)
 test_that("Fails if newdata not a clv.data object", {
+  skip_on_cran()
   expect_error(predict(pnbd.cdnow, newdata = NA_character_), regexp = "needs to be a clv data object")
   expect_error(predict(pnbd.cdnow, newdata = character()), regexp = "needs to be a clv data object")
   expect_error(predict(pnbd.cdnow, newdata = cdnow), regexp = "needs to be a clv data object")
@@ -81,6 +79,8 @@ test_that("Fails if newdata is of wrong clv.data", {
 })
 
 test_that("Fails if newdata has not the same covariates", {
+  skip_on_cran()
+
   apparelDemographics.additional <- data.table::copy(apparelStaticCov)
   apparelDemographics.additional[, Haircolor := c(rep(c(1,2), .N/2))]
 

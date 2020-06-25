@@ -146,4 +146,4 @@ summary()
 - calculate param summary from vcov() and coef()
 
 
-
+<!-- **discuss sorting of name vectors** -->

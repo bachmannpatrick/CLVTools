@@ -6,7 +6,7 @@
 \alias{pnbd_nocov_LL_sum}
 \alias{pnbd_staticcov_LL_ind}
 \alias{pnbd_staticcov_LL_sum}
-\title{Pareto/NBD: Log-Likelihood}
+\title{Pareto/NBD: Log-Likelihood functions}
 \usage{
 pnbd_nocov_LL_ind(vLogparams, vX, vT_x, vT_cal)
 
@@ -17,7 +17,7 @@ pnbd_staticcov_LL_ind(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 pnbd_staticcov_LL_sum(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
 \arguments{
-\item{vLogparams}{vector with the Pareto/NBD model parameters log scaled. See Details.}
+\item{vLogparams}{vector with the Pareto/NBD model parameters at log scale. See Details.}
 
 \item{vX}{Frequency vector of length n counting the numbers of purchases.}
 
@@ -25,7 +25,7 @@ pnbd_staticcov_LL_sum(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 
 \item{vT_cal}{Vector of length n indicating the total number of periods of observation.}
 
-\item{vParams}{vector with the parameters for the Pareto/NBD model and the static covariates. See Details.}
+\item{vParams}{vector with the parameters for the Pareto/NBD model at log scale and the static covariates at original scale. See Details.}
 
 \item{mCov_life}{Matrix containing the covariates data affecting the lifetime process. One column for each covariate.}
 
@@ -51,30 +51,31 @@ The function \code{pnbd_staticcov_LL_sum} calculates the individual LogLikelihoo
 across customers.
 }
 \details{
-\code{r, alpha_0, s, beta_0} are the model parameters used for estimation.\cr
-s: shape parameter of the Gamma distribution for the lifetime process.
-The smaller s, the stronger the heterogeneity of customer lifetimes. \cr
-beta: scale parameter for the Gamma distribution for the lifetime process. \cr
-r: shape parameter of the Gamma distribution of the purchase process.
-The smaller r, the stronger the heterogeneity of the purchase process.\cr
-alpha: scale parameter of the Gamma distribution of the purchase process.
+\code{vLogparams} is a vector with model parameters \code{r, alpha_0, s, beta_0} at log-scale, in this order.
 
 \code{vParams} is vector with the Pareto/NBD model parameters at log scale,
 followed by the parameters for the lifetime covariates at original scale and then
 followed by the parameters for the transaction covariates at original scale
 
-\code{mCov_life} is a matrix containing the covariates data of
-the time-invariant covariates that affect the lifetime process.
-Each column represents a different covariate. For every column, a gamma parameter
-needs to added to \code{vParams} at the respective position.
-
 \code{mCov_trans} is a matrix containing the covariates data of
 the time-invariant covariates that affect the transaction process.
-Each column represents a different covariate. For every column, a gamma parameter
+Each column represents a different covariate. For every column a gamma parameter
+needs to added to \code{vParams} at the respective position.
+
+\code{mCov_life} is a matrix containing the covariates data of
+the time-invariant covariates that affect the lifetime process.
+Each column represents a different covariate. For every column a gamma parameter
 needs to added to \code{vParams} at the respective position.
 }
 \references{
-Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
- Pareto/NBD Model and Related Expressions.", Web.
- \url{http://www.brucehardie.com/notes/008/}.
+Schmittlein DC, Morrison DG, Colombo R (1987). \dQuote{Counting Your Customers:
+Who-Are They and What Will They Do Next?} Management Science, 33(1), 1–24.
+
+Fader PS, Hardie BGS (2005). \dQuote{A Note on Deriving the Pareto/NBD Model and
+Related Expressions.}
+URL \url{http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf}.
+
+Fader PS, Hardie BG (2007). \dQuote{Incorporating time-invariant covariates into the
+Pareto/NBD and BG/NBD models.}
+URL \url{http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf}.
 }

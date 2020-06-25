@@ -39,10 +39,12 @@ clv.template.controlflow.predict <- function(clv.fitted, prediction.end, predict
   #   tp.prediction.end: End of prediction period which includes this timepoint
   #   prediction.length: Length of period for which predictions should be made, in number of periods
 
-  # Could be viewed as part of input checks
-  #   but the end of the prediction period cannot be determined until after newdata is set
+  # Whether the prediction.end is valid after conversion is done in
+  #   clv.time.get.prediction.table(). Cannot be done before because
+  #   the end of the prediction period cannot be determined until after newdata is set
   dt.prediction.time.table <- clv.time.get.prediction.table(clv.time = clv.fitted@clv.data@clv.time,
                                                             user.prediction.end = prediction.end)
+
   # Add information to prediction table
   dt.prediction <- cbind(dt.prediction, dt.prediction.time.table)
 
@@ -54,11 +56,6 @@ clv.template.controlflow.predict <- function(clv.fitted, prediction.end, predict
     message("Predicting from ", timepoint.prediction.first, " until (incl.) ",
             timepoint.prediction.last, " (", format(prediction.period.length, digits = 4, nsmall=2)," ",
             clv.fitted@clv.data@clv.time@name.time.unit,").")
-
-
-  # Need at least > 2 time units to predict
-  if(prediction.period.length <= 2)
-    stop("The end of the prediction needs to be at least 3 periods after the end of the estimation period!", call. = FALSE)
 
 
 
@@ -233,11 +230,11 @@ clv.template.controlflow.predict <- function(clv.fitted, prediction.end, predict
 #' }
 #'
 #' @references
-#' Schmittlein DC, Morrison DG, Colombo R (1987). “Counting Your Customers:
-#' Who-Are They and What Will They Do Next?” Management Science, 33(1), 1–24.
+#' Schmittlein DC, Morrison DG, Colombo R (1987). \dQuote{Counting Your Customers:
+#' Who-Are They and What Will They Do Next?} Management Science, 33(1), 1–24.
 #'
-#' Fader PS, Hardie BGS (2005). “A Note on Deriving the Pareto/NBD Model and
-#' Related Expressions.”
+#' Fader PS, Hardie BGS (2005). \dQuote{A Note on Deriving the Pareto/NBD Model and
+#' Related Expressions.}
 #' URL \url{http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf}.
 #'
 #' Fader PS, Hardie BG (2007). "Incorporating time-invariant covariates into the

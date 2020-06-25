@@ -2,10 +2,10 @@
 % Please edit documentation in R/f_interface_ggomnbd.R
 \name{ggomnbd}
 \alias{ggomnbd}
+\alias{ggomnbd,clv.data.dynamic.covariates-method}
 \alias{ggomnbd,clv.data-method}
 \alias{ggomnbd,clv.data.static.covariates-method}
-\alias{ggomnbd,clv.data.dynamic.covariates-method}
-\title{Gamma-Gompertz/NBD models - Work In Progress}
+\title{Gamma-Gompertz/NBD model}
 \usage{
 \S4method{ggomnbd}{clv.data}(
   clv.data,
@@ -16,21 +16,6 @@
 )
 
 \S4method{ggomnbd}{clv.data.static.covariates}(
-  clv.data,
-  start.params.model = c(),
-  optimx.args = list(),
-  verbose = TRUE,
-  names.cov.life = c(),
-  names.cov.trans = c(),
-  start.params.life = c(),
-  start.params.trans = c(),
-  names.cov.constr = c(),
-  start.params.constr = c(),
-  reg.lambdas = c(),
-  ...
-)
-
-\S4method{ggomnbd}{clv.data.dynamic.covariates}(
   clv.data,
   start.params.model = c(),
   optimx.args = list(),
@@ -72,8 +57,110 @@ If multiple optimization methods are specified, only the result of the last meth
 \item{reg.lambdas}{Named lambda parameters used for the L2 regularization of the lifetime and the transaction covariate parameters. Lambdas have to be >= 0.}
 }
 \value{
-No value is returned.
+\code{ggomnbd} returns an object of
+class \code{clv.ggomnbd}.
+
+The function \code{\link[CLVTools:summary.clv.fitted]{summary}} can be used to obtain and print a summary of the results.
+The generic accessor functions \code{coefficients}, \code{fitted},
+\code{residuals}, \code{vcov}, \code{logLik}, \code{AIC}, \code{BIC}, and \code{nobs} are available.
 }
 \description{
-Fits Gamma-Gompertz/NBD models on transactional data with static and without covariates. Not yet implemented.
+Fits Gamma-Gompertz/NBD models on transactional data with static and without covariates.
+}
+\details{
+Model parameters for the GGompertz /NBD model are \code{r, alpha, beta, b and s}. \cr
+\code{r}: shape parameter of the Gamma distribution of the purchase process.
+The smaller \code{r}, the stronger the heterogeneity of the purchase process.\cr
+\code{alpha}: scale parameter of the Gamma distribution of the purchase process.\cr
+\code{beta}: scale parameter for the Gamma distribution for the lifetime process.\cr
+\code{b}: scale parameter of the Gompertz distribution (constant across customers).\cr
+\code{s}: shape parameter of the Gamma distribution for the lifetime process.
+The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.
+
+If no start parameters are given, r = 1, alpha = 1, beta = 1, b = 1, s = 1 is used.
+The model start parameters are required to be > 0.
+
+\subsection{The Gamma-Gompertz/NBD model}{
+There are two key differences of the gamma/Gompertz/NBD (GGom/NBD) model compared to the relative to the well-known Pareto/NBD
+model: (i) its probability density function can exhibit a mode at zero or an interior mode, and (ii) it can be skewed
+to the right or to the left. Therefore, the GGom/NBD model is more flexible than the Pareto/NBD model.
+According to Bemmaor and Glady (2012) can indicate substantial differences in expected residual lifetimes compared to the Pareto/NBD.
+The GGom/NBD tends to be appropriate when firms are reputed and their offerings are differentiated.
+}
+}
+\examples{
+\donttest{
+data("apparelTrans")
+clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
+                            time.unit = "w", estimation.split = 40)
+
+# Fit standard ggomnbd model
+ggomnbd(clv.data.apparel)
+
+# Give initial guesses for the Model parameters
+ggomnbd(clv.data.apparel,
+     start.params.model = c(r=0.5, alpha=15, b=5, beta=10, s=0.5))
+
+
+# pass additional parameters to the optimizer (optimx)
+#    Use Nelder-Mead as optimization method and print
+#    detailed information about the optimization process
+apparel.ggomnbd <- ggomnbd(clv.data.apparel,
+                     optimx.args = list(method="Nelder-Mead",
+                                        control=list(trace=6)))
+
+# estimated coefs
+coef(apparel.ggomnbd)
+
+# summary of the fitted model
+summary(apparel.ggomnbd)
+
+# predict CLV etc for holdout period
+predict(apparel.ggomnbd)
+
+# predict CLV etc for the next 15 periods
+predict(apparel.ggomnbd, prediction.end = 15)
+}
+\donttest{
+# To estimate the ggomnbd model with static covariates,
+#   add static covariates to the data
+data("apparelStaticCov")
+clv.data.static.cov <-
+ SetStaticCovariates(clv.data.apparel,
+                     data.cov.life = apparelStaticCov,
+                     names.cov.life = c("Gender", "Channel"),
+                     data.cov.trans = apparelStaticCov,
+                     names.cov.trans = c("Gender", "Channel"))
+
+# Fit ggomnbd with static covariates
+ggomnbd(clv.data.static.cov)
+
+# Give initial guesses for both covariate parameters
+ggomnbd(clv.data.static.cov, start.params.trans = c(Gender=0.75, Channel=0.7),
+                   start.params.life  = c(Gender=0.5, Channel=0.5))
+
+# Use regularization
+ggomnbd(clv.data.static.cov, reg.lambdas = c(trans = 5, life=5))
+
+# Force the same coefficient to be used for both covariates
+ggomnbd(clv.data.static.cov, names.cov.constr = "Gender",
+                   start.params.constr = c(Gender=0.5))
+
+# Fit model only with the Channel covariate for life but
+# keep all trans covariates as is
+ggomnbd(clv.data.static.cov, names.cov.life = c("Channel"))
+}
+}
+\references{
+Bemmaor AC, Glady N (2012). \dQuote{Modeling Purchasing Behavior with Sudden \dQuote{Death}: A Flexible Customer
+Lifetime Model} Management Science, 58(5), 1012-1021.
+}
+\seealso{
+\code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object
+
+\code{\link[CLVTools:predict.clv.fitted]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
+
+\code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation as predicted by the fitted model
+
+The generic functions \code{\link[CLVTools:summary.clv.fitted]{summary}} and \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
 }

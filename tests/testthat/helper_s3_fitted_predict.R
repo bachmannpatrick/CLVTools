@@ -1,4 +1,5 @@
-.fct.helper.s3.fitted.predict <- function(clv.fitted, clv.newdata.nohold, clv.newdata.withhold){
+.fct.helper.s3.fitted.predict <- function(clv.fitted, clv.newdata.nohold, clv.newdata.withhold,
+                                          DERT.not.implemented){
 
   # Only for models which were fit with heldout data
   if(clv.fitted@clv.data@has.holdout){
@@ -7,6 +8,7 @@
       expect_silent(predict(clv.fitted, verbose=FALSE))
     })
     test_that("Works with prediction end in holdout period", {
+      skip_on_cran()
       expect_silent(dt.pred <- predict(clv.fitted,prediction.end = as.character(clv.fitted@clv.data@clv.time@timepoint.holdout.end - lubridate::days(30)), verbose=FALSE))
       # then also has actuals
       expect_true(c("actual.x" %in% colnames(dt.pred)))
@@ -38,21 +40,25 @@
     expect_true(dt.pred[, data.table::uniqueN(Id)] == clv.fitted@clv.data@data.transactions[, data.table::uniqueN(Id)])
     # all ids in predictions
     expect_true(nrow(data.table::fsetdiff(clv.fitted@clv.data@data.transactions[, "Id"], dt.pred[, "Id"]))==0)
-    expect_true(nrow(dt.pred[PAlive < 0 | PAlive > 1]) == 0)
+    # May fail because of numerical tolerance issues
+    expect_true(nrow(dt.pred[PAlive < 0 - sqrt(.Machine$double.eps) | PAlive > 1 + sqrt(.Machine$double.eps)]) == 0)
+
     #   all columns > 0
     expect_true(dt.pred[, all(.SD >= 0 | is.na(.SD))])
     expect_true(all(c("Id", "CET", "DERT", "PAlive") %in% colnames(dt.pred)))
   })
 
 
-  test_that("Works with discount factor", {
-    skip_on_cran()
-    expect_silent(dt.pred.1 <- predict(clv.fitted, continuous.discount.factor = 0,    prediction.end = 6, verbose=FALSE))
-    expect_silent(dt.pred.2 <- predict(clv.fitted, continuous.discount.factor = 0.06, prediction.end = 6, verbose=FALSE))
-    expect_silent(dt.pred.3 <- predict(clv.fitted, continuous.discount.factor = 0.99, prediction.end = 6, verbose=FALSE))
-    expect_false(isTRUE(all.equal(dt.pred.1, dt.pred.2)))
-    expect_false(isTRUE(all.equal(dt.pred.2, dt.pred.3)))
-  })
+  if(!DERT.not.implemented){
+    test_that("Works with discount factor", {
+      skip_on_cran()
+      expect_silent(dt.pred.1 <- predict(clv.fitted, continuous.discount.factor = 0,    prediction.end = 6, verbose=FALSE))
+      expect_silent(dt.pred.2 <- predict(clv.fitted, continuous.discount.factor = 0.06, prediction.end = 6, verbose=FALSE))
+      expect_silent(dt.pred.3 <- predict(clv.fitted, continuous.discount.factor = 0.99, prediction.end = 6, verbose=FALSE))
+      expect_false(isTRUE(all.equal(dt.pred.1, dt.pred.2)))
+      expect_false(isTRUE(all.equal(dt.pred.2, dt.pred.3)))
+    })
+  }
 
   test_that("Works with different types of prediction.end: number, date, posix, char (short) ",{
     # not checking anything correctness on cran, just run
@@ -72,6 +78,7 @@
 
 
   test_that("Works with different newdata", {
+    skip_on_cran()
     # **TODO: Often still has NA (because estimated params do not work with artificial newdata)
     # No holdout needs prediction.end
     expect_silent(dt.pred <- predict(clv.fitted, newdata = clv.newdata.nohold, prediction.end = 25,
@@ -148,37 +155,3 @@
   })
 
 }
-
-
-
-# **TODO: MODEL CORRECTNESS TESTS
-# test_that("Same results with differently sorted transaction data",{
-#   skip_on_cran()
-#   data.diff.sort <- apparelTrans[sample.int(n=nrow(apparelTrans), replace = FALSE),]
-#
-#   res.orig      <- pnbd(clvdata(data.transactions = apparelTrans, date.format = "ymd",time.unit = "w"))
-#   res.diff.sort <- pnbd(clvdata(data.transactions = data.diff.sort,date.format = "ymd",time.unit = "w"))
-#
-#   expect_equal(coef(res.orig), coef(res.diff.sort))
-#   expect_equal(coef(summary(res.orig)), coef(summary(res.diff.sort)))
-#   expect_equal(predict(res.orig, prediction.end=10), predict(res.diff.sort, prediction.end=10))
-# })
-#
-# test_that("Same results with differently sorted covariates data",{
-#   skip_on_cran()
-#   data.diff.sort <- apparelDemographics[sample.int(n=nrow(apparelDemographics), replace = FALSE),]
-#
-#   obj <- clvdata(data.transactions = apparelTrans, date.format = "ymd",time.unit = "w")
-#
-#   pnbd.static.cov.obj <- SetStaticCovariates(obj,data.cov.life = apparelDemographics, data.cov.trans = apparelDemographics,
-#                                              names.cov.life = "Gender", names.cov.trans = "Gender", name.id = "Id")
-#   pnbd.static.cov.obj.diff.sort <- SetStaticCovariates(obj,data.cov.life = data.diff.sort, data.cov.trans = data.diff.sort,
-#                                                        names.cov.life = "Gender", names.cov.trans = "Gender", name.id = "Id")
-#
-#   res.orig      <- pnbd(pnbd.static.cov.obj)
-#   res.diff.sort <- pnbd(pnbd.static.cov.obj.diff.sort)
-#
-#   expect_equal(coef(res.orig), coef(res.diff.sort))
-#   expect_equal(coef(summary(res.orig)), coef(summary(res.diff.sort)))
-#   expect_equal(predict(res.orig, prediction.end = 10), predict(res.diff.sort, prediction.end = 10))
-# })

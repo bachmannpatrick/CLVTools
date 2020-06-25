@@ -54,7 +54,7 @@ again start on Mondays and end on Sundays.
 If \code{prediction.end} indicates a timepoint on which to end, this timepoint is included in the prediction period.
 
 If there are no repeat transactions until \code{prediction.end}, only the time for which there is data
-is plotted. If the data is returned (ie with argument \code{plot=FALSE}), the respective rows
+is plotted. If the data is returned (i.e. with argument \code{plot=FALSE}), the respective rows
 contain \code{NA} in column \code{Number of Repeat Transactions}.
 }
 \examples{

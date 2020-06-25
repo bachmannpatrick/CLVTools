@@ -1,10 +1,10 @@
 .fct.helper.s3.fitted.plot <- function(clv.fitted, clv.newdata.nohold, clv.newdata.withhold){
 
-
-  if(clv.fitted@clv.data@has.holdout)
+  if(clv.fitted@clv.data@has.holdout){
     test_that("Works without prediction end, out-of-the-box", {
       expect_silent(plot(clv.fitted, verbose=FALSE))
     })
+  }
 
   test_that("Works with/without transactions=TRUE/FALSE",{
     skip_on_cran()
@@ -24,6 +24,7 @@
   })
 
   test_that("Works for plot=FALSE and always has 0 repeat trans and expectation on first",{
+    skip_on_cran()
     expect_silent(dt.plot <- plot(clv.fitted, plot=FALSE, verbose=FALSE))
     expect_true(isTRUE(all.equal( unlist(dt.plot[period.until == min(period.until), 2:3]),
                                   c(0,0), check.attributes = FALSE)))
@@ -35,6 +36,7 @@
   })
 
   test_that("Works for prediction.end in different formats, after holdout", {
+    skip_on_cran()
     # prediction.end as character, Date, posix, numeric
     expect_silent(plot(clv.fitted, prediction.end = as.character(clv.fitted@clv.data@clv.time@timepoint.holdout.end+lubridate::weeks(26)), verbose=FALSE))
     expect_silent(plot(clv.fitted, prediction.end = as.Date(clv.fitted@clv.data@clv.time@timepoint.holdout.end+lubridate::weeks(26)), verbose=FALSE))
@@ -107,6 +109,7 @@
   })
 
   test_that("Works with newdata", {
+    skip_on_cran()
     expect_silent(dt.plot <- plot(clv.fitted, newdata = clv.newdata.nohold, plot=FALSE, verbose=FALSE))
     # expect_false(anyNA(dt.plot))
 

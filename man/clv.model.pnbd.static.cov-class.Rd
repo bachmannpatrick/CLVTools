@@ -3,7 +3,7 @@
 \docType{class}
 \name{clv.model.pnbd.static.cov-class}
 \alias{clv.model.pnbd.static.cov-class}
-\title{CLV Model functionality for PNBD with static covariates}
+\title{CLV Model functionality for Pareto/NBD with static covariates}
 \description{
 This class implements the functionalities and model-specific steps which are required
 to fit the Pareto/NBD model with static covariates.

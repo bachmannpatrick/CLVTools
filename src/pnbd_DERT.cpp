@@ -15,37 +15,21 @@
 //' \item{\code{pnbd_staticcov_DERT}}{ Discounted expected residual transactions for the Pareto/NBD model with static covariates}
 //' }
 //'
-//' @template template_params_rcppestimatedparams
+//' @template template_params_pnbd
 //' @template template_params_rcppxtxtcal
 //' @template template_params_rcppcovmatrix
 //' @template template_params_rcppvcovparams
 //' @param continuous_discount_factor continuous discount factor to use
 //'
-//' @details
 //'
-//' \code{vEstimated_params} vector with the estimated parameters in original scale
-//' for the Pareto/NBD model, namely (r, alpha, s, beta). \cr
-//' r and alpha: unobserved parameters that describe the NBD transaction process. \cr
-//' s and beta: unobserved parameters that describe the pareto
-//' (exponential gamma) lifetime process.
-//'
-//' \code{mCov_trans} is a matrix containing the covariates data of
-//' the time-invariant covariates that affect the transaction process.
-//' Each column represents a different covariate. For every column a gamma parameter
-//' needs to added to \code{vCovParams_trans} at the respective position.
-//'
-//' \code{mCov_life} is a matrix containing the covariates data of
-//' the time-invariant covariates that affect the lifetime process.
-//' Each column represents a different covariate. For every column a gamma parameter
-//' needs to added to \code{vCovParams_life} at the respective position.
+//' @templateVar name_params_cov_life vCovParams_life
+//' @templateVar name_params_cov_trans vCovParams_trans
+//' @template template_details_rcppcovmatrix
 //'
 //' @return
 //' Returns a vector with the DERT for each customer.
 //'
-//' @references
-//' Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
-//' Pareto/NBD Model and Related Expressions.", Web.
-//' \url{http://www.brucehardie.com/notes/008/}.
+//' @template template_references_pnbd
 //'
 //'
 arma::vec pnbd_DERT_ind(const double r,
@@ -86,18 +70,16 @@ arma::vec pnbd_DERT_ind(const double r,
 
 //' @rdname pnbd_DERT
 // [[Rcpp::export]]
-arma::vec pnbd_nocov_DERT(const arma::vec& vEstimated_params,
+arma::vec pnbd_nocov_DERT(const double r,
+                          const double alpha_0,
+                          const double s,
+                          const double beta_0,
                           const double continuous_discount_factor,
                           const arma::vec& vX,
                           const arma::vec& vT_x,
                           const arma::vec& vT_cal){
 
   const double n = vX.n_elem;
-
-  const double r       = vEstimated_params(0);
-  const double alpha_0 = vEstimated_params(1);
-  const double s       = vEstimated_params(2);
-  const double beta_0  = vEstimated_params(3);
 
 
   // Build alpha and beta -------------------------------------------
@@ -118,7 +100,10 @@ arma::vec pnbd_nocov_DERT(const arma::vec& vEstimated_params,
 
 //' @rdname pnbd_DERT
 // [[Rcpp::export]]
-arma::vec pnbd_staticcov_DERT(const arma::vec& vEstimated_params,
+arma::vec pnbd_staticcov_DERT(const double r,
+                              const double alpha_0,
+                              const double s,
+                              const double beta_0,
                               const double continuous_discount_factor,
                               const arma::vec& vX,
                               const arma::vec& vT_x,
@@ -130,11 +115,6 @@ arma::vec pnbd_staticcov_DERT(const arma::vec& vEstimated_params,
 
   // Build alpha and beta --------------------------------------------
   //    No covariates: Same alphas, betas for every customer
-
-  const double r       = vEstimated_params(0);
-  const double alpha_0 = vEstimated_params(1);
-  const double s       = vEstimated_params(2);
-  const double beta_0  = vEstimated_params(3);
 
   arma::vec vAlpha_i = alpha_0 * arma::exp(((mCov_trans * (-1)) * vCovParams_trans));
   arma::vec vBeta_i  = beta_0  * arma::exp(((mCov_life  * (-1)) * vCovParams_life));

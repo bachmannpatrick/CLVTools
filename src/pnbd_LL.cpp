@@ -5,63 +5,20 @@
 
 //' @name pnbd_LL
 //'
-//' @title Pareto/NBD: Log-Likelihood
+//' @templateVar name_model_full Pareto/NBD
+//' @templateVar name_model_short pnbd
+//' @templateVar model_params_ordered r, alpha_0, s, beta_0
+//' @template template_titleparamsdescriptionreturndetails_LL
 //'
-//' @description
-//' Calculates the Log-Likelihood values for the Pareto/NBD model with and without covariates.
-//'
-//' The function \code{pnbd_nocov_LL_ind} calculates the individual LogLikelihood
-//' values for each customer for the given parameters.
-//'
-//' The function \code{pnbd_nocov_LL_sum} calculates the LogLikelihood value summed
-//' across customers for the given parameters.
-//'
-//' The function \code{pnbd_staticcov_LL_ind} calculates the individual LogLikelihood
-//' values for each customer for the given parameters and covariates.
-//'
-//' The function \code{pnbd_staticcov_LL_sum} calculates the individual LogLikelihood values summed
-//' across customers.
-//'
-//' @param vLogparams vector with the Pareto/NBD model parameters log scaled. See Details.
 //' @template template_params_rcppxtxtcal
-//' @param vParams vector with the parameters for the Pareto/NBD model and the static covariates. See Details.
 //' @template template_params_rcppcovmatrix
 //'
-//' @details
+//' @templateVar name_params_cov_life vParams
+//' @templateVar name_params_cov_trans vParams
+//' @template template_details_rcppcovmatrix
 //'
-//' \code{r, alpha_0, s, beta_0} are the model parameters used for estimation.\cr
-//' s: shape parameter of the Gamma distribution for the lifetime process.
-//' The smaller s, the stronger the heterogeneity of customer lifetimes. \cr
-//' beta: scale parameter for the Gamma distribution for the lifetime process. \cr
-//' r: shape parameter of the Gamma distribution of the purchase process.
-//' The smaller r, the stronger the heterogeneity of the purchase process.\cr
-//' alpha: scale parameter of the Gamma distribution of the purchase process.
+//' @template template_references_pnbd
 //'
-//' \code{vParams} is vector with the Pareto/NBD model parameters at log scale,
-//' followed by the parameters for the lifetime covariates at original scale and then
-//' followed by the parameters for the transaction covariates at original scale
-//'
-//' \code{mCov_life} is a matrix containing the covariates data of
-//' the time-invariant covariates that affect the lifetime process.
-//' Each column represents a different covariate. For every column, a gamma parameter
-//' needs to added to \code{vParams} at the respective position.
-//'
-//' \code{mCov_trans} is a matrix containing the covariates data of
-//' the time-invariant covariates that affect the transaction process.
-//' Each column represents a different covariate. For every column, a gamma parameter
-//' needs to added to \code{vParams} at the respective position.
-//'
-//'@return
-//'  Returns the respective Log-Likelihood value(s) for the Pareto/NBD model
-//'  with or without covariates.
-//'
-//'@references
-//'  Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
-//'  Pareto/NBD Model and Related Expressions.", Web.
-//'  \url{http://www.brucehardie.com/notes/008/}.
-//'
-//Individual pnbd LL. No cov and staticcov differ by the individual vAlpha_i and vBeta_i which are different
-// for each customer depending on the covariate.
 arma::vec pnbd_LL_ind(const double r,
                       const double s,
                       const arma::vec& vAlpha_i,

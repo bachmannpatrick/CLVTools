@@ -12,7 +12,7 @@
 #' @template template_details_predictionend
 #'
 #' @details If there are no repeat transactions until \code{prediction.end}, only the time for which there is data
-#' is plotted. If the data is returned (ie with argument \code{plot=FALSE}), the respective rows
+#' is plotted. If the data is returned (i.e. with argument \code{plot=FALSE}), the respective rows
 #' contain \code{NA} in column \code{Number of Repeat Transactions}.
 #'
 #' @return

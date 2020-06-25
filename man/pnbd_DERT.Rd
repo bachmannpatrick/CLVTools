@@ -7,7 +7,10 @@
 \title{Pareto/NBD: Discounted Expected Residual Transactions}
 \usage{
 pnbd_nocov_DERT(
-  vEstimated_params,
+  r,
+  alpha_0,
+  s,
+  beta_0,
   continuous_discount_factor,
   vX,
   vT_x,
@@ -15,7 +18,10 @@ pnbd_nocov_DERT(
 )
 
 pnbd_staticcov_DERT(
-  vEstimated_params,
+  r,
+  alpha_0,
+  s,
+  beta_0,
   continuous_discount_factor,
   vX,
   vT_x,
@@ -27,7 +33,13 @@ pnbd_staticcov_DERT(
 )
 }
 \arguments{
-\item{vEstimated_params}{Vector with the Pareto/NBD model parameters at original scale.}
+\item{r}{shape parameter of the Gamma distribution of the purchase process. The smaller r, the stronger the heterogeneity of the purchase process}
+
+\item{alpha_0}{scale parameter of the Gamma distribution of the purchase process}
+
+\item{s}{shape parameter of the Gamma distribution for the lifetime process. The smaller s, the stronger the heterogeneity of customer lifetimes}
+
+\item{beta_0}{scale parameter for the Gamma distribution for the lifetime process.}
 
 \item{continuous_discount_factor}{continuous discount factor to use}
 
@@ -41,7 +53,7 @@ pnbd_staticcov_DERT(
 
 \item{mCov_trans}{Matrix containing the covariates data affecting the transaction process. One column for each covariate.}
 
-\item{vCovParams_life}{Vector of estimated parameters for the dropout covariates.}
+\item{vCovParams_life}{Vector of estimated parameters for the lifetime covariates.}
 
 \item{vCovParams_trans}{Vector of estimated parameters for the transaction covariates.}
 }
@@ -57,12 +69,6 @@ Calculates the discounted expected residual transactions.
 }
 }
 \details{
-\code{vEstimated_params} vector with the estimated parameters in original scale
-for the Pareto/NBD model, namely (r, alpha, s, beta). \cr
-r and alpha: unobserved parameters that describe the NBD transaction process. \cr
-s and beta: unobserved parameters that describe the pareto
-(exponential gamma) lifetime process.
-
 \code{mCov_trans} is a matrix containing the covariates data of
 the time-invariant covariates that affect the transaction process.
 Each column represents a different covariate. For every column a gamma parameter
@@ -74,7 +80,14 @@ Each column represents a different covariate. For every column a gamma parameter
 needs to added to \code{vCovParams_life} at the respective position.
 }
 \references{
-Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
-Pareto/NBD Model and Related Expressions.", Web.
-\url{http://www.brucehardie.com/notes/008/}.
+Schmittlein DC, Morrison DG, Colombo R (1987). \dQuote{Counting Your Customers:
+Who-Are They and What Will They Do Next?} Management Science, 33(1), 1–24.
+
+Fader PS, Hardie BGS (2005). \dQuote{A Note on Deriving the Pareto/NBD Model and
+Related Expressions.}
+URL \url{http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf}.
+
+Fader PS, Hardie BG (2007). \dQuote{Incorporating time-invariant covariates into the
+Pareto/NBD and BG/NBD models.}
+URL \url{http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf}.
 }

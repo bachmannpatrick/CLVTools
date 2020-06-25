@@ -6,11 +6,14 @@
 \alias{pnbd_staticcov_CET}
 \title{Pareto/NBD: Conditional Expected Transactions}
 \usage{
-pnbd_nocov_CET(vEstimated_params, dPrediction_period, vX, vT_x, vT_cal)
+pnbd_nocov_CET(r, alpha_0, s, beta_0, dPeriods, vX, vT_x, vT_cal)
 
 pnbd_staticcov_CET(
-  vEstimated_params,
-  dPrediction_period,
+  r,
+  alpha_0,
+  s,
+  beta_0,
+  dPeriods,
   vX,
   vT_x,
   vT_cal,
@@ -21,9 +24,15 @@ pnbd_staticcov_CET(
 )
 }
 \arguments{
-\item{vEstimated_params}{Vector with the Pareto/NBD model parameters at original scale.}
+\item{r}{shape parameter of the Gamma distribution of the purchase process. The smaller r, the stronger the heterogeneity of the purchase process}
 
-\item{dPrediction_period}{time prediction time frame}
+\item{alpha_0}{scale parameter of the Gamma distribution of the purchase process}
+
+\item{s}{shape parameter of the Gamma distribution for the lifetime process. The smaller s, the stronger the heterogeneity of customer lifetimes}
+
+\item{beta_0}{scale parameter for the Gamma distribution for the lifetime process.}
+
+\item{dPeriods}{number of periods to predict}
 
 \item{vX}{Frequency vector of length n counting the numbers of purchases.}
 
@@ -33,7 +42,7 @@ pnbd_staticcov_CET(
 
 \item{vCovParams_trans}{Vector of estimated parameters for the transaction covariates.}
 
-\item{vCovParams_life}{Vector of estimated parameters for the dropout covariates.}
+\item{vCovParams_life}{Vector of estimated parameters for the lifetime covariates.}
 
 \item{mCov_trans}{Matrix containing the covariates data affecting the transaction process. One column for each covariate.}
 
@@ -53,12 +62,6 @@ on a customer's past transaction behavior and the Pareto/NBD model parameters.
 }
 }
 \details{
-\code{vEstimated_params} vector with the estimated parameters in original scale
-for the Pareto/NBD model, namely (r, alpha, s, beta).
-r and alpha: unobserved parameters that describe the NBD transaction process.
-s and beta: unobserved parameters that describe the pareto
-(exponential gamma) dropout process.
-
 \code{mCov_trans} is a matrix containing the covariates data of
 the time-invariant covariates that affect the transaction process.
 Each column represents a different covariate. For every column a gamma parameter
@@ -70,8 +73,14 @@ Each column represents a different covariate. For every column a gamma parameter
 needs to added to \code{vCovParams_life} at the respective position.
 }
 \references{
-Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
- Pareto/NBD Model and Related Expressions.", Web.
- \url{http://www.brucehardie.com/notes/008/}.
+Schmittlein DC, Morrison DG, Colombo R (1987). \dQuote{Counting Your Customers:
+Who-Are They and What Will They Do Next?} Management Science, 33(1), 1–24.
+
+Fader PS, Hardie BGS (2005). \dQuote{A Note on Deriving the Pareto/NBD Model and
+Related Expressions.}
+URL \url{http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf}.
+
+Fader PS, Hardie BG (2007). \dQuote{Incorporating time-invariant covariates into the
+Pareto/NBD and BG/NBD models.}
+URL \url{http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf}.
 }
-\keyword{internal}

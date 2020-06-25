@@ -2,10 +2,10 @@
 % Please edit documentation in R/f_interface_bgnbd.R
 \name{bgnbd}
 \alias{bgnbd}
+\alias{bgnbd,clv.data.dynamic.covariates-method}
 \alias{bgnbd,clv.data-method}
 \alias{bgnbd,clv.data.static.covariates-method}
-\alias{bgnbd,clv.data.dynamic.covariates-method}
-\title{BG/NBD models - Work In Progress}
+\title{BG/NBD models}
 \usage{
 \S4method{bgnbd}{clv.data}(
   clv.data,
@@ -16,21 +16,6 @@
 )
 
 \S4method{bgnbd}{clv.data.static.covariates}(
-  clv.data,
-  start.params.model = c(),
-  optimx.args = list(),
-  verbose = TRUE,
-  names.cov.life = c(),
-  names.cov.trans = c(),
-  start.params.life = c(),
-  start.params.trans = c(),
-  names.cov.constr = c(),
-  start.params.constr = c(),
-  reg.lambdas = c(),
-  ...
-)
-
-\S4method{bgnbd}{clv.data.dynamic.covariates}(
   clv.data,
   start.params.model = c(),
   optimx.args = list(),
@@ -72,8 +57,124 @@ If multiple optimization methods are specified, only the result of the last meth
 \item{reg.lambdas}{Named lambda parameters used for the L2 regularization of the lifetime and the transaction covariate parameters. Lambdas have to be >= 0.}
 }
 \value{
-No value is returned.
+Depending on the data object on which the model was fit, \code{bgnbd} returns either an object of
+class \link[CLVTools:clv.bgnbd-class]{clv.bgnbd} or \link[CLVTools:clv.bgnbd.static.cov-class]{clv.bgnbd.static.cov}.
 }
 \description{
-Fits BG/NBD models on transactional data with static and without covariates. Not yet implemented.
+Fits BG/NBD models on transactional data without and with static covariates.
+}
+\details{
+Model parameters for the BG/NBD model are \code{r, alpha, a, and b}. \cr
+\code{r}: shape parameter of the Gamma distribution of the purchase process. \cr
+\code{alpha}: scale parameter of the Gamma distribution of the purchase process. \cr
+\code{a}: shape parameter of the Beta distribution of the dropout process.\cr
+\code{b}: shape parameter of the Beta distribution of the dropout process.
+
+If no start parameters are given, r = 1, alpha = 3, a = 1, b = 3 is used.
+All model start parameters are required to be > 0.
+
+Note that the DERT expression has not been derived (yet) and it consequently is not possible to calculated
+values for DERT and CLV.
+
+\subsection{The BG/NBD model}{
+The BG/NBD is an "easy" alternative to the Pareto/NBD model that is easier to implement. The BG/NBD model slight adapts
+the behavioral "story" associated with the Pareto/NBD model in order to simplify the implementation. The BG/NBD model uses a beta-geometric and
+exponential gamma mixture distributions to model customer behavior. The key difference to the Pareto/NBD model is that a customer can only
+churn right after a transaction. This simplifies computations significantly, however has the drawback that a customer cannot churn until he/she
+makes a transaction. The Pareto/NBD model assumes that a customer can churn at any time.
+}
+
+\subsection{BG/NBD model with static covariates}{
+The standard BG/NBD model captures heterogeneity was solely using Gamma distributions.
+However, often exogenous knowledge, such as for example customer demographics, is available.
+The supplementary knowledge may explain part of the heterogeneity among the customers and
+therefore increase the predictive accuracy of the model. In addition, we can rely on these
+parameter estimates for inference, i.e. identify and quantify effects of contextual factors
+on the two underlying purchase and attrition processes. For technical details we refer to
+the technical note by Fader and Hardie (2007).
+}
+}
+\examples{
+\donttest{
+data("apparelTrans")
+clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
+                            time.unit = "w", estimation.split = 40)
+
+# Fit standard bgnbd model
+bgnbd(clv.data.apparel)
+
+# Give initial guesses for the Model parameters
+bgnbd(clv.data.apparel,
+     start.params.model = c(r=0.5, alpha=15, a = 2, b=5))
+
+
+# pass additional parameters to the optimizer (optimx)
+#    Use Nelder-Mead as optimization method and print
+#    detailed information about the optimization process
+apparel.bgnbd <- bgnbd(clv.data.apparel,
+                     optimx.args = list(method="Nelder-Mead",
+                                        control=list(trace=6)))
+
+# estimated coefs
+coef(apparel.bgnbd)
+
+# summary of the fitted model
+summary(apparel.bgnbd)
+
+# predict CLV etc for holdout period
+predict(apparel.bgnbd)
+
+# predict CLV etc for the next 15 periods
+predict(apparel.bgnbd, prediction.end = 15)
+}
+\donttest{
+# To estimate the bgnbd model with static covariates,
+#   add static covariates to the data
+data("apparelStaticCov")
+clv.data.static.cov <-
+ SetStaticCovariates(clv.data.apparel,
+                     data.cov.life = apparelStaticCov,
+                     names.cov.life = c("Gender", "Channel"),
+                     data.cov.trans = apparelStaticCov,
+                     names.cov.trans = c("Gender", "Channel"))
+
+# Fit bgnbd with static covariates
+bgnbd(clv.data.static.cov)
+
+# Give initial guesses for both covariate parameters
+bgnbd(clv.data.static.cov, start.params.trans = c(Gender=0.75, Channel=0.7),
+                   start.params.life  = c(Gender=0.5, Channel=0.5))
+
+# Use regularization
+bgnbd(clv.data.static.cov, reg.lambdas = c(trans = 5, life=5))
+
+# Force the same coefficient to be used for both covariates
+bgnbd(clv.data.static.cov, names.cov.constr = "Gender",
+                   start.params.constr = c(Gender=0.5))
+
+# Fit model only with the Channel covariate for life but
+# keep all trans covariates as is
+bgnbd(clv.data.static.cov, names.cov.life = c("Channel"))
+}
+}
+\references{
+Fader PS, Hardie BGS, Lee, KL (2005). \dQuote{\dQuote{Counting Your Customers} the Easy Way:
+An Alternative to the Pareto/NBD Model} Marketing Science, 24(2), 275–284.
+
+Fader PS, Hardie BGS (2013). \dQuote{Overcoming the BG/NBD Model’s #NUM! Error Problem}
+URL \url{http://brucehardie.com/notes/027/bgnbd_num_error.pdf}.
+
+Fader PS, Hardie BGS (2007). \dQuote{Incorporating time-invariant covariates into the
+Pareto/NBD and BG/NBD models.}
+URL \url{http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf}.
+}
+\seealso{
+\code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object, \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}}
+to add static covariates to an existing clv data object.
+
+\code{\link[CLVTools:predict.clv.fitted]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
+
+\code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation as predicted by the fitted model
+
+The generic functions \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:summary.clv.fitted]{summary}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
 }

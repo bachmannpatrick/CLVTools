@@ -32,7 +32,7 @@
 #' The model start parameters are required to be > 0.
 #'
 #' \subsection{The Pareto/NBD model}{
-#' The Pareto/NBD was the first model addressing the issue of modeling customer purchases and
+#' The Pareto/NBD is the first model addressing the issue of modeling customer purchases and
 #' attrition simultaneously for non-contractual settings. The model uses a Pareto distribution,
 #' a combination of an Exponential and a Gamma distribution, to explicitly model customers'
 #' (unobserved) attrition behavior in addition to customers' purchase process.\cr
@@ -61,21 +61,21 @@
 #' covariates can affect customer on aggregated level as well as on an individual level:
 #' In the first case, all customers are affected simultaneously, in the latter case a
 #' covariate is only relevant for a particular customer. For technical details we refer to
-#' the paper by Bachmann, Meierer and Näf (2019).
+#' the paper by Bachmann, Meierer and Näf (2020).
 #' }
 #'
 #' @note
 #' Fitting the Pareto/NBD model with dynamic covariates is for the most part implemented using \code{data.table} and to a smaller part further
 #' parallelized with the \code{foreach} package. Registering a
-#' parallel backend with \code{\link[doFuture:doFuture]{doFuture}} or \code{\link[doParallel:doParallel]{doParallel}} before fitting the
+#' parallel backend with \code{\link[doFuture]{doFuture}} or \code{\link[doParallel:doParallel-package]{doParallel}} before fitting the
 #' models allows to take advantage of this. If no parallel backend is set up, the \code{foreach} package gives a friendly reminder that
 #' it is executed sequentially. In case this is desired but no warning should be given, a parallel backend in sequential mode
 #' can be set up, for example package \code{doFuture} with \code{\link[future:plan]{plan("sequential")}}.
 #'
 #' The part executed with \code{foreach} also heavily relies on \code{data.table} which is natively parallelized already. When setting up
 #' the parallel backend, great care should be taken to reduce the overhead from this nested parallelism as otherwise it can \emph{increase} runtime.
-#' See \code{\link[data.table:setDTthreads]{setDTthreads}}, \code{\link[data.table:getDTthreads]{getDTthreads}},
-#' and \code{\link[future:plan]{plan}} for information on how to do this.
+#' See \code{\link[data.table:openmp-utils]{setDTthreads}}, \code{\link[data.table:openmp-utils]{getDTthreads}},
+#' and \code{\link[future]{plan}} for information on how to do this.
 #'
 #' The Pareto/NBD model with dynamic covariates can currently not be fit with data that has a temporal resolution
 #' of less than one day (data that was built with time unit \code{hours}).
@@ -84,91 +84,31 @@
 #' Depending on the data object on which the model was fit, \code{pnbd} returns either an object of
 #' class \link[CLVTools:clv.pnbd-class]{clv.pnbd}, \link[CLVTools:clv.pnbd.static.cov-class]{clv.pnbd.static.cov}, or \link[CLVTools:clv.pnbd.dynamic.cov-class]{clv.pnbd.dynamic.cov}.
 #'
-#' The function \code{\link[CLVTools:summary.clv.fitted]{summary}} can be used to obtain and print a summary of the results.
-#' The generic accessor functions \code{coefficients}, \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}},
-#' \code{logLik}, \code{AIC}, \code{BIC}, and \code{nobs} are available.
+#' @template template_clvfitted_returnvalue
 #'
-#' @seealso \code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object, \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}} and \code{\link[CLVTools:SetDynamicCovariates]{SetDynamicCovariates}}
-#' to add static or dynamic covariates to an existing clv data object on which then the \code{pnbd} method can be fit
-#' @seealso \code{\link[CLVTools:predict.clv.fitted]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
-#' @seealso \code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation as predicted by the fitted model
-#' @seealso The generic functions \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:summary.clv.fitted]{summary}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
-#' @seealso \code{\link[data.table]{setDTthreads}}, \code{\link[data.table]{getDTthreads}},\code{\link[doParallel]{registerDoParallel}},\code{\link[doFuture]{registerDoFuture}} for setting up parallel execution.
+#' @template template_clvfitted_seealso
+#' @seealso \code{\link[CLVTools:SetDynamicCovariates]{SetDynamicCovariates}} to add dynamic covariates on which the \code{pnbd} model can be fit.
 #'
-#' @template template_pnbd_reference
+#' @seealso \code{\link[data.table:openmp-utils]{setDTthreads}}, \code{\link[data.table:openmp-utils]{getDTthreads}},\code{\link[doParallel:registerDoParallel]{registerDoParallel}},\code{\link[doFuture]{registerDoFuture}} for setting up parallel execution.
 #'
-#' @examples
-#' \donttest{
+#' @template template_references_pnbd
 #'
-#' data("apparelTrans")
-#' clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
-#'                             time.unit = "w", estimation.split = 40)
-#'
-#' # Fit standard PNBD model
-#' pnbd(clv.data.apparel)
-#'
-#' # Give initial guesses for the Model parameters
-#' pnbd(clv.data.apparel,
-#'      start.params.model = c(r=0.5, alpha=15, s=0.5, beta=10))
-#'
+#' @templateVar name_model_short pnbd
+#' @templateVar vec_startparams_model c(r=0.5, alpha=15, s=0.5, beta=10)
+#' @template template_examples_nocovmodelinterface
+#' @examples \donttest{
 #' # Estimate correlation as well
 #' pnbd(clv.data.apparel, use.cor = TRUE)
-#'
-#' # pass additional parameters to the optimizer (optimx)
-#' #    Use Nelder-Mead as optimization method and print
-#' #    detailed information about the optimization process
-#' apparel.pnbd <- pnbd(clv.data.apparel,
-#'                      optimx.args = list(method="Nelder-Mead",
-#'                                         control=list(trace=6)))
-#'
-#' # estimated coefs
-#' coef(apparel.pnbd)
-#'
-#' # summary of the fitted model
-#' summary(apparel.pnbd)
-#'
-#' # predict CLV etc for holdout period
-#' predict(apparel.pnbd)
-#'
-#' # predict CLV etc for the next 15 periods
-#' predict(apparel.pnbd, prediction.end = 15)
-#'
-#'
-#' # To estimate the PNBD model with static covariates,
-#' #   add static covariates to the data
-#' data("apparelStaticCov")
-#' clv.data.static.cov <-
-#'  SetStaticCovariates(clv.data.apparel,
-#'                      data.cov.life = apparelStaticCov,
-#'                      names.cov.life = c("Gender", "Channel"),
-#'                      data.cov.trans = apparelStaticCov,
-#'                      names.cov.trans = c("Gender", "Channel"))
-#'
-#' # Fit PNBD with static covariates
-#' pnbd(clv.data.static.cov)
-#'
-#' # Give initial guesses for both covariate parameters
-#' pnbd(clv.data.static.cov, start.params.trans = c(Gender=0.75, Channel=0.7),
-#'                    start.params.life  = c(Gender=0.5, Channel=0.5))
-#'
-#' # Use regularization
-#' pnbd(clv.data.static.cov, reg.lambdas = c(trans = 5, life=5))
-#'
-#' # Force the same coefficient to be used for both covariates
-#' pnbd(clv.data.static.cov, names.cov.constr = "Gender",
-#'                    start.params.constr = c(Gender=0.5))
-#'
-#' # Fit model only with the Channel covariate for life but
-#' # keep all trans covariates as is
-#' pnbd(clv.data.static.cov, names.cov.life = c("Channel"))
-#'
-#'
-#'
+#' }
+#' @templateVar name_model_short pnbd
+#' @template template_examples_staticcovmodelinterface
+#' @examples
 #' # Add dynamic covariates data to the data object
 #  # To estimate the PNBD model with dynamic covariates,
 #' #   add dynamic covariates to the data
-#' data("apparelDynCov")
+#' \donttest{
 #' \dontrun{
+#' data("apparelDynCov")
 #' clv.data.dyn.cov <-
 #'   SetDynamicCovariates(clv.data = clv.data.apparel,
 #'                        data.cov.life = apparelDynCov,
@@ -192,8 +132,6 @@
 #' #  static covariate are available
 #' pnbd(clv.data.dyn.cov, reg.lambdas = c(trans=10, life=2))
 #' }
-#'
-#'
 #' }
 #'
 NULL
@@ -209,11 +147,11 @@ setGeneric("pnbd", def = function(clv.data, start.params.model=c(), use.cor = FA
 #' @include class_clv_data.R
 #' @rdname pnbd
 setMethod("pnbd", signature = signature(clv.data="clv.data"), definition = function(clv.data,
-                                                                                        start.params.model=c(),
-                                                                                        use.cor = FALSE,
-                                                                                        start.param.cor=c(),
-                                                                                        optimx.args=list(),
-                                                                                        verbose=TRUE,...){
+                                                                                    start.params.model=c(),
+                                                                                    use.cor = FALSE,
+                                                                                    start.param.cor=c(),
+                                                                                    optimx.args=list(),
+                                                                                    verbose=TRUE,...){
 
   cl  <- match.call(call = sys.call(-1), expand.dots = TRUE)
 
@@ -254,15 +192,15 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.static.covariates"), 
 #' @include class_clv_data_dynamiccovariates.R
 #' @rdname pnbd
 setMethod("pnbd", signature = signature(clv.data="clv.data.dynamic.covariates"), definition = function(clv.data,
-                                                                                                        start.params.model=c(),
-                                                                                                        use.cor = FALSE,
-                                                                                                        start.param.cor=c(),
-                                                                                                        optimx.args=list(),
-                                                                                                        verbose=TRUE,
-                                                                                                        names.cov.life=c(), names.cov.trans=c(),
-                                                                                                        start.params.life=c(), start.params.trans=c(),
-                                                                                                        names.cov.constr=c(),start.params.constr=c(),
-                                                                                                        reg.lambdas = c(), ...){
+                                                                                                       start.params.model=c(),
+                                                                                                       use.cor = FALSE,
+                                                                                                       start.param.cor=c(),
+                                                                                                       optimx.args=list(),
+                                                                                                       verbose=TRUE,
+                                                                                                       names.cov.life=c(), names.cov.trans=c(),
+                                                                                                       start.params.life=c(), start.params.trans=c(),
+                                                                                                       names.cov.constr=c(),start.params.constr=c(),
+                                                                                                       reg.lambdas = c(), ...){
 
   cl  <- match.call(call = sys.call(-1), expand.dots = TRUE)
 

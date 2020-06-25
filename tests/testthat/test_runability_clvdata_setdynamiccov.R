@@ -25,6 +25,7 @@ test_that("Works with and withouth holdout period", {
 context("Runability - SetDynamicCovariates - Covariate length")
 
 test_that("Works with cov data longer than estimation.end/holdout.end", {
+  skip_on_cran()
 
   # Add additional 100w of fake cov data for all Ids
   dt.additional.cov <- expand.grid(Id = unique(apparelDynCov$Id),
