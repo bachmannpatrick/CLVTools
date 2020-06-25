@@ -12,12 +12,14 @@
   })
 
   test_that("Names have same order as vcov()", {
+    skip_on_cran()
     expect_silent(res.vcov <- vcov(clv.fitted))
     expect_named(res.coef, rownames(vcov(clv.fitted)), ignore.case = FALSE, ignore.order = FALSE)
     expect_named(res.coef, colnames(vcov(clv.fitted)), ignore.case = FALSE, ignore.order = FALSE)
   })
 
   test_that("Same order as coef(summary())", {
+    skip_on_cran()
     expect_named(res.coef, rownames(coef(summary(clv.fitted))), ignore.case = FALSE, ignore.order = FALSE)
   })
 
@@ -42,10 +44,12 @@
     expect_equal(res.attr$dimnames[[2]], names(coef(clv.fitted)))
   })
   test_that("Names same order as coef()", {
+    skip_on_cran()
     expect_named(coef(clv.fitted), rownames(res.vcov), ignore.case = FALSE, ignore.order = FALSE)
     expect_named(coef(clv.fitted), colnames(res.vcov), ignore.case = FALSE, ignore.order = FALSE)
   })
   test_that("Names same order as coef(summary())", {
+    skip_on_cran()
     expect_equal(rownames(coef(summary(clv.fitted))), rownames(res.vcov), ignore.case = FALSE, ignore.order = FALSE)
     expect_equal(rownames(coef(summary(clv.fitted))), colnames(res.vcov), ignore.case = FALSE, ignore.order = FALSE)
   })
@@ -80,6 +84,7 @@
   })
 
   test_that("Confint works with character param", {
+    skip_on_cran()
     # Single
     for(p in full.names)
       expect_equal(rownames(confint(clv.fitted, parm = p)), expected = p)
@@ -96,6 +101,7 @@
   })
 
   test_that("Confint works with integer param", {
+    skip_on_cran()
     p <- full.names
     # Single
     expect_equal(rownames(confint(clv.fitted, parm = 2)), expected = p[2])
@@ -116,6 +122,7 @@
   })
   # same behavior as lm
   test_that("confint NA if unknown parm", {
+    skip_on_cran()
     # Unknown character
     expect_true(all(is.na( confint(clv.fitted, parm = "abc") )))
     expect_true(all(is.na( confint(clv.fitted, parm = c("abc", "zcgd")) )))

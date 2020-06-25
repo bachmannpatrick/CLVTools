@@ -8,6 +8,7 @@
 #' @include all_generics.R class_clv_model_nocorrelation.R
 setClass(Class = "clv.model.bgnbd.no.cov", contains = "clv.model.no.correlation")
 
+
 #' @importFrom methods new
 clv.model.bgnbd.no.cov <- function(){
   return(new("clv.model.bgnbd.no.cov",

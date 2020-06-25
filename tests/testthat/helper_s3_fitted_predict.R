@@ -8,6 +8,7 @@
       expect_silent(predict(clv.fitted, verbose=FALSE))
     })
     test_that("Works with prediction end in holdout period", {
+      skip_on_cran()
       expect_silent(dt.pred <- predict(clv.fitted,prediction.end = as.character(clv.fitted@clv.data@clv.time@timepoint.holdout.end - lubridate::days(30)), verbose=FALSE))
       # then also has actuals
       expect_true(c("actual.x" %in% colnames(dt.pred)))
@@ -77,6 +78,7 @@
 
 
   test_that("Works with different newdata", {
+    skip_on_cran()
     # **TODO: Often still has NA (because estimated params do not work with artificial newdata)
     # No holdout needs prediction.end
     expect_silent(dt.pred <- predict(clv.fitted, newdata = clv.newdata.nohold, prediction.end = 25,
@@ -153,19 +155,3 @@
   })
 
 }
-
-
-
-# **TODO: MODEL CORRECTNESS TESTS
-# test_that("Same results with differently sorted transaction data",{
-#   skip_on_cran()
-#   data.diff.sort <- apparelTrans[sample.int(n=nrow(apparelTrans), replace = FALSE),]
-#
-#   res.orig      <- pnbd(clvdata(data.transactions = apparelTrans, date.format = "ymd",time.unit = "w"))
-#   res.diff.sort <- pnbd(clvdata(data.transactions = data.diff.sort,date.format = "ymd",time.unit = "w"))
-#
-#   expect_equal(coef(res.orig), coef(res.diff.sort))
-#   expect_equal(coef(summary(res.orig)), coef(summary(res.diff.sort)))
-#   expect_equal(predict(res.orig, prediction.end=10), predict(res.diff.sort, prediction.end=10))
-# })
-#

@@ -8,6 +8,7 @@
 #' @importFrom methods setClass
 setClass(Class = "clv.model.ggomnbd.no.cov", contains = "clv.model.no.correlation")
 
+
 clv.model.ggomnbd.no.cov <- function(){
   return(new("clv.model.ggomnbd.no.cov",
              name.model = "GGompertz/NBD Standard",

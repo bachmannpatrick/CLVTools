@@ -10,7 +10,7 @@
 }
 \description{
 Represents a time unit and offers methods for time unit related functionality.
-It stores all information related to timepoints (ie time and dates) of the
+It stores all information related to timepoints (i.e. time and dates) of the
 estimation and holdout sample periods and offers methods to parse user input
 and to do 'time-unit math'.
 }

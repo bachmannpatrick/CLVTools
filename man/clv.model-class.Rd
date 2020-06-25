@@ -21,7 +21,7 @@ to obtain a functional \code{clv.fitted} object.
 
 \item{\code{names.prefixed.params.model}}{character vector that defines the names of the model parameters as they are named during LL optimization}
 
-\item{\code{start.params.model}}{numeric vector of default values at original scale that should be used for the LL optimization if the user does not provide start parameters. Named with names.original.params.model.}
+\item{\code{start.params.model}}{numeric vector of default values at original scale that should be used for the LL optimization if the user does not provide start parameters. Named with \code{names.original.params.model}.}
 
 \item{\code{optimx.defaults}}{list of default arguments for calling \code{\link[optimx]{optimx}} with \code{do.call}. Named after the respective arguments in optimx.}
 }}
