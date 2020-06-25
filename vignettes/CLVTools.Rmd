@@ -154,7 +154,7 @@ As an alternative to the Pareto/NBD model `CLVTools` features the BG/NBD model [
 | bgnbd()  |BG/NBD   	| time-invariant  | 
 | ggomnbd() |GGom/NBD   | time-invariant  |
 
-To estimate the GGom/NBD model we apply the `ggomnbd()`to the `clv.apparel` object. The GGom/NBD model is more flexible than the Pareto/NBD model, however it sometimes is challanging to optimize. Note that in this particular case providing start parameters is essential to arrive at an optimal solution (i.e. `kkt1: TRUE` and `kkt2: TRUE`).
+To estimate the GGom/NBD model we apply the `ggomnbd()`to the `clv.apparel` object. The GGom/NBD model is more flexible than the Pareto/NBD model, however it sometimes is challenging to optimize. Note that in this particular case providing start parameters is essential to arrive at an optimal solution (i.e. `kkt1: TRUE` and `kkt2: TRUE`).
 ```{r estimate-ggomnbd, eval=FALSE}
 est.ggomnbd <- ggomnbd(clv.data = clv.apparel, 
                      start.params.model = c(r=0.7, alpha=5, b=0.005,  s=0.02, beta=0.001), 
@@ -334,6 +334,9 @@ summary(est.pnbd.constr)
 `CLVTools` supports parallel processing when estimating models containing time-varying covariates using the package `future` [@future] and the corresponding `foreach` [@foreach] parallel adapter `doFuture` [@doFuture]. To enable the distribution of the workload across all available cores, use execute the following commands before estimating the model (i.e. calling `pnbd()):
 
 ```{r doFuture, eval=FALSE}
+  # disable multithreading for data.table (to avoid nested parallelism)
+  setDTthreads(1)
+
   library("doFuture")
   registerDoFuture()
   plan("multisession")

@@ -72,12 +72,14 @@ fct.testthat.inputchecks.usecor <- function(method, l.std.args, correct.param){
   })
 
   test_that("Fails if more than 1", {
+    skip_on_cran()
     expect_error(do.call(method, modifyList(l.std.args,
                                                list(use.cor = rep(correct.param,2)))),
                  regexp = "single element")
   })
 
   test_that("Fails if is NA", {
+    skip_on_cran()
     expect_error(do.call(method, modifyList(l.std.args,
                                                list(use.cor = NA))),
                  regexp = "NA")
@@ -173,6 +175,7 @@ fct.testthat.inputchecks.optimxargs <- function(method, l.std.args){
 fct.testthat.inputchecks.nocov... <- function(method, l.std.args){
 
   test_that("Stop if unnecessary inputs given in ellipsis", {
+    skip_on_cran()
     # stuff that is for covariate models only
 
     expect_error(do.call(method, modifyList(l.std.args, list(names.cov.trans="Gender"))),
@@ -195,6 +198,7 @@ fct.testthat.inputchecks.nocov... <- function(method, l.std.args){
   })
 
   test_that("Stop if anything else in ellipsis", {
+    skip_on_cran()
     expect_error(do.call(method, modifyList(l.std.args, list(abc=10))),
                  regexp = "not needed")
   })
@@ -215,6 +219,7 @@ fct.testthat.inputchecks.helper.expect.error.for.params <- function(start.params
 
 fct.testthat.inputchecks.nocov.cannot.predict.without.spending <- function(method, cdnow, start.params.model)
 test_that("Spending fit cannot predict on newdata that has no spending", {
+  skip_on_cran()
   l.args <- list(clv.data = clvdata(cdnow, name.price = "Price", date.format = "ymd", time.unit = "w", estimation.split = 37),
                  verbose = FALSE)
   # Spending fit

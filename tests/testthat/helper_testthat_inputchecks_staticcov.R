@@ -203,6 +203,7 @@ fct.testthat.inputchecks.reglambdas <- function(method, l.std.args){
 fct.testthat.inputchecks.staticcov... <- function(method, l.std.args){
 
   test_that("Stop if unnecessary inputs given in ellipsis", {
+    skip_on_cran()
     # stuff that is for nothing
     expect_error(do.call(method, modifyList(l.std.args, list(abc="Gender"))),
                  regexp = "not needed")

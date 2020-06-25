@@ -1,3 +1,4 @@
+skip_on_cran()
 data("cdnow")
 data("apparelTrans")
 data("apparelStaticCov")
@@ -56,6 +57,7 @@ test_that("Fails if prediction.end before fitting end", {
 
 # **TODO: Prediction end as not date/numeric/char (= same tests as for plot)
 test_that("Fails if newdata not a clv.data object", {
+  skip_on_cran()
   expect_error(predict(pnbd.cdnow, newdata = NA_character_), regexp = "needs to be a clv data object")
   expect_error(predict(pnbd.cdnow, newdata = character()), regexp = "needs to be a clv data object")
   expect_error(predict(pnbd.cdnow, newdata = cdnow), regexp = "needs to be a clv data object")
@@ -77,6 +79,8 @@ test_that("Fails if newdata is of wrong clv.data", {
 })
 
 test_that("Fails if newdata has not the same covariates", {
+  skip_on_cran()
+
   apparelDemographics.additional <- data.table::copy(apparelStaticCov)
   apparelDemographics.additional[, Haircolor := c(rep(c(1,2), .N/2))]
 

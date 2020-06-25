@@ -1,3 +1,4 @@
+skip_on_cran()
 data("cdnow")
 
 fct.testthat.runability.nocov(name.model = "GGompertz/NBD", method = ggomnbd, cdnow=cdnow,

@@ -2,7 +2,12 @@
 [![R CMD
 checks](https://github.com/bachmannpatrick/CLVTools/workflows/R-CMD-check/badge.svg?branch=development)](https://github.com/bachmannpatrick/CLVTools/actions)
 [![Tests](https://github.com/bachmannpatrick/CLVTools/workflows/testthat-tests/badge.svg?branch=development)](https://github.com/bachmannpatrick/CLVTools/actions)
-[![Downloads](https://cranlogs.r-pkg.org/badges/CLVTools)](https://cran.r-project.org/package=CLVTools)
+[![CRAN
+Status](http://www.r-pkg.org/badges/version/CLVTools)](https://cran.r-project.org/package=CLVTools)
+[![Repo
+Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![CRAN
+Downloads](https://cranlogs.r-pkg.org/badges/CLVTools)](https://cran.r-project.org/package=CLVTools)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
@@ -50,7 +55,7 @@ for a time-line.
 
 8)  Standard BG/BB model (Fader, Hardie, & Shang 2010)
 
-9)  Gamma/Gamma model for estimating customer speding (Colombo & Jiang
+9)  Gamma/Gamma model to estimate customer spending (Colombo & Jiang
     1999; Fader, Hardie & Lee 2005; Fader & Hardie 2013)
 
 In addition the framework features a system of layers between the
@@ -71,8 +76,7 @@ Install the stable version from CRAN:
 
     install.packages("CLVTools")
 
-Install the development version from
-    GitHub:
+Install the development version from GitHub:
 
     devtools::install_github("bachmannpatrick/CLVTools", ref = "development")
 
@@ -86,7 +90,7 @@ For detailed instructions and all available options and model variations
 see the [Walkthrough](https://www.clvtools.com/articles/CLVTools.html)
 and the [manual](https://www.clvtools.com/reference/index.html).
 
-Start by loadin the package:
+Start by loading the package:
 
 ``` r
 library("CLVTools")
@@ -115,7 +119,7 @@ apparelTrans
 Before we estimate a model, we are required to initialize a data object
 using the `clvdata()` command. The data object contains the prepared
 transactional data and is later used as input for model fitting.
-Additionaly we sepecify options for the date and time units, estimation
+Additionally we specify options for the date and time units, estimation
 duration and variable names (see
 [Walkthrough](https://www.clvtools.com/articles/CLVTools.html) for
 details). Make sure to store the generated object in a variable, e.g. in
@@ -156,7 +160,7 @@ est.pnbd
 #> Correlation:     FALSE
 ```
 
-You can allways use `summary()` to get details on CLVTools object (also
+You can always use `summary()` to get details on CLVTools object (also
 before they are estimated):
 
 ``` r
@@ -196,7 +200,7 @@ summary(est.pnbd)
 
 Once the model parameters are estimated, we are able to predict future
 customer behavior on an individual level. To do so, we use `predict()`
-on the object with the estimated parameters (i.e. `est.pnbd`). In
+on the object with the estimated parameters (i.e. `est.pnbd`). In
 general, probabilistic customer attrition model predict three expected
 characteristics for every customer:
 

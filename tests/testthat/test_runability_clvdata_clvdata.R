@@ -5,11 +5,6 @@ data("cdnow")
 
 context("Runability - clvdata - clvdata")
 
-# Runs with example input ------------------------------------------------------------------------------
-test_that("Works with example inputs", {
-  expect_silent(clvdata(cdnow, time.unit="w", date.format="ymd"))
-})
-
 
 # data.transactions ------------------------------------------------------------------------------------
 test_that("Works with data.frame / data.table input", {
