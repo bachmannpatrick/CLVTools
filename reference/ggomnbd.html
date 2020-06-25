@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Gamma-Gompertz/NBD models - Work In Progress — ggomnbd • CLVTools</title>
+<title>Gamma-Gompertz/NBD model — ggomnbd • CLVTools</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Gamma-Gompertz/NBD models - Work In Progress — ggomnbd" />
-<meta property="og:description" content="Fits Gamma-Gompertz/NBD models on transactional data with static and without covariates. Not yet implemented." />
+<meta property="og:title" content="Gamma-Gompertz/NBD model — ggomnbd" />
+<meta property="og:description" content="Fits Gamma-Gompertz/NBD models on transactional data with static and without covariates." />
 
 
 
@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -136,54 +136,38 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Gamma-Gompertz/NBD models - Work In Progress</h1>
+    <h1>Gamma-Gompertz/NBD model</h1>
     <small class="dont-index">Source: <a href='https://github.com/bachmannpatrick/CLVTools/blob/master/R/f_interface_ggomnbd.R'><code>R/f_interface_ggomnbd.R</code></a></small>
     <div class="hidden name"><code>ggomnbd.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Fits Gamma-Gompertz/NBD models on transactional data with static and without covariates. Not yet implemented.</p>
+    <p>Fits Gamma-Gompertz/NBD models on transactional data with static and without covariates.</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for clv.data</span>
-<span class='fu'>ggomnbd</span>(
-  <span class='no'>clv.data</span>,
-  <span class='kw'>start.params.model</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>optimx.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/ggomnbd.html'>ggomnbd</a></span>(
+  <span class='kw'>clv.data</span>,
+  start.params.model = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  optimx.args = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  verbose = <span class='fl'>TRUE</span>,
+  <span class='kw'>...</span>
 )
 
 <span class='co'># S4 method for clv.data.static.covariates</span>
-<span class='fu'>ggomnbd</span>(
-  <span class='no'>clv.data</span>,
-  <span class='kw'>start.params.model</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>optimx.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>names.cov.life</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>names.cov.trans</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.life</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.trans</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>names.cov.constr</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.constr</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>reg.lambdas</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='no'>...</span>
-)
-
-<span class='co'># S4 method for clv.data.dynamic.covariates</span>
-<span class='fu'>ggomnbd</span>(
-  <span class='no'>clv.data</span>,
-  <span class='kw'>start.params.model</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>optimx.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>names.cov.life</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>names.cov.trans</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.life</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.trans</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>names.cov.constr</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.constr</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>reg.lambdas</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='no'>...</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/ggomnbd.html'>ggomnbd</a></span>(
+  <span class='kw'>clv.data</span>,
+  start.params.model = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  optimx.args = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  verbose = <span class='fl'>TRUE</span>,
+  names.cov.life = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  names.cov.trans = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  start.params.life = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  start.params.trans = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  names.cov.constr = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  start.params.constr = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  reg.lambdas = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  <span class='kw'>...</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -242,8 +226,680 @@ If multiple optimization methods are specified, only the result of the last meth
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>No value is returned.</p>
+    <p><code>ggomnbd</code> returns an object of
+class <code>clv.ggomnbd</code>.</p>
+<p>The function <code><a href='https://rdrr.io/pkg/CLVTools/man/summary.clv.fitted.html'>summary</a></code> can be used to obtain and print a summary of the results.
+The generic accessor functions <code>coefficients</code>, <code>fitted</code>,
+<code>residuals</code>, <code>vcov</code>, <code>logLik</code>, <code>AIC</code>, <code>BIC</code>, and <code>nobs</code> are available.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
+    <p>Model parameters for the GGompertz /NBD model are <code>r, alpha, beta, b and s</code>. <br />
+<code>r</code>: shape parameter of the Gamma distribution of the purchase process.
+The smaller <code>r</code>, the stronger the heterogeneity of the purchase process.<br />
+<code>alpha</code>: scale parameter of the Gamma distribution of the purchase process.<br />
+<code>beta</code>: scale parameter for the Gamma distribution for the lifetime process.<br />
+<code>b</code>: scale parameter of the Gompertz distribution (constant across customers).<br />
+<code>s</code>: shape parameter of the Gamma distribution for the lifetime process.
+The smaller <code>s</code>, the stronger the heterogeneity of customer lifetimes.</p>
+<p>If no start parameters are given, r = 1, alpha = 1, beta = 1, b = 1, s = 1 is used.
+The model start parameters are required to be &gt; 0.</p>
+<h3>The Gamma-Gompertz/NBD model</h3>
+<p>There are two key differences of the gamma/Gompertz/NBD (GGom/NBD) model compared to the relative to the well-known Pareto/NBD
+model: (i) its probability density function can exhibit a mode at zero or an interior mode, and (ii) it can be skewed
+to the right or to the left. Therefore, the GGom/NBD model is more flexible than the Pareto/NBD model.
+According to Bemmaor and Glady (2012) can indicate substantial differences in expected residual lifetimes compared to the Pareto/NBD.
+The GGom/NBD tends to be appropriate when firms are reputed and their offerings are differentiated.</p>
+
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>Bemmaor AC, Glady N (2012). &#8220;Modeling Purchasing Behavior with Sudden &#8220;Death&#8221;: A Flexible Customer
+Lifetime Model&#8221; Management Science, 58(5), 1012-1021.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='https://rdrr.io/pkg/CLVTools/man/clvdata.html'>clvdata</a></code> to create a clv data object</p>
+<p><code><a href='https://rdrr.io/pkg/CLVTools/man/predict.clv.fitted.html'>predict</a></code> to predict expected transactions, probability of being alive, and customer lifetime value for every customer</p>
+<p><code><a href='https://rdrr.io/pkg/CLVTools/man/plot.clv.fitted.html'>plot</a></code> to plot the unconditional expectation as predicted by the fitted model</p>
+<p>The generic functions <code><a href='https://rdrr.io/pkg/CLVTools/man/summary.clv.fitted.html'>summary</a></code> and <code><a href='https://rdrr.io/pkg/CLVTools/man/fitted.clv.fitted.html'>fitted</a></code>.</p></div>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"apparelTrans"</span>)
+<span class='kw'>clv.data.apparel</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/clvdata.html'>clvdata</a></span>(<span class='kw'>apparelTrans</span>, date.format = <span class='st'>"ymd"</span>,
+                            time.unit = <span class='st'>"w"</span>, estimation.split = <span class='fl'>40</span>)
+
+<span class='co'># Fit standard ggomnbd model</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/ggomnbd.html'>ggomnbd</a></span>(<span class='kw'>clv.data.apparel</span>)</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; GGompertz/NBD Standard  Model
+#&gt; 
+#&gt; Call:
+#&gt; ggomnbd(clv.data = clv.data.apparel)
+#&gt; 
+#&gt; Coefficients:
+#&gt;         r      alpha          b          s       beta  
+#&gt; 7.865e-01  5.334e+00  4.903e-07  3.573e-01  5.703e-06  
+#&gt; KKT1: TRUE 
+#&gt; KKT2: FALSE 
+#&gt; 
+#&gt; Used Options:
+#&gt; Correlation:     FALSE </div><div class='input'>
+<span class='co'># Give initial guesses for the Model parameters</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/ggomnbd.html'>ggomnbd</a></span>(<span class='kw'>clv.data.apparel</span>,
+     start.params.model = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(r=<span class='fl'>0.5</span>, alpha=<span class='fl'>15</span>, b=<span class='fl'>5</span>, beta=<span class='fl'>10</span>, s=<span class='fl'>0.5</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; GGompertz/NBD Standard  Model
+#&gt; 
+#&gt; Call:
+#&gt; ggomnbd(clv.data = clv.data.apparel, start.params.model = c(r = 0.5, 
+#&gt;     alpha = 15, b = 5, beta = 10, s = 0.5))
+#&gt; 
+#&gt; Coefficients:
+#&gt;        r     alpha         b         s      beta  
+#&gt; 0.694315  4.918703  9.074435  0.001513  0.625261  
+#&gt; KKT1: TRUE 
+#&gt; KKT2: FALSE 
+#&gt; 
+#&gt; Used Options:
+#&gt; Correlation:     FALSE </div><div class='input'>
+
+<span class='co'># pass additional parameters to the optimizer (optimx)</span>
+<span class='co'>#    Use Nelder-Mead as optimization method and print</span>
+<span class='co'>#    detailed information about the optimization process</span>
+<span class='kw'>apparel.ggomnbd</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/ggomnbd.html'>ggomnbd</a></span>(<span class='kw'>clv.data.apparel</span>,
+                     optimx.args = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(method=<span class='st'>"Nelder-Mead"</span>,
+                                        control=<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(trace=<span class='fl'>6</span>)))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; fn is  fn 
+#&gt; Looking for method =  Nelder-Mead 
+#&gt; Methods to be used:[1] "Nelder-Mead"
+#&gt; optcfg:$fname
+#&gt; [1] "fn"
+#&gt; 
+#&gt; $npar
+#&gt; [1] 5
+#&gt; 
+#&gt; $ctrl
+#&gt; $ctrl$follow.on
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $ctrl$save.failures
+#&gt; [1] TRUE
+#&gt; 
+#&gt; $ctrl$trace
+#&gt; [1] 6
+#&gt; 
+#&gt; $ctrl$kkt
+#&gt; [1] TRUE
+#&gt; 
+#&gt; $ctrl$all.methods
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $ctrl$starttests
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $ctrl$maximize
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $ctrl$dowarn
+#&gt; [1] TRUE
+#&gt; 
+#&gt; $ctrl$usenumDeriv
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $ctrl$kkttol
+#&gt; [1] 0.001
+#&gt; 
+#&gt; $ctrl$kkt2tol
+#&gt; [1] 1e-06
+#&gt; 
+#&gt; $ctrl$badval
+#&gt; [1] 8.988466e+307
+#&gt; 
+#&gt; $ctrl$scaletol
+#&gt; [1] 3
+#&gt; 
+#&gt; $ctrl$have.bounds
+#&gt; [1] FALSE
+#&gt; 
+#&gt; 
+#&gt; $usenumDeriv
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $ufn
+#&gt; function (LL.params, LL.function.sum, use.interlayer.constr, 
+#&gt;     use.interlayer.reg, reg.lambda.trans, reg.lambda.life, use.cor, 
+#&gt;     ...) 
+#&gt; {
+#&gt;     all.other.args &lt;- list(...)
+#&gt;     interlayers.to.use &lt;- list(callLL = interlayer_callLL)
+#&gt;     if (use.cor == T &amp; !anyNA(use.cor)) 
+#&gt;         interlayers.to.use &lt;- c(correlation = interlayer_correlation, 
+#&gt;             interlayers.to.use)
+#&gt;     if (use.interlayer.reg == T &amp; !is.null(reg.lambda.trans) &amp; 
+#&gt;         !anyNA(reg.lambda.trans) &amp; !is.null(reg.lambda.life) &amp; 
+#&gt;         !anyNA(reg.lambda.life)) {
+#&gt;         interlayers.to.use &lt;- c(regularization = interlayer_regularization, 
+#&gt;             interlayers.to.use)
+#&gt;     }
+#&gt;     if (use.interlayer.constr == TRUE) {
+#&gt;         interlayers.to.use &lt;- c(constraints = interlayer_constraints, 
+#&gt;             interlayers.to.use)
+#&gt;     }
+#&gt;     interlayer.call.args &lt;- list(next.interlayers = interlayers.to.use, 
+#&gt;         LL.function.sum = LL.function.sum, LL.params = LL.params, 
+#&gt;         reg.lambda.life = reg.lambda.life, reg.lambda.trans = reg.lambda.trans)
+#&gt;     interlayer.call.args &lt;- modifyList(interlayer.call.args, 
+#&gt;         all.other.args)
+#&gt;     return(do.call(what = interlayer_callnextinterlayer, args = interlayer.call.args))
+#&gt; }
+#&gt; &lt;bytecode: 0x7fe34ced29e8&gt;
+#&gt; &lt;environment: namespace:CLVTools&gt;
+#&gt; 
+#&gt; $have.bounds
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $method
+#&gt; [1] "Nelder-Mead"
+#&gt; 
+#&gt; Method:  Nelder-Mead 
+#&gt;   Nelder-Mead direct search function minimizer
+#&gt; function value for initial parameters = 7135.028461
+#&gt;   Scaled convergence tolerance is 0.00010632
+#&gt; Stepsize computed as 0.100000
+#&gt; BUILD              6 7601.506541 7119.715103
+#&gt; EXTENSION          8 7601.506541 6551.338914
+#&gt; EXTENSION         10 7158.281161 6037.513352
+#&gt; LO-REDUCTION      12 7135.028461 6037.513352
+#&gt; LO-REDUCTION      14 7120.679158 6037.513352
+#&gt; EXTENSION         16 7119.715103 5383.511468
+#&gt; EXTENSION         18 6551.338914 4690.867542
+#&gt; LO-REDUCTION      20 6407.902236 4690.867542
+#&gt; EXTENSION         22 6168.906218 4191.553467
+#&gt; LO-REDUCTION      24 6037.513352 4191.553467
+#&gt; EXTENSION         26 5383.511468 3460.012466
+#&gt; LO-REDUCTION      28 4978.908267 3460.012466
+#&gt; LO-REDUCTION      30 4690.867542 3460.012466
+#&gt; REFLECTION        32 4211.205075 3420.897750
+#&gt; REFLECTION        34 4191.553467 3347.024278
+#&gt; REFLECTION        36 3564.368966 3306.075340
+#&gt; LO-REDUCTION      38 3484.060645 3306.075340
+#&gt; LO-REDUCTION      40 3460.012466 3306.075340
+#&gt; HI-REDUCTION      42 3420.897750 3306.075340
+#&gt; EXTENSION         44 3360.906285 3249.494945
+#&gt; EXTENSION         46 3355.169338 3177.258603
+#&gt; LO-REDUCTION      48 3347.024278 3177.258603
+#&gt; LO-REDUCTION      50 3320.849704 3177.258603
+#&gt; LO-REDUCTION      52 3306.075340 3177.258603
+#&gt; EXTENSION         54 3273.448592 3126.508670
+#&gt; LO-REDUCTION      56 3249.494945 3126.508670
+#&gt; EXTENSION         58 3244.766463 3053.745820
+#&gt; EXTENSION         60 3213.848103 2976.546260
+#&gt; LO-REDUCTION      62 3177.258603 2976.546260
+#&gt; EXTENSION         64 3132.215016 2966.834537
+#&gt; REFLECTION        66 3126.508670 2947.715342
+#&gt; LO-REDUCTION      68 3053.745820 2943.458875
+#&gt; LO-REDUCTION      70 2984.745015 2943.458875
+#&gt; HI-REDUCTION      72 2976.546260 2943.458875
+#&gt; HI-REDUCTION      74 2966.834537 2943.458875
+#&gt; REFLECTION        76 2959.194063 2931.290958
+#&gt; LO-REDUCTION      78 2955.728569 2931.290958
+#&gt; LO-REDUCTION      80 2947.715342 2931.290958
+#&gt; EXTENSION         82 2945.749591 2910.691924
+#&gt; LO-REDUCTION      84 2943.458875 2910.691924
+#&gt; REFLECTION        86 2939.904064 2910.078049
+#&gt; LO-REDUCTION      88 2938.148136 2910.078049
+#&gt; HI-REDUCTION      90 2931.290958 2910.078049
+#&gt; EXTENSION         92 2925.652202 2899.477011
+#&gt; LO-REDUCTION      94 2921.692144 2899.477011
+#&gt; EXTENSION         96 2913.280407 2889.676951
+#&gt; LO-REDUCTION      98 2910.691924 2889.676951
+#&gt; LO-REDUCTION     100 2910.078049 2889.676951
+#&gt; LO-REDUCTION     102 2903.117478 2889.676951
+#&gt; LO-REDUCTION     104 2899.477011 2889.676951
+#&gt; LO-REDUCTION     106 2893.310771 2889.595748
+#&gt; LO-REDUCTION     108 2893.204167 2889.595748
+#&gt; HI-REDUCTION     110 2891.149473 2889.595748
+#&gt; LO-REDUCTION     112 2890.442814 2888.986058
+#&gt; HI-REDUCTION     114 2889.977167 2888.986058
+#&gt; HI-REDUCTION     116 2889.970098 2888.986058
+#&gt; HI-REDUCTION     118 2889.676951 2888.986058
+#&gt; HI-REDUCTION     120 2889.595748 2888.986058
+#&gt; HI-REDUCTION     122 2889.178411 2888.983546
+#&gt; HI-REDUCTION     124 2889.113981 2888.915364
+#&gt; HI-REDUCTION     126 2889.089142 2888.892026
+#&gt; LO-REDUCTION     128 2888.992848 2888.856251
+#&gt; HI-REDUCTION     130 2888.986058 2888.851384
+#&gt; HI-REDUCTION     132 2888.983546 2888.828646
+#&gt; REFLECTION       134 2888.915364 2888.803918
+#&gt; LO-REDUCTION     136 2888.892026 2888.798226
+#&gt; REFLECTION       138 2888.856251 2888.789774
+#&gt; LO-REDUCTION     140 2888.851384 2888.765020
+#&gt; LO-REDUCTION     142 2888.828646 2888.765020
+#&gt; EXTENSION        144 2888.803918 2888.676231
+#&gt; LO-REDUCTION     146 2888.798226 2888.676231
+#&gt; LO-REDUCTION     148 2888.789774 2888.676231
+#&gt; LO-REDUCTION     150 2888.769507 2888.676231
+#&gt; LO-REDUCTION     152 2888.765020 2888.676231
+#&gt; EXTENSION        154 2888.736045 2888.597050
+#&gt; LO-REDUCTION     156 2888.715116 2888.597050
+#&gt; HI-REDUCTION     158 2888.707924 2888.597050
+#&gt; LO-REDUCTION     160 2888.690153 2888.597050
+#&gt; EXTENSION        162 2888.676231 2888.502717
+#&gt; LO-REDUCTION     164 2888.663956 2888.502717
+#&gt; LO-REDUCTION     166 2888.640703 2888.502717
+#&gt; LO-REDUCTION     168 2888.609471 2888.502717
+#&gt; EXTENSION        170 2888.597050 2888.382369
+#&gt; LO-REDUCTION     172 2888.543721 2888.382369
+#&gt; EXTENSION        174 2888.535603 2888.309287
+#&gt; LO-REDUCTION     176 2888.514759 2888.309287
+#&gt; EXTENSION        178 2888.502717 2888.127086
+#&gt; EXTENSION        180 2888.385486 2887.907764
+#&gt; LO-REDUCTION     182 2888.382369 2887.907764
+#&gt; EXTENSION        184 2888.316554 2887.664092
+#&gt; LO-REDUCTION     186 2888.309287 2887.664092
+#&gt; EXTENSION        188 2888.127086 2887.039334
+#&gt; LO-REDUCTION     190 2888.014226 2887.039334
+#&gt; EXTENSION        192 2887.907764 2886.518976
+#&gt; LO-REDUCTION     194 2887.679675 2886.518976
+#&gt; EXTENSION        196 2887.664092 2885.899786
+#&gt; EXTENSION        198 2887.259417 2884.907469
+#&gt; LO-REDUCTION     200 2887.039334 2884.907469
+#&gt; EXTENSION        202 2886.574065 2884.328374
+#&gt; EXTENSION        204 2886.518976 2883.794179
+#&gt; LO-REDUCTION     206 2885.899786 2883.794179
+#&gt; REFLECTION       208 2885.210263 2883.541083
+#&gt; LO-REDUCTION     210 2884.907469 2883.541083
+#&gt; LO-REDUCTION     212 2884.328374 2883.541083
+#&gt; LO-REDUCTION     214 2883.934387 2883.541083
+#&gt; LO-REDUCTION     216 2883.829988 2883.541083
+#&gt; LO-REDUCTION     218 2883.794179 2883.541083
+#&gt; LO-REDUCTION     220 2883.782612 2883.541083
+#&gt; EXTENSION        222 2883.685721 2883.400072
+#&gt; LO-REDUCTION     224 2883.642556 2883.400072
+#&gt; LO-REDUCTION     226 2883.599999 2883.400072
+#&gt; EXTENSION        228 2883.564787 2883.308266
+#&gt; LO-REDUCTION     230 2883.541083 2883.308266
+#&gt; LO-REDUCTION     232 2883.468012 2883.308266
+#&gt; LO-REDUCTION     234 2883.418052 2883.306199
+#&gt; LO-REDUCTION     236 2883.400072 2883.306199
+#&gt; LO-REDUCTION     238 2883.323743 2883.306199
+#&gt; HI-REDUCTION     240 2883.311312 2883.305223
+#&gt; REFLECTION       242 2883.310127 2883.304818
+#&gt; HI-REDUCTION     244 2883.308335 2883.302027
+#&gt; HI-REDUCTION     246 2883.308266 2883.300185
+#&gt; LO-REDUCTION     248 2883.306199 2883.300090
+#&gt; LO-REDUCTION     250 2883.305223 2883.300090
+#&gt; HI-REDUCTION     252 2883.304818 2883.300090
+#&gt; HI-REDUCTION     254 2883.302027 2883.299983
+#&gt; HI-REDUCTION     256 2883.300344 2883.299669
+#&gt; REFLECTION       258 2883.300317 2883.299194
+#&gt; LO-REDUCTION     260 2883.300185 2883.299057
+#&gt; HI-REDUCTION     262 2883.300090 2883.298750
+#&gt; HI-REDUCTION     264 2883.299983 2883.298750
+#&gt; LO-REDUCTION     266 2883.299669 2883.298750
+#&gt; EXTENSION        268 2883.299194 2883.298015
+#&gt; HI-REDUCTION     270 2883.299057 2883.298015
+#&gt; LO-REDUCTION     272 2883.299025 2883.298015
+#&gt; LO-REDUCTION     274 2883.298804 2883.298015
+#&gt; LO-REDUCTION     276 2883.298750 2883.298015
+#&gt; EXTENSION        278 2883.298553 2883.297571
+#&gt; HI-REDUCTION     280 2883.298422 2883.297571
+#&gt; LO-REDUCTION     282 2883.298380 2883.297571
+#&gt; LO-REDUCTION     284 2883.298279 2883.297571
+#&gt; EXTENSION        286 2883.298148 2883.296809
+#&gt; LO-REDUCTION     288 2883.298015 2883.296809
+#&gt; LO-REDUCTION     290 2883.297743 2883.296809
+#&gt; LO-REDUCTION     292 2883.297632 2883.296809
+#&gt; EXTENSION        294 2883.297571 2883.296772
+#&gt; EXTENSION        296 2883.297233 2883.295620
+#&gt; LO-REDUCTION     298 2883.297112 2883.295620
+#&gt; LO-REDUCTION     300 2883.296827 2883.295620
+#&gt; EXTENSION        302 2883.296809 2883.295605
+#&gt; LO-REDUCTION     304 2883.296772 2883.295605
+#&gt; EXTENSION        306 2883.295826 2883.293410
+#&gt; LO-REDUCTION     308 2883.295782 2883.293410
+#&gt; LO-REDUCTION     310 2883.295776 2883.293410
+#&gt; LO-REDUCTION     312 2883.295620 2883.293410
+#&gt; EXTENSION        314 2883.295605 2883.292723
+#&gt; EXTENSION        316 2883.294609 2883.289572
+#&gt; LO-REDUCTION     318 2883.293997 2883.289572
+#&gt; LO-REDUCTION     320 2883.293762 2883.289572
+#&gt; EXTENSION        322 2883.293410 2883.286270
+#&gt; LO-REDUCTION     324 2883.292723 2883.286270
+#&gt; LO-REDUCTION     326 2883.290936 2883.286270
+#&gt; EXTENSION        328 2883.290621 2883.283268
+#&gt; EXTENSION        330 2883.289572 2883.278231
+#&gt; LO-REDUCTION     332 2883.286998 2883.278231
+#&gt; LO-REDUCTION     334 2883.286272 2883.278231
+#&gt; EXTENSION        336 2883.286270 2883.270565
+#&gt; LO-REDUCTION     338 2883.283268 2883.270565
+#&gt; LO-REDUCTION     340 2883.280953 2883.270565
+#&gt; EXTENSION        342 2883.278967 2883.263534
+#&gt; LO-REDUCTION     344 2883.278231 2883.263534
+#&gt; EXTENSION        346 2883.272985 2883.251432
+#&gt; LO-REDUCTION     348 2883.270853 2883.251432
+#&gt; EXTENSION        350 2883.270565 2883.238136
+#&gt; LO-REDUCTION     352 2883.263964 2883.238136
+#&gt; EXTENSION        354 2883.263534 2883.229625
+#&gt; EXTENSION        356 2883.255152 2883.216446
+#&gt; EXTENSION        358 2883.251432 2883.204430
+#&gt; EXTENSION        360 2883.242396 2883.202079
+#&gt; EXTENSION        362 2883.238136 2883.169805
+#&gt; LO-REDUCTION     364 2883.229625 2883.169805
+#&gt; LO-REDUCTION     366 2883.216446 2883.169805
+#&gt; LO-REDUCTION     368 2883.204430 2883.169805
+#&gt; LO-REDUCTION     370 2883.202079 2883.169805
+#&gt; LO-REDUCTION     372 2883.197022 2883.169805
+#&gt; LO-REDUCTION     374 2883.191411 2883.169805
+#&gt; EXTENSION        376 2883.190426 2883.165323
+#&gt; EXTENSION        378 2883.186334 2883.141877
+#&gt; EXTENSION        380 2883.180422 2883.122569
+#&gt; EXTENSION        382 2883.170577 2883.100133
+#&gt; EXTENSION        384 2883.169805 2883.063949
+#&gt; LO-REDUCTION     386 2883.165323 2883.063949
+#&gt; EXTENSION        388 2883.141877 2883.011666
+#&gt; EXTENSION        390 2883.122569 2882.937129
+#&gt; LO-REDUCTION     392 2883.100133 2882.937129
+#&gt; EXTENSION        394 2883.070135 2882.831742
+#&gt; EXTENSION        396 2883.063949 2882.738245
+#&gt; EXTENSION        398 2883.011666 2882.630856
+#&gt; EXTENSION        400 2882.941382 2882.528348
+#&gt; EXTENSION        402 2882.937129 2882.420613
+#&gt; EXTENSION        404 2882.831742 2882.302142
+#&gt; EXTENSION        406 2882.738245 2882.020821
+#&gt; LO-REDUCTION     408 2882.630856 2882.020821
+#&gt; LO-REDUCTION     410 2882.528348 2882.020821
+#&gt; LO-REDUCTION     412 2882.420613 2882.020821
+#&gt; REFLECTION       414 2882.302142 2882.012199
+#&gt; REFLECTION       416 2882.170239 2882.005497
+#&gt; REFLECTION       418 2882.135074 2881.990807
+#&gt; REFLECTION       420 2882.043244 2881.926713
+#&gt; EXTENSION        422 2882.020821 2881.851125
+#&gt; HI-REDUCTION     424 2882.012199 2881.851125
+#&gt; LO-REDUCTION     426 2882.005497 2881.851125
+#&gt; LO-REDUCTION     428 2881.990807 2881.851125
+#&gt; LO-REDUCTION     430 2881.926713 2881.846532
+#&gt; REFLECTION       432 2881.919198 2881.819054
+#&gt; LO-REDUCTION     434 2881.905029 2881.819054
+#&gt; LO-REDUCTION     436 2881.851619 2881.819054
+#&gt; LO-REDUCTION     438 2881.851125 2881.819054
+#&gt; LO-REDUCTION     440 2881.848764 2881.819054
+#&gt; LO-REDUCTION     442 2881.846532 2881.819054
+#&gt; REFLECTION       444 2881.825776 2881.803843
+#&gt; LO-REDUCTION     446 2881.823536 2881.803843
+#&gt; HI-REDUCTION     448 2881.823029 2881.803843
+#&gt; LO-REDUCTION     450 2881.820846 2881.803843
+#&gt; EXTENSION        452 2881.819054 2881.800244
+#&gt; EXTENSION        454 2881.813008 2881.788903
+#&gt; LO-REDUCTION     456 2881.810210 2881.788903
+#&gt; EXTENSION        458 2881.808841 2881.782684
+#&gt; EXTENSION        460 2881.803843 2881.774659
+#&gt; EXTENSION        462 2881.800244 2881.761178
+#&gt; LO-REDUCTION     464 2881.795478 2881.761178
+#&gt; REFLECTION       466 2881.788903 2881.758899
+#&gt; LO-REDUCTION     468 2881.782684 2881.758899
+#&gt; LO-REDUCTION     470 2881.774659 2881.758899
+#&gt; REFLECTION       472 2881.769603 2881.749476
+#&gt; HI-REDUCTION     474 2881.768143 2881.749476
+#&gt; LO-REDUCTION     476 2881.761178 2881.749476
+#&gt; LO-REDUCTION     478 2881.760836 2881.749476
+#&gt; HI-REDUCTION     480 2881.759550 2881.749476
+#&gt; LO-REDUCTION     482 2881.758899 2881.749476
+#&gt; REFLECTION       484 2881.755954 2881.746958
+#&gt; HI-REDUCTION     486 2881.754370 2881.746958
+#&gt; LO-REDUCTION     488 2881.753467 2881.746958
+#&gt; LO-REDUCTION     490 2881.752460 2881.746958
+#&gt; REFLECTION       492 2881.750015 2881.746107
+#&gt; LO-REDUCTION     494 2881.749476 2881.746107
+#&gt; LO-REDUCTION     496 2881.748688 2881.746107
+#&gt; HI-REDUCTION     498 2881.748420 2881.746107
+#&gt; REFLECTION       500 2881.747639 2881.745752
+#&gt; HI-REDUCTION     502 2881.747257 2881.745752
+#&gt; LO-REDUCTION     504 2881.747126 2881.745752
+#&gt; EXTENSION        506 2881.746958 2881.745432
+#&gt; LO-REDUCTION     508 2881.746951 2881.745432
+#&gt; HI-REDUCTION     510 2881.746609 2881.745432
+#&gt; HI-REDUCTION     512 2881.746247 2881.745432
+#&gt; HI-REDUCTION     514 2881.746107 2881.745432
+#&gt; LO-REDUCTION     516 2881.746028 2881.745432
+#&gt; LO-REDUCTION     518 2881.745901 2881.745392
+#&gt; HI-REDUCTION     520 2881.745752 2881.745392
+#&gt; HI-REDUCTION     522 2881.745638 2881.745392
+#&gt; HI-REDUCTION     524 2881.745574 2881.745392
+#&gt; HI-REDUCTION     526 2881.745573 2881.745392
+#&gt; HI-REDUCTION     528 2881.745567 2881.745392
+#&gt; HI-REDUCTION     530 2881.745509 2881.745392
+#&gt; REFLECTION       532 2881.745471 2881.745359
+#&gt; HI-REDUCTION     534 2881.745467 2881.745359
+#&gt; Exiting from Nelder Mead minimizer
+#&gt;     536 function evaluations used
+#&gt; Post processing for method  Nelder-Mead 
+#&gt; Successful convergence! 
+#&gt; Compute Hessian approximation at finish of  Nelder-Mead 
+#&gt; Compute gradient approximation at finish of  Nelder-Mead 
+#&gt; Save results from method  Nelder-Mead 
+#&gt; $par
+#&gt;      log.r  log.alpha      log.b      log.s   log.beta 
+#&gt; -0.3673579  1.5919801 -8.9486321  6.0617963  1.4036926 
+#&gt; 
+#&gt; $value
+#&gt; [1] 2881.745
+#&gt; 
+#&gt; $message
+#&gt; NULL
+#&gt; 
+#&gt; $convcode
+#&gt; [1] 0
+#&gt; 
+#&gt; $fevals
+#&gt; function 
+#&gt;      536 
+#&gt; 
+#&gt; $gevals
+#&gt; gradient 
+#&gt;       NA 
+#&gt; 
+#&gt; $nitns
+#&gt; [1] NA
+#&gt; 
+#&gt; $kkt1
+#&gt; [1] TRUE
+#&gt; 
+#&gt; $kkt2
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $xtimes
+#&gt; user.self 
+#&gt;      0.56 
+#&gt; 
+#&gt; Assemble the answers</div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='input'>
+<span class='co'># estimated coefs</span>
+<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='kw'>apparel.ggomnbd</span>)</div><div class='output co'>#&gt;            r        alpha            b            s         beta 
+#&gt; 6.925617e-01 4.913469e+00 1.299148e-04 4.291456e+02 4.070202e+00 </div><div class='input'>
+<span class='co'># summary of the fitted model</span>
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='kw'>apparel.ggomnbd</span>)</div><div class='output co'>#&gt; GGompertz/NBD Standard  Model 
+#&gt; 
+#&gt; Call:
+#&gt; ggomnbd(clv.data = clv.data.apparel, optimx.args = list(method = "Nelder-Mead", 
+#&gt;     control = list(trace = 6)))
+#&gt; 
+#&gt; Fitting period:                               
+#&gt; Estimation start  2005-01-03   
+#&gt; Estimation end    2005-10-10   
+#&gt; Estimation length 40.0000 Weeks
+#&gt; 
+#&gt; Coefficients:
+#&gt;        Estimate Std. Error    z-val Pr(&gt;|z|)    
+#&gt; r     6.926e-01  1.098e-01    6.306 2.86e-10 ***
+#&gt; alpha 4.913e+00  8.493e-01    5.785 7.23e-09 ***
+#&gt; b     1.299e-04  8.552e-05    1.519    0.129    
+#&gt; s     4.291e+02  5.410e-02 7932.865  &lt; 2e-16 ***
+#&gt; beta  4.070e+00  5.758e-01    7.068 1.57e-12 ***
+#&gt; ---
+#&gt; Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+#&gt; 
+#&gt; Optimization info:                  
+#&gt; LL     -2881.7454 
+#&gt; AIC    5773.4907  
+#&gt; BIC    5791.0980  
+#&gt; KKT 1  TRUE       
+#&gt; KKT 2  FALSE      
+#&gt; fevals 536.0000   
+#&gt; Method Nelder-Mead
+#&gt; 
+#&gt; Used Options:                 
+#&gt; Correlation FALSE</div><div class='input'>
+<span class='co'># predict CLV etc for holdout period</span>
+<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='kw'>apparel.ggomnbd</span>)</div><div class='output co'>#&gt; <span class='message'>Predicting from 2005-10-11 until (incl.) 2006-07-16 (39.86 Weeks).</span></div><div class='output co'>#&gt;        Id period.first period.last period.length actual.x actual.spending
+#&gt;   1:    1   2005-10-11  2006-07-16      39.85714        0            0.00
+#&gt;   2:   10   2005-10-11  2006-07-16      39.85714        0            0.00
+#&gt;   3:  100   2005-10-11  2006-07-16      39.85714       23         5086.44
+#&gt;   4: 1000   2005-10-11  2006-07-16      39.85714       23         4077.34
+#&gt;   5: 1001   2005-10-11  2006-07-16      39.85714       11         2914.10
+#&gt;  ---                                                                     
+#&gt; 246: 1219   2005-10-11  2006-07-16      39.85714       14         3233.78
+#&gt; 247:  122   2005-10-11  2006-07-16      39.85714        0            0.00
+#&gt; 248: 1220   2005-10-11  2006-07-16      39.85714        0            0.00
+#&gt; 249: 1221   2005-10-11  2006-07-16      39.85714        9         1322.94
+#&gt; 250: 1222   2005-10-11  2006-07-16      39.85714        0            0.00
+#&gt;         PAlive       CET DERT predicted.Spending predicted.CLV
+#&gt;   1: 0.4157734  1.799972    0           216.7955             0
+#&gt;   2: 0.3653550  4.370424    0           209.1146             0
+#&gt;   3: 0.8492175 21.278243    0           188.9758             0
+#&gt;   4: 0.9936311 24.359085    0           171.0913             0
+#&gt;   5: 0.3834394  7.927577    0           229.8529             0
+#&gt;  ---                                                          
+#&gt; 246: 0.9223629 14.914337    0           206.0859             0
+#&gt; 247: 0.4157734  1.799972    0           216.7955             0
+#&gt; 248: 0.4157734  1.799972    0           216.7955             0
+#&gt; 249: 0.8977081 15.832742    0           207.0518             0
+#&gt; 250: 0.3882902  3.413481    0           208.3194             0</div><div class='input'>
+<span class='co'># predict CLV etc for the next 15 periods</span>
+<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='kw'>apparel.ggomnbd</span>, prediction.end = <span class='fl'>15</span>)</div><div class='output co'>#&gt; <span class='message'>Predicting from 2005-10-11 until (incl.) 2006-01-23 (15 Weeks).</span></div><div class='output co'>#&gt;        Id period.first period.last period.length actual.x actual.spending
+#&gt;   1:    1   2005-10-11  2006-01-23            15        0            0.00
+#&gt;   2:   10   2005-10-11  2006-01-23            15        0            0.00
+#&gt;   3:  100   2005-10-11  2006-01-23            15       10         1516.83
+#&gt;   4: 1000   2005-10-11  2006-01-23            15       10         1980.30
+#&gt;   5: 1001   2005-10-11  2006-01-23            15        6         1673.55
+#&gt;  ---                                                                     
+#&gt; 246: 1219   2005-10-11  2006-01-23            15       11         2256.68
+#&gt; 247:  122   2005-10-11  2006-01-23            15        0            0.00
+#&gt; 248: 1220   2005-10-11  2006-01-23            15        0            0.00
+#&gt; 249: 1221   2005-10-11  2006-01-23            15        7         1180.04
+#&gt; 250: 1222   2005-10-11  2006-01-23            15        0            0.00
+#&gt;         PAlive        CET DERT predicted.Spending predicted.CLV
+#&gt;   1: 0.4157734  0.7946941    0           216.7955             0
+#&gt;   2: 0.3653550  1.9295576    0           209.1146             0
+#&gt;   3: 0.8492175  9.3944194    0           188.9758             0
+#&gt;   4: 0.9936311 10.7546219    0           171.0913             0
+#&gt;   5: 0.3834394  3.5000533    0           229.8529             0
+#&gt;  ---                                                           
+#&gt; 246: 0.9223629  6.5847324    0           206.0859             0
+#&gt; 247: 0.4157734  0.7946941    0           216.7955             0
+#&gt; 248: 0.4157734  0.7946941    0           216.7955             0
+#&gt; 249: 0.8977081  6.9902115    0           207.0518             0
+#&gt; 250: 0.3882902  1.5070640    0           208.3194             0</div><div class='input'><span class='co'># }</span>
+<span class='co'># \donttest{</span>
+<span class='co'># To estimate the ggomnbd model with static covariates,</span>
+<span class='co'>#   add static covariates to the data</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"apparelStaticCov"</span>)
+<span class='kw'>clv.data.static.cov</span> <span class='op'>&lt;-</span>
+ <span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/SetStaticCovariates.html'>SetStaticCovariates</a></span>(<span class='kw'>clv.data.apparel</span>,
+                     data.cov.life = <span class='kw'>apparelStaticCov</span>,
+                     names.cov.life = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Gender"</span>, <span class='st'>"Channel"</span>),
+                     data.cov.trans = <span class='kw'>apparelStaticCov</span>,
+                     names.cov.trans = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Gender"</span>, <span class='st'>"Channel"</span>))
+
+<span class='co'># Fit ggomnbd with static covariates</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/ggomnbd.html'>ggomnbd</a></span>(<span class='kw'>clv.data.static.cov</span>)</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; GGompertz/NBD with Static Covariates  Model
+#&gt; 
+#&gt; Call:
+#&gt; ggomnbd(clv.data = clv.data.static.cov)
+#&gt; 
+#&gt; Coefficients:
+#&gt;             r          alpha              b              s           beta  
+#&gt;       1.43107       35.52640        0.05541        0.15116        0.24240  
+#&gt;   life.Gender   life.Channel   trans.Gender  trans.Channel  
+#&gt;       2.20859       -2.67490        1.43715        0.37278  
+#&gt; KKT1: TRUE 
+#&gt; KKT2: TRUE 
+#&gt; 
+#&gt; Used Options:
+#&gt; Correlation:     FALSE 
+#&gt; Constraints:     FALSE 
+#&gt; Regularization:  FALSE </div><div class='input'>
+<span class='co'># Give initial guesses for both covariate parameters</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/ggomnbd.html'>ggomnbd</a></span>(<span class='kw'>clv.data.static.cov</span>, start.params.trans = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(Gender=<span class='fl'>0.75</span>, Channel=<span class='fl'>0.7</span>),
+                   start.params.life  = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(Gender=<span class='fl'>0.5</span>, Channel=<span class='fl'>0.5</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; GGompertz/NBD with Static Covariates  Model
+#&gt; 
+#&gt; Call:
+#&gt; ggomnbd(clv.data = clv.data.static.cov, start.params.life = c(Gender = 0.5, 
+#&gt;     Channel = 0.5), start.params.trans = c(Gender = 0.75, Channel = 0.7))
+#&gt; 
+#&gt; Coefficients:
+#&gt;             r          alpha              b              s           beta  
+#&gt;       1.42882       35.57508        0.05692        0.14949        0.25683  
+#&gt;   life.Gender   life.Channel   trans.Gender  trans.Channel  
+#&gt;       2.26738       -2.69762        1.44023        0.37271  
+#&gt; KKT1: TRUE 
+#&gt; KKT2: TRUE 
+#&gt; 
+#&gt; Used Options:
+#&gt; Correlation:     FALSE 
+#&gt; Constraints:     FALSE 
+#&gt; Regularization:  FALSE </div><div class='input'>
+<span class='co'># Use regularization</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/ggomnbd.html'>ggomnbd</a></span>(<span class='kw'>clv.data.static.cov</span>, reg.lambdas = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(trans = <span class='fl'>5</span>, life=<span class='fl'>5</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; GGompertz/NBD with Static Covariates  Model
+#&gt; 
+#&gt; Call:
+#&gt; ggomnbd(clv.data = clv.data.static.cov, reg.lambdas = c(trans = 5, 
+#&gt;     life = 5))
+#&gt; 
+#&gt; Coefficients:
+#&gt;             r          alpha              b              s           beta  
+#&gt;     7.927e-01      5.447e+00      4.684e-07      3.549e-01      5.348e-06  
+#&gt;   life.Gender   life.Channel   trans.Gender  trans.Channel  
+#&gt;    -4.784e-04     -2.250e-03      1.075e-02      8.734e-03  
+#&gt; KKT1: TRUE 
+#&gt; KKT2: FALSE 
+#&gt; 
+#&gt; Used Options:
+#&gt; Correlation:     FALSE 
+#&gt; Constraints:     FALSE 
+#&gt; Regularization:  TRUE </div><div class='input'>
+<span class='co'># Force the same coefficient to be used for both covariates</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/ggomnbd.html'>ggomnbd</a></span>(<span class='kw'>clv.data.static.cov</span>, names.cov.constr = <span class='st'>"Gender"</span>,
+                   start.params.constr = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(Gender=<span class='fl'>0.5</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; GGompertz/NBD with Static Covariates  Model
+#&gt; 
+#&gt; Call:
+#&gt; ggomnbd(clv.data = clv.data.static.cov, names.cov.constr = "Gender", 
+#&gt;     start.params.constr = c(Gender = 0.5))
+#&gt; 
+#&gt; Coefficients:
+#&gt;             r          alpha              b              s           beta  
+#&gt;       1.44961       34.84602        0.03586        0.18108        0.11873  
+#&gt;  life.Channel  trans.Channel  constr.Gender  
+#&gt;      -2.26175        0.37993        1.39922  
+#&gt; KKT1: TRUE 
+#&gt; KKT2: TRUE 
+#&gt; 
+#&gt; Used Options:
+#&gt; Correlation:     FALSE 
+#&gt; Constraints:     TRUE 
+#&gt; Regularization:  FALSE </div><div class='input'>
+<span class='co'># Fit model only with the Channel covariate for life but</span>
+<span class='co'># keep all trans covariates as is</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/ggomnbd.html'>ggomnbd</a></span>(<span class='kw'>clv.data.static.cov</span>, names.cov.life = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Channel"</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; GGompertz/NBD with Static Covariates  Model
+#&gt; 
+#&gt; Call:
+#&gt; ggomnbd(clv.data = clv.data.static.cov, names.cov.life = c("Channel"))
+#&gt; 
+#&gt; Coefficients:
+#&gt;             r          alpha              b              s           beta  
+#&gt;       1.53001       32.11224        0.09839        0.10211        0.01619  
+#&gt;  life.Channel   trans.Gender  trans.Channel  
+#&gt;      -3.50196        1.28595        0.35031  
+#&gt; KKT1: TRUE 
+#&gt; KKT2: TRUE 
+#&gt; 
+#&gt; Used Options:
+#&gt; Correlation:     FALSE 
+#&gt; Constraints:     FALSE 
+#&gt; Regularization:  FALSE </div><div class='input'><span class='co'># }</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

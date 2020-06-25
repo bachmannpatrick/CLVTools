@@ -83,7 +83,7 @@ by the fitted model (unconditional expectation)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -148,29 +148,29 @@ by the fitted model (unconditional expectation).</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for clv.fitted</span>
-<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(
-  <span class='no'>x</span>,
-  <span class='kw'>prediction.end</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>newdata</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>cumulative</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>transactions</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>label</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(
+  <span class='kw'>x</span>,
+  prediction.end = <span class='kw'>NULL</span>,
+  newdata = <span class='kw'>NULL</span>,
+  cumulative = <span class='fl'>FALSE</span>,
+  transactions = <span class='fl'>TRUE</span>,
+  label = <span class='kw'>NULL</span>,
+  plot = <span class='fl'>TRUE</span>,
+  verbose = <span class='fl'>TRUE</span>,
+  <span class='kw'>...</span>
 )
 
 <span class='co'># S4 method for clv.fitted</span>
-<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(
-  <span class='no'>x</span>,
-  <span class='kw'>prediction.end</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>newdata</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>cumulative</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>transactions</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>label</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(
+  <span class='kw'>x</span>,
+  prediction.end = <span class='kw'>NULL</span>,
+  newdata = <span class='kw'>NULL</span>,
+  cumulative = <span class='fl'>FALSE</span>,
+  transactions = <span class='fl'>TRUE</span>,
+  label = <span class='kw'>NULL</span>,
+  plot = <span class='fl'>TRUE</span>,
+  verbose = <span class='fl'>TRUE</span>,
+  <span class='kw'>...</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -264,29 +264,28 @@ but the start of the first time unit after <code>prediction.end</code>.</p>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"cdnow"</span>)
 
 <span class='co'># Fit ParetoNBD model on the CDnow data</span>
-<span class='no'>pnbd.cdnow</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='pnbd.html'>pnbd</a></span>(<span class='fu'><a href='clvdata.html'>clvdata</a></span>(<span class='no'>cdnow</span>, <span class='kw'>time.unit</span><span class='kw'>=</span><span class='st'>"w"</span>,
-                           <span class='kw'>estimation.split</span><span class='kw'>=</span><span class='fl'>37</span>,
-                           <span class='kw'>date.format</span><span class='kw'>=</span><span class='st'>"ymd"</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='input'>
+<span class='kw'>pnbd.cdnow</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd.html'>pnbd</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/clvdata.html'>clvdata</a></span>(<span class='kw'>cdnow</span>, time.unit=<span class='st'>"w"</span>,
+                           estimation.split=<span class='fl'>37</span>,
+                           date.format=<span class='st'>"ymd"</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='input'>
 <span class='co'># Plot actual repeat transaction, overlayed with the</span>
 <span class='co'>#  expected repeat transactions as by the fitted model</span>
-<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>pnbd.cdnow</span>)</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 1998-07-05.</span></div><div class='img'><img src='plot.clv.fitted-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='kw'>pnbd.cdnow</span>)</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 1998-07-05.</span></div><div class='img'><img src='plot.clv.fitted-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Plot cumulative expected transactions of only the model</span>
-<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>pnbd.cdnow</span>, <span class='kw'>cumulative</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>transactions</span><span class='kw'>=</span><span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 1998-07-05.</span></div><div class='img'><img src='plot.clv.fitted-2.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='kw'>pnbd.cdnow</span>, cumulative=<span class='fl'>TRUE</span>, transactions=<span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 1998-07-05.</span></div><div class='img'><img src='plot.clv.fitted-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Plot forecast until 2001-10-21</span>
-<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>pnbd.cdnow</span>, <span class='kw'>prediction.end</span> <span class='kw'>=</span> <span class='st'>"2001-10-21"</span>)</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 2001-10-21.</span></div><div class='img'><img src='plot.clv.fitted-3.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='kw'>pnbd.cdnow</span>, prediction.end = <span class='st'>"2001-10-21"</span>)</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 2001-10-21.</span></div><div class='img'><img src='plot.clv.fitted-3.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Plot until 2001-10-21, as date</span>
-<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>pnbd.cdnow</span>,
-     <span class='kw'>prediction.end</span> <span class='kw'>=</span> <span class='kw pkg'>lubridate</span><span class='kw ns'>::</span><span class='fu'><a href='http://lubridate.tidyverse.org/reference/ymd.html'>dym</a></span>(<span class='st'>"21-2001-10"</span>))</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 2001-10-21.</span></div><div class='img'><img src='plot.clv.fitted-4.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='kw'>pnbd.cdnow</span>,
+     prediction.end = <span class='kw'>lubridate</span>::<span class='fu'><a href='http://lubridate.tidyverse.org/reference/ymd.html'>dym</a></span>(<span class='st'>"21-2001-10"</span>))</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 2001-10-21.</span></div><div class='img'><img src='plot.clv.fitted-4.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Plot 15 time units after end of estimation period</span>
-<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>pnbd.cdnow</span>, <span class='kw'>prediction.end</span> <span class='kw'>=</span> <span class='fl'>15</span>)</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 1998-01-04.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Not plotting full holdout period.</span></div><div class='img'><img src='plot.clv.fitted-5.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='kw'>pnbd.cdnow</span>, prediction.end = <span class='fl'>15</span>)</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 1998-01-04.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Not plotting full holdout period.</span></div><div class='img'><img src='plot.clv.fitted-5.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Save the data generated for plotting</span>
 <span class='co'>#   (period, actual transactions, expected transactions)</span>
-<span class='no'>plot.out</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>pnbd.cdnow</span>, <span class='kw'>prediction.end</span> <span class='kw'>=</span> <span class='fl'>15</span>)</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 1998-01-04.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Not plotting full holdout period.</span></div><div class='input'>
+<span class='kw'>plot.out</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='kw'>pnbd.cdnow</span>, prediction.end = <span class='fl'>15</span>)</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 1998-01-04.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Not plotting full holdout period.</span></div><div class='input'>
 <span class='co'># A ggplot object is returned that can be further tweaked</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='st'>"ggplot2"</span>)
-<span class='no'>gg.pnbd.cdnow</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>pnbd.cdnow</span>)</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 1998-07-05.</span></div><div class='input'><span class='no'>gg.pnbd.cdnow</span> + <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ggtitle</a></span>(<span class='st'>"PNBD on CDnow"</span>)</div><div class='img'><img src='plot.clv.fitted-6.png' alt='' width='700' height='433' /></div><div class='input'>
-# }
-
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='st'><a href='http://ggplot2.tidyverse.org'>"ggplot2"</a></span>)
+<span class='kw'>gg.pnbd.cdnow</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='kw'>pnbd.cdnow</span>)</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 1998-07-05.</span></div><div class='input'><span class='kw'>gg.pnbd.cdnow</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ggtitle</a></span>(<span class='st'>"PNBD on CDnow"</span>)</div><div class='img'><img src='plot.clv.fitted-6.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># }</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -87,7 +87,7 @@ pnbd_staticcov_DERT Discounted expected residual transactions for the Pareto/NBD
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -155,32 +155,50 @@ pnbd_staticcov_DERT Discounted expected residual transactions for the Pareto/NBD
 
     </div>
 
-    <pre class="usage"><span class='fu'>pnbd_nocov_DERT</span>(
-  <span class='no'>vEstimated_params</span>,
-  <span class='no'>continuous_discount_factor</span>,
-  <span class='no'>vX</span>,
-  <span class='no'>vT_x</span>,
-  <span class='no'>vT_cal</span>
+    <pre class="usage"><span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd_DERT.html'>pnbd_nocov_DERT</a></span>(
+  <span class='kw'>r</span>,
+  <span class='kw'>alpha_0</span>,
+  <span class='kw'>s</span>,
+  <span class='kw'>beta_0</span>,
+  <span class='kw'>continuous_discount_factor</span>,
+  <span class='kw'>vX</span>,
+  <span class='kw'>vT_x</span>,
+  <span class='kw'>vT_cal</span>
 )
 
-<span class='fu'>pnbd_staticcov_DERT</span>(
-  <span class='no'>vEstimated_params</span>,
-  <span class='no'>continuous_discount_factor</span>,
-  <span class='no'>vX</span>,
-  <span class='no'>vT_x</span>,
-  <span class='no'>vT_cal</span>,
-  <span class='no'>mCov_life</span>,
-  <span class='no'>mCov_trans</span>,
-  <span class='no'>vCovParams_life</span>,
-  <span class='no'>vCovParams_trans</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd_DERT.html'>pnbd_staticcov_DERT</a></span>(
+  <span class='kw'>r</span>,
+  <span class='kw'>alpha_0</span>,
+  <span class='kw'>s</span>,
+  <span class='kw'>beta_0</span>,
+  <span class='kw'>continuous_discount_factor</span>,
+  <span class='kw'>vX</span>,
+  <span class='kw'>vT_x</span>,
+  <span class='kw'>vT_cal</span>,
+  <span class='kw'>mCov_life</span>,
+  <span class='kw'>mCov_trans</span>,
+  <span class='kw'>vCovParams_life</span>,
+  <span class='kw'>vCovParams_trans</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>vEstimated_params</th>
-      <td><p>Vector with the Pareto/NBD model parameters at original scale.</p></td>
+      <th>r</th>
+      <td><p>shape parameter of the Gamma distribution of the purchase process. The smaller r, the stronger the heterogeneity of the purchase process</p></td>
+    </tr>
+    <tr>
+      <th>alpha_0</th>
+      <td><p>scale parameter of the Gamma distribution of the purchase process</p></td>
+    </tr>
+    <tr>
+      <th>s</th>
+      <td><p>shape parameter of the Gamma distribution for the lifetime process. The smaller s, the stronger the heterogeneity of customer lifetimes</p></td>
+    </tr>
+    <tr>
+      <th>beta_0</th>
+      <td><p>scale parameter for the Gamma distribution for the lifetime process.</p></td>
     </tr>
     <tr>
       <th>continuous_discount_factor</th>
@@ -208,7 +226,7 @@ pnbd_staticcov_DERT Discounted expected residual transactions for the Pareto/NBD
     </tr>
     <tr>
       <th>vCovParams_life</th>
-      <td><p>Vector of estimated parameters for the dropout covariates.</p></td>
+      <td><p>Vector of estimated parameters for the lifetime covariates.</p></td>
     </tr>
     <tr>
       <th>vCovParams_trans</th>
@@ -221,12 +239,7 @@ pnbd_staticcov_DERT Discounted expected residual transactions for the Pareto/NBD
     <p>Returns a vector with the DERT for each customer.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>vEstimated_params</code> vector with the estimated parameters in original scale
-for the Pareto/NBD model, namely (r, alpha, s, beta). <br />
-r and alpha: unobserved parameters that describe the NBD transaction process. <br />
-s and beta: unobserved parameters that describe the pareto
-(exponential gamma) lifetime process.</p>
-<p><code>mCov_trans</code> is a matrix containing the covariates data of
+    <p><code>mCov_trans</code> is a matrix containing the covariates data of
 the time-invariant covariates that affect the transaction process.
 Each column represents a different covariate. For every column a gamma parameter
 needs to added to <code>vCovParams_trans</code> at the respective position.</p>
@@ -236,9 +249,14 @@ Each column represents a different covariate. For every column a gamma parameter
 needs to added to <code>vCovParams_life</code> at the respective position.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
-Pareto/NBD Model and Related Expressions.", Web.
-<a href='http://www.brucehardie.com/notes/008/'>http://www.brucehardie.com/notes/008/</a>.</p>
+    <p>Schmittlein DC, Morrison DG, Colombo R (1987). &#8220;Counting Your Customers:
+Who-Are They and What Will They Do Next?&#8221; Management Science, 33(1), 1–24.</p>
+<p>Fader PS, Hardie BGS (2005). &#8220;A Note on Deriving the Pareto/NBD Model and
+Related Expressions.&#8221;
+URL <a href='http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf'>http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf</a>.</p>
+<p>Fader PS, Hardie BG (2007). &#8220;Incorporating time-invariant covariates into the
+Pareto/NBD and BG/NBD models.&#8221;
+URL <a href='http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf'>http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf</a>.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -83,7 +83,7 @@ possible holdout sample, and descriptive statistics of the transaction data." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -148,22 +148,22 @@ possible holdout sample, and descriptive statistics of the transaction data.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for clv.data</span>
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='kw'>object</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for summary.clv.data</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>x</span>, <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='fl'>3L</span>, <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"digits"</span>) - <span class='fl'>3L</span>), <span class='no'>...</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>x</span>, digits = <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='fl'>3L</span>, <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"digits"</span>) <span class='op'>-</span> <span class='fl'>3L</span>), <span class='kw'>...</span>)
 
 <span class='co'># S3 method for clv.data.dynamic.covariates</span>
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='kw'>object</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for summary.clv.data.dynamic.covariates</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>x</span>, <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='fl'>3L</span>, <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"digits"</span>) - <span class='fl'>3L</span>), <span class='no'>...</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>x</span>, digits = <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='fl'>3L</span>, <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"digits"</span>) <span class='op'>-</span> <span class='fl'>3L</span>), <span class='kw'>...</span>)
 
 <span class='co'># S3 method for clv.data.static.covariates</span>
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='kw'>object</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for summary.clv.data.static.covariates</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>x</span>, <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='fl'>3L</span>, <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"digits"</span>) - <span class='fl'>3L</span>), <span class='no'>...</span>)</pre>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>x</span>, digits = <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='fl'>3L</span>, <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"digits"</span>) <span class='op'>-</span> <span class='fl'>3L</span>), <span class='kw'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -204,22 +204,22 @@ and further contains the elements:
 
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='plot.clv.data.html'>plot</a></code> for how to plot a clv data object</p>
-<p><code><a href='clvdata.html'>clvdata</a></code> for how to create a clv data object</p>
-<p><code><a href='SetStaticCovariates.html'>SetStaticCovariates</a></code> for how to add static covariates</p>
-<p><code><a href='SetDynamicCovariates.html'>SetDynamicCovariates</a></code> for how to add dynamic covariates</p></div>
+    <div class='dont-index'><p><code><a href='https://rdrr.io/pkg/CLVTools/man/plot.clv.data.html'>plot</a></code> for how to plot a clv data object</p>
+<p><code><a href='https://rdrr.io/pkg/CLVTools/man/clvdata.html'>clvdata</a></code> for how to create a clv data object</p>
+<p><code><a href='https://rdrr.io/pkg/CLVTools/man/SetStaticCovariates.html'>SetStaticCovariates</a></code> for how to add static covariates</p>
+<p><code><a href='https://rdrr.io/pkg/CLVTools/man/SetDynamicCovariates.html'>SetDynamicCovariates</a></code> for how to add dynamic covariates</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='co'># \donttest{</span>
 
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"apparelTrans"</span>)
-<span class='no'>clv.data.apparel</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='clvdata.html'>clvdata</a></span>(<span class='no'>apparelTrans</span>, <span class='kw'>date.format</span> <span class='kw'>=</span> <span class='st'>"ymd"</span>,
-                            <span class='kw'>time.unit</span> <span class='kw'>=</span> <span class='st'>"w"</span>,
-                            <span class='kw'>estimation.split</span> <span class='kw'>=</span> <span class='fl'>40</span>)
+<span class='kw'>clv.data.apparel</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/clvdata.html'>clvdata</a></span>(<span class='kw'>apparelTrans</span>, date.format = <span class='st'>"ymd"</span>,
+                            time.unit = <span class='st'>"w"</span>,
+                            estimation.split = <span class='fl'>40</span>)
 
 <span class='co'># summary of transaction data and split</span>
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>clv.data.apparel</span>)</div><div class='output co'>#&gt; CLV Transaction Data 
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='kw'>clv.data.apparel</span>)</div><div class='output co'>#&gt; CLV Transaction Data 
 #&gt;                                 
 #&gt; Time unit         Weeks         
 #&gt; Estimation length 40.0000 Weeks 
@@ -243,15 +243,15 @@ and further contains the elements:
 #&gt; </div><div class='input'>
 <span class='co'># add contextual factors</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"apparelStaticCov"</span>)
-<span class='no'>clv.data.apparel.cov</span> <span class='kw'>&lt;-</span>
- <span class='fu'><a href='SetStaticCovariates.html'>SetStaticCovariates</a></span>(<span class='no'>clv.data.apparel</span>,
-                     <span class='kw'>data.cov.life</span> <span class='kw'>=</span> <span class='no'>apparelStaticCov</span>,
-                     <span class='kw'>names.cov.life</span> <span class='kw'>=</span> <span class='st'>"Gender"</span>,
-                     <span class='kw'>data.cov.trans</span> <span class='kw'>=</span> <span class='no'>apparelStaticCov</span>,
-                     <span class='kw'>names.cov.trans</span> <span class='kw'>=</span> <span class='st'>"Gender"</span>)
+<span class='kw'>clv.data.apparel.cov</span> <span class='op'>&lt;-</span>
+ <span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/SetStaticCovariates.html'>SetStaticCovariates</a></span>(<span class='kw'>clv.data.apparel</span>,
+                     data.cov.life = <span class='kw'>apparelStaticCov</span>,
+                     names.cov.life = <span class='st'>"Gender"</span>,
+                     data.cov.trans = <span class='kw'>apparelStaticCov</span>,
+                     names.cov.trans = <span class='st'>"Gender"</span>)
 
 <span class='co'># additional info about the covariates</span>
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>clv.data.apparel.cov</span>)</div><div class='output co'>#&gt; CLV Transaction Data with Static Covariates 
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='kw'>clv.data.apparel.cov</span>)</div><div class='output co'>#&gt; CLV Transaction Data with Static Covariates 
 #&gt;                                 
 #&gt; Time unit         Weeks         
 #&gt; Estimation length 40.0000 Weeks 
@@ -278,8 +278,7 @@ and further contains the elements:
 #&gt;        # covs        1     
 #&gt; Life.  Covariates    Gender
 #&gt;        # covs        1     
-#&gt; </div><div class='input'># }
-
+#&gt; </div><div class='input'><span class='co'># }</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

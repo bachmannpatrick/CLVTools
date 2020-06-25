@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>BG/NBD models - Work In Progress — bgnbd • CLVTools</title>
+<title>BG/NBD models — bgnbd • CLVTools</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="BG/NBD models - Work In Progress — bgnbd" />
-<meta property="og:description" content="Fits BG/NBD models on transactional data with static and without covariates. Not yet implemented." />
+<meta property="og:title" content="BG/NBD models — bgnbd" />
+<meta property="og:description" content="Fits BG/NBD models on transactional data without and with static covariates." />
 
 
 
@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -136,54 +136,38 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>BG/NBD models - Work In Progress</h1>
+    <h1>BG/NBD models</h1>
     <small class="dont-index">Source: <a href='https://github.com/bachmannpatrick/CLVTools/blob/master/R/f_interface_bgnbd.R'><code>R/f_interface_bgnbd.R</code></a></small>
     <div class="hidden name"><code>bgnbd.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Fits BG/NBD models on transactional data with static and without covariates. Not yet implemented.</p>
+    <p>Fits BG/NBD models on transactional data without and with static covariates.</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for clv.data</span>
-<span class='fu'>bgnbd</span>(
-  <span class='no'>clv.data</span>,
-  <span class='kw'>start.params.model</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>optimx.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/bgnbd.html'>bgnbd</a></span>(
+  <span class='kw'>clv.data</span>,
+  start.params.model = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  optimx.args = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  verbose = <span class='fl'>TRUE</span>,
+  <span class='kw'>...</span>
 )
 
 <span class='co'># S4 method for clv.data.static.covariates</span>
-<span class='fu'>bgnbd</span>(
-  <span class='no'>clv.data</span>,
-  <span class='kw'>start.params.model</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>optimx.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>names.cov.life</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>names.cov.trans</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.life</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.trans</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>names.cov.constr</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.constr</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>reg.lambdas</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='no'>...</span>
-)
-
-<span class='co'># S4 method for clv.data.dynamic.covariates</span>
-<span class='fu'>bgnbd</span>(
-  <span class='no'>clv.data</span>,
-  <span class='kw'>start.params.model</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>optimx.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>names.cov.life</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>names.cov.trans</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.life</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.trans</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>names.cov.constr</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.constr</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>reg.lambdas</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='no'>...</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/bgnbd.html'>bgnbd</a></span>(
+  <span class='kw'>clv.data</span>,
+  start.params.model = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  optimx.args = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  verbose = <span class='fl'>TRUE</span>,
+  names.cov.life = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  names.cov.trans = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  start.params.life = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  start.params.trans = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  names.cov.constr = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  start.params.constr = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  reg.lambdas = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  <span class='kw'>...</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -242,8 +226,589 @@ If multiple optimization methods are specified, only the result of the last meth
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>No value is returned.</p>
+    <p>Depending on the data object on which the model was fit, <code>bgnbd</code> returns either an object of
+class <a href='https://rdrr.io/pkg/CLVTools/man/clv.bgnbd-class.html'>clv.bgnbd</a> or <a href='https://rdrr.io/pkg/CLVTools/man/clv.bgnbd.static.cov-class.html'>clv.bgnbd.static.cov</a>.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
+    <p>Model parameters for the BG/NBD model are <code>r, alpha, a, and b</code>. <br />
+<code>r</code>: shape parameter of the Gamma distribution of the purchase process. <br />
+<code>alpha</code>: scale parameter of the Gamma distribution of the purchase process. <br />
+<code>a</code>: shape parameter of the Beta distribution of the dropout process.<br />
+<code>b</code>: shape parameter of the Beta distribution of the dropout process.</p>
+<p>If no start parameters are given, r = 1, alpha = 3, a = 1, b = 3 is used.
+All model start parameters are required to be &gt; 0.</p>
+<p>Note that the DERT expression has not been derived (yet) and it consequently is not possible to calculated
+values for DERT and CLV.</p>
+<h3>The BG/NBD model</h3>
+<p>The BG/NBD is an "easy" alternative to the Pareto/NBD model that is easier to implement. The BG/NBD model slight adapts
+the behavioral "story" associated with the Pareto/NBD model in order to simplify the implementation. The BG/NBD model uses a beta-geometric and
+exponential gamma mixture distributions to model customer behavior. The key difference to the Pareto/NBD model is that a customer can only
+churn right after a transaction. This simplifies computations significantly, however has the drawback that a customer cannot churn until he/she
+makes a transaction. The Pareto/NBD model assumes that a customer can churn at any time.</p>
+
+<h3>BG/NBD model with static covariates</h3>
+<p>The standard BG/NBD model captures heterogeneity was solely using Gamma distributions.
+However, often exogenous knowledge, such as for example customer demographics, is available.
+The supplementary knowledge may explain part of the heterogeneity among the customers and
+therefore increase the predictive accuracy of the model. In addition, we can rely on these
+parameter estimates for inference, i.e. identify and quantify effects of contextual factors
+on the two underlying purchase and attrition processes. For technical details we refer to
+the technical note by Fader and Hardie (2007).</p>
+
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>Fader PS, Hardie BGS, Lee, KL (2005). &#8220;&#8220;Counting Your Customers&#8221; the Easy Way:
+An Alternative to the Pareto/NBD Model&#8221; Marketing Science, 24(2), 275–284.</p>
+<p>Fader PS, Hardie BGS (2013). &#8220;Overcoming the BG/NBD Model’s #NUM! Error Problem&#8221;
+URL <a href='http://brucehardie.com/notes/027/bgnbd_num_error.pdf'>http://brucehardie.com/notes/027/bgnbd_num_error.pdf</a>.</p>
+<p>Fader PS, Hardie BGS (2007). &#8220;Incorporating time-invariant covariates into the
+Pareto/NBD and BG/NBD models.&#8221;
+URL <a href='http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf'>http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf</a>.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='https://rdrr.io/pkg/CLVTools/man/clvdata.html'>clvdata</a></code> to create a clv data object, <code><a href='https://rdrr.io/pkg/CLVTools/man/SetStaticCovariates.html'>SetStaticCovariates</a></code>
+to add static covariates to an existing clv data object.</p>
+<p><code><a href='https://rdrr.io/pkg/CLVTools/man/predict.clv.fitted.html'>predict</a></code> to predict expected transactions, probability of being alive, and customer lifetime value for every customer</p>
+<p><code><a href='https://rdrr.io/pkg/CLVTools/man/plot.clv.fitted.html'>plot</a></code> to plot the unconditional expectation as predicted by the fitted model</p>
+<p>The generic functions <code><a href='https://rdrr.io/pkg/CLVTools/man/vcov.clv.fitted.html'>vcov</a></code>, <code><a href='https://rdrr.io/pkg/CLVTools/man/summary.clv.fitted.html'>summary</a></code>, <code><a href='https://rdrr.io/pkg/CLVTools/man/fitted.clv.fitted.html'>fitted</a></code>.</p></div>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"apparelTrans"</span>)
+<span class='kw'>clv.data.apparel</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/clvdata.html'>clvdata</a></span>(<span class='kw'>apparelTrans</span>, date.format = <span class='st'>"ymd"</span>,
+                            time.unit = <span class='st'>"w"</span>, estimation.split = <span class='fl'>40</span>)
+
+<span class='co'># Fit standard bgnbd model</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/bgnbd.html'>bgnbd</a></span>(<span class='kw'>clv.data.apparel</span>)</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; BG/NBD Standard  Model
+#&gt; 
+#&gt; Call:
+#&gt; bgnbd(clv.data = clv.data.apparel)
+#&gt; 
+#&gt; Coefficients:
+#&gt;      r   alpha       a       b  
+#&gt; 0.4837  3.2825  0.3760  4.2874  
+#&gt; KKT1: TRUE 
+#&gt; KKT2: TRUE 
+#&gt; 
+#&gt; Used Options:
+#&gt; Correlation:     FALSE </div><div class='input'>
+<span class='co'># Give initial guesses for the Model parameters</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/bgnbd.html'>bgnbd</a></span>(<span class='kw'>clv.data.apparel</span>,
+     start.params.model = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(r=<span class='fl'>0.5</span>, alpha=<span class='fl'>15</span>, a = <span class='fl'>2</span>, b=<span class='fl'>5</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; BG/NBD Standard  Model
+#&gt; 
+#&gt; Call:
+#&gt; bgnbd(clv.data = clv.data.apparel, start.params.model = c(r = 0.5, 
+#&gt;     alpha = 15, a = 2, b = 5))
+#&gt; 
+#&gt; Coefficients:
+#&gt;      r   alpha       a       b  
+#&gt; 0.4837  3.2823  0.3755  4.2785  
+#&gt; KKT1: TRUE 
+#&gt; KKT2: TRUE 
+#&gt; 
+#&gt; Used Options:
+#&gt; Correlation:     FALSE </div><div class='input'>
+
+<span class='co'># pass additional parameters to the optimizer (optimx)</span>
+<span class='co'>#    Use Nelder-Mead as optimization method and print</span>
+<span class='co'>#    detailed information about the optimization process</span>
+<span class='kw'>apparel.bgnbd</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/bgnbd.html'>bgnbd</a></span>(<span class='kw'>clv.data.apparel</span>,
+                     optimx.args = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(method=<span class='st'>"Nelder-Mead"</span>,
+                                        control=<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(trace=<span class='fl'>6</span>)))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; fn is  fn 
+#&gt; Looking for method =  Nelder-Mead 
+#&gt; Methods to be used:[1] "Nelder-Mead"
+#&gt; Function has  4  arguments
+#&gt; Analytic gradient not made available.
+#&gt; Analytic Hessian not made available.
+#&gt; Scale check -- log parameter ratio= 0   log bounds ratio= NA 
+#&gt; optcfg:$fname
+#&gt; [1] "fn"
+#&gt; 
+#&gt; $npar
+#&gt; [1] 4
+#&gt; 
+#&gt; $ctrl
+#&gt; $ctrl$follow.on
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $ctrl$save.failures
+#&gt; [1] TRUE
+#&gt; 
+#&gt; $ctrl$trace
+#&gt; [1] 6
+#&gt; 
+#&gt; $ctrl$kkt
+#&gt; [1] TRUE
+#&gt; 
+#&gt; $ctrl$all.methods
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $ctrl$starttests
+#&gt; [1] TRUE
+#&gt; 
+#&gt; $ctrl$maximize
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $ctrl$dowarn
+#&gt; [1] TRUE
+#&gt; 
+#&gt; $ctrl$usenumDeriv
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $ctrl$kkttol
+#&gt; [1] 0.001
+#&gt; 
+#&gt; $ctrl$kkt2tol
+#&gt; [1] 1e-06
+#&gt; 
+#&gt; $ctrl$badval
+#&gt; [1] 8.988466e+307
+#&gt; 
+#&gt; $ctrl$scaletol
+#&gt; [1] 3
+#&gt; 
+#&gt; $ctrl$have.bounds
+#&gt; [1] FALSE
+#&gt; 
+#&gt; 
+#&gt; $usenumDeriv
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $ufn
+#&gt; function (LL.params, LL.function.sum, use.interlayer.constr, 
+#&gt;     use.interlayer.reg, reg.lambda.trans, reg.lambda.life, use.cor, 
+#&gt;     ...) 
+#&gt; {
+#&gt;     all.other.args &lt;- list(...)
+#&gt;     interlayers.to.use &lt;- list(callLL = interlayer_callLL)
+#&gt;     if (use.cor == T &amp; !anyNA(use.cor)) 
+#&gt;         interlayers.to.use &lt;- c(correlation = interlayer_correlation, 
+#&gt;             interlayers.to.use)
+#&gt;     if (use.interlayer.reg == T &amp; !is.null(reg.lambda.trans) &amp; 
+#&gt;         !anyNA(reg.lambda.trans) &amp; !is.null(reg.lambda.life) &amp; 
+#&gt;         !anyNA(reg.lambda.life)) {
+#&gt;         interlayers.to.use &lt;- c(regularization = interlayer_regularization, 
+#&gt;             interlayers.to.use)
+#&gt;     }
+#&gt;     if (use.interlayer.constr == TRUE) {
+#&gt;         interlayers.to.use &lt;- c(constraints = interlayer_constraints, 
+#&gt;             interlayers.to.use)
+#&gt;     }
+#&gt;     interlayer.call.args &lt;- list(next.interlayers = interlayers.to.use, 
+#&gt;         LL.function.sum = LL.function.sum, LL.params = LL.params, 
+#&gt;         reg.lambda.life = reg.lambda.life, reg.lambda.trans = reg.lambda.trans)
+#&gt;     interlayer.call.args &lt;- modifyList(interlayer.call.args, 
+#&gt;         all.other.args)
+#&gt;     return(do.call(what = interlayer_callnextinterlayer, args = interlayer.call.args))
+#&gt; }
+#&gt; &lt;bytecode: 0x7fe34ced29e8&gt;
+#&gt; &lt;environment: namespace:CLVTools&gt;
+#&gt; 
+#&gt; $have.bounds
+#&gt; [1] FALSE
+#&gt; 
+#&gt; $method
+#&gt; [1] "Nelder-Mead"
+#&gt; 
+#&gt; Method:  Nelder-Mead 
+#&gt;   Nelder-Mead direct search function minimizer
+#&gt; function value for initial parameters = 2985.769409
+#&gt;   Scaled convergence tolerance is 4.44914e-05
+#&gt; Stepsize computed as 0.109861
+#&gt; BUILD              5 3012.752572 2973.973439
+#&gt; EXTENSION          7 2993.373011 2943.829057
+#&gt; LO-REDUCTION       9 2985.769409 2943.829057
+#&gt; EXTENSION         11 2981.542423 2924.136709
+#&gt; LO-REDUCTION      13 2973.973439 2924.136709
+#&gt; EXTENSION         15 2948.255070 2905.355668
+#&gt; LO-REDUCTION      17 2943.829057 2905.355668
+#&gt; LO-REDUCTION      19 2924.512075 2905.355668
+#&gt; REFLECTION        21 2924.136709 2903.722832
+#&gt; LO-REDUCTION      23 2914.417772 2903.722832
+#&gt; LO-REDUCTION      25 2910.432354 2903.722832
+#&gt; EXTENSION         27 2906.938793 2900.310876
+#&gt; HI-REDUCTION      29 2905.762406 2900.310876
+#&gt; EXTENSION         31 2905.355668 2897.983732
+#&gt; EXTENSION         33 2903.963391 2892.824039
+#&gt; LO-REDUCTION      35 2903.722832 2892.824039
+#&gt; LO-REDUCTION      37 2900.310876 2892.824039
+#&gt; EXTENSION         39 2897.983732 2888.407512
+#&gt; EXTENSION         41 2895.428656 2886.461459
+#&gt; EXTENSION         43 2894.728449 2885.167328
+#&gt; LO-REDUCTION      45 2892.824039 2885.167328
+#&gt; LO-REDUCTION      47 2888.407512 2884.465033
+#&gt; LO-REDUCTION      49 2886.461459 2884.465033
+#&gt; HI-REDUCTION      51 2885.358936 2884.465033
+#&gt; LO-REDUCTION      53 2885.167328 2884.241545
+#&gt; HI-REDUCTION      55 2884.621344 2884.241545
+#&gt; HI-REDUCTION      57 2884.533026 2884.241545
+#&gt; HI-REDUCTION      59 2884.471900 2884.241545
+#&gt; LO-REDUCTION      61 2884.465033 2884.241545
+#&gt; HI-REDUCTION      63 2884.307960 2884.241545
+#&gt; LO-REDUCTION      65 2884.294155 2884.241545
+#&gt; HI-REDUCTION      67 2884.260398 2884.232491
+#&gt; HI-REDUCTION      69 2884.251403 2884.227891
+#&gt; REFLECTION        71 2884.242641 2884.214209
+#&gt; HI-REDUCTION      73 2884.241545 2884.214209
+#&gt; HI-REDUCTION      75 2884.232491 2884.214209
+#&gt; LO-REDUCTION      77 2884.227891 2884.214209
+#&gt; REFLECTION        79 2884.222247 2884.211910
+#&gt; LO-REDUCTION      81 2884.219542 2884.211910
+#&gt; REFLECTION        83 2884.216543 2884.208206
+#&gt; HI-REDUCTION      85 2884.214209 2884.208206
+#&gt; REFLECTION        87 2884.212109 2884.207571
+#&gt; REFLECTION        89 2884.211910 2884.204090
+#&gt; LO-REDUCTION      91 2884.209897 2884.204090
+#&gt; EXTENSION         93 2884.208206 2884.196287
+#&gt; LO-REDUCTION      95 2884.207571 2884.196287
+#&gt; LO-REDUCTION      97 2884.205801 2884.196287
+#&gt; LO-REDUCTION      99 2884.204090 2884.196287
+#&gt; EXTENSION        101 2884.200845 2884.187823
+#&gt; LO-REDUCTION     103 2884.200017 2884.187823
+#&gt; LO-REDUCTION     105 2884.197901 2884.187823
+#&gt; LO-REDUCTION     107 2884.196287 2884.187823
+#&gt; EXTENSION        109 2884.194098 2884.185217
+#&gt; REFLECTION       111 2884.192371 2884.184869
+#&gt; EXTENSION        113 2884.190371 2884.181057
+#&gt; REFLECTION       115 2884.187823 2884.179468
+#&gt; LO-REDUCTION     117 2884.185217 2884.179468
+#&gt; LO-REDUCTION     119 2884.184869 2884.179468
+#&gt; LO-REDUCTION     121 2884.182670 2884.179271
+#&gt; EXTENSION        123 2884.181057 2884.174673
+#&gt; LO-REDUCTION     125 2884.180099 2884.174673
+#&gt; EXTENSION        127 2884.179468 2884.170098
+#&gt; LO-REDUCTION     129 2884.179271 2884.170098
+#&gt; EXTENSION        131 2884.176628 2884.166480
+#&gt; EXTENSION        133 2884.174673 2884.161706
+#&gt; EXTENSION        135 2884.170454 2884.149121
+#&gt; LO-REDUCTION     137 2884.170098 2884.149121
+#&gt; LO-REDUCTION     139 2884.166480 2884.149121
+#&gt; EXTENSION        141 2884.161706 2884.134374
+#&gt; LO-REDUCTION     143 2884.157294 2884.134374
+#&gt; EXTENSION        145 2884.155098 2884.116203
+#&gt; EXTENSION        147 2884.149121 2884.090693
+#&gt; LO-REDUCTION     149 2884.141857 2884.090693
+#&gt; EXTENSION        151 2884.134374 2884.069820
+#&gt; EXTENSION        153 2884.116203 2883.997578
+#&gt; LO-REDUCTION     155 2884.093568 2883.997578
+#&gt; EXTENSION        157 2884.090693 2883.921060
+#&gt; LO-REDUCTION     159 2884.069820 2883.921060
+#&gt; EXTENSION        161 2884.001430 2883.768134
+#&gt; LO-REDUCTION     163 2883.997578 2883.768134
+#&gt; EXTENSION        165 2883.931248 2883.604649
+#&gt; LO-REDUCTION     167 2883.921060 2883.604649
+#&gt; EXTENSION        169 2883.788867 2883.342194
+#&gt; LO-REDUCTION     171 2883.768134 2883.342194
+#&gt; EXTENSION        173 2883.611557 2883.264365
+#&gt; LO-REDUCTION     175 2883.604649 2883.264365
+#&gt; LO-REDUCTION     177 2883.366603 2883.236876
+#&gt; LO-REDUCTION     179 2883.342194 2883.236876
+#&gt; HI-REDUCTION     181 2883.266722 2883.236876
+#&gt; LO-REDUCTION     183 2883.264365 2883.235914
+#&gt; HI-REDUCTION     185 2883.253315 2883.235914
+#&gt; HI-REDUCTION     187 2883.250570 2883.231901
+#&gt; REFLECTION       189 2883.238972 2883.223324
+#&gt; HI-REDUCTION     191 2883.236876 2883.223324
+#&gt; REFLECTION       193 2883.235914 2883.222976
+#&gt; LO-REDUCTION     195 2883.231901 2883.222976
+#&gt; REFLECTION       197 2883.230575 2883.219943
+#&gt; REFLECTION       199 2883.226230 2883.216983
+#&gt; REFLECTION       201 2883.223324 2883.215562
+#&gt; LO-REDUCTION     203 2883.222976 2883.215562
+#&gt; REFLECTION       205 2883.219943 2883.213091
+#&gt; EXTENSION        207 2883.216983 2883.209451
+#&gt; LO-REDUCTION     209 2883.216054 2883.209451
+#&gt; LO-REDUCTION     211 2883.215562 2883.209451
+#&gt; REFLECTION       213 2883.213091 2883.209182
+#&gt; REFLECTION       215 2883.210682 2883.206047
+#&gt; LO-REDUCTION     217 2883.210389 2883.206047
+#&gt; HI-REDUCTION     219 2883.209451 2883.206047
+#&gt; EXTENSION        221 2883.209182 2883.204351
+#&gt; EXTENSION        223 2883.206824 2883.201442
+#&gt; EXTENSION        225 2883.206198 2883.197598
+#&gt; EXTENSION        227 2883.206047 2883.194732
+#&gt; LO-REDUCTION     229 2883.204351 2883.194732
+#&gt; EXTENSION        231 2883.201442 2883.184381
+#&gt; EXTENSION        233 2883.197598 2883.179577
+#&gt; LO-REDUCTION     235 2883.196262 2883.179577
+#&gt; EXTENSION        237 2883.194732 2883.163859
+#&gt; EXTENSION        239 2883.186089 2883.155529
+#&gt; LO-REDUCTION     241 2883.184381 2883.155529
+#&gt; LO-REDUCTION     243 2883.179577 2883.155529
+#&gt; REFLECTION       245 2883.163859 2883.149003
+#&gt; LO-REDUCTION     247 2883.157131 2883.149003
+#&gt; LO-REDUCTION     249 2883.156818 2883.149003
+#&gt; LO-REDUCTION     251 2883.155529 2883.149003
+#&gt; LO-REDUCTION     253 2883.152542 2883.149003
+#&gt; LO-REDUCTION     255 2883.151799 2883.149003
+#&gt; LO-REDUCTION     257 2883.151213 2883.149003
+#&gt; LO-REDUCTION     259 2883.150774 2883.149003
+#&gt; EXTENSION        261 2883.149429 2883.146832
+#&gt; LO-REDUCTION     263 2883.149373 2883.146832
+#&gt; EXTENSION        265 2883.149111 2883.146446
+#&gt; REFLECTION       267 2883.149003 2883.145823
+#&gt; EXTENSION        269 2883.147235 2883.142518
+#&gt; LO-REDUCTION     271 2883.146832 2883.142518
+#&gt; LO-REDUCTION     273 2883.146446 2883.142518
+#&gt; LO-REDUCTION     275 2883.145823 2883.142518
+#&gt; EXTENSION        277 2883.144279 2883.140196
+#&gt; EXTENSION        279 2883.143353 2883.139006
+#&gt; EXTENSION        281 2883.143184 2883.136671
+#&gt; LO-REDUCTION     283 2883.142518 2883.136671
+#&gt; LO-REDUCTION     285 2883.140196 2883.136671
+#&gt; LO-REDUCTION     287 2883.139143 2883.136671
+#&gt; LO-REDUCTION     289 2883.139006 2883.136671
+#&gt; LO-REDUCTION     291 2883.138430 2883.136671
+#&gt; EXTENSION        293 2883.137091 2883.135142
+#&gt; LO-REDUCTION     295 2883.137055 2883.135142
+#&gt; LO-REDUCTION     297 2883.136876 2883.135142
+#&gt; LO-REDUCTION     299 2883.136671 2883.135142
+#&gt; LO-REDUCTION     301 2883.136256 2883.135142
+#&gt; EXTENSION        303 2883.135331 2883.134309
+#&gt; EXTENSION        305 2883.135314 2883.134212
+#&gt; REFLECTION       307 2883.135160 2883.133997
+#&gt; LO-REDUCTION     309 2883.135142 2883.133997
+#&gt; LO-REDUCTION     311 2883.134309 2883.133919
+#&gt; LO-REDUCTION     313 2883.134212 2883.133912
+#&gt; HI-REDUCTION     315 2883.134091 2883.133912
+#&gt; LO-REDUCTION     317 2883.133997 2883.133899
+#&gt; HI-REDUCTION     319 2883.133938 2883.133888
+#&gt; LO-REDUCTION     321 2883.133919 2883.133864
+#&gt; HI-REDUCTION     323 2883.133912 2883.133862
+#&gt; Exiting from Nelder Mead minimizer
+#&gt;     325 function evaluations used
+#&gt; Post processing for method  Nelder-Mead 
+#&gt; Successful convergence! 
+#&gt; Compute Hessian approximation at finish of  Nelder-Mead 
+#&gt; Compute gradient approximation at finish of  Nelder-Mead 
+#&gt; Save results from method  Nelder-Mead 
+#&gt; $par
+#&gt;      log.r  log.alpha      log.a      log.b 
+#&gt; -0.7265353  1.1885279 -0.9792292  1.4542322 
+#&gt; 
+#&gt; $value
+#&gt; [1] 2883.134
+#&gt; 
+#&gt; $message
+#&gt; NULL
+#&gt; 
+#&gt; $convcode
+#&gt; [1] 0
+#&gt; 
+#&gt; $fevals
+#&gt; function 
+#&gt;      325 
+#&gt; 
+#&gt; $gevals
+#&gt; gradient 
+#&gt;       NA 
+#&gt; 
+#&gt; $nitns
+#&gt; [1] NA
+#&gt; 
+#&gt; $kkt1
+#&gt; [1] TRUE
+#&gt; 
+#&gt; $kkt2
+#&gt; [1] TRUE
+#&gt; 
+#&gt; $xtimes
+#&gt; user.self 
+#&gt;      0.11 
+#&gt; 
+#&gt; Assemble the answers</div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='input'>
+<span class='co'># estimated coefs</span>
+<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='kw'>apparel.bgnbd</span>)</div><div class='output co'>#&gt;         r     alpha         a         b 
+#&gt; 0.4835815 3.2822459 0.3756005 4.2811953 </div><div class='input'>
+<span class='co'># summary of the fitted model</span>
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='kw'>apparel.bgnbd</span>)</div><div class='output co'>#&gt; BG/NBD Standard  Model 
+#&gt; 
+#&gt; Call:
+#&gt; bgnbd(clv.data = clv.data.apparel, optimx.args = list(method = "Nelder-Mead", 
+#&gt;     control = list(trace = 6)))
+#&gt; 
+#&gt; Fitting period:                               
+#&gt; Estimation start  2005-01-03   
+#&gt; Estimation end    2005-10-10   
+#&gt; Estimation length 40.0000 Weeks
+#&gt; 
+#&gt; Coefficients:
+#&gt;       Estimate Std. Error z-val Pr(&gt;|z|)    
+#&gt; r      0.48358    0.05366 9.012  &lt; 2e-16 ***
+#&gt; alpha  3.28225    0.51360 6.391 1.65e-10 ***
+#&gt; a      0.37560    0.18360 2.046   0.0408 *  
+#&gt; b      4.28120    2.92789 1.462   0.1437    
+#&gt; ---
+#&gt; Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+#&gt; 
+#&gt; Optimization info:                  
+#&gt; LL     -2883.1339 
+#&gt; AIC    5774.2677  
+#&gt; BIC    5788.3536  
+#&gt; KKT 1  TRUE       
+#&gt; KKT 2  TRUE       
+#&gt; fevals 325.0000   
+#&gt; Method Nelder-Mead
+#&gt; 
+#&gt; Used Options:                 
+#&gt; Correlation FALSE</div><div class='input'>
+<span class='co'># predict CLV etc for holdout period</span>
+<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='kw'>apparel.bgnbd</span>)</div><div class='output co'>#&gt; <span class='message'>Predicting from 2005-10-11 until (incl.) 2006-07-16 (39.86 Weeks).</span></div><div class='output co'>#&gt;        Id period.first period.last period.length actual.x actual.spending
+#&gt;   1:    1   2005-10-11  2006-07-16      39.85714        0            0.00
+#&gt;   2:   10   2005-10-11  2006-07-16      39.85714        0            0.00
+#&gt;   3:  100   2005-10-11  2006-07-16      39.85714       23         5086.44
+#&gt;   4: 1000   2005-10-11  2006-07-16      39.85714       23         4077.34
+#&gt;   5: 1001   2005-10-11  2006-07-16      39.85714       11         2914.10
+#&gt;  ---                                                                     
+#&gt; 246: 1219   2005-10-11  2006-07-16      39.85714       14         3233.78
+#&gt; 247:  122   2005-10-11  2006-07-16      39.85714        0            0.00
+#&gt; 248: 1220   2005-10-11  2006-07-16      39.85714        0            0.00
+#&gt; 249: 1221   2005-10-11  2006-07-16      39.85714        9         1322.94
+#&gt; 250: 1222   2005-10-11  2006-07-16      39.85714        0            0.00
+#&gt;         PAlive        CET DERT predicted.Spending predicted.CLV
+#&gt;   1: 1.0000000  0.4243615    0           216.7955             0
+#&gt;   2: 0.5589646  1.1842170    0           209.1146             0
+#&gt;   3: 0.8918495 13.4903936    0           188.9758             0
+#&gt;   4: 0.9775625 13.2073200    0           171.0913             0
+#&gt;   5: 0.5114537  3.5970526    0           229.8529             0
+#&gt;  ---                                                           
+#&gt; 246: 0.9215830  3.4747558    0           206.0859             0
+#&gt; 247: 1.0000000  0.4243615    0           216.7955             0
+#&gt; 248: 1.0000000  0.4243615    0           216.7955             0
+#&gt; 249: 0.9135946  4.1928882    0           207.0518             0
+#&gt; 250: 0.6210671  0.7949918    0           208.3194             0</div><div class='input'>
+<span class='co'># predict CLV etc for the next 15 periods</span>
+<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='kw'>apparel.bgnbd</span>, prediction.end = <span class='fl'>15</span>)</div><div class='output co'>#&gt; <span class='message'>Predicting from 2005-10-11 until (incl.) 2006-01-23 (15 Weeks).</span></div><div class='output co'>#&gt;        Id period.first period.last period.length actual.x actual.spending
+#&gt;   1:    1   2005-10-11  2006-01-23            15        0            0.00
+#&gt;   2:   10   2005-10-11  2006-01-23            15        0            0.00
+#&gt;   3:  100   2005-10-11  2006-01-23            15       10         1516.83
+#&gt;   4: 1000   2005-10-11  2006-01-23            15       10         1980.30
+#&gt;   5: 1001   2005-10-11  2006-01-23            15        6         1673.55
+#&gt;  ---                                                                     
+#&gt; 246: 1219   2005-10-11  2006-01-23            15       11         2256.68
+#&gt; 247:  122   2005-10-11  2006-01-23            15        0            0.00
+#&gt; 248: 1220   2005-10-11  2006-01-23            15        0            0.00
+#&gt; 249: 1221   2005-10-11  2006-01-23            15        7         1180.04
+#&gt; 250: 1222   2005-10-11  2006-01-23            15        0            0.00
+#&gt;         PAlive       CET DERT predicted.Spending predicted.CLV
+#&gt;   1: 1.0000000 0.1643356    0           216.7955             0
+#&gt;   2: 0.5589646 0.4660760    0           209.1146             0
+#&gt;   3: 0.8918495 5.4306174    0           188.9758             0
+#&gt;   4: 0.9775625 5.3123540    0           171.0913             0
+#&gt;   5: 0.5114537 1.4381151    0           229.8529             0
+#&gt;  ---                                                          
+#&gt; 246: 0.9215830 1.3784751    0           206.0859             0
+#&gt; 247: 1.0000000 0.1643356    0           216.7955             0
+#&gt; 248: 1.0000000 0.1643356    0           216.7955             0
+#&gt; 249: 0.9135946 1.6677149    0           207.0518             0
+#&gt; 250: 0.6210671 0.3108782    0           208.3194             0</div><div class='input'><span class='co'># }</span>
+<span class='co'># \donttest{</span>
+<span class='co'># To estimate the bgnbd model with static covariates,</span>
+<span class='co'>#   add static covariates to the data</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"apparelStaticCov"</span>)
+<span class='kw'>clv.data.static.cov</span> <span class='op'>&lt;-</span>
+ <span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/SetStaticCovariates.html'>SetStaticCovariates</a></span>(<span class='kw'>clv.data.apparel</span>,
+                     data.cov.life = <span class='kw'>apparelStaticCov</span>,
+                     names.cov.life = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Gender"</span>, <span class='st'>"Channel"</span>),
+                     data.cov.trans = <span class='kw'>apparelStaticCov</span>,
+                     names.cov.trans = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Gender"</span>, <span class='st'>"Channel"</span>))
+
+<span class='co'># Fit bgnbd with static covariates</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/bgnbd.html'>bgnbd</a></span>(<span class='kw'>clv.data.static.cov</span>)</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; BG/NBD with Static Covariates  Model
+#&gt; 
+#&gt; Call:
+#&gt; bgnbd(clv.data = clv.data.static.cov)
+#&gt; 
+#&gt; Coefficients:
+#&gt;             r          alpha              a              b    life.Gender  
+#&gt;        0.6389        19.4339      1244.2537     16544.7003        -8.6913  
+#&gt;  life.Channel   trans.Gender  trans.Channel  
+#&gt;        1.1027         1.3665         0.6999  
+#&gt; KKT1: TRUE 
+#&gt; KKT2: FALSE 
+#&gt; 
+#&gt; Used Options:
+#&gt; Correlation:     FALSE 
+#&gt; Constraints:     FALSE 
+#&gt; Regularization:  FALSE </div><div class='input'>
+<span class='co'># Give initial guesses for both covariate parameters</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/bgnbd.html'>bgnbd</a></span>(<span class='kw'>clv.data.static.cov</span>, start.params.trans = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(Gender=<span class='fl'>0.75</span>, Channel=<span class='fl'>0.7</span>),
+                   start.params.life  = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(Gender=<span class='fl'>0.5</span>, Channel=<span class='fl'>0.5</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; BG/NBD with Static Covariates  Model
+#&gt; 
+#&gt; Call:
+#&gt; bgnbd(clv.data = clv.data.static.cov, start.params.life = c(Gender = 0.5, 
+#&gt;     Channel = 0.5), start.params.trans = c(Gender = 0.75, Channel = 0.7))
+#&gt; 
+#&gt; Coefficients:
+#&gt;             r          alpha              a              b    life.Gender  
+#&gt;        0.6388        19.4243      1226.2097     16305.4012        -8.6802  
+#&gt;  life.Channel   trans.Gender  trans.Channel  
+#&gt;        1.1067         1.3659         0.6997  
+#&gt; KKT1: TRUE 
+#&gt; KKT2: FALSE 
+#&gt; 
+#&gt; Used Options:
+#&gt; Correlation:     FALSE 
+#&gt; Constraints:     FALSE 
+#&gt; Regularization:  FALSE </div><div class='input'>
+<span class='co'># Use regularization</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/bgnbd.html'>bgnbd</a></span>(<span class='kw'>clv.data.static.cov</span>, reg.lambdas = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(trans = <span class='fl'>5</span>, life=<span class='fl'>5</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; BG/NBD with Static Covariates  Model
+#&gt; 
+#&gt; Call:
+#&gt; bgnbd(clv.data = clv.data.static.cov, reg.lambdas = c(trans = 5, 
+#&gt;     life = 5))
+#&gt; 
+#&gt; Coefficients:
+#&gt;             r          alpha              a              b    life.Gender  
+#&gt;     0.4851731      3.3293236      0.3770233      4.3084276     -0.0001786  
+#&gt;  life.Channel   trans.Gender  trans.Channel  
+#&gt;     0.0004033      0.0080432      0.0069523  
+#&gt; KKT1: TRUE 
+#&gt; KKT2: TRUE 
+#&gt; 
+#&gt; Used Options:
+#&gt; Correlation:     FALSE 
+#&gt; Constraints:     FALSE 
+#&gt; Regularization:  TRUE </div><div class='input'>
+<span class='co'># Force the same coefficient to be used for both covariates</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/bgnbd.html'>bgnbd</a></span>(<span class='kw'>clv.data.static.cov</span>, names.cov.constr = <span class='st'>"Gender"</span>,
+                   start.params.constr = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(Gender=<span class='fl'>0.5</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; BG/NBD with Static Covariates  Model
+#&gt; 
+#&gt; Call:
+#&gt; bgnbd(clv.data = clv.data.static.cov, names.cov.constr = "Gender", 
+#&gt;     start.params.constr = c(Gender = 0.5))
+#&gt; 
+#&gt; Coefficients:
+#&gt;             r          alpha              a              b   life.Channel  
+#&gt;       0.64326       20.11592        0.05313        0.73095        1.22227  
+#&gt; trans.Channel  constr.Gender  
+#&gt;       0.70168        1.38921  
+#&gt; KKT1: TRUE 
+#&gt; KKT2: TRUE 
+#&gt; 
+#&gt; Used Options:
+#&gt; Correlation:     FALSE 
+#&gt; Constraints:     TRUE 
+#&gt; Regularization:  FALSE </div><div class='input'>
+<span class='co'># Fit model only with the Channel covariate for life but</span>
+<span class='co'># keep all trans covariates as is</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/bgnbd.html'>bgnbd</a></span>(<span class='kw'>clv.data.static.cov</span>, names.cov.life = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Channel"</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; BG/NBD with Static Covariates  Model
+#&gt; 
+#&gt; Call:
+#&gt; bgnbd(clv.data = clv.data.static.cov, names.cov.life = c("Channel"))
+#&gt; 
+#&gt; Coefficients:
+#&gt;             r          alpha              a              b   life.Channel  
+#&gt;        0.6408        19.7873         0.2105         2.8296         1.1514  
+#&gt;  trans.Gender  trans.Channel  
+#&gt;        1.3802         0.7010  
+#&gt; KKT1: TRUE 
+#&gt; KKT2: TRUE 
+#&gt; 
+#&gt; Used Options:
+#&gt; Correlation:     FALSE 
+#&gt; Constraints:     FALSE 
+#&gt; Regularization:  FALSE </div><div class='input'><span class='co'># }</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

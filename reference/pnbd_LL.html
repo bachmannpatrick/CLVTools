@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Pareto/NBD: Log-Likelihood — pnbd_LL • CLVTools</title>
+<title>Pareto/NBD: Log-Likelihood functions — pnbd_LL • CLVTools</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Pareto/NBD: Log-Likelihood — pnbd_LL" />
+<meta property="og:title" content="Pareto/NBD: Log-Likelihood functions — pnbd_LL" />
 <meta property="og:description" content="Calculates the Log-Likelihood values for the Pareto/NBD model with and without covariates.
 The function pnbd_nocov_LL_ind calculates the individual LogLikelihood
 values for each customer for the given parameters.
@@ -90,7 +90,7 @@ across customers." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -144,7 +144,7 @@ across customers." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Pareto/NBD: Log-Likelihood</h1>
+    <h1>Pareto/NBD: Log-Likelihood functions</h1>
     <small class="dont-index">Source: <a href='https://github.com/bachmannpatrick/CLVTools/blob/master/R/RcppExports.R'><code>R/RcppExports.R</code></a></small>
     <div class="hidden name"><code>pnbd_LL.Rd</code></div>
     </div>
@@ -161,20 +161,20 @@ values for each customer for the given parameters and covariates.</p>
 across customers.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>pnbd_nocov_LL_ind</span>(<span class='no'>vLogparams</span>, <span class='no'>vX</span>, <span class='no'>vT_x</span>, <span class='no'>vT_cal</span>)
+    <pre class="usage"><span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd_LL.html'>pnbd_nocov_LL_ind</a></span>(<span class='kw'>vLogparams</span>, <span class='kw'>vX</span>, <span class='kw'>vT_x</span>, <span class='kw'>vT_cal</span>)
 
-<span class='fu'>pnbd_nocov_LL_sum</span>(<span class='no'>vLogparams</span>, <span class='no'>vX</span>, <span class='no'>vT_x</span>, <span class='no'>vT_cal</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd_LL.html'>pnbd_nocov_LL_sum</a></span>(<span class='kw'>vLogparams</span>, <span class='kw'>vX</span>, <span class='kw'>vT_x</span>, <span class='kw'>vT_cal</span>)
 
-<span class='fu'>pnbd_staticcov_LL_ind</span>(<span class='no'>vParams</span>, <span class='no'>vX</span>, <span class='no'>vT_x</span>, <span class='no'>vT_cal</span>, <span class='no'>mCov_life</span>, <span class='no'>mCov_trans</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd_LL.html'>pnbd_staticcov_LL_ind</a></span>(<span class='kw'>vParams</span>, <span class='kw'>vX</span>, <span class='kw'>vT_x</span>, <span class='kw'>vT_cal</span>, <span class='kw'>mCov_life</span>, <span class='kw'>mCov_trans</span>)
 
-<span class='fu'>pnbd_staticcov_LL_sum</span>(<span class='no'>vParams</span>, <span class='no'>vX</span>, <span class='no'>vT_x</span>, <span class='no'>vT_cal</span>, <span class='no'>mCov_life</span>, <span class='no'>mCov_trans</span>)</pre>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd_LL.html'>pnbd_staticcov_LL_sum</a></span>(<span class='kw'>vParams</span>, <span class='kw'>vX</span>, <span class='kw'>vT_x</span>, <span class='kw'>vT_cal</span>, <span class='kw'>mCov_life</span>, <span class='kw'>mCov_trans</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>vLogparams</th>
-      <td><p>vector with the Pareto/NBD model parameters log scaled. See Details.</p></td>
+      <td><p>vector with the Pareto/NBD model parameters at log scale. See Details.</p></td>
     </tr>
     <tr>
       <th>vX</th>
@@ -190,7 +190,7 @@ across customers.</p>
     </tr>
     <tr>
       <th>vParams</th>
-      <td><p>vector with the parameters for the Pareto/NBD model and the static covariates. See Details.</p></td>
+      <td><p>vector with the parameters for the Pareto/NBD model at log scale and the static covariates at original scale. See Details.</p></td>
     </tr>
     <tr>
       <th>mCov_life</th>
@@ -208,29 +208,28 @@ across customers.</p>
  with or without covariates.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>r, alpha_0, s, beta_0</code> are the model parameters used for estimation.<br />
-s: shape parameter of the Gamma distribution for the lifetime process.
-The smaller s, the stronger the heterogeneity of customer lifetimes. <br />
-beta: scale parameter for the Gamma distribution for the lifetime process. <br />
-r: shape parameter of the Gamma distribution of the purchase process.
-The smaller r, the stronger the heterogeneity of the purchase process.<br />
-alpha: scale parameter of the Gamma distribution of the purchase process.</p>
+    <p><code>vLogparams</code> is a vector with model parameters <code>r, alpha_0, s, beta_0</code> at log-scale, in this order.</p>
 <p><code>vParams</code> is vector with the Pareto/NBD model parameters at log scale,
 followed by the parameters for the lifetime covariates at original scale and then
 followed by the parameters for the transaction covariates at original scale</p>
-<p><code>mCov_life</code> is a matrix containing the covariates data of
-the time-invariant covariates that affect the lifetime process.
-Each column represents a different covariate. For every column, a gamma parameter
-needs to added to <code>vParams</code> at the respective position.</p>
 <p><code>mCov_trans</code> is a matrix containing the covariates data of
 the time-invariant covariates that affect the transaction process.
-Each column represents a different covariate. For every column, a gamma parameter
+Each column represents a different covariate. For every column a gamma parameter
+needs to added to <code>vParams</code> at the respective position.</p>
+<p><code>mCov_life</code> is a matrix containing the covariates data of
+the time-invariant covariates that affect the lifetime process.
+Each column represents a different covariate. For every column a gamma parameter
 needs to added to <code>vParams</code> at the respective position.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>Fader, Peter S., and Bruce G.S. Hardie (2005). "A Note on Deriving the
- Pareto/NBD Model and Related Expressions.", Web.
- <a href='http://www.brucehardie.com/notes/008/'>http://www.brucehardie.com/notes/008/</a>.</p>
+    <p>Schmittlein DC, Morrison DG, Colombo R (1987). &#8220;Counting Your Customers:
+Who-Are They and What Will They Do Next?&#8221; Management Science, 33(1), 1–24.</p>
+<p>Fader PS, Hardie BGS (2005). &#8220;A Note on Deriving the Pareto/NBD Model and
+Related Expressions.&#8221;
+URL <a href='http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf'>http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf</a>.</p>
+<p>Fader PS, Hardie BG (2007). &#8220;Incorporating time-invariant covariates into the
+Pareto/NBD and BG/NBD models.&#8221;
+URL <a href='http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf'>http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf</a>.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

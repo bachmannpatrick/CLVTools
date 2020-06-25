@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -146,44 +146,44 @@
     </div>
 
     <pre class="usage"><span class='co'># S4 method for clv.data</span>
-<span class='fu'>bgbb</span>(
-  <span class='no'>clv.data</span>,
-  <span class='kw'>start.params.model</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>optimx.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/bgbb.html'>bgbb</a></span>(
+  <span class='kw'>clv.data</span>,
+  start.params.model = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  optimx.args = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  verbose = <span class='fl'>TRUE</span>,
+  <span class='kw'>...</span>
 )
 
 <span class='co'># S4 method for clv.data.static.covariates</span>
-<span class='fu'>bgbb</span>(
-  <span class='no'>clv.data</span>,
-  <span class='kw'>start.params.model</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>optimx.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>names.cov.life</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>names.cov.trans</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.life</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.trans</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>names.cov.constr</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.constr</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>reg.lambdas</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='no'>...</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/bgbb.html'>bgbb</a></span>(
+  <span class='kw'>clv.data</span>,
+  start.params.model = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  optimx.args = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  verbose = <span class='fl'>TRUE</span>,
+  names.cov.life = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  names.cov.trans = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  start.params.life = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  start.params.trans = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  names.cov.constr = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  start.params.constr = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  reg.lambdas = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  <span class='kw'>...</span>
 )
 
 <span class='co'># S4 method for clv.data.dynamic.covariates</span>
-<span class='fu'>bgbb</span>(
-  <span class='no'>clv.data</span>,
-  <span class='kw'>start.params.model</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>optimx.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>names.cov.life</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>names.cov.trans</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.life</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.trans</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>names.cov.constr</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.constr</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>reg.lambdas</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='no'>...</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/bgbb.html'>bgbb</a></span>(
+  <span class='kw'>clv.data</span>,
+  start.params.model = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  optimx.args = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  verbose = <span class='fl'>TRUE</span>,
+  names.cov.life = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  names.cov.trans = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  start.params.life = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  start.params.trans = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  names.cov.constr = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  start.params.constr = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  reg.lambdas = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  <span class='kw'>...</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>

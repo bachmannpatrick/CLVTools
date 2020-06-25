@@ -82,7 +82,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -146,50 +146,50 @@
     </div>
 
     <pre class="usage"><span class='co'># S4 method for clv.data</span>
-<span class='fu'>pnbd</span>(
-  <span class='no'>clv.data</span>,
-  <span class='kw'>start.params.model</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>use.cor</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>start.param.cor</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>optimx.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd.html'>pnbd</a></span>(
+  <span class='kw'>clv.data</span>,
+  start.params.model = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  use.cor = <span class='fl'>FALSE</span>,
+  start.param.cor = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  optimx.args = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  verbose = <span class='fl'>TRUE</span>,
+  <span class='kw'>...</span>
 )
 
 <span class='co'># S4 method for clv.data.static.covariates</span>
-<span class='fu'>pnbd</span>(
-  <span class='no'>clv.data</span>,
-  <span class='kw'>start.params.model</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>use.cor</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>start.param.cor</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>optimx.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>names.cov.life</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>names.cov.trans</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.life</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.trans</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>names.cov.constr</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.constr</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>reg.lambdas</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='no'>...</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd.html'>pnbd</a></span>(
+  <span class='kw'>clv.data</span>,
+  start.params.model = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  use.cor = <span class='fl'>FALSE</span>,
+  start.param.cor = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  optimx.args = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  verbose = <span class='fl'>TRUE</span>,
+  names.cov.life = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  names.cov.trans = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  start.params.life = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  start.params.trans = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  names.cov.constr = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  start.params.constr = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  reg.lambdas = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  <span class='kw'>...</span>
 )
 
 <span class='co'># S4 method for clv.data.dynamic.covariates</span>
-<span class='fu'>pnbd</span>(
-  <span class='no'>clv.data</span>,
-  <span class='kw'>start.params.model</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>use.cor</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>start.param.cor</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>optimx.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>names.cov.life</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>names.cov.trans</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.life</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.trans</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>names.cov.constr</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>start.params.constr</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>reg.lambdas</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='no'>...</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd.html'>pnbd</a></span>(
+  <span class='kw'>clv.data</span>,
+  start.params.model = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  use.cor = <span class='fl'>FALSE</span>,
+  start.param.cor = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  optimx.args = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  verbose = <span class='fl'>TRUE</span>,
+  names.cov.life = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  names.cov.trans = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  start.params.life = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  start.params.trans = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  names.cov.constr = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  start.params.constr = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  reg.lambdas = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  <span class='kw'>...</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -257,10 +257,7 @@ If multiple optimization methods are specified, only the result of the last meth
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Depending on the data object on which the model was fit, <code>pnbd</code> returns either an object of
-class <a href='clv.pnbd-class.html'>clv.pnbd</a>, <a href='clv.pnbd.static.cov-class.html'>clv.pnbd.static.cov</a>, or <a href='clv.pnbd.dynamic.cov-class.html'>clv.pnbd.dynamic.cov</a>.</p>
-<p>The function <code><a href='summary.clv.fitted.html'>summary</a></code> can be used to obtain and print a summary of the results.
-The generic accessor functions <code>coefficients</code>, <code><a href='vcov.clv.fitted.html'>vcov</a></code>, <code><a href='fitted.clv.fitted.html'>fitted</a></code>,
-<code>logLik</code>, <code>AIC</code>, <code>BIC</code>, and <code>nobs</code> are available.</p>
+class <a href='https://rdrr.io/pkg/CLVTools/man/clv.pnbd-class.html'>clv.pnbd</a>, <a href='https://rdrr.io/pkg/CLVTools/man/clv.pnbd.static.cov-class.html'>clv.pnbd.static.cov</a>, or <a href='https://rdrr.io/pkg/CLVTools/man/clv.pnbd.dynamic.cov-class.html'>clv.pnbd.dynamic.cov</a>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Model parameters for the Pareto/NBD model are <code>alpha, r, beta, and s</code>. <br />
@@ -277,7 +274,7 @@ covariates affecting the attrition and the purchase process are part of the mode
 <p>If no start parameters are given, 1.0 is used for all model parameters and 0.1 for covariate parameters.
 The model start parameters are required to be &gt; 0.</p>
 <h3>The Pareto/NBD model</h3>
-<p>The Pareto/NBD was the first model addressing the issue of modeling customer purchases and
+<p>The Pareto/NBD is the first model addressing the issue of modeling customer purchases and
 attrition simultaneously for non-contractual settings. The model uses a Pareto distribution,
 a combination of an Exponential and a Gamma distribution, to explicitly model customers'
 (unobserved) attrition behavior in addition to customers' purchase process.<br />
@@ -304,7 +301,7 @@ and the corresponding value of at covariate a that time becomes relevant. Time-v
 covariates can affect customer on aggregated level as well as on an individual level:
 In the first case, all customers are affected simultaneously, in the latter case a
 covariate is only relevant for a particular customer. For technical details we refer to
-the paper by Bachmann, Meierer and Näf (2019).</p>
+the paper by Bachmann, Meierer and Näf (2020).</p>
 
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
@@ -316,38 +313,38 @@ it is executed sequentially. In case this is desired but no warning should be gi
 can be set up, for example package <code>doFuture</code> with <code><a href='https://rdrr.io/pkg/future/man/plan.html'>plan("sequential")</a></code>.</p>
 <p>The part executed with <code>foreach</code> also heavily relies on <code>data.table</code> which is natively parallelized already. When setting up
 the parallel backend, great care should be taken to reduce the overhead from this nested parallelism as otherwise it can <em>increase</em> runtime.
-See <code><a href='https://Rdatatable.gitlab.io/data.table/reference/openmp-utils.html'>setDTthreads</a></code>, <code><a href='https://Rdatatable.gitlab.io/data.table/reference/openmp-utils.html'>getDTthreads</a></code>,
+See <code>setDTthreads</code>, <code>getDTthreads</code>,
 and <code><a href='https://rdrr.io/pkg/future/man/plan.html'>plan</a></code> for information on how to do this.</p>
 <p>The Pareto/NBD model with dynamic covariates can currently not be fit with data that has a temporal resolution
 of less than one day (data that was built with time unit <code>hours</code>).</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>Schmittlein DC, Morrison DG, Colombo R (1987). "Counting Your Customers:
-Who-Are They and What Will They Do Next?" Management Science, 33(1), 1–24.</p>
-<p>Fader PS, Hardie BGS (2005). "A Note on Deriving the Pareto/NBD Model and
-Related Expressions."
+    <p>Schmittlein DC, Morrison DG, Colombo R (1987). &#8220;Counting Your Customers:
+Who-Are They and What Will They Do Next?&#8221; Management Science, 33(1), 1–24.</p>
+<p>Fader PS, Hardie BGS (2005). &#8220;A Note on Deriving the Pareto/NBD Model and
+Related Expressions.&#8221;
 URL <a href='http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf'>http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf</a>.</p>
-<p>Fader PS, Hardie BG (2007). "Incorporating time-invariant covariates into the
-Pareto/NBD and BG/NBD models."
+<p>Fader PS, Hardie BG (2007). &#8220;Incorporating time-invariant covariates into the
+Pareto/NBD and BG/NBD models.&#8221;
 URL <a href='http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf'>http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf</a>.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='clvdata.html'>clvdata</a></code> to create a clv data object, <code><a href='SetStaticCovariates.html'>SetStaticCovariates</a></code> and <code><a href='SetDynamicCovariates.html'>SetDynamicCovariates</a></code>
-to add static or dynamic covariates to an existing clv data object on which then the <code>pnbd</code> method can be fit</p>
-<p><code><a href='predict.clv.fitted.html'>predict</a></code> to predict expected transactions, probability of being alive, and customer lifetime value for every customer</p>
-<p><code><a href='plot.clv.fitted.html'>plot</a></code> to plot the unconditional expectation as predicted by the fitted model</p>
-<p>The generic functions <code><a href='vcov.clv.fitted.html'>vcov</a></code>, <code><a href='summary.clv.fitted.html'>summary</a></code>, <code><a href='fitted.clv.fitted.html'>fitted</a></code>.</p>
-<p><code><a href='https://Rdatatable.gitlab.io/data.table/reference/openmp-utils.html'>setDTthreads</a></code>, <code><a href='https://Rdatatable.gitlab.io/data.table/reference/openmp-utils.html'>getDTthreads</a></code>,<code><a href='https://rdrr.io/pkg/doParallel/man/registerDoParallel.html'>registerDoParallel</a></code>,<code><a href='https://rdrr.io/pkg/doFuture/man/registerDoFuture.html'>registerDoFuture</a></code> for setting up parallel execution.</p></div>
+    <div class='dont-index'><p><code><a href='https://rdrr.io/pkg/CLVTools/man/clvdata.html'>clvdata</a></code> to create a clv data object, <code><a href='https://rdrr.io/pkg/CLVTools/man/SetStaticCovariates.html'>SetStaticCovariates</a></code>
+to add static covariates to an existing clv data object.</p>
+<p><code><a href='https://rdrr.io/pkg/CLVTools/man/predict.clv.fitted.html'>predict</a></code> to predict expected transactions, probability of being alive, and customer lifetime value for every customer</p>
+<p><code><a href='https://rdrr.io/pkg/CLVTools/man/plot.clv.fitted.html'>plot</a></code> to plot the unconditional expectation as predicted by the fitted model</p>
+<p>The generic functions <code><a href='https://rdrr.io/pkg/CLVTools/man/vcov.clv.fitted.html'>vcov</a></code>, <code><a href='https://rdrr.io/pkg/CLVTools/man/summary.clv.fitted.html'>summary</a></code>, <code><a href='https://rdrr.io/pkg/CLVTools/man/fitted.clv.fitted.html'>fitted</a></code>.</p>
+<p><code><a href='https://rdrr.io/pkg/CLVTools/man/SetDynamicCovariates.html'>SetDynamicCovariates</a></code> to add dynamic covariates on which the <code>pnbd</code> model can be fit.</p>
+<p><code>setDTthreads</code>, <code>getDTthreads</code>,<code><a href='https://rdrr.io/pkg/doParallel/man/registerDoParallel.html'>registerDoParallel</a></code>,<code><a href='https://rdrr.io/pkg/doFuture/man/registerDoFuture.html'>registerDoFuture</a></code> for setting up parallel execution.</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"apparelTrans"</span>)
-<span class='no'>clv.data.apparel</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='clvdata.html'>clvdata</a></span>(<span class='no'>apparelTrans</span>, <span class='kw'>date.format</span> <span class='kw'>=</span> <span class='st'>"ymd"</span>,
-                            <span class='kw'>time.unit</span> <span class='kw'>=</span> <span class='st'>"w"</span>, <span class='kw'>estimation.split</span> <span class='kw'>=</span> <span class='fl'>40</span>)
+<span class='kw'>clv.data.apparel</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/clvdata.html'>clvdata</a></span>(<span class='kw'>apparelTrans</span>, date.format = <span class='st'>"ymd"</span>,
+                            time.unit = <span class='st'>"w"</span>, estimation.split = <span class='fl'>40</span>)
 
-<span class='co'># Fit standard PNBD model</span>
-<span class='fu'>pnbd</span>(<span class='no'>clv.data.apparel</span>)</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD Standard  Model
+<span class='co'># Fit standard pnbd model</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd.html'>pnbd</a></span>(<span class='kw'>clv.data.apparel</span>)</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD Standard  Model
 #&gt; 
 #&gt; Call:
 #&gt; pnbd(clv.data = clv.data.apparel)
@@ -361,8 +358,8 @@ to add static or dynamic covariates to an existing clv data object on which then
 #&gt; Used Options:
 #&gt; Correlation:     FALSE </div><div class='input'>
 <span class='co'># Give initial guesses for the Model parameters</span>
-<span class='fu'>pnbd</span>(<span class='no'>clv.data.apparel</span>,
-     <span class='kw'>start.params.model</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>r</span><span class='kw'>=</span><span class='fl'>0.5</span>, <span class='kw'>alpha</span><span class='kw'>=</span><span class='fl'>15</span>, <span class='kw'>s</span><span class='kw'>=</span><span class='fl'>0.5</span>, <span class='kw'>beta</span><span class='kw'>=</span><span class='fl'>10</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD Standard  Model
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd.html'>pnbd</a></span>(<span class='kw'>clv.data.apparel</span>,
+     start.params.model = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(r=<span class='fl'>0.5</span>, alpha=<span class='fl'>15</span>, s=<span class='fl'>0.5</span>, beta=<span class='fl'>10</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD Standard  Model
 #&gt; 
 #&gt; Call:
 #&gt; pnbd(clv.data = clv.data.apparel, start.params.model = c(r = 0.5, 
@@ -376,28 +373,13 @@ to add static or dynamic covariates to an existing clv data object on which then
 #&gt; 
 #&gt; Used Options:
 #&gt; Correlation:     FALSE </div><div class='input'>
-<span class='co'># Estimate correlation as well</span>
-<span class='fu'>pnbd</span>(<span class='no'>clv.data.apparel</span>, <span class='kw'>use.cor</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD Standard  Model
-#&gt; 
-#&gt; Call:
-#&gt; pnbd(clv.data = clv.data.apparel, use.cor = TRUE)
-#&gt; 
-#&gt; Coefficients:
-#&gt;               r            alpha                s             beta  
-#&gt;        0.790394         5.355977         0.278047         7.116957  
-#&gt; Cor(life,trans)  
-#&gt;       -0.009087  
-#&gt; KKT1: TRUE 
-#&gt; KKT2: FALSE 
-#&gt; 
-#&gt; Used Options:
-#&gt; Correlation:     TRUE </div><div class='input'>
+
 <span class='co'># pass additional parameters to the optimizer (optimx)</span>
 <span class='co'>#    Use Nelder-Mead as optimization method and print</span>
 <span class='co'>#    detailed information about the optimization process</span>
-<span class='no'>apparel.pnbd</span> <span class='kw'>&lt;-</span> <span class='fu'>pnbd</span>(<span class='no'>clv.data.apparel</span>,
-                     <span class='kw'>optimx.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>method</span><span class='kw'>=</span><span class='st'>"Nelder-Mead"</span>,
-                                        <span class='kw'>control</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>trace</span><span class='kw'>=</span><span class='fl'>6</span>)))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; fn is  fn 
+<span class='kw'>apparel.pnbd</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd.html'>pnbd</a></span>(<span class='kw'>clv.data.apparel</span>,
+                     optimx.args = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(method=<span class='st'>"Nelder-Mead"</span>,
+                                        control=<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(trace=<span class='fl'>6</span>)))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; fn is  fn 
 #&gt; Looking for method =  Nelder-Mead 
 #&gt; Methods to be used:[1] "Nelder-Mead"
 #&gt; optcfg:$fname
@@ -480,7 +462,7 @@ to add static or dynamic covariates to an existing clv data object on which then
 #&gt;         all.other.args)
 #&gt;     return(do.call(what = interlayer_callnextinterlayer, args = interlayer.call.args))
 #&gt; }
-#&gt; &lt;bytecode: 0x7fc9a816a970&gt;
+#&gt; &lt;bytecode: 0x7fe34ced29e8&gt;
 #&gt; &lt;environment: namespace:CLVTools&gt;
 #&gt; 
 #&gt; $have.bounds
@@ -676,14 +658,14 @@ to add static or dynamic covariates to an existing clv data object on which then
 #&gt; 
 #&gt; $xtimes
 #&gt; user.self 
-#&gt;     0.143 
+#&gt;     0.119 
 #&gt; 
 #&gt; Assemble the answers</div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='input'>
 <span class='co'># estimated coefs</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='no'>apparel.pnbd</span>)</div><div class='output co'>#&gt;         r     alpha         s      beta 
+<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='kw'>apparel.pnbd</span>)</div><div class='output co'>#&gt;         r     alpha         s      beta 
 #&gt;  0.787492  5.343412  0.356832 11.612502 </div><div class='input'>
 <span class='co'># summary of the fitted model</span>
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>apparel.pnbd</span>)</div><div class='output co'>#&gt; Pareto NBD Standard  Model 
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='kw'>apparel.pnbd</span>)</div><div class='output co'>#&gt; Pareto NBD Standard  Model 
 #&gt; 
 #&gt; Call:
 #&gt; pnbd(clv.data = clv.data.apparel, optimx.args = list(method = "Nelder-Mead", 
@@ -715,7 +697,7 @@ to add static or dynamic covariates to an existing clv data object on which then
 #&gt; Used Options:                 
 #&gt; Correlation FALSE</div><div class='input'>
 <span class='co'># predict CLV etc for holdout period</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='no'>apparel.pnbd</span>)</div><div class='output co'>#&gt; <span class='message'>Predicting from 2005-10-11 until (incl.) 2006-07-16 (39.86 Weeks).</span></div><div class='output co'>#&gt;        Id period.first period.last period.length actual.x actual.spending
+<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='kw'>apparel.pnbd</span>)</div><div class='output co'>#&gt; <span class='message'>Predicting from 2005-10-11 until (incl.) 2006-07-16 (39.86 Weeks).</span></div><div class='output co'>#&gt;        Id period.first period.last period.length actual.x actual.spending
 #&gt;   1:    1   2005-10-11  2006-07-16      39.85714        0            0.00
 #&gt;   2:   10   2005-10-11  2006-07-16      39.85714        0            0.00
 #&gt;   3:  100   2005-10-11  2006-07-16      39.85714       23         5086.44
@@ -740,7 +722,7 @@ to add static or dynamic covariates to an existing clv data object on which then
 #&gt; 249: 0.9434610  4.2993712 1.13652527           207.0518     235.31960
 #&gt; 250: 0.4137006  0.5822653 0.15391999           208.3194      32.06452</div><div class='input'>
 <span class='co'># predict CLV etc for the next 15 periods</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='no'>apparel.pnbd</span>, <span class='kw'>prediction.end</span> <span class='kw'>=</span> <span class='fl'>15</span>)</div><div class='output co'>#&gt; <span class='message'>Predicting from 2005-10-11 until (incl.) 2006-01-23 (15 Weeks).</span></div><div class='output co'>#&gt;        Id period.first period.last period.length actual.x actual.spending
+<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='kw'>apparel.pnbd</span>, prediction.end = <span class='fl'>15</span>)</div><div class='output co'>#&gt; <span class='message'>Predicting from 2005-10-11 until (incl.) 2006-01-23 (15 Weeks).</span></div><div class='output co'>#&gt;        Id period.first period.last period.length actual.x actual.spending
 #&gt;   1:    1   2005-10-11  2006-01-23            15        0            0.00
 #&gt;   2:   10   2005-10-11  2006-01-23            15        0            0.00
 #&gt;   3:  100   2005-10-11  2006-01-23            15       10         1516.83
@@ -763,20 +745,37 @@ to add static or dynamic covariates to an existing clv data object on which then
 #&gt; 247: 0.3571652 0.08876335 0.05854369           216.7955      12.69201
 #&gt; 248: 0.3571652 0.08876335 0.05854369           216.7955      12.69201
 #&gt; 249: 0.9434610 1.72318818 1.13652527           207.0518     235.31960
-#&gt; 250: 0.4137006 0.23337194 0.15391999           208.3194      32.06452</div><div class='input'>
-
-<span class='co'># To estimate the PNBD model with static covariates,</span>
+#&gt; 250: 0.4137006 0.23337194 0.15391999           208.3194      32.06452</div><div class='input'><span class='co'># }</span>
+<span class='co'># \donttest{</span>
+<span class='co'># Estimate correlation as well</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd.html'>pnbd</a></span>(<span class='kw'>clv.data.apparel</span>, use.cor = <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD Standard  Model
+#&gt; 
+#&gt; Call:
+#&gt; pnbd(clv.data = clv.data.apparel, use.cor = TRUE)
+#&gt; 
+#&gt; Coefficients:
+#&gt;               r            alpha                s             beta  
+#&gt;        0.790394         5.355977         0.278047         7.116957  
+#&gt; Cor(life,trans)  
+#&gt;       -0.009087  
+#&gt; KKT1: TRUE 
+#&gt; KKT2: FALSE 
+#&gt; 
+#&gt; Used Options:
+#&gt; Correlation:     TRUE </div><div class='input'><span class='co'># }</span>
+<span class='co'># \donttest{</span>
+<span class='co'># To estimate the pnbd model with static covariates,</span>
 <span class='co'>#   add static covariates to the data</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"apparelStaticCov"</span>)
-<span class='no'>clv.data.static.cov</span> <span class='kw'>&lt;-</span>
- <span class='fu'><a href='SetStaticCovariates.html'>SetStaticCovariates</a></span>(<span class='no'>clv.data.apparel</span>,
-                     <span class='kw'>data.cov.life</span> <span class='kw'>=</span> <span class='no'>apparelStaticCov</span>,
-                     <span class='kw'>names.cov.life</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Gender"</span>, <span class='st'>"Channel"</span>),
-                     <span class='kw'>data.cov.trans</span> <span class='kw'>=</span> <span class='no'>apparelStaticCov</span>,
-                     <span class='kw'>names.cov.trans</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Gender"</span>, <span class='st'>"Channel"</span>))
+<span class='kw'>clv.data.static.cov</span> <span class='op'>&lt;-</span>
+ <span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/SetStaticCovariates.html'>SetStaticCovariates</a></span>(<span class='kw'>clv.data.apparel</span>,
+                     data.cov.life = <span class='kw'>apparelStaticCov</span>,
+                     names.cov.life = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Gender"</span>, <span class='st'>"Channel"</span>),
+                     data.cov.trans = <span class='kw'>apparelStaticCov</span>,
+                     names.cov.trans = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Gender"</span>, <span class='st'>"Channel"</span>))
 
-<span class='co'># Fit PNBD with static covariates</span>
-<span class='fu'>pnbd</span>(<span class='no'>clv.data.static.cov</span>)</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD with Static Covariates  Model
+<span class='co'># Fit pnbd with static covariates</span>
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd.html'>pnbd</a></span>(<span class='kw'>clv.data.static.cov</span>)</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD with Static Covariates  Model
 #&gt; 
 #&gt; Call:
 #&gt; pnbd(clv.data = clv.data.static.cov)
@@ -794,8 +793,8 @@ to add static or dynamic covariates to an existing clv data object on which then
 #&gt; Constraints:     FALSE 
 #&gt; Regularization:  FALSE </div><div class='input'>
 <span class='co'># Give initial guesses for both covariate parameters</span>
-<span class='fu'>pnbd</span>(<span class='no'>clv.data.static.cov</span>, <span class='kw'>start.params.trans</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>Gender</span><span class='kw'>=</span><span class='fl'>0.75</span>, <span class='kw'>Channel</span><span class='kw'>=</span><span class='fl'>0.7</span>),
-                   <span class='kw'>start.params.life</span>  <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>Gender</span><span class='kw'>=</span><span class='fl'>0.5</span>, <span class='kw'>Channel</span><span class='kw'>=</span><span class='fl'>0.5</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD with Static Covariates  Model
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd.html'>pnbd</a></span>(<span class='kw'>clv.data.static.cov</span>, start.params.trans = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(Gender=<span class='fl'>0.75</span>, Channel=<span class='fl'>0.7</span>),
+                   start.params.life  = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(Gender=<span class='fl'>0.5</span>, Channel=<span class='fl'>0.5</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD with Static Covariates  Model
 #&gt; 
 #&gt; Call:
 #&gt; pnbd(clv.data = clv.data.static.cov, start.params.life = c(Gender = 0.5, 
@@ -814,7 +813,7 @@ to add static or dynamic covariates to an existing clv data object on which then
 #&gt; Constraints:     FALSE 
 #&gt; Regularization:  FALSE </div><div class='input'>
 <span class='co'># Use regularization</span>
-<span class='fu'>pnbd</span>(<span class='no'>clv.data.static.cov</span>, <span class='kw'>reg.lambdas</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>trans</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>life</span><span class='kw'>=</span><span class='fl'>5</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD with Static Covariates  Model
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd.html'>pnbd</a></span>(<span class='kw'>clv.data.static.cov</span>, reg.lambdas = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(trans = <span class='fl'>5</span>, life=<span class='fl'>5</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD with Static Covariates  Model
 #&gt; 
 #&gt; Call:
 #&gt; pnbd(clv.data = clv.data.static.cov, reg.lambdas = c(trans = 5, 
@@ -833,8 +832,8 @@ to add static or dynamic covariates to an existing clv data object on which then
 #&gt; Constraints:     FALSE 
 #&gt; Regularization:  TRUE </div><div class='input'>
 <span class='co'># Force the same coefficient to be used for both covariates</span>
-<span class='fu'>pnbd</span>(<span class='no'>clv.data.static.cov</span>, <span class='kw'>names.cov.constr</span> <span class='kw'>=</span> <span class='st'>"Gender"</span>,
-                   <span class='kw'>start.params.constr</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>Gender</span><span class='kw'>=</span><span class='fl'>0.5</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD with Static Covariates  Model
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd.html'>pnbd</a></span>(<span class='kw'>clv.data.static.cov</span>, names.cov.constr = <span class='st'>"Gender"</span>,
+                   start.params.constr = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(Gender=<span class='fl'>0.5</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD with Static Covariates  Model
 #&gt; 
 #&gt; Call:
 #&gt; pnbd(clv.data = clv.data.static.cov, names.cov.constr = "Gender", 
@@ -854,7 +853,7 @@ to add static or dynamic covariates to an existing clv data object on which then
 #&gt; Regularization:  FALSE </div><div class='input'>
 <span class='co'># Fit model only with the Channel covariate for life but</span>
 <span class='co'># keep all trans covariates as is</span>
-<span class='fu'>pnbd</span>(<span class='no'>clv.data.static.cov</span>, <span class='kw'>names.cov.life</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Channel"</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD with Static Covariates  Model
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd.html'>pnbd</a></span>(<span class='kw'>clv.data.static.cov</span>, names.cov.life = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Channel"</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD with Static Covariates  Model
 #&gt; 
 #&gt; Call:
 #&gt; pnbd(clv.data = clv.data.static.cov, names.cov.life = c("Channel"))
@@ -870,39 +869,37 @@ to add static or dynamic covariates to an existing clv data object on which then
 #&gt; Used Options:
 #&gt; Correlation:     FALSE 
 #&gt; Constraints:     FALSE 
-#&gt; Regularization:  FALSE </div><div class='input'>
-
-
+#&gt; Regularization:  FALSE </div><div class='input'><span class='co'># }</span>
 <span class='co'># Add dynamic covariates data to the data object</span>
 <span class='co'>#   add dynamic covariates to the data</span>
+<span class='co'># \donttest{</span>
+<span class='co'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"apparelDynCov"</span>)
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>clv.data.dyn.cov</span> <span class='kw'>&lt;-</span>
-  <span class='fu'><a href='SetDynamicCovariates.html'>SetDynamicCovariates</a></span>(<span class='kw'>clv.data</span> <span class='kw'>=</span> <span class='no'>clv.data.apparel</span>,
-                       <span class='kw'>data.cov.life</span> <span class='kw'>=</span> <span class='no'>apparelDynCov</span>,
-                       <span class='kw'>data.cov.trans</span> <span class='kw'>=</span> <span class='no'>apparelDynCov</span>,
-                       <span class='kw'>names.cov.life</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Marketing"</span>, <span class='st'>"Gender"</span>, <span class='st'>"Channel"</span>),
-                       <span class='kw'>names.cov.trans</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Marketing"</span>, <span class='st'>"Gender"</span>, <span class='st'>"Channel"</span>),
-                       <span class='kw'>name.date</span> <span class='kw'>=</span> <span class='st'>"Cov.Date"</span>)
+<span class='kw'>clv.data.dyn.cov</span> <span class='op'>&lt;-</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/SetDynamicCovariates.html'>SetDynamicCovariates</a></span>(clv.data = <span class='kw'>clv.data.apparel</span>,
+                       data.cov.life = <span class='kw'>apparelDynCov</span>,
+                       data.cov.trans = <span class='kw'>apparelDynCov</span>,
+                       names.cov.life = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Marketing"</span>, <span class='st'>"Gender"</span>, <span class='st'>"Channel"</span>),
+                       names.cov.trans = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Marketing"</span>, <span class='st'>"Gender"</span>, <span class='st'>"Channel"</span>),
+                       name.date = <span class='st'>"Cov.Date"</span>)
 
 <span class='co'># Enable parallel execution of some parts of the dyncov LL</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>doFuture</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://github.com/HenrikBengtsson/doFuture'>doFuture</a></span>)
 <span class='fu'><a href='https://rdrr.io/pkg/doFuture/man/registerDoFuture.html'>registerDoFuture</a></span>()
 <span class='co'># avoid overhead from nested parallelism by setting up</span>
 <span class='co'># appropriate to _your_ system</span>
-<span class='fu'>setDTthreads</span>(<span class='kw'>threads</span><span class='kw'>=</span><span class='fl'>8</span>)
-<span class='fu'>plan</span>(<span class='st'>"multisession"</span>, <span class='kw'>workers</span><span class='kw'>=</span><span class='fl'>2</span>)
+<span class='fu'>setDTthreads</span>(threads=<span class='fl'>8</span>)
+<span class='fu'>plan</span>(<span class='st'>"multisession"</span>, workers=<span class='fl'>2</span>)
 
 <span class='co'># Fit PNBD with dynamic covariates</span>
-<span class='fu'>pnbd</span>(<span class='no'>clv.data.dyn.cov</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd.html'>pnbd</a></span>(<span class='kw'>clv.data.dyn.cov</span>)
 
 <span class='co'># The same fitting options as for the</span>
 <span class='co'>#  static covariate are available</span>
-<span class='fu'>pnbd</span>(<span class='no'>clv.data.dyn.cov</span>, <span class='kw'>reg.lambdas</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>trans</span><span class='kw'>=</span><span class='fl'>10</span>, <span class='kw'>life</span><span class='kw'>=</span><span class='fl'>2</span>))
+<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd.html'>pnbd</a></span>(<span class='kw'>clv.data.dyn.cov</span>, reg.lambdas = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(trans=<span class='fl'>10</span>, life=<span class='fl'>2</span>))
 }
-
-
-<span class='co'># }</span></div></pre>
+<span class='co'># }</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

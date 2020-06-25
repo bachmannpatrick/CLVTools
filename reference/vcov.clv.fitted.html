@@ -47,7 +47,7 @@ variance-covariance matrix.
 Next, because some parameters may be transformed for the purpose of restricting their value during
 the log-likelihood estimation, the variance estimates are adapted to
 be comparable to the reported coefficient estimates.
-If the result is not positive definite, nearPD is used
+If the result is not positive definite, Matrix::nearPD is used
 with standard settings to find the nearest positive definite matrix.
 If multiple estimation methods were used, the Hessian of the last method is used." />
 
@@ -91,7 +91,7 @@ If multiple estimation methods were used, the Hessian of the last method is used
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -158,13 +158,13 @@ variance-covariance matrix.
 Next, because some parameters may be transformed for the purpose of restricting their value during
 the log-likelihood estimation, the variance estimates are adapted to
 be comparable to the reported coefficient estimates.
-If the result is not positive definite, <a href='https://rdrr.io/pkg/Matrix/man/nearPD.html'>nearPD</a> is used
+If the result is not positive definite, <a href='https://rdrr.io/pkg/Matrix/man/nearPD.html'>Matrix::nearPD</a> is used
 with standard settings to find the nearest positive definite matrix.</p>
 <p>If multiple estimation methods were used, the Hessian of the last method is used.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for clv.fitted</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)</pre>
+<span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span>(<span class='kw'>object</span>, <span class='kw'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -185,7 +185,7 @@ with standard settings to find the nearest positive definite matrix.</p>
 The row and column names correspond to the parameter names given by the <code>coef</code> method.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><a href='https://rdrr.io/pkg/MASS/man/ginv.html'>ginv</a>, <a href='https://rdrr.io/pkg/Matrix/man/nearPD.html'>nearPD</a></p></div>
+    <div class='dont-index'><p><a href='https://rdrr.io/pkg/MASS/man/ginv.html'>MASS::ginv</a>, <a href='https://rdrr.io/pkg/Matrix/man/nearPD.html'>Matrix::nearPD</a></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

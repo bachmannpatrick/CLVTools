@@ -95,7 +95,7 @@ the customer lifetime value (CLV).
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -173,24 +173,24 @@ to predict spending and calculate the predicted CLV. In this case, the predictio
 
     <pre class="usage"><span class='co'># S3 method for clv.fitted</span>
 <span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(
-  <span class='no'>object</span>,
-  <span class='kw'>newdata</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>prediction.end</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>predict.spending</span> <span class='kw'>=</span> <span class='fu'>clv.data.has.spending</span>(<span class='no'>object</span>@<span class='kw'>clv.data</span>),
-  <span class='kw'>continuous.discount.factor</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>
+  <span class='kw'>object</span>,
+  newdata = <span class='kw'>NULL</span>,
+  prediction.end = <span class='kw'>NULL</span>,
+  predict.spending = <span class='fu'>clv.data.has.spending</span>(<span class='kw'>object</span><span class='op'>@</span>clv.data),
+  continuous.discount.factor = <span class='fl'>0.1</span>,
+  verbose = <span class='fl'>TRUE</span>,
+  <span class='kw'>...</span>
 )
 
 <span class='co'># S4 method for clv.fitted</span>
 <span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(
-  <span class='no'>object</span>,
-  <span class='kw'>newdata</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>prediction.end</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>predict.spending</span> <span class='kw'>=</span> <span class='fu'>clv.data.has.spending</span>(<span class='no'>object</span>@<span class='kw'>clv.data</span>),
-  <span class='kw'>continuous.discount.factor</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>
+  <span class='kw'>object</span>,
+  newdata = <span class='kw'>NULL</span>,
+  prediction.end = <span class='kw'>NULL</span>,
+  predict.spending = <span class='fu'>clv.data.has.spending</span>(<span class='kw'>object</span><span class='op'>@</span>clv.data),
+  continuous.discount.factor = <span class='fl'>0.1</span>,
+  verbose = <span class='fl'>TRUE</span>,
+  <span class='kw'>...</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -279,10 +279,10 @@ popular choice.</p>
 
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>Schmittlein DC, Morrison DG, Colombo R (1987). “Counting Your Customers:
-Who-Are They and What Will They Do Next?” Management Science, 33(1), 1–24.</p>
-<p>Fader PS, Hardie BGS (2005). “A Note on Deriving the Pareto/NBD Model and
-Related Expressions.”
+    <p>Schmittlein DC, Morrison DG, Colombo R (1987). &#8220;Counting Your Customers:
+Who-Are They and What Will They Do Next?&#8221; Management Science, 33(1), 1–24.</p>
+<p>Fader PS, Hardie BGS (2005). &#8220;A Note on Deriving the Pareto/NBD Model and
+Related Expressions.&#8221;
 URL <a href='http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf'>http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf</a>.</p>
 <p>Fader PS, Hardie BG (2007). "Incorporating time-invariant covariates into the
 Pareto/NBD and BG/NBD models."
@@ -300,10 +300,10 @@ URL <a href='http://www.brucehardie.com/notes/025/gamma_gamma.pdf'>http://www.br
 
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"apparelTrans"</span>)
 <span class='co'># Fit pnbd standard model on data, WITH holdout</span>
-<span class='no'>pnc</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='pnbd.html'>pnbd</a></span>(<span class='fu'><a href='clvdata.html'>clvdata</a></span>(<span class='no'>apparelTrans</span>, <span class='kw'>time.unit</span><span class='kw'>=</span><span class='st'>"w"</span>,
-                    <span class='kw'>estimation.split</span><span class='kw'>=</span><span class='fl'>37</span>, <span class='kw'>date.format</span><span class='kw'>=</span><span class='st'>"ymd"</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='input'>
+<span class='kw'>pnc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd.html'>pnbd</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/clvdata.html'>clvdata</a></span>(<span class='kw'>apparelTrans</span>, time.unit=<span class='st'>"w"</span>,
+                    estimation.split=<span class='fl'>37</span>, date.format=<span class='st'>"ymd"</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='input'>
 <span class='co'># Predict until the end of the holdout period</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='no'>pnc</span>)</div><div class='output co'>#&gt; <span class='message'>Predicting from 2005-09-20 until (incl.) 2006-07-16 (42.86 Weeks).</span></div><div class='output co'>#&gt;        Id period.first period.last period.length actual.x actual.spending
+<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='kw'>pnc</span>)</div><div class='output co'>#&gt; <span class='message'>Predicting from 2005-09-20 until (incl.) 2006-07-16 (42.86 Weeks).</span></div><div class='output co'>#&gt;        Id period.first period.last period.length actual.x actual.spending
 #&gt;   1:    1   2005-09-20  2006-07-16      42.85714        0            0.00
 #&gt;   2:   10   2005-09-20  2006-07-16      42.85714        0            0.00
 #&gt;   3:  100   2005-09-20  2006-07-16      42.85714       23         5086.44
@@ -329,7 +329,7 @@ URL <a href='http://www.brucehardie.com/notes/025/gamma_gamma.pdf'>http://www.br
 #&gt; 250: 0.4471943  0.7010328 0.17538901           207.6214      36.41452</div><div class='input'>
 <span class='co'># Predict until 10 periods (weeks in this case) after</span>
 <span class='co'>#   the end of the 37 weeks fitting period</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='no'>pnc</span>, <span class='kw'>prediction.end</span> <span class='kw'>=</span> <span class='fl'>10</span>) <span class='co'># ends on 2010-11-28</span></div><div class='output co'>#&gt; <span class='message'>Predicting from 2005-09-20 until (incl.) 2005-11-28 (10 Weeks).</span></div><div class='output co'>#&gt;        Id period.first period.last period.length actual.x actual.spending
+<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='kw'>pnc</span>, prediction.end = <span class='fl'>10</span>) <span class='co'># ends on 2010-11-28</span></div><div class='output co'>#&gt; <span class='message'>Predicting from 2005-09-20 until (incl.) 2005-11-28 (10 Weeks).</span></div><div class='output co'>#&gt;        Id period.first period.last period.length actual.x actual.spending
 #&gt;   1:    1   2005-09-20  2005-11-28            10        0            0.00
 #&gt;   2:   10   2005-09-20  2005-11-28            10        0            0.00
 #&gt;   3:  100   2005-09-20  2005-11-28            10        6          632.52
@@ -354,7 +354,7 @@ URL <a href='http://www.brucehardie.com/notes/025/gamma_gamma.pdf'>http://www.br
 #&gt; 249: 0.9762841 1.27868563 1.24094046           206.1343     255.80034
 #&gt; 250: 0.4471943 0.18072375 0.17538901           207.6214      36.41452</div><div class='input'>
 <span class='co'># Predict until 31th Dec 2016 with the timepoint as a character</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='no'>pnc</span>, <span class='kw'>prediction.end</span> <span class='kw'>=</span> <span class='st'>"2016-12-31"</span>)</div><div class='output co'>#&gt; <span class='message'>Predicting from 2005-09-20 until (incl.) 2016-12-31 (588.71 Weeks).</span></div><div class='output co'>#&gt;        Id period.first period.last period.length    PAlive        CET
+<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='kw'>pnc</span>, prediction.end = <span class='st'>"2016-12-31"</span>)</div><div class='output co'>#&gt; <span class='message'>Predicting from 2005-09-20 until (incl.) 2016-12-31 (588.71 Weeks).</span></div><div class='output co'>#&gt;        Id period.first period.last period.length    PAlive        CET
 #&gt;   1:    1   2005-09-20  2016-12-31      588.7143 0.3909486   2.095890
 #&gt;   2:   10   2005-09-20  2016-12-31      588.7143 0.4683655   8.908351
 #&gt;   3:  100   2005-09-20  2016-12-31      588.7143 0.9858260 126.474033
@@ -379,7 +379,7 @@ URL <a href='http://www.brucehardie.com/notes/025/gamma_gamma.pdf'>http://www.br
 #&gt; 249: 1.24094046           206.1343     255.80034
 #&gt; 250: 0.17538901           207.6214      36.41452</div><div class='input'>
 <span class='co'># Predict until 31th Dec 2016 with the timepoint as a Date</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='no'>pnc</span>, <span class='kw'>prediction.end</span> <span class='kw'>=</span> <span class='kw pkg'>lubridate</span><span class='kw ns'>::</span><span class='fu'><a href='http://lubridate.tidyverse.org/reference/ymd.html'>ymd</a></span>(<span class='st'>"2016-12-31"</span>))</div><div class='output co'>#&gt; <span class='message'>Predicting from 2005-09-20 until (incl.) 2016-12-31 (588.71 Weeks).</span></div><div class='output co'>#&gt;        Id period.first period.last period.length    PAlive        CET
+<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='kw'>pnc</span>, prediction.end = <span class='kw'>lubridate</span>::<span class='fu'><a href='http://lubridate.tidyverse.org/reference/ymd.html'>ymd</a></span>(<span class='st'>"2016-12-31"</span>))</div><div class='output co'>#&gt; <span class='message'>Predicting from 2005-09-20 until (incl.) 2016-12-31 (588.71 Weeks).</span></div><div class='output co'>#&gt;        Id period.first period.last period.length    PAlive        CET
 #&gt;   1:    1   2005-09-20  2016-12-31      588.7143 0.3909486   2.095890
 #&gt;   2:   10   2005-09-20  2016-12-31      588.7143 0.4683655   8.908351
 #&gt;   3:  100   2005-09-20  2016-12-31      588.7143 0.9858260 126.474033
@@ -405,26 +405,26 @@ URL <a href='http://www.brucehardie.com/notes/025/gamma_gamma.pdf'>http://www.br
 #&gt; 250: 0.17538901           207.6214      36.41452</div><div class='input'>
 
 <span class='co'># Fit pnbd standard model WITHOUT holdout</span>
-<span class='no'>pnc</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='pnbd.html'>pnbd</a></span>(<span class='fu'><a href='clvdata.html'>clvdata</a></span>(<span class='no'>apparelTrans</span>, <span class='kw'>time.unit</span><span class='kw'>=</span><span class='st'>"w"</span>, <span class='kw'>date.format</span><span class='kw'>=</span><span class='st'>"ymd"</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='input'>
+<span class='kw'>pnc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd.html'>pnbd</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/clvdata.html'>clvdata</a></span>(<span class='kw'>apparelTrans</span>, time.unit=<span class='st'>"w"</span>, date.format=<span class='st'>"ymd"</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='input'>
 <span class='co'># This fails, because without holdout, a prediction.end is required</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='no'>pnc</span>)
+<span class='co'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='kw'>pnc</span>)
 }
 
 <span class='co'># Now, predict 10 periods from the end of the last transaction</span>
 <span class='co'>#   (end of estimation period)</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='no'>pnc</span>, <span class='kw'>prediction.end</span> <span class='kw'>=</span> <span class='fl'>10</span>) <span class='co'># ends on 2016-12-17</span></div><div class='output co'>#&gt; <span class='message'>Predicting from 2006-07-16 until (incl.) 2006-09-24 (10 Weeks).</span></div><div class='output co'>#&gt;        Id period.first period.last period.length     PAlive        CET
-#&gt;   1:    1   2006-07-16  2006-09-24            10 0.19161789 0.01673191
-#&gt;   2:   10   2006-07-16  2006-09-24            10 0.07059577 0.02243071
-#&gt;   3:  100   2006-07-16  2006-09-24            10 0.99543304 4.78886271
-#&gt;   4: 1000   2006-07-16  2006-09-24            10 0.99921311 4.57681399
-#&gt;   5: 1001   2006-07-16  2006-09-24            10 0.92653166 2.10903146
+<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='kw'>pnc</span>, prediction.end = <span class='fl'>10</span>) <span class='co'># ends on 2016-12-17</span></div><div class='output co'>#&gt; <span class='message'>Predicting from 2006-07-17 until (incl.) 2006-09-24 (10 Weeks).</span></div><div class='output co'>#&gt;        Id period.first period.last period.length     PAlive        CET
+#&gt;   1:    1   2006-07-17  2006-09-24            10 0.19161789 0.01673191
+#&gt;   2:   10   2006-07-17  2006-09-24            10 0.07059577 0.02243071
+#&gt;   3:  100   2006-07-17  2006-09-24            10 0.99543304 4.78886271
+#&gt;   4: 1000   2006-07-17  2006-09-24            10 0.99921311 4.57681399
+#&gt;   5: 1001   2006-07-17  2006-09-24            10 0.92653166 2.10903146
 #&gt;  ---                                                                  
-#&gt; 246: 1219   2006-07-16  2006-09-24            10 0.80935629 1.74906523
-#&gt; 247:  122   2006-07-16  2006-09-24            10 0.19161789 0.01673191
-#&gt; 248: 1220   2006-07-16  2006-09-24            10 0.19161789 0.01673191
-#&gt; 249: 1221   2006-07-16  2006-09-24            10 0.88300093 1.50130158
-#&gt; 250: 1222   2006-07-16  2006-09-24            10 0.12410715 0.02513502
+#&gt; 246: 1219   2006-07-17  2006-09-24            10 0.80935629 1.74906523
+#&gt; 247:  122   2006-07-17  2006-09-24            10 0.19161789 0.01673191
+#&gt; 248: 1220   2006-07-17  2006-09-24            10 0.19161789 0.01673191
+#&gt; 249: 1221   2006-07-17  2006-09-24            10 0.88300093 1.50130158
+#&gt; 250: 1222   2006-07-17  2006-09-24            10 0.12410715 0.02513502
 #&gt;            DERT predicted.Spending predicted.CLV
 #&gt;   1: 0.01636545           220.4315      3.607462
 #&gt;   2: 0.02193944           216.1576      4.742378
@@ -437,8 +437,7 @@ URL <a href='http://www.brucehardie.com/notes/025/gamma_gamma.pdf'>http://www.br
 #&gt; 248: 0.01636545           220.4315      3.607462
 #&gt; 249: 1.46842091           204.4750    300.255303
 #&gt; 250: 0.02458453           215.8908      5.307575</div><div class='input'>
-# }
-
+<span class='co'># }</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
