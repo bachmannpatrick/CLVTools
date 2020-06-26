@@ -7,6 +7,13 @@ setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.
   check_err_msg(err.msg)
 })
 
+setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, verbose, remove.first.transaction, ...){
+  clv.fitted <- callNextMethod()
+
+  clv.fitted@estimation.removed.first.transaction <- remove.first.transaction
+  return(clv.fitted)
+})
+
 
 # . clv.controlflow.check.newdata ------------------------------------------------------------------------
 #' @importFrom methods is
@@ -20,7 +27,7 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.spen
     err.msg <- c(err.msg, paste0("The parameter newdata needs to be a clv data object of class clv.data or a subclass thereof."))
 
   }else{
-    # Is actually a clv.data object.
+    # Is actually a clv.data object
     #   Also check if it has spending
     if(!clv.data.has.spending(user.newdata))
       err.msg <- c(err.msg, paste0("The newdata object needs to contain spending data in order to predict spending with it."))

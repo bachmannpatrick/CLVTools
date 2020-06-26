@@ -20,8 +20,7 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv
 })
 
 # . clv.controlflow.estimate.put.inputs ------------------------------------------------------------------------
-setMethod("clv.controlflow.estimate.put.inputs", signature =  signature(clv.fitted="clv.fitted"), definition = function(clv.fitted, cl, verbose, ...){
-  clv.fitted@call <- cl
+setMethod("clv.controlflow.estimate.put.inputs", signature =  signature(clv.fitted="clv.fitted"), definition = function(clv.fitted, verbose, ...){
   return(clv.fitted)
 })
 

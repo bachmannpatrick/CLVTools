@@ -86,7 +86,7 @@ setMethod(f = "clv.model.process.newdata", signature = signature(clv.model = "cl
 
 # .clv.model.predict -------------------------------------------------------------------------------------------------------------------
 setMethod("clv.model.predict", signature(clv.model="clv.model.gg"), function(clv.model, clv.fitted, dt.predictions, verbose, ...){
-  cbs.x <- cbs.Spending <- i.Spending <- i.x <- NULL
+  cbs.x <- cbs.Spending <- i.Spending <- i.x <- predicted.Spending <- NULL
 
   p     <- clv.fitted@prediction.params.model[["p"]]
   q     <- clv.fitted@prediction.params.model[["q"]]

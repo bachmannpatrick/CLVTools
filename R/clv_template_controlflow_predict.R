@@ -1,4 +1,3 @@
-#' @importFrom stats predict
 clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, ...){
 
   # ***TODO: For development purposes only: All additional args have to be named!
@@ -187,6 +186,7 @@ clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, 
 #'
 #' }
 #'
+#' @importFrom stats predict
 #' @method predict clv.fitted
 #' @export
 predict.clv.fitted <- function(object, newdata=NULL, prediction.end=NULL, predict.spending=clv.data.has.spending(object@clv.data),

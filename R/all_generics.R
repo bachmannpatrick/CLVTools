@@ -18,7 +18,7 @@ setGeneric(name = "predict")
 setGeneric("clv.controlflow.estimate.check.inputs", def=function(clv.fitted,  start.params.model, use.cor, start.param.cor, optimx.args, verbose,...)
   standardGeneric("clv.controlflow.estimate.check.inputs"))
 
-setGeneric("clv.controlflow.estimate.put.inputs", def=function(clv.fitted, cl, use.cor, verbose, ...)
+setGeneric("clv.controlflow.estimate.put.inputs", def=function(clv.fitted, verbose, ...)
   standardGeneric("clv.controlflow.estimate.put.inputs"))
 
 setGeneric("clv.controlflow.estimate.generate.start.params", def=function(clv.fitted, start.params.model, verbose,...)

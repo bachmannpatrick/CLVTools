@@ -62,7 +62,7 @@ setMethod("ggomnbd", signature = signature(clv.data="clv.data"), definition = fu
 
   obj <- clv.ggomnbd(cl=cl, clv.data=clv.data)
 
-  return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model,
+  return(clv.template.controlflow.estimate(clv.fitted=obj, start.params.model = start.params.model,
                                            optimx.args = optimx.args, verbose=verbose))
 })
 
@@ -83,7 +83,7 @@ setMethod("ggomnbd", signature = signature(clv.data="clv.data.static.covariates"
 
   obj <- clv.ggomnbd.static(cl=cl, clv.data=clv.data)
 
-  return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model,
+  return(clv.template.controlflow.estimate(clv.fitted=obj, start.params.model = start.params.model,
                                            optimx.args = optimx.args, verbose=verbose,
                                            names.cov.life=names.cov.life, names.cov.trans=names.cov.trans,
                                            start.params.life=start.params.life, start.params.trans=start.params.trans,

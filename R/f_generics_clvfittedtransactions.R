@@ -60,7 +60,7 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.tran
 # . clv.controlflow.predict.build.result.table ---------------------------------------------------------------------
 setMethod("clv.controlflow.predict.build.result.table", signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, verbose, prediction.end, ...){
 
-  period.last <- period.first <- period.first <- NULL
+  period.last <- period.first <- period.length <- NULL
 
   dt.predictions <- copy(clv.fitted@cbs[, "Id"])
 
@@ -102,7 +102,7 @@ setMethod("clv.controlflow.predict.get.has.actuals", signature(clv.fitted="clv.f
 # .clv.controlflow.predict.add.actuals ---------------------------------------------------------------------------------
 setMethod("clv.controlflow.predict.add.actuals", signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, dt.predictions, has.actuals, verbose, ...){
 
-  period.first <- period.last <- actual.x <- i.actual.x <- NULL
+  Date <- period.first <- period.last <- actual.x <- i.actual.x <- NULL
 
   # Only if:
   #   - there is a holdout

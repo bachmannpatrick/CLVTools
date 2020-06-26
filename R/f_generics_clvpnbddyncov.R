@@ -50,7 +50,7 @@ setMethod("clv.controlflow.estimate.generate.start.params", signature = signatur
 
 # . clv.model.put.estimation.input ------------------------------------------------------------------------------------------------
 
-setMethod(f = "clv.controlflow.estimate.put.inputs", signature = signature(clv.fitted="clv.pnbd.dynamic.cov"), definition = function(clv.fitted, cl, verbose, ...){
+setMethod(f = "clv.controlflow.estimate.put.inputs", signature = signature(clv.fitted="clv.pnbd.dynamic.cov"), definition = function(clv.fitted, verbose, ...){
   # Create walks - they are specific to the pnbd dyncov model
   clv.fitted <- callNextMethod()
 

@@ -53,7 +53,7 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv
 
 # . clv.controlflow.estimate.put.inputs ------------------------------------------------------------------------------
 #' @importFrom methods callNextMethod
-setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted, cl, verbose, reg.lambdas, names.cov.constr, names.cov.life, names.cov.trans, ...){
+setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted, verbose, reg.lambdas, names.cov.constr, names.cov.life, names.cov.trans, ...){
 
   # clv.fitted put inputs
   clv.fitted <- callNextMethod()

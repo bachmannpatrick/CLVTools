@@ -8,9 +8,9 @@ setClass(Class = "clv.gg", contains = "clv.fitted.spending",
 
 
 #' @importFrom methods new
-clv.gg <- function(cl, clv.data){
+clv.gg <- function(cl, clv.data, remove.first.transaction){
 
-  dt.cbs.gg   <- gg_cbs(clv.data = clv.data)
+  dt.cbs.gg   <- gg_cbs(clv.data = clv.data, remove.first.transaction = remove.first.transaction)
   clv.model   <- clv.model.gg()
 
   return(new("clv.gg",
@@ -18,8 +18,8 @@ clv.gg <- function(cl, clv.data){
              cbs = dt.cbs.gg))
 }
 
-gg_cbs <- function(clv.data){
-  Date <- Price <- x <- date.first.actual.trans <- date.last.transaction <- NULL
+gg_cbs <- function(clv.data, remove.first.transaction){
+  Date <- Price <- x <- i.x <- Spending <- i.Spending <- date.first.actual.trans <- date.last.transaction <- NULL
   # Customer-By-Sufficiency (CBS) Matrix
   #   Only for transactions in calibration period
   #   Only repeat transactions are relevant
@@ -27,13 +27,35 @@ gg_cbs <- function(clv.data){
   #     x:        Number of repeat transactions := Number of actual transactions - 1
   #     Spending: Average (mean) spending per transaction (of all transactions, not only repeat)
 
-  trans.dt <- clv.data.get.transactions.in.estimation.period(clv.data = clv.data)
+  dt.transactions <- clv.data.get.transactions.in.estimation.period(clv.data = clv.data)
 
-  cbs <- trans.dt[ , list(x         =.N,
-                          Spending  = mean(Price, na.rm=TRUE)),
-                   by="Id"]
+  # Removing the first transaction and then doing counting transactions and spending on it, will
+  #   lose customers. Therefore do in separate steps: Id of all, then match their data
+
+  if(!remove.first.transaction){
+    # Ordinary approach as will not lose Ids
+    cbs <- dt.transactions[ , list(x         =.N,
+                                   Spending  = mean(Price)),
+                            by="Id"]
+  }else{
+    # Ensure all Ids are kept in cbs
+    cbs <- unique(dt.transactions[, "Id"])
+    # Add statistics based on repeat transactions only
+
+    dt.repeat.transactions <- copy(clv.data@data.repeat.trans)
+    dt.stats.repeat.trans <- dt.repeat.transactions[ , list(x         =.N,
+                                                            Spending  = mean(Price)),
+                                                     keyby="Id"]
+
+    cbs[dt.stats.repeat.trans, x        := i.x,        on = "Id"]
+    cbs[dt.stats.repeat.trans, Spending := i.Spending, on = "Id"]
+    # Zero-repeaters have no spending and repeat-transactions
+    cbs[is.na(x),        x        := 0]
+    cbs[is.na(Spending), Spending := 0]
+  }
 
   setcolorder(cbs, c("Id","x","Spending"))
+  setkeyv(cbs, "Id")
 
   return(cbs)
 }
