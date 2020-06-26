@@ -33,28 +33,29 @@ gg_cbs <- function(clv.data, remove.first.transaction){
   #   lose customers. Therefore do in separate steps: Id of all, then match their data
 
   if(!remove.first.transaction){
-    # Ordinary approach as will not lose Ids
-    cbs <- dt.transactions[ , list(x         =.N,
+    # Ordinary approach is ok because will not lose Ids
+    cbs <- dt.transactions[ , list(x         = .N,
                                    Spending  = mean(Price)),
                             by="Id"]
   }else{
     # Ensure all Ids are kept in cbs
     cbs <- unique(dt.transactions[, "Id"])
-    # Add statistics based on repeat transactions only
 
+    # Add statistics based on repeat transactions only
     dt.repeat.transactions <- copy(clv.data@data.repeat.trans)
-    dt.stats.repeat.trans <- dt.repeat.transactions[ , list(x         =.N,
+    dt.stats.repeat.trans <- dt.repeat.transactions[ , list(x         = .N,
                                                             Spending  = mean(Price)),
                                                      keyby="Id"]
 
     cbs[dt.stats.repeat.trans, x        := i.x,        on = "Id"]
     cbs[dt.stats.repeat.trans, Spending := i.Spending, on = "Id"]
+
     # Zero-repeaters have no spending and repeat-transactions
     cbs[is.na(x),        x        := 0]
     cbs[is.na(Spending), Spending := 0]
   }
 
-  setcolorder(cbs, c("Id","x","Spending"))
+  setcolorder(cbs, c("Id", "x", "Spending"))
   setkeyv(cbs, "Id")
 
   return(cbs)

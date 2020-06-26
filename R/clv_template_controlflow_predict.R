@@ -189,7 +189,7 @@ clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, 
 #' @importFrom stats predict
 #' @method predict clv.fitted
 #' @export
-predict.clv.fitted <- function(object, newdata=NULL, prediction.end=NULL, predict.spending=clv.data.has.spending(object@clv.data),
+predict.clv.fitted <- function(object, newdata=NULL, prediction.end=NULL, predict.spending=gg,
                                continuous.discount.factor=0.1, verbose=TRUE, ...){
   check_err_msg(check_user_data_emptyellipsis())
 

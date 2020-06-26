@@ -12,15 +12,50 @@ setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.
 
   err.msg <- c(err.msg, check_user_data_continuousdiscountfactor(continuous.discount.factor=continuous.discount.factor))
 
-  err.msg <- c(err.msg, .check_user_data_single_boolean(b = predict.spending,
-                                                        var.name = "predict.spending"))
+  # predict.spending
+  # Spending can be predicted using either a function (ie gg), a logical (ie FALSE), or an
+  #   already fitted spending model
+  if(is(object = predict.spending, class2 = "clv.fitted.spending")){
+    # Check if usable for prediction
+    if(anyNA(coef(predict.spending)))
+      err.msg <- c(err.msg, "The provided spending model in parameter 'predict.spending' cannot be used because its coefficents contain NA!")
 
-  # predict.spending has to be single logical already
+  }else{
+    if(is.function(predict.spending)){
+      # has to be a CLVTools spending model
+      if(!isTRUE(all.equal(predict.spending, CLVTools::gg)))
+        err.msg <- c(err.msg, "The method to predict spending has to be a spending model from CLVTools (ie gg())!")
+
+    }else{
+      # None of the above: Then it has to be a logical
+      #   cannot use .check_user_data_single_boolean() because it will return message "has to be logical" what is not true
+      #     for predict.spending
+      if(!is.logical(predict.spending)){
+        err.msg <- c(err.msg, "The parameter predict.spending has to be either an already fitted spending model, a method from CLVTools to fit a spending model (ie gg()) or a logical (True/False)!")
+
+      # Cannot continue if not a logical
+      }else{
+        # Is logical
+        if(length(predict.spending)>1)
+          err.msg <- c(err.msg, paste0("The parameter predict.spending can only contain a single element!"))
+        if(anyNA(predict.spending))
+          err.msg <- c(err.msg, paste0("The parameter predict.spending cannot be NA!"))
+      }
+    }
+  }
+
+  # predict.spending has to be valid already
   check_err_msg(err.msg)
 
-  # Check the data in the fitted model if it has spending
-  if(predict.spending == TRUE & clv.data.has.spending(clv.fitted@clv.data) == FALSE)
-    err.msg <- c(err.msg, "Cannot predict spending if there is no spending data!")
+  # There has to be spending data if it should be predicted from it
+  if(is.logical(predict.spending)){
+    if(predict.spending == TRUE & clv.data.has.spending(clv.fitted@clv.data) == FALSE)
+      err.msg <- c(err.msg, "Cannot predict spending if there is no spending data!")
+
+  }else{
+    if(is.function(predict.spending) == TRUE & clv.data.has.spending(clv.fitted@clv.data) == FALSE)
+      err.msg <- c(err.msg, "Cannot predict spending if there is no spending data!")
+  }
 
   check_err_msg(err.msg)
   # nothing to return
@@ -136,33 +171,85 @@ setMethod("clv.controlflow.predict.add.actuals", signature(clv.fitted="clv.fitte
 
 # . clv.controlflow.predict.post.process.prediction.table ------------------------------------------------------------------------------
 setMethod("clv.controlflow.predict.post.process.prediction.table", signature = signature(clv.fitted="clv.fitted.transactions"), function(clv.fitted, dt.predictions, has.actuals, verbose, predict.spending, ...){
-
   predicted.Spending <- i.predicted.Spending <- actual.spending <- i.actual.spending <- NULL
   predicted.CLV <- DECT <- DERT <- NULL
-  # Predict spending ---------------------------------------------------------------------------
-  #   Estimate a GG model for this
-  #   CLV: DERT * Spending
-  #  Input checks already checked whether there is spending data in clv.data
-  if(predict.spending){
 
+  # Predict spending ---------------------------------------------------------------------------------------
+  # depends on predict.spending:
+  #   Predict spending
+  #     logical TRUE:   fit gg     on data and predict
+  #     function:       fit method on data and predict
+  #     fitted model:   predict
+  #
+  #   Add predicted spending to prediction table
+  # Input checks already checked whether there is spending data in clv.data
+
+
+  # Add spending data and actuals to prediction table
+  fct.add.spending.data <- function(dt.spending, dt.predictions){
+    dt.predictions[dt.spending, predicted.Spending := i.predicted.Spending, on = "Id"]
+
+    if("actual.spending" %in% colnames(dt.spending)){
+      dt.predictions[dt.spending, actual.spending := i.actual.spending, on = "Id"]
+    }
+
+    return(dt.predictions)
+  }
+
+
+  # Fit, predict, and add to prediction table
+  fct.fit.and.predict.spending.model <- function(spending.method, verbose, dt.predictions){
+    name.model <- as.character(spending.method@generic)
     if(verbose)
-      message("Estimating Gamma-Gamma model to predict spending...")
+      message(paste0("Estimating ",name.model," model to predict spending..."))
 
-    fitted.gg <- gg(clv.fitted@clv.data, verbose = verbose)
+    # Fit spending method onto data
+    fitted.spending <- do.call(what = spending.method, args = list(clv.data = clv.fitted@clv.data,
+                                                                   verbose = verbose))
 
-    if(anyNA(coef(fitted.gg))){
-      warning("The Gamma-Gamma spending model could not be fit. All spending is set to 0.", immediate. = TRUE, call. = FALSE)
+    if(anyNA(coef(fitted.spending))){
+
+      warning(paste0("The ",name.model," spending model could not be fit. All spending is set to 0."), immediate. = TRUE, call. = FALSE)
       dt.predictions[, predicted.Spending := 0]
-    }else{
-      dt.spending <- predict(fitted.gg)
-      dt.predictions[dt.spending, predicted.Spending := i.predicted.Spending, on = "Id"]
 
-      if("actual.spending" %in% colnames(dt.spending)){
-        dt.predictions[dt.spending, actual.spending := i.actual.spending, on = "Id"]
+    }else{
+      # Did fit fine
+      res.sum <- summary(fitted.spending)
+      if(res.sum$kkt1 == FALSE | res.sum$kkt2 == FALSE)
+        warning(paste0("The KKT optimality conditions are not met both for the fitted ",name.model," spending model."), immediate. = TRUE, call. = FALSE)
+
+      dt.spending    <- predict(fitted.spending)
+      dt.predictions <- fct.add.spending.data(dt.spending = dt.spending, dt.predictions = dt.predictions)
+    }
+
+    return(dt.predictions)
+  }
+
+
+  # Predict spending in any case except if predict.spending == FALSE
+  #   use all.equal because can also be function or fitted spending model
+  do.predict.spending <- !isTRUE(all.equal(predict.spending, FALSE))
+  if(do.predict.spending){
+
+    if(is.logical(predict.spending)){
+      # Is TRUE because FALSE would not be here
+      dt.predictions <- fct.fit.and.predict.spending.model(spending.method = gg, verbose = verbose,
+                                                           dt.predictions = dt.predictions)
+    }else{
+      if(is.function(predict.spending)){
+        # Use the method provided by the user
+        dt.predictions <- fct.fit.and.predict.spending.model(spending.method = predict.spending, verbose = verbose,
+                                                             dt.predictions = dt.predictions)
+      }else{
+        # is already fitted model
+        # no further checks, the user is (hopefully) happy with how it fitted (coef not NA is checking in inputchecks)
+        dt.spending    <- predict(object = predict.spending, verbose = verbose)
+        dt.predictions <- fct.add.spending.data(dt.spending = dt.spending, dt.predictions = dt.predictions)
       }
     }
 
-    # Calculate CLV
+    # If spending is predicted, CLV is also calculated
+    # CLV: DERT/DECT * Spending
     if("DERT" %in% colnames(dt.predictions))
       dt.predictions[, predicted.CLV := DERT * predicted.Spending]
     if("DECT" %in% colnames(dt.predictions))
@@ -184,7 +271,7 @@ setMethod("clv.controlflow.predict.post.process.prediction.table", signature = s
   if("DECT" %in% colnames(dt.predictions))
     cols <- c(cols, "PAlive", "CET", "DECT")
 
-  if(predict.spending){
+  if(do.predict.spending){
     cols <- c(cols, c("predicted.Spending", "predicted.CLV"))
   }
 
