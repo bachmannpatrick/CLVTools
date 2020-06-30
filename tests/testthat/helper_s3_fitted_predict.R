@@ -44,7 +44,7 @@
     expect_true(nrow(dt.pred[PAlive < 0 - sqrt(.Machine$double.eps) | PAlive > 1 + sqrt(.Machine$double.eps)]) == 0)
 
     #   all columns > 0
-    expect_true(dt.pred[, all(.SD >= 0 | is.na(.SD))])
+    expect_true(dt.pred[, all(.SD >= (0 - sqrt(.Machine$double.eps)) | is.na(.SD))])
     expect_true(all(c("Id", "CET", "DERT", "PAlive") %in% colnames(dt.pred)))
   })
 

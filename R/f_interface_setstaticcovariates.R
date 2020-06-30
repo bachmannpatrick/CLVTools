@@ -9,7 +9,7 @@ SetStaticCovariates <- function(clv.data, data.cov.life, data.cov.trans, names.c
   if(!is(clv.data, "clv.data"))
     stop("Covariate data can only be added to objects of class clv.data!")
   if(is(clv.data, "clv.data.static.covariates") | is(clv.data, "clv.data.dynamic.covariates"))
-    stop("Cannot set dynamic covariates because this object has covariates set already!", call. = FALSE)
+    stop("Cannot set static covariates because this object has covariates set already!", call. = FALSE)
 
 
   # Basic inputchecks ---------------------------------------------------------------------

@@ -134,5 +134,5 @@ Collate:
     'pnbd_dyncov_expectation.R'
     'pnbd_dyncov_makewalks.R'
     'pnbd_dyncov_palive.R'
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 VignetteBuilder: knitr

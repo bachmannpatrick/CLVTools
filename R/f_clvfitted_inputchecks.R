@@ -272,8 +272,16 @@ check_user_data_emptyellipsis <- function(...){
 
   err.msg <- c()
   if(length(list(...)) > 0)
-    err.msg <- c(err.msg, "Any further parameters passed in ... are ignored because they are not needed.")
-    # stop("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
+    err.msg <- c(err.msg, "Any further parameters passed in ... are ignored because they are not needed!")
+
+  return(err.msg)
+}
+
+
+check_user_data_containsspendingdata <- function(clv.data){
+  err.msg <- c()
+  if(!clv.data.has.spending(clv.data))
+    err.msg <- c(err.msg, "The data object is required to contain spending data!")
 
   return(err.msg)
 }

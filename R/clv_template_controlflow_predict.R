@@ -187,11 +187,23 @@ clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, 
 #' }
 #'
 #' @importFrom stats predict
-#' @method predict clv.fitted
+#' @method predict clv.fitted.transactions
 #' @export
-predict.clv.fitted <- function(object, newdata=NULL, prediction.end=NULL, predict.spending=gg,
+predict.clv.fitted.transactions <- function(object, newdata=NULL, prediction.end=NULL, predict.spending=gg,
                                continuous.discount.factor=0.1, verbose=TRUE, ...){
-  check_err_msg(check_user_data_emptyellipsis())
+
+  check_err_msg(check_user_data_emptyellipsis(...))
+
+  # If it was not explicitly passed in the call, the spending model should only be applied
+  #   it there is spending data. Otherwise, predict does not work out-of-the-box for
+  #   data object w/o spending
+  if(missing(predict.spending)){
+    # Only need to disable if has no spending, default argument is a spending model
+    #   (ie prediction.end = gg already)
+    if(!clv.data.has.spending(object@clv.data)){
+      predict.spending <- FALSE
+    }
+  }
 
   clv.template.controlflow.predict(clv.fitted=object, prediction.end=prediction.end, predict.spending=predict.spending,
                                    continuous.discount.factor=continuous.discount.factor, verbose=verbose, user.newdata=newdata)
@@ -200,7 +212,22 @@ predict.clv.fitted <- function(object, newdata=NULL, prediction.end=NULL, predic
 
 # S4 predict definitions --------------------------------------------------------------------------------
 # S4 method to forward to S3 method
-#' @include all_generics.R class_clv_fitted.R
+#' @include all_generics.R class_clv_fitted_transactions.R
 #' @exportMethod predict
-#' @rdname predict.clv.fitted
-setMethod(f = "predict", signature = signature(object="clv.fitted"), predict.clv.fitted)
+#' @rdname predict.clv.fitted.transactions
+setMethod(f = "predict", signature = signature(object="clv.fitted.transactions"), predict.clv.fitted.transactions)
+
+
+#' @importFrom stats predict
+#' @method predict clv.fitted.spending
+#' @export
+predict.clv.fitted.spending <- function(object, newdata=NULL, verbose=TRUE, ...){
+
+  check_err_msg(check_user_data_emptyellipsis(...))
+
+  clv.template.controlflow.predict(clv.fitted=object, verbose=verbose, user.newdata=newdata)
+}
+
+#' @include all_generics.R class_clv_fitted_spending.R
+#' @exportMethod predict
+setMethod(f = "predict", signature = signature(object="clv.fitted.spending"), predict.clv.fitted.spending)

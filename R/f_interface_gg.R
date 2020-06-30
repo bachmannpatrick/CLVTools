@@ -18,6 +18,7 @@ setMethod("gg", signature = signature(clv.data="clv.data"), definition = functio
   err.msg <- c(err.msg, check_user_data_emptyellipsis(...))
   # Check remove first here already because needed to build cbs
   err.msg <- c(err.msg, .check_user_data_single_boolean(remove.first.transaction, var.name = "remove.first.transaction"))
+  err.msg <- c(err.msg, check_user_data_containsspendingdata(clv.data = clv.data))
   check_err_msg(err.msg)
 
   cl  <- match.call(call = sys.call(-1), expand.dots = TRUE)

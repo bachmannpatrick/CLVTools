@@ -24,14 +24,14 @@ setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.
     if(is.function(predict.spending)){
       # has to be a CLVTools spending model
       if(!isTRUE(all.equal(predict.spending, CLVTools::gg)))
-        err.msg <- c(err.msg, "The method to predict spending has to be a spending model from CLVTools (ie gg())!")
+        err.msg <- c(err.msg, "The method to predict spending has to be a spending model from CLVTools (ie gg)!")
 
     }else{
       # None of the above: Then it has to be a logical
       #   cannot use .check_user_data_single_boolean() because it will return message "has to be logical" what is not true
       #     for predict.spending
       if(!is.logical(predict.spending)){
-        err.msg <- c(err.msg, "The parameter predict.spending has to be either an already fitted spending model, a method from CLVTools to fit a spending model (ie gg()) or a logical (True/False)!")
+        err.msg <- c(err.msg, "The parameter predict.spending has to be either an already fitted spending model, a method from CLVTools to fit a spending model (ie gg) or a logical (True/False)!")
 
       # Cannot continue if not a logical
       }else{
