@@ -217,9 +217,7 @@
   })
 }
 
-fct.helper.fitted.all.s3 <- function(clv.fitted, clv.newdata, full.names, clv.newdata.nohold, clv.newdata.withhold,
-                                     DERT.not.implemented){ #, name.model){
-
+.fct.helper.clvfitted.all.s3 <- function(clv.fitted, full.names){
   .fct.helper.s3.fitted.coef(clv.fitted = clv.fitted, full.names = full.names)
 
   .fct.helper.s3.fitted.vcov(clv.fitted = clv.fitted, full.names = full.names)
@@ -233,16 +231,35 @@ fct.helper.fitted.all.s3 <- function(clv.fitted, clv.newdata, full.names, clv.ne
   .fct.helper.s3.fitted.nobs(clv.fitted = clv.fitted)
 
   .fct.helper.s3.fitted.logLik(clv.fitted = clv.fitted)
+}
+
+
+fct.helper.clvfittedtransactions.all.s3 <- function(clv.fitted, full.names,
+                                                    clv.newdata.nohold, clv.newdata.withhold,
+                                                    DERT.not.implemented){
+
+  .fct.helper.clvfitted.all.s3(clv.fitted = clv.fitted, full.names = full.names)
 
   .fct.helper.s3.fitted.plot(clv.fitted = clv.fitted, clv.newdata.nohold=clv.newdata.nohold,
                              clv.newdata.withhold=clv.newdata.withhold)
 
-  .fct.helper.s3.fitted.predict(clv.fitted = clv.fitted, clv.newdata.nohold=clv.newdata.nohold,
-                                clv.newdata.withhold=clv.newdata.withhold, DERT.not.implemented=DERT.not.implemented)
+  .fct.helper.s3.clvfittedtransactions.predict(fitted.transactions = clv.fitted, clv.newdata.nohold=clv.newdata.nohold,
+                                                clv.newdata.withhold=clv.newdata.withhold, DERT.not.implemented=DERT.not.implemented)
 
+}
+
+
+fct.helper.clvfittedspending.all.s3 <- function(clv.fitted, full.names,
+                                                clv.newdata.nohold, clv.newdata.withhold){
+
+  .fct.helper.clvfitted.all.s3(clv.fitted = clv.fitted, full.names = full.names)
+
+  # **TEST PLOTS
+
+  fct.testthat.runability.clvfittedspending.predict(fitted.spending = clv.fitted,
+                                                    clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
 }
 
 # plot with different ways of naming
 # plot with predict.end=NULL same as predict.end=holdout.end and predict.end=holdout.period.in.tu
 # correct that label = model name same as no label
-#  names(vcov()) = names(coef(summary)) = names(coef()) with and without correlation

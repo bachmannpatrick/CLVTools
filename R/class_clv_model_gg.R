@@ -78,7 +78,7 @@ setMethod(f = "clv.model.process.newdata", signature = signature(clv.model = "cl
   # clv.data in clv.fitted is already replaced with newdata here
   # Only need to redo cbs if new data is given
 
-  clv.fitted@cbs <- gg_cbs(clv.data = clv.fitted@clv.data)
+  clv.fitted@cbs <- gg_cbs(clv.data = clv.fitted@clv.data, remove.first.transaction = clv.fitted@estimation.removed.first.transaction)
   return(clv.fitted)
 })
 

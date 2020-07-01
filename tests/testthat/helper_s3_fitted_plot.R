@@ -1,6 +1,6 @@
 .fct.helper.s3.fitted.plot <- function(clv.fitted, clv.newdata.nohold, clv.newdata.withhold){
 
-  if(clv.fitted@clv.data@has.holdout){
+  if(clv.data.has.holdout(clv.fitted@clv.data)){
     test_that("Works without prediction end, out-of-the-box", {
       expect_silent(plot(clv.fitted, verbose=FALSE))
     })
@@ -45,7 +45,7 @@
   })
 
 
-  if(clv.fitted@clv.data@has.holdout){
+  if(clv.data.has.holdout(clv.fitted@clv.data)){
     test_that("Warns if ends in holdout", {
       skip_on_cran()
       # prediction.end as character, Date, posix, numeric
@@ -60,7 +60,7 @@
 
   test_that("Works for negative prediction.end", {
     skip_on_cran()
-    if(clv.fitted@clv.data@has.holdout){
+    if(clv.data.has.holdout(clv.fitted@clv.data)){
       # With holdout: Warn about holdout period
       expect_warning(plot(clv.fitted, prediction.end=-2,  verbose=FALSE),
                      regexp = "Not plotting full holdout period.")

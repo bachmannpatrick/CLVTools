@@ -217,6 +217,7 @@ test_that("No price data gives correct object", {
 
   expect_silent(clv.cdnow <- clvdata(cdnow, date.format = "ymd", time.unit = "w", estimation.split = 37, name.price = NULL))
   expect_false(clv.cdnow@has.spending)
+  expect_false(clv.data.has.spending(clv.cdnow))
   expect_false("Price" %in% colnames(clv.cdnow@data.transactions))
   expect_false("Price" %in% colnames(clv.cdnow@data.repeat.trans))
   # also nothing in descriptives
@@ -227,6 +228,7 @@ test_that("Price data gives correct object", {
   skip_on_cran()
   expect_silent(clv.cdnow <- clvdata(cdnow, date.format = "ymd", time.unit = "w", estimation.split = 37, name.price = "Price"))
   expect_true(clv.cdnow@has.spending)
+  expect_true(clv.data.has.spending(clv.cdnow))
   expect_true("Price" %in% colnames(clv.cdnow@data.transactions))
   expect_true("Price" %in% colnames(clv.cdnow@data.repeat.trans))
   # also Spending info in descriptives
