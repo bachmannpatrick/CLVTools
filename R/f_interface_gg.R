@@ -1,6 +1,6 @@
 #' @param remove.first.transaction consequence: All zero-repeaters are excluded when fitting the model
 #' @exportMethod gg
-setGeneric("gg", def = function(clv.data, start.params.model=c(), optimx.args=list(), verbose=TRUE, ...)
+setGeneric("gg", def = function(clv.data, start.params.model=c(), optimx.args=list(), remove.first.transaction = TRUE, verbose=TRUE, ...)
   standardGeneric("gg"))
 
 
@@ -10,8 +10,8 @@ setGeneric("gg", def = function(clv.data, start.params.model=c(), optimx.args=li
 setMethod("gg", signature = signature(clv.data="clv.data"), definition = function(clv.data,
                                                                                   start.params.model=c(),
                                                                                   optimx.args=list(),
-                                                                                  verbose=TRUE,
                                                                                   remove.first.transaction = TRUE,
+                                                                                  verbose=TRUE,
                                                                                   ...){
 
   err.msg <- c()

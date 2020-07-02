@@ -74,9 +74,9 @@ clv.data.get.transactions.in.estimation.period <- function(clv.data){
 }
 
 clv.data.get.transactions.in.holdout.period <- function(clv.data){
+  Date <- NULL
   # **TODO: Remove or implement clean
   stopifnot(clv.data.has.holdout(clv.data))
-  Date <- NULL
   return(clv.data@data.transactions[Date >= clv.data@clv.time@timepoint.holdout.start])
 }
 

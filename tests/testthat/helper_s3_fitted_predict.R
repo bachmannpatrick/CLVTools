@@ -13,8 +13,11 @@
       # then also has actuals
       expect_true(c("actual.x" %in% colnames(dt.pred)))
 
-      if(clv.data.has.spending(fitted.transactions@clv.data))
+      if(clv.data.has.spending(fitted.transactions@clv.data)){
         expect_true(c("actual.spending" %in% colnames(dt.pred)))
+      }else{
+        expect_false(c("actual.spending" %in% colnames(dt.pred)))
+      }
     })
   }
 
@@ -57,7 +60,7 @@
 
   test_that("Formal correct", {
     skip_on_cran()
-    dt.pred <- predict(fitted.transactions, prediction.end = 6)
+    expect_silent(dt.pred <- predict(fitted.transactions, prediction.end = 6, verbose = FALSE))
     expect_true(dt.pred[, data.table::uniqueN(Id)] == fitted.transactions@clv.data@data.transactions[, data.table::uniqueN(Id)])
     # all ids in predictions
     expect_true(nrow(data.table::fsetdiff(fitted.transactions@clv.data@data.transactions[, "Id"], dt.pred[, "Id"]))==0)
@@ -67,6 +70,22 @@
     #   all columns > 0
     expect_true(dt.pred[, all(.SD >= (0 - sqrt(.Machine$double.eps)) | is.na(.SD))])
     expect_true(all(c("Id", "CET", "DERT", "PAlive") %in% colnames(dt.pred)))
+
+    if(clv.data.has.holdout(fitted.transactions@clv.data)){
+      # Has actuals if there is a holdout period
+      expect_true("actual.x" %in% colnames(dt.pred))
+      expect_true(dt.pred[, is.numeric(actual.x)])
+
+      if(clv.data.has.spending(fitted.transactions@clv.data)){
+        expect_true("actual.spending" %in% colnames(dt.pred))
+        expect_true(dt.pred[, is.numeric(actual.spending)])
+      }else{
+        expect_false("actual.spending" %in% colnames(dt.pred))
+      }
+    }else{
+      expect_false("actual.x" %in% colnames(dt.pred))
+      expect_false("actual.spending" %in% colnames(dt.pred))
+    }
   })
 
 
@@ -192,5 +211,24 @@ fct.testthat.runability.clvfittedspending.predict <- function(fitted.spending, c
     skip_on_cran()
     expect_silent(predict(fitted.spending, newdata = clv.newdata.nohold, verbose = FALSE))
     expect_silent(predict(fitted.spending, newdata = clv.newdata.withhold, verbose = FALSE))
+  })
+
+  test_that("Predict is formally correct", {
+    skip_on_cran()
+    expect_silent(dt.pred <- predict(fitted.spending, verbose = FALSE))
+    # All Ids there
+    expect_equal(dt.pred[order(Id),"Id"], fitted.spending@cbs[order(Id), "Id"])
+    expect_true(fsetequal(dt.pred[,"Id"], unique(fitted.spending@clv.data@data.transactions[, "Id"])))
+    # Spending cols
+    expect_true("predicted.Spending" %in% colnames(dt.pred))
+    expect_true(dt.pred[, is.numeric(predicted.Spending)])
+
+    # Has actuals if there is a holdout period
+    if(clv.data.has.holdout(fitted.spending@clv.data)){
+      expect_true("actual.spending" %in% colnames(dt.pred))
+      expect_true(dt.pred[, is.numeric(actual.spending)])
+    }else{
+      expect_false("actual.spending" %in% colnames(dt.pred))
+    }
   })
 }

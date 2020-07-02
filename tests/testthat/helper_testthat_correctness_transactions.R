@@ -1,4 +1,36 @@
-fct.testthat.correctness.nocov.correct.se <- function(method, cdnow, start.params.model, params.nocov.se){
+fct.testhat.correctness.clvfittedtransactions.same.spending.as.independent.spending.model <- function(method, clv.data){
+  test_that("Predict spending in transaction prediction same as independent spending model", {
+    skip_on_cran()
+    expect_silent(fitted <- do.call(method, list(clv.data = clv.data, verbose = FALSE)))
+    # with prediction.end to also predict if no holdout
+    expect_silent(dt.pred <- predict(fitted, prediction.end = 10, verbose = FALSE))
+    expect_silent(dt.pred.gg <- predict(gg(clv.data, verbose = FALSE)))
+    expect_equal(dt.pred.gg[order(Id), "predicted.Spending"], dt.pred[order(Id), "predicted.Spending"])
+  })
+}
+
+fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box <- function(method, clv.data){
+  test_that("Flawless results out of the box", {
+    skip_on_cran()
+    expect_silent(fitted <- do.call(what = method, args = list(clv.data, verbose = FALSE)))
+    expect_silent(res.sum <- summary(fitted))
+    # No NAs anywhere
+    expect_false(any(!is.finite(coef(res.sum)))) # vcov and coef together
+    fct.DT.any.non.finite <- function(DT){
+      return(DT[, any(sapply(.SD, function(x){any(!is.finite(x))})), .SDcols = DT[, sapply(.SD, is.numeric)]])
+    }
+
+    expect_false(fct.DT.any.non.finite(predict(fitted, verbose = FALSE)))
+    if(is(fitted, "clv.fitted.transactions")){
+      expect_false(fct.DT.any.non.finite(plot(fitted, plot = FALSE, verbose = FALSE)[, !"Actual Number of Repeat Transactions"]))
+    }
+    # KKTs both true
+    expect_true(res.sum$kkt1)
+    expect_true(res.sum$kkt2)
+  })
+}
+
+fct.testthat.correctness.clvfitted.nocov.correct.se <- function(method, cdnow, start.params.model, params.nocov.se){
   test_that("Cdnow nocov correct SE", {
     expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "w", estimation.split = "1997-09-30"))
 
@@ -10,7 +42,7 @@ fct.testthat.correctness.nocov.correct.se <- function(method, cdnow, start.param
   })
 }
 
-fct.testthat.correctness.nocov.correct.coefs <- function(method, cdnow, start.params.model, params.nocov.coef, LL.nocov){
+fct.testthat.correctness.clvfitted.correct.coefs <- function(method, cdnow, start.params.model, params.nocov.coef, LL.nocov){
   test_that("Cdnow nocov correct coefs", {
     skip_on_cran()
     expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "w", estimation.split = "1997-09-30"))
@@ -26,7 +58,7 @@ fct.testthat.correctness.nocov.correct.coefs <- function(method, cdnow, start.pa
 
 
 
-fct.testthat.correctness.nocov.same.as.btyd <- function(clvtools.method, btyd.method, btyd.dert.method, btyd.cet.method, btyd.palive.method, start.params.model, cdnow, DERT.not.implemented = FALSE){
+fct.testthat.correctness.clvfittedtransactions.nocov.same.as.btyd <- function(clvtools.method, btyd.method, btyd.dert.method, btyd.cet.method, btyd.palive.method, start.params.model, cdnow, DERT.not.implemented = FALSE){
   test_that("Same results as BTYD", {
     # Fitting
     # From ?BTYD::<model>.cbs.LL()
@@ -69,7 +101,7 @@ fct.testthat.correctness.nocov.same.as.btyd <- function(clvtools.method, btyd.me
   })
 }
 
-fct.testthat.correctness.nocov.compare.cbs.vs.btyd <- function(method, cdnow){
+fct.testthat.correctness.clvfittedtransactions.nocov.compare.cbs.vs.btyd <- function(method, cdnow){
   # cdnow has to be fit exactly as in BTYD example
   test_that("CBS is the same as BTYD", { # are the same - PNBD vs. BGNBD vs. BTYD", {
     skip_on_cran()
@@ -94,7 +126,7 @@ fct.testthat.correctness.nocov.compare.cbs.vs.btyd <- function(method, cdnow){
 }
 
 
-fct.testthat.correctness.nocov.newdata.fitting.sample.predicting.full.data.equal <- function(method, cdnow, clv.cdnow){
+fct.testthat.correctness.clvfittedtransactions.nocov.newdata.fitting.sample.predicting.full.data.equal <- function(method, cdnow, clv.cdnow){
   test_that("Fitting sample but predicting with full data yields same results as predicting sample only", {
     skip_on_cran()
     # Sample only
@@ -127,7 +159,7 @@ fct.testthat.correctness.nocov.newdata.fitting.sample.predicting.full.data.equal
   })
 }
 
-fct.testthat.correctness.staticcov.covariate.row.sorting <- function(method, clv.apparel, apparelStaticCov, m.fitted.static){
+fct.testthat.correctness.clvfittedtransactions.staticcov.covariate.row.sorting <- function(method, clv.apparel, apparelStaticCov, m.fitted.static){
   test_that("Same result for differently sorted covariate data (row)", {
     skip_on_cran()
 
@@ -153,7 +185,7 @@ fct.testthat.correctness.staticcov.covariate.row.sorting <- function(method, clv
   })
 }
 
-fct.testthat.correctness.staticcov.covariate.column.sorting <- function(method, clv.apparel, apparelStaticCov, m.fitted.static){
+fct.testthat.correctness.clvfittedtransactions.staticcov.covariate.column.sorting <- function(method, clv.apparel, apparelStaticCov, m.fitted.static){
   test_that("Same result for differently sorted covariate data (columns)", {
     skip_on_cran()
 
@@ -182,15 +214,15 @@ fct.testthat.correctness.staticcov.covariate.column.sorting <- function(method, 
 }
 
 
-fct.testthat.correctness.common.newdata.same.predicting.fitting <- function(clv.fitted, clv.newdata){
+fct.testthat.correctness.clvfitted.newdata.same.predicting.fitting <- function(clv.fitted){
   test_that("Same when predicting as with fitting data", {
     skip_on_cran()
     expect_true(isTRUE(all.equal(predict(clv.fitted, verbose=FALSE),
-                                 predict(clv.fitted, newdata = clv.newdata, verbose=FALSE))))
+                                 predict(clv.fitted, newdata = clv.fitted@clv.data, verbose=FALSE))))
   })
 }
 
-fct.testthat.correctness.CET.0.for.no.prediction.period <- function(clv.fitted){
+fct.testthat.correctness.clvfittedtransactions.CET.0.for.no.prediction.period <- function(clv.fitted){
   test_that("CET = 0 for no prediction period", {
     skip_on_cran()
     expect_silent(dt.pred <- predict(clv.fitted, verbose = FALSE, prediction.end = 0))
@@ -199,7 +231,7 @@ fct.testthat.correctness.CET.0.for.no.prediction.period <- function(clv.fitted){
 }
 
 
-fct.testthat.correctness.staticcov.fitting.sample.predicting.full.data.equal <- function(method, apparelTrans, apparelStaticCov, clv.apparel.staticcov){
+fct.testthat.correctness.clvfittedtransactions.staticcov.fitting.sample.predicting.full.data.equal <- function(method, apparelTrans, apparelStaticCov, clv.apparel.staticcov){
   test_that("Fitting with sample but predicting full data yields same results as predicting sample only", {
     skip_on_cran()
 
@@ -227,7 +259,7 @@ fct.testthat.correctness.staticcov.fitting.sample.predicting.full.data.equal <- 
   })
 }
 
-fct.testthat.correctness.staticcov.regularization.lambda.0.no.regularization <- function(method, clv.apparel.staticcov, m.fitted.static){
+fct.testthat.correctness.clvfittedtransactions.staticcov.regularization.lambda.0.no.regularization <- function(method, clv.apparel.staticcov, m.fitted.static){
   test_that("Regularization with 0 lambda has the same effect as no regularization", {
     skip_on_cran()
     l.args <- list(clv.data = clv.apparel.staticcov, reg.lambdas = c(trans=0, life=0), verbose = FALSE)
@@ -239,53 +271,65 @@ fct.testthat.correctness.staticcov.regularization.lambda.0.no.regularization <- 
 }
 
 
-fct.testthat.correctness <- function(name.model, method, data.cdnow, data.apparelTrans, data.apparelStaticCov,
-                                     correct.start.params.model, correct.params.nocov.coef, correct.LL.nocov){
+fct.testthat.correctness.clvfittedtransactions <- function(name.model, method, data.cdnow, data.apparelTrans, data.apparelStaticCov,
+                                                           correct.start.params.model, correct.params.nocov.coef, correct.LL.nocov){
 
-  # Create necessary object ----------------------------------------------------------------
-  # Nocov
+
+  # No cov ---------------------------------------------------------------------------------------------------
   expect_silent(clv.cdnow <- clvdata(data.transactions = data.cdnow,
                                      date.format = "ymd", time.unit = "W", estimation.split = 38,
                                      name.id = "Id", name.date = "Date", name.price = "Price"))
   expect_silent(obj.fitted <- do.call(method, list(clv.data = clv.cdnow, verbose = FALSE)))
 
 
-  # Static cov
-  expect_silent(clv.apparel <- clvdata(data.transactions = data.apparelTrans, date.format = "ymd", time.unit = "W", estimation.split = 52))
-  expect_silent(clv.apparel.staticcov <- SetStaticCovariates(clv.apparel,
-                                                             names.cov.life = c("Gender", "Channel"), names.cov.trans = c("Gender", "Channel"),
-                                                             data.cov.life = data.apparelStaticCov, data.cov.trans = data.apparelStaticCov))
+  context(paste0("Correctness - ",name.model," nocov - CBS comparison"))
+  fct.testthat.correctness.clvfittedtransactions.nocov.compare.cbs.vs.btyd(method = method, cdnow = data.cdnow)
+
+  context(paste0("Correctness - ",name.model," nocov - Recover parameters"))
+  fct.testthat.correctness.clvfitted.correct.coefs(method = method, cdnow = data.cdnow, start.params.model = correct.start.params.model,
+                                                   params.nocov.coef = correct.params.nocov.coef, LL.nocov = correct.LL.nocov)
+
+  context(paste0("Correctness - ",name.model," nocov - Example data"))
+  fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box(method = method, clv.data = clv.cdnow)
+
+
+  context(paste0("Correctness - ",name.model," nocov - predict"))
+  fct.testthat.correctness.clvfitted.newdata.same.predicting.fitting(clv.fitted = obj.fitted)
+  fct.testthat.correctness.clvfittedtransactions.CET.0.for.no.prediction.period(clv.fitted = obj.fitted)
+
+  fct.testthat.correctness.clvfittedtransactions.nocov.newdata.fitting.sample.predicting.full.data.equal(method = method, cdnow = data.cdnow, clv.cdnow = clv.cdnow)
+  fct.testhat.correctness.clvfittedtransactions.same.spending.as.independent.spending.model(method = method, clv.data = clv.cdnow)
+
+
+  # Static cov ------------------------------------------------------------------------------------------------
+  clv.apparel.staticcov <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
+                                                                       estimation.split = 52)
+  clv.apparel.nocov <- as(clv.apparel.staticcov, "clv.data")
+
   expect_silent(obj.fitted.static <- do.call(method, list(clv.data=clv.apparel.staticcov, verbose=FALSE)))
 
 
-
-
-  context(paste0("Correctness - ",name.model," nocov - CBS comparison"))
-  fct.testthat.correctness.nocov.compare.cbs.vs.btyd(method = method, cdnow = data.cdnow)
-
-  context(paste0("Correctness - ",name.model," nocov - Recover parameters"))
-  fct.testthat.correctness.nocov.correct.coefs(method = method, cdnow = data.cdnow, start.params.model = correct.start.params.model,
-                                               params.nocov.coef = correct.params.nocov.coef, LL.nocov = correct.LL.nocov)
-
-  context(paste0("Correctness - ",name.model," nocov - predict"))
-  fct.testthat.correctness.common.newdata.same.predicting.fitting(clv.fitted = obj.fitted, clv.newdata = clv.cdnow)
-  fct.testthat.correctness.CET.0.for.no.prediction.period(clv.fitted = obj.fitted)
-
-  fct.testthat.correctness.nocov.newdata.fitting.sample.predicting.full.data.equal(method = method, cdnow = data.cdnow, clv.cdnow = clv.cdnow)
-
   context(paste0("Correctness - ",name.model," static cov - Data sorting"))
-  fct.testthat.correctness.staticcov.covariate.row.sorting(method = method, clv.apparel = clv.apparel,
-                                                           apparelStaticCov = data.apparelStaticCov, m.fitted.static = obj.fitted.static)
-  fct.testthat.correctness.staticcov.covariate.column.sorting(method = method, clv.apparel = clv.apparel,
-                                                              apparelStaticCov = data.apparelStaticCov, m.fitted.static = obj.fitted.static)
+  fct.testthat.correctness.clvfittedtransactions.staticcov.covariate.row.sorting(method = method, clv.apparel = clv.apparel.nocov,
+                                                                                 apparelStaticCov = data.apparelStaticCov, m.fitted.static = obj.fitted.static)
+  fct.testthat.correctness.clvfittedtransactions.staticcov.covariate.column.sorting(method = method, clv.apparel = clv.apparel.nocov,
+                                                                                    apparelStaticCov = data.apparelStaticCov, m.fitted.static = obj.fitted.static)
+
+
+  context(paste0("Correctness - ",name.model," static cov - Example data"))
+  fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box(method = method, clv.data = clv.apparel.nocov)
+  fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box(method = method, clv.data = clv.apparel.staticcov)
+
 
   context(paste0("Correctness - ",name.model," static cov - predict"))
-  fct.testthat.correctness.CET.0.for.no.prediction.period(clv.fitted = obj.fitted.static)
-  fct.testthat.correctness.staticcov.fitting.sample.predicting.full.data.equal(method = method, apparelTrans = data.apparelTrans,
-                                                                               clv.apparel.staticcov = clv.apparel.staticcov,
-                                                                               apparelStaticCov = data.apparelStaticCov)
+  fct.testthat.correctness.clvfittedtransactions.CET.0.for.no.prediction.period(clv.fitted = obj.fitted.static)
+  fct.testthat.correctness.clvfittedtransactions.staticcov.fitting.sample.predicting.full.data.equal(method = method, apparelTrans = data.apparelTrans,
+                                                                                                     clv.apparel.staticcov = clv.apparel.staticcov,
+                                                                                                     apparelStaticCov = data.apparelStaticCov)
+  fct.testhat.correctness.clvfittedtransactions.same.spending.as.independent.spending.model(method = method, clv.data = clv.apparel.staticcov)
+
 
   context(paste0("Correctness - ",name.model," static cov - regularization"))
-  fct.testthat.correctness.staticcov.regularization.lambda.0.no.regularization(method = method, clv.apparel.staticcov = clv.apparel.staticcov,
-                                                                               m.fitted.static = obj.fitted.static)
+  fct.testthat.correctness.clvfittedtransactions.staticcov.regularization.lambda.0.no.regularization(method = method, clv.apparel.staticcov = clv.apparel.staticcov,
+                                                                                                     m.fitted.static = obj.fitted.static)
 }
