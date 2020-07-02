@@ -119,7 +119,7 @@
 #' @export
 clvdata <- function(data.transactions, date.format, time.unit, estimation.split=NULL, name.id="Id", name.date="Date", name.price="Price"){
   # silence CRAN notes
-  Date <- Price <- Id <- date.first.actual.trans <- date.last.transaction <- x <- previous <- NULL
+  Date <- Price <- Id <- x <- previous <- NULL
 
   cl <- match.call(expand.dots = TRUE)
 

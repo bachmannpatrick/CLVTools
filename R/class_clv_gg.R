@@ -19,7 +19,7 @@ clv.gg <- function(cl, clv.data, remove.first.transaction){
 }
 
 gg_cbs <- function(clv.data, remove.first.transaction){
-  Date <- Price <- x <- i.x <- Spending <- i.Spending <- date.first.actual.trans <- date.last.transaction <- NULL
+  Date <- Price <- x <- i.x <- Spending <- i.Spending <- NULL
   # Customer-By-Sufficiency (CBS) Matrix
   #   Only for transactions in calibration period
   #   Only repeat transactions are relevant
