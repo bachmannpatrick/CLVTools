@@ -3,6 +3,13 @@ setMethod("clv.controlflow.plot.check.inputs", signature(obj="clv.fitted"), func
   # Empty fallback method.
 })
 
+# . clv.controlflow.check.prediction.params -----------------------------------------------------------------
+setMethod("clv.controlflow.check.prediction.params", signature = signature(clv.fitted = "clv.fitted"), function(clv.fitted){
+  # Do not check coef() because correlation coef may be NA and can still predict
+  if(anyNA(clv.fitted@prediction.params.model)){
+    check_err_msg("Cannot proceed because there are NAs in the estimated model coefficients!")
+  }
+})
 
 # . clv.controlflow.predict.set.prediction.params ------------------------------------------------------------------------
 setMethod(f = "clv.controlflow.predict.set.prediction.params", signature = signature(clv.fitted="clv.fitted"), definition = function(clv.fitted){

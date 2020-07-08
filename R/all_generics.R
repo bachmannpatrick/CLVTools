@@ -57,6 +57,11 @@ setGeneric(name = "clv.controlflow.predict.post.process.prediction.table", def =
 setGeneric("clv.controlflow.check.newdata", def = function(clv.fitted, user.newdata, ...)
   standardGeneric("clv.controlflow.check.newdata"))
 
+# .. Prediction params -------------------------------------------------------------------------------------
+# Check whether prediction params are ok to predict/plot
+setGeneric("clv.controlflow.check.prediction.params", def = function(clv.fitted)
+  standardGeneric("clv.controlflow.check.prediction.params"))
+
 
 # . Plot ----------------------------------------------------------------------------------------------------
 # clv.controlflow.plot.check.inputs is needed for fitted.dyncov models only to check dyncov length

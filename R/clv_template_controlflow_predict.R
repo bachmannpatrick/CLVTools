@@ -8,6 +8,10 @@ clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, 
     stopifnot(all(nchar(names(list(...)))>0))
   }
 
+  # Check if can predict -----------------------------------------------------------------------------------------
+  # Cannot predict if there are any NAs in any of the prediction.params
+  clv.controlflow.check.prediction.params(clv.fitted = clv.fitted)
+
   # Process Newdata -------------------------------------------------------------------------------------
   # Because many of the following steps refer to the data stored in the fitted model,
   #   it first is replaced with newdata before any other steps are done
