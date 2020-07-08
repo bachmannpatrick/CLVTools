@@ -6,6 +6,10 @@ clv.template.controlflow.predict <- function(clv.fitted, prediction.end, predict
   period.first <- period.last <- period.length <- cbs.x <- i.x <- cbs.Spending <- i.Spending <- NULL
   i.actual.x <- i.actual.spending <- NULL
 
+  # Check if can predict -----------------------------------------------------------------------------------------
+  # Cannot predict if there are any NAs in any of the prediction.params
+  clv.controlflow.check.prediction.params(clv.fitted = clv.fitted)
+
 
   # Process Newdata ----------------------------------------------------------------------------------------------
   # Because many of the following steps refer to the data stored in the fitted model,
