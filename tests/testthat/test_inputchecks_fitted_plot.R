@@ -12,6 +12,28 @@ l.std.args <- list(pnbd.cdnow, prediction.end=6)
 .fct.helper.inputchecks.single.logical(fct = plot, l.std.args = l.std.args, name.param = "verbose")
 
 
+#
+test_that("Fails if prediction.params are NA", {
+  skip_on_cran()
+  clv.fitted <- pnbd.cdnow
+
+  # Check cov first, before setting model prediction params to NA
+  # ***refactor to nocov and staticcov test
+  # ***refactor to function that takes predict and plot
+  if(is(clv.fitted, "clv.fitted.static.cov")){
+    clv.fitted@prediction.params.life[1] <- NA_real_
+    expect_error(plot(clv.fitted, prediction.end = 6), regexp = "NAs in the estimated covariate")
+    clv.fitted@prediction.params.life[1] <- 1 # remove NA
+
+    clv.fitted@prediction.params.trans[1] <- NA_real_
+    expect_error(plot(clv.fitted, prediction.end = 6), regexp = "NAs in the estimated covariate")
+    clv.fitted@prediction.params.trans[1] <- 1 # remove NA
+  }
+
+  clv.fitted@prediction.params.model[2] <- NA_real_
+  expect_error(plot(clv.fitted, prediction.end = 6), regexp = "NAs in the estimated model")
+})
+
 # **TODO: newdata
 # test_that("Fails for prediction.end not char/date/posix", {
 #   # **TODO: Regexp
