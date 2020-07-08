@@ -64,6 +64,27 @@ test_that("Fails if newdata not a clv.data object", {
   expect_error(predict(pnbd.cdnow, newdata = unlist(cdnow)), regexp = "needs to be a clv data object")
 })
 
+test_that("Fails if prediction.params are NA", {
+  skip_on_cran()
+  clv.fitted <- p.apparel.static
+
+  # Check cov first, before setting model prediction params to NA
+  # ***refactor to nocov and staticcov test
+  # ***refactor to function that takes predict and plot
+  if(is(clv.fitted, "clv.fitted.static.cov")){
+    clv.fitted@prediction.params.life[1] <- NA_real_
+    expect_error(predict(clv.fitted, prediction.end = 6), regexp = "NAs in the estimated covariate")
+    clv.fitted@prediction.params.life[1] <- 1 # remove NA
+
+    clv.fitted@prediction.params.trans[1] <- NA_real_
+    expect_error(predict(clv.fitted, prediction.end = 6), regexp = "NAs in the estimated covariate")
+    clv.fitted@prediction.params.trans[1] <- 1 # remove NA
+  }
+
+  clv.fitted@prediction.params.model[2] <- NA_real_
+  expect_error(predict(clv.fitted, prediction.end = 6), regexp = "NAs in the estimated model")
+})
+
 
 test_that("Fails if newdata is of wrong clv.data", {
   skip_on_cran()

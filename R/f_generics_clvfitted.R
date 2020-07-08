@@ -5,7 +5,15 @@ setMethod("clv.controlflow.plot.check.inputs", signature(obj="clv.fitted"), func
 })
 
 
-# . clv.controlflow.check.newdata ------------------------------------------------------------------------
+# . clv.controlflow.check.prediction.params -----------------------------------------------------------------
+setMethod("clv.controlflow.check.prediction.params", signature = signature(clv.fitted = "clv.fitted"), function(clv.fitted){
+  # Do not check coef() because correlation coef may be NA and can still predict
+  if(anyNA(clv.fitted@prediction.params.model)){
+    check_err_msg("Cannot proceed because there are NAs in the estimated model coefficients!")
+  }
+})
+
+# . clv.controlflow.check.newdata ---------------------------------------------------------------------------
 #' @importFrom methods is
 setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted"), definition = function(clv.fitted, user.newdata, prediction.end){
   err.msg <- c()

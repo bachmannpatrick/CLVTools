@@ -43,9 +43,13 @@ setGeneric("clv.controlflow.predict.set.prediction.params", def = function(clv.f
 setGeneric("clv.controlflow.check.newdata", def = function(clv.fitted, user.newdata, prediction.end)
   standardGeneric("clv.controlflow.check.newdata"))
 
+# .. Prediction params -------------------------------------------------------------------------------------
+# Check whether prediction params are ok to predict/plot
+setGeneric("clv.controlflow.check.prediction.params", def = function(clv.fitted)
+  standardGeneric("clv.controlflow.check.prediction.params"))
+
 
 # . Plot ----------------------------------------------------------------------------------------------------
-#function(clv.fitted, prediction.end, data.dyn.cov.life, data.dyn.cov.trans,...)
 setGeneric("clv.controlflow.plot.check.inputs", def = function(obj, prediction.end, cumulative, plot, label.line, verbose)
   standardGeneric("clv.controlflow.plot.check.inputs"))
 

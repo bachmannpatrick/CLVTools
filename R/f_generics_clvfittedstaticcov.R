@@ -52,6 +52,18 @@ setMethod(f = "clv.controlflow.predict.set.prediction.params", signature = signa
 })
 
 
+# . clv.controlflow.check.prediction.params -----------------------------------------------------------------
+setMethod("clv.controlflow.check.prediction.params", signature = signature(clv.fitted = "clv.fitted.static.cov"), function(clv.fitted){
+  # Check model prediction params
+  callNextMethod()
+
+  # Do not check coef() because correlation coef may be NA and can still predict
+  if(anyNA(clv.fitted@prediction.params.life) | anyNA(clv.fitted@prediction.params.trans)){
+    check_err_msg("Cannot proceed because there are NAs in the estimated covariate coefficients!")
+  }
+})
+
+
 # . clv.controlflow.check.newdata ------------------------------------------------------------------------------
 setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.static.cov"), definition = function(clv.fitted, user.newdata, prediction.end){
   # Do nocov newdata checks first

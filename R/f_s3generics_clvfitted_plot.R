@@ -91,8 +91,13 @@
 #' @method plot clv.fitted
 #' @export
 plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FALSE, transactions=TRUE, label=NULL, plot=TRUE, verbose=TRUE,...) {
-
   period.until <- period.num <- NULL
+
+
+  # Check if can plot -----------------------------------------------------------------------------------------
+  # Cannot plot if there are any NAs in any of the prediction.params
+  clv.controlflow.check.prediction.params(clv.fitted = x)
+
 
   # Newdata ------------------------------------------------------------------------------------------------
   # Because many of the following steps refer to the data stored in the fitted model,
