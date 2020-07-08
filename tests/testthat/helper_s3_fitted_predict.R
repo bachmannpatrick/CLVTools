@@ -31,24 +31,46 @@
   if(clv.data.has.spending(fitted.transactions@clv.data)){
     test_that("Predict works with logical for predict.spending", {
       skip_on_cran()
+      skip_on_ci()
       expect_silent(pred <- predict(fitted.transactions, prediction.end=6, predict.spending = TRUE, verbose=FALSE))
       expect_true("predicted.Spending" %in% colnames(pred))
       expect_silent(pred <- predict(fitted.transactions, prediction.end=6, predict.spending = FALSE, verbose=FALSE))
       expect_false("predicted.Spending" %in% colnames(pred))
     })
 
-    test_that("Predict works with fitted spending model for predict.spending",{
+    test_that("Predict works with fitted spending model for predict.spending (and newdata) ",{
       skip_on_cran()
+      skip_on_ci()
+      # ordinary
       expect_silent(pred <- predict(fitted.transactions, prediction.end=6,  verbose=FALSE,
                                     predict.spending = gg(fitted.transactions@clv.data, verbose=FALSE)))
       expect_true("predicted.Spending" %in% colnames(pred))
+      # fitted on different clv.data object
+      expect_silent(fitted.spending.different.data <- gg(clv.newdata.nohold, verbose=FALSE))
+      expect_silent(pred <- predict(fitted.transactions, prediction.end=6,  verbose=FALSE,
+                                    predict.spending = fitted.spending.different.data))
+      expect_true("predicted.Spending" %in% colnames(pred))
+      expect_equal(pred[order(Id), "Id"], fitted.transactions@cbs[order(Id), "Id"]) # all original Ids present
+      expect_false(anyNA(pred[, c("Id", "predicted.Spending")])) # No Id w/o predicted spending
+
+      # mix it all up: predict for clv.newdata.withhold using spending model fitted on clv.newdata.nohold
+      #   but use newdata with different Ids to see a difference to the one used for spending model fitting
+      clv.subset <- clvdata(fitted.transactions@clv.data@data.transactions[Id %in% sample(unique(Id), uniqueN(Id)/2)], "ymd", "w")
+      expect_silent(pred <- predict(fitted.transactions,prediction.end=6, verbose=FALSE,
+                                    newdata = clv.subset,
+                                    predict.spending = fitted.spending.different.data))
+      expect_true("predicted.Spending" %in% colnames(pred))
+      expect_equal(pred[order(Id), "Id"], unique(clv.subset@data.transactions[order(Id), "Id"])) # all original Ids present
+      expect_false(anyNA(pred[, c("Id", "predicted.Spending")])) # No Id w/o predicted spending
     })
 
     test_that("Predict works with CLVTools spending model method for predict.spending",{
       skip_on_cran()
+      skip_on_ci()
       expect_silent(pred <- predict(fitted.transactions, predict.spending = gg, prediction.end=6,  verbose=FALSE))
       expect_true("predicted.Spending" %in% colnames(pred))
     })
+
 
     test_that("Predict forwards parameter verbose to fitting spending model", {
       skip_on_cran()
@@ -121,19 +143,16 @@
     skip_on_cran()
     # **TODO: Often still has NA (because estimated params do not work with artificial newdata)
     # No holdout needs prediction.end
-    expect_silent(dt.pred <- predict(fitted.transactions, newdata = clv.newdata.nohold, prediction.end = 25,
-                                     predict.spending = clv.newdata.nohold@has.spending, verbose=FALSE))
+    expect_silent(dt.pred <- predict(fitted.transactions, newdata = clv.newdata.nohold, prediction.end = 25, predict.spending = FALSE, verbose=FALSE))
     # expect_false(anyNA(dt.pred))
     expect_true(all(unique(clv.newdata.nohold@data.transactions$Id) %in% dt.pred$Id))
 
     # Holdout needs no prediction end, but do both
-    expect_silent(dt.pred <- predict(fitted.transactions, newdata = clv.newdata.withhold, verbose=FALSE,
-                                     predict.spending = clv.newdata.withhold@has.spending))
+    expect_silent(dt.pred <- predict(fitted.transactions, newdata = clv.newdata.withhold, verbose=FALSE, predict.spending = FALSE))
     # expect_false(anyNA(dt.pred))
     expect_true(all(unique(clv.newdata.nohold@data.transactions$Id) %in% dt.pred$Id))
 
-    expect_silent(dt.pred <- predict(fitted.transactions, newdata = clv.newdata.withhold, prediction.end = 10,
-                                     predict.spending = clv.newdata.withhold@has.spending, verbose=FALSE))
+    expect_silent(dt.pred <- predict(fitted.transactions, newdata = clv.newdata.withhold, prediction.end = 10, predict.spending = FALSE, verbose=FALSE))
     # expect_false(anyNA(dt.pred))
     expect_true(all(unique(clv.newdata.nohold@data.transactions$Id) %in% dt.pred$Id))
   })

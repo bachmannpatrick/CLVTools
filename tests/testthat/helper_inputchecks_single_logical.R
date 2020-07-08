@@ -1,33 +1,81 @@
-.fct.helper.inputchecks.single.logical <- function(fct, l.std.args, name.param, null.allowed = FALSE){
-
-  if(!null.allowed){
-    test_that("Fails for NULL", {
-      expect_error(do.call(fct, modifyList(l.std.args, setNames(list(param=NULL), name.param),keep.null = TRUE)),
-                   regexp="logical")
-    })
-  }
-  test_that("Fails for not logicals", {
-    expect_error(do.call(fct, modifyList(l.std.args, setNames(list(param="1"), name.param))),
-                 regexp="logical")
-    expect_error(do.call(fct, modifyList(l.std.args, setNames(list(param=data.frame(TRUE)), name.param))),
-                 regexp="logical")
-    expect_error(do.call(fct, modifyList(l.std.args, setNames(list(param=list(TRUE)), name.param))),
-                 regexp="logical")
-    expect_error(do.call(fct, modifyList(l.std.args, setNames(list(param=1), name.param))),
+.fct.helper.inputchecks.fails.for.NULL <- function(fct, l.std.args, name.param){
+  test_that("Fails for NULL", {
+    expect_error(do.call(fct, modifyList(l.std.args, setNames(list(param=NULL), name.param),keep.null = TRUE)),
                  regexp="logical")
   })
+}
+
+.fct.helper.inputchecks.fails.for.NA <- function(fct, l.std.args, name.param){
   test_that("Fails for NA", {
     expect_error(do.call(fct, modifyList(l.std.args, setNames(list(param=NA), name.param))),
                  regexp="cannot be NA")
   })
-  test_that("Fails for multiple", {
-    expect_error(do.call(fct, modifyList(l.std.args, setNames(list(param=c(TRUE,TRUE)), name.param))),
-                 regexp="single element")
-    expect_error(do.call(fct, modifyList(l.std.args, setNames(list(param=c(TRUE,FALSE)), name.param))),
-                 regexp="single element")
-    expect_error(do.call(fct, modifyList(l.std.args, setNames(list(param=c(FALSE,FALSE)), name.param))),
-                 regexp="single element")
-    expect_error(do.call(fct, modifyList(l.std.args, setNames(list(param=c(FALSE,NA)), name.param))),
-                 regexp="single element")
+}
+
+
+.fct.helper.inputchecks.fails.if.not.allowed.type <- function(fct, l.std.args, name.param, name.allowed.type){
+
+  l.illegal.inputs <- list(character = "1",
+                           data.frame = data.frame(1),
+                           list = list(1),
+                           logical = TRUE,
+                           numerical = 0.5,
+                           Date = lubridate::ymd("2019-01-01"))
+
+  # Remove legal type, only keep illegal types
+  l.illegal.inputs <- l.illegal.inputs[which(names(l.illegal.inputs) != name.allowed.type)]
+
+  test_that("Fails if not allowed type", {
+    for(illegal.input in l.illegal.inputs){
+      expect_error(do.call(fct, modifyList(l.std.args, setNames(list(param=illegal.input), name.param))),
+                   regexp=name.allowed.type)
+    }
   })
+}
+
+
+
+.fct.helper.inputchecks.fails.for.multiple <- function(fct, l.std.args, name.param, l.illegal.multiples){
+  test_that("Fails for multiple", {
+    for(illegal.arg in l.illegal.multiples){
+      expect_error(do.call(fct, modifyList(l.std.args, setNames(list(param=illegal.arg), name.param))),
+                   regexp="single element")
+    }
+  })
+}
+
+
+
+.fct.helper.inputchecks.single.logical <- function(fct, l.std.args, name.param, null.allowed = FALSE){
+
+  if(!null.allowed){
+    .fct.helper.inputchecks.fails.for.NULL(fct=fct, l.std.args = l.std.args, name.param = name.param)
+  }
+
+  .fct.helper.inputchecks.fails.for.NA(fct=fct, l.std.args = l.std.args, name.param = name.param)
+  .fct.helper.inputchecks.fails.if.not.allowed.type(fct=fct, l.std.args = l.std.args, name.param = name.param,
+                                                    name.allowed.type = "logical")
+
+  .fct.helper.inputchecks.fails.for.multiple(fct=fct, l.std.args = l.std.args, name.param = name.param,
+                                             l.illegal.multiples = list(c(TRUE,TRUE),
+                                                                        c(TRUE,FALSE),
+                                                                        c(FALSE,FALSE),
+                                                                        c(FALSE,NA)))
+}
+
+
+fct.helper.inputcheck.single.numeric <- function(fct, l.std.args, name.param){
+
+  .fct.helper.inputchecks.fails.for.NULL(fct=fct, l.std.args = l.std.args, name.param = name.param)
+  .fct.helper.inputchecks.fails.for.NA(fct=fct, l.std.args = l.std.args, name.param = name.param)
+
+  .fct.helper.inputchecks.fails.if.not.allowed.type(fct=fct, l.std.args = l.std.args, name.param = name.param,
+                                                    name.allowed.type = "numerical")
+
+  .fct.helper.inputchecks.fails.for.multiple(fct=fct, l.std.args = l.std.args, name.param = name.param,
+                                             l.illegal.multiples = list(c(0.1,0.1),
+                                                                        c(0.1,1.1),
+                                                                        c(1.5,0.1),
+                                                                        c(0,0)))
+
 }

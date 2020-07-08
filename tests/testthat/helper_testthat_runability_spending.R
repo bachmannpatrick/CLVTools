@@ -17,8 +17,6 @@ fct.testthat.runability.clvfittedspending <- function(name.model, method,
                              clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
 
   # clv.fitted tests ------------------------------------------------------------------------------------------------
-
-  # Works on cov and nocov data
   fct.testthat.runability.clvfitted.out.of.the.box.no.hold(method = method, clv.data.noholdout = clv.data.cdnow.noholdout,
                                                            fct.test.all.s3 = fct.helper.clvfittedspending.all.s3, l.args.test.all.s3 = l.args.test.all.s3)
   fct.testthat.runability.clvfitted.out.of.the.box.with.hold(method = method, clv.data.withholdout = clv.data.cdnow.withholdout,
@@ -37,22 +35,22 @@ fct.testthat.runability.clvfittedspending <- function(name.model, method,
                                                                   l.args.test.all.s3= l.args.test.all.s3, fct.test.all.s3=fct.helper.clvfittedspending.all.s3)
 
   fct.testthat.runability.clvfitted.hourly.data(method = method, data.cdnow = data.cdnow,
-                                            fct.test.all.s3 = fct.helper.clvfittedspending.all.s3, l.args.test.all.s3 = l.args.test.all.s3)
+                                                fct.test.all.s3 = fct.helper.clvfittedspending.all.s3, l.args.test.all.s3 = l.args.test.all.s3)
 
 
   # Also works with covariate data ------------------------------------------------------------------------------------
   # only check basic workings
   clv.data.cov.no.holdout <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
-                                                                        estimation.split = NULL)
+                                                                         estimation.split = NULL)
   clv.data.cov.holdout   <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
                                                                         estimation.split = 40)
   clv.newdata.cov.nohold   <- fct.helper.create.fake.newdata.staticcov(data.trans = data.apparelTrans, names.cov = c("Gender", "Channel"),
-                                                                   estimation.split = NULL)
+                                                                       estimation.split = NULL)
   clv.newdata.cov.withhold <- fct.helper.create.fake.newdata.staticcov(data.trans = data.apparelTrans, names.cov = c("Gender", "Channel"),
-                                                                   estimation.split = 40)
+                                                                       estimation.split = 40)
 
   l.args.test.all.s3.cov <- list(full.names = c("p", "q", "gamma"), clv.newdata.nohold = clv.newdata.cov.nohold,
-                             clv.newdata.withhold = clv.newdata.cov.withhold)
+                                 clv.newdata.withhold = clv.newdata.cov.withhold)
 
   fct.testthat.runability.clvfitted.out.of.the.box.no.hold(method = method, clv.data.noholdout = clv.data.cov.no.holdout,
                                                            fct.test.all.s3 = fct.helper.clvfittedspending.all.s3,
@@ -60,5 +58,18 @@ fct.testthat.runability.clvfittedspending <- function(name.model, method,
   fct.testthat.runability.clvfitted.out.of.the.box.with.hold(method = method, clv.data.withholdout = clv.data.cov.holdout,
                                                              fct.test.all.s3 = fct.helper.clvfittedspending.all.s3,
                                                              l.args.test.all.s3 = l.args.test.all.s3.cov)
+
+  # And dyncov data as well (has holdout, but can use eith way)
+  fitted.dyncov    <- fct.helper.load.fitted.dyncov()
+  clv.data.dyn.cov <- fitted.dyncov@clv.data
+
+  l.args.test.all.s3.dyncov <- list(full.names = c("p", "q", "gamma"), clv.newdata.nohold = clv.data.dyn.cov,
+                                    clv.newdata.withhold = clv.data.dyn.cov)
+  fct.testthat.runability.clvfitted.out.of.the.box.with.hold(method = method, clv.data.withholdout = clv.data.dyn.cov,
+                                                             fct.test.all.s3 = fct.helper.clvfittedspending.all.s3,
+                                                             l.args.test.all.s3 = l.args.test.all.s3.dyncov)
+
+
+
 
 }

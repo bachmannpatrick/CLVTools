@@ -15,6 +15,4 @@ fct.testthat.inputchecks.clvfittedspending.nocov(name.method = "Gamma-Gamma", me
                                                  data.cdnow = cdnow)
 
 
-
-
 # test_that() # placeholder to have "Run Tests" button

@@ -18,7 +18,7 @@ setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.
   if(is(object = predict.spending, class2 = "clv.fitted.spending")){
     # Check if usable for prediction
     if(anyNA(coef(predict.spending)))
-      err.msg <- c(err.msg, "The provided spending model in parameter 'predict.spending' cannot be used because its coefficents contain NA!")
+      err.msg <- c(err.msg, "The provided spending model in parameter 'predict.spending' cannot be used because its estimated coefficents contain NA!")
 
   }else{
     if(is.function(predict.spending)){
@@ -33,7 +33,7 @@ setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.
       if(!is.logical(predict.spending)){
         err.msg <- c(err.msg, "The parameter predict.spending has to be either an already fitted spending model, a method from CLVTools to fit a spending model (ie gg) or a logical (True/False)!")
 
-      # Cannot continue if not a logical
+        # Cannot continue if not a logical
       }else{
         # Is logical
         if(length(predict.spending)>1)
@@ -53,7 +53,8 @@ setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.
       err.msg <- c(err.msg, "Cannot predict spending if there is no spending data!")
 
   }else{
-    if(is.function(predict.spending) == TRUE & clv.data.has.spending(clv.fitted@clv.data) == FALSE)
+    # function or fitted spending model but both required spending data
+    if(clv.data.has.spending(clv.fitted@clv.data) == FALSE)
       err.msg <- c(err.msg, "Cannot predict spending if there is no spending data!")
   }
 
@@ -154,12 +155,13 @@ setMethod("clv.controlflow.predict.add.actuals", signature(clv.fitted="clv.fitte
     return(dt.predictions)
   }else{
     # only what is in prediction period!
-    dt.actual.transcations <- clv.fitted@clv.data@data.transactions[between(x = Date,
-                                                                            lower = timepoint.prediction.first,
-                                                                            upper = timepoint.prediction.last,
-                                                                            incbounds = TRUE),
-                                                                    list(actual.x = .N),
-                                                                    by="Id"]
+    dt.holdout.transactions <- clv.data.get.transactions.in.holdout.period(clv.fitted@clv.data)
+    dt.actual.transcations  <- dt.holdout.transactions[between(x = Date,
+                                                               lower = timepoint.prediction.first,
+                                                               upper = timepoint.prediction.last,
+                                                               incbounds = TRUE),
+                                                       list(actual.x = .N),
+                                                       by="Id"]
 
     setkeyv(dt.actual.transcations, "Id")
     dt.predictions[dt.actual.transcations, actual.x  := i.actual.x,  on="Id"]
@@ -243,7 +245,8 @@ setMethod("clv.controlflow.predict.post.process.prediction.table", signature = s
       }else{
         # is already fitted model
         # no further checks, the user is (hopefully) happy with how it fitted (coef not NA is checking in inputchecks)
-        dt.spending    <- predict(object = predict.spending, verbose = verbose)
+        # newdata: Predict for data in transaction model, dont predict spending for data on which the spending model was fit
+        dt.spending    <- predict(object = predict.spending, newdata = clv.fitted@clv.data, verbose = verbose)
         dt.predictions <- fct.add.spending.data(dt.spending = dt.spending, dt.predictions = dt.predictions)
       }
     }

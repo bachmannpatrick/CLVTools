@@ -9,54 +9,6 @@ fct.testhat.correctness.clvfittedtransactions.same.spending.as.independent.spend
   })
 }
 
-fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box <- function(method, clv.data){
-  test_that("Flawless results out of the box", {
-    skip_on_cran()
-    expect_silent(fitted <- do.call(what = method, args = list(clv.data, verbose = FALSE)))
-    expect_silent(res.sum <- summary(fitted))
-    # No NAs anywhere
-    expect_false(any(!is.finite(coef(res.sum)))) # vcov and coef together
-    fct.DT.any.non.finite <- function(DT){
-      return(DT[, any(sapply(.SD, function(x){any(!is.finite(x))})), .SDcols = DT[, sapply(.SD, is.numeric)]])
-    }
-
-    expect_false(fct.DT.any.non.finite(predict(fitted, verbose = FALSE)))
-    if(is(fitted, "clv.fitted.transactions")){
-      expect_false(fct.DT.any.non.finite(plot(fitted, plot = FALSE, verbose = FALSE)[, !"Actual Number of Repeat Transactions"]))
-    }
-    # KKTs both true
-    expect_true(res.sum$kkt1)
-    expect_true(res.sum$kkt2)
-  })
-}
-
-fct.testthat.correctness.clvfitted.nocov.correct.se <- function(method, cdnow, start.params.model, params.nocov.se){
-  test_that("Cdnow nocov correct SE", {
-    expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "w", estimation.split = "1997-09-30"))
-
-    l.args <- list(clv.data=clv.cdnow, start.params.model = start.params.model, verbose=FALSE)
-    expect_silent(p.cdnow <- do.call(what = method, args = l.args))
-
-    # From previous fit
-    expect_equal(sqrt(diag(vcov(p.cdnow))), params.nocov.se, tolerance = 0.001)
-  })
-}
-
-fct.testthat.correctness.clvfitted.correct.coefs <- function(method, cdnow, start.params.model, params.nocov.coef, LL.nocov){
-  test_that("Cdnow nocov correct coefs", {
-    skip_on_cran()
-    expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "w", estimation.split = "1997-09-30"))
-
-    l.args <- list(clv.data=clv.cdnow, start.params.model = start.params.model, verbose=FALSE)
-    expect_silent(p.cdnow <- do.call(what = method, args = l.args))
-
-    # From previous fit
-    expect_equal(coef(p.cdnow), params.nocov.coef, tolerance = 0.001)
-    expect_equal(as.numeric(logLik(p.cdnow)), LL.nocov, tolerance = 0.001)
-  })
-}
-
-
 
 fct.testthat.correctness.clvfittedtransactions.nocov.same.as.btyd <- function(clvtools.method, btyd.method, btyd.dert.method, btyd.cet.method, btyd.palive.method, start.params.model, cdnow, DERT.not.implemented = FALSE){
   test_that("Same results as BTYD", {
@@ -213,6 +165,19 @@ fct.testthat.correctness.clvfittedtransactions.staticcov.covariate.column.sortin
   })
 }
 
+fct.testthat.correctness.clvfittedtransactions.predict.actual.x <- function(method, data.cdnow){
+  test_that("actual.x are counted correctly", {
+    skip_on_cran()
+
+    expect_silent(fitted <- do.call(method, list(clvdata(data.cdnow, estimation.split = "1998-01-01", date.format = "ymd", time.unit = "w"), verbose=FALSE)))
+    expect_silent(dt.pred <- predict(fitted, verbose = FALSE))
+    # some known customers
+    expect_true(dt.pred[Id == "1", actual.x] == 0)
+    expect_true(dt.pred[Id == "1000", actual.x] == 3)
+    expect_true(dt.pred[Id == "1056", actual.x] == 3) # has a transaction on 1998-01-01 which may not be counted in actual.x!
+  })
+}
+
 
 fct.testthat.correctness.clvfitted.newdata.same.predicting.fitting <- function(clv.fitted){
   test_that("Same when predicting as with fitting data", {
@@ -282,7 +247,7 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method, d
   expect_silent(obj.fitted <- do.call(method, list(clv.data = clv.cdnow, verbose = FALSE)))
 
 
-  context(paste0("Correctness - ",name.model," nocov - CBS comparison"))
+  context(paste0("Correctness - ",name.model," nocov - cbs"))
   fct.testthat.correctness.clvfittedtransactions.nocov.compare.cbs.vs.btyd(method = method, cdnow = data.cdnow)
 
   context(paste0("Correctness - ",name.model," nocov - Recover parameters"))
@@ -294,6 +259,7 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method, d
 
 
   context(paste0("Correctness - ",name.model," nocov - predict"))
+  fct.testthat.correctness.clvfittedtransactions.predict.actual.x(method = method, data.cdnow = data.cdnow)
   fct.testthat.correctness.clvfitted.newdata.same.predicting.fitting(clv.fitted = obj.fitted)
   fct.testthat.correctness.clvfittedtransactions.CET.0.for.no.prediction.period(clv.fitted = obj.fitted)
 

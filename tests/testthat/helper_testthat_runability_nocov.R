@@ -13,7 +13,7 @@ fct.testthat.runability.nocov.without.spending.data <- function(method, data.tra
   })
 }
 
-fct.testthat.runability.nocov.predict.newdata.spending <- function(method, data.transactions){
+fct.testthat.runability.nocov.predict.fit.no.spending.but.newdata.spending <- function(method, data.transactions){
   test_that("No spending fit can predict on newdata that has spending", {
     skip_on_cran()
     skip_on_ci()
@@ -96,8 +96,7 @@ fct.testthat.runability.nocov <- function(name.model, method, cdnow,
 
   fct.testthat.runability.nocov.without.spending.data(method = method, data.transactions = cdnow)
 
-  fct.testthat.runability.nocov.predict.newdata.spending(method = method, data.transactions = cdnow)
-
+  fct.testthat.runability.nocov.predict.fit.no.spending.but.newdata.spending(method = method, data.transactions = cdnow)
 
 
   if(has.cor){

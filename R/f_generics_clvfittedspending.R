@@ -61,10 +61,9 @@ setMethod("clv.controlflow.predict.add.actuals", signature(clv.fitted="clv.fitte
   }else{
     # only what is in prediction period!
     dt.actual.spending <- clv.data.get.transactions.in.holdout.period(clv.fitted@clv.data)
-    dt.actual.spending <- dt.actual.spending[, list(actual.spending = sum(Price)), by="Id"]
+    dt.actual.spending <- dt.actual.spending[, list(actual.spending = sum(Price)), keyby="Id"]
 
-
-    setkeyv(dt.actual.spending, "Id")
+    # Add to prediction table. Customers with no actual spending (not in table) are set to 0
     dt.predictions[dt.actual.spending,     actual.spending := i.actual.spending, on="Id"]
     dt.predictions[is.na(actual.spending), actual.spending := 0]
     return(dt.predictions)

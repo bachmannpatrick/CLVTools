@@ -62,10 +62,10 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.tran
 
   # Check that it does have the same covariates as the ones used for fitting
   #   nocov already checked that is of correct class
-  if(!all(sort(user.newdata@names.cov.data.life) == sort(clv.fitted@clv.data@names.cov.data.life)))
+  if(!setequal(user.newdata@names.cov.data.life, clv.fitted@clv.data@names.cov.data.life))
     err.msg <- c(err.msg, "Not all Lifetime covariates used for fitting are present in the 'newdata' object!")
 
-  if(!all(sort(user.newdata@names.cov.data.trans) == sort(clv.fitted@clv.data@names.cov.data.trans)))
+  if(!setequal(user.newdata@names.cov.data.trans, clv.fitted@clv.data@names.cov.data.trans))
     err.msg <- c(err.msg, "Not all Transaction covariates used for fitting are present in the 'newdata' object!")
 
   check_err_msg(err.msg)
