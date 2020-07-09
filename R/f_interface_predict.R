@@ -11,14 +11,10 @@
 #' @template template_param_dots
 #'
 #' @description
-#' Most probabilistic latent customer attrition model capture future customer
-#' behavior as a combination of the customer's purchase and attrition process.
-#' However, in order to derive a monetary value such as CLV, customer spending
-#' also has to be considered.
 #'
 #' Probabilistic customer attrition models predict in general three expected characteristics for every customer:
 #' \itemize{
-#' \item "conditional expected transactions" (\code{CET}), which is the number of transactions to expect form a customer
+#' \item "conditional expected transactions" (\code{CET}), which is the number of transactions to expect from a customer
 #' during the prediction period,
 #' \item "probability of a customer being alive" (\code{PAlive}) at the end of the estimation period and
 #' \item "discounted expected residual transactions" (\code{DERT}) for every customer, which is the total number of
@@ -26,38 +22,37 @@
 #' In the case of time-varying covariates, instead of \code{DERT}, "discounted expected conditional transactions" (\code{DECT})
 #' is predicted. \code{DECT} does only cover a finite time horizon in contrast to \code{DERT}. For \code{continuous.discount.factor=0}, \code{DECT} corresponds to \code{CET}.
 #'}
-#' If spending information was provided in the \code{clvdata} object, by default a Gamma/Gamma model is fitted
-#' to predict spending and calculate the predicted CLV. In this case, the prediction additionally contains
-#' the following two columns:
+#'
+#' In order to derive a monetary value such as CLV, customer spending also has to be considered.
+#' If the \code{clv.data} object contains spending information, customer spending can be predicted as explained for
+#' parameter \code{predict.spending} and the predicted CLV can be calculated (if the transaction model supports \code{DERT/DECT}).
+#' In this case, the prediction additionally contains the following two columns:
 #' \itemize{
-#' \item predicted.Spending: mean spending per transactions as predicted by the Gamma/Gamma model
-#' \item CLV: the customer lifetime value
+#' \item "predicted.Spending", the mean spending per transactions as predicted by the spending model
+#' \item "CLV", the customer lifetime value
 #'}
-#'
-#'
-#' @template template_details_newdata
-#'
-#' @template template_details_predictionend
 #'
 #' @details \code{predict.spending} indicates whether to predict customers' spending and if so, the spending model to use.
 #' Accepted inputs are either a logical (\code{TRUE/FALSE}), a method to fit a spending model (i.e. \code{\link{gg}}), or
 #' an already fitted spending model. If provided \code{TRUE}, a Gamma-Gamma model is fit with default options. If argument
 #' \code{newdata} is provided, the spending model is fit on \code{newdata}. Predicting spending is only possible if
-#' the transaction data contains spending information. See examples for illustrations of
-#' valid inputs.
+#' the transaction data contains spending information. See examples for illustrations of valid inputs.
 #'
+#' @template template_details_newdata
+#'
+#' @template template_details_predictionend
 #'
 #' @details \code{continuous.discount.factor} allows to adjust the discount rate used to estimated the discounted expected
 #' transactions (\code{DERT/DECT}).
 #' The default value is \code{0.1} (=10\%). Note that a continuous rate needs to be provided.
 #'
 #'
-#'
-#' @template template_references_gg
+#' @seealso models to predict transactions: \link{pnbd}, \link{bgnbd}, \link{ggomnbd}.
+#' @seealso models to predict spending: \link{gg}.
 #'
 #'
 #' @return
-#' An object of class \code{data.table} with each columns containing the predictions:
+#' An object of class \code{data.table} with columns:
 #' \item{Id}{The respective customer identifier}
 #' \item{period.first}{First timepoint of prediction period}
 #' \item{period.last}{Last timepoint of prediction period}
@@ -65,10 +60,10 @@
 #' \item{PAlive}{Probability to be alive at the end of the estimation period}
 #' \item{CET}{The Conditional Expected Transactions}
 #' \item{DERT or DECT}{Discounted Expected Residual Transactions or Discounted Expected Conditional Transactions for dynamic covariates models}
-#' \item{actual.x}{Actual number of transactions until prediction.end. Only if there is a holdout period and the prediction ends in it.}
-#' \item{actual.Spending}{Actual spending until prediction.end. Only if there is a holdout period and the prediction ends in it, 0 otherwise.}
-#' \item{predicted.Spending}{The spending as predicted by the Gamma-Gamma model.}
-#' \item{predicted.CLV}{Customer Lifetime Value based on DERT/DECT and predicted spending.}
+#' \item{actual.x}{Actual number of transactions until prediction.end. Only if there is a holdout period and the prediction ends in it, otherwise it is not reported..}
+#' \item{actual.Spending}{Actual total spending until prediction.end.}
+#' \item{predicted.Spending}{The spending as predicted by the spending model.}
+#' \item{predicted.CLV}{Customer Lifetime Value based on DERT/DECT and \code{predicted.Spending}.}
 #'
 #' @examples
 #'
@@ -94,19 +89,6 @@
 #' predict(apparel.pnbd, prediction.end = lubridate::ymd("2016-12-31"))
 #'
 #'
-#' # Fit pnbd standard model WITHOUT holdout
-#' pnc <- pnbd(clvdata(apparelTrans, time.unit="w", date.format="ymd"))
-#'
-#' # This fails, because without holdout, a prediction.end is required
-#' \dontrun{
-#' predict(pnc)
-#' }
-#'
-#' # Now, predict 10 periods from the end of the last transaction
-#' #   (end of estimation period)
-#' predict(pnc, prediction.end = 10) # ends on 2016-12-17
-#'
-#'
 #' # Predict future transactions but not spending and CLV
 #' predict(apparel.pnbd, predict.spending = FALSE)
 #'
@@ -117,10 +99,25 @@
 #' apparel.gg <- gg(apparel.holdout, remove.first.transaction = FALSE)
 #' predict(apparel.pnbd, predict.spending = apparel.gg)
 #'
+#'
+#' # Fit pnbd standard model WITHOUT holdout
+#' pnc <- pnbd(clvdata(apparelTrans, time.unit="w", date.format="ymd"))
+#'
+#' # This fails, because without holdout, a prediction.end is required
+#' \dontrun{
+#' predict(pnc)
+#' }
+#'
+#' # But it works if providing a prediction.end
+#' predict(pnc, prediction.end = 10) # ends on 2016-12-17
 #' }
 #'
 #' @importFrom stats predict
 #' @method predict clv.fitted.transactions
+#' @aliases predict
+#' @aliases predict,clv.pnbd
+#' @aliases predict,clv.bgnbd
+#' @aliases predict,clv.ggomnbd
 #' @export
 predict.clv.fitted.transactions <- function(object, newdata=NULL, prediction.end=NULL, predict.spending=gg,
                                             continuous.discount.factor=0.1, verbose=TRUE, ...){
@@ -147,13 +144,56 @@ predict.clv.fitted.transactions <- function(object, newdata=NULL, prediction.end
 # S4 method to forward to S3 method
 #' @include all_generics.R class_clv_fitted_transactions.R
 #' @exportMethod predict
+#' @aliases predict,clv.pnbd
 #' @rdname predict.clv.fitted.transactions
 setMethod(f = "predict", signature = signature(object="clv.fitted.transactions"), predict.clv.fitted.transactions)
 
 
+
 # S3 predict for clv.fitted.spending ------------------------------------------------------------------------------
+#' @title Predict customers' future spending
+#'
+#' @param object A fitted spending model for which prediction is desired.
+#' @param newdata A clv data object for which predictions should be made with the fitted model. If none or NULL is given, predictions are made for the data on which the model was fit.
+#'
+#' @template template_param_verbose
+#' @template template_param_dots
+#'
+#' @description
+#' Predict customer's future spending and compares it to actual spending, if there is a holdout period.
+#'
+#' @details
+#' If \code{newdata} is provided, the individual customer statistics underlying the model are calculated
+#' the same way as when the model was fit initially. Hence, if \code{remove.first.transaction} was \code{TRUE},
+#' this will be applied to \code{newdata} as well.
+#'
+#' @seealso models to predict spending: \link{gg}.
+#' @seealso models to predict transactions: \link{pnbd}, \link{bgnbd}, \link{ggomnbd}.
+#'
+#'
+#' @return An object of class \code{data.table} with columns:
+#' \item{Id}{The respective customer identifier}
+#' \item{actual.spending}{Actual mean spending per transaction.}
+#' \item{predicted.Spending}{The spending as predicted by the fitted spending model.}
+#'
+#'
+#' @examples
+#' \donttest{
+#' data("apparelTrans")
+#'
+#' # Fit gg model on data
+#' apparel.holdout <- clvdata(apparelTrans, time.unit="w",
+#'                            estimation.split=37, date.format="ymd")
+#' apparel.gg <- gg(apparel.holdout)
+#'
+#' # Predict customers' future mean spending per transaction
+#' predict(apparel.gg)
+#'
+#' }
+#'
 #' @importFrom stats predict
 #' @method predict clv.fitted.spending
+#' @aliases predict,clv.gg
 #' @export
 predict.clv.fitted.spending <- function(object, newdata=NULL, verbose=TRUE, ...){
 

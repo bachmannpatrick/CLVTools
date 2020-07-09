@@ -47,7 +47,7 @@ time units smaller than a single day.
 }}
 
 \seealso{
-\linkS4class{summary.clv.time} for a summary about an object of class \code{clv.time}
+\link{summary.clv.time} for a summary about an object of class \code{clv.time}
 
 \linkS4class{clv.time.days} for an implementation of time unit 'Days'
 

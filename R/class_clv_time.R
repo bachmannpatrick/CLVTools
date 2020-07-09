@@ -26,7 +26,7 @@
 #' @slot holdout.period.in.tu Single numeric indicating the length of the holdout period in number of time units.
 #' @slot name.time.unit Single character vector storing the human-readable name of the time unit for output.
 #'
-#' @seealso \linkS4class{summary.clv.time} for a summary about an object of class \code{clv.time}
+#' @seealso \link{summary.clv.time} for a summary about an object of class \code{clv.time}
 #' @seealso \linkS4class{clv.time.days} for an implementation of time unit 'Days'
 #' @seealso \linkS4class{clv.time.weeks} for an implementation of time unit 'Weeks'
 #' @seealso \linkS4class{clv.time.years} for an implementation of time unit 'Years'

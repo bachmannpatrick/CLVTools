@@ -215,7 +215,7 @@ confint.clv.fitted <- function(object, parm, level = 0.95, ...){
 print.clv.fitted <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
   # Short print similar to lm
 
-  cat(x@clv.model@name.model, " Model\n")
+  cat(x@clv.model@name.model, "Model\n")
 
   cat("\nCall:\n", paste(deparse(x@call), sep = "\n", collapse = "\n"), "\n", sep = "")
 

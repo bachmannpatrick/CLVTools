@@ -2,6 +2,10 @@
 % Please edit documentation in R/f_interface_predict.R
 \name{predict.clv.fitted.transactions}
 \alias{predict.clv.fitted.transactions}
+\alias{predict}
+\alias{predict,clv.pnbd}
+\alias{predict,clv.bgnbd}
+\alias{predict,clv.ggomnbd}
 \alias{predict,clv.fitted.transactions-method}
 \title{Predict CLV from a fitted transaction model}
 \usage{
@@ -41,7 +45,7 @@
 \item{...}{Ignored}
 }
 \value{
-An object of class \code{data.table} with each columns containing the predictions:
+An object of class \code{data.table} with columns:
 \item{Id}{The respective customer identifier}
 \item{period.first}{First timepoint of prediction period}
 \item{period.last}{Last timepoint of prediction period}
@@ -49,20 +53,15 @@ An object of class \code{data.table} with each columns containing the prediction
 \item{PAlive}{Probability to be alive at the end of the estimation period}
 \item{CET}{The Conditional Expected Transactions}
 \item{DERT or DECT}{Discounted Expected Residual Transactions or Discounted Expected Conditional Transactions for dynamic covariates models}
-\item{actual.x}{Actual number of transactions until prediction.end. Only if there is a holdout period and the prediction ends in it.}
-\item{actual.Spending}{Actual spending until prediction.end. Only if there is a holdout period and the prediction ends in it, 0 otherwise.}
-\item{predicted.Spending}{The spending as predicted by the Gamma-Gamma model.}
-\item{predicted.CLV}{Customer Lifetime Value based on DERT/DECT and predicted spending.}
+\item{actual.x}{Actual number of transactions until prediction.end. Only if there is a holdout period and the prediction ends in it, otherwise it is not reported..}
+\item{actual.Spending}{Actual total spending until prediction.end.}
+\item{predicted.Spending}{The spending as predicted by the spending model.}
+\item{predicted.CLV}{Customer Lifetime Value based on DERT/DECT and \code{predicted.Spending}.}
 }
 \description{
-Most probabilistic latent customer attrition model capture future customer
-behavior as a combination of the customer's purchase and attrition process.
-However, in order to derive a monetary value such as CLV, customer spending
-also has to be considered.
-
 Probabilistic customer attrition models predict in general three expected characteristics for every customer:
 \itemize{
-\item "conditional expected transactions" (\code{CET}), which is the number of transactions to expect form a customer
+\item "conditional expected transactions" (\code{CET}), which is the number of transactions to expect from a customer
 during the prediction period,
 \item "probability of a customer being alive" (\code{PAlive}) at the end of the estimation period and
 \item "discounted expected residual transactions" (\code{DERT}) for every customer, which is the total number of
@@ -70,15 +69,23 @@ transactions for the residual lifetime of a customer discounted to the end of th
 In the case of time-varying covariates, instead of \code{DERT}, "discounted expected conditional transactions" (\code{DECT})
 is predicted. \code{DECT} does only cover a finite time horizon in contrast to \code{DERT}. For \code{continuous.discount.factor=0}, \code{DECT} corresponds to \code{CET}.
 }
-If spending information was provided in the \code{clvdata} object, by default a Gamma/Gamma model is fitted
-to predict spending and calculate the predicted CLV. In this case, the prediction additionally contains
-the following two columns:
+
+In order to derive a monetary value such as CLV, customer spending also has to be considered.
+If the \code{clv.data} object contains spending information, customer spending can be predicted as explained for
+parameter \code{predict.spending} and the predicted CLV can be calculated (if the transaction model supports \code{DERT/DECT}).
+In this case, the prediction additionally contains the following two columns:
 \itemize{
-\item predicted.Spending: mean spending per transactions as predicted by the Gamma/Gamma model
-\item CLV: the customer lifetime value
+\item "predicted.Spending", the mean spending per transactions as predicted by the spending model
+\item "CLV", the customer lifetime value
 }
 }
 \details{
+\code{predict.spending} indicates whether to predict customers' spending and if so, the spending model to use.
+Accepted inputs are either a logical (\code{TRUE/FALSE}), a method to fit a spending model (i.e. \code{\link{gg}}), or
+an already fitted spending model. If provided \code{TRUE}, a Gamma-Gamma model is fit with default options. If argument
+\code{newdata} is provided, the spending model is fit on \code{newdata}. Predicting spending is only possible if
+the transaction data contains spending information. See examples for illustrations of valid inputs.
+
 The \code{newdata} argument has to be a clv data object of the exact same class as the data object
 on which the model was fit. In case the model was fit with covariates, \code{newdata} needs to contain identically
 named covariate data.
@@ -103,13 +110,6 @@ of the first prediction period is Monday 2019-01-02. Each prediction period incl
 the first prediction period therefore will end on, and include, Sunday 2019-01-08. Subsequent prediction periods
 again start on Mondays and end on Sundays.
 If \code{prediction.end} indicates a timepoint on which to end, this timepoint is included in the prediction period.
-
-\code{predict.spending} indicates whether to predict customers' spending and if so, the spending model to use.
-Accepted inputs are either a logical (\code{TRUE/FALSE}), a method to fit a spending model (i.e. \code{\link{gg}}), or
-an already fitted spending model. If provided \code{TRUE}, a Gamma-Gamma model is fit with default options. If argument
-\code{newdata} is provided, the spending model is fit on \code{newdata}. Predicting spending is only possible if
-the transaction data contains spending information. See examples for illustrations of
-valid inputs.
 
 \code{continuous.discount.factor} allows to adjust the discount rate used to estimated the discounted expected
 transactions (\code{DERT/DECT}).
@@ -139,19 +139,6 @@ predict(apparel.pnbd, prediction.end = "2016-12-31")
 predict(apparel.pnbd, prediction.end = lubridate::ymd("2016-12-31"))
 
 
-# Fit pnbd standard model WITHOUT holdout
-pnc <- pnbd(clvdata(apparelTrans, time.unit="w", date.format="ymd"))
-
-# This fails, because without holdout, a prediction.end is required
-\dontrun{
-predict(pnc)
-}
-
-# Now, predict 10 periods from the end of the last transaction
-#   (end of estimation period)
-predict(pnc, prediction.end = 10) # ends on 2016-12-17
-
-
 # Predict future transactions but not spending and CLV
 predict(apparel.pnbd, predict.spending = FALSE)
 
@@ -162,16 +149,22 @@ predict(apparel.pnbd, predict.spending = gg)
 apparel.gg <- gg(apparel.holdout, remove.first.transaction = FALSE)
 predict(apparel.pnbd, predict.spending = apparel.gg)
 
+
+# Fit pnbd standard model WITHOUT holdout
+pnc <- pnbd(clvdata(apparelTrans, time.unit="w", date.format="ymd"))
+
+# This fails, because without holdout, a prediction.end is required
+\dontrun{
+predict(pnc)
+}
+
+# But it works if providing a prediction.end
+predict(pnc, prediction.end = 10) # ends on 2016-12-17
 }
 
 }
-\references{
-Colombo R, Jiang W (1999). \dQuote{A stochastic RFM model.}
-Journal of Interactive Marketing, 13(3), 2–12.
+\seealso{
+models to predict transactions: \link{pnbd}, \link{bgnbd}, \link{ggomnbd}.
 
-Fader PS, Hardie BG, Lee K (2005). \dQuote{RFM and CLV: Using Iso-Value Curves for
-Customer Base Analysis.} Journal of Marketing Research, 42(4), 415–430.
-
-Fader PS, Hardie BG (2013). \dQuote{The Gamma-Gamma Model of Monetary Value.}
-URL \url{http://www.brucehardie.com/notes/025/gamma_gamma.pdf}.
+models to predict spending: \link{gg}.
 }
