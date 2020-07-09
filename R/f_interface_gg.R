@@ -22,7 +22,9 @@
 #' to be > 0.
 #'
 #' \subsection{The Gamma-Gamma model}{
-#' **TODO: PATRICK: Something about GG
+#'
+#'
+#' **TODO: PATRICK: Something about GG, assumptions, limitations, etc?
 #' }
 #'
 #' @return

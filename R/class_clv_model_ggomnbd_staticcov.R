@@ -25,24 +25,10 @@ clv.model.ggomnbd.static.cov <- function(){
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
 # . clv.model.check.input.args ------------------------------------------------------------------------------------------------------------
-#' @include all_generics.R
-setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.ggomnbd.static.cov"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose,
-                                                                                                                                   names.cov.life, names.cov.trans,
-                                                                                                                                   start.params.life, start.params.trans,
-                                                                                                                                   names.cov.constr,start.params.constr,
-                                                                                                                                   reg.lambdas, ...){
-
-  # Check start.params.model in ggomnbd.no.cov function
-  #   but with no cov specific inputs only
-  callNextMethod(clv.model=clv.model, clv.fitted=clv.fitted, start.params.model=start.params.model, use.cor=use.cor,
-                 start.param.cor=start.param.cor, optimx.args=optimx.args, verbose=verbose)
-})
+# Use nocov
 
 # . clv.model.put.estimation.input ------------------------------------------------------------------------------------------------------------
-#   Use ggomnbd.no.cov methods, dont need to overwrite
-# setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model.ggomnbd.static.cov"), definition = function(clv.model, clv.fitted, ...){
-#   return(callNextMethod())
-# })
+# Nothing specific required, use nocov
 
 # . clv.model.transform.start.params.cov ------------------------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.transform.start.params.cov", signature = signature(clv.model="clv.model.ggomnbd.static.cov"), definition = function(clv.model, start.params.cov){

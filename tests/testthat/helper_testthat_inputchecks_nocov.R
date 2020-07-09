@@ -278,7 +278,7 @@ fct.testthat.inputchecks.clvfittedtransactions.nocov <- function(name.method, me
                                       l.illegal.start.params.model=l.illegal.start.params.model, data.cdnow=data.cdnow)
 
 
-  fct.testthat.inputchecks.cannot.predict.without.spending(method = method, cdnow = data.cdnow, is.spending.model = FALSE)
+  fct.testthat.inputchecks.cannot.predict.without.spending(method = method, data.cdnow = data.cdnow, is.spending.model = FALSE)
 
   if(has.cor){
     context(paste0("Inputchecks - ",name.method," nocov - Parameter use.cor"))

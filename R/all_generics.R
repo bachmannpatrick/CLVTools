@@ -15,7 +15,7 @@ setGeneric(name = "predict")
 # Steps performed by all models but different between base (no cov) and covariate models
 
 # . Estimate ---------------------------------------------------------------------------------------------------
-setGeneric("clv.controlflow.estimate.check.inputs", def=function(clv.fitted,  start.params.model, use.cor, start.param.cor, optimx.args, verbose,...)
+setGeneric("clv.controlflow.estimate.check.inputs", def=function(clv.fitted,  start.params.model, optimx.args, verbose,...)
   standardGeneric("clv.controlflow.estimate.check.inputs"))
 
 setGeneric("clv.controlflow.estimate.put.inputs", def=function(clv.fitted, verbose, ...)
@@ -81,7 +81,7 @@ setGeneric("clv.controlflow.plot.get.data", def = function(obj, dt.expectation.s
 
 # .. Estimate ----------------------------------------------------------------------------------------------------------------------
 # Perform model specific checks on user inputs to estimate
-setGeneric("clv.model.check.input.args", def = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...)
+setGeneric("clv.model.check.input.args", def = function(clv.model, clv.fitted, start.params.model, optimx.args, verbose, ...)
   standardGeneric("clv.model.check.input.args"))
 
 # Store additional arguments potentially given in estimate

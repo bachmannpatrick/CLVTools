@@ -1,15 +1,12 @@
 # . clv.controlflow.estimate.check.inputs ------------------------------------------------------------------------------
-setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted,  start.params.model, use.cor, start.param.cor, optimx.args, # clv.fitted input args
-                                                                                                                                 verbose,
+setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted,  start.params.model, optimx.args, verbose, # clv.fitted input args
                                                                                                                                  names.cov.life, names.cov.trans,
                                                                                                                                  start.params.life, start.params.trans,
                                                                                                                                  reg.lambdas,
                                                                                                                                  names.cov.constr, start.params.constr, cl, ...){
 
-  # check clv.fitted input
-  #   only forward what would have been passed if nocov model was estimated because in the parent method
-  #   it is warned if there are addtional unneded params in ...
-  callNextMethod(clv.fitted=clv.fitted,use.cor=use.cor, start.param.cor=start.param.cor, start.params.model=start.params.model, optimx.args=optimx.args, verbose=verbose)
+  # check input for clv.fitted.transactions
+  callNextMethod()
 
   # Additional covariates input args checks
   err.msg <- c()
@@ -134,7 +131,6 @@ setMethod("clv.controlflow.estimate.generate.start.params", signature = signatur
           # original signature: clv.fitted, start.params.model
           definition = function(clv.fitted,
                                 start.params.model,
-                                start.param.cor,
                                 start.params.life,
                                 start.params.trans,
                                 start.params.constr,

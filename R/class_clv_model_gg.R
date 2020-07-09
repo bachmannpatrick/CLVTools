@@ -32,7 +32,7 @@ clv.model.gg <- function(){
 # Methods --------------------------------------------------------------------------------------------------------------------------------
 
 # .clv.model.check.input.args -----------------------------------------------------------------------------------------------------------
-setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.gg"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...){
+setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.gg"), definition = function(clv.model, clv.fitted, start.params.model, optimx.args, verbose, ...){
   err.msg <- c()
   # Have to be > 0 as will be logged
   if(any(start.params.model <= 0))

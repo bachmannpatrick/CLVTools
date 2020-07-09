@@ -20,7 +20,7 @@ clv.model.bgnbd.no.cov <- function(){
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
-setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...){
+setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, start.params.model, optimx.args, verbose, ...){
 
   err.msg <- c()
 
@@ -34,10 +34,7 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
 
 
 # .clv.model.put.estimation.input --------------------------------------------------------------------------------------------------------
-# setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, verbose, ...){
-#   # nothing to put specifically for this model
-#   return(clv.model)
-# })
+# Nothing required, use clv.model.no.correlation
 
 # .clv.model.transform.start.params.model --------------------------------------------------------------------------------------------------------
 #' @importFrom stats setNames

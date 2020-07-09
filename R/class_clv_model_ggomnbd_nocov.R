@@ -29,7 +29,7 @@ clv.model.ggomnbd.no.cov <- function(){
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
-setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.ggomnbd.no.cov"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...){
+setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.ggomnbd.no.cov"), definition = function(clv.model, clv.fitted, start.params.model, optimx.args, verbose, ...){
 
   err.msg <- c()
 
@@ -41,10 +41,10 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
   check_err_msg(err.msg)
 })
 
-# setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model.ggomnbd.no.cov"), definition = function(clv.model, clv.fitted, verbose, ...){
-#   # nothing to put specifically for this model
-#   return(clv.model)
-# })
+# .clv.model.put.estimation.input --------------------------------------------------------------------------------------------------------
+# Nothing required, use clv.model.no.correlation
+
+
 
 #' @importFrom stats setNames
 setMethod("clv.model.transform.start.params.model", signature = signature(clv.model="clv.model.ggomnbd.no.cov"), definition = function(clv.model, original.start.params.model){

@@ -34,7 +34,7 @@ clv.model.pnbd.no.cov <- function(){
 # Methods --------------------------------------------------------------------------------------------------------------------------------
 
 # .clv.model.check.input.args -----------------------------------------------------------------------------------------------------------
-setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...){
+setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, start.params.model, optimx.args, verbose, use.cor, start.param.cor, ...){
   err.msg <- c()
   # Have to be > 0 as will be logged
   if(any(start.params.model <= 0))
@@ -48,10 +48,8 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
 
 
 # .clv.model.put.estimation.input --------------------------------------------------------------------------------------------------------
-# setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, verbose, ...){
-#   # nothing to put specifically for this model
-#   return(clv.model)
-# })
+# Nothing required, use clv.model.with.correlation
+
 
 # .clv.model.transform.start.params.model --------------------------------------------------------------------------------------------------------
 #' @importFrom stats setNames

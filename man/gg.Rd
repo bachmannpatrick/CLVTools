@@ -50,7 +50,9 @@ If no start parameters are given, 1.0 is used for all model parameters. All para
 to be > 0.
 
 \subsection{The Gamma-Gamma model}{
-**TODO: PATRICK: Something about GG
+
+
+**TODO: PATRICK: Something about GG, assumptions, limitations, etc?
 }
 }
 \examples{

@@ -13,7 +13,8 @@ fct.testthat.runability.clvfittedspending <- function(name.model, method,
   clv.newdata.nohold   <- fct.helper.create.fake.newdata.nocov(data = data.cdnow, estimation.split = NULL)
   clv.newdata.withhold <- fct.helper.create.fake.newdata.nocov(data = data.cdnow, estimation.split = 37)
 
-  l.args.test.all.s3 <- list(full.names = c("p", "q", "gamma"),
+  param.names <- names(start.params.model)
+  l.args.test.all.s3 <- list(full.names = param.names,
                              clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
 
   # clv.fitted tests ------------------------------------------------------------------------------------------------
@@ -49,7 +50,7 @@ fct.testthat.runability.clvfittedspending <- function(name.model, method,
   clv.newdata.cov.withhold <- fct.helper.create.fake.newdata.staticcov(data.trans = data.apparelTrans, names.cov = c("Gender", "Channel"),
                                                                        estimation.split = 40)
 
-  l.args.test.all.s3.cov <- list(full.names = c("p", "q", "gamma"), clv.newdata.nohold = clv.newdata.cov.nohold,
+  l.args.test.all.s3.cov <- list(full.names = param.names, clv.newdata.nohold = clv.newdata.cov.nohold,
                                  clv.newdata.withhold = clv.newdata.cov.withhold)
 
   fct.testthat.runability.clvfitted.out.of.the.box.no.hold(method = method, clv.data.noholdout = clv.data.cov.no.holdout,
@@ -63,7 +64,7 @@ fct.testthat.runability.clvfittedspending <- function(name.model, method,
   fitted.dyncov    <- fct.helper.load.fitted.dyncov()
   clv.data.dyn.cov <- fitted.dyncov@clv.data
 
-  l.args.test.all.s3.dyncov <- list(full.names = c("p", "q", "gamma"), clv.newdata.nohold = clv.data.dyn.cov,
+  l.args.test.all.s3.dyncov <- list(full.names = param.names, clv.newdata.nohold = clv.data.dyn.cov,
                                     clv.newdata.withhold = clv.data.dyn.cov)
   fct.testthat.runability.clvfitted.out.of.the.box.with.hold(method = method, clv.data.withholdout = clv.data.dyn.cov,
                                                              fct.test.all.s3 = fct.helper.clvfittedspending.all.s3,
