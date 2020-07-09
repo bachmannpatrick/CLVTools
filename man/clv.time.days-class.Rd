@@ -10,8 +10,8 @@ with instances of class \code{Date}. Hence, no temporal resolution finer than 1 
 possible with this time unit.
 }
 \seealso{
-\code{\link[CLVTools:clv.time-class]{clv.time}}
+\linkS4class{clv.time}
 
-\code{\link[CLVTools:clv.time.date-class]{clv.time.date}}
+\linkS4class{clv.time.date}
 }
 \keyword{internal}

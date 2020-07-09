@@ -1,7 +1,7 @@
 #' Transactional data to fit CLV models
 #'
 #' @description
-#' Stores the processed transactional data and holds an object of class \code{\link[CLVTools:clv.time-class]{clv.time}}
+#' Stores the processed transactional data and holds an object of class \linkS4class{clv.time}
 #' which stores further information about the split in an estimation and holdout sample.
 #'
 #' A \code{clv.data} object serves as input into the various model fitting functions.
@@ -14,7 +14,7 @@
 #' @slot has.spending Single logical whether the data contains information about the amount spent per transaction
 #' @slot has.holdout Single logical whether the data is split in a holdout and estimation period
 #'
-#' @seealso \code{\link[CLVTools:clv.time-class]{clv.time}}
+#' @seealso \linkS4class{clv.time}
 #'
 #' @keywords internal
 #' @include all_generics.R class_clv_time.R

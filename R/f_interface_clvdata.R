@@ -53,7 +53,7 @@
 #'
 #' @return
 #' An object of class \code{clv.data}.
-#' See the class definition \code{\link[CLVTools:clv.data-class]{clv.data}}
+#' See the class definition \linkS4class{clv.data}
 #' for more details about the returned object.
 #'
 #' The function \code{summary} can be used to obtain and print a summary of the data.

@@ -10,10 +10,10 @@
 #'
 #' \code{clv.time} is a virtual class and sub-classes implement the actual parsing and calculations.
 #'
-#' \code{\link[CLVTools:clv.time.date-class]{clv.time.date}} uses data type \code{Date} for time units equal or
+#' \linkS4class{clv.time.date} uses data type \code{Date} for time units equal or
 #' greater than a single day that do not require a time of day.
 #'
-#' \code{\link[CLVTools:clv.time.datetime-class]{clv.time.datetime}} uses data type \code{POSIXct} for
+#' \linkS4class{clv.time.datetime} uses data type \code{POSIXct} for
 #' time units smaller than a single day.
 #'
 #'
@@ -26,10 +26,10 @@
 #' @slot holdout.period.in.tu Single numeric indicating the length of the holdout period in number of time units.
 #' @slot name.time.unit Single character vector storing the human-readable name of the time unit for output.
 #'
-#' @seealso \code{\link[CLVTools:summary.clv.time]{summary.clv.time}} for a summary about an object of class \code{clv.time}
-#' @seealso \code{\link[CLVTools:clv.time.days-class]{clv.time.days}} for an implementation of time unit 'Days'
-#' @seealso \code{\link[CLVTools:clv.time.weeks-class]{clv.time.weeks}} for an implementation of time unit 'Weeks'
-#' @seealso \code{\link[CLVTools:clv.time.years-class]{clv.time.years}} for an implementation of time unit 'Years'
+#' @seealso \linkS4class{summary.clv.time} for a summary about an object of class \code{clv.time}
+#' @seealso \linkS4class{clv.time.days} for an implementation of time unit 'Days'
+#' @seealso \linkS4class{clv.time.weeks} for an implementation of time unit 'Weeks'
+#' @seealso \linkS4class{clv.time.years} for an implementation of time unit 'Years'
 #'
 #'
 #' @include all_generics.R
