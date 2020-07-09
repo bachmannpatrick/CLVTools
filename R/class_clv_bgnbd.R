@@ -1,6 +1,6 @@
 #' @templateVar name_model_full BG/NBD
 #' @templateVar name_class_clvmodel clv.model.bgnbd.no.cov
-#' @template template_class_clvfittedmodels
+#' @template template_class_clvfittedtransactionmodels
 #'
 #' @template template_slot_bgnbdcbs
 #'

@@ -5,7 +5,7 @@
 \name{clv.fitted.transactions.static.cov-class}
 \alias{clv.fitted.transactions.static.cov-class}
 \alias{show,clv.fitted.transactions.static.cov-method}
-\title{Fitted CLV Model with Static covariates}
+\title{Fitted Transaction Model with Static covariates}
 \usage{
 \S4method{show}{clv.fitted.transactions.static.cov}(object)
 }

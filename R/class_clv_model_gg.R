@@ -1,3 +1,10 @@
+#' CLV Model functionality for the Gamma-Gamma spending model
+#'
+#' This class implements the functionalities and model-specific steps which are required
+#' to fit the Gamma-Gamma spending model.
+#'
+#' @importFrom methods setClass
+#' @keywords internal
 #' @include all_generics.R class_clv_model_nocorrelation.R
 setClass(Class = "clv.model.gg", contains = "clv.model.no.correlation")
 

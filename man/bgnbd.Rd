@@ -58,7 +58,11 @@ If multiple optimization methods are specified, only the result of the last meth
 }
 \value{
 Depending on the data object on which the model was fit, \code{bgnbd} returns either an object of
-class \link[CLVTools:clv.bgnbd-class]{clv.bgnbd} or \link[CLVTools:clv.bgnbd.static.cov-class]{clv.bgnbd.static.cov}.
+class \linkS4class{clv.bgnbd} or \linkS4class{clv.bgnbd.static.cov}.
+
+The function \code{\link[CLVTools:summary.clv.fitted]{summary}} can be used to obtain and print a summary of the results.
+The generic accessor functions \code{coefficients}, \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}},
+\code{logLik}, \code{AIC}, \code{BIC}, and \code{nobs} are available.
 }
 \description{
 Fits BG/NBD models on transactional data without and with static covariates.
@@ -103,7 +107,7 @@ clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
 # Fit standard bgnbd model
 bgnbd(clv.data.apparel)
 
-# Give initial guesses for the Model parameters
+# Give initial guesses for the model parameters
 bgnbd(clv.data.apparel,
      start.params.model = c(r=0.5, alpha=15, a = 2, b=5))
 
@@ -172,9 +176,9 @@ URL \url{http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf}.
 \code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object, \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}}
 to add static covariates to an existing clv data object.
 
-\code{\link[CLVTools:predict.clv.fitted]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
+\code{\link[CLVTools:predict.clv.fitted.transactions]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
 
-\code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation as predicted by the fitted model
+\code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} to plot the unconditional expectation as predicted by the fitted model
 
 The generic functions \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:summary.clv.fitted]{summary}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
 }

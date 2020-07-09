@@ -1,6 +1,6 @@
 #' @templateVar name_model_full Pareto/NBD
 #' @templateVar name_class_clvmodel clv.model.pnbd.static.cov
-#' @template template_class_clvfittedmodels_staticcov
+#' @template template_class_clvfittedtransactionmodels_staticcov
 #'
 #' @template template_slot_pnbdcbs
 #'

@@ -9,8 +9,8 @@ Output from fitting the Pareto/NBD model on data with static covariates. It cons
 estimation result and is returned to the user to use it as input to other methods such as
 to make predictions or plot the unconditional expectation.
 
-Inherits from \code{clv.fitted.transactions.static.cov} in order to execute all steps required for fitting a model
-with static covariates and it contains an instance of class \code{clv.model.pnbd.static.cov} which
+Inherits from \linkS4class{clv.fitted.transactions.static.cov} in order to execute all steps required for fitting a model
+with static covariates and it contains an instance of class \linkS4class{clv.model.pnbd.static.cov} which
 provides the required Pareto/NBD (static covariates) specific functionalities.
 }
 \section{Slots}{

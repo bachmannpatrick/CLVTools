@@ -19,6 +19,28 @@ fct.testthat.inputchecks.clvfitted.predict.newdata.not.clvdata <- function(clv.f
   })
 }
 
+fct.testthat.inputchecks.clvfitted.na.in.prediction.params.model <- function(s3method, clv.fitted){
+  test_that("Fails if prediction.params.model are NA", {
+    skip_on_cran()
+
+    clv.fitted@prediction.params.model[2] <- NA_real_
+    expect_error(do.call(s3method, list(clv.fitted, prediction.end = 6)), regexp = "NAs in the estimated model")
+  })
+}
+
+
+fct.testthat.inputchecks.clvfittedtransactions.cov.na.in.prediction.params.cov <- function(s3method, clv.fitted.cov){
+  test_that("Fails if prediction.params.life/trans are NA", {
+    skip_on_cran()
+    clv.fitted.cov@prediction.params.life[1] <- NA_real_
+    expect_error(do.call(s3method, list(clv.fitted.cov, prediction.end = 6)), regexp = "NAs in the estimated covariate")
+    clv.fitted.cov@prediction.params.life[1] <- 1 # remove NA
+
+    clv.fitted.cov@prediction.params.trans[1] <- NA_real_
+    expect_error(do.call(s3method, list(clv.fitted.cov, prediction.end = 6)), regexp = "NAs in the estimated covariate")
+    clv.fitted.cov@prediction.params.trans[1] <- 1 # remove NA
+  })
+}
 
 fct.testthat.inputchecks.clvfittedtransactions.predict.discountfactor.out.of.range <- function(clv.fitted.transactions){
   test_that("Fails if discount factor out of [0,1)", {
@@ -166,11 +188,10 @@ fct.testthat.inputchecks.clvfittedtransactions.predict.predict.spending.has.NA <
 
 
 
-
 fct.testthat.inputchecks.clvfittedtransactions <- function(data.cdnow, data.apparelTrans, data.apparelStaticCov){
   context("Inputchecks - clv.fitted.transactions predict - newdata")
   clv.data.apparel.static.cov <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
-                                                                 estimation.split = 40)
+                                                                             estimation.split = 40)
   expect_silent(fitted.apparel.static <- pnbd(clv.data.apparel.static.cov, verbose = FALSE))
   expect_silent(clv.data.cdnow.nohold <- clvdata(data.cdnow, "ymd", "w", estimation.split = NULL))
   expect_silent(fitted.cdnow.nohold   <- pnbd(clv.data.cdnow.nohold, verbose = FALSE))
@@ -184,6 +205,10 @@ fct.testthat.inputchecks.clvfittedtransactions <- function(data.cdnow, data.appa
                                                                                     clv.data.no.cov = clv.data.cdnow.nohold,
                                                                                     clv.data.static.cov = clv.data.apparel.static.cov)
 
+
+  # General inputchecks
+  fct.testthat.inputchecks.clvfitted.na.in.prediction.params.model(s3method = predict, clv.fitted = fitted.cdnow.nohold)
+  fct.testthat.inputchecks.clvfittedtransactions.cov.na.in.prediction.params.cov(s3method = predict, clv.fitted.cov = fitted.apparel.static)
 
   context("Inputchecks - clv.fitted.transactions predict - prediction.end")
   fct.testthat.inputchecks.clvfittedtransactions.predict.prediction.end.fails.no.holdout(clv.fitted.transactions.no.hold = fitted.cdnow.nohold)

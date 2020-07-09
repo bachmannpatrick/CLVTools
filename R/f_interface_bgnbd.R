@@ -45,13 +45,12 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), optimx.args
 #' the technical note by Fader and Hardie (2007).
 #' }
 #'
-#' @return
-#' Depending on the data object on which the model was fit, \code{bgnbd} returns either an object of
-#' class \link[CLVTools:clv.bgnbd-class]{clv.bgnbd} or \link[CLVTools:clv.bgnbd.static.cov-class]{clv.bgnbd.static.cov}.
+#' @return Depending on the data object on which the model was fit, \code{bgnbd} returns either an object of
+#' class \linkS4class{clv.bgnbd} or \linkS4class{clv.bgnbd.static.cov}.
 #'
 #' @template template_clvfitted_returnvalue
 #'
-#' @template template_clvfitted_seealso
+#' @template template_clvfittedtransactions_seealso
 #'
 #' @template template_references_bgnbd
 #'

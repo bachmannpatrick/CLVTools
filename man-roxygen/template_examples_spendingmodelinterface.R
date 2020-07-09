@@ -3,7 +3,7 @@
 #' clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
 #'                             time.unit = "w", estimation.split = 40)
 #'
-#' # Fit standard <%=name_model_short%> model
+#' # Fit the <%=name_model_short%> model
 #' <%=name_model_short%>(clv.data.apparel)
 #'
 #' # Give initial guesses for the model parameters
@@ -24,11 +24,9 @@
 #' # summary of the fitted model
 #' summary(apparel.<%=name_model_short%>)
 #'
-#' # predict CLV etc for holdout period
+#' # predict mean spending and compare against
+#' #    actuals in the holdout period
 #' predict(apparel.<%=name_model_short%>)
-#'
-#' # predict CLV etc for the next 15 periods
-#' predict(apparel.<%=name_model_short%>, prediction.end = 15)
 #' }
 
 

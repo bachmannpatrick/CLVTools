@@ -187,27 +187,27 @@ fct.testthat.inputchecks.fails.for.start.params.subzero <- function(method, l.st
   })
 }
 
-fct.testthat.inputchecks.cannot.fit.without.spending <- function(method, cdnow){
+fct.testthat.inputchecks.cannot.fit.without.spending <- function(method, data.cdnow){
   test_that("Cannot fit without spending data", {
     skip_on_cran()
-    expect_silent(clv.cdnow.no.spending <- clvdata(cdnow, name.price = NULL, date.format = "ymd", time.unit = "w",
+    expect_silent(clv.cdnow.no.spending <- clvdata(data.cdnow, name.price = NULL, date.format = "ymd", time.unit = "w",
                                                    estimation.split = 37))
     expect_error(do.call(method, list(clv.data = clv.cdnow.no.spending, verbose=FALSE)),
                  regexp = "spending data")
   })
 }
 
-fct.testthat.inputchecks.cannot.predict.without.spending <- function(method, cdnow, is.spending.model){
+fct.testthat.inputchecks.cannot.predict.without.spending <- function(method, data.cdnow, is.spending.model){
   test_that("Spending fit cannot predict on newdata that has no spending", {
     skip_on_cran()
 
     # Fit with spending
-    l.args <- list(clv.data = clvdata(cdnow, name.price = "Price", date.format = "ymd", time.unit = "w", estimation.split = 37),
+    l.args <- list(clv.data = clvdata(data.cdnow, name.price = "Price", date.format = "ymd", time.unit = "w", estimation.split = 37),
                    verbose = FALSE)
     expect_silent(clv.spending <- do.call(what = method, args = l.args))
 
     # Data without spending
-    expect_silent(clv.cdnow.nospending <- clvdata(cdnow, name.price = NULL, date.format = "ymd", time.unit = "w", estimation.split = 37))
+    expect_silent(clv.cdnow.nospending <- clvdata(data.cdnow, name.price = NULL, date.format = "ymd", time.unit = "w", estimation.split = 37))
 
     if(is.spending.model){
       expect_error(predict(clv.spending, newdata=clv.cdnow.nospending, verbose=FALSE),
@@ -311,8 +311,8 @@ fct.testthat.inputchecks.clvfittedspending.nocov <- function(name.method, method
   fct.testthat.inputchecks.remove.first.transaction(method = method, l.std.args = l.std.args.withholdout)
 
   context(paste0("Inputchecks - ",name.method," nocov - Parameter clvdata/newdata always have spending"))
-  fct.testthat.inputchecks.cannot.fit.without.spending(method = method, cdnow = cdnow)
-  fct.testthat.inputchecks.cannot.predict.without.spending(method = method, cdnow = data.cdnow, is.spending.model = TRUE)
+  fct.testthat.inputchecks.cannot.fit.without.spending(method = method, data.cdnow = data.cdnow)
+  fct.testthat.inputchecks.cannot.predict.without.spending(method = method, data.cdnow = data.cdnow, is.spending.model = TRUE)
 }
 
 

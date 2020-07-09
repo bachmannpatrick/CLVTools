@@ -9,8 +9,8 @@ Output from fitting the Pareto/NBD model on data without covariates. It constitu
 result and is returned to the user to use it as input to other methods such as to make
 predictions or plot the unconditional expectation.
 
-Inherits from \code{clv.fitted} in order to execute all steps required for fitting a model
-without covariates and it contains an instance of class \code{clv.model.pnbd.no.cov} which
+Inherits from \linkS4class{clv.fitted.transactions} in order to execute all steps required for fitting a model
+without covariates and it contains an instance of class \linkS4class{clv.model.pnbd.no.cov} which
 provides the required Pareto/NBD (no covariates) specific functionalities.
 }
 \section{Slots}{

@@ -1,4 +1,4 @@
-#' Fitted CLV Model with Static covariates
+#' Fitted Transaction Model with Static covariates
 #'
 #' Extends the class \code{clv.fitted.transactions} with slots to accommodate the various additional
 #' optimization options that can be used for covariates models.

@@ -53,7 +53,7 @@ setMethod(f = "clv.controlflow.predict.set.prediction.params", signature = signa
 
 
 # . clv.controlflow.check.prediction.params -----------------------------------------------------------------
-setMethod("clv.controlflow.check.prediction.params", signature = signature(clv.fitted = "clv.fitted.static.cov"), function(clv.fitted){
+setMethod("clv.controlflow.check.prediction.params", signature = signature(clv.fitted = "clv.fitted.transactions.static.cov"), function(clv.fitted){
   # Check model prediction params
   callNextMethod()
 

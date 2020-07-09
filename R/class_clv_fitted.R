@@ -3,14 +3,15 @@
 setOldClass("optimx")
 
 
-#' Fitted CLV Model without covariates
+#' Fitted model without covariates
 #'
 #' @description
 #' The class stores the transaction data and various optimization outputs and options.
 #' It is created already when model fitting is initiated and is then used to perform no covariate specific steps
 #' during the estimation process.
+#' Serves as parent classes to fitted transaction and spending models.
 #'
-#' Created from an existing clv.data and clv.model object (or subclasses thereof).
+#' Created with an existing clv.data and clv.model object (or subclasses thereof).
 #'
 #' @slot call Single language of the call used to create the object
 #' @slot clv.model Single object of (sub-) class \code{clv.model} that determines model-specific behavior.
@@ -19,7 +20,7 @@ setOldClass("optimx")
 #' @slot optimx.estimation.output A single object of class \code{optimx} as returned from method \code{optimx::optimx} after optimizing the log-likelihood fitting the model.
 #' @slot optimx.hessian Single matrix that is the hessian extracted from the last row of the optimization output stored in the slot \code{optimx.estimation.output}.
 #'
-#' @seealso \code{\link[CLVTools:clv.fitted.transactions.static.cov-class]{clv.fitted.transactions.static.cov}}, \code{\link[CLVTools:clv.fitted.transactions.dynamic.cov-class]{clv.fitted.transactions.dynamic.cov}}
+#' @seealso \linkS4class{clv.fitted.spending}, \linkS4class{clv.fitted.transactions}, \linkS4class{clv.fitted.transactions.static.cov}, \linkS4class{clv.fitted.transactions.dynamic.cov}
 #'
 #' @importFrom methods setClass
 #' @keywords internal

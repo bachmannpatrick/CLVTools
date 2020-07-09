@@ -1,3 +1,10 @@
+#' Fitted Spending Model
+#'
+#' Extends the class \code{clv.fitted} with slots for spending models and performs steps during the
+#' estimation, prediction and plotting process that are specific to all spending models.
+#'
+#' @slot estimation.removed.first.transaction Single boolean whether every customers' first transaction was removed when counting transactions.
+#'
 #' @include class_clv_fitted.R
 #' @keywords internal
 setClass(Class = "clv.fitted.spending", contains = "clv.fitted",

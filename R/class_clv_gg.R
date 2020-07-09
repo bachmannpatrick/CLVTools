@@ -1,3 +1,17 @@
+#' @templateVar name_model_full GammaGamma
+#' @templateVar name_class_clvmodel clv.model.gg
+#' @template template_class_clvfittedspendingmodels
+#'
+#' @slot cbs Single \code{data.table} that contains information about
+#' each customers' mean spending per transaction and the number of purchases which depends on whether the
+#' first transaction was removed or not.
+#'
+#' @seealso \linkS4class{clv.fitted}, \linkS4class{clv.fitted.spending}, \linkS4class{clv.model.gg}
+#'
+#'
+#' @keywords internal
+#' @importFrom methods setClass
+#' @include class_clv_model_gg.R class_clv_fitted_spending.R
 setClass(Class = "clv.gg", contains = "clv.fitted.spending",
          slots = c(
            cbs = "data.table"),

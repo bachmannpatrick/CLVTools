@@ -418,7 +418,7 @@ vcov.summary.clv.fitted <- function(object, ...){
 #'
 #' @template template_details_predictionend
 #'
-#' @seealso \code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation
+#' @seealso \code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} to plot the unconditional expectation
 #'
 #' @return
 #' A \code{data.table} which contains the following columns:

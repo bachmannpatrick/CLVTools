@@ -1,4 +1,7 @@
-#' Fitted CLV Transaction Model without covariates
+#' Fitted Transaction Model without covariates
+#'
+#' Extends the class \code{clv.fitted} to performs steps during the
+#' estimation, prediction and plotting process that are specific to all transaction models.
 #'
 #' @include class_clv_fitted.R
 #' @keywords internal

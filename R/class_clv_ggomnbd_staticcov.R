@@ -1,6 +1,6 @@
 #' @templateVar name_model_full GGompertz/NBD
 #' @templateVar name_class_clvmodel clv.model.ggomnbd.static.cov
-#' @template template_class_clvfittedmodels_staticcov
+#' @template template_class_clvfittedtransactionmodels_staticcov
 #'
 #' @template template_slot_ggomnbdcbs
 #'
