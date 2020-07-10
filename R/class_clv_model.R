@@ -150,5 +150,9 @@ setMethod(f = "clv.model.backtransform.estimated.params.cov", signature = signat
   stop("The method clv.model.backtransform.estimated.params.cov has not been implemented by this model!")
 })
 
+# .clv.model.probability.density -------------------------------------------------------------------------------------------------------
+setMethod(f = "clv.model.probability.density", signature = signature(clv.model="clv.model"), definition = function(clv.model, x, clv.fitted){
+  stop("The method clv.model.probability.density has not been implemented for this model!")
+})
 
 
