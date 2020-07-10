@@ -132,3 +132,26 @@ setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv
                                                         ncol = length(clv.model@names.prefixed.params.model))
   return(m.diag)
 })
+
+# .clv.model.probability.density -------------------------------------------------------------------------------------------------------
+setMethod(f = "clv.model.probability.density", signature = signature(clv.model="clv.model.gg"), definition = function(clv.model, x, clv.fitted){
+  cbs <- copy(clv.fitted@cbs)
+
+  setnames(cbs, "x", "x1")
+
+  p <- coef(clv.fitted)["p"]
+  q <- coef(clv.fitted)["q"]
+  gamma <- coef(clv.fitted)["gamma"]
+
+  results <- sapply(x, function(zbar){
+    cbs[,a1 := lgamma(p*x1+q)-lgamma(p*x1)-lgamma(q)]
+    cbs[,a2 := q*log(gamma)]
+    cbs[,a3 := (p*x1-1)*log(zbar)]
+    cbs[,a4 := (p*x1)*log(x1)]
+    cbs[,a5 := (p*x1+q)*log(gamma+x1*zbar)]
+    cbs[,g1 := exp(a1+a2+a3+a4-a5)]
+    return(cbs[,mean(g1)])
+  })
+
+  return(results)
+})
