@@ -34,10 +34,12 @@
 #' }
 #'
 #' @importFrom graphics plot
-#' @importFrom ggplot2 ggplot aes geom_line geom_vline labs theme scale_fill_manual guide_legend element_text element_rect element_blank element_line rel
+#' @importFrom ggplot2 ggplot aes geom_density labs theme scale_colour_manual guide_legend element_text element_rect element_blank element_line rel
 #' @method plot clv.fitted.spending
 #' @export
 plot.clv.fitted.spending <- function (x, verbose=TRUE, plot.interpolation.points = 250,...) {
+   Spending <- NULL
+
    # Check inputs -----------------------------------------------------------------------------------------------------
    err.msg <- c()
 
