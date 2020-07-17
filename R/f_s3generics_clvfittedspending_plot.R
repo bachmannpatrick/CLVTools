@@ -1,3 +1,36 @@
+#' @title Plot expected and actual spending density
+#' @param x The fitted clv model to plot
+#' @param plot.interpolation.points Number of interpolation points in density graph
+#' @template template_param_verbose
+#' @template template_param_dots
+#'
+#'
+#' @description
+#' Plot the spending density (actual vs. model-based)
+#'
+#' @return
+#' An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
+#'
+#' @examples
+#' \donttest{
+#'
+#' library("CLVTools")
+#' data("cdnow")
+#'
+#' clv.cdnow <- clvdata(cdnow,
+#' date.format="ymd",
+#' time.unit = "week",
+#' estimation.split = "1997-09-30",
+#' name.id = "Id",
+#' name.date = "Date",
+#' name.price = "Price")
+#'
+#' est.gg <- gg(clv.data = clv.cdnow, remove.first.transaction = FALSE)
+#'
+#' plot(est.gg, plot.interpolation.points = 1000)
+#'
+#' }
+#'
 #' @importFrom graphics plot
 #' @importFrom ggplot2 ggplot aes geom_line geom_vline labs theme scale_fill_manual guide_legend element_text element_rect element_blank element_line rel
 #' @method plot clv.fitted.spending
