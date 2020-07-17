@@ -15,15 +15,17 @@
 #' \donttest{
 #'
 #' library("CLVTools")
+#' library("ggplot2")
+#'
 #' data("cdnow")
 #'
 #' clv.cdnow <- clvdata(cdnow,
-#' date.format="ymd",
-#' time.unit = "week",
-#' estimation.split = "1997-09-30",
-#' name.id = "Id",
-#' name.date = "Date",
-#' name.price = "Price")
+#'   date.format="ymd",
+#'   time.unit = "week",
+#'   estimation.split = "1997-09-30",
+#'   name.id = "Id",
+#'   name.date = "Date",
+#'   name.price = "Price")
 #'
 #' est.gg <- gg(clv.data = clv.cdnow, remove.first.transaction = FALSE)
 #'
