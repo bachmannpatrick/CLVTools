@@ -2,6 +2,7 @@ data("cdnow")
 data("apparelTrans")
 data("apparelStaticCov")
 data("apparelDynCov")
+library(BTYD)
 
 # Correct coefs are our estimates
 fct.testthat.correctness.clvfittedtransactions(name.model = "PNBD", method=pnbd, data.cdnow=cdnow,
