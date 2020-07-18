@@ -1,7 +1,6 @@
 data("cdnow")
 data("apparelTrans")
 data("apparelStaticCov")
-library(BTYD)
 
 # Correct coefs are our estimates
 fct.testthat.correctness.clvfittedtransactions(name.model = "BG/NBD", method=bgnbd, data.cdnow=cdnow,
@@ -20,11 +19,13 @@ fct.testthat.correctness.clvfitted.correct.coefs(method = bgnbd,
                                                  params.nocov.coef = c(r = 0.243, alpha = 4.414, a = 0.793, b = 2.426),
                                                  LL.nocov = -9582.4)
 
-fct.testthat.correctness.clvfittedtransactions.nocov.same.as.btyd(clvtools.method = bgnbd,
-                                                                  btyd.method = BTYD::bgnbd.EstimateParameters,
-                                                                  btyd.dert.method = NULL,
-                                                                  btyd.cet.method = BTYD::bgnbd.ConditionalExpectedTransactions,
-                                                                  btyd.palive.method = BTYD::bgnbd.PAlive,
-                                                                  start.params.model = c(r = 1, alpha = 3, a = 1, b = 3),
-                                                                  cdnow = cdnow,
-                                                                  DERT.not.implemented = TRUE)
+if(requireNamespace("BTYD", quietly = TRUE)){
+  fct.testthat.correctness.clvfittedtransactions.nocov.same.as.btyd(clvtools.method = bgnbd,
+                                                                    btyd.method = BTYD::bgnbd.EstimateParameters,
+                                                                    btyd.dert.method = NULL,
+                                                                    btyd.cet.method = BTYD::bgnbd.ConditionalExpectedTransactions,
+                                                                    btyd.palive.method = BTYD::bgnbd.PAlive,
+                                                                    start.params.model = c(r = 1, alpha = 3, a = 1, b = 3),
+                                                                    cdnow = cdnow,
+                                                                    DERT.not.implemented = TRUE)
+}
