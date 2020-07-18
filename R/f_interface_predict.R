@@ -206,4 +206,5 @@ predict.clv.fitted.spending <- function(object, newdata=NULL, verbose=TRUE, ...)
 # S4 method to forward to S3 method
 #' @include all_generics.R class_clv_fitted_spending.R
 #' @exportMethod predict
+#' @rdname predict.clv.fitted.spending
 setMethod(f = "predict", signature = signature(object="clv.fitted.spending"), predict.clv.fitted.spending)

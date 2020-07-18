@@ -3,9 +3,12 @@
 \name{predict.clv.fitted.spending}
 \alias{predict.clv.fitted.spending}
 \alias{predict,clv.gg}
+\alias{predict,clv.fitted.spending-method}
 \title{Predict customers' future spending}
 \usage{
 \method{predict}{clv.fitted.spending}(object, newdata = NULL, verbose = TRUE, ...)
+
+\S4method{predict}{clv.fitted.spending}(object, newdata = NULL, verbose = TRUE, ...)
 }
 \arguments{
 \item{object}{A fitted spending model for which prediction is desired.}
