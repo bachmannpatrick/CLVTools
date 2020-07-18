@@ -37,7 +37,8 @@ Suggests:
     future,
     knitr,
     rmarkdown,
-    testthat
+    testthat,
+    BTYD
 License: GPL-3
 URL: https://github.com/bachmannpatrick/CLVTools
 BugReports: https://github.com/bachmannpatrick/CLVTools/issues
