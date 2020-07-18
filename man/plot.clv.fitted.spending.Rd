@@ -2,9 +2,12 @@
 % Please edit documentation in R/f_s3generics_clvfittedspending_plot.R
 \name{plot.clv.fitted.spending}
 \alias{plot.clv.fitted.spending}
+\alias{plot,clv.fitted.spending-method}
 \title{Plot expected and actual spending density}
 \usage{
 \method{plot}{clv.fitted.spending}(x, verbose = TRUE, plot.interpolation.points = 250, ...)
+
+\S4method{plot}{clv.fitted.spending}(x, verbose = TRUE, plot.interpolation.points = 250, ...)
 }
 \arguments{
 \item{x}{The fitted clv model to plot}

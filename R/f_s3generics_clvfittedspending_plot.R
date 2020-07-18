@@ -95,6 +95,6 @@ plot.clv.fitted.spending <- function (x, verbose=TRUE, plot.interpolation.points
 }
 
 #' @exportMethod plot
-#' @export
 #' @include class_clv_fitted_spending.R
+#' @rdname plot.clv.fitted.spending
 setMethod("plot", signature(x="clv.fitted.spending"), definition = plot.clv.fitted.spending)
