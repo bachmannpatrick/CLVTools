@@ -1,5 +1,5 @@
 ---
-title: "The CLVTools Package"
+title: "Walkthrough for the CLVTools Package"
 output: 
   pdf_document: 
     latex_engine: xelatex
@@ -21,10 +21,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Walkthrough for the CLVTools package
-
-
-## Setup the R environment
+# Prerequisits: Setup the R environment
 
 Install the stable version from CRAN:
      
@@ -32,7 +29,7 @@ Install the stable version from CRAN:
 install.packages("CLVTools")
 ```
 
-Install the development version from GitHub (using the `devtools` [@devtools] package):
+Install the development version from GitHub (using the `devtools` package [@devtools]):
 
 ```{r install-package-GITHUB, eval = FALSE}
 install.packages("devtools")
@@ -44,7 +41,21 @@ Load the package
 library("CLVTools")
 ```
 
-# Load sample data provided in the package
+#Apply the `CLVTools` Package
+
+## General workflow
+
+Independent of the probabilistic model applied in `CLVTools`, the general workflow consists of three main steps:
+
+1. Create a `clv.data` object containing the dataset and required meta-information such as date formats and column names in the dataset. After initializing the object, there is the option to add additional information on covariates in a separate step.
+
+2. Fit the model on the data provided.
+
+3. Use the estimated model parameters to predict future customer purchase behavior.
+
+Reporting and plotting results is facilitated by the implementation of well-known generic methods such as `plot()`, `print()` and `summary()`. These commands adapt their output according to the model state and may be used at any point of the workﬂow.
+
+## Load sample data provided in the package
 As Input data `CLVTools` requires customers' transaction history. Every transaction record consists of a purchase date and customer ID. Optionally, the price of the transaction may be included to allow for prediction of future customer spending using an additional Gamma/Gamma model[@Fader2005b; @Colombo1999]. Using the full history of transaction data allows for comprehensive plots and summary statistics, which allow the identification of possible issues prior to model estimation. Data may be provided as `data.frame` or `data.table` [@data.table].  
 
 It is common practice to split time series data into two parts, an estimation and a holdout period. The model is estimated based on the data from the estimation period while the data from the holdout period allows to rigorously assess model performance. Once model performance is checked on known data one can proceed to predict data without a holdout period. The length of the estimation period is heavily dependent on the characteristics of the analyzed dataset. We recommend to choose an estimation period that contains in minimum the length of the average inter-purchase time. Note that all customers in the dataset need to purchase at least once during the estimation period, i.e. these models do not account for prospects who have not yet a purchase record.
@@ -59,7 +70,7 @@ data("apparelTrans")
 apparelTrans
 ```
 
-## Initialize the CLV-Object
+## Initialize the CLV-Object{#clvdata}
 
 Before we estimate a model, we are required to initialize a data object using the `clvdata()` command. The data object contains the prepared transactional data and is later used as input for model fitting. Make sure to store the generated object in a variable, e.g. in our example `clv.apparel`.
 
@@ -94,7 +105,7 @@ summary(clv.apparel)
 ```
 
 
-## Estimate Model Parameters
+## Estimate Model Parameters{#estimate}
 
 After initializing the object, we are able to estimate the first probabilistic latent attrition model. We start with the standard Pareto/NBD model [@Schmittlein1987] and therefore use the command `pnbd()` to fit the model and estimate model parameters. `clv.data` specifies the initialized object prepared in the last step. Optionally, starting values for the model parameters and control settings for the optimization algorithm may be provided: The argument `start.params.model` allows to assign a vector (e.g. `c(alpha=1, beta=2, s=1, beta=2)` in the case of the Pareto/NBD model) of starting values for the optimization. This is useful if prior knowledge on the parameters of the distributions are available. By default starting values are set to 1 for all parameters. The argument `optimx.args` provides an option to control settings for the optimization routine. It passes a list of arguments to the optimizer. All options known from the package `optimx` [@optimx1; @optimx2] may be used. This option enables users to specify specific optimization algorithms, set upper and/or lower limits or enable tracing information on the progress of the optimization. In the case of the standard Pareto/NBD model, `CLVTools` uses by default the optimization method `L-BFGS-G` [@byrd1995limited]. If the result of the optimization is in-feasible, the optimization automatically switches to the more robust but often slower `Nelder-Mead` method [@nelder1965simplex]. `verbose` shows additional output. 
 
@@ -146,13 +157,14 @@ vcov(est.pnbd)
 
 ```
 
-As an alternative to the Pareto/NBD model `CLVTools` features the BG/NBD model [@Fader2005c] and the GGomp/NBD [@Bemmaor2012a]. To use the alternative models replace `pnbd()` by the corresponding model-command. Note that he naming and number of model parameters is dependent on the model. Consult the manual for more details on the individual models.
+As an alternative to the Pareto/NBD model `CLVTools` features the BG/NBD model [@Fader2005c] and the GGomp/NBD [@Bemmaor2012a]. To use the alternative models replace `pnbd()` by the corresponding model-command. Note that he naming and number of model parameters is dependent on the model. Consult the manual for more details on the individual models. Beside probabilistic latent attrition models, `CLVTools` also features the Gamma/Gamma model [@Colombo1999; @Fader2005c] which is used to predict customer spending. See section [Customer Spending](#spending) for details on the spending model.
 
-|Command| Model | Covariates| 
+|Command| Model | Covariates| Type |
 |---|---|---|---|---|
-| pnbd()   |Pareto/NBD|  time-invariant & time-varying  |
-| bgnbd()  |BG/NBD   	| time-invariant  | 
-| ggomnbd() |GGom/NBD   | time-invariant  |
+| pnbd()   |Pareto/NBD|  time-invariant & time-varying  | latent attrition model |
+| bgnbd()  |BG/NBD    | time-invariant  | latent attrition model | 
+| ggomnbd() |GGom/NBD   | time-invariant  | latent attrition model |
+| gg() | Gamma/Gamma  | - | spending model |
 
 To estimate the GGom/NBD model we apply the `ggomnbd()`to the `clv.apparel` object. The GGom/NBD model is more flexible than the Pareto/NBD model, however it sometimes is challenging to optimize. Note that in this particular case providing start parameters is essential to arrive at an optimal solution (i.e. `kkt1: TRUE` and `kkt2: TRUE`).
 ```{r estimate-ggomnbd, eval=FALSE}
@@ -162,7 +174,7 @@ est.ggomnbd <- ggomnbd(clv.data = clv.apparel,
                                        method="Nelder-Mead"))
 ```
 
-## Predicting Customer Behavior
+## Predict Customer Behavior{#predict}
 
 Once the model parameters are estimated, we are able to predict future customer behavior on an individual level. To do so, we use `predict()` on the object with the estimated parameters (i.e. `est.pnbd`). The prediction period may be varied by specifying `prediction.end`. It is possible to provide either an end-date or a duration using the same time unit as specified when initializing the object (i.e  `prediction.end = "2006-05-08"` or `prediction.end = 30`). By default, the prediction is made until the end of the dataset specified in the `clvdata()` command. The argument `continuous.discount.factor` allows to adjust the discount rate used to estimated the discounted expected transactions (DERT). The default value is `0.1` (=10%). Probabilistic customer attrition model predict in general three expected characteristics for every customer:
 
@@ -172,10 +184,10 @@ Once the model parameters are estimated, we are able to predict future customer 
 
 If spending information was provided when initializing the `clvdata`-object, `CLVTools` provides prediction for 
  
-* predicted spending estimated by a Gamma/Gamma model [@Colombo1999; @Fader2005c] and 
+* predicted mean spending estimated by a Gamma/Gamma model [@Colombo1999; @Fader2005c] and 
 *  the customer lifetime value (CLV).
 
-If a holdout period is available additionally the true numbers of transactions ("actual.x") and true spending ("actual.spending") during the holdout period are reported.
+If a holdout period is available additionally the true numbers of transactions ("actual.x") and true spending ("actual.total.spending") during the holdout period are reported.
 
 To use the parameter estimates on new data (e.g., an other customer cohort), the argument `newdata` optionally allows to provide a new `clvdata` object.
 
@@ -198,20 +210,14 @@ predict(est.pnbd, prediction.end = "2006-05-08")
 ```
 
 
-## Model Plotting
-`clvdata` objects may be plotted using the `plot()` command. Similar to `summary()`, the output of `plot()` adapts to the current modeling step. It provides a descriptive plot of the actual transactional data if the model has not yet been fitted. Once the model has been estimated, `plot()` provides an aggregated incremental tracking plot of the actual data and the model based on the estimated parameters. The time-span for the plot may be altered using the `prediction.end` argument by providing either a duration or an end date. By default the plot is generated for the entire time-span of the provided dataset specified in the `clvdata()` command. The dashed line indicates the end of the estimation period. Alternatively cumulative actual and expected transactions can be plotted by setting `cumulative` to `TRUE`. The argument `transactions` disable for plotting actual transactions (`transactions=FALSE`). For further plotting options see the documentation
-
-plot(x, prediction.end = NULL, cumulative = FALSE,
-  transactions = TRUE, label = NULL, plot = TRUE, verbose = TRUE,
-  ...)
+## Plot Transactions
+`clvdata` objects may be plotted using the `plot()` command. Similar to `summary()`, the output of `plot()` adapts to the current modeling step. It provides a descriptive plot of the actual transactional data if the model has not yet been fitted. Once the model has been estimated, `plot()` provides an aggregated incremental tracking plot of the actual data and the model based on the estimated parameters. The time-span for the plot may be altered using the `prediction.end` argument by providing either a duration or an end date. By default the plot is generated for the entire time-span of the provided dataset specified in the `clvdata()` command. The dashed line indicates the end of the estimation period. Alternatively cumulative actual and expected transactions can be plotted by setting `cumulative` to `TRUE`. The argument `transactions` disable for plotting actual transactions (`transactions=FALSE`). For further plotting options see the documentation.
 
 ```{r plot-model, fig.height=4.40, fig.width=9}
 plot(est.pnbd)
 
 ```
-
-
-
+s
 To plot the *cumulative* expected transactions 30 time units (30 weeks in this example) ahead of the end of the estimation plot, we use:
 
 ```{r plot-model2, eval = FALSE}
@@ -343,8 +349,74 @@ summary(est.pnbd.constr)
 ```
 To limit the number of parallel processes simultaneously executed, we can specify the number of workers `plan(multisession, workers = 2)`.
 
+# Customer Spending {#spending}
+Customer lifetime value (CLV) is composed of three components of every customer: the future level of transactions, expeced attrition behaviour (i.e. probability of beeing alive) and the moentary value.
+While probabilistic latent attrition models provide metrics for the first two components, they do not predict customer spending. To predict customer spending an additional model is required. The `CLVTools`package features the Gamma/Gamma (G/G) [@Fader2005b; @Colombo1999] model for predicting customer spending. For convenience, the `predict()` command allows to automatically predict customer spending for all latent attrition models using the option `predict.spending=TRUE` (see section [Customer Spending](#spending)). However, to provide more options and more granular insights the Gamma/Gamma model can be estimated independently. In the following, we discuss how to estimate a Gamma/Gamma model using `CLVTools`.
+
+The general workflow remains identical. It consists of the three main steps: (1) creating a `clv.data` object containing the dataset and required meta-information, (2) fitting the model on the provided data and (3) predicting future customer purchase behavior based on the fitted model.
+
+Reporting and plotting results is facilitated by the implementation of well-known generic methods such as `plot()`, `print()` and `summary()`.
+
+## Load sample data provided in the package
+For estimating customer spending `CLVTools` requires customers' transaction history including price. Every transaction record consists of a purchase date,customer ID and the price of the transaction. Data may be provided as `data.frame` or `data.table` [@data.table]. Currently, the Gamma/Gamma model does not allow for covariates.
+
+We use again simulated data comparable to data from a retailer in the apparel industry. The apparel dataset is available in the `CLVTools` package. We use the `data(apparelTrans)` to load it and initialize a data object using the `clvdata()` command. For details see section [Initialize the CLV-Object](#clvdata).
 
 
+```{r spending-load-data and initialize}
+data("apparelTrans")
+apparelTrans
+
+clv.apparel <- clvdata(apparelTrans,  
+                       date.format="ymd", 
+                       time.unit = "week",
+                       estimation.split = 40,
+                       name.id = "Id",
+                       name.date = "Date",
+                       name.price = "Price")
+```
+
+## Estimate Model Parameters
+To estimate the Gamma/Gamma spending model, we use the command `gg()` on the initialized `clvdata` object. `clv.data` specifies the initialized object prepared in the last step. Optionally, starting values for the model parameters and control settings for the optimization algorithm may be provided: The argument `start.params.model` allows to assign a vector of starting values for the optimization (i.e `c(p=1, q=2, gamma=1)` for the the Gamma/Gamma model). This is useful if prior knowledge on the parameters of the distributions are available. By default starting values are set to 1 for all parameters. The argument `optimx.args` provides an option to control settings for the optimization routine (see section [Estimate Model Parameters](#estimate)).
+
+
+```{r spending-estimate-model}
+est.gg<- gg(clv.data = clv.apparel)
+est.gg
+```
+
+In line with literature, `CLVTools` does not use by default the monetary value of the first transaction to fit the model since it might be atypical of future purchases. If the first transaction should be considered the argument `remove.first.transaction` can be set to `FALSE`.
+
+```{r spendsing-estimate-model2, eval=TRUE}
+est.gg<- gg(clv.data = clv.apparel, remove.first.transaction=FALSE)
+est.gg
+```
+
+## Predict Customer Spending {#predictspending}
+
+Once the model parameters are estimated, we are able to predict future customer mean spending on an individual level. To do so, we use `predict()` on the object with the estimated parameters (i.e. `est.gg`). Note that there is no need to specify a prediction period as we predict mean spending.
+
+In general, probabilistic spending mdoels predict the following expected characteristic for every customer:
+
+* predicted mean spending ("predicted.mean.spending")
+
+If a holdout period is available additionally the true mean spending ("actual.mean.spending") during the holdout period is reported.
+
+To use the parameter estimates on new data (e.g., an other customer cohort), the argument `newdata` optionally allows to provide a new `clvdata` object.
+
+```{r spending-predict-model}
+results.spending <- predict(est.gg)
+print(results.spending)
+```
+
+## Plot Spendings
+an estimated spending model object (i.e. `est.gg`) may be plotted using the `plot()` command. The plot provides a comparison of the estimated and actual density of customer spending. The argument `plot.interpolation.points` allows to adjust the number of interpolation points in density graph.
+
+
+```{r spending-plot-model4, fig.height=4.40, fig.width=9}
+plot(est.gg)
+
+```
 
 ### Literature
 
