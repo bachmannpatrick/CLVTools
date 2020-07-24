@@ -185,7 +185,7 @@ Once the model parameters are estimated, we are able to predict future customer 
 If spending information was provided when initializing the `clvdata`-object, `CLVTools` provides prediction for 
  
 * predicted mean spending estimated by a Gamma/Gamma model [@Colombo1999; @Fader2005c] and 
-*  the customer lifetime value (CLV).
+* the customer lifetime value (CLV). CLV is calculated as the product of DERT and predicted spending.
 
 If a holdout period is available additionally the true numbers of transactions ("actual.x") and true spending ("actual.total.spending") during the holdout period are reported.
 

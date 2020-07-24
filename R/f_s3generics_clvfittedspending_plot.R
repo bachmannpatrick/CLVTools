@@ -1,5 +1,5 @@
 #' @title Plot expected and actual spending density
-#' @param x The fitted clv model to plot
+#' @param x The fitted spending model to plot
 #' @param plot.interpolation.points Number of interpolation points in density graph
 #' @template template_param_verbose
 #' @template template_param_dots
@@ -32,6 +32,8 @@
 #' plot(est.gg, plot.interpolation.points = 1000)
 #'
 #' }
+#'
+#' @template template_references_gg
 #'
 #' @importFrom graphics plot
 #' @importFrom ggplot2 ggplot aes geom_density labs theme scale_colour_manual guide_legend element_text element_rect element_blank element_line rel

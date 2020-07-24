@@ -23,13 +23,13 @@
 #' is predicted. \code{DECT} does only cover a finite time horizon in contrast to \code{DERT}. For \code{continuous.discount.factor=0}, \code{DECT} corresponds to \code{CET}.
 #'}
 #'
-#' In order to derive a monetary value such as CLV, customer spending also has to be considered.
-#' If the \code{clv.data} object contains spending information, customer spending can be predicted as explained for
-#' parameter \code{predict.spending} and the predicted CLV can be calculated (if the transaction model supports \code{DERT/DECT}).
+#' In order to derive a monetary value such as CLV, customer spending has to be considered.
+#' If the \code{clv.data} object contains spending information, customer spending can be predicted using a Gamma/Gamma spending model for
+#' parameter \code{predict.spending} and the predicted CLV is be calculated (if the transaction model supports \code{DERT/DECT}).
 #' In this case, the prediction additionally contains the following two columns:
 #' \itemize{
 #' \item "predicted.Spending", the mean spending per transactions as predicted by the spending model
-#' \item "CLV", the customer lifetime value
+#' \item "CLV", the customer lifetime value. CLV is the product of DERT/DECT and predicted spending.
 #'}
 #'
 #' @details \code{predict.spending} indicates whether to predict customers' spending and if so, the spending model to use.
