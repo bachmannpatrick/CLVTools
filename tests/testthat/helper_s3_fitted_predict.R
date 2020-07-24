@@ -57,7 +57,13 @@
 
       # mix it all up: predict for clv.newdata.withhold using spending model fitted on clv.newdata.nohold
       #   but use newdata with different Ids to see a difference to the one used for spending model fitting
-      clv.subset <- clvdata(fitted.transactions@clv.data@data.transactions[Id %in% sample(unique(Id), uniqueN(Id)/2)], "ymd", "w")
+      subset.id  <- fitted.transactions@clv.data@data.transactions[, sample(x = unique(Id), size = uniqueN(Id)/2)]
+      clv.subset <- clvdata(fitted.transactions@clv.data@data.transactions[Id %in% subset.id], "ymd", "w")
+      if(is(fitted.transactions@clv.data, "clv.data.static.covariates")){
+        clv.subset <- SetStaticCovariates(clv.subset,
+                                          data.cov.life  = fitted.transactions@clv.data@data.cov.life[Id %in% subset.id],  names.cov.life = fitted.transactions@clv.data@names.cov.data.life,
+                                          data.cov.trans = fitted.transactions@clv.data@data.cov.trans[Id %in% subset.id], names.cov.trans = fitted.transactions@clv.data@names.cov.data.trans)
+      }
       expect_silent(pred <- predict(fitted.transactions,prediction.end=6, verbose=FALSE,
                                     newdata = clv.subset,
                                     predict.spending = fitted.spending.different.data))

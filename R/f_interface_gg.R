@@ -64,10 +64,15 @@ setMethod("gg", signature = signature(clv.data="clv.data"), definition = functio
 
   err.msg <- c()
   err.msg <- c(err.msg, check_user_data_emptyellipsis(...))
-  # Check remove first here already because needed to build cbs
+
+  # Check here already because needed to build cbs (remove.first.transaction and data)
   err.msg <- c(err.msg, .check_user_data_single_boolean(remove.first.transaction, var.name = "remove.first.transaction"))
   err.msg <- c(err.msg, check_user_data_containsspendingdata(clv.data = clv.data))
   check_err_msg(err.msg)
+
+  if(clv.data.has.negative.spending(clv.data)){
+    check_err_msg("The Gamma-Gamma spending model cannot be fit on data that contains negative prices!")
+  }
 
   cl  <- match.call(call = sys.call(-1), expand.dots = TRUE)
   obj <- clv.gg(cl=cl, clv.data=clv.data, remove.first.transaction = remove.first.transaction)
