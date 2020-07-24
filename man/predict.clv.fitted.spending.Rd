@@ -19,11 +19,11 @@
 \value{
 An object of class \code{data.table} with columns:
 \item{Id}{The respective customer identifier}
-\item{actual.spending}{Actual mean spending per transaction.}
-\item{predicted.Spending}{The spending as predicted by the fitted spending model.}
+\item{actual.mean.spending}{Actual mean spending per transaction in the holdout period. Only if there is a holdout period otherwise it is not reported.}
+\item{predicted.mean.spending}{The mean spending per transaction as predicted by the fitted spending model.}
 }
 \description{
-Predict customer's future spending and compares it to actual spending, if there is a holdout period.
+Predict customer's future mean spending per transaction and compare it to the actual mean spending in the holdout period.
 }
 \details{
 If \code{newdata} is provided, the individual customer statistics underlying the model are calculated

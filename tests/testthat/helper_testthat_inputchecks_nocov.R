@@ -218,7 +218,7 @@ fct.testthat.inputchecks.cannot.predict.without.spending <- function(method, dat
                    regexp = "there is no spending data")
       # but works without spending
       expect_silent(dt.pred <- predict(clv.spending, newdata=clv.cdnow.nospending, predict.spending=FALSE, verbose=FALSE))
-      expect_false(any(c("predicted.Spending","predicted.CLV") %in% colnames(dt.pred)))
+      expect_false(any(c("predicted.mean.spending","predicted.CLV") %in% colnames(dt.pred)))
     }
   })
 }

@@ -28,7 +28,7 @@
 #' parameter \code{predict.spending} and the predicted CLV can be calculated (if the transaction model supports \code{DERT/DECT}).
 #' In this case, the prediction additionally contains the following two columns:
 #' \itemize{
-#' \item "predicted.Spending", the mean spending per transactions as predicted by the spending model
+#' \item "predicted.mean.spending", the mean spending per transactions as predicted by the spending model
 #' \item "CLV", the customer lifetime value
 #'}
 #'
@@ -60,10 +60,10 @@
 #' \item{PAlive}{Probability to be alive at the end of the estimation period}
 #' \item{CET}{The Conditional Expected Transactions}
 #' \item{DERT or DECT}{Discounted Expected Residual Transactions or Discounted Expected Conditional Transactions for dynamic covariates models}
-#' \item{actual.x}{Actual number of transactions until prediction.end. Only if there is a holdout period and the prediction ends in it, otherwise it is not reported..}
-#' \item{actual.Spending}{Actual total spending until prediction.end.}
-#' \item{predicted.Spending}{The spending as predicted by the spending model.}
-#' \item{predicted.CLV}{Customer Lifetime Value based on DERT/DECT and \code{predicted.Spending}.}
+#' \item{actual.x}{Actual number of transactions until prediction.end. Only if there is a holdout period and the prediction ends in it, otherwise it is not reported.}
+#' \item{actual.total.spending}{Actual total spending until prediction.end. Only if there is a holdout period and the prediction ends in it, otherwise it is not reported.}
+#' \item{predicted.mean.spending}{The mean spending per transactions as predicted by the spending model.}
+#' \item{predicted.CLV}{Customer Lifetime Value based on \code{DERT/DECT} and \code{predicted.mean.spending}.}
 #'
 #' @examples
 #'
@@ -160,7 +160,7 @@ setMethod(f = "predict", signature = signature(object="clv.fitted.transactions")
 #' @template template_param_dots
 #'
 #' @description
-#' Predict customer's future spending and compares it to actual spending, if there is a holdout period.
+#' Predict customer's future mean spending per transaction and compare it to the actual mean spending in the holdout period.
 #'
 #' @details
 #' If \code{newdata} is provided, the individual customer statistics underlying the model are calculated
@@ -173,8 +173,8 @@ setMethod(f = "predict", signature = signature(object="clv.fitted.transactions")
 #'
 #' @return An object of class \code{data.table} with columns:
 #' \item{Id}{The respective customer identifier}
-#' \item{actual.spending}{Actual mean spending per transaction.}
-#' \item{predicted.Spending}{The spending as predicted by the fitted spending model.}
+#' \item{actual.mean.spending}{Actual mean spending per transaction in the holdout period. Only if there is a holdout period otherwise it is not reported.}
+#' \item{predicted.mean.spending}{The mean spending per transaction as predicted by the fitted spending model.}
 #'
 #'
 #' @examples
