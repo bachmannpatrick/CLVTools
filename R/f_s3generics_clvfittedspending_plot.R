@@ -36,7 +36,7 @@
 #' @template template_references_gg
 #'
 #' @importFrom graphics plot
-#' @importFrom ggplot2 ggplot aes geom_density labs theme scale_colour_manual guide_legend element_text element_rect element_blank element_line rel
+#' @importFrom ggplot2 ggplot aes stat_density geom_line labs theme scale_colour_manual guide_legend element_text element_rect element_blank element_line rel
 #' @method plot clv.fitted.spending
 #' @export
 plot.clv.fitted.spending <- function (x, verbose=TRUE, plot.interpolation.points = 256,...) {
