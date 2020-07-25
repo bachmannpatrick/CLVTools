@@ -9,6 +9,8 @@
 #' Compares the density of the observed average spending per transaction (empirical distribution) to the
 #' model's distribution of mean transaction spending (weighted by the actual number of transactions).
 #'
+#' @seealso \code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} for transaction models
+#'
 #' @return
 #' An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
 #'

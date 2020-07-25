@@ -3,9 +3,6 @@
 \name{predict.clv.fitted.transactions}
 \alias{predict.clv.fitted.transactions}
 \alias{predict}
-\alias{predict,clv.pnbd}
-\alias{predict,clv.bgnbd}
-\alias{predict,clv.ggomnbd}
 \alias{predict,clv.fitted.transactions-method}
 \title{Predict CLV from a fitted transaction model}
 \usage{
@@ -167,4 +164,6 @@ predict(pnc, prediction.end = 10) # ends on 2016-12-17
 models to predict transactions: \link{pnbd}, \link{bgnbd}, \link{ggomnbd}.
 
 models to predict spending: \link{gg}.
+
+\code{\link[CLVTools:predict.clv.fitted.spending]{predict}} for spending models
 }

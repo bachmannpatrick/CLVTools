@@ -58,3 +58,6 @@ Customer Base Analysis.} Journal of Marketing Research, 42(4), 415–430.
 Fader PS, Hardie BG (2013). \dQuote{The Gamma-Gamma Model of Monetary Value.}
 URL \url{http://www.brucehardie.com/notes/025/gamma_gamma.pdf}.
 }
+\seealso{
+\code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} for transaction models
+}

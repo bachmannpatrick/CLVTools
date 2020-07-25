@@ -2,7 +2,6 @@
 % Please edit documentation in R/f_interface_predict_clvfittedspending.R
 \name{predict.clv.fitted.spending}
 \alias{predict.clv.fitted.spending}
-\alias{predict,clv.gg}
 \alias{predict,clv.fitted.spending-method}
 \title{Predict customers' future spending}
 \usage{
@@ -52,4 +51,6 @@ predict(apparel.gg)
 models to predict spending: \link{gg}.
 
 models to predict transactions: \link{pnbd}, \link{bgnbd}, \link{ggomnbd}.
+
+\code{\link[CLVTools:predict.clv.fitted.transactions]{predict}} for transaction models
 }
