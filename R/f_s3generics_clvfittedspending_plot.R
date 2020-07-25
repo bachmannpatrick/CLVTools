@@ -39,7 +39,7 @@
 #' @importFrom ggplot2 ggplot aes geom_density labs theme scale_colour_manual guide_legend element_text element_rect element_blank element_line rel
 #' @method plot clv.fitted.spending
 #' @export
-plot.clv.fitted.spending <- function (x, verbose=TRUE, plot.interpolation.points = 250,...) {
+plot.clv.fitted.spending <- function (x, verbose=TRUE, plot.interpolation.points = 256,...) {
    Spending <- NULL
 
    # Check inputs -----------------------------------------------------------------------------------------------------
@@ -50,24 +50,22 @@ plot.clv.fitted.spending <- function (x, verbose=TRUE, plot.interpolation.points
    # Gather actual mean spending data by customer ---------------------------------------------------------------------
    dt.customer.mean.spending <- clv.fitted@cbs[x>0, c("x", "Spending")]
 
-  # Plot customer's mean spending as density -------------------------------------------------------------------------
-   p <- ggplot(data = dt.customer.mean.spending) + geom_density(mapping = aes(Spending, colour = "Actual transactions"))
+   # Plot customer's mean spending as density -------------------------------------------------------------------------
+   p <- ggplot(data = dt.customer.mean.spending) + stat_density(mapping = aes(x = Spending, colour = "Average spending"), n = plot.interpolation.points, geom = "line")
 
-   # Overlay plot with model pdf function -----------------------------------------------------------------------------
-   model.density <- function(x, clv.fitted){
-      return(clv.model.probability.density(clv.model = clv.fitted@clv.model, x = x, clv.fitted = clv.fitted))
-   }
-
-   p <- p + geom_density(stat = "function",
-                           fun = model.density,
-                           args = list(clv.fitted = clv.fitted),
-                        #   colour = "red",
-
+   p <- p + geom_line(stat = "function",
+                           mapping = aes(x = Spending, colour = clv.fitted@clv.model@name.model),
+                           fun = clv.model.probability.density,
+                           args = list(clv.model = clv.fitted@clv.model, clv.fitted = clv.fitted),
                            n = plot.interpolation.points,
-                           mapping = aes(colour = clv.fitted@clv.model@name.model))
+                           na.rm = FALSE)
 
    # Add legend
-   p <- p + scale_colour_manual(name = "Legend", values = c("black", "red"))
+   columns <- c("black", "red")
+   setNames(columns, c("Average spending", clv.fitted@clv.model@name.model))
+
+   p <- p + scale_colour_manual(name = "Legend", values = columns)
+
    # Axis and title
    p <- p + labs(x = "Spending", y= "Density", title= paste0("Spending density plot"),
                  subtitle = paste0("Estimation end: ",  clv.time.format.timepoint(clv.time=clv.fitted@clv.data@clv.time, timepoint=clv.fitted@clv.data@clv.time@timepoint.estimation.end)))

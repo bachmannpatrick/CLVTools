@@ -5,9 +5,9 @@
 \alias{plot,clv.fitted.spending-method}
 \title{Plot expected and actual spending density}
 \usage{
-\method{plot}{clv.fitted.spending}(x, verbose = TRUE, plot.interpolation.points = 250, ...)
+\method{plot}{clv.fitted.spending}(x, verbose = TRUE, plot.interpolation.points = 256, ...)
 
-\S4method{plot}{clv.fitted.spending}(x, verbose = TRUE, plot.interpolation.points = 250, ...)
+\S4method{plot}{clv.fitted.spending}(x, verbose = TRUE, plot.interpolation.points = 256, ...)
 }
 \arguments{
 \item{x}{The fitted spending model to plot}

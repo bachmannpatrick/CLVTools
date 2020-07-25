@@ -137,7 +137,7 @@ setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv
 setMethod(f = "clv.model.probability.density", signature = signature(clv.model="clv.model.gg"), definition = function(clv.model, x, clv.fitted){
   a1 <- a2 <- a3 <- a4 <- a5 <- g1 <- x1 <- NULL
 
-  cbs <- copy(clv.fitted@cbs)
+  cbs <- copy(clv.fitted@cbs[x>0,])
 
   setnames(cbs, "x", "x1")
 
