@@ -42,5 +42,5 @@ again start on Mondays and end on Sundays.
 If \code{prediction.end} indicates a timepoint on which to end, this timepoint is included in the prediction period.
 }
 \seealso{
-\code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation
+\code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} to plot the unconditional expectation
 }
