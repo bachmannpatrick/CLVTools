@@ -7,7 +7,8 @@ fct.testthat.correctness.clvfittedtransactions(name.model = "BG/NBD", method=bgn
                                                data.apparelTrans=apparelTrans, data.apparelStaticCov=apparelStaticCov,
                                                correct.start.params.model = c(r=1, alpha = 3, a = 1, b = 3),
                                                correct.params.nocov.coef = c(r = 0.2425945, alpha = 4.4136019, a = 0.7929199, b = 2.4258881),
-                                               correct.LL.nocov = -9582.429)
+                                               correct.LL.nocov = -9582.429,
+                                               kkt2.true = TRUE)
 
 
 

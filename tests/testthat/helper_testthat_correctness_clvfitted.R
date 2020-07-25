@@ -1,4 +1,4 @@
-fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box <- function(method, clv.data){
+fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box <- function(method, clv.data, kkt2.true){
   test_that("Flawless results out of the box", {
     skip_on_cran()
     expect_silent(fitted <- do.call(what = method, args = list(clv.data, verbose = FALSE)))
@@ -15,7 +15,8 @@ fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box <- function(m
     }
     # KKTs both true
     expect_true(res.sum$kkt1)
-    expect_true(res.sum$kkt2)
+    if(kkt2.true)
+      expect_true(res.sum$kkt2)
   })
 }
 

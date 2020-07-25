@@ -58,9 +58,9 @@ fct.testthat.correctness.clvfittedspending <- function(name.model, method,
 
 
   context(paste0("Correctness - ",name.model," - Example data"))
-  fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box(method = method, clv.data = clv.cdnow.hold)
-  fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box(method = method, clv.data = clv.apparel.nocov)
-  fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box(method = method, clv.data = clv.apparel.staticcov)
+  fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box(method = method, clv.data = clv.cdnow.hold, kkt2.true = TRUE)
+  fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box(method = method, clv.data = clv.apparel.nocov, kkt2.true = TRUE)
+  fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box(method = method, clv.data = clv.apparel.staticcov, kkt2.true = TRUE)
 
 
   context(paste0("Correctness - ",name.model," - Predict"))

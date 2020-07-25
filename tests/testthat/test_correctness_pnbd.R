@@ -8,7 +8,8 @@ fct.testthat.correctness.clvfittedtransactions(name.model = "PNBD", method=pnbd,
                                                data.apparelTrans=apparelTrans, data.apparelStaticCov=apparelStaticCov,
                                                correct.start.params.model = c(r=1, alpha = 1, s = 1, beta = 1),
                                                correct.params.nocov.coef = c(r=0.55315,   alpha=10.57633,  s=0.60625,   beta=11.67150),
-                                               correct.LL.nocov = -9594.976)
+                                               correct.LL.nocov = -9594.976,
+                                               kkt2.true = TRUE)
 
 
 # # Recover parameters ---------------------------------------------------------------------------------
