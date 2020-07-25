@@ -13,7 +13,7 @@
 \arguments{
 \item{object}{A fitted spending model for which prediction is desired.}
 
-\item{newdata}{A clv.data object for which predictions should be made with the fitted model. If none or NULL is given, predictions are made for the data on which the model was fit.}
+\item{newdata}{A clv data object for which predictions should be made with the fitted model. If none or NULL is given, predictions are made for the data on which the model was fit.}
 
 \item{verbose}{Show details about the running of the function.}
 

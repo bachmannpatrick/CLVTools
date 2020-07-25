@@ -3,18 +3,18 @@
 \name{plot.clv.fitted.spending}
 \alias{plot.clv.fitted.spending}
 \alias{plot,clv.fitted.spending-method}
-\title{Plot expected and actual spending density}
+\title{Plot expected and actual mean spending per transaction}
 \usage{
-\method{plot}{clv.fitted.spending}(x, verbose = TRUE, plot.interpolation.points = 256, ...)
+\method{plot}{clv.fitted.spending}(x, n = 256, verbose = TRUE, ...)
 
-\S4method{plot}{clv.fitted.spending}(x, verbose = TRUE, plot.interpolation.points = 256, ...)
+\S4method{plot}{clv.fitted.spending}(x, n = 256, verbose = TRUE, ...)
 }
 \arguments{
 \item{x}{The fitted spending model to plot}
 
-\item{verbose}{Show details about the running of the function.}
+\item{n}{Number of points at which the empirical and model density are calculated. Should be a power of two.}
 
-\item{plot.interpolation.points}{Number of interpolation points in density graph}
+\item{verbose}{Show details about the running of the function.}
 
 \item{...}{Ignored}
 }
@@ -22,28 +22,29 @@
 An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
 }
 \description{
-Plot the spending density (actual vs. model-based)
+Compares the density of the observed average spending per transaction (empirical distribution) to the
+model's distribution of mean transaction spending (weighted by the actual number of transactions).
 }
 \examples{
 \donttest{
-
-library("CLVTools")
-library("ggplot2")
-
 data("cdnow")
 
 clv.cdnow <- clvdata(cdnow,
   date.format="ymd",
   time.unit = "week",
-  estimation.split = "1997-09-30",
-  name.id = "Id",
-  name.date = "Date",
-  name.price = "Price")
+  estimation.split = "1997-09-30")
 
-est.gg <- gg(clv.data = clv.cdnow, remove.first.transaction = FALSE)
+est.gg <- gg(clv.data = clv.cdnow)
 
-plot(est.gg, plot.interpolation.points = 1000)
+# Compare empirical to theoretical distribution
+plot(est.gg)
 
+\dontrun{
+# Modify the created plot further
+library(ggplot2)
+gg.cdnow <- plot(est.gg)
+gg.cdnow + ggtitle("CDnow Spending Distribution")
+}
 }
 
 }

@@ -1,36 +1,37 @@
-#' @title Plot expected and actual spending density
+#' @title Plot expected and actual mean spending per transaction
 #' @param x The fitted spending model to plot
-#' @param plot.interpolation.points Number of interpolation points in density graph
+#' @param n Number of points at which the empirical and model density are calculated. Should be a power of two.
 #' @template template_param_verbose
 #' @template template_param_dots
 #'
 #'
 #' @description
-#' Plot the spending density (actual vs. model-based)
+#' Compares the density of the observed average spending per transaction (empirical distribution) to the
+#' model's distribution of mean transaction spending (weighted by the actual number of transactions).
 #'
 #' @return
 #' An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
 #'
 #' @examples
 #' \donttest{
-#'
-#' library("CLVTools")
-#' library("ggplot2")
-#'
 #' data("cdnow")
 #'
 #' clv.cdnow <- clvdata(cdnow,
 #'   date.format="ymd",
 #'   time.unit = "week",
-#'   estimation.split = "1997-09-30",
-#'   name.id = "Id",
-#'   name.date = "Date",
-#'   name.price = "Price")
+#'   estimation.split = "1997-09-30")
 #'
-#' est.gg <- gg(clv.data = clv.cdnow, remove.first.transaction = FALSE)
+#' est.gg <- gg(clv.data = clv.cdnow)
 #'
-#' plot(est.gg, plot.interpolation.points = 1000)
+#' # Compare empirical to theoretical distribution
+#' plot(est.gg)
 #'
+#' \dontrun{
+#' # Modify the created plot further
+#' library(ggplot2)
+#' gg.cdnow <- plot(est.gg)
+#' gg.cdnow + ggtitle("CDnow Spending Distribution")
+#' }
 #' }
 #'
 #' @template template_references_gg
@@ -39,36 +40,37 @@
 #' @importFrom ggplot2 ggplot aes stat_density geom_line labs theme scale_colour_manual guide_legend element_text element_rect element_blank element_line rel
 #' @method plot clv.fitted.spending
 #' @export
-plot.clv.fitted.spending <- function (x, verbose=TRUE, plot.interpolation.points = 256,...) {
+plot.clv.fitted.spending <- function (x, n = 256, verbose=TRUE, ...) {
    Spending <- NULL
 
    # Check inputs -----------------------------------------------------------------------------------------------------
    err.msg <- c()
+   err.msg <- c(err.msg, check_user_data_emptyellipsis(...))
+   err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
+   err.msg <- c(err.msg, .check_user_data_single_numeric(n=n, var.name="n"))
+   check_err_msg(err.msg = err.msg)
 
    clv.fitted <- x
 
-   # Gather actual mean spending data by customer ---------------------------------------------------------------------
-   dt.customer.mean.spending <- clv.fitted@cbs[x>0, c("x", "Spending")]
 
    # Plot customer's mean spending as density -------------------------------------------------------------------------
-   p <- ggplot(data = dt.customer.mean.spending) + stat_density(mapping = aes(x = Spending, colour = "Average spending"), n = plot.interpolation.points, geom = "line")
+   dt.customer.mean.spending <- clv.fitted@cbs[x>0, "Spending"]
+   p <- ggplot(data = dt.customer.mean.spending) + stat_density(mapping = aes(x = Spending, colour = "Actual Mean Value per Transaction"), n = n, geom = "line")
 
+   # Overlay with model density ---------------------------------------------------------------------------------------
    p <- p + geom_line(stat = "function",
-                           mapping = aes(x = Spending, colour = clv.fitted@clv.model@name.model),
-                           fun = clv.model.probability.density,
-                           args = list(clv.model = clv.fitted@clv.model, clv.fitted = clv.fitted),
-                           n = plot.interpolation.points,
-                           na.rm = FALSE)
+                      mapping = aes(x = Spending, colour = clv.fitted@clv.model@name.model),
+                      fun = clv.model.probability.density,
+                      args = list(clv.model = clv.fitted@clv.model, clv.fitted = clv.fitted),
+                      n = n,
+                      na.rm = FALSE)
 
    # Add legend
-   columns <- c("black", "red")
-   setNames(columns, c("Average spending", clv.fitted@clv.model@name.model))
-
+   columns <- setNames(c("black", "red"), c("Actual Mean Value per Transaction", clv.fitted@clv.model@name.model))
    p <- p + scale_colour_manual(name = "Legend", values = columns)
 
    # Axis and title
-   p <- p + labs(x = "Spending", y= "Density", title= paste0("Spending density plot"),
-                 subtitle = paste0("Estimation end: ",  clv.time.format.timepoint(clv.time=clv.fitted@clv.data@clv.time, timepoint=clv.fitted@clv.data@clv.time@timepoint.estimation.end)))
+   p <- p + labs(x = "Average Value per Transaction", y= "Density", title= "Density of Average Transaction Value")
 
    p <- p + theme(
       plot.title = element_text(face = "bold", size = rel(1.5)),
