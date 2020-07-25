@@ -240,11 +240,11 @@ fct.helper.clvfittedtransactions.all.s3 <- function(clv.fitted, full.names,
 
   .fct.helper.clvfitted.all.s3(clv.fitted = clv.fitted, full.names = full.names)
 
-  .fct.helper.s3.fitted.plot(clv.fitted = clv.fitted, clv.newdata.nohold=clv.newdata.nohold,
-                             clv.newdata.withhold=clv.newdata.withhold)
+  fct.testthat.runability.clvfittedtransactions.plot(clv.fitted = clv.fitted, clv.newdata.nohold=clv.newdata.nohold,
+                                                     clv.newdata.withhold=clv.newdata.withhold)
 
-  .fct.helper.s3.clvfittedtransactions.predict(fitted.transactions = clv.fitted, clv.newdata.nohold=clv.newdata.nohold,
-                                                clv.newdata.withhold=clv.newdata.withhold, DERT.not.implemented=DERT.not.implemented)
+  fct.testthat.runability.clvfittedtransactions.predict(fitted.transactions = clv.fitted, clv.newdata.nohold=clv.newdata.nohold,
+                                                        clv.newdata.withhold=clv.newdata.withhold, DERT.not.implemented=DERT.not.implemented)
 
 }
 
@@ -254,7 +254,7 @@ fct.helper.clvfittedspending.all.s3 <- function(clv.fitted, full.names,
 
   .fct.helper.clvfitted.all.s3(clv.fitted = clv.fitted, full.names = full.names)
 
-  # **TEST PLOTS
+  fct.testthat.runability.clvfittedspending.plot(fitted.spending = clv.fitted)
 
   fct.testthat.runability.clvfittedspending.predict(fitted.spending = clv.fitted,
                                                     clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
