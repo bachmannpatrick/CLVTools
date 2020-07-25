@@ -14,17 +14,17 @@
       expect_true(c("actual.x" %in% colnames(dt.pred)))
 
       if(clv.data.has.spending(fitted.transactions@clv.data)){
-        expect_true(c("actual.spending" %in% colnames(dt.pred)))
+        expect_true(c("actual.total.spending" %in% colnames(dt.pred)))
       }else{
-        expect_false(c("actual.spending" %in% colnames(dt.pred)))
+        expect_false(c("actual.total.spending" %in% colnames(dt.pred)))
       }
     })
   }
 
   # Test
-  #   Sum of actual.spending same as sum based on data
+  #   Sum of actual.total.spending same as sum based on data
   #   sum of actual.x same as sum based on data
-  #   actual.spending all > 0
+  #   actual.total.spending all > 0
   #   actual.transactions all > 0
   # predicted CLV is = X*Y
 
@@ -33,42 +33,50 @@
       skip_on_cran()
       skip_on_ci()
       expect_silent(pred <- predict(fitted.transactions, prediction.end=6, predict.spending = TRUE, verbose=FALSE))
-      expect_true("predicted.Spending" %in% colnames(pred))
+      expect_true("predicted.mean.spending" %in% colnames(pred))
       expect_silent(pred <- predict(fitted.transactions, prediction.end=6, predict.spending = FALSE, verbose=FALSE))
-      expect_false("predicted.Spending" %in% colnames(pred))
+      expect_false("predicted.mean.spending" %in% colnames(pred))
     })
 
     test_that("Predict works with fitted spending model for predict.spending (and newdata) ",{
       skip_on_cran()
       skip_on_ci()
+
       # ordinary
       expect_silent(pred <- predict(fitted.transactions, prediction.end=6,  verbose=FALSE,
                                     predict.spending = gg(fitted.transactions@clv.data, verbose=FALSE)))
-      expect_true("predicted.Spending" %in% colnames(pred))
+      expect_true("predicted.mean.spending" %in% colnames(pred))
+
       # fitted on different clv.data object
       expect_silent(fitted.spending.different.data <- gg(clv.newdata.nohold, verbose=FALSE))
       expect_silent(pred <- predict(fitted.transactions, prediction.end=6,  verbose=FALSE,
                                     predict.spending = fitted.spending.different.data))
-      expect_true("predicted.Spending" %in% colnames(pred))
+      expect_true("predicted.mean.spending" %in% colnames(pred))
       expect_equal(pred[order(Id), "Id"], fitted.transactions@cbs[order(Id), "Id"]) # all original Ids present
-      expect_false(anyNA(pred[, c("Id", "predicted.Spending")])) # No Id w/o predicted spending
+      expect_false(anyNA(pred[, c("Id", "predicted.mean.spending")])) # No Id w/o predicted spending
 
       # mix it all up: predict for clv.newdata.withhold using spending model fitted on clv.newdata.nohold
       #   but use newdata with different Ids to see a difference to the one used for spending model fitting
-      clv.subset <- clvdata(fitted.transactions@clv.data@data.transactions[Id %in% sample(unique(Id), uniqueN(Id)/2)], "ymd", "w")
+      subset.id  <- fitted.transactions@clv.data@data.transactions[, sample(x = unique(Id), size = uniqueN(Id)/2)]
+      clv.subset <- clvdata(fitted.transactions@clv.data@data.transactions[Id %in% subset.id], "ymd", "w")
+      if(is(fitted.transactions@clv.data, "clv.data.static.covariates")){
+        clv.subset <- SetStaticCovariates(clv.subset,
+                                          data.cov.life  = fitted.transactions@clv.data@data.cov.life[Id %in% subset.id],  names.cov.life = fitted.transactions@clv.data@names.cov.data.life,
+                                          data.cov.trans = fitted.transactions@clv.data@data.cov.trans[Id %in% subset.id], names.cov.trans = fitted.transactions@clv.data@names.cov.data.trans)
+      }
       expect_silent(pred <- predict(fitted.transactions,prediction.end=6, verbose=FALSE,
                                     newdata = clv.subset,
                                     predict.spending = fitted.spending.different.data))
-      expect_true("predicted.Spending" %in% colnames(pred))
+      expect_true("predicted.mean.spending" %in% colnames(pred))
       expect_equal(pred[order(Id), "Id"], unique(clv.subset@data.transactions[order(Id), "Id"])) # all original Ids present
-      expect_false(anyNA(pred[, c("Id", "predicted.Spending")])) # No Id w/o predicted spending
+      expect_false(anyNA(pred[, c("Id", "predicted.mean.spending")])) # No Id w/o predicted spending
     })
 
     test_that("Predict works with CLVTools spending model method for predict.spending",{
       skip_on_cran()
       skip_on_ci()
       expect_silent(pred <- predict(fitted.transactions, predict.spending = gg, prediction.end=6,  verbose=FALSE))
-      expect_true("predicted.Spending" %in% colnames(pred))
+      expect_true("predicted.mean.spending" %in% colnames(pred))
     })
 
 
@@ -99,14 +107,14 @@
       expect_true(dt.pred[, is.numeric(actual.x)])
 
       if(clv.data.has.spending(fitted.transactions@clv.data)){
-        expect_true("actual.spending" %in% colnames(dt.pred))
-        expect_true(dt.pred[, is.numeric(actual.spending)])
+        expect_true("actual.total.spending" %in% colnames(dt.pred))
+        expect_true(dt.pred[, is.numeric(actual.total.spending)])
       }else{
-        expect_false("actual.spending" %in% colnames(dt.pred))
+        expect_false("actual.total.spending" %in% colnames(dt.pred))
       }
     }else{
       expect_false("actual.x" %in% colnames(dt.pred))
-      expect_false("actual.spending" %in% colnames(dt.pred))
+      expect_false("actual.total.spending" %in% colnames(dt.pred))
     }
   })
 
@@ -239,15 +247,15 @@ fct.testthat.runability.clvfittedspending.predict <- function(fitted.spending, c
     expect_equal(dt.pred[order(Id),"Id"], fitted.spending@cbs[order(Id), "Id"])
     expect_true(fsetequal(dt.pred[,"Id"], unique(fitted.spending@clv.data@data.transactions[, "Id"])))
     # Spending cols
-    expect_true("predicted.Spending" %in% colnames(dt.pred))
-    expect_true(dt.pred[, is.numeric(predicted.Spending)])
+    expect_true("predicted.mean.spending" %in% colnames(dt.pred))
+    expect_true(dt.pred[, is.numeric(predicted.mean.spending)])
 
     # Has actuals if there is a holdout period
     if(clv.data.has.holdout(fitted.spending@clv.data)){
-      expect_true("actual.spending" %in% colnames(dt.pred))
-      expect_true(dt.pred[, is.numeric(actual.spending)])
+      expect_true("actual.mean.spending" %in% colnames(dt.pred))
+      expect_true(dt.pred[, is.numeric(actual.mean.spending)])
     }else{
-      expect_false("actual.spending" %in% colnames(dt.pred))
+      expect_false("actual.mean.spending" %in% colnames(dt.pred))
     }
   })
 }

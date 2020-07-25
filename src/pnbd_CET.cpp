@@ -35,8 +35,7 @@ arma::vec pnbd_CET(const double r,
   const arma::vec vP2 = (1 - arma::pow((vBeta_i + vT_cal) / (vBeta_i + vT_cal + dPeriods), (s-1)));
   const arma::vec vP3 = vPAlive;
 
-  // eval is needed as evaluation could be delayed!
-  return (vP1 % vP2 % vP3).eval();
+  return vP1 % vP2 % vP3;
 }
 
 

@@ -7,26 +7,6 @@
 #   .fct.helper.inputchecks.fails.for.NULL
 # }
 
-fct.testthat.inputchecks.clvfitted.predict.newdata.not.clvdata <- function(clv.fitted, data.cdnow){
-  test_that("Fails if newdata not a clv.data object", {
-    skip_on_cran()
-    expect_error(predict(clv.fitted, newdata = NA_character_), regexp = "needs to be a clv data object")
-    expect_error(predict(clv.fitted, newdata = character()), regexp = "needs to be a clv data object")
-    expect_error(predict(clv.fitted, newdata = "abc"), regexp = "needs to be a clv data object")
-    expect_error(predict(clv.fitted, newdata = 123), regexp = "needs to be a clv data object")
-    expect_error(predict(clv.fitted, newdata = data.cdnow), regexp = "needs to be a clv data object")
-    expect_error(predict(clv.fitted, newdata = unlist(data.cdnow)), regexp = "needs to be a clv data object")
-  })
-}
-
-fct.testthat.inputchecks.clvfitted.na.in.prediction.params.model <- function(s3method, clv.fitted){
-  test_that("Fails if prediction.params.model are NA", {
-    skip_on_cran()
-
-    clv.fitted@prediction.params.model[2] <- NA_real_
-    expect_error(do.call(s3method, list(clv.fitted, prediction.end = 6)), regexp = "NAs in the estimated model")
-  })
-}
 
 
 fct.testthat.inputchecks.clvfittedtransactions.cov.na.in.prediction.params.cov <- function(s3method, clv.fitted.cov){
@@ -184,7 +164,13 @@ fct.testthat.inputchecks.clvfittedtransactions.predict.predict.spending.has.NA <
 }
 
 
-
+fct.testthat.inputchecks.clvfittedtransactions.predict.ellipsis <- function(clv.fitted.transactions){
+  test_that("Stop if unnecessary inputs given in ellipsis", {
+    expect_error(predict(clv.fitted.transactions, abc = 123), regexp = "further parameters")
+    expect_error(predict(clv.fitted.transactions, continous.discount.factor = 0.2), regexp = "further parameters")
+    expect_error(predict(x = clv.fitted.transactions), regexp = "further parameters")
+  })
+}
 
 
 
@@ -235,8 +221,8 @@ fct.testthat.inputchecks.clvfittedtransactions <- function(data.cdnow, data.appa
                                          name.param = "verbose", null.allowed=FALSE)
 
 
-  # context("Inputchecks - clv.fitted.transactions predict - ...")
-  # fct.testthat.inputchecks.clvfitted.predict.ellipsis
+  context("Inputchecks - clv.fitted.transactions predict - ...")
+  fct.testthat.inputchecks.clvfittedtransactions.predict.ellipsis(clv.fitted.transactions = fitted.cdnow.nohold)
 }
 
 

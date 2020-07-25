@@ -7,13 +7,28 @@ fct.testthat.inputchecks.clvfittedspending.predict.newdata.has.no.spending <- fu
 }
 
 
+fct.testthat.inputchecks.clvfittedspending.predict.ellipsis <- function(fitted.spending){
+
+  test_that("Stop if unnecessary inputs given in ellipsis", {
+    expect_error(predict(fitted.spending, abc = 123), "further parameters")
+    expect_error(predict(fitted.spending, use.cor = TRUE), "further parameters")
+    expect_error(predict(fitted.spending, prediction.end = 6), "further parameters")
+  })
+
+}
+
+
 fct.testthat.inputchecks.clvfittedspending <- function(data.cdnow, data.apparelTrans, data.apparelStaticCov){
   context("Inputchecks - clv.fitted.spending predict - newdata")
   clv.data.apparel.static.cov <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
                                                                              estimation.split = 40)
   expect_silent(fitted.spending <- gg(clv.data.apparel.static.cov, verbose = FALSE))
 
-  # fct.testthat.inputchecks.clvfitted.predict.newdata.not.clvdata(clv.fitted = fitted.spending, data.cdnow = data.cdnow)
+  # General
+  fct.testthat.inputchecks.clvfitted.na.in.prediction.params.model(s3method = predict, clv.fitted = fitted.spending)
+
+  # Newdata
+  fct.testthat.inputchecks.clvfitted.predict.newdata.not.clvdata(clv.fitted = fitted.spending, data.cdnow = data.cdnow)
   fct.testthat.inputchecks.clvfittedspending.predict.newdata.has.no.spending(fitted.spending = fitted.spending, data.cdnow = data.cdnow)
 
 
@@ -22,8 +37,8 @@ fct.testthat.inputchecks.clvfittedspending <- function(data.cdnow, data.apparelT
   .fct.helper.inputchecks.single.logical(fct = predict, l.std.args = l.std.args,
                                          name.param = "verbose", null.allowed=FALSE)
 
-  # context("Inputchecks - clv.fitted.spending predict - ...")
-  # fct.testthat.inputchecks.clvfitted.predict.ellipsis
+  context("Inputchecks - clv.fitted.spending predict - ...")
+  fct.testthat.inputchecks.clvfittedspending.predict.ellipsis(fitted.spending = fitted.spending)
 }
 
 

@@ -153,10 +153,7 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
   if(!is.data.table(dt.trans))
     dt.trans <- setDT(dt.trans)
 
-  if(is.null(name.price))
-    has.spending <- FALSE
-  else
-    has.spending <- TRUE
+  has.spending <- (!is.null(name.price))
 
   # Reduce to named columns.
   #   This is needed if the data contains a column "Date"/"Id"/"Price" which is not actually selected
@@ -196,9 +193,8 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
 
   if(has.spending){
     dt.trans[, Price := as.numeric(Price)] # already checked that is numeric
-    if(dt.trans[Price<0, .N] > 0)
-      warning("Some Prices are negative! Some models might not work with this.", call. = FALSE)
   }
+
   setkeyv(dt.trans, cols = c("Id", "Date"))
 
 

@@ -93,7 +93,7 @@ setMethod(f = "clv.model.process.newdata", signature = signature(clv.model = "cl
 
 # .clv.model.predict -------------------------------------------------------------------------------------------------------------------
 setMethod("clv.model.predict", signature(clv.model="clv.model.gg"), function(clv.model, clv.fitted, dt.predictions, verbose, ...){
-  cbs.x <- cbs.Spending <- i.Spending <- i.x <- predicted.Spending <- NULL
+  cbs.x <- cbs.Spending <- i.Spending <- i.x <- predicted.mean.spending <- NULL
 
   p     <- clv.fitted@prediction.params.model[["p"]]
   q     <- clv.fitted@prediction.params.model[["q"]]
@@ -103,7 +103,7 @@ setMethod("clv.model.predict", signature(clv.model="clv.model.gg"), function(clv
   #   add data from cbs by Id to ensure matching
   dt.predictions[clv.fitted@cbs, cbs.x := i.x,               on="Id"]
   dt.predictions[clv.fitted@cbs, cbs.Spending := i.Spending, on="Id"]
-  dt.predictions[, predicted.Spending := (gamma + cbs.Spending * cbs.x) * p/(p * cbs.x + q - 1)]
+  dt.predictions[, predicted.mean.spending := (gamma + cbs.Spending * cbs.x) * p/(p * cbs.x + q - 1)]
   dt.predictions[, cbs.x        := NULL]
   dt.predictions[, cbs.Spending := NULL]
 

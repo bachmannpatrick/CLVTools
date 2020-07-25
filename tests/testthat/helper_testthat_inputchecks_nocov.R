@@ -218,7 +218,7 @@ fct.testthat.inputchecks.cannot.predict.without.spending <- function(method, dat
                    regexp = "there is no spending data")
       # but works without spending
       expect_silent(dt.pred <- predict(clv.spending, newdata=clv.cdnow.nospending, predict.spending=FALSE, verbose=FALSE))
-      expect_false(any(c("predicted.Spending","predicted.CLV") %in% colnames(dt.pred)))
+      expect_false(any(c("predicted.mean.spending","predicted.CLV") %in% colnames(dt.pred)))
     }
   })
 }
@@ -288,6 +288,12 @@ fct.testthat.inputchecks.clvfittedtransactions.nocov <- function(name.method, me
     context(paste0("Inputchecks - ",name.method," nocov - Parameter start.param.cor"))
     fct.testthat.inputchecks.startparamcor(method = method, l.std.args = l.std.args.noholdout,   correct.param = 0.5)
     fct.testthat.inputchecks.startparamcor(method = method, l.std.args = l.std.args.withholdout, correct.param = 0.5)
+  }else{
+    test_that("Fails for use.cor", {
+      expect_error(do.call(what = method,
+                           args = list(clv.data=clv.data.cdnow.with.holdout, use.cor = TRUE)),
+                   regexp = "ignored because they are not needed")
+    })
   }
 }
 

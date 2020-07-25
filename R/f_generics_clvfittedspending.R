@@ -1,3 +1,13 @@
+# . clv.controlflow.estimate.put.inputs -----------------------------------------------------------------
+setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, verbose, remove.first.transaction, ...){
+  clv.fitted <- callNextMethod()
+
+  clv.fitted@estimation.removed.first.transaction <- remove.first.transaction
+  return(clv.fitted)
+})
+
+
+
 # . clv.controlflow.predict.check.inputs -----------------------------------------------------------------
 setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, verbose, ...){
   err.msg <- c()
@@ -5,13 +15,6 @@ setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
 
   check_err_msg(err.msg)
-})
-
-setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, verbose, remove.first.transaction, ...){
-  clv.fitted <- callNextMethod()
-
-  clv.fitted@estimation.removed.first.transaction <- remove.first.transaction
-  return(clv.fitted)
 })
 
 
@@ -37,47 +40,49 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.spen
 })
 
 
-
+# . clv.controlflow.predict.build.result.table -----------------------------------------------------------------
 setMethod("clv.controlflow.predict.build.result.table", signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, verbose, ...){
   dt.predictions <- copy(clv.fitted@cbs[, "Id"])
   return(dt.predictions)
 })
 
+# . clv.controlflow.predict.get.has.actuals -----------------------------------------------------------------
 setMethod("clv.controlflow.predict.get.has.actuals", signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, dt.predictions){
   return(clv.data.has.holdout(clv.fitted@clv.data))
 })
 
+
+# . clv.controlflow.predict.add.actuals ----------------------------------------------------------------------
 setMethod("clv.controlflow.predict.add.actuals", signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, dt.predictions, has.actuals, verbose, ...){
-  actual.spending <- i.actual.spending <- Price <- NULL
-  # Only if:
-  #   - there is a holdout
-  #   - the prediction is not beyond holdout
-  #
-  # Data until prediction end
-  #   actual.spending:  $
+  actual.mean.spending <- i.actual.mean.spending <- Price <- NULL
+
+  # Spending models have no prediction.end
+  #   Therefore all data in holdout period
+  #   actual.mean.spending: mean spending per transaction
 
   if(!has.actuals){
     return(dt.predictions)
   }else{
     # only what is in prediction period!
     dt.actual.spending <- clv.data.get.transactions.in.holdout.period(clv.fitted@clv.data)
-    dt.actual.spending <- dt.actual.spending[, list(actual.spending = sum(Price)), keyby="Id"]
+    dt.actual.spending <- dt.actual.spending[, list(actual.mean.spending = mean(Price)), keyby="Id"]
 
     # Add to prediction table. Customers with no actual spending (not in table) are set to 0
-    dt.predictions[dt.actual.spending,     actual.spending := i.actual.spending, on="Id"]
-    dt.predictions[is.na(actual.spending), actual.spending := 0]
+    dt.predictions[dt.actual.spending,          actual.mean.spending := i.actual.mean.spending, on="Id"]
+    dt.predictions[is.na(actual.mean.spending), actual.mean.spending := 0]
     return(dt.predictions)
   }
 })
+
 
 # . clv.controlflow.predict.post.process.prediction.table ------------------------------------------------------------------------------
 setMethod("clv.controlflow.predict.post.process.prediction.table", signature = signature(clv.fitted="clv.fitted.spending"), function(clv.fitted, dt.predictions, has.actuals, verbose, ...){
 
   # Present cols in desired order ------------------------------------------------------------
   if(has.actuals){
-    cols <- c("Id", "predicted.Spending", "actual.spending")
+    cols <- c("Id", "actual.mean.spending", "predicted.mean.spending")
   }else{
-    cols <- c("Id", "predicted.Spending")
+    cols <- c("Id", "predicted.mean.spending")
   }
 
   setcolorder(dt.predictions, cols)

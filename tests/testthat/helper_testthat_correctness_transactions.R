@@ -5,7 +5,7 @@ fct.testhat.correctness.clvfittedtransactions.same.spending.as.independent.spend
     # with prediction.end to also predict if no holdout
     expect_silent(dt.pred <- predict(fitted, prediction.end = 10, verbose = FALSE))
     expect_silent(dt.pred.gg <- predict(gg(clv.data, verbose = FALSE)))
-    expect_equal(dt.pred.gg[order(Id), "predicted.Spending"], dt.pred[order(Id), "predicted.Spending"])
+    expect_equal(dt.pred.gg[order(Id), "predicted.mean.spending"], dt.pred[order(Id), "predicted.mean.spending"])
   })
 }
 

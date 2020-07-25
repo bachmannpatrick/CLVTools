@@ -250,6 +250,12 @@ fct.testthat.inputchecks.staticcov <- function(name.method, method, start.params
     context(paste0("Inputchecks - ",name.method," staticcov - Parameter start.param.cor"))
     fct.testthat.inputchecks.startparamcor(method = method, l.std.args = l.std.args.noholdout,   correct.param = 0.5)
     fct.testthat.inputchecks.startparamcor(method = method, l.std.args = l.std.args.withholdout, correct.param = 0.5)
+  }else{
+    test_that("Fails for use.cor", {
+      expect_error(do.call(what = method,
+                           args = list(clv.data=clv.data.apparel.with.holdout, use.cor = TRUE)),
+                   regexp = "ignored because they are not needed")
+    })
   }
 
 

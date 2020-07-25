@@ -25,7 +25,7 @@ fct.testthat.runability.nocov.predict.fit.no.spending.but.newdata.spending <- fu
     # Data with spending
     expect_silent(clv.cdnow.spending <- clvdata(data.transactions, name.price = "Price", date.format = "ymd", time.unit = "w", estimation.split = 37))
     expect_silent(dt.pred <- predict(clv.nospending, newdata=clv.cdnow.spending, verbose=FALSE, predict.spending=TRUE))
-    expect_true(all(c("predicted.Spending","predicted.CLV") %in% colnames(dt.pred)))
+    expect_true(all(c("predicted.mean.spending","predicted.CLV") %in% colnames(dt.pred)))
   })
 }
 
