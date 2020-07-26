@@ -1,4 +1,4 @@
-.fct.helper.s3.clvfittedtransactions.predict <- function(fitted.transactions, clv.newdata.nohold, clv.newdata.withhold,
+fct.testthat.runability.clvfittedtransactions.predict <- function(fitted.transactions, clv.newdata.nohold, clv.newdata.withhold,
                                                          DERT.not.implemented){
 
 

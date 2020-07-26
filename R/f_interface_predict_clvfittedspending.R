@@ -17,6 +17,7 @@
 #'
 #' @seealso models to predict spending: \link{gg}.
 #' @seealso models to predict transactions: \link{pnbd}, \link{bgnbd}, \link{ggomnbd}.
+#' @seealso \code{\link[CLVTools:predict.clv.fitted.transactions]{predict}} for transaction models
 #'
 #'
 #' @return An object of class \code{data.table} with columns:
@@ -41,7 +42,6 @@
 #'
 #' @importFrom stats predict
 #' @method predict clv.fitted.spending
-#' @aliases predict,clv.gg
 #' @export
 predict.clv.fitted.spending <- function(object, newdata=NULL, verbose=TRUE, ...){
 

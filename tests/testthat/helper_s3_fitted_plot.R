@@ -1,4 +1,4 @@
-.fct.helper.s3.fitted.plot <- function(clv.fitted, clv.newdata.nohold, clv.newdata.withhold){
+fct.testthat.runability.clvfittedtransactions.plot <- function(clv.fitted, clv.newdata.nohold, clv.newdata.withhold){
 
   if(clv.data.has.holdout(clv.fitted@clv.data)){
     test_that("Works without prediction end, out-of-the-box", {
@@ -139,4 +139,21 @@
   #   expect_true(res.char[, .(N=data.table::uniqueN(period.until)), by="variable"][, diff(N) == 4])
   # })
 
+}
+
+
+
+fct.testthat.runability.clvfittedspending.plot <- function(fitted.spending){
+
+  test_that("Works out-of-the-box", {
+    skip_on_cran()
+    expect_silent(res.plot <- plot(fitted.spending))
+  })
+
+  test_that("Different result for different n", {
+    skip_on_cran()
+    expect_silent(res.plot.10 <- plot(fitted.spending, n = 10, verbose=FALSE))
+    expect_silent(res.plot.20 <- plot(fitted.spending, n = 20, verbose=FALSE))
+    expect_false(isTRUE(all.equal(res.plot.10, res.plot.20)))
+  })
 }

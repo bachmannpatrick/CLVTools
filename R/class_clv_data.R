@@ -69,6 +69,8 @@ clv.data.has.spending <- function(clv.data){
 }
 
 clv.data.has.negative.spending <- function(clv.data){
+  Price <- NULL
+
   if(clv.data.has.spending(clv.data = clv.data) == FALSE)
     return(FALSE)
 

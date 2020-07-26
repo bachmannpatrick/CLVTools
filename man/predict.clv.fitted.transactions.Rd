@@ -3,9 +3,6 @@
 \name{predict.clv.fitted.transactions}
 \alias{predict.clv.fitted.transactions}
 \alias{predict}
-\alias{predict,clv.pnbd}
-\alias{predict,clv.bgnbd}
-\alias{predict,clv.ggomnbd}
 \alias{predict,clv.fitted.transactions-method}
 \title{Predict CLV from a fitted transaction model}
 \usage{
@@ -70,13 +67,13 @@ In the case of time-varying covariates, instead of \code{DERT}, "discounted expe
 is predicted. \code{DECT} does only cover a finite time horizon in contrast to \code{DERT}. For \code{continuous.discount.factor=0}, \code{DECT} corresponds to \code{CET}.
 }
 
-In order to derive a monetary value such as CLV, customer spending also has to be considered.
-If the \code{clv.data} object contains spending information, customer spending can be predicted as explained for
-parameter \code{predict.spending} and the predicted CLV can be calculated (if the transaction model supports \code{DERT/DECT}).
+In order to derive a monetary value such as CLV, customer spending has to be considered.
+If the \code{clv.data} object contains spending information, customer spending can be predicted using a Gamma/Gamma spending model for
+parameter \code{predict.spending} and the predicted CLV is be calculated (if the transaction model supports \code{DERT/DECT}).
 In this case, the prediction additionally contains the following two columns:
 \itemize{
-\item "predicted.mean.spending", the mean spending per transactions as predicted by the spending model
-\item "CLV", the customer lifetime value
+\item "predicted.mean.spending", the mean spending per transactions as predicted by the spending model.
+\item "CLV", the customer lifetime value. CLV is the product of DERT/DECT and predicted spending.
 }
 }
 \details{
@@ -167,4 +164,6 @@ predict(pnc, prediction.end = 10) # ends on 2016-12-17
 models to predict transactions: \link{pnbd}, \link{bgnbd}, \link{ggomnbd}.
 
 models to predict spending: \link{gg}.
+
+\code{\link[CLVTools:predict.clv.fitted.spending]{predict}} for spending models
 }

@@ -37,7 +37,8 @@ Suggests:
     future,
     knitr,
     rmarkdown,
-    testthat
+    testthat,
+    BTYD
 License: GPL-3
 URL: https://github.com/bachmannpatrick/CLVTools
 BugReports: https://github.com/bachmannpatrick/CLVTools/issues
@@ -114,7 +115,7 @@ Collate:
     'f_s3generics_clvdata_plot.R'
     'f_s3generics_clvdata_staticcov.R'
     'f_s3generics_clvfitted.R'
-    'f_s3generics_clvfitted_plot.R'
+    'f_s3generics_clvfittedspending_plot.R'
     'f_s3generics_clvfittedtransactions_plot.R'
     'f_s3generics_clvfittedtransactions_staticcov.R'
     'f_s3generics_clvtime.R'

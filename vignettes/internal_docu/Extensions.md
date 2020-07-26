@@ -23,17 +23,11 @@ This guide will show you, how to easily integrate your own models into the CLVTo
 ## <a name="1-estimation"></a> 1. Estimation 
 
 ### <a name="1-1-create-model"></a>1.1 Create a model class
-First, create a new R script with a class called `clv.model.{your-model-name}` where the part in the brackets is the name of your model. In the class definition, make sure to inherit from `clv.model` in order to get the basic model functionality.
+First, create a new R script with a class called `clv.model.{your-model-name}` where the part in the brackets is the name of your model. In the class definition, make sure to inherit from `clv.model` or `clv.model.no.correlation` (if your model does not support correlation) in order to get the basic model functionality.
 
 ```R
-setClass(Class = "clv.model.bgnbd.no.cov", contains = "clv.model",
-         slots = list(),
-         prototype = list(
-           name.model = character(),
-           names.original.params.model = character(0),
-           names.prefixed.params.model = character(0),
-           start.params.model = numeric(0)
-         ))
+setClass(Class = "clv.model.bgnbd.no.cov", contains = "clv.model.no.correlation")
+
 
 #' @importFrom methods new
 clv.model.bgnbd.no.cov <- function(){
@@ -51,7 +45,8 @@ In order for your model class to provide estimation data, you will need to imple
 **clv.model.check.input.args**: Contains validation for the input parameters of your model.
 ```R
 #' @include all_generics.R
-setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...){
+setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, start.params.model, optimx.args, verbose, ...){
+
   err.msg <- c()
 
   # Have to be > 0 as will be logged
@@ -59,20 +54,13 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
     err.msg <- c(err.msg, "Please provide only model start parameters greater than 0 as they will be log()-ed for the optimization!")
   }
 
-  if(use.cor){
-    err.msg <- c(err.msg, "Correlation is not supported for the BG/NBD model")
-  }
-
-  if(length(list(...)) > 0){
-    stop("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE, immediate. = TRUE)
-  }
-
   check_err_msg(err.msg)
 })
 
+
 ```
 
-**clv.model.put.estimation.input**: 
+**clv.model.put.estimation.input**: Only required if your model supports correlation and inherits from `clv.model` directly: 
 ```R
 setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, verbose, ...){
   # nothing to put specifically for this model
@@ -97,7 +85,7 @@ setMethod("clv.model.backtransform.estimated.params.model", signature = signatur
   return(exp(prefixed.params.model[clv.model@names.prefixed.params.model]))
 })
 ```
-**clv.model.prepare.optimx.args**: This is where you initialize optimx arguments. You specifiy your log likelihood (LL) functions both on individual (`LL.function.ind`) and on aggregated levels (`LL.function.sum`). Also, you provide the CBS (Customer-By-Sufficiency) matrix. 
+**clv.model.prepare.optimx.args**: This is where you initialize optimx arguments. You specifiy your log likelihood (LL) functions both on individual (`LL.function.ind`) and on aggregated levels (`LL.function.sum`). Also, you provide the Customer-By-Sufficiency (CBS) matrix. 
 **CAUTION**: Your parameters are very likely logarithmic, so you need to consider this in your LL functions or you will get incorrect values.
 ```R
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
@@ -155,13 +143,13 @@ setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv
 ```
 
 ### <a name="1-3-create-model-fitted"></a>1.3 Create your fitted model class
-Create a new R script with a class called `clv.{your-model-name}` where the part in the brackets is the name of your model. In the class definition, make sure to inherit from `clv.fitted` in order to get the basic functionality. This class will be responsible to create the CBS (Customer-By-Sufficiency) matrix, which we need for the optimization.
+Create a new R script with a class called `clv.{your-model-name}` where the part in the brackets is the name of your model. In the class definition, make sure to inherit from `clv.fitted.transactions` (transaction models) or `clv.fitted.spending` (spending models) in order to get the basic functionality. This class will be responsible to create the Customer-By-Sufficiency (CBS) matrix, which we need for the optimization.
 
 ```R
 #' @keywords internal
 #' @importFrom methods setClass
-#' @include class_clv_model_bgnbd.R class_clv_data.R class_clv_fitted.R
-setClass(Class = "clv.bgnbd", contains = "clv.fitted",
+#' @include class_clv_model_bgnbd.R class_clv_data.R class_clv_fitted_transactions.R
+setClass(Class = "clv.bgnbd", contains = "clv.fitted.transactions",
          slots = c(
            cbs = "data.table"),
 
@@ -181,7 +169,7 @@ clv.bgnbd <- function(cl, clv.data){
   clv.model    <- clv.model.bgnbd.no.cov()
 
   return(new("clv.bgnbd",
-             clv.fitted(cl=cl, clv.model=clv.model, clv.data=clv.data),
+             clv.fitted.transactions(cl=cl, clv.model=clv.model, clv.data=clv.data),
              cbs = dt.cbs.bgnbd))
 }
 ```
@@ -198,24 +186,15 @@ bgnbd_cbs <- function(clv.data){
   #     x:        Number of repeat transactions := Number of actual transactions - 1
   #     t.x:      Time between first actual and last transaction
   #     T.cal:    Time between first actual transaction and end of calibration period
-  #     Spending: Average (mean) spending per transaction (of all transactions, not only repeat)
   #
   #     All time is expressed in time units
-  trans.dt <- clv.data@data.transactions[Date <= clv.data@clv.time@timepoint.estimation.end]
+  trans.dt <- clv.data.get.transactions.in.estimation.period(clv.data = clv.data)
 
   #Initial cbs, for every Id a row
-  if(clv.data.has.spending(clv.data)){
-    cbs <- trans.dt[ , list(x                        =.N,
-                            date.first.actual.trans  = min(Date),
-                            date.last.transaction    = max(Date),
-                            Spending                 = mean(Price, na.rm=TRUE)),
-                     by="Id"]
-  }else{
-    cbs <- trans.dt[ , list(x                        =.N,
-                            date.first.actual.trans  = min(Date),
-                            date.last.transaction    = max(Date)),
-                     by="Id"]
-  }
+  cbs <- trans.dt[ , list(x                        =.N,
+                          date.first.actual.trans  = min(Date),
+                          date.last.transaction    = max(Date)),
+                   by="Id"]
 
   # Only repeat transactions -> Number of transactions - 1
   cbs[, x := x - 1]
@@ -223,12 +202,10 @@ bgnbd_cbs <- function(clv.data){
   # t.x, T.cal
   cbs[, ':='(t.x      = clv.time.interval.in.number.tu(clv.time=clv.data@clv.time, interv=interval(start = date.first.actual.trans, end = date.last.transaction)),
              T.cal    = clv.time.interval.in.number.tu(clv.time=clv.data@clv.time, interv=interval(start = date.first.actual.trans, end = clv.data@clv.time@timepoint.estimation.end)))]
+  cbs[, date.last.transaction := NULL]
 
   setkeyv(cbs, c("Id", "date.first.actual.trans"))
-  if(clv.data.has.spending(clv.data))
-    setcolorder(cbs, c("Id","x","t.x","T.cal","Spending","date.first.actual.trans", "date.last.transaction"))
-  else
-    setcolorder(cbs, c("Id","x","t.x","T.cal", "date.first.actual.trans", "date.last.transaction"))
+  setcolorder(cbs, c("Id","x","t.x","T.cal", "date.first.actual.trans"))
 
   return(cbs)
 }
@@ -238,27 +215,27 @@ bgnbd_cbs <- function(clv.data){
 We now have both a model and a fitted class, the missing piece in the puzzle is the entry point that makes use of the functionality that we implemented. We use a generic method for this purpose. Create a new R script called `f_interface_{your-model-name}.R` with the following contents:
 ```R
 #' @exportMethod bgnbd
-setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), use.cor = FALSE, start.param.cor=c(),
-                                  optimx.args=list(), verbose=TRUE, ...)
+setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), optimx.args=list(), verbose=TRUE, ...)
   standardGeneric("bgnbd"))
   
-#' @aliases bgnbd bgnbd,clv.data-method
-#' @include class_clv_data.R class_clv_model_bgnbd.R
-#' @export
+#' @rdname bgnbd
+#' @include class_clv_data.R
 setMethod("bgnbd", signature = signature(clv.data="clv.data"), definition = function(clv.data,
-                                                                                    start.params.model=c(),
-                                                                                    use.cor = FALSE,
-                                                                                    start.param.cor=c(),
-                                                                                    optimx.args=list(),
-                                                                                    verbose=TRUE,...){
+                                                                                     start.params.model=c(),
+                                                                                     optimx.args=list(),
+                                                                                     verbose=TRUE,...){
+
+  check_err_msg(check_user_data_emptyellipsis(...))
+
   cl <- match.call(call = sys.call(-1), expand.dots = TRUE)
 
   obj <- clv.bgnbd(cl=cl, clv.data=clv.data)
 
-  return(clv.template.controlflow.estimate(clv.fitted = obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
-                                           start.param.cor = start.param.cor, optimx.args = optimx.args, verbose=verbose, ...))
+  return(clv.template.controlflow.estimate(clv.fitted=obj, start.params.model = start.params.model,
+                                           optimx.args = optimx.args, verbose=verbose))
 })
 ```
+Note that this is also the place where you would provide entrypoints for covariate versions of your model.
 
 ### <a name="1-6-example-estimation"></a>1.6 Example: Estimation
 If you set up your model correctly, you should be able to estimate parameters:
@@ -280,7 +257,7 @@ est.bgnbd <- bgnbd(clv.data = clv.apparel, start.params.model = c(r = 1, alpha =
 summary(est.bgnbd)
 ```
 
-The output should look like this:
+The output should look similar to this:
 ```
 BG/NBD Standard  Model 
 
@@ -352,38 +329,42 @@ In your model class, create the method `clv.model.predict.clv`:
 
 ```R
 #' @include all_generics.R
-setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgnbd.no.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
-  r <- alpha <- a <- b <- period.length <- CET <- x <- t.x <- T.cal <- PAlive <- DERT <- NULL
+setMethod("clv.model.predict", signature(clv.model="clv.model.bgnbd.no.cov"), function(clv.model, clv.fitted, dt.predictions, verbose, continuous.discount.factor, ...){
+  r <- alpha <- a <- b <- period.length <- CET <- PAlive <- DERT <- i.CET <- i.PAlive <- i.DERT <- x <- t.x <- T.cal <- NULL
 
-  # To be sure they are both sorted the same when calling cpp functions
-  setkeyv(dt.prediction, "Id")
-  setkeyv(clv.fitted@cbs, "Id")
+  predict.number.of.periods <- dt.predictions[1, period.length]
 
-  predict.number.of.periods <- dt.prediction[1, period.length]
+  # To ensure sorting, do everything in a single table
+  dt.result <- copy(clv.fitted@cbs[, c("Id", "x", "t.x", "T.cal")])
 
   # Add CET
-  dt.prediction[, CET := bgnbd_nocov_CET(r = clv.fitted@prediction.params.model[["r"]],
-                                         alpha = clv.fitted@prediction.params.model[["alpha"]],
-                                         a = clv.fitted@prediction.params.model[["a"]],
-                                         b = clv.fitted@prediction.params.model[["b"]],
-                                         nPeriods = predict.number.of.periods,
-                                         vX = clv.fitted@cbs[, x],
-                                         vT_x = clv.fitted@cbs[, t.x],
-                                         vT_cal = clv.fitted@cbs[, T.cal])]
+  dt.result[, CET := bgnbd_nocov_CET(r     = clv.fitted@prediction.params.model[["r"]],
+                                     alpha = clv.fitted@prediction.params.model[["alpha"]],
+                                     a     = clv.fitted@prediction.params.model[["a"]],
+                                     b     = clv.fitted@prediction.params.model[["b"]],
+                                     dPeriods = predict.number.of.periods,
+                                     vX = x,
+                                     vT_x = t.x,
+                                     vT_cal = T.cal)]
 
 
   # Add PAlive
-  dt.prediction[, PAlive := bgnbd_nocov_PAlive(r = clv.fitted@prediction.params.model[["r"]],
-                                               alpha = clv.fitted@prediction.params.model[["alpha"]],
-                                               a = clv.fitted@prediction.params.model[["a"]],
-                                               b = clv.fitted@prediction.params.model[["b"]],
-                                               vX = clv.fitted@cbs[, x],
-                                               vT_x = clv.fitted@cbs[, t.x],
-                                               vT_cal = clv.fitted@cbs[, T.cal])]
+  dt.result[, PAlive := bgnbd_nocov_PAlive(r     = clv.fitted@prediction.params.model[["r"]],
+                                           alpha = clv.fitted@prediction.params.model[["alpha"]],
+                                           a     = clv.fitted@prediction.params.model[["a"]],
+                                           b     = clv.fitted@prediction.params.model[["b"]],
+                                           vX = x,
+                                           vT_x = t.x,
+                                           vT_cal = T.cal)]
   # Add DERT
-  dt.prediction[, DERT := 0]
+  dt.result[, DERT := 0]
 
-  return(dt.prediction)
+  # Add results to prediction table, by matching Id
+  dt.predictions[dt.result, CET    := i.CET,    on = "Id"]
+  dt.predictions[dt.result, PAlive := i.PAlive, on = "Id"]
+  dt.predictions[dt.result, DERT   := i.DERT,   on = "Id"]
+
+  return(dt.predictions)
 })
 ```
 ## <a name="4-example"></a>4. Example: Putting it all together

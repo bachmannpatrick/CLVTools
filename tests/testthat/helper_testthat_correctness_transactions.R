@@ -241,7 +241,8 @@ fct.testthat.correctness.clvfittedtransactions.staticcov.regularization.lambda.0
 
 
 fct.testthat.correctness.clvfittedtransactions <- function(name.model, method, data.cdnow, data.apparelTrans, data.apparelStaticCov,
-                                                           correct.start.params.model, correct.params.nocov.coef, correct.LL.nocov){
+                                                           correct.start.params.model, correct.params.nocov.coef, correct.LL.nocov,
+                                                           kkt2.true){
 
 
   # No cov ---------------------------------------------------------------------------------------------------
@@ -250,16 +251,17 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method, d
                                      name.id = "Id", name.date = "Date", name.price = "Price"))
   expect_silent(obj.fitted <- do.call(method, list(clv.data = clv.cdnow, verbose = FALSE)))
 
-
-  context(paste0("Correctness - ",name.model," nocov - cbs"))
-  fct.testthat.correctness.clvfittedtransactions.nocov.compare.cbs.vs.btyd(method = method, cdnow = data.cdnow)
+  if(requireNamespace("BTYD", quietly = TRUE)){
+    context(paste0("Correctness - ",name.model," nocov - cbs"))
+    fct.testthat.correctness.clvfittedtransactions.nocov.compare.cbs.vs.btyd(method = method, cdnow = data.cdnow)
+  }
 
   context(paste0("Correctness - ",name.model," nocov - Recover parameters"))
   fct.testthat.correctness.clvfitted.correct.coefs(method = method, cdnow = data.cdnow, start.params.model = correct.start.params.model,
                                                    params.nocov.coef = correct.params.nocov.coef, LL.nocov = correct.LL.nocov)
 
   context(paste0("Correctness - ",name.model," nocov - Example data"))
-  fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box(method = method, clv.data = clv.cdnow)
+  fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box(method = method, clv.data = clv.cdnow, kkt2.true = kkt2.true)
 
 
   context(paste0("Correctness - ",name.model," nocov - predict"))
@@ -287,8 +289,8 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method, d
 
 
   context(paste0("Correctness - ",name.model," static cov - Example data"))
-  fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box(method = method, clv.data = clv.apparel.nocov)
-  fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box(method = method, clv.data = clv.apparel.staticcov)
+  fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box(method = method, clv.data = clv.apparel.nocov, kkt2.true = kkt2.true)
+  fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box(method = method, clv.data = clv.apparel.staticcov, kkt2.true = kkt2.true)
 
 
   context(paste0("Correctness - ",name.model," static cov - predict"))

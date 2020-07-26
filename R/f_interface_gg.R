@@ -11,20 +11,17 @@
 #' Fits the Gamma-Gamma model on a given object of class \code{clv.data} to predict customers' mean
 #' spending per transaction.
 #'
-#' @details
-#' Model parameters for the Gamma-Gamma model are \code{p, q, gamma}. \cr
-#' **TODO: PATRICK docu: What are these params for, what is their interpretation? \cr
-#' \code{p}: shape parameter of the XX  distribution.
-#' The smaller s, the stronger the heterogeneity of customer lifetimes. \cr
-#' \code{beta}: scale parameter for the Gamma distribution for the lifetime process. \cr
 #'
+#' @details Model parameters for the G/G model are \code{p, q, and gamma}. \cr
+#' \code{p}: shape parameter of the Gamma distribution of the spending process. \cr
+#' \code{q}: shape parameter of the Gamma distribution to account for customer heterogeneity. \cr
+#' \code{gamma}: scale parameter of the Gamma distribution to account for customer heterogeneity.\cr
 #' If no start parameters are given, 1.0 is used for all model parameters. All parameters are required
 #' to be > 0.
 #'
-#' \subsection{The Gamma-Gamma model}{
-#'
-#'
-#' **TODO: PATRICK: Something about GG, assumptions, limitations, etc?
+#' \subsection{The G/G model}{
+#' The G/G model allows to predict a value for future customer transactions. Usually, the G/G model is used 
+#' in combination with a probabilistic model predicting customer transaction such as the Pareto/NBD or the BG/NBD model.
 #' }
 #'
 #' @return

@@ -107,6 +107,11 @@ setGeneric(name="clv.model.backtransform.estimated.params.model", def=function(c
 setGeneric(name="clv.model.process.post.estimation", def=function(clv.model, clv.fitted, res.optimx)
   standardGeneric("clv.model.process.post.estimation"))
 
+# . Density for spending models
+setGeneric(name="clv.model.probability.density", def=function(clv.model, x, clv.fitted)
+  standardGeneric("clv.model.probability.density"))
+
+
 # .. Correlation ---------------------------------------------------------------------------------
 # Whether the model in general supports life/trans correlation
 setGeneric(name="clv.model.supports.correlation", def = function(clv.model)

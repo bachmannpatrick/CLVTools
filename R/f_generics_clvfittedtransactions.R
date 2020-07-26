@@ -143,7 +143,7 @@ setMethod("clv.controlflow.predict.get.has.actuals", signature(clv.fitted="clv.f
 # .clv.controlflow.predict.add.actuals ---------------------------------------------------------------------------------
 setMethod("clv.controlflow.predict.add.actuals", signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, dt.predictions, has.actuals, verbose, ...){
 
-  Date <- period.first <- period.last <- actual.x <- i.actual.x <- NULL
+  actual.total.spending <- i.actual.total.spending <- Price <- Date <- period.first <- period.last <- actual.x <- i.actual.x <- NULL
 
   # Only if:
   #   - there is a holdout

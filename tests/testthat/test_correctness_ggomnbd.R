@@ -8,7 +8,8 @@ fct.testthat.correctness.clvfittedtransactions(name.model = "GGompertz/NBD", met
                                                data.apparelTrans=apparelTrans, data.apparelStaticCov=apparelStaticCov,
                                                correct.start.params.model = c(r = 0.5, alpha = 2, b = 0.5, s = 0.5, beta = 0.5),
                                                correct.params.nocov.coef = c(r = 0.55313, alpha = 10.5758, b = 0.0000011, s = 0.60682, beta = 0.000013),
-                                               correct.LL.nocov = -9594.9762)
+                                               correct.LL.nocov = -9594.9762,
+                                               kkt2.true = FALSE)
 
 # Cannot compare against BTYD
 

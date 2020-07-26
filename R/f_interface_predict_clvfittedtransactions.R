@@ -23,13 +23,13 @@
 #' is predicted. \code{DECT} does only cover a finite time horizon in contrast to \code{DERT}. For \code{continuous.discount.factor=0}, \code{DECT} corresponds to \code{CET}.
 #'}
 #'
-#' In order to derive a monetary value such as CLV, customer spending also has to be considered.
-#' If the \code{clv.data} object contains spending information, customer spending can be predicted as explained for
-#' parameter \code{predict.spending} and the predicted CLV can be calculated (if the transaction model supports \code{DERT/DECT}).
+#' In order to derive a monetary value such as CLV, customer spending has to be considered.
+#' If the \code{clv.data} object contains spending information, customer spending can be predicted using a Gamma/Gamma spending model for
+#' parameter \code{predict.spending} and the predicted CLV is be calculated (if the transaction model supports \code{DERT/DECT}).
 #' In this case, the prediction additionally contains the following two columns:
 #' \itemize{
-#' \item "predicted.mean.spending", the mean spending per transactions as predicted by the spending model
-#' \item "CLV", the customer lifetime value
+#' \item "predicted.mean.spending", the mean spending per transactions as predicted by the spending model.
+#' \item "CLV", the customer lifetime value. CLV is the product of DERT/DECT and predicted spending.
 #'}
 #'
 #' @details \code{predict.spending} indicates whether to predict customers' spending and if so, the spending model to use.
@@ -49,6 +49,7 @@
 #'
 #' @seealso models to predict transactions: \link{pnbd}, \link{bgnbd}, \link{ggomnbd}.
 #' @seealso models to predict spending: \link{gg}.
+#' @seealso \code{\link[CLVTools:predict.clv.fitted.spending]{predict}} for spending models
 #'
 #'
 #' @return
@@ -115,9 +116,6 @@
 #' @importFrom stats predict
 #' @method predict clv.fitted.transactions
 #' @aliases predict
-#' @aliases predict,clv.pnbd
-#' @aliases predict,clv.bgnbd
-#' @aliases predict,clv.ggomnbd
 #' @export
 predict.clv.fitted.transactions <- function(object, newdata=NULL, prediction.end=NULL, predict.spending=gg,
                                             continuous.discount.factor=0.1, verbose=TRUE, ...){
@@ -144,9 +142,5 @@ predict.clv.fitted.transactions <- function(object, newdata=NULL, prediction.end
 # S4 method to forward to S3 method
 #' @include all_generics.R class_clv_fitted_transactions.R
 #' @exportMethod predict
-#' @aliases predict,clv.pnbd
 #' @rdname predict.clv.fitted.transactions
 setMethod(f = "predict", signature = signature(object="clv.fitted.transactions"), predict.clv.fitted.transactions)
-
-
-
