@@ -28,7 +28,7 @@ fct.testthat.inputchecks.clvfittedspending <- function(data.cdnow, data.apparelT
   fct.testthat.inputchecks.clvfitted.na.in.prediction.params.model(s3method = predict, clv.fitted = fitted.spending)
 
   # Newdata
-  fct.testthat.inputchecks.clvfitted.predict.newdata.not.clvdata(clv.fitted = fitted.spending, data.cdnow = data.cdnow)
+  fct.testthat.inputchecks.clvfitted.newdata.not.clvdata(clv.fitted = fitted.spending, data.cdnow = data.cdnow)
   fct.testthat.inputchecks.clvfittedspending.predict.newdata.has.no.spending(fitted.spending = fitted.spending, data.cdnow = data.cdnow)
 
 

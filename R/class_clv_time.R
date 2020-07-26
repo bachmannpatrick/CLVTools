@@ -202,7 +202,7 @@ clv.time.expectation.periods <- function(clv.time, user.tp.end){
   #   check_err_msg("The prediction end cannot be before the end of the estimation!")
 
   if(tp.expectation.end <= tp.first.period.start)
-    check_err_msg("The end cannot be before the start of the expectation period!")
+    check_err_msg("The end cannot be before the start of the estimation period!")
 
 
   if(clv.time.interval.in.number.tu(clv.time = clv.time,

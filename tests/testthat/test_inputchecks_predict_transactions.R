@@ -3,24 +3,11 @@
 #   test_that("Fails for NA",{
 #
 #   })
-#   .fct.helper.inputchecks.fails.for.NA
-#   .fct.helper.inputchecks.fails.for.NULL
 # }
 
 
 
-fct.testthat.inputchecks.clvfittedtransactions.cov.na.in.prediction.params.cov <- function(s3method, clv.fitted.cov){
-  test_that("Fails if prediction.params.life/trans are NA", {
-    skip_on_cran()
-    clv.fitted.cov@prediction.params.life[1] <- NA_real_
-    expect_error(do.call(s3method, list(clv.fitted.cov, prediction.end = 6)), regexp = "NAs in the estimated covariate")
-    clv.fitted.cov@prediction.params.life[1] <- 1 # remove NA
 
-    clv.fitted.cov@prediction.params.trans[1] <- NA_real_
-    expect_error(do.call(s3method, list(clv.fitted.cov, prediction.end = 6)), regexp = "NAs in the estimated covariate")
-    clv.fitted.cov@prediction.params.trans[1] <- 1 # remove NA
-  })
-}
 
 fct.testthat.inputchecks.clvfittedtransactions.predict.discountfactor.out.of.range <- function(clv.fitted.transactions){
   test_that("Fails if discount factor out of [0,1)", {
@@ -53,52 +40,6 @@ fct.testthat.inputchecks.clvfittedtransactions.predict.prediction.end.before.est
   })
 }
 
-fct.testthat.inputchecks.clvfittedtransactions.predict.newdata.has.different.covs <- function(clv.fitted.apparel.cov,
-                                                                                              data.apparelStaticCov){
-  test_that("Fails if newdata has different covariates (names)", {
-    skip_on_cran()
-
-    # newdata should be exactly same except for the cov names
-    clv.apparel.nocov <- as(clv.fitted.apparel.cov@clv.data, "clv.data")
-    data.apparelStaticCov.additional <- data.table::copy(data.apparelStaticCov)
-    data.apparelStaticCov.additional[, Haircolor := "red"]
-    data.apparelStaticCov.additional[sample.int(.N, size = .N/4), Haircolor := "black"]
-
-    # Other covs
-    expect_silent(clv.apparel.static.other <- SetStaticCovariates(clv.data = clv.apparel.nocov,
-                                                                  data.cov.life = data.apparelStaticCov.additional,
-                                                                  data.cov.trans = data.apparelStaticCov.additional,
-                                                                  names.cov.life = "Haircolor",
-                                                                  names.cov.trans = "Haircolor"))
-    expect_error(predict(clv.fitted.apparel.cov, newdata = clv.apparel.static.other),
-                 regexp = "used for fitting are present in the")
-
-
-    # More covs
-    expect_silent(clv.apparel.static.more <- SetStaticCovariates(clv.data = clv.apparel.nocov,
-                                                                 data.cov.life = data.apparelStaticCov.additional,
-                                                                 data.cov.trans = data.apparelStaticCov.additional,
-                                                                 names.cov.life = c("Gender","Channel", "Haircolor"),
-                                                                 names.cov.trans = c("Gender", "Channel","Haircolor")))
-
-    expect_error(predict(clv.fitted.apparel.cov, newdata = clv.apparel.static.more),
-                 regexp = "used for fitting are present in the")
-  })
-}
-
-fct.testthat.inputchecks.clvfittedtransactions.predict.newdata.is.different.class <- function(clv.fitted.transactions.nocov,
-                                                                                              clv.fitted.transactions.staticcov,
-                                                                                              clv.data.no.cov,
-                                                                                              clv.data.static.cov){
-  test_that("Fails if newdata is of wrong clv.data", {
-    skip_on_cran()
-    # predicting nocov model with staticcov data
-    expect_error(predict(clv.fitted.transactions.nocov, newdata = clv.data.static.cov), regexp = "of class clv.data")
-
-    # predicting staticcov model with nocov data
-    expect_error(predict(clv.fitted.transactions.staticcov, newdata=clv.data.no.cov), regexp ="of class clv.data.static.covariates")
-  })
-}
 
 
 fct.testthat.inputchecks.clvfittedtransactions.predict.predict.spending.but.no.spending.data <- function(method, data.cdnow){
@@ -174,7 +115,7 @@ fct.testthat.inputchecks.clvfittedtransactions.predict.ellipsis <- function(clv.
 
 
 
-fct.testthat.inputchecks.clvfittedtransactions <- function(data.cdnow, data.apparelTrans, data.apparelStaticCov){
+fct.testthat.inputchecks.clvfittedtransactions.predict <- function(data.cdnow, data.apparelTrans, data.apparelStaticCov){
   context("Inputchecks - clv.fitted.transactions predict - newdata")
   clv.data.apparel.static.cov <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
                                                                              estimation.split = 40)
@@ -183,13 +124,15 @@ fct.testthat.inputchecks.clvfittedtransactions <- function(data.cdnow, data.appa
   expect_silent(fitted.cdnow.nohold   <- pnbd(clv.data.cdnow.nohold, verbose = FALSE))
 
 
-  fct.testthat.inputchecks.clvfitted.predict.newdata.not.clvdata(clv.fitted = fitted.cdnow.nohold, data.cdnow = data.cdnow)
-  fct.testthat.inputchecks.clvfittedtransactions.predict.newdata.has.different.covs(clv.fitted.apparel.cov = fitted.apparel.static,
-                                                                                    data.apparelStaticCov = data.apparelStaticCov)
-  fct.testthat.inputchecks.clvfittedtransactions.predict.newdata.is.different.class(clv.fitted.transactions.nocov = fitted.cdnow.nohold,
-                                                                                    clv.fitted.transactions.staticcov = fitted.apparel.static,
-                                                                                    clv.data.no.cov = clv.data.cdnow.nohold,
-                                                                                    clv.data.static.cov = clv.data.apparel.static.cov)
+  fct.testthat.inputchecks.clvfitted.newdata.not.clvdata(clv.fitted = fitted.cdnow.nohold, data.cdnow = data.cdnow)
+  fct.testthat.inputchecks.clvfittedtransactions.newdata.has.different.covs(s3method = predict,
+                                                                            clv.fitted.apparel.cov = fitted.apparel.static,
+                                                                            data.apparelStaticCov = data.apparelStaticCov)
+  fct.testthat.inputchecks.clvfittedtransactions.newdata.is.different.class(s3method = predict,
+                                                                            clv.fitted.transactions.nocov = fitted.cdnow.nohold,
+                                                                            clv.fitted.transactions.staticcov = fitted.apparel.static,
+                                                                            clv.data.no.cov = clv.data.cdnow.nohold,
+                                                                            clv.data.static.cov = clv.data.apparel.static.cov)
 
 
   # General inputchecks
@@ -197,6 +140,7 @@ fct.testthat.inputchecks.clvfittedtransactions <- function(data.cdnow, data.appa
   fct.testthat.inputchecks.clvfittedtransactions.cov.na.in.prediction.params.cov(s3method = predict, clv.fitted.cov = fitted.apparel.static)
 
   context("Inputchecks - clv.fitted.transactions predict - prediction.end")
+  fct.testthat.inputchecks.clvfittedtransactions.prediction.end.wrong.format(fitted.transactions = fitted.cdnow.nohold)
   fct.testthat.inputchecks.clvfittedtransactions.predict.prediction.end.fails.no.holdout(clv.fitted.transactions.no.hold = fitted.cdnow.nohold)
   fct.testthat.inputchecks.clvfittedtransactions.predict.prediction.end.before.estimation.end(clv.fitted = fitted.cdnow.nohold)
   fct.testthat.inputchecks.clvfittedtransactions.predict.prediction.end.before.estimation.end(clv.fitted = fitted.apparel.static)
@@ -207,6 +151,7 @@ fct.testthat.inputchecks.clvfittedtransactions <- function(data.cdnow, data.appa
                                                                                                data.cdnow = data.cdnow)
   fct.testthat.inputchecks.clvfittedtransactions.predict.predict.spending.wrong.type(clv.fitted.transactions = fitted.cdnow.nohold)
   fct.testthat.inputchecks.clvfittedtransactions.predict.predict.spending.has.NA(clv.fitted.transactions = fitted.cdnow.nohold, data.cdnow = data.cdnow)
+  fct.testthat.inputchecks.clvfittedtransactions.prediction.end.uses.newdata(s3method = predict, fitted.cdnow = fitted.cdnow.nohold, data.cdnow = data.cdnow)
 
 
   context("Inputchecks - clv.fitted.transactions predict - continuous.discount.factor")
@@ -229,4 +174,4 @@ fct.testthat.inputchecks.clvfittedtransactions <- function(data.cdnow, data.appa
 data("cdnow")
 data("apparelTrans")
 data("apparelStaticCov")
-fct.testthat.inputchecks.clvfittedtransactions(data.cdnow = cdnow, data.apparelTrans = apparelTrans, data.apparelStaticCov = apparelStaticCov)
+fct.testthat.inputchecks.clvfittedtransactions.predict(data.cdnow = cdnow, data.apparelTrans = apparelTrans, data.apparelStaticCov = apparelStaticCov)

@@ -5,10 +5,10 @@
   })
 }
 
-.fct.helper.inputchecks.fails.for.NA <- function(fct, l.std.args, name.param){
+.fct.helper.inputchecks.fails.for.NA <- function(fct, l.std.args, name.param, NA_literal){
   test_that("Fails for NA", {
-    expect_error(do.call(fct, modifyList(l.std.args, setNames(list(param=NA), name.param))),
-                 regexp="cannot be NA")
+    expect_error(do.call(fct, modifyList(l.std.args, setNames(list(param=NA_literal), name.param))),
+                 regexp="NA")
   })
 }
 
@@ -52,7 +52,7 @@
     .fct.helper.inputchecks.fails.for.NULL(fct=fct, l.std.args = l.std.args, name.param = name.param)
   }
 
-  .fct.helper.inputchecks.fails.for.NA(fct=fct, l.std.args = l.std.args, name.param = name.param)
+  .fct.helper.inputchecks.fails.for.NA(fct=fct, l.std.args = l.std.args, name.param = name.param, NA_literal = NA)
   .fct.helper.inputchecks.fails.if.not.allowed.type(fct=fct, l.std.args = l.std.args, name.param = name.param,
                                                     name.allowed.type = "logical")
 
@@ -67,7 +67,7 @@
 fct.helper.inputcheck.single.numeric <- function(fct, l.std.args, name.param){
 
   .fct.helper.inputchecks.fails.for.NULL(fct=fct, l.std.args = l.std.args, name.param = name.param)
-  .fct.helper.inputchecks.fails.for.NA(fct=fct, l.std.args = l.std.args, name.param = name.param)
+  .fct.helper.inputchecks.fails.for.NA(fct=fct, l.std.args = l.std.args, name.param = name.param, NA_literal = NA_real_)
 
   .fct.helper.inputchecks.fails.if.not.allowed.type(fct=fct, l.std.args = l.std.args, name.param = name.param,
                                                     name.allowed.type = "numerical")
@@ -79,3 +79,21 @@ fct.helper.inputcheck.single.numeric <- function(fct, l.std.args, name.param){
                                                                         c(0,0)))
 
 }
+
+fct.helper.inputcheck.single.character <- function(fct, l.std.args, name.param, null.allowed){
+  if(!null.allowed){
+    .fct.helper.inputchecks.fails.for.NULL(fct=fct, l.std.args = l.std.args, name.param = name.param)
+  }
+
+  .fct.helper.inputchecks.fails.for.NA(fct=fct, l.std.args = l.std.args, name.param = name.param, NA_literal = NA_character_)
+
+  .fct.helper.inputchecks.fails.if.not.allowed.type(fct=fct, l.std.args = l.std.args, name.param = name.param,
+                                                    name.allowed.type = "character")
+
+  .fct.helper.inputchecks.fails.for.multiple(fct=fct, l.std.args = l.std.args, name.param = name.param,
+                                             l.illegal.multiples = list(c("a", "b"),
+                                                                        c("Pareto", "NBD"),
+                                                                        c("abc", ""),
+                                                                        c("", "")))
+}
+

@@ -125,13 +125,11 @@ plot.clv.fitted.transactions <- function (x, prediction.end=NULL, newdata=NULL, 
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=transactions, var.name="transactions"))
   err.msg <- c(err.msg, check_user_data_predictionend(clv.fitted=x, prediction.end=prediction.end))
+  err.msg <- c(err.msg, check_user_data_emptyellipsis(...))
   if(!is.null(label)) # null is allowed = std. model name
     err.msg <- c(err.msg, .check_userinput_single_character(char=label, var.name="label"))
   check_err_msg(err.msg)
 
-  if(length(list(...))>0){
-    stop("Any additional parameters passed in ... are not needed!", call. = FALSE)
-  }
 
   # do fitted object specific checks (ie dyncov checks cov data length)
   clv.controlflow.plot.check.inputs(obj=x, prediction.end=prediction.end, cumulative=cumulative,
