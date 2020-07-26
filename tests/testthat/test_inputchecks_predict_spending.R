@@ -18,7 +18,7 @@ fct.testthat.inputchecks.clvfittedspending.predict.ellipsis <- function(fitted.s
 }
 
 
-fct.testthat.inputchecks.clvfittedspending <- function(data.cdnow, data.apparelTrans, data.apparelStaticCov){
+fct.testthat.inputchecks.clvfittedspending.predict <- function(data.cdnow, data.apparelTrans, data.apparelStaticCov){
   context("Inputchecks - clv.fitted.spending predict - newdata")
   clv.data.apparel.static.cov <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
                                                                              estimation.split = 40)
@@ -45,4 +45,4 @@ fct.testthat.inputchecks.clvfittedspending <- function(data.cdnow, data.apparelT
 data("cdnow")
 data("apparelTrans")
 data("apparelStaticCov")
-fct.testthat.inputchecks.clvfittedspending(data.cdnow = cdnow, data.apparelTrans = apparelTrans, data.apparelStaticCov = apparelStaticCov)
+fct.testthat.inputchecks.clvfittedspending.predict(data.cdnow = cdnow, data.apparelTrans = apparelTrans, data.apparelStaticCov = apparelStaticCov)
