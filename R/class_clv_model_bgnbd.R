@@ -114,7 +114,7 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.no.cov")
 # clv.model.predict --------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
 setMethod("clv.model.predict", signature(clv.model="clv.model.bgnbd.no.cov"), function(clv.model, clv.fitted, dt.predictions, verbose, continuous.discount.factor, ...){
-  r <- alpha <- a <- b <- period.length <- CET <- PAlive <- DERT <- i.CET <- i.PAlive <- i.DERT <- x <- t.x <- T.cal <- NULL
+  r <- alpha <- a <- b <- period.length <- CET <- PAlive <- i.CET <- i.PAlive <- x <- t.x <- T.cal <- NULL
 
   predict.number.of.periods <- dt.predictions[1, period.length]
 
@@ -140,13 +140,10 @@ setMethod("clv.model.predict", signature(clv.model="clv.model.bgnbd.no.cov"), fu
                                            vX = x,
                                            vT_x = t.x,
                                            vT_cal = T.cal)]
-  # Add DERT
-  dt.result[, DERT := 0]
 
   # Add results to prediction table, by matching Id
   dt.predictions[dt.result, CET    := i.CET,    on = "Id"]
   dt.predictions[dt.result, PAlive := i.PAlive, on = "Id"]
-  dt.predictions[dt.result, DERT   := i.DERT,   on = "Id"]
 
   return(dt.predictions)
 })

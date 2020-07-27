@@ -291,9 +291,11 @@ setMethod("clv.controlflow.predict.post.process.prediction.table", signature = s
   if("DECT" %in% colnames(dt.predictions))
     cols <- c(cols, "PAlive", "CET", "DECT")
 
-  if(do.predict.spending){
-    cols <- c(cols, c("predicted.mean.spending", "predicted.CLV"))
-  }
+  if(do.predict.spending)
+    cols <- c(cols, "predicted.mean.spending")
+
+  if("predicted.CLV" %in% colnames(dt.predictions))
+    cols <- c(cols, "predicted.CLV")
 
   setcolorder(dt.predictions, cols)
 

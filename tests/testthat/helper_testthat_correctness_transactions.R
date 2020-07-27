@@ -251,10 +251,8 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method, d
                                      name.id = "Id", name.date = "Date", name.price = "Price"))
   expect_silent(obj.fitted <- do.call(method, list(clv.data = clv.cdnow, verbose = FALSE)))
 
-  if(requireNamespace("BTYD", quietly = TRUE)){
-    context(paste0("Correctness - ",name.model," nocov - cbs"))
-    fct.testthat.correctness.clvfittedtransactions.nocov.compare.cbs.vs.btyd(method = method, cdnow = data.cdnow)
-  }
+  context(paste0("Correctness - ",name.model," nocov - cbs"))
+  fct.testthat.correctness.clvfittedtransactions.nocov.compare.cbs.vs.btyd(method = method, cdnow = data.cdnow)
 
   context(paste0("Correctness - ",name.model," nocov - Recover parameters"))
   fct.testthat.correctness.clvfitted.correct.coefs(method = method, cdnow = data.cdnow, start.params.model = correct.start.params.model,

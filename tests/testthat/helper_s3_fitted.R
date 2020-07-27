@@ -24,12 +24,11 @@
   })
 
   test_that("No NAs", {
-    # ** TODO: Really?
     expect_false(anyNA(res.coef))
   })
 
-  # model specific: coef() same as exp(coef(optimx))
-  # model specific: test that coef() really use last row of optimx result, not any other
+  # **Todo: model specific: coef() same as exp(coef(optimx))
+  # **Todo: model specific: test that coef() really use last row of optimx result, not any other
 }
 
 .fct.helper.s3.fitted.vcov <- function(clv.fitted, full.names){
@@ -144,7 +143,6 @@
   test_that("Basic summary structure", {
     expect_is(res.sum, "summary.clv.fitted")
     expect_true(is.list(res.sum))
-    # **TODO: vcov as well?
     expect_true(all(c("call", "name.model", "tp.estimation.start","tp.estimation.end",
                       "time.unit", "coefficients", "AIC", "BIC","kkt1", "kkt2","additional.options") %in%
                       names(res.sum)))

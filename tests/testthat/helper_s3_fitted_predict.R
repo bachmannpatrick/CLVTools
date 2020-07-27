@@ -99,7 +99,12 @@ fct.testthat.runability.clvfittedtransactions.predict <- function(fitted.transac
 
     #   all columns > 0
     expect_true(dt.pred[, all(.SD >= (0 - sqrt(.Machine$double.eps)) | is.na(.SD))])
-    expect_true(all(c("Id", "CET", "DERT", "PAlive") %in% colnames(dt.pred)))
+    expect_true(all(c("Id", "CET", "PAlive") %in% colnames(dt.pred)))
+    if(DERT.not.implemented){
+      expect_false("DERT" %in% colnames(dt.pred) | "DECT" %in% colnames(dt.pred))
+    }else{
+      expect_true("DERT" %in% colnames(dt.pred) | "DECT" %in% colnames(dt.pred))
+    }
 
     if(clv.data.has.holdout(fitted.transactions@clv.data)){
       # Has actuals if there is a holdout period

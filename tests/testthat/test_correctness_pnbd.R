@@ -26,15 +26,14 @@ fct.testthat.correctness.clvfitted.nocov.correct.se(method = pnbd,
                                                     start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
                                                     params.nocov.se = c(r=0.0476264, alpha=0.8427222, s=0.1872594, beta=6.2105448))
 
-if(requireNamespace("BTYD", quietly = TRUE)){
-  fct.testthat.correctness.clvfittedtransactions.nocov.same.as.btyd(clvtools.method = pnbd,
-                                                                    btyd.method = BTYD::pnbd.EstimateParameters,
-                                                                    btyd.dert.method = BTYD::pnbd.DERT,
-                                                                    btyd.cet.method = BTYD::pnbd.ConditionalExpectedTransactions,
-                                                                    btyd.palive.method = BTYD::pnbd.PAlive,
-                                                                    start.params.model = c(r=0.5, alpha = 6, s = 0.9, beta = 8),
-                                                                    cdnow = cdnow)
-}
+fct.testthat.correctness.clvfittedtransactions.nocov.same.as.btyd(clvtools.method = pnbd,
+                                                                  btyd.method = BTYD::pnbd.EstimateParameters,
+                                                                  btyd.dert.method = BTYD::pnbd.DERT,
+                                                                  btyd.cet.method = BTYD::pnbd.ConditionalExpectedTransactions,
+                                                                  btyd.palive.method = BTYD::pnbd.PAlive,
+                                                                  start.params.model = c(r=0.5, alpha = 6, s = 0.9, beta = 8),
+                                                                  cdnow = cdnow)
+
 
 context("Correctness - PNBD nocov - PAlive")
 

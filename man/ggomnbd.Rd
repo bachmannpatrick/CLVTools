@@ -80,6 +80,9 @@ The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.
 If no start parameters are given, r = 1, alpha = 1, beta = 1, b = 1, s = 1 is used.
 All model start parameters are required to be > 0.
 
+Note that the DERT expression has not been derived (yet) and it consequently is not possible to calculated
+values for DERT and CLV.
+
 \subsection{The Gamma-Gompertz/NBD model}{
 There are two key differences of the gamma/Gompertz/NBD (GGom/NBD) model compared to the relative to the well-known Pareto/NBD
 model: (i) its probability density function can exhibit a mode at zero or an interior mode, and (ii) it can be skewed
