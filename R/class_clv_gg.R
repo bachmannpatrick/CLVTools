@@ -3,8 +3,8 @@
 #' @template template_class_clvfittedspendingmodels
 #'
 #' @slot cbs Single \code{data.table} that contains information about
-#' each customers' mean spending per transaction and the number of purchases which depends on whether the
-#' first transaction was removed or not.
+#' each customers' mean spending per transaction (Spending) and the number of purchases (x) which
+#' both depend on whether the first transaction was removed or not.
 #'
 #' @seealso \linkS4class{clv.fitted}, \linkS4class{clv.fitted.spending}, \linkS4class{clv.model.gg}
 #'
@@ -34,16 +34,18 @@ clv.gg <- function(cl, clv.data, remove.first.transaction){
 
 gg_cbs <- function(clv.data, remove.first.transaction){
   Date <- Price <- x <- i.x <- Spending <- i.Spending <- NULL
+
   # Customer-By-Sufficiency (CBS) Matrix
   #   Only for transactions in calibration period
-  #   Only repeat transactions are relevant
+  #   After first transaction was removed (if required)
   #   For every customer:
-  #     x:        Number of repeat transactions := Number of actual transactions - 1
-  #     Spending: Average (mean) spending per transaction (of all transactions, not only repeat)
+  #     x:        Number of transactions
+  #     Spending: Average (mean) spending per transaction
 
   dt.transactions <- clv.data.get.transactions.in.estimation.period(clv.data = clv.data)
 
-  # Removing the first transaction and then doing counting transactions and spending on it, will
+
+  # Removing the first transaction and then counting transactions and spending on it, will
   #   lose customers. Therefore do in separate steps: Id of all, then match their data
 
   if(!remove.first.transaction){

@@ -17,8 +17,8 @@ provides the required GammaGamma specific functionalities.
 
 \describe{
 \item{\code{cbs}}{Single \code{data.table} that contains information about
-each customers' mean spending per transaction and the number of purchases which depends on whether the
-first transaction was removed or not.}
+each customers' mean spending per transaction (Spending) and the number of purchases (x) which
+both depend on whether the first transaction was removed or not.}
 }}
 
 \seealso{
