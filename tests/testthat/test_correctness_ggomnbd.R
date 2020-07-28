@@ -11,7 +11,6 @@ fct.testthat.correctness.clvfittedtransactions(name.model = "GGompertz/NBD", met
                                                correct.LL.nocov = -9594.9762,
                                                kkt2.true = FALSE)
 
-# Cannot compare against BTYD
 
 context("Correctness - GGompertz/NBD nocov - Recover parameters")
 

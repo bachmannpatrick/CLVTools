@@ -10,76 +10,7 @@ fct.testhat.correctness.clvfittedtransactions.same.spending.as.independent.spend
 }
 
 
-fct.testthat.correctness.clvfittedtransactions.nocov.same.as.btyd <- function(clvtools.method, btyd.method, btyd.dert.method, btyd.cet.method, btyd.palive.method, start.params.model, cdnow, DERT.not.implemented = FALSE){
-  if(requireNamespace("BTYD", quietly = TRUE)){
-    test_that("Same results as BTYD", {
-      # Fitting
-      # From ?BTYD::<model>.cbs.LL()
-      data("cdnowSummary", package = "BTYD", envir = environment())
-      expect_silent(cal.cbs <- cdnowSummary$cbs)
-      expect_silent(startingparams <- unname(start.params.model))
-      l.args.btyd <- list(cal.cbs, startingparams)
-      expect_silent(est.params <- do.call(what = btyd.method, args = l.args.btyd))
 
-      # CLVTools
-      expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "w", estimation.split = "1997-09-30"))
-      l.args.clvtools <- list(clv.data=clv.cdnow, start.params.model = start.params.model, verbose=FALSE)
-      expect_silent(p.cdnow <- do.call(what = clvtools.method, args = l.args.clvtools))
-      expect_equal(unname(coef(p.cdnow)), est.params, tolerance = 0.0001)
-
-
-      # Predicting
-      if(!DERT.not.implemented){
-        l.args.btyd.dert <- list(est.params, x=cal.cbs[,"x"], t.x = cal.cbs[,"t.x"], T.cal = cal.cbs[,"T.cal"], d=0.15)
-        expect_silent(btyd.dert <- do.call(what = btyd.dert.method, args = l.args.btyd.dert))
-      }
-
-      l.args.btyd.cet <- list(est.params, x=cal.cbs[,"x"], t.x = cal.cbs[,"t.x"], T.cal = cal.cbs[,"T.cal"], T.star = 10)
-      expect_silent(btyd.cet  <- do.call(what = btyd.cet.method, args = l.args.btyd.cet))
-      l.args.btyd.palive <- list(est.params, x=cal.cbs[,"x"], t.x = cal.cbs[,"t.x"], T.cal = cal.cbs[,"T.cal"])
-      expect_silent(btyd.palive <- do.call(what = btyd.palive.method, args = l.args.btyd.palive))
-
-      # CLVTools
-      expect_silent(dt.pred <- predict(p.cdnow, prediction.end = 10, continuous.discount.factor = 0.15, verbose = FALSE))
-
-      if(!DERT.not.implemented){
-        expect_equivalent(btyd.dert[dt.pred$Id],   dt.pred$DERT, tolerance = 0.0001)
-      }
-
-      expect_equivalent(btyd.cet[dt.pred$Id],    dt.pred$CET, tolerance = 0.0001)
-      expect_equivalent(btyd.palive[dt.pred$Id], dt.pred$PAlive, tolerance = 0.0001)
-
-      # Expectation: Cannot compare 1vs1 from fitted() output
-      # expect_silent(btyd.expect <- BTYD::<model>.Expectation(est.params, t=2))
-    })
-  }
-}
-
-fct.testthat.correctness.clvfittedtransactions.nocov.compare.cbs.vs.btyd <- function(method, cdnow){
-  if(requireNamespace("BTYD", quietly = TRUE)){
-    test_that("CBS is the same as BTYD", { # are the same - PNBD vs. BGNBD vs. BTYD", {
-      # cdnow has to be fit exactly as in BTYD example
-      skip_on_cran()
-
-      data(cdnowSummary, package = "BTYD", envir = environment())
-      expect_silent(cal.cbs <- cdnowSummary$cbs)
-      expect_silent(btyd.cbs <- as.data.table(cal.cbs))
-      expect_silent(btyd.cbs <- btyd.cbs[order("x", "t.x", "T.cal"),c("x", "t.x", "T.cal")])
-
-      expect_silent(clv.data <- clvdata(data.transactions = cdnow,
-                                        date.format="ymd",
-                                        time.unit = "week",
-                                        estimation.split = "1997-09-30",
-                                        name.id = "Id",
-                                        name.date = "Date",
-                                        name.price = "Price"))
-
-      expect_silent(cbs.method  <- method(clv.data = clv.data, verbose = FALSE)@cbs[order("x", "t.x", "T.cal"),c("x", "t.x", "T.cal")])
-
-      expect_equivalent(cbs.method, btyd.cbs)
-    })
-  }
-}
 
 
 fct.testthat.correctness.clvfittedtransactions.nocov.newdata.fitting.sample.predicting.full.data.equal <- function(method, cdnow, clv.cdnow){
@@ -250,9 +181,6 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method, d
                                      date.format = "ymd", time.unit = "W", estimation.split = 38,
                                      name.id = "Id", name.date = "Date", name.price = "Price"))
   expect_silent(obj.fitted <- do.call(method, list(clv.data = clv.cdnow, verbose = FALSE)))
-
-  context(paste0("Correctness - ",name.model," nocov - cbs"))
-  fct.testthat.correctness.clvfittedtransactions.nocov.compare.cbs.vs.btyd(method = method, cdnow = data.cdnow)
 
   context(paste0("Correctness - ",name.model," nocov - Recover parameters"))
   fct.testthat.correctness.clvfitted.correct.coefs(method = method, cdnow = data.cdnow, start.params.model = correct.start.params.model,

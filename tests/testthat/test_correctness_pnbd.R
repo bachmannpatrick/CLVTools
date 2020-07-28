@@ -26,18 +26,11 @@ fct.testthat.correctness.clvfitted.nocov.correct.se(method = pnbd,
                                                     start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
                                                     params.nocov.se = c(r=0.0476264, alpha=0.8427222, s=0.1872594, beta=6.2105448))
 
-fct.testthat.correctness.clvfittedtransactions.nocov.same.as.btyd(clvtools.method = pnbd,
-                                                                  btyd.method = BTYD::pnbd.EstimateParameters,
-                                                                  btyd.dert.method = BTYD::pnbd.DERT,
-                                                                  btyd.cet.method = BTYD::pnbd.ConditionalExpectedTransactions,
-                                                                  btyd.palive.method = BTYD::pnbd.PAlive,
-                                                                  start.params.model = c(r=0.5, alpha = 6, s = 0.9, beta = 8),
-                                                                  cdnow = cdnow)
 
 
 context("Correctness - PNBD nocov - PAlive")
 
-test_that("Can calculate numerically stable PAlive that produced NaNs in previous implementation and in BTYD", {
+test_that("Can calculate numerically stable PAlive that produced NaNs in previous implementation", {
 
   vX     <- c(221,       254,      161,      204)
   vT_x   <- c(103.42857, 97.14286, 94.71429, 98.57143)
