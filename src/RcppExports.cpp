@@ -541,6 +541,40 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// pnbd_nocov_expectation
+arma::vec pnbd_nocov_expectation(const double r, const double s, const double alpha_0, const double beta_0, const arma::vec& vT_i);
+RcppExport SEXP _CLVTools_pnbd_nocov_expectation(SEXP rSEXP, SEXP sSEXP, SEXP alpha_0SEXP, SEXP beta_0SEXP, SEXP vT_iSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const double >::type r(rSEXP);
+    Rcpp::traits::input_parameter< const double >::type s(sSEXP);
+    Rcpp::traits::input_parameter< const double >::type alpha_0(alpha_0SEXP);
+    Rcpp::traits::input_parameter< const double >::type beta_0(beta_0SEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type vT_i(vT_iSEXP);
+    rcpp_result_gen = Rcpp::wrap(pnbd_nocov_expectation(r, s, alpha_0, beta_0, vT_i));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pnbd_staticcov_expectation
+arma::vec pnbd_staticcov_expectation(const double r, const double s, const double alpha_0, const double beta_0, const arma::vec& vT_i, const arma::vec& vCovParams_trans, const arma::vec& vCovParams_life, const arma::mat& mCov_life, const arma::mat& mCov_trans);
+RcppExport SEXP _CLVTools_pnbd_staticcov_expectation(SEXP rSEXP, SEXP sSEXP, SEXP alpha_0SEXP, SEXP beta_0SEXP, SEXP vT_iSEXP, SEXP vCovParams_transSEXP, SEXP vCovParams_lifeSEXP, SEXP mCov_lifeSEXP, SEXP mCov_transSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const double >::type r(rSEXP);
+    Rcpp::traits::input_parameter< const double >::type s(sSEXP);
+    Rcpp::traits::input_parameter< const double >::type alpha_0(alpha_0SEXP);
+    Rcpp::traits::input_parameter< const double >::type beta_0(beta_0SEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type vT_i(vT_iSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type vCovParams_trans(vCovParams_transSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type vCovParams_life(vCovParams_lifeSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type mCov_life(mCov_lifeSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type mCov_trans(mCov_transSEXP);
+    rcpp_result_gen = Rcpp::wrap(pnbd_staticcov_expectation(r, s, alpha_0, beta_0, vT_i, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_CLVTools_bgnbd_nocov_CET", (DL_FUNC) &_CLVTools_bgnbd_nocov_CET, 8},
@@ -574,6 +608,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CLVTools_pnbd_staticcov_LL_sum", (DL_FUNC) &_CLVTools_pnbd_staticcov_LL_sum, 6},
     {"_CLVTools_pnbd_nocov_PAlive", (DL_FUNC) &_CLVTools_pnbd_nocov_PAlive, 7},
     {"_CLVTools_pnbd_staticcov_PAlive", (DL_FUNC) &_CLVTools_pnbd_staticcov_PAlive, 11},
+    {"_CLVTools_pnbd_nocov_expectation", (DL_FUNC) &_CLVTools_pnbd_nocov_expectation, 5},
+    {"_CLVTools_pnbd_staticcov_expectation", (DL_FUNC) &_CLVTools_pnbd_staticcov_expectation, 9},
     {NULL, NULL, 0}
 };
 

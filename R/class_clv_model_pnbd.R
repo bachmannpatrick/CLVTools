@@ -273,7 +273,14 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.no.cov"),
   params_i[, beta_i  := clv.fitted@prediction.params.model[["beta"]]]
 
   # To caluclate expectation at point t for customers alive in t, given in params_i.t
-  fct.expectation <- function(params_i.t) {return( params_i.t[, (r * beta_i)/(alpha_i * (s - 1)) * (1 - (beta_i/(beta_i + t_i))^(s - 1))] )}
+  # fct.expectation <- function(params_i.t) {return( params_i.t[, (r * beta_i)/(alpha_i * (s - 1)) * (1 - (beta_i/(beta_i + t_i))^(s - 1))] )}
+
+  fct.expectation <- function(params_i.t) {return(pnbd_nocov_expectation(r       = clv.fitted@prediction.params.model[["r"]],
+                                                                            s       = clv.fitted@prediction.params.model[["s"]],
+                                                                            alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+                                                                            beta_0  = clv.fitted@prediction.params.model[["beta"]],
+                                                                            vT_i = params_i.t$t_i))}
+
 
   return(DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
                        fct.expectation = fct.expectation, clv.time = clv.fitted@clv.data@clv.time))
