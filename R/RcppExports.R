@@ -414,3 +414,11 @@ pnbd_staticcov_PAlive <- function(r, alpha_0, s, beta_0, vX, vT_x, vT_cal, vCovP
     .Call(`_CLVTools_pnbd_staticcov_PAlive`, r, alpha_0, s, beta_0, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
 }
 
+pnbd_nocov_expectation <- function(r, s, alpha_0, beta_0, vT_i) {
+    .Call(`_CLVTools_pnbd_nocov_expectation`, r, s, alpha_0, beta_0, vT_i)
+}
+
+pnbd_staticcov_expectation <- function(r, s, alpha_0, beta_0, vT_i, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans) {
+    .Call(`_CLVTools_pnbd_staticcov_expectation`, r, s, alpha_0, beta_0, vT_i, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans)
+}
+
