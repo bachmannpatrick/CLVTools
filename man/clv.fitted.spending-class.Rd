@@ -14,4 +14,9 @@ estimation, prediction and plotting process that are specific to all spending mo
 \item{\code{estimation.removed.first.transaction}}{Single boolean whether every customers' first transaction was removed when counting transactions.}
 }}
 
+\seealso{
+Definition of the parent class \linkS4class{clv.fitted}
+
+For transaction models \linkS4class{clv.fitted.transactions}
+}
 \keyword{internal}

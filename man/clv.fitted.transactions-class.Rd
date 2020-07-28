@@ -8,4 +8,9 @@
 Extends the class \code{clv.fitted} to performs steps during the
 estimation, prediction and plotting process that are specific to all transaction models.
 }
+\seealso{
+Definition of the parent class \linkS4class{clv.fitted}
+
+For spending models \linkS4class{clv.fitted.spending}
+}
 \keyword{internal}

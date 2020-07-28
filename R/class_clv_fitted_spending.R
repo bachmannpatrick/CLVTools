@@ -5,6 +5,9 @@
 #'
 #' @slot estimation.removed.first.transaction Single boolean whether every customers' first transaction was removed when counting transactions.
 #'
+#' @seealso Definition of the parent class \linkS4class{clv.fitted}
+#' @seealso For transaction models \linkS4class{clv.fitted.transactions}
+#'
 #' @include class_clv_fitted.R
 #' @keywords internal
 setClass(Class = "clv.fitted.spending", contains = "clv.fitted",
