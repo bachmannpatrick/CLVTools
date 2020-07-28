@@ -17,7 +17,10 @@ setGeneric("ggomnbd", def = function(clv.data, start.params.model=c(), optimx.ar
 #' @template template_details_paramsggomnbd
 #'
 #' @details If no start parameters are given, r = 1, alpha = 1, beta = 1, b = 1, s = 1 is used.
-#' The model start parameters are required to be > 0.
+#' All model start parameters are required to be > 0.
+#'
+#' Note that the DERT expression has not been derived (yet) and it consequently is not possible to calculated
+#' values for DERT and CLV.
 #'
 #' \subsection{The Gamma-Gompertz/NBD model}{
 #' There are two key differences of the gamma/Gompertz/NBD (GGom/NBD) model compared to the relative to the well-known Pareto/NBD
@@ -27,18 +30,12 @@ setGeneric("ggomnbd", def = function(clv.data, start.params.model=c(), optimx.ar
 #' The GGom/NBD tends to be appropriate when firms are reputed and their offerings are differentiated.
 #' }
 #'
-#' @return
-#' \code{ggomnbd} returns an object of
-#' class \code{clv.ggomnbd}.
+#' @return Depending on the data object on which the model was fit, \code{ggomnbd} returns either an object of
+#' class \linkS4class{clv.ggomnbd} or \linkS4class{clv.ggomnbd.static.cov}.
 #'
-#' The function \code{\link[CLVTools:summary.clv.fitted]{summary}} can be used to obtain and print a summary of the results.
-#' The generic accessor functions \code{coefficients}, \code{fitted},
-#' \code{residuals}, \code{vcov}, \code{logLik}, \code{AIC}, \code{BIC}, and \code{nobs} are available.
+#' @template template_clvfitted_returnvalue
 #'
-#' @seealso \code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object
-#' @seealso \code{\link[CLVTools:predict.clv.fitted]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
-#' @seealso \code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation as predicted by the fitted model
-#' @seealso The generic functions \code{\link[CLVTools:summary.clv.fitted]{summary}} and \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
+#' @template template_clvfittedtransactions_seealso
 #'
 #' @template template_references_ggomnbd
 #'
@@ -62,7 +59,7 @@ setMethod("ggomnbd", signature = signature(clv.data="clv.data"), definition = fu
 
   obj <- clv.ggomnbd(cl=cl, clv.data=clv.data)
 
-  return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model,
+  return(clv.template.controlflow.estimate(clv.fitted=obj, start.params.model = start.params.model,
                                            optimx.args = optimx.args, verbose=verbose))
 })
 
@@ -83,7 +80,7 @@ setMethod("ggomnbd", signature = signature(clv.data="clv.data.static.covariates"
 
   obj <- clv.ggomnbd.static(cl=cl, clv.data=clv.data)
 
-  return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model,
+  return(clv.template.controlflow.estimate(clv.fitted=obj, start.params.model = start.params.model,
                                            optimx.args = optimx.args, verbose=verbose,
                                            names.cov.life=names.cov.life, names.cov.trans=names.cov.trans,
                                            start.params.life=start.params.life, start.params.trans=start.params.trans,

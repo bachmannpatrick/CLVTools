@@ -5,18 +5,18 @@
 #' estimation result and is returned to the user to use it as input to other methods such as
 #' to make predictions or plot the unconditional expectation.
 #'
-#' Inherits from \code{clv.fitted.dynamic.cov} in order to execute all steps required for fitting a model
+#' Inherits from \code{clv.fitted.transactions.dynamic.cov} in order to execute all steps required for fitting a model
 #' with dynamic covariates and it contains an instance of class \code{clv.model.pnbd.dynamic.cov} which
 #' provides the required Pareto/NBD (dynamic covariates) specific functionalities.
 #'
 #' @template template_slot_pnbdcbs
 #'
-#' @seealso \linkS4class{clv.fitted.dynamic.cov}, \linkS4class{clv.model.pnbd.dynamic.cov}, \linkS4class{clv.pnbd}, \linkS4class{clv.pnbd.static.cov}
+#' @seealso \linkS4class{clv.fitted.transactions.dynamic.cov}, \linkS4class{clv.model.pnbd.dynamic.cov}, \linkS4class{clv.pnbd}, \linkS4class{clv.pnbd.static.cov}
 #'
 #' @keywords internal
 #' @importFrom methods setClass
 #' @include class_clv_model_pnbd_dynamiccov.R class_clv_data_dynamiccovariates.R
-setClass(Class = "clv.pnbd.dynamic.cov", contains = "clv.fitted.dynamic.cov",
+setClass(Class = "clv.pnbd.dynamic.cov", contains = "clv.fitted.transactions.dynamic.cov",
          slots = c(
            cbs = "data.table",
 
@@ -44,7 +44,7 @@ clv.pnbd.dynamic.cov <- function(cl, clv.data){
   #   (walks are done in clv.model.put.estimation.input)
 
   return(new("clv.pnbd.dynamic.cov",
-             clv.fitted.dynamic.cov(cl=cl, clv.model=clv.model, clv.data=clv.data),
+             clv.fitted.transactions.dynamic.cov(cl=cl, clv.model=clv.model, clv.data=clv.data),
              cbs = dt.cbs.pnbd))
 }
 

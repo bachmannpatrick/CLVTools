@@ -10,7 +10,7 @@
 \S4method{show}{clv.data.dynamic.covariates}(object)
 }
 \description{
-Extends the class \code{\link[CLVTools:clv.data.static.covariates-class]{clv.data.static.covariates}},
+Extends the class \linkS4class{clv.data.static.covariates},
 but adds no additional slots to it. The purpose of this class rather is to define different behaviors
 suitable for dynamic covariates.
 
@@ -32,7 +32,7 @@ An object of this class serves as input to fit models with dynamic covariates.
 }}
 
 \seealso{
-Definition of the parent class \code{\link[CLVTools:clv.data.static.covariates-class]{clv.data.static.covariates}}.
+Definition of the parent class \linkS4class{clv.data.static.covariates}.
 
 For fitting dynamic covariate models: \code{\link[CLVTools:pnbd]{pnbd}}
 }

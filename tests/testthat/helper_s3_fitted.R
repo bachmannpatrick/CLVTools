@@ -24,12 +24,11 @@
   })
 
   test_that("No NAs", {
-    # ** TODO: Really?
     expect_false(anyNA(res.coef))
   })
 
-  # model specific: coef() same as exp(coef(optimx))
-  # model specific: test that coef() really use last row of optimx result, not any other
+  # **Todo: model specific: coef() same as exp(coef(optimx))
+  # **Todo: model specific: test that coef() really use last row of optimx result, not any other
 }
 
 .fct.helper.s3.fitted.vcov <- function(clv.fitted, full.names){
@@ -144,7 +143,6 @@
   test_that("Basic summary structure", {
     expect_is(res.sum, "summary.clv.fitted")
     expect_true(is.list(res.sum))
-    # **TODO: vcov as well?
     expect_true(all(c("call", "name.model", "tp.estimation.start","tp.estimation.end",
                       "time.unit", "coefficients", "AIC", "BIC","kkt1", "kkt2","additional.options") %in%
                       names(res.sum)))
@@ -217,9 +215,7 @@
   })
 }
 
-fct.helper.fitted.all.s3 <- function(clv.fitted, clv.newdata, full.names, clv.newdata.nohold, clv.newdata.withhold,
-                                     DERT.not.implemented){ #, name.model){
-
+.fct.helper.clvfitted.all.s3 <- function(clv.fitted, full.names){
   .fct.helper.s3.fitted.coef(clv.fitted = clv.fitted, full.names = full.names)
 
   .fct.helper.s3.fitted.vcov(clv.fitted = clv.fitted, full.names = full.names)
@@ -233,16 +229,35 @@ fct.helper.fitted.all.s3 <- function(clv.fitted, clv.newdata, full.names, clv.ne
   .fct.helper.s3.fitted.nobs(clv.fitted = clv.fitted)
 
   .fct.helper.s3.fitted.logLik(clv.fitted = clv.fitted)
+}
 
-  .fct.helper.s3.fitted.plot(clv.fitted = clv.fitted, clv.newdata.nohold=clv.newdata.nohold,
-                             clv.newdata.withhold=clv.newdata.withhold)
 
-  .fct.helper.s3.fitted.predict(clv.fitted = clv.fitted, clv.newdata.nohold=clv.newdata.nohold,
-                                clv.newdata.withhold=clv.newdata.withhold, DERT.not.implemented=DERT.not.implemented)
+fct.helper.clvfittedtransactions.all.s3 <- function(clv.fitted, full.names,
+                                                    clv.newdata.nohold, clv.newdata.withhold,
+                                                    DERT.not.implemented){
 
+  .fct.helper.clvfitted.all.s3(clv.fitted = clv.fitted, full.names = full.names)
+
+  fct.testthat.runability.clvfittedtransactions.plot(clv.fitted = clv.fitted, clv.newdata.nohold=clv.newdata.nohold,
+                                                     clv.newdata.withhold=clv.newdata.withhold)
+
+  fct.testthat.runability.clvfittedtransactions.predict(fitted.transactions = clv.fitted, clv.newdata.nohold=clv.newdata.nohold,
+                                                        clv.newdata.withhold=clv.newdata.withhold, DERT.not.implemented=DERT.not.implemented)
+
+}
+
+
+fct.helper.clvfittedspending.all.s3 <- function(clv.fitted, full.names,
+                                                clv.newdata.nohold, clv.newdata.withhold){
+
+  .fct.helper.clvfitted.all.s3(clv.fitted = clv.fitted, full.names = full.names)
+
+  fct.testthat.runability.clvfittedspending.plot(fitted.spending = clv.fitted)
+
+  fct.testthat.runability.clvfittedspending.predict(fitted.spending = clv.fitted,
+                                                    clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
 }
 
 # plot with different ways of naming
 # plot with predict.end=NULL same as predict.end=holdout.end and predict.end=holdout.period.in.tu
 # correct that label = model name same as no label
-#  names(vcov()) = names(coef(summary)) = names(coef()) with and without correlation

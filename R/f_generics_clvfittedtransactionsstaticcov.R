@@ -1,6 +1,6 @@
 # . clv.controlflow.predict.set.prediction.params ------------------------------------------------------------------------
 #' @importFrom methods callNextMethod
-setMethod(f = "clv.controlflow.predict.set.prediction.params", signature = signature(clv.fitted="clv.fitted.static.cov"), definition = function(clv.fitted){
+setMethod(f = "clv.controlflow.predict.set.prediction.params", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted){
   # Get no cov model params
   clv.fitted <- callNextMethod()
 
@@ -53,7 +53,7 @@ setMethod(f = "clv.controlflow.predict.set.prediction.params", signature = signa
 
 
 # . clv.controlflow.check.prediction.params -----------------------------------------------------------------
-setMethod("clv.controlflow.check.prediction.params", signature = signature(clv.fitted = "clv.fitted.static.cov"), function(clv.fitted){
+setMethod("clv.controlflow.check.prediction.params", signature = signature(clv.fitted = "clv.fitted.transactions.static.cov"), function(clv.fitted){
   # Check model prediction params
   callNextMethod()
 
@@ -65,7 +65,7 @@ setMethod("clv.controlflow.check.prediction.params", signature = signature(clv.f
 
 
 # . clv.controlflow.check.newdata ------------------------------------------------------------------------------
-setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.static.cov"), definition = function(clv.fitted, user.newdata, prediction.end){
+setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted, user.newdata, prediction.end, ...){
   # Do nocov newdata checks first
   #   newdata fulfills all basic properties after this
   callNextMethod()
@@ -74,10 +74,10 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.stat
 
   # Check that it does have the same covariates as the ones used for fitting
   #   nocov already checked that is of correct class
-  if(!all(sort(user.newdata@names.cov.data.life) == sort(clv.fitted@clv.data@names.cov.data.life)))
+  if(!setequal(user.newdata@names.cov.data.life, clv.fitted@clv.data@names.cov.data.life))
     err.msg <- c(err.msg, "Not all Lifetime covariates used for fitting are present in the 'newdata' object!")
 
-  if(!all(sort(user.newdata@names.cov.data.trans) == sort(clv.fitted@clv.data@names.cov.data.trans)))
+  if(!setequal(user.newdata@names.cov.data.trans, clv.fitted@clv.data@names.cov.data.trans))
     err.msg <- c(err.msg, "Not all Transaction covariates used for fitting are present in the 'newdata' object!")
 
   check_err_msg(err.msg)

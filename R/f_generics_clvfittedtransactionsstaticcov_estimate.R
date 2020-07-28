@@ -1,15 +1,12 @@
 # . clv.controlflow.estimate.check.inputs ------------------------------------------------------------------------------
-setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv.fitted="clv.fitted.static.cov"), definition = function(clv.fitted,  start.params.model, use.cor, start.param.cor, optimx.args, # clv.fitted input args
-                                                                                                                                 verbose,
+setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted,  start.params.model, optimx.args, verbose, # clv.fitted input args
                                                                                                                                  names.cov.life, names.cov.trans,
                                                                                                                                  start.params.life, start.params.trans,
                                                                                                                                  reg.lambdas,
                                                                                                                                  names.cov.constr, start.params.constr, cl, ...){
 
-  # check clv.fitted input
-  #   only forward what would have been passed if nocov model was estimated because in the parent method
-  #   it is warned if there are addtional unneded params in ...
-  callNextMethod(clv.fitted=clv.fitted,use.cor=use.cor, start.param.cor=start.param.cor, start.params.model=start.params.model, optimx.args=optimx.args, verbose=verbose)
+  # check input for clv.fitted.transactions
+  callNextMethod()
 
   # Additional covariates input args checks
   err.msg <- c()
@@ -48,12 +45,13 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv
   check_err_msg(err.msg)
 
   # Do not warn if there are additional args in ... as they can be for a model
-  #   without ... in clv.fitted.static.cov estimate not possible
+  #   without ... in clv.fitted.transactions.static.cov estimate not possible
 })
 
 # . clv.controlflow.estimate.put.inputs ------------------------------------------------------------------------------
 #' @importFrom methods callNextMethod
-setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitted="clv.fitted.static.cov"), definition = function(clv.fitted, cl, verbose, reg.lambdas, names.cov.constr, names.cov.life, names.cov.trans, ...){
+setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted, verbose, reg.lambdas, names.cov.constr, names.cov.life, names.cov.trans, ...){
+
   # clv.fitted put inputs
   clv.fitted <- callNextMethod()
 
@@ -129,11 +127,10 @@ setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitte
 
 
 # . clv.controlflow.estimate.generate.start.params ------------------------------------------------------------------------------
-setMethod("clv.controlflow.estimate.generate.start.params", signature = signature(clv.fitted="clv.fitted.static.cov"),
+setMethod("clv.controlflow.estimate.generate.start.params", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"),
           # original signature: clv.fitted, start.params.model
           definition = function(clv.fitted,
                                 start.params.model,
-                                start.param.cor,
                                 start.params.life,
                                 start.params.trans,
                                 start.params.constr,
@@ -204,7 +201,7 @@ setMethod("clv.controlflow.estimate.generate.start.params", signature = signatur
 
 # . clv.controlflow.estimate.prepare.optimx.args ------------------------------------------------------------------------------
 #' @importFrom utils modifyList
-setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(clv.fitted="clv.fitted.static.cov"),
+setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"),
           def=function(clv.fitted, start.params.all){
 
             # Call clv.fitted prepare.optimx.args

@@ -58,7 +58,11 @@ If multiple optimization methods are specified, only the result of the last meth
 }
 \value{
 Depending on the data object on which the model was fit, \code{bgnbd} returns either an object of
-class \link[CLVTools:clv.bgnbd-class]{clv.bgnbd} or \link[CLVTools:clv.bgnbd.static.cov-class]{clv.bgnbd.static.cov}.
+class \linkS4class{clv.bgnbd} or \linkS4class{clv.bgnbd.static.cov}.
+
+The function \code{\link[CLVTools:summary.clv.fitted]{summary}} can be used to obtain and print a summary of the results.
+The generic accessor functions \code{coefficients}, \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}},
+\code{logLik}, \code{AIC}, \code{BIC}, and \code{nobs} are available.
 }
 \description{
 Fits BG/NBD models on transactional data without and with static covariates.
@@ -76,6 +80,8 @@ All model start parameters are required to be > 0.
 Note that the DERT expression has not been derived (yet) and it consequently is not possible to calculated
 values for DERT and CLV.
 
+
+
 \subsection{The BG/NBD model}{
 The BG/NBD is an "easy" alternative to the Pareto/NBD model that is easier to implement. The BG/NBD model slight adapts
 the behavioral "story" associated with the Pareto/NBD model in order to simplify the implementation. The BG/NBD model uses a beta-geometric and
@@ -92,6 +98,11 @@ therefore increase the predictive accuracy of the model. In addition, we can rel
 parameter estimates for inference, i.e. identify and quantify effects of contextual factors
 on the two underlying purchase and attrition processes. For technical details we refer to
 the technical note by Fader and Hardie (2007).
+
+The likelihood function is the likelihood function associated with the basic model where
+alpha, a, and b are replaced with alpha = alpha0*exp(−g1z1), a = a_0*exp(g2z2), and b = b0*exp(g3z2)
+while r remains unchanged. Note that in the current implementation, we constrain the covariate parameters
+and data for the lifetime process to be equal (g2=g3 and z2=z3).
 }
 }
 \examples{
@@ -103,7 +114,7 @@ clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
 # Fit standard bgnbd model
 bgnbd(clv.data.apparel)
 
-# Give initial guesses for the Model parameters
+# Give initial guesses for the model parameters
 bgnbd(clv.data.apparel,
      start.params.model = c(r=0.5, alpha=15, a = 2, b=5))
 
@@ -172,9 +183,9 @@ URL \url{http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf}.
 \code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object, \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}}
 to add static covariates to an existing clv data object.
 
-\code{\link[CLVTools:predict.clv.fitted]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
+\code{\link[CLVTools:predict.clv.fitted.transactions]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
 
-\code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation as predicted by the fitted model
+\code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} to plot the unconditional expectation as predicted by the fitted model
 
 The generic functions \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:summary.clv.fitted]{summary}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
 }

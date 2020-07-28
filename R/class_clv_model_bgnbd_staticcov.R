@@ -2,7 +2,7 @@
 #' @template template_class_clvmodelstaticcov
 #'
 #' @seealso Other clv model classes \linkS4class{clv.model}, \linkS4class{clv.model.bgnbd.no.cov}
-#' @seealso Classes using its instance: \linkS4class{clv.fitted.static.cov}
+#' @seealso Classes using its instance: \linkS4class{clv.fitted.transactions.static.cov}
 #'
 #' @include all_generics.R class_clv_model_bgnbd.R
 setClass(Class = "clv.model.bgnbd.static.cov", contains = "clv.model.bgnbd.no.cov",
@@ -23,24 +23,11 @@ clv.model.bgnbd.static.cov <- function(){
 }
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
-#' @importFrom methods callNextMethod
-setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.bgnbd.static.cov"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose,
-                                                                                                                                 names.cov.life, names.cov.trans,
-                                                                                                                                 start.params.life, start.params.trans,
-                                                                                                                                 names.cov.constr,start.params.constr,
-                                                                                                                                 reg.lambdas, ...){
-
-  # Check start.params.model in bgnbd.no.cov function
-  #   but with no cov specific inputs only
-  callNextMethod(clv.model=clv.model, clv.fitted=clv.fitted, start.params.model=start.params.model, use.cor=use.cor,
-                 start.param.cor=start.param.cor, optimx.args=optimx.args, verbose=verbose)
-})
+# . clv.model.check.input.args ----------------------------------------------------------------------------------------------------------
+# Use nocov
 
 # . clv.model.put.estimation.input ------------------------------------------------------------------------------------------------------------
-#   Use bgnbd.no.cov methods, dont need to overwrite
-# setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model.bgnbd.static.cov"), definition = function(clv.model, clv.fitted, ...){
-#   return(callNextMethod())
-# })
+# Nothing specific required, use nocov
 
 # . clv.model.transform.start.params.cov ------------------------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.transform.start.params.cov", signature = signature(clv.model="clv.model.bgnbd.static.cov"), definition = function(clv.model, start.params.cov){
@@ -108,11 +95,11 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.static.c
                        fct.expectation = fct.bgnbd.expectation, clv.time = clv.fitted@clv.data@clv.time))
 })
 
-# . clv.model.predict.clv -----------------------------------------------------------------------------------------------------
-setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgnbd.static.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
-  r <- alpha <- a <- b <- period.length <- CET <- PAlive <- DERT <- i.CET <- i.PAlive <- i.DERT <- x <- t.x <- T.cal <- NULL
+# . clv.model.predict -----------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict", signature(clv.model="clv.model.bgnbd.static.cov"), function(clv.model, clv.fitted, dt.predictions, verbose, continuous.discount.factor, ...){
+  r <- alpha <- a <- b <- period.length <- CET <- PAlive <- i.CET <- i.PAlive <- x <- t.x <- T.cal <- NULL
 
-  predict.number.of.periods <- dt.prediction[1, period.length]
+  predict.number.of.periods <- dt.predictions[1, period.length]
 
   # To ensure sorting, do everything in a single table
   dt.result <- copy(clv.fitted@cbs[, c("Id", "x", "t.x", "T.cal")])
@@ -148,15 +135,12 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgnbd.static.c
                                                vCovParams_life  = clv.fitted@prediction.params.life,
                                                mCov_trans = data.cov.mat.trans,
                                                mCov_life  = data.cov.mat.life)]
-  # Add DERT
-  dt.result[, DERT := 0]
 
   # Add results to prediction table, by matching Id
-  dt.prediction[dt.result, CET    := i.CET,    on = "Id"]
-  dt.prediction[dt.result, PAlive := i.PAlive, on = "Id"]
-  dt.prediction[dt.result, DERT   := i.DERT,   on = "Id"]
+  dt.predictions[dt.result, CET    := i.CET,    on = "Id"]
+  dt.predictions[dt.result, PAlive := i.PAlive, on = "Id"]
 
-  return(dt.prediction)
+  return(dt.predictions)
 })
 
 

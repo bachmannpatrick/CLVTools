@@ -49,7 +49,7 @@ setClass(Class = "clv.model", contains = "VIRTUAL",
 # Default / fallback methods for all models --------------------------------------------------------
 
 # . clv.model.check.input.args -----------------------------------------------------------------------------
-setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...){
+setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, start.params.model, optimx.args, verbose, ...){
   # Example:
   # if(length(list(...)) > 0)
   #   stop("Any further parameters passed in ... are not needed for this model.", call. = FALSE)
@@ -57,7 +57,7 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
 })
 
 # . clv.model.put.estimation.input -----------------------------------------------------------------------------
-setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model"), definition = function(clv.model, use.cor, ...){
+setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model"), definition = function(clv.model, ...){
   # Example: do nothing
   # return(clv.model)
   stop("The method clv.model.put.estimation.input has not been implemented by this model!")
@@ -119,9 +119,9 @@ setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv
   stop("The method clv.model.vcov.jacobi.diag has not been implemented by this model!")
 })
 
-# . clv.model.predict.clv ------------------------------------------------------------------------------------------
-setMethod("clv.model.predict.clv", signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
-  stop("The method clv.model.predict.clv has not been implemented by this model!")
+# . clv.model.predict ------------------------------------------------------------------------------------------
+setMethod("clv.model.predict", signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, dt.predictions, verbose, continuous.discount.factor, ...){
+  stop("The method clv.model.predict has not been implemented by this model!")
 })
 
 # . clv.model.expectation ------------------------------------------------------------------------------------------
@@ -129,9 +129,9 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model"), definition 
   stop("The method clv.model.expectation has not been implemented by this model!")
 })
 
-# . clv.model.put.newdata ------------------------------------------------------------------------------------------
-setMethod("clv.model.put.newdata", signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, user.newdata, verbose){
-  stop("The method clv.model.put.newdata has not been implemented by this model!")
+# . clv.model.process.newdata ------------------------------------------------------------------------------------------
+setMethod("clv.model.process.newdata", signature(clv.model="clv.model"), definition = function(clv.model, clv.fitted, user.newdata, verbose){
+  stop("The method clv.model.process.newdata has not been implemented by this model!")
 })
 
 
@@ -150,5 +150,9 @@ setMethod(f = "clv.model.backtransform.estimated.params.cov", signature = signat
   stop("The method clv.model.backtransform.estimated.params.cov has not been implemented by this model!")
 })
 
+# .clv.model.probability.density -------------------------------------------------------------------------------------------------------
+setMethod(f = "clv.model.probability.density", signature = signature(clv.model="clv.model"), definition = function(clv.model, x, clv.fitted){
+  stop("The method clv.model.probability.density has not been implemented for this model!")
+})
 
 

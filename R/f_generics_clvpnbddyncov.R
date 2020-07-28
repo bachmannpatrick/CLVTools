@@ -15,7 +15,7 @@ setMethod("clv.controlflow.estimate.generate.start.params", signature = signatur
   # This has to be done here, and cannot be done in the model.prepare.optimx.args function
   #   because there the original estimation input is unknown
   #   ie it is not known if the user actually did supply start params or not
-  #   Also, doing it as part of clv.fitted.dynamic.cov is not possible because the model
+  #   Also, doing it as part of clv.fitted.transactions.dynamic.cov is not possible because the model
   #     to call (ie pnbd()) is unknown
 
   if(is.null(start.params.model)){
@@ -50,7 +50,7 @@ setMethod("clv.controlflow.estimate.generate.start.params", signature = signatur
 
 # . clv.model.put.estimation.input ------------------------------------------------------------------------------------------------
 
-setMethod(f = "clv.controlflow.estimate.put.inputs", signature = signature(clv.fitted="clv.pnbd.dynamic.cov"), definition = function(clv.fitted, cl, verbose, ...){
+setMethod(f = "clv.controlflow.estimate.put.inputs", signature = signature(clv.fitted="clv.pnbd.dynamic.cov"), definition = function(clv.fitted, verbose, ...){
   # Create walks - they are specific to the pnbd dyncov model
   clv.fitted <- callNextMethod()
 

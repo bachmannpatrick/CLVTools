@@ -6,7 +6,7 @@
 ^Walkthrough\.rmd$
 ^bibliography\.bib$
 ^man-roxygen$
-^thoughts_parameterhandling\.rtf$
+^vignettes/internal_docu/internal_docu.Rmd$
 ^\.github$
 ^cran-comments\.md$
 ^_pkgdown\.yml$

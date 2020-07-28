@@ -4,27 +4,27 @@ data("apparelStaticCov")
 
 
 # Coefs are our estimate
-fct.testthat.correctness(name.model = "GGompertz/NBD", method=ggomnbd, data.cdnow=cdnow,
-                         data.apparelTrans=apparelTrans, data.apparelStaticCov=apparelStaticCov,
-                         correct.start.params.model = c(r = 0.5, alpha = 2, b = 0.5, s = 0.5, beta = 0.5),
-                         correct.params.nocov.coef = c(r = 0.55313, alpha = 10.5758, b = 0.0000011, s = 0.60682, beta = 0.000013),
-                         correct.LL.nocov = -9594.9762)
+fct.testthat.correctness.clvfittedtransactions(name.model = "GGompertz/NBD", method=ggomnbd, data.cdnow=cdnow,
+                                               data.apparelTrans=apparelTrans, data.apparelStaticCov=apparelStaticCov,
+                                               correct.start.params.model = c(r = 0.5, alpha = 2, b = 0.5, s = 0.5, beta = 0.5),
+                                               correct.params.nocov.coef = c(r = 0.55313, alpha = 10.5758, b = 0.0000011, s = 0.60682, beta = 0.000013),
+                                               correct.LL.nocov = -9594.9762,
+                                               kkt2.true = FALSE)
 
-# Cannot compare against BTYD
 
 context("Correctness - GGompertz/NBD nocov - Recover parameters")
 
 # Bemmaor and Glady (2012)
 #   Table 2, p. 1018
-fct.testthat.correctness.nocov.correct.coefs(method = ggomnbd,
-                                             cdnow = cdnow,
-                                             start.params.model = c(r = 0.5, alpha = 2, b = 0.5, s = 0.5, beta = 0.5),
-                                             params.nocov.coef = c(r = 0.553, alpha = 10.578, b = 0.0002, s = 0.603, beta = 0.0026),
-                                             LL.nocov = -9594.98)
+fct.testthat.correctness.clvfitted.correct.coefs(method = ggomnbd,
+                                                 cdnow = cdnow,
+                                                 start.params.model = c(r = 0.5, alpha = 2, b = 0.5, s = 0.5, beta = 0.5),
+                                                 params.nocov.coef = c(r = 0.553, alpha = 10.578, b = 0.0002, s = 0.603, beta = 0.0026),
+                                                 LL.nocov = -9594.98)
 
 # No reliable data available for comparison. Paper information is not sufficient
 #   In the paper, no explanation is given on how the SEs were derived and they diverge substantially from ours for s and beta
-# fct.testthat.correctness.nocov.correct.se(method = ggomnbd,
+# fct.testthat.correctness.clvfitted.nocov.correct.se(method = ggomnbd,
 #                                           cdnow = cdnow,
 #                                           start.params.model = c(r = 0.5, alpha = 2, b = 0.5, s = 0.5, beta = 0.5),
 #                                           params.nocov.se = c(r = 0.049, alpha = 0.949, b = 0.0000, s = 0.039, beta = 0.0004))
@@ -268,7 +268,7 @@ test_that("Same PAlive as in matlab code", {
                                                x = vX, t.x = vT_x, tcal = vT_cal))
 
   expect_silent(PAlive_Rcpp <- CLVTools:::ggomnbd_nocov_PAlive(r = r, alpha_0 = alpha, b = b, s = s, beta_0 = beta,
-                                                    vX = vX, vT_x = vT_x, vT_cal = vT_cal))
+                                                               vX = vX, vT_x = vT_x, vT_cal = vT_cal))
   expect_equal(PAlive_R, drop(PAlive_Rcpp))
 
   # Static cov
@@ -277,10 +277,10 @@ test_that("Same PAlive as in matlab code", {
                                            x = vX, t.x = vT_x, tcal = vT_cal))
 
   expect_silent(LL_Rcpp <- CLVTools:::ggomnbd_staticcov_PAlive(r = r, alpha_0 = alpha, b = b, s = s, beta_0 = beta,
-                                                    vCovParams_life = clv.ggomnbd@prediction.params.life,
-                                                    vCovParams_trans = clv.ggomnbd@prediction.params.trans,
-                                                    vX = vX, vT_x = vT_x, vT_cal = vT_cal,
-                                                    mCov_life = m.cov.data.life, mCov_trans = m.cov.data.trans))
+                                                               vCovParams_life = clv.ggomnbd@prediction.params.life,
+                                                               vCovParams_trans = clv.ggomnbd@prediction.params.trans,
+                                                               vX = vX, vT_x = vT_x, vT_cal = vT_cal,
+                                                               mCov_life = m.cov.data.life, mCov_trans = m.cov.data.trans))
   # Difference are verified to stem from numerical integration
   expect_equal(drop(LL_R), drop(LL_Rcpp), check.attributes=FALSE, tolerance = 1e-4)
 

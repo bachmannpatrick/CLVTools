@@ -10,3 +10,4 @@ src/*.gcno
 src/*.o.tmp
 inst/doc
 .DS_Store
+check

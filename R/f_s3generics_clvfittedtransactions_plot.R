@@ -31,6 +31,8 @@
 #' but the start of the first time unit after \code{prediction.end}.
 #'
 #'
+#' @seealso \code{\link[CLVTools:plot.clv.fitted.spending]{plot}} for spending models
+#'
 #' @return
 #' An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
 #' If the parameter \code{plot} is \code{FALSE}, the data that would have been melted and used to
@@ -88,9 +90,10 @@
 #                  color="blue")
 #' @importFrom graphics plot
 #' @include class_clv_fitted.R
-#' @method plot clv.fitted
+#' @method plot clv.fitted.transactions
+#' @aliases plot
 #' @export
-plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FALSE, transactions=TRUE, label=NULL, plot=TRUE, verbose=TRUE,...) {
+plot.clv.fitted.transactions <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FALSE, transactions=TRUE, label=NULL, plot=TRUE, verbose=TRUE,...) {
   period.until <- period.num <- NULL
 
 
@@ -111,7 +114,7 @@ plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FA
     x@clv.data <- copy(newdata)
 
     # Do model dependent steps of adding newdata
-    x <- clv.model.put.newdata(clv.model = x@clv.model, clv.fitted=x, verbose=verbose)
+    x <- clv.model.process.newdata(clv.model = x@clv.model, clv.fitted=x, verbose=verbose)
   }
 
 
@@ -122,13 +125,11 @@ plot.clv.fitted <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FA
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=transactions, var.name="transactions"))
   err.msg <- c(err.msg, check_user_data_predictionend(clv.fitted=x, prediction.end=prediction.end))
+  err.msg <- c(err.msg, check_user_data_emptyellipsis(...))
   if(!is.null(label)) # null is allowed = std. model name
     err.msg <- c(err.msg, .check_userinput_single_character(char=label, var.name="label"))
   check_err_msg(err.msg)
 
-  if(length(list(...))>0){
-    stop("Any additional parameters passed in ... are not needed!", call. = FALSE)
-  }
 
   # do fitted object specific checks (ie dyncov checks cov data length)
   clv.controlflow.plot.check.inputs(obj=x, prediction.end=prediction.end, cumulative=cumulative,
@@ -267,7 +268,7 @@ clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
 }
 
 # . clv.controlflow.plot.get.data ---------------------------------------------------------------
-setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.fitted"), definition = function(obj, dt.expectation.seq, cumulative, verbose){
+setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.fitted.transactions"), definition = function(obj, dt.expectation.seq, cumulative, verbose){
 
   expectation <- i.expectation <- NULL
 
@@ -288,7 +289,7 @@ setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.fitt
 })
 
 
-#' @include class_clv_fitted.R
 #' @exportMethod plot
-#' @rdname plot.clv.fitted
-setMethod("plot", signature(x="clv.fitted"), definition = plot.clv.fitted)
+#' @include class_clv_fitted.R
+#' @rdname plot.clv.fitted.transactions
+setMethod("plot", signature(x="clv.fitted.transactions"), definition = plot.clv.fitted.transactions)

@@ -1,11 +1,3 @@
-fct.testthat.inputchecks.staticcov.fails.for.start.params.subzero <- function(method, clv.data.no.holdout, clv.data.with.holdout, l.start.params.model){
-  test_that("Fails for start params <= 0", {
-    lapply(l.start.params.model, fct.testthat.inputchecks.helper.expect.error.for.params, method = method, clv.data = clv.data.no.holdout)
-    lapply(l.start.params.model, fct.testthat.inputchecks.helper.expect.error.for.params, method = method, clv.data = clv.data.with.holdout)
-  })
-}
-
-
 fct.testthat.inputchecks.startparamcov <- function(method, l.std.args, name.param){
   test_that("Fails if not numeric", {
     expect_error(do.call(method, modifyList(l.std.args, setNames(list(c(Gender="0.5")), name.param))),
@@ -252,12 +244,18 @@ fct.testthat.inputchecks.staticcov <- function(name.method, method, start.params
 
   if(has.cor){
     context(paste0("Inputchecks - ",name.method," staticcov - Parameter use.cor"))
-    fct.testthat.inputchecks.usecor(method = method, l.std.args = l.std.args.noholdout,   correct.param = TRUE)
-    fct.testthat.inputchecks.usecor(method = method, l.std.args = l.std.args.withholdout, correct.param = TRUE)
+    fct.testthat.inputchecks.usecor(method = method, l.std.args = l.std.args.noholdout)
+    fct.testthat.inputchecks.usecor(method = method, l.std.args = l.std.args.withholdout)
 
     context(paste0("Inputchecks - ",name.method," staticcov - Parameter start.param.cor"))
     fct.testthat.inputchecks.startparamcor(method = method, l.std.args = l.std.args.noholdout,   correct.param = 0.5)
     fct.testthat.inputchecks.startparamcor(method = method, l.std.args = l.std.args.withholdout, correct.param = 0.5)
+  }else{
+    test_that("Fails for use.cor", {
+      expect_error(do.call(what = method,
+                           args = list(clv.data=clv.data.apparel.with.holdout, use.cor = TRUE)),
+                   regexp = "ignored because they are not needed")
+    })
   }
 
 

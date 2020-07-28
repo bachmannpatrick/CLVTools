@@ -27,6 +27,8 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), optimx.args
 #' Note that the DERT expression has not been derived (yet) and it consequently is not possible to calculated
 #' values for DERT and CLV.
 #'
+#'
+#'
 #' \subsection{The BG/NBD model}{
 #' The BG/NBD is an "easy" alternative to the Pareto/NBD model that is easier to implement. The BG/NBD model slight adapts
 #' the behavioral "story" associated with the Pareto/NBD model in order to simplify the implementation. The BG/NBD model uses a beta-geometric and
@@ -43,15 +45,19 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), optimx.args
 #' parameter estimates for inference, i.e. identify and quantify effects of contextual factors
 #' on the two underlying purchase and attrition processes. For technical details we refer to
 #' the technical note by Fader and Hardie (2007).
+#'
+#' The likelihood function is the likelihood function associated with the basic model where
+#' alpha, a, and b are replaced with alpha = alpha0*exp(−g1z1), a = a_0*exp(g2z2), and b = b0*exp(g3z2)
+#' while r remains unchanged. Note that in the current implementation, we constrain the covariate parameters
+#' and data for the lifetime process to be equal (g2=g3 and z2=z3).
 #' }
 #'
-#' @return
-#' Depending on the data object on which the model was fit, \code{bgnbd} returns either an object of
-#' class \link[CLVTools:clv.bgnbd-class]{clv.bgnbd} or \link[CLVTools:clv.bgnbd.static.cov-class]{clv.bgnbd.static.cov}.
+#' @return Depending on the data object on which the model was fit, \code{bgnbd} returns either an object of
+#' class \linkS4class{clv.bgnbd} or \linkS4class{clv.bgnbd.static.cov}.
 #'
 #' @template template_clvfitted_returnvalue
 #'
-#' @template template_clvfitted_seealso
+#' @template template_clvfittedtransactions_seealso
 #'
 #' @template template_references_bgnbd
 #'
@@ -76,7 +82,7 @@ setMethod("bgnbd", signature = signature(clv.data="clv.data"), definition = func
 
   obj <- clv.bgnbd(cl=cl, clv.data=clv.data)
 
-  return(clv.template.controlflow.estimate(clv.fitted = obj, cl=cl, start.params.model = start.params.model,
+  return(clv.template.controlflow.estimate(clv.fitted=obj, start.params.model = start.params.model,
                                            optimx.args = optimx.args, verbose=verbose))
 })
 
@@ -97,7 +103,7 @@ setMethod("bgnbd", signature = signature(clv.data="clv.data.static.covariates"),
 
   obj <- clv.bgnbd.static.cov(cl=cl, clv.data=clv.data)
 
-  return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model,
+  return(clv.template.controlflow.estimate(clv.fitted=obj, start.params.model = start.params.model,
                                            optimx.args = optimx.args, verbose=verbose,
                                            names.cov.life=names.cov.life, names.cov.trans=names.cov.trans,
                                            start.params.life=start.params.life, start.params.trans=start.params.trans,

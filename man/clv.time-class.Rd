@@ -20,10 +20,10 @@ time units such as Bi-weekly or irregularly spaced time units.
 
 \code{clv.time} is a virtual class and sub-classes implement the actual parsing and calculations.
 
-\code{\link[CLVTools:clv.time.date-class]{clv.time.date}} uses data type \code{Date} for time units equal or
+\linkS4class{clv.time.date} uses data type \code{Date} for time units equal or
 greater than a single day that do not require a time of day.
 
-\code{\link[CLVTools:clv.time.datetime-class]{clv.time.datetime}} uses data type \code{POSIXct} for
+\linkS4class{clv.time.datetime} uses data type \code{POSIXct} for
 time units smaller than a single day.
 }
 \section{Slots}{
@@ -47,12 +47,12 @@ time units smaller than a single day.
 }}
 
 \seealso{
-\code{\link[CLVTools:summary.clv.time]{summary.clv.time}} for a summary about an object of class \code{clv.time}
+\link{summary.clv.time} for a summary about an object of class \code{clv.time}
 
-\code{\link[CLVTools:clv.time.days-class]{clv.time.days}} for an implementation of time unit 'Days'
+\linkS4class{clv.time.days} for an implementation of time unit 'Days'
 
-\code{\link[CLVTools:clv.time.weeks-class]{clv.time.weeks}} for an implementation of time unit 'Weeks'
+\linkS4class{clv.time.weeks} for an implementation of time unit 'Weeks'
 
-\code{\link[CLVTools:clv.time.years-class]{clv.time.years}} for an implementation of time unit 'Years'
+\linkS4class{clv.time.years} for an implementation of time unit 'Years'
 }
 \keyword{internal}

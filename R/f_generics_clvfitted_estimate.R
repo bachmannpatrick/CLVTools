@@ -1,55 +1,26 @@
 # . clv.controlflow.estimate.check.inputs ------------------------------------------------------------------------
 setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv.fitted="clv.fitted"), definition = function(clv.fitted,  start.params.model, optimx.args, verbose, ...){
 
-  l.args <- list(...)
-
   # Check only basic structure
   err.msg <- c()
-  if(!is.null(start.params.model)) # may be NULL = use model default
+
+  if(!is.null(start.params.model)){
+    # may be NULL = use model default
     err.msg <- c(err.msg, check_user_data_startparams(start.params = start.params.model,
                                                       vector.names = clv.fitted@clv.model@names.original.params.model,
                                                       param.names = "model start parameter"))
+  }
 
 
-  # Check cor input
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name ="verbose"))
 
   # Check additional optimx args
   err.msg <- c(err.msg, check_user_data_optimxargs(optimx.args=optimx.args))
   check_err_msg(err.msg)
-
-  # warn that this model has no covariates but names/start.params/lambdas/cor/constr were given
-
-  if(length(l.args) > 0){
-    if("start.params.life" %in% names(l.args))
-      if(length(l.args$start.params.life)>0)
-        stop("The start parameters given for covariates are not needed because this is a no covariate model!", call. = FALSE)
-    if("start.params.trans" %in% names(l.args))
-      if(length(l.args$start.params.trans)>0)
-        stop("The start parameters given for covariates are not needed because this is a no covariate model!", call. = FALSE)
-    if("names.cov.life" %in% names(l.args))
-      if(length(l.args$names.cov.life)>0)
-        stop("The covariate names given are not needed because this is a no covariate model!", call. = FALSE)
-    if("names.cov.trans" %in% names(l.args))
-      if(length(l.args$names.cov.trans)>0)
-        stop("The covariate names given are not needed because this is a no covariate model!", call. = FALSE)
-    if("reg.lambdas" %in% names(l.args))
-      if(length(l.args$reg.lambdas)>0)
-        stop("The regularization lambdas are not needed because this is a no covariate model!", call. = FALSE)
-    if("start.params.constr" %in% names(l.args))
-      if(length(l.args$start.params.constr) > 0)
-        stop("The given parameters to constrain and their start parameters are not needed because this is a no covariate model!", call. = FALSE)
-    if("names.cov.constr" %in% names(l.args))
-      if(length(l.args$names.cov.constr) > 0)
-        stop("The given parameters to constrain and their start parameters are not needed because this is a no covariate model!", call. = FALSE)
-
-    # Do not warn if anything else unneeded is passed - could be something for a model
-  }
 })
 
 # . clv.controlflow.estimate.put.inputs ------------------------------------------------------------------------
-setMethod("clv.controlflow.estimate.put.inputs", signature =  signature(clv.fitted="clv.fitted"), definition = function(clv.fitted, cl, verbose, ...){
-  clv.fitted@call <- cl
+setMethod("clv.controlflow.estimate.put.inputs", signature =  signature(clv.fitted="clv.fitted"), definition = function(clv.fitted, verbose, ...){
   return(clv.fitted)
 })
 
@@ -70,7 +41,7 @@ setMethod("clv.controlflow.estimate.generate.start.params", signature = signatur
 
   if(clv.model.supports.correlation(clv.fitted@clv.model)){
     # If the model supports correlation, start.param.cor is passed, otherwise not
-    transformed.start.params.model <- clv.model.generate.start.param.cor(clv.model=clv.fitted@clv.model, start.param.cor=start.param.cor, transformed.start.params=transformed.start.params.model)
+    transformed.start.params.model <- clv.model.generate.start.param.cor(clv.model=clv.fitted@clv.model, start.param.cor=start.param.cor, transformed.start.params.model=transformed.start.params.model)
   }
 
   return(transformed.start.params.model)
@@ -92,12 +63,11 @@ setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(
                                               hessian       = TRUE),
                             keep.null = TRUE)
 
-  # Forbid to use any covariate specific interlayers ---------------------------------------------------
-  #   For no covariates objects, only the correlation interlayer can be used. For covariates clv.fitted,
-  #     this functions is overwritten to prepare more args
+  # By default dont use any covariate specific interlayers ---------------------------------------------------
+  #   For no covariates objects only the correlation interlayer can be used
   #
-  #   However, not passing these parameters, results in missing parameters for the interlayer manager
-  #   This could be handled by default parameters or with missing there,
+  #   However, not passing the parameters for the other interlayers results in missing parameters for
+  #   the interlayer manager. This could be handled by using default parameters or with missing there,
   #   but passing them with "False" is much cleaner
 
   optimx.args <- modifyList(optimx.args, list(use.interlayer.constr        = FALSE,
@@ -112,7 +82,6 @@ setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(
                             keep.null = TRUE)
 
 
-  # Everything to call the correlation layer
   # Default is no correlation
   optimx.args <- modifyList(optimx.args, list(use.cor                   = FALSE,
                                               name.prefixed.cor.param.m = character(0),
@@ -177,13 +146,14 @@ setMethod(f = "clv.controlflow.estimate.process.post.estimation", signature = si
 
   optimx.last.row <- tail(clv.fitted@optimx.estimation.output, n=1)
 
-  if(anyNA(coef(optimx.last.row)))
+  if(anyNA(coef(optimx.last.row))){
     warning("Estimation failed with NA coefs. The returened object contains results but further usage is restricted.",
             immediate. = TRUE, call. = FALSE)
+  }
 
   # extract hessian from "details" attribute which is a list (if more then 1 method given)
   #   name it the same as the coefs for reading out later on
-  clv.fitted@optimx.hessian           <- as.matrix(tail(attr(optimx.last.row, "details")[, "nhatend"], n=1)[[1]])
+  clv.fitted@optimx.hessian <- as.matrix(tail(attr(optimx.last.row, "details")[, "nhatend"], n=1)[[1]])
 
   if(length(clv.fitted@optimx.hessian)==1 & all(is.na(clv.fitted@optimx.hessian))){
     clv.fitted@optimx.hessian <- matrix(data = NA_real_, nrow = ncol(coef(optimx.last.row)),

@@ -4,7 +4,7 @@
 \name{clv.fitted-class}
 \alias{clv.fitted-class}
 \alias{show,clv.fitted-method}
-\title{Fitted CLV Model without covariates}
+\title{Fitted model without covariates}
 \usage{
 \S4method{show}{clv.fitted}(object)
 }
@@ -12,8 +12,9 @@
 The class stores the transaction data and various optimization outputs and options.
 It is created already when model fitting is initiated and is then used to perform no covariate specific steps
 during the estimation process.
+Serves as parent classes to fitted transaction and spending models.
 
-Created from an existing clv.data and clv.model object (or subclasses thereof).
+Created with an existing clv.data and clv.model object (or subclasses thereof).
 }
 \section{Slots}{
 
@@ -32,6 +33,6 @@ Created from an existing clv.data and clv.model object (or subclasses thereof).
 }}
 
 \seealso{
-\code{\link[CLVTools:clv.fitted.static.cov-class]{clv.fitted.static.cov}}, \code{\link[CLVTools:clv.fitted.dynamic.cov-class]{clv.fitted.dynamic.cov}}
+\linkS4class{clv.fitted.spending}, \linkS4class{clv.fitted.transactions}, \linkS4class{clv.fitted.transactions.static.cov}, \linkS4class{clv.fitted.transactions.dynamic.cov}
 }
 \keyword{internal}

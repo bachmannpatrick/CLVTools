@@ -1,10 +1,9 @@
 clv.template.controlflow.estimate <- function(clv.fitted,
-                                              cl,
                                               start.params.model,
                                               optimx.args,
                                               verbose,
                                               ...){
-  # For development purposes only: All additional args have to be named!
+  # ***TODO: For development purposes only: All additional args have to be named!
   l.elipsis <- list(...)
   if(length(l.elipsis)>0){
     names.ellipsis.args <- names(list(...))
@@ -22,7 +21,7 @@ clv.template.controlflow.estimate <- function(clv.fitted,
 
 
   # Store user input for estimation ----------------------------------------------------------------------------
-  clv.fitted           <- clv.controlflow.estimate.put.inputs(clv.fitted=clv.fitted, cl=cl, verbose=verbose, ...)
+  clv.fitted           <- clv.controlflow.estimate.put.inputs(clv.fitted=clv.fitted, verbose=verbose, ...)
   clv.fitted@clv.model <- clv.model.put.estimation.input(clv.model=clv.fitted@clv.model, ...)
 
 

@@ -214,8 +214,8 @@ confint.clv.fitted <- function(object, parm, level = 0.95, ...){
 #' @include class_clv_fitted.R
 print.clv.fitted <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
   # Short print similar to lm
-  # Only print the main model coefs
-  cat(x@clv.model@name.model, " Model\n")
+
+  cat(x@clv.model@name.model, "Model\n")
 
   cat("\nCall:\n", paste(deparse(x@call), sep = "\n", collapse = "\n"), "\n", sep = "")
 
@@ -418,7 +418,7 @@ vcov.summary.clv.fitted <- function(object, ...){
 #'
 #' @template template_details_predictionend
 #'
-#' @seealso \code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation
+#' @seealso \code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} to plot the unconditional expectation
 #'
 #' @return
 #' A \code{data.table} which contains the following columns:

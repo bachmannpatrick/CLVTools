@@ -80,13 +80,12 @@
 #' The Pareto/NBD model with dynamic covariates can currently not be fit with data that has a temporal resolution
 #' of less than one day (data that was built with time unit \code{hours}).
 #'
-#' @return
-#' Depending on the data object on which the model was fit, \code{pnbd} returns either an object of
-#' class \link[CLVTools:clv.pnbd-class]{clv.pnbd}, \link[CLVTools:clv.pnbd.static.cov-class]{clv.pnbd.static.cov}, or \link[CLVTools:clv.pnbd.dynamic.cov-class]{clv.pnbd.dynamic.cov}.
+#' @return Depending on the data object on which the model was fit, \code{pnbd} returns either an object of
+#' class \linkS4class{clv.pnbd}, \linkS4class{clv.pnbd.static.cov}, or \linkS4class{clv.pnbd.dynamic.cov}.
 #'
 #' @template template_clvfitted_returnvalue
 #'
-#' @template template_clvfitted_seealso
+#' @template template_clvfittedtransactions_seealso
 #' @seealso \code{\link[CLVTools:SetDynamicCovariates]{SetDynamicCovariates}} to add dynamic covariates on which the \code{pnbd} model can be fit.
 #'
 #' @seealso \code{\link[data.table:openmp-utils]{setDTthreads}}, \code{\link[data.table:openmp-utils]{getDTthreads}},\code{\link[doParallel:registerDoParallel]{registerDoParallel}},\code{\link[doFuture]{registerDoFuture}} for setting up parallel execution.
@@ -159,7 +158,7 @@ setMethod("pnbd", signature = signature(clv.data="clv.data"), definition = funct
 
   obj <- clv.pnbd(cl=cl, clv.data=clv.data)
 
-  return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
+  return(clv.template.controlflow.estimate(clv.fitted=obj, start.params.model = start.params.model, use.cor = use.cor,
                                            start.param.cor = start.param.cor, optimx.args = optimx.args, verbose=verbose))
 })
 
@@ -183,7 +182,7 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.static.covariates"), 
   obj <- clv.pnbd.static.cov(cl=cl, clv.data=clv.data)
 
   # Do the estimate controlflow / process steps with the static cov object
-  return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor, start.param.cor = start.param.cor,
+  return(clv.template.controlflow.estimate(clv.fitted=obj, start.params.model = start.params.model, use.cor = use.cor, start.param.cor = start.param.cor,
                                            optimx.args = optimx.args, verbose=verbose,
                                            names.cov.life=names.cov.life, names.cov.trans=names.cov.trans,
                                            start.params.life=start.params.life, start.params.trans=start.params.trans,
@@ -216,7 +215,7 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.dynamic.covariates"),
     stop("This model currently cannot be fitted with data that has a temporal resolution of less than 1d (ie hours).")
   }
 
-  return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor, start.param.cor = start.param.cor,
+  return(clv.template.controlflow.estimate(clv.fitted=obj, start.params.model = start.params.model, use.cor = use.cor, start.param.cor = start.param.cor,
                                            optimx.args = optimx.args, verbose=verbose,
                                            names.cov.life=names.cov.life, names.cov.trans=names.cov.trans,
                                            start.params.life=start.params.life, start.params.trans=start.params.trans,

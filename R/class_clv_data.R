@@ -1,7 +1,7 @@
 #' Transactional data to fit CLV models
 #'
 #' @description
-#' Stores the processed transactional data and holds an object of class \code{\link[CLVTools:clv.time-class]{clv.time}}
+#' Stores the processed transactional data and holds an object of class \linkS4class{clv.time}
 #' which stores further information about the split in an estimation and holdout sample.
 #'
 #' A \code{clv.data} object serves as input into the various model fitting functions.
@@ -14,7 +14,7 @@
 #' @slot has.spending Single logical whether the data contains information about the amount spent per transaction
 #' @slot has.holdout Single logical whether the data is split in a holdout and estimation period
 #'
-#' @seealso \code{\link[CLVTools:clv.time-class]{clv.time}}
+#' @seealso \linkS4class{clv.time}
 #'
 #' @keywords internal
 #' @include all_generics.R class_clv_time.R
@@ -68,6 +68,25 @@ clv.data.has.spending <- function(clv.data){
   return(clv.data@has.spending)
 }
 
+clv.data.has.negative.spending <- function(clv.data){
+  Price <- NULL
+
+  if(clv.data.has.spending(clv.data = clv.data) == FALSE)
+    return(FALSE)
+
+  return(clv.data@data.transactions[Price < 0, .N] > 0)
+}
+
+clv.data.get.transactions.in.estimation.period <- function(clv.data){
+  Date <- NULL
+  return(clv.data@data.transactions[Date <= clv.data@clv.time@timepoint.estimation.end])
+}
+
+clv.data.get.transactions.in.holdout.period <- function(clv.data){
+  Date <- NULL
+  stopifnot(clv.data.has.holdout(clv.data))
+  return(clv.data@data.transactions[Date >= clv.data@clv.time@timepoint.holdout.start])
+}
 
 clv.data.make.repeat.transactions <- function(dt.transactions){
   Date <- previous <- NULL
@@ -116,7 +135,7 @@ clv.data.mean.interpurchase.times <- function(clv.data, dt.transactions){
   Id <- num.trans <- Date <- NULL
 
   num.transactions <- dt.transactions[, list(num.trans = .N), by="Id"]
-  
+
   return(rbindlist(list(
     # 1 Transaction = NA
     dt.transactions[Id %in% num.transactions[num.trans == 1,Id], list(interp.time = NA_real_, Id)],

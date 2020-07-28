@@ -1,7 +1,7 @@
 #' Transactional and static covariates data to fit CLV models
 #'
 #'
-#' Extends the class \code{\link[CLVTools:clv.data-class]{clv.data}} and adds slots to store data and names of
+#' Extends the class \linkS4class{clv.data} and adds slots to store data and names of
 #' static covariates for both processes.
 #' An object of this class then serves as input to fit models with static covariates.
 #'
@@ -12,7 +12,7 @@
 #' @slot names.cov.data.trans Character vector with names of the static transaction covariates.
 #Corresponds to the column names of the \code{data.table} in slot data.cov.life
 #'
-#' @seealso Definition of the parent class \code{\link[CLVTools:clv.data-class]{clv.data}}.
+#' @seealso Definition of the parent class \linkS4class{clv.data}.
 #' @seealso For fitting covariate models: \code{\link[CLVTools:pnbd]{pnbd}}
 #'
 #'
