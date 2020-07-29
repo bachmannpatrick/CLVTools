@@ -193,7 +193,6 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.static.co
   m.cov.data.trans <- clv.data.get.matrix.data.cov.trans(clv.data=clv.fitted@clv.data, correct.row.names=params_i$Id,
                                                          correct.col.names=names(clv.fitted@prediction.params.trans))
 
-
   # To caluclate expectation at point t for customers alive in t, given in params_i.t
   fct.expectation <- function(params_i.t) {return(pnbd_staticcov_expectation(r = clv.fitted@prediction.params.model[["r"]],
                                                                              s = clv.fitted@prediction.params.model[["s"]],
