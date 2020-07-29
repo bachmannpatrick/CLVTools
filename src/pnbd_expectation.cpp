@@ -3,6 +3,23 @@
 #include "pnbd_expectation.h"
 #include "clv_vectorized.h"
 
+//' @name pnbd_expectation
+//' @title Pareto/NBD: Unconditional Expectation
+//'
+//' @description Computes the expected number of repeat transactions in the interval (0, vT_i]
+//' for a randomly selected customer, where 0 is defined as the point when the customer came alive.
+//'
+//' @template template_params_pnbd
+//' @param vT_i Number of periods since the customer came alive
+//' @template template_params_rcppcovmatrix
+//' @template template_params_rcppvcovparams
+//'
+//' @templateVar name_params_cov_life vCovParams_life
+//' @templateVar name_params_cov_trans vCovParams_trans
+//' @template template_details_rcppcovmatrix
+//'
+//' @template template_references_pnbd
+//'
 arma::vec pnbd_expectation(const double r,
                            const double s,
                            const arma::vec& vAlpha_i,
@@ -11,6 +28,7 @@ arma::vec pnbd_expectation(const double r,
   return (r * vBeta_i) / (vAlpha_i * (s - 1)) % (1 -arma::pow((vBeta_i/(vBeta_i + vT_i)), (s - 1)));
 }
 
+//' @rdname pnbd_expectation
 // [[Rcpp::export]]
 arma::vec pnbd_nocov_expectation(const double r,
                                     const double s,
@@ -32,6 +50,7 @@ arma::vec pnbd_nocov_expectation(const double r,
                           vT_i));
 }
 
+//' @rdname pnbd_expectation
 // [[Rcpp::export]]
 arma::vec pnbd_staticcov_expectation(const double r,
                                         const double s,

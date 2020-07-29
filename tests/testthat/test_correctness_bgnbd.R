@@ -50,9 +50,9 @@ test_that("Expectation in Rcpp matches expectation in R (nocov)", {
   }
 
   fct.expectation.Cpp <- function(params_i.t){return(params_i.t[, bgnbd_nocov_expectation(r = obj.fitted@prediction.params.model[["r"]],
-                                                                                alpha_0 = obj.fitted@prediction.params.model[["alpha"]],
-                                                                                a_0 = obj.fitted@prediction.params.model[["a"]],
-                                                                                b_0 = obj.fitted@prediction.params.model[["b"]],
+                                                                                alpha = obj.fitted@prediction.params.model[["alpha"]],
+                                                                                a = obj.fitted@prediction.params.model[["a"]],
+                                                                                b = obj.fitted@prediction.params.model[["b"]],
                                                                                 vT_i = t_i)])}
 
   dt.expectation.seq <- clv.time.expectation.periods(clv.time = obj.fitted@clv.data@clv.time,
@@ -65,7 +65,6 @@ test_that("Expectation in Rcpp matches expectation in R (nocov)", {
                               fct.expectation = fct.expectation.Cpp, clv.time = obj.fitted@clv.data@clv.time)
 
   expect_equal(result.R, result.Cpp)
-
 })
 
 context("Correctness - BG/NBD staticcov - Expectation")
@@ -108,11 +107,11 @@ test_that("Expectation in Rcpp matches expectation in R (staticcov)", {
   }
 
 
-  # To caluclate expectation at point t for customers alive in t, given in params_i.t
+  # To calculate expectation at point t for customers alive in t, given in params_i.t
   fct.expectation.Cpp <- function(params_i.t){return(params_i.t[, bgnbd_staticcov_expectation(r = obj.fitted@prediction.params.model[["r"]],
-                                                                                   alpha_0 = obj.fitted@prediction.params.model[["alpha"]],
-                                                                                   a_0 = obj.fitted@prediction.params.model[["a"]],
-                                                                                   b_0 = obj.fitted@prediction.params.model[["b"]],
+                                                                                   alpha = obj.fitted@prediction.params.model[["alpha"]],
+                                                                                   a = obj.fitted@prediction.params.model[["a"]],
+                                                                                   b = obj.fitted@prediction.params.model[["b"]],
                                                                                    vT_i = t_i,
                                                                                    vCovParams_trans = obj.fitted@prediction.params.trans,
                                                                                    vCovParams_life = obj.fitted@prediction.params.life,
@@ -129,5 +128,4 @@ test_that("Expectation in Rcpp matches expectation in R (staticcov)", {
                               fct.expectation = fct.expectation.Cpp, clv.time = obj.fitted@clv.data@clv.time)
 
   expect_equal(result.R, result.Cpp)
-
 })

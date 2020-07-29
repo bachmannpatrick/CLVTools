@@ -93,9 +93,9 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.no.cov")
   params_i <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
 
   fct.bgnbd.expectation <- function(params_i.t){return(bgnbd_nocov_expectation(r = clv.fitted@prediction.params.model[["r"]],
-                                                                               alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
-                                                                               a_0 = clv.fitted@prediction.params.model[["a"]],
-                                                                               b_0 = clv.fitted@prediction.params.model[["b"]],
+                                                                               alpha = clv.fitted@prediction.params.model[["alpha"]],
+                                                                               a = clv.fitted@prediction.params.model[["a"]],
+                                                                               b = clv.fitted@prediction.params.model[["b"]],
                                                                                vT_i = params_i.t$t_i))}
 
   return(DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,

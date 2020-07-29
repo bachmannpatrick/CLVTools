@@ -79,9 +79,9 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.static.c
 
   # Alpha is for trans, a and b for live!
   fct.bgnbd.expectation <- function(params_i.t){return(bgnbd_staticcov_expectation(r = clv.fitted@prediction.params.model[["r"]],
-                                                                                   alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
-                                                                                   a_0 = clv.fitted@prediction.params.model[["a"]],
-                                                                                   b_0 = clv.fitted@prediction.params.model[["b"]],
+                                                                                   alpha = clv.fitted@prediction.params.model[["alpha"]],
+                                                                                   a = clv.fitted@prediction.params.model[["a"]],
+                                                                                   b = clv.fitted@prediction.params.model[["b"]],
                                                                                    vT_i = params_i.t$t_i,
                                                                                    vCovParams_trans = clv.fitted@prediction.params.trans,
                                                                                    vCovParams_life = clv.fitted@prediction.params.life,
