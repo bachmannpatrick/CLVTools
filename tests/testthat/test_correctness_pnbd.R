@@ -49,4 +49,41 @@ fct.testthat.correctness.dyncov(data.apparelTrans=apparelTrans, data.apparelDynC
 
 # ** Static cov??
 
+context("Correctness - PNBD nocov - Expectation")
 
+test_that("Expectation in Rcpp matches expectation in R", {
+
+  # No cov ---------------------------------------------------------------------------------------------------
+  expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow,
+                                     date.format = "ymd", time.unit = "W", estimation.split = 38,
+                                     name.id = "Id", name.date = "Date", name.price = "Price"))
+  expect_silent(obj.fitted <- do.call(pnbd, list(clv.data = clv.cdnow, verbose = FALSE)))
+
+
+  params_i <- obj.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
+
+  # all params exactly the same for all customers because there are no covariates
+  params_i[, r       := obj.fitted@prediction.params.model[["r"]]]
+  params_i[, alpha_i := obj.fitted@prediction.params.model[["alpha"]]]
+  params_i[, s       := obj.fitted@prediction.params.model[["s"]]]
+  params_i[, beta_i  := obj.fitted@prediction.params.model[["beta"]]]
+
+  fct.expectation.R <- function(params_i.t) {return( params_i.t[, (r * beta_i)/(alpha_i * (s - 1)) * (1 - (beta_i/(beta_i + t_i))^(s - 1))] )}
+  fct.expectation.Cpp <- function(params_i.t) {return( params_i.t[, pnbd_nocov_expectation(r = obj.fitted@prediction.params.model[["r"]],
+                                                                                           s = obj.fitted@prediction.params.model[["s"]],
+                                                                                           alpha_0 = obj.fitted@prediction.params.model[["alpha"]],
+                                                                                           beta_0 = obj.fitted@prediction.params.model[["beta"]],
+                                                                                           vT_i = t_i)])}
+
+  dt.expectation.seq <- clv.time.expectation.periods(clv.time = obj.fitted@clv.data@clv.time,
+                                                     user.tp.end = 38)
+
+  result.R <- DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
+                            fct.expectation = fct.expectation.R, clv.time = obj.fitted@clv.data@clv.time)
+
+  result.Cpp <- DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
+                              fct.expectation = fct.expectation.Cpp, clv.time = obj.fitted@clv.data@clv.time)
+
+  expect_equal(result.R, result.Cpp)
+
+})
