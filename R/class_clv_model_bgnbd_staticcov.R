@@ -78,18 +78,15 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.static.c
                                                          correct.col.names=names(clv.fitted@prediction.params.trans))
 
   # Alpha is for trans, a and b for live!
-  params_i[, r       := clv.fitted@prediction.params.model[["r"]]]
-  params_i[, alpha_i := clv.fitted@prediction.params.model[["alpha"]] * exp( -m.cov.data.trans  %*% clv.fitted@prediction.params.trans)]
-  params_i[, a_i     := clv.fitted@prediction.params.model[["a"]]     * exp(  m.cov.data.life   %*% clv.fitted@prediction.params.life)]
-  params_i[, b_i     := clv.fitted@prediction.params.model[["b"]]     * exp(  m.cov.data.life   %*% clv.fitted@prediction.params.life)]
-
-  fct.bgnbd.expectation <- function(params_i.t){
-    term1 <- params_i.t[,(a_i + b_i - 1)/(a_i - 1)]
-    term2 <- params_i.t[,(alpha_i/(alpha_i + t_i))^r]
-    term3 <- params_i.t[, vec_gsl_hyp2f1_e(r, b_i, a_i+b_i-1, t_i/(alpha_i+t_i))$value]
-
-    return(term1 * (1 - term2 * term3))
-  }
+  fct.bgnbd.expectation <- function(params_i.t){return(bgnbd_staticcov_expectation(r = clv.fitted@prediction.params.model[["r"]],
+                                                                                   alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+                                                                                   a_0 = clv.fitted@prediction.params.model[["a"]],
+                                                                                   b_0 = clv.fitted@prediction.params.model[["b"]],
+                                                                                   vT_i = params_i.t$t_i,
+                                                                                   vCovParams_trans = clv.fitted@prediction.params.trans,
+                                                                                   vCovParams_life = clv.fitted@prediction.params.life,
+                                                                                   mCov_life = m.cov.data.life,
+                                                                                   mCov_trans = m.cov.data.trans))}
 
   return(DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
                        fct.expectation = fct.bgnbd.expectation, clv.time = clv.fitted@clv.data@clv.time))

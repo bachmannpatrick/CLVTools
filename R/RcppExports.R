@@ -98,6 +98,14 @@ bgnbd_staticcov_PAlive <- function(r, alpha, a, b, vX, vT_x, vT_cal, vCovParams_
     .Call(`_CLVTools_bgnbd_staticcov_PAlive`, r, alpha, a, b, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
 }
 
+bgnbd_nocov_expectation <- function(r, alpha_0, a_0, b_0, vT_i) {
+    .Call(`_CLVTools_bgnbd_nocov_expectation`, r, alpha_0, a_0, b_0, vT_i)
+}
+
+bgnbd_staticcov_expectation <- function(r, alpha_0, a_0, b_0, vT_i, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans) {
+    .Call(`_CLVTools_bgnbd_staticcov_expectation`, r, alpha_0, a_0, b_0, vT_i, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans)
+}
+
 #' @title GSL Hypergeom 2f0 for equal length vectors
 #'
 #' @param vA Vector of values for parameter a
