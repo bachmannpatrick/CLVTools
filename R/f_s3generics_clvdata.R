@@ -71,10 +71,10 @@ print.clv.data.dynamic.covariates <- function(x, digits = max(3L, getOption("dig
   timepoint.last.cov.trans  <- x@data.cov.trans[, max(Cov.Date)]
 
   # Print first and last day of cov data
-  .print.list(list("Cov Date start Life"  = clv.time.format.timepoint(clv.time=x@clv.time, timepoint=timepoint.first.cov.life),
-                   "Cov Date end   Life"  = clv.time.format.timepoint(clv.time=x@clv.time, timepoint=timepoint.last.cov.life),
-                   "Cov Date start Trans" = clv.time.format.timepoint(clv.time=x@clv.time, timepoint=timepoint.first.cov.trans),
-                   "Cov Date end   Trans" = clv.time.format.timepoint(clv.time=x@clv.time, timepoint=timepoint.last.cov.trans)))
+  .print.list(list("Cov Date first Life"  = clv.time.format.timepoint(clv.time=x@clv.time, timepoint=timepoint.first.cov.life),
+                   "Cov Date last  Life"  = clv.time.format.timepoint(clv.time=x@clv.time, timepoint=timepoint.last.cov.life),
+                   "Cov Date first Trans" = clv.time.format.timepoint(clv.time=x@clv.time, timepoint=timepoint.first.cov.trans),
+                   "Cov Date last  Trans" = clv.time.format.timepoint(clv.time=x@clv.time, timepoint=timepoint.last.cov.trans)))
 
   invisible(x)
 }
