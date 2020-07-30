@@ -20,7 +20,7 @@
 #' to be > 0.
 #'
 #' \subsection{The G/G model}{
-#' The G/G model allows to predict a value for future customer transactions. Usually, the G/G model is used 
+#' The G/G model allows to predict a value for future customer transactions. Usually, the G/G model is used
 #' in combination with a probabilistic model predicting customer transaction such as the Pareto/NBD or the BG/NBD model.
 #' }
 #'
@@ -62,7 +62,7 @@ setMethod("gg", signature = signature(clv.data="clv.data"), definition = functio
   err.msg <- c()
   err.msg <- c(err.msg, check_user_data_emptyellipsis(...))
 
-  # Check here already because needed to build cbs (remove.first.transaction and data)
+  # Check here already because inputs are already needed to build the cbs (remove.first.transaction and data)
   err.msg <- c(err.msg, .check_user_data_single_boolean(remove.first.transaction, var.name = "remove.first.transaction"))
   err.msg <- c(err.msg, check_user_data_containsspendingdata(clv.data = clv.data))
   check_err_msg(err.msg)
