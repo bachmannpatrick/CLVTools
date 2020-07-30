@@ -44,11 +44,13 @@ Currently, CLVTools implements the following probabilistic models:
 
 (7) Gamma/Gompertz/NBD model with **time-invariant** contextual factors (Näf, Bachmann & Meierer 2020)
 
+(8) Gamma/Gamma model to estimate customer spending (Colombo & Jiang 1999; Fader, Hardie & Lee 2005; Fader & Hardie 2013)
+
 In future versions of **CLVTools** the following models are added. See [GitHub Issues](https://github.com/bachmannpatrick/CLVTools/projects) for a time-line.
 
-(8) Standard BG/BB model (Fader, Hardie, & Shang 2010)
+(9) Standard BG/BB model (Fader, Hardie, & Shang 2010)
 
-(9) Gamma/Gamma model to estimate customer spending (Colombo & Jiang 1999; Fader, Hardie & Lee 2005; Fader & Hardie 2013)
+
 
 
 In addition the framework features a system of layers between the optimizer and the log-likelihood function to allow the flexible addition of model extensions during the model fitting process. Currently these layers include:
@@ -57,7 +59,7 @@ In addition the framework features a system of layers between the optimizer and 
 
 - L2 regularization for parameters of contextual factors
 
-- Equality constraints between parameters of contextual for the purchase and the attrition process.
+- Equality constraints between parameters of contextual factors for the purchase and the attrition process.
 
 
 

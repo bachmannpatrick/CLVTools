@@ -49,14 +49,14 @@ Currently, CLVTools implements the following probabilistic models:
 7)  Gamma/Gompertz/NBD model with **time-invariant** contextual factors
     (Näf, Bachmann & Meierer 2020)
 
+8)  Gamma/Gamma model to estimate customer spending (Colombo & Jiang
+    1999; Fader, Hardie & Lee 2005; Fader & Hardie 2013)
+
 In future versions of **CLVTools** the following models are added. See
 [GitHub Issues](https://github.com/bachmannpatrick/CLVTools/projects)
 for a time-line.
 
-8)  Standard BG/BB model (Fader, Hardie, & Shang 2010)
-
-9)  Gamma/Gamma model to estimate customer spending (Colombo & Jiang
-    1999; Fader, Hardie & Lee 2005; Fader & Hardie 2013)
+9)  Standard BG/BB model (Fader, Hardie, & Shang 2010)
 
 In addition the framework features a system of layers between the
 optimizer and the log-likelihood function to allow the flexible addition
@@ -67,8 +67,8 @@ layers include:
 
   - L2 regularization for parameters of contextual factors
 
-  - Equality constraints between parameters of contextual for the
-    purchase and the attrition process.
+  - Equality constraints between parameters of contextual factors for
+    the purchase and the attrition process.
 
 ## Installation Instructions
 
@@ -103,17 +103,17 @@ transaction record consists of a purchase date and customer ID.
 data("apparelTrans")
 apparelTrans
 #>         Id       Date  Price
-#>    1:    1 2005-01-03  26.95
-#>    2:   10 2005-01-03  38.95
-#>    3:   10 2005-02-25  93.73
-#>    4:   10 2005-04-05 224.96
-#>    5:  100 2005-01-03 104.95
+#>    1:    1 2005-01-03 230.30
+#>    2:   10 2005-01-03  84.39
+#>    3:   10 2005-02-25 131.07
+#>    4:   10 2005-04-05  86.43
+#>    5:  100 2005-01-03  11.49
 #>   ---                       
-#> 2349: 1221 2006-01-23  62.95
-#> 2350: 1221 2006-03-09  89.95
-#> 2351: 1221 2006-05-14  52.95
-#> 2352: 1222 2005-01-03   5.90
-#> 2353: 1222 2005-03-03  13.90
+#> 2349: 1221 2006-01-23  26.57
+#> 2350: 1221 2006-03-09 129.82
+#> 2351: 1221 2006-05-14  14.37
+#> 2352: 1222 2005-01-03  44.77
+#> 2353: 1222 2005-03-03  99.21
 ```
 
 Before we estimate a model, we are required to initialize a data object
@@ -145,7 +145,7 @@ est.pnbd <- pnbd(clv.data = clv.apparel)
 #> Starting estimation...
 #> Estimation finished!
 est.pnbd
-#> Pareto NBD Standard  Model
+#> Pareto NBD Standard Model
 #> 
 #> Call:
 #> pnbd(clv.data = clv.apparel)
@@ -219,31 +219,34 @@ clvdata-object, also “customer lifetime value” (CLV) is predicted.
 ``` r
 results <- predict(est.pnbd)
 #> Predicting from 2005-10-11 until (incl.) 2006-07-16 (39.86 Weeks).
+#> Estimating gg model to predict spending...
+#> Starting estimation...
+#> Estimation finished!
 print(results)
-#>        Id period.first period.last period.length actual.x actual.spending
-#>   1:    1   2005-10-11  2006-07-16      39.85714        0            0.00
-#>   2:   10   2005-10-11  2006-07-16      39.85714        0            0.00
-#>   3:  100   2005-10-11  2006-07-16      39.85714       23         5086.44
-#>   4: 1000   2005-10-11  2006-07-16      39.85714       23         4077.34
-#>   5: 1001   2005-10-11  2006-07-16      39.85714       11         2914.10
-#>  ---                                                                     
-#> 246: 1219   2005-10-11  2006-07-16      39.85714       14         3233.78
-#> 247:  122   2005-10-11  2006-07-16      39.85714        0            0.00
-#> 248: 1220   2005-10-11  2006-07-16      39.85714        0            0.00
-#> 249: 1221   2005-10-11  2006-07-16      39.85714        9         1322.94
-#> 250: 1222   2005-10-11  2006-07-16      39.85714        0            0.00
-#>         PAlive        CET       DERT predicted.Spending predicted.CLV
-#>   1: 0.3571358  0.2212240 0.05848369           216.7955      12.67900
-#>   2: 0.4224409  0.9269543 0.24505345           209.1146      51.24426
-#>   3: 0.9155010 13.5430229 3.58028916           188.9758     676.58785
-#>   4: 0.9967760 13.1755612 3.48314547           171.0913     595.93576
-#>   5: 0.5096716  3.5263202 0.93223249           229.8529     214.27636
-#>  ---                                                                 
-#> 246: 0.9578990  3.6104399 0.95447073           206.0859     196.70295
-#> 247: 0.3571358  0.2212240 0.05848369           216.7955      12.67900
-#> 248: 0.3571358  0.2212240 0.05848369           216.7955      12.67900
-#> 249: 0.9433972  4.2986317 1.13640393           207.0518     235.29447
-#> 250: 0.4135069  0.5817466 0.15379292           208.3194      32.03804
+#>        Id period.first period.last period.length actual.x actual.total.spending
+#>   1:    1   2005-10-11  2006-07-16      39.85714        0                  0.00
+#>   2:   10   2005-10-11  2006-07-16      39.85714        0                  0.00
+#>   3:  100   2005-10-11  2006-07-16      39.85714       23                737.53
+#>   4: 1000   2005-10-11  2006-07-16      39.85714       23               1069.91
+#>   5: 1001   2005-10-11  2006-07-16      39.85714       11                364.00
+#>  ---                                                                           
+#> 246: 1219   2005-10-11  2006-07-16      39.85714       14                413.76
+#> 247:  122   2005-10-11  2006-07-16      39.85714        0                  0.00
+#> 248: 1220   2005-10-11  2006-07-16      39.85714        0                  0.00
+#> 249: 1221   2005-10-11  2006-07-16      39.85714        9                302.65
+#> 250: 1222   2005-10-11  2006-07-16      39.85714        0                  0.00
+#>         PAlive        CET       DERT predicted.mean.spending predicted.CLV
+#>   1: 0.3571358  0.2212240 0.05848369                39.95483      2.336706
+#>   2: 0.4224409  0.9269543 0.24505345                55.23031     13.534378
+#>   3: 0.9155010 13.5430229 3.58028916                43.57390    156.007160
+#>   4: 0.9967760 13.1755612 3.48314547                41.60921    144.930921
+#>   5: 0.5096716  3.5263202 0.93223249                45.58153     42.492580
+#>  ---                                                                      
+#> 246: 0.9578990  3.6104399 0.95447073                33.58728     32.058074
+#> 247: 0.3571358  0.2212240 0.05848369                39.95483      2.336706
+#> 248: 0.3571358  0.2212240 0.05848369                39.95483      2.336706
+#> 249: 0.9433972  4.2986317 1.13640393                34.28958     38.966813
+#> 250: 0.4135069  0.5817466 0.15379292                47.35500      7.282864
 ```
 
 `clvdata` objects may be plotted using the `plot()` command. Similar to
