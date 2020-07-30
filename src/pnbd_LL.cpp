@@ -28,7 +28,7 @@ arma::vec pnbd_LL_ind(const double r,
                       const arma::vec& vT_cal)
 {
 
-  // This is log() of Equation (18) in Fader & Hardie 2005 (A Note on Deriving the Pareto/NBD Modeland Related Expressions)
+  // This is log() of Equation (18) in Fader & Hardie 2005 ("A Note on Deriving the Pareto/NBD Modeland Related Expressions")
   //
   // (18):  log(L) = log(x) + log({y + z})
   //
@@ -57,7 +57,7 @@ arma::vec pnbd_LL_ind(const double r,
   //      z=0 and both hyp2F1 = 1 which yields log(Atilde) = log(1 - (./.)^(r+s+x))
   //
   //
-  // There still can be problems with vX as then lgamma(vX) gets too large
+  // There still can be problems for large x in lgamma(x)
 
   const unsigned int n = vX.n_elem;
 
@@ -136,7 +136,7 @@ arma::vec pnbd_LL_ind(const double r,
 
   // Special case: Tcal = t.x
   arma::uvec vTcalEqualTx = find(vT_cal == vT_x);
-  vLL(find(vT_cal == vT_x)) = vLog_x(vTcalEqualTx) + vLog_y(vTcalEqualTx);
+  vLL(vTcalEqualTx) = vLog_x(vTcalEqualTx) + vLog_y(vTcalEqualTx);
 
   return (vLL);
 }
