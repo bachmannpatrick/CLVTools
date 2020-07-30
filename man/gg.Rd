@@ -48,7 +48,7 @@ If no start parameters are given, 1.0 is used for all model parameters. All para
 to be > 0.
 
 \subsection{The G/G model}{
-The G/G model allows to predict a value for future customer transactions. Usually, the G/G model is used 
+The G/G model allows to predict a value for future customer transactions. Usually, the G/G model is used
 in combination with a probabilistic model predicting customer transaction such as the Pareto/NBD or the BG/NBD model.
 }
 }
@@ -78,6 +78,9 @@ coef(apparel.gg)
 
 # summary of the fitted model
 summary(apparel.gg)
+
+# Plot model vs empirical distribution
+plot(apparel.gg)
 
 # predict mean spending and compare against
 #    actuals in the holdout period
