@@ -147,7 +147,8 @@ setMethod(f = "clv.controlflow.estimate.process.post.estimation", signature = si
   optimx.last.row <- tail(clv.fitted@optimx.estimation.output, n=1)
 
   if(anyNA(coef(optimx.last.row))){
-    warning("Estimation failed with NA coefs. The returened object contains results but further usage is restricted.",
+    warning(paste0("Estimation failed with NA coefficients. The returned object contains results but further usage is restricted.",
+                  " You might want to try to fit the model again with method Nelder-Mead (using optimx.args=list(method=\"Nelder-Mead\")) or try different starting values. See examples."),
             immediate. = TRUE, call. = FALSE)
   }
 
