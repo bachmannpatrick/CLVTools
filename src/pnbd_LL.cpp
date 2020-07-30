@@ -92,14 +92,14 @@ arma::vec pnbd_LL_ind(const double r,
   // .. log(Atilde) for alpha != beta ------------------------------------------------------
   // log(Atilde) = log(2F1() - (2F1() * (./.)^(rsx)))
   vLog_Atilde(uvAlphaNeqBeta) = clv::vec_hyp2F1(r + s + vX(uvAlphaNeqBeta),
-                                           vHyp2f1ParamB(uvAlphaNeqBeta),
-                                           r + s + vX(uvAlphaNeqBeta) + 1.0,
-                                           vABabs(uvAlphaNeqBeta) / (vMaxAB(uvAlphaNeqBeta) + vT_x(uvAlphaNeqBeta)));
+                                               vHyp2f1ParamB(uvAlphaNeqBeta),
+                                               r + s + vX(uvAlphaNeqBeta) + 1.0,
+                                               vABabs(uvAlphaNeqBeta) / (vMaxAB(uvAlphaNeqBeta) + vT_x(uvAlphaNeqBeta)));
 
   vLog_Atilde(uvAlphaNeqBeta) -= (clv::vec_hyp2F1(r + s + vX(uvAlphaNeqBeta),
-                                            vHyp2f1ParamB(uvAlphaNeqBeta),
-                                            r + s + vX(uvAlphaNeqBeta) + 1.0,
-                                            vABabs(uvAlphaNeqBeta)/(vMaxAB(uvAlphaNeqBeta) + vT_cal(uvAlphaNeqBeta)))
+                                                  vHyp2f1ParamB(uvAlphaNeqBeta),
+                                                  r + s + vX(uvAlphaNeqBeta) + 1.0,
+                                                  vABabs(uvAlphaNeqBeta) / (vMaxAB(uvAlphaNeqBeta) + vT_cal(uvAlphaNeqBeta)))
                               % clv::vec_pow((vMaxAB(uvAlphaNeqBeta) + vT_x(uvAlphaNeqBeta))/(vMaxAB(uvAlphaNeqBeta) + vT_cal(uvAlphaNeqBeta)),
                                               r + s + vX(uvAlphaNeqBeta)));
 
