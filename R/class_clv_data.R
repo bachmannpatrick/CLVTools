@@ -77,6 +77,15 @@ clv.data.has.negative.spending <- function(clv.data){
   return(clv.data@data.transactions[Price < 0, .N] > 0)
 }
 
+clv.data.has.zero.spending <- function(clv.data){
+  Price <- NULL
+
+  if(clv.data.has.spending(clv.data = clv.data) == FALSE)
+    return(FALSE)
+
+  return(clv.data@data.transactions[Price == 0, .N] > 0)
+}
+
 clv.data.get.transactions.in.estimation.period <- function(clv.data){
   Date <- NULL
   return(clv.data@data.transactions[Date <= clv.data@clv.time@timepoint.estimation.end])

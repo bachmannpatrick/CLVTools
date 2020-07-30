@@ -67,8 +67,8 @@ setMethod("gg", signature = signature(clv.data="clv.data"), definition = functio
   err.msg <- c(err.msg, check_user_data_containsspendingdata(clv.data = clv.data))
   check_err_msg(err.msg)
 
-  if(clv.data.has.negative.spending(clv.data)){
-    check_err_msg("The Gamma-Gamma spending model cannot be fit on data that contains negative prices!")
+  if(clv.data.has.negative.spending(clv.data) | clv.data.has.zero.spending(clv.data)){
+    check_err_msg("The Gamma-Gamma spending model cannot be fit on data that contains prices that are negative or zero!")
   }
 
   cl  <- match.call(call = sys.call(-1), expand.dots = TRUE)

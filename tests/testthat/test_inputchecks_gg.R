@@ -14,17 +14,16 @@ fct.testthat.inputchecks.clvfittedspending.nocov(name.method = "Gamma-Gamma", me
                                                  data.cdnow = cdnow)
 
 
-test_that("Cannot fit on data with negative spending", {
+test_that("Cannot fit on data with negative or zero spending", {
   cdnow.neg <- copy(cdnow)
 
-  # TODO: Cann fit on Prices = 0?
-  # expect_silent(cdnow.neg[1000, Price := 0])
-  # expect_silent(clv.neg <- clvdata(cdnow.neg, date.format = "ymd", time.unit = "w", estimation.split = 37))
-  # expect_error(gg(clv.neg), regexp = "negative prices")
+  expect_silent(cdnow.neg[1000, Price := 0])
+  expect_silent(clv.neg <- clvdata(cdnow.neg, date.format = "ymd", time.unit = "w", estimation.split = 37))
+  expect_error(gg(clv.neg), regexp = "zero")
 
   expect_silent(cdnow.neg[1000, Price := -1])
   expect_silent(clv.neg <- clvdata(cdnow.neg, date.format = "ymd", time.unit = "w", estimation.split = 37))
-  expect_error(gg(clv.neg), regexp = "negative prices")
+  expect_error(gg(clv.neg), regexp = "negative")
 })
 
 
