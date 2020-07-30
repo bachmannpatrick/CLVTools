@@ -31,7 +31,8 @@ print.clv.data <- function(x, digits = max(3L, getOption("digits") - 3L), ...){
 
   # Rough data set overview of sample only  --------------------------------------------------
   .print.list(list("Total # customers"    = nobs(x),
-                   "Total # transactions" = nrow(x@data.transactions)))
+                   "Total # transactions" = nrow(x@data.transactions),
+                   "Spending information" = clv.data.has.spending(clv.data = x)))
   cat("\n")
   print(x@clv.time, digits = digits, ...)
   # clv.time already prints a newline
