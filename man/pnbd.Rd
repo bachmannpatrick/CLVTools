@@ -101,6 +101,9 @@ The smaller s, the stronger the heterogeneity of customer lifetimes. \cr
 The smaller r, the stronger the heterogeneity of the purchase process.\cr
 \code{alpha}: scale parameter of the Gamma distribution of the purchase process.
 
+Based on these parameters, the average purchase rate while customers are active
+is r/alpha and the average dropout rate is s/beta.
+
 Ideally, the starting parameters for r and s represent your best guess
 concerning the heterogeneity of customers in their buy and die rate.
 If covariates are included into the model additionally parameters for the
@@ -145,14 +148,14 @@ the paper by Bachmann, Meierer and Näf (2020).
 \note{
 Fitting the Pareto/NBD model with dynamic covariates is for the most part implemented using \code{data.table} and to a smaller part further
 parallelized with the \code{foreach} package. Registering a
-parallel backend with \code{\link[doFuture]{doFuture}} or \code{\link[doParallel:doParallel-package]{doParallel}} before fitting the
+parallel backend with \code{\link[doFuture]{doFuture}} or \code{\link[doParallel]{doParallel}} before fitting the
 models allows to take advantage of this. If no parallel backend is set up, the \code{foreach} package gives a friendly reminder that
 it is executed sequentially. In case this is desired but no warning should be given, a parallel backend in sequential mode
 can be set up, for example package \code{doFuture} with \code{\link[future:plan]{plan("sequential")}}.
 
 The part executed with \code{foreach} also heavily relies on \code{data.table} which is natively parallelized already. When setting up
 the parallel backend, great care should be taken to reduce the overhead from this nested parallelism as otherwise it can \emph{increase} runtime.
-See \code{\link[data.table:openmp-utils]{setDTthreads}}, \code{\link[data.table:openmp-utils]{getDTthreads}},
+See \code{\link[data.table]{setDTthreads}}, \code{\link[data.table]{getDTthreads}},
 and \code{\link[future]{plan}} for information on how to do this.
 
 The Pareto/NBD model with dynamic covariates can currently not be fit with data that has a temporal resolution
@@ -279,5 +282,5 @@ The generic functions \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[
 
 \code{\link[CLVTools:SetDynamicCovariates]{SetDynamicCovariates}} to add dynamic covariates on which the \code{pnbd} model can be fit.
 
-\code{\link[data.table:openmp-utils]{setDTthreads}}, \code{\link[data.table:openmp-utils]{getDTthreads}},\code{\link[doParallel:registerDoParallel]{registerDoParallel}},\code{\link[doFuture]{registerDoFuture}} for setting up parallel execution.
+\code{\link[data.table]{setDTthreads}}, \code{\link[data.table]{getDTthreads}},\code{\link[doParallel]{registerDoParallel}},\code{\link[doFuture]{registerDoFuture}} for setting up parallel execution.
 }

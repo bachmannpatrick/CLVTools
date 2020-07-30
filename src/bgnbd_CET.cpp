@@ -79,17 +79,6 @@ arma::vec bgnbd_staticcov_CET(const double r,
                               const arma::mat& mCov_life){
 
 
-  if(vCovParams_trans.n_elem != mCov_trans.n_cols)
-    throw std::out_of_range("Vector of transaction parameters need to have same length as number of columns in transaction covariates!");
-
-  if(vCovParams_life.n_elem != mCov_life.n_cols)
-    throw std::out_of_range("Vector of lifetime parameters need to have same length as number of columns in lifetime covariates!");
-
-  if((vX.n_elem != mCov_trans.n_rows) ||
-     (vX.n_elem != mCov_life.n_rows))
-    throw std::out_of_range("There need to be as many covariate rows as customers!");
-
-
   // Build alpha and beta --------------------------------------------
   //  Static covariates: Different alpha/beta for every customer
 

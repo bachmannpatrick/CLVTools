@@ -20,7 +20,7 @@ CLVs in continuous non-contractual business settings such as retailers,
 probabilistic customer attrition models are the preferred choice in
 literature and practice.
 
-The R package **CLVTools** provides an efficient and easy to use
+The R package `CLVTools` provides an efficient and easy to use
 implementation framework for probabilistic customer attrition models in
 non-contractual settings. Building up on the learnings of other
 implementations, the package adopts S4 classes to allow constructing
@@ -49,14 +49,14 @@ Currently, CLVTools implements the following probabilistic models:
 7)  Gamma/Gompertz/NBD model with **time-invariant** contextual factors
     (Näf, Bachmann & Meierer 2020)
 
-In future versions of **CLVTools** the following models are added. See
+8)  Gamma/Gamma model to estimate customer spending (Colombo & Jiang
+    1999; Fader, Hardie & Lee 2005; Fader & Hardie 2013)
+
+In future versions of `CLVTools` the following models are added. See
 [GitHub Issues](https://github.com/bachmannpatrick/CLVTools/projects)
 for a time-line.
 
-8)  Standard BG/BB model (Fader, Hardie, & Shang 2010)
-
-9)  Gamma/Gamma model to estimate customer spending (Colombo & Jiang
-    1999; Fader, Hardie & Lee 2005; Fader & Hardie 2013)
+9)  Standard BG/BB model (Fader, Hardie, & Shang 2010)
 
 In addition the framework features a system of layers between the
 optimizer and the log-likelihood function to allow the flexible addition
@@ -67,28 +67,77 @@ layers include:
 
   - L2 regularization for parameters of contextual factors
 
-  - Equality constraints between parameters of contextual for the
-    purchase and the attrition process.
+  - Equality constraints between parameters of contextual factors for
+    the purchase and the attrition process.
 
-## Installation Instructions
+## Installation
 
-Install the stable version from CRAN:
+Install the most recent **stable release from CRAN**:
 
     install.packages("CLVTools")
 
-Install the development version from GitHub:
+Install the **development version from GitHub** (using the `devtools`
+package):
 
     devtools::install_github("bachmannpatrick/CLVTools", ref = "development")
 
-Note that the package depends on RcppArmadillo and RcppGSL which will
-likely require additional setup steps in order to compile and install
-the CLVTools package from source.
+To **compile the package from source**, please be advised that
+`CLVTools` relies on an external C++ library called `GSL`. This library
+has to be installed on your computer to be able to compile `CLVTools`
+from source. Follow these 3 steps:
+
+1.  Update to the latest version of R.
+
+2.  Install the external dependency (`GSL`):
+
+<!-- end list -->
+
+  - *For Linux:*
+    
+        apt-get update
+        apt-get install libgsl0-dev
+    
+    If you are using an R Docker container with Linux
+    (e.g. rocker/tidyverse), you can build up on these Docker images as
+    follows
+    
+        FROM rocker/tidyverse
+        RUN apt-get update -qq && apt-get -y install \
+        libgsl0-dev
+    
+    Alternatively, follow the instruction in the section “Installing
+    Dependencies external to the R system” at
+    <https://ropenscilabs.github.io/r-docker-tutorial/03-install-packages.html>
+    to install `GSL` in a running Docker container with Linux.
+
+  - *For Mac:*
+    
+        brew install gsl
+
+  - *For Windows:*  
+    First, install `RTools` through
+    <https://cran.r-project.org/bin/windows/Rtools/> (\> v4.0). Next,
+    use the new `RTools` package manager to install the `GSL` library
+    (see
+    <https://github.com/r-windows/docs/blob/master/rtools40.md#readme>)
+    by using `pacman` through the `RTools Bash`:
+    
+        pacman -S mingw-w64-{i686,x86_64}-gsl
+
+<!-- end list -->
+
+3.  Install the development version from source:
+
+<!-- end list -->
+
+    devtools::install_github("bachmannpatrick/CLVTools", ref = "development")
 
 ## A Minimal Example
 
 For detailed instructions and all available options and model variations
-see the [Walkthrough](https://www.clvtools.com/articles/CLVTools.html)
-and the [manual](https://www.clvtools.com/reference/index.html).
+see the detailed
+[walkthrough](https://www.clvtools.com/articles/CLVTools.html) and the
+[manual](https://www.clvtools.com/reference/index.html).
 
 Start by loading the package:
 
@@ -103,17 +152,17 @@ transaction record consists of a purchase date and customer ID.
 data("apparelTrans")
 apparelTrans
 #>         Id       Date  Price
-#>    1:    1 2005-01-03  26.95
-#>    2:   10 2005-01-03  38.95
-#>    3:   10 2005-02-25  93.73
-#>    4:   10 2005-04-05 224.96
-#>    5:  100 2005-01-03 104.95
+#>    1:    1 2005-01-03 230.30
+#>    2:   10 2005-01-03  84.39
+#>    3:   10 2005-02-25 131.07
+#>    4:   10 2005-04-05  86.43
+#>    5:  100 2005-01-03  11.49
 #>   ---                       
-#> 2349: 1221 2006-01-23  62.95
-#> 2350: 1221 2006-03-09  89.95
-#> 2351: 1221 2006-05-14  52.95
-#> 2352: 1222 2005-01-03   5.90
-#> 2353: 1222 2005-03-03  13.90
+#> 2349: 1221 2006-01-23  26.57
+#> 2350: 1221 2006-03-09 129.82
+#> 2351: 1221 2006-05-14  14.37
+#> 2352: 1222 2005-01-03  44.77
+#> 2353: 1222 2005-03-03  99.21
 ```
 
 Before we estimate a model, we are required to initialize a data object
@@ -135,24 +184,34 @@ clv.apparel <- clvdata(apparelTrans,
                        name.price = "Price")
 ```
 
-To estimate the first probabilistic latent attrition model we start with
-the standard Pareto/NBD model and therefore use the command `pnbd()` to
-fit the model and estimate model parameters. Other models such as the
-BG/NBD model (`bgnbd()`) and the GGomp/NBD (`ggomnbd()`) are available.
+Be aware that probabilistic models such as the ones implemented in
+CLVTools are usually applied to specific customer cohorts. That means,
+you analyze customer that have joined your company at the same time
+(usually same day, week, month, or quarter). For more information on
+cohort analysis, see also
+[here](https://en.wikipedia.org/wiki/Cohort_analysis). Consequently, the
+data apparelTrans in this example is not the full transaction records of
+a fashion retailer, but rather only the customer cohort of 250 customers
+purchasing for the first time at this business on the day of 2005-01-03.
+
+As a first probabilistic latent attrition model we estimate the standard
+Pareto/NBD model and therefore, use the command `pnbd()` to fit the
+model and estimate model parameters. Other models such as the BG/NBD
+model (`bgnbd()`) and the GGomp/NBD (`ggomnbd()`) are also available.
 
 ``` r
 est.pnbd <- pnbd(clv.data = clv.apparel)
 #> Starting estimation...
 #> Estimation finished!
 est.pnbd
-#> Pareto NBD Standard  Model
+#> Pareto NBD Standard Model
 #> 
 #> Call:
 #> pnbd(clv.data = clv.apparel)
 #> 
 #> Coefficients:
 #>       r    alpha        s     beta  
-#>  0.7867   5.3356   0.3574  11.6316  
+#>  0.7866   5.3349   0.3570  11.6152  
 #> KKT1: TRUE 
 #> KKT2: TRUE 
 #> 
@@ -178,10 +237,10 @@ summary(est.pnbd)
 #> 
 #> Coefficients:
 #>       Estimate Std. Error z-val Pr(>|z|)    
-#> r       0.7867     0.1324 5.942 2.82e-09 ***
-#> alpha   5.3356     0.9028 5.910 3.42e-09 ***
-#> s       0.3574     0.1841 1.941   0.0523 .  
-#> beta   11.6316    10.6823 1.089   0.2762    
+#> r       0.7866     0.1324 5.942 2.81e-09 ***
+#> alpha   5.3349     0.9027 5.910 3.42e-09 ***
+#> s       0.3570     0.1838 1.943   0.0521 .  
+#> beta   11.6152    10.6598 1.090   0.2759    
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
@@ -191,7 +250,7 @@ summary(est.pnbd)
 #> BIC    5781.0257 
 #> KKT 1  TRUE      
 #> KKT 2  TRUE      
-#> fevals 20.0000   
+#> fevals 23.0000   
 #> Method L-BFGS-B  
 #> 
 #> Used Options:                 
@@ -219,31 +278,34 @@ clvdata-object, also “customer lifetime value” (CLV) is predicted.
 ``` r
 results <- predict(est.pnbd)
 #> Predicting from 2005-10-11 until (incl.) 2006-07-16 (39.86 Weeks).
+#> Estimating gg model to predict spending...
+#> Starting estimation...
+#> Estimation finished!
 print(results)
-#>        Id period.first period.last period.length actual.x actual.spending
-#>   1:    1   2005-10-11  2006-07-16      39.85714        0            0.00
-#>   2:   10   2005-10-11  2006-07-16      39.85714        0            0.00
-#>   3:  100   2005-10-11  2006-07-16      39.85714       23         5086.44
-#>   4: 1000   2005-10-11  2006-07-16      39.85714       23         4077.34
-#>   5: 1001   2005-10-11  2006-07-16      39.85714       11         2914.10
-#>  ---                                                                     
-#> 246: 1219   2005-10-11  2006-07-16      39.85714       14         3233.78
-#> 247:  122   2005-10-11  2006-07-16      39.85714        0            0.00
-#> 248: 1220   2005-10-11  2006-07-16      39.85714        0            0.00
-#> 249: 1221   2005-10-11  2006-07-16      39.85714        9         1322.94
-#> 250: 1222   2005-10-11  2006-07-16      39.85714        0            0.00
-#>         PAlive        CET       DERT predicted.Spending predicted.CLV
-#>   1: 0.3571358  0.2212240 0.05848369           216.7955      12.67900
-#>   2: 0.4224409  0.9269543 0.24505345           209.1146      51.24426
-#>   3: 0.9155010 13.5430229 3.58028916           188.9758     676.58785
-#>   4: 0.9967760 13.1755612 3.48314547           171.0913     595.93576
-#>   5: 0.5096716  3.5263202 0.93223249           229.8529     214.27636
-#>  ---                                                                 
-#> 246: 0.9578990  3.6104399 0.95447073           206.0859     196.70295
-#> 247: 0.3571358  0.2212240 0.05848369           216.7955      12.67900
-#> 248: 0.3571358  0.2212240 0.05848369           216.7955      12.67900
-#> 249: 0.9433972  4.2986317 1.13640393           207.0518     235.29447
-#> 250: 0.4135069  0.5817466 0.15379292           208.3194      32.03804
+#>        Id period.first period.last period.length actual.x actual.total.spending
+#>   1:    1   2005-10-11  2006-07-16      39.85714        0                  0.00
+#>   2:   10   2005-10-11  2006-07-16      39.85714        0                  0.00
+#>   3:  100   2005-10-11  2006-07-16      39.85714       23                737.53
+#>   4: 1000   2005-10-11  2006-07-16      39.85714       23               1069.91
+#>   5: 1001   2005-10-11  2006-07-16      39.85714       11                364.00
+#>  ---                                                                           
+#> 246: 1219   2005-10-11  2006-07-16      39.85714       14                413.76
+#> 247:  122   2005-10-11  2006-07-16      39.85714        0                  0.00
+#> 248: 1220   2005-10-11  2006-07-16      39.85714        0                  0.00
+#> 249: 1221   2005-10-11  2006-07-16      39.85714        9                302.65
+#> 250: 1222   2005-10-11  2006-07-16      39.85714        0                  0.00
+#>         PAlive        CET       DERT predicted.mean.spending predicted.CLV
+#>   1: 0.3571791  0.2212506 0.05848859                39.95483      2.336902
+#>   2: 0.4225636  0.9272819 0.24513121                55.23031     13.538672
+#>   3: 0.9155479 13.5448630 3.58064629                43.57390    156.022721
+#>   4: 0.9967780 13.1766970 3.48331993                41.60921    144.938180
+#>   5: 0.5098134  3.5275846 0.93253307                45.58153     42.506281
+#>  ---                                                                      
+#> 246: 0.9579241  3.6108002 0.95453149                33.58728     32.060115
+#> 247: 0.3571791  0.2212506 0.05848859                39.95483      2.336902
+#> 248: 0.3571791  0.2212506 0.05848859                39.95483      2.336902
+#> 249: 0.9434302  4.2991096 1.13648922                34.28958     38.969738
+#> 250: 0.4136156  0.5819279 0.15383529                47.35500      7.284870
 ```
 
 `clvdata` objects may be plotted using the `plot()` command. Similar to

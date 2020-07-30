@@ -297,8 +297,8 @@ fct.testthat.runability.staticcov <- function(name.model, method, start.params.m
   # fct.testthat.runability.clvfitted.all.optimization.methods(method = method, clv.data = clv.data.cov.no.holdout,
   #                                                         expected.message = failed.optimization.methods.expected.message)
 
-  # fct.testthat.runability.clvfitted.multiple.optimization.methods(method = method, clv.data=clv.data.cov.no.holdout
-  #                                                                 l.args.test.all.s3 = l.args.test.all.s3, fct.test.all.s3=fct.helper.clvfittedtransactions.all.s3)
+  fct.testthat.runability.clvfitted.multiple.optimization.methods(method = method, clv.data=clv.data.cov.no.holdout,
+                                                                  l.args.test.all.s3 = l.args.test.all.s3, fct.test.all.s3=fct.helper.clvfittedtransactions.all.s3)
 
 
 

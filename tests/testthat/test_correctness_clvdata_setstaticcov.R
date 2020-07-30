@@ -206,15 +206,22 @@ test_that("Cov data column names are changed to syntactically valid names", {
 
 
 # Copied ---------------------------------------------------------------------------
-test_that("Cov data was properly copied", {
+test_that("Data was properly copied", {
   skip_on_cran()
   expect_silent(static.cov <- SetStaticCovariates(clv.data = clv.data.apparel.withhold,
                                                         data.cov.life  = apparelStaticCov, names.cov.life = "Gender",
                                                         data.cov.trans = apparelStaticCov, names.cov.trans = "Gender"))
+  # Cov data
   expect_false(isTRUE(all.equal(data.table::address(static.cov@data.cov.life),
                                 data.table::address(apparelStaticCov))))
   expect_false(isTRUE(all.equal(data.table::address(static.cov@data.cov.trans),
                                 data.table::address(apparelStaticCov))))
+
+  # And also transaction data
+  expect_false(isTRUE(all.equal(data.table::address(static.cov@data.transactions),
+                                data.table::address(clv.data.apparel.withhold@data.transactions))))
+  expect_false(isTRUE(all.equal(data.table::address(static.cov@data.repeat.trans),
+                                data.table::address(clv.data.apparel.withhold@data.repeat.trans))))
 })
 
 

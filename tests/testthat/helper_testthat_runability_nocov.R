@@ -84,8 +84,8 @@ fct.testthat.runability.nocov <- function(name.model, method, cdnow,
   # fct.testthat.runability.clvfitted.all.optimization.methods(method = method, clv.data = clv.data.cdnow.noholdout,
   #                                                         expected.message = failed.optimization.methods.expected.message)
   #
-  # fct.testthat.runability.clvfitted.multiple.optimization.methods(method = method, clv.data= clv.data.cdnow.noholdout
-  #                                                                 l.args.test.all.s3 = l.args.test.all.s3, fct.test.all.s3=fct.helper.clvfittedtransactions.all.s3)
+  fct.testthat.runability.clvfitted.multiple.optimization.methods(method = method, clv.data= clv.data.cdnow.noholdout,
+                                                                  l.args.test.all.s3 = l.args.test.all.s3, fct.test.all.s3=fct.helper.clvfittedtransactions.all.s3)
 
   # **TODO: fix ggomnbd?
   # fct.testthat.runability.clvfitted.hourly.data(method = method, data.cdnow = cdnow)

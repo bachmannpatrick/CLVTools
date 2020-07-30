@@ -3,13 +3,6 @@ clv.template.controlflow.estimate <- function(clv.fitted,
                                               optimx.args,
                                               verbose,
                                               ...){
-  # ***TODO: For development purposes only: All additional args have to be named!
-  l.elipsis <- list(...)
-  if(length(l.elipsis)>0){
-    names.ellipsis.args <- names(list(...))
-    stopifnot(!is.null(names.ellipsis.args))
-    stopifnot(all(nchar(names(list(...)))>0))
-  }
 
   # input checks ------------------------------------------------------------------------------------------
   #   checks for model first

@@ -42,10 +42,6 @@ fct.helper.dyncov.fit.LL.once <- function(clv.data, params){
   obj <- clv.controlflow.estimate.put.inputs(clv.fitted=obj, verbose=FALSE, reg.lambdas=NULL, names.cov.constr=NULL,
                                              names.cov.life  = clv.data@names.cov.data.life,
                                              names.cov.trans = clv.data@names.cov.data.trans)
-
-  print(obj@data.walks.trans[[1]][AuxTrans==TRUE])
-  print(obj@data.walks.life[[1]][AuxTrans==TRUE])
-
   return(pnbd_dyncov_LL(params = params,
                         clv.fitted = obj,
                         return.all.intermediate.results = TRUE))

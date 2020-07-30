@@ -1,14 +1,14 @@
 ---
 title: "Walkthrough for the CLVTools Package"
-output: 
-  pdf_document: 
+output:
+  pdf_document:
     latex_engine: xelatex
     number_sections: yes
-vignette: >
-  %\VignetteIndexEntry{The CLVTools Package}
-  %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown}
 bibliography: bibliography.bib
+vignette: >
+  %\VignetteIndexEntry{The CLVTools Package} 
+  %\VignetteEncoding{UTF-8} 
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 
@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Prerequisits: Setup the R environment
+# Prerequisites: Setup the R environment
 
 Install the stable version from CRAN:
      
@@ -73,6 +73,8 @@ apparelTrans
 ## Initialize the CLV-Object{#clvdata}
 
 Before we estimate a model, we are required to initialize a data object using the `clvdata()` command. The data object contains the prepared transactional data and is later used as input for model fitting. Make sure to store the generated object in a variable, e.g. in our example `clv.apparel`.
+
+Be aware that probabilistic models such as the ones implemented in CLVTools are usually applied to specific customer cohorts. That means, you analyze customer that have joined your company at the same time (usually same day, week, month, or quarter). For more information on cohort analysis, see also [here](https://en.wikipedia.org/wiki/Cohort_analysis). Consequently, the data apparelTrans in this example is not the full transaction records of a fashion retailer, but rather only the customer cohort of 250 customers purchasing for the first time at this business on the day of 2005-01-03. This has to be done before initializing a data object using the `clvdata()` command.
 
 Through the argument `data.transactions` a `data.frame` or `data.table` which contains the transaction records, is specified. In our example this is `data.transactions=apparelTrans`. The argument `date.format` is used to indicate the format of the date variable in the data used. The date format in the apparel dataset is given as "year-month-day" (i.e., "2005-01-03"), therefore we set `date.format="ymd"`. Other combinations such as `date.format="dmy"` are possible. See the documentation of `lubridate` [@lubridate] for all details. `time.unit` is the scale used to measure time between two dates. For this dataset and in most other cases The argument `time.unit="week"` is the preferred choice. Abbreviations may be used (i.e. "w"). `estimation.split` indicates the length of the estimation period. Either the length of the estimation period (in previous specified time units) or the date at which the estimation period ends can be specified. If no value is provided, the whole dataset is used as estimation period (i.e. no holdout period). In this example, we use an estimation period of 40 weeks. Finally, the three name arguments indicate the column names for customer ID, date and price in the supplied dataset. Note that the price column is optional.
 
@@ -350,7 +352,7 @@ summary(est.pnbd.constr)
 To limit the number of parallel processes simultaneously executed, we can specify the number of workers `plan(multisession, workers = 2)`.
 
 # Customer Spending {#spending}
-Customer lifetime value (CLV) is composed of three components of every customer: the future level of transactions, expeced attrition behaviour (i.e. probability of beeing alive) and the moentary value.
+Customer lifetime value (CLV) is composed of three components of every customer: the future level of transactions, expected attrition behaviour (i.e. probability of being alive) and the monetary value.
 While probabilistic latent attrition models provide metrics for the first two components, they do not predict customer spending. To predict customer spending an additional model is required. The `CLVTools`package features the Gamma/Gamma (G/G) [@Fader2005b; @Colombo1999] model for predicting customer spending. For convenience, the `predict()` command allows to automatically predict customer spending for all latent attrition models using the option `predict.spending=TRUE` (see section [Customer Spending](#spending)). However, to provide more options and more granular insights the Gamma/Gamma model can be estimated independently. In the following, we discuss how to estimate a Gamma/Gamma model using `CLVTools`.
 
 The general workflow remains identical. It consists of the three main steps: (1) creating a `clv.data` object containing the dataset and required meta-information, (2) fitting the model on the provided data and (3) predicting future customer purchase behavior based on the fitted model.
@@ -396,7 +398,7 @@ est.gg
 
 Once the model parameters are estimated, we are able to predict future customer mean spending on an individual level. To do so, we use `predict()` on the object with the estimated parameters (i.e. `est.gg`). Note that there is no need to specify a prediction period as we predict mean spending.
 
-In general, probabilistic spending mdoels predict the following expected characteristic for every customer:
+In general, probabilistic spending models predict the following expected characteristic for every customer:
 
 * predicted mean spending ("predicted.mean.spending")
 

@@ -281,8 +281,17 @@ test_that("Cov data was properly copied", {
                                                 data.cov.life  = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
                                                 data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                                 name.date = "Cov.Date"))
+
+  # Cov data
   expect_false(isTRUE(all.equal(data.table::address(dyn.cov@data.cov.life),
                                 data.table::address(apparelDynCov))))
   expect_false(isTRUE(all.equal(data.table::address(dyn.cov@data.cov.trans),
                                 data.table::address(apparelDynCov))))
+
+  # And also transaction data
+  expect_false(isTRUE(all.equal(data.table::address(dyn.cov@data.transactions),
+                                data.table::address(clv.data.apparel.withhold@data.transactions))))
+  expect_false(isTRUE(all.equal(data.table::address(dyn.cov@data.repeat.trans),
+                                data.table::address(clv.data.apparel.withhold@data.repeat.trans))))
 })
+

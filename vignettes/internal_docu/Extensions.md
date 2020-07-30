@@ -79,7 +79,7 @@ setMethod("clv.model.transform.start.params.model", signature = signature(clv.mo
 })
 ```
 
-**clv.model.backtransform.start.params.model**: Apply transformation on the estimated model parameteters after the estimation has finished. Usually used to revert the transformation first applied in `clv.model.transform.start.params.model`. 
+**clv.model.backtransform.start.params.model**: Apply transformation on the estimated model parameters after the estimation has finished. Usually used to revert the transformation first applied in `clv.model.transform.start.params.model`. 
 
 ```R
 #' @importFrom stats setNames
@@ -90,7 +90,7 @@ setMethod("clv.model.backtransform.estimated.params.model", signature = signatur
 ```
 
 **clv.model.prepare.optimx.args**: This is where you prepare the arguments to call `optimx::optimx`. Most arguments, notably these for the interlayers, are already in the `prepared.optimx.args` list and only the ones specific to your model have to be added. This includes your log likelihood (LL) functions both on individual (`LL.function.ind`) and on aggregated levels (`LL.function.sum`) and the data it requires as input (such as your Customer-By-Sufficiency (CBS) data)
-**CAUTION**: Your parameters are likely at log-scale what needs to be considered in your LL function (ie apply `exp()`) as otherwise incorrect results will be produced.
+**CAUTION**: Your parameters are likely at log-scale what needs to be considered in your LL function (i.e. apply `exp()`) as otherwise incorrect results will be produced.
 ```R
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
 
@@ -114,12 +114,12 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
 
 ```R
 setMethod("clv.model.process.post.estimation", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, res.optimx){
-  # No additional step needed (ie store model specific stuff, extra process)
+  # No additional step needed (i.e. store model specific stuff, extra process)
   return(clv.fitted)
 })
 ```
 
-**clv.model.process.newdata**: This method is called whenever the parameter `newdata` is passed to either `predict` or `plot` to execute steps that are required before `predict` or `plot` can progress with the new data. Most often this includes re-calculating the model statistics (ie the CBS) for the new transaction data and customers. Note that the `newdata` object is not passed as an argument but can be found in the `clv.data` slot in  `clv.fitted` where it has already replaced the previous data object.
+**clv.model.process.newdata**: This method is called whenever the parameter `newdata` is passed to either `predict` or `plot` to execute steps that are required before `predict` or `plot` can progress with the new data. Most often this includes re-calculating the model statistics (i.e. the CBS) for the new transaction data and customers. Note that the `newdata` object is not passed as an argument but can be found in the `clv.data` slot in  `clv.fitted` where it has already replaced the previous data object.
 
 ```R
 setMethod(f = "clv.model.process.newdata", signature = signature(clv.model = "clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, verbose){
