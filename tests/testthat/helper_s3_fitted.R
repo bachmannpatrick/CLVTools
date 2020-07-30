@@ -28,7 +28,6 @@
   })
 
   # **Todo: model specific: coef() same as exp(coef(optimx))
-  # **Todo: model specific: test that coef() really use last row of optimx result, not any other
 }
 
 .fct.helper.s3.fitted.vcov <- function(clv.fitted, full.names){
