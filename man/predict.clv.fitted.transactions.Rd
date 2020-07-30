@@ -139,7 +139,7 @@ predict(apparel.pnbd, prediction.end = lubridate::ymd("2016-12-31"))
 # Predict future transactions but not spending and CLV
 predict(apparel.pnbd, predict.spending = FALSE)
 
-# Predict spending by fitting a GammaGamma model
+# Predict spending by fitting a Gamma-Gamma model
 predict(apparel.pnbd, predict.spending = gg)
 
 # Fit a spending model separately and use it to predict spending

@@ -3,15 +3,15 @@
 \docType{class}
 \name{clv.gg-class}
 \alias{clv.gg-class}
-\title{Result of fitting the GammaGamma model}
+\title{Result of fitting the Gamma-Gamma model}
 \description{
-Output from fitting the GammaGamma model on transactional data. It constitutes the estimation
+Output from fitting the Gamma-Gamma model on transactional data. It constitutes the estimation
 result and is returned to the user to use it as input to other methods such as to diagnose the model
 fit or to predict customer's future spending.
 
 Inherits from \linkS4class{clv.fitted.spending} in order to execute all steps required to fit a model or to predict
 future spending. Contains an instance of class \linkS4class{clv.model.gg} which
-provides the required GammaGamma specific functionalities.
+provides the required Gamma-Gamma specific functionalities.
 }
 \section{Slots}{
 
