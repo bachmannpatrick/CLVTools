@@ -35,4 +35,24 @@ double bgnbd_staticcov_LL_sum(const arma::vec& vParams,
                               const arma::mat& mCov_life,
                               const arma::mat& mCov_trans);
 
+arma::vec bgnbd_nocov_alpha_i(const double alpha, const int n);
+
+arma::vec bgnbd_nocov_a_i(const double a, const int n);
+
+arma::vec bgnbd_nocov_b_i(const double b, const int n);
+
+arma::vec bgnbd_staticcov_alpha_i(const double alpha,
+                                  const arma::vec& vCovParams_trans,
+                                  const arma::vec& vCovParams_life,
+                                  const arma::mat& mCov_life,
+                                  const arma::mat& mCov_trans);
+
+arma::vec bgnbd_staticcov_a_i(const double a,
+                              const arma::vec& vCovParams_life,
+                              const arma::mat& mCov_life);
+
+arma::vec bgnbd_staticcov_b_i(const double b,
+                              const arma::vec& vCovParams_life,
+                              const arma::mat& mCov_life);
+
 #endif

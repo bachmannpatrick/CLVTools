@@ -70,8 +70,6 @@ arma::vec pnbd_staticcov_expectation(const double r,
   //    beta_i:  beta0  * exp(-cov.life  * cov.parama.life)
   const arma::vec vAlpha_i = alpha_0 * arma::exp(((mCov_trans * (-1)) * vCovParams_trans));
   const arma::vec vBeta_i  = beta_0  * arma::exp(((mCov_life  * (-1)) * vCovParams_life));
-  arma::vec vR(vAlpha_i.n_elem);
-  vR.fill(r);
 
   return(pnbd_expectation(r,
                           s,
