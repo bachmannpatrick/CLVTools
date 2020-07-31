@@ -55,9 +55,9 @@ arma::vec bgnbd_nocov_LL_ind(const arma::vec& vLogparams,
 
   arma::vec vAlpha_i(n), vA_i(n), vB_i(n);
 
-  vAlpha_i.fill(alpha_0);
-  vA_i.fill(a_0);
-  vB_i.fill(b_0);
+  vA_i = bgnbd_nocov_a_i(a_0, n);
+  vB_i = bgnbd_nocov_b_i(b_0, n);
+  vAlpha_i = bgnbd_nocov_alpha_i(alpha_0, n);
 
   arma::vec vLL = bgnbd_LL_ind(r, vAlpha_i, vA_i, vB_i, vX, vT_x, vT_cal);
 
@@ -112,9 +112,19 @@ arma::vec bgnbd_staticcov_LL_ind(const arma::vec& vParams,
   //    b_i:  b0 * exp(cov.life * cov.param.life)
   arma::vec vAlpha_i(n), vA_i(n), vB_i(n);
 
-  vAlpha_i = alpha_0 * arma::exp(((mCov_trans * (-1)) * vTrans_params));
-  vA_i     = a_0     * arma::exp(((mCov_life          * vLife_params)));
-  vB_i     = b_0     * arma::exp(((mCov_life          * vLife_params)));
+  vAlpha_i = bgnbd_staticcov_alpha_i(alpha_0,
+                                     vTrans_params,
+                                     vLife_params,
+                                     mCov_life,
+                                     mCov_trans);
+
+  vA_i  = bgnbd_staticcov_a_i(a_0,
+                              vLife_params,
+                              mCov_life);
+
+  vB_i  = bgnbd_staticcov_b_i(b_0,
+                              vLife_params,
+                              mCov_life);
 
   // Calculate LL ----------------------------------------------------
   //    Calculate value for every customer
