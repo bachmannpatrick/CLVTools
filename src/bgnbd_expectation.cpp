@@ -1,7 +1,7 @@
 #include <RcppArmadillo.h>
 #include <math.h>
-#include "bgnbd_expectation.h"
-#include "clv_vectorized.h"
+#include "bgnbd_expectation.hpp"
+#include "clv_vectorized.hpp"
 
 //' @name bgnbd_expectation
 //' @title BG/NBD: Unconditional Expectation

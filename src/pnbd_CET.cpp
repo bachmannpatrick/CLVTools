@@ -2,7 +2,7 @@
 #include <math.h>
 #include <vector>
 
-#include "pnbd_PAlive.h"
+#include "pnbd_PAlive.hpp"
 
 //' @name pnbd_CET
 //'

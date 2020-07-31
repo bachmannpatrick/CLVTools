@@ -1,7 +1,7 @@
 #include <RcppArmadillo.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_integration.h>
-#include "ggomnbd_LL.h"
+#include "ggomnbd_LL.hpp"
 
 arma::vec ggomnbd_integrate(const double r,
                             const double b,
