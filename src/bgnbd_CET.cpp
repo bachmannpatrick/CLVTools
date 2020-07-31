@@ -1,6 +1,7 @@
 #include <RcppArmadillo.h>
 #include <math.h>
 #include "clv_vectorized.h"
+#include "bgnbd_CET.h"
 
 //' @name bgnbd_CET
 //'
