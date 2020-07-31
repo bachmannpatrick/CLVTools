@@ -1,8 +1,6 @@
 #include <RcppArmadillo.h>
-#include <RcppGSL.h>
-#include <gsl/gsl_sf_hyperg.h>
-#include <gsl/gsl_errno.h>
-#include <gsl/gsl_sf_result.h>
+
+#include "clv_vectorized.h"
 
 
 //' @title GSL Hypergeom 2f0 for equal length vectors

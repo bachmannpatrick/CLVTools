@@ -9,4 +9,28 @@ arma::vec pnbd_LL_ind( const double r,
                        const arma::vec& vT_x,
                        const arma::vec& vT_cal);
 
+arma::vec pnbd_nocov_LL_ind(const arma::vec& vLogparams,
+                            const arma::vec& vX,
+                            const arma::vec& vT_x,
+                            const arma::vec& vT_cal);
+
+double pnbd_nocov_LL_sum(const arma::vec& vLogparams,
+                         const arma::vec& vX,
+                         const arma::vec& vT_x,
+                         const arma::vec& vT_cal);
+
+arma::vec pnbd_staticcov_LL_ind(const arma::vec& vParams,
+                                const arma::vec& vX,
+                                const arma::vec& vT_x,
+                                const arma::vec& vT_cal,
+                                const arma::mat& mCov_life,
+                                const arma::mat& mCov_trans);
+
+double pnbd_staticcov_LL_sum(const arma::vec& vParams,
+                             const arma::vec& vX,
+                             const arma::vec& vT_x,
+                             const arma::vec& vT_cal,
+                             const arma::mat& mCov_life,
+                             const arma::mat& mCov_trans);
+
 #endif

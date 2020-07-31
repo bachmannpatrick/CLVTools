@@ -1,6 +1,7 @@
 #include <RcppArmadillo.h>
 #include <math.h>
 #include "clv_vectorized.h"
+#include "pnbd_LL_ind.h"
 
 
 //' @name pnbd_LL

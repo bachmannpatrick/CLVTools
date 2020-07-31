@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "pnbd_PAlive.h"
+#include "pnbd_CET.h"
 
 //' @name pnbd_CET
 //'

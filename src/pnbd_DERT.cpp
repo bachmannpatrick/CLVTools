@@ -2,6 +2,7 @@
 #include <math.h>
 #include "pnbd_LL_ind.h"
 #include "clv_vectorized.h"
+#include "pnbd_DERT.h"
 
 //' @name pnbd_DERT
 //'

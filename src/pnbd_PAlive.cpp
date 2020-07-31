@@ -4,6 +4,7 @@
 
 #include "clv_vectorized.h"
 #include "pnbd_LL_ind.h"
+#include "pnbd_PAlive.h"
 
 //' @name pnbd_PAlive
 //'
