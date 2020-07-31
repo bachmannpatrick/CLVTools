@@ -3,6 +3,7 @@
 #include "ggomnbd_LL.h"
 #include "ggomnbd_PAlive.h"
 #include "ggomnbd_expectation.h"
+#include "ggomnbd_CET.h"
 
 
 
