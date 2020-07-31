@@ -101,11 +101,10 @@ bgnbd_staticcov_PAlive <- function(r, alpha, a, b, vX, vT_x, vT_cal, vCovParams_
 #' @name bgnbd_expectation
 #' @title BG/NBD: Unconditional Expectation
 #'
-#' @description Computes the expected number of repeat transactions in the interval (0, vT_i]
-#' for a randomly selected customer, where 0 is defined as the point when the customer came alive.
+#' @template template_expectation_description
 #'
 #' @template template_params_bgnbd
-#' @param vT_i Number of periods since the customer came alive
+#' @template template_expectation_params
 #' @template template_params_rcppcovmatrix
 #' @template template_params_rcppvcovparams
 #'
@@ -114,6 +113,8 @@ bgnbd_staticcov_PAlive <- function(r, alpha, a, b, vX, vT_x, vT_cal, vCovParams_
 #' @template template_details_rcppcovmatrix
 #'
 #' @template template_references_bgnbd
+#'
+#' @template template_expectation_return
 #'
 NULL
 
@@ -279,11 +280,10 @@ ggomnbd_nocov_PAlive <- function(r, alpha_0, b, s, beta_0, vX, vT_x, vT_cal) {
 #' @name ggomnbd_expectation
 #' @title GGompertz/NBD: Unconditional Expectation
 #'
-#' @description Computes the expected number of repeat transactions in the interval (0, vT_i]
-#' for a randomly selected customer, where 0 is defined as the point when the customer came alive.
+#' @template template_expectation_description
 #'
 #' @template template_params_ggomnbd
-#' @param vT_i Number of periods since the customer came alive
+#' @template template_expectation_params
 #' @template template_params_rcppcovmatrix
 #' @template template_params_rcppvcovparams
 #'
@@ -292,6 +292,8 @@ ggomnbd_nocov_PAlive <- function(r, alpha_0, b, s, beta_0, vX, vT_x, vT_cal) {
 #' @template template_details_rcppcovmatrix
 #'
 #' @template template_references_ggomnbd
+#'
+#' @template template_expectation_return
 #'
 NULL
 
@@ -446,11 +448,10 @@ pnbd_staticcov_PAlive <- function(r, alpha_0, s, beta_0, vX, vT_x, vT_cal, vCovP
 #' @name pnbd_expectation
 #' @title Pareto/NBD: Unconditional Expectation
 #'
-#' @description Computes the expected number of repeat transactions in the interval (0, vT_i]
-#' for a randomly selected customer, where 0 is defined as the point when the customer came alive.
+#' @template template_expectation_description
 #'
 #' @template template_params_pnbd
-#' @param vT_i Number of periods since the customer came alive
+#' @template template_expectation_params
 #' @template template_params_rcppcovmatrix
 #' @template template_params_rcppvcovparams
 #'
@@ -459,6 +460,8 @@ pnbd_staticcov_PAlive <- function(r, alpha_0, s, beta_0, vX, vT_x, vT_cal, vCovP
 #' @template template_details_rcppcovmatrix
 #'
 #' @template template_references_pnbd
+#'
+#' @template template_expectation_return
 #'
 NULL
 

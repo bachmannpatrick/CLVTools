@@ -6,11 +6,10 @@
 //' @name bgnbd_expectation
 //' @title BG/NBD: Unconditional Expectation
 //'
-//' @description Computes the expected number of repeat transactions in the interval (0, vT_i]
-//' for a randomly selected customer, where 0 is defined as the point when the customer came alive.
+//' @template template_expectation_description
 //'
 //' @template template_params_bgnbd
-//' @param vT_i Number of periods since the customer came alive
+//' @template template_expectation_params
 //' @template template_params_rcppcovmatrix
 //' @template template_params_rcppvcovparams
 //'
@@ -19,6 +18,8 @@
 //' @template template_details_rcppcovmatrix
 //'
 //' @template template_references_bgnbd
+//'
+//' @template template_expectation_return
 //'
 arma::vec bgnbd_expectation(const double r,
                             const arma::vec& vAlpha_i,
