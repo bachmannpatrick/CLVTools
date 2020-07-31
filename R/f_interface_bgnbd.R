@@ -48,7 +48,7 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), optimx.args
 #' the technical note by Fader and Hardie (2007).
 #'
 #' The likelihood function is the likelihood function associated with the basic model where
-#' alpha, a, and b are replaced with alpha = alpha0*exp(−g1z1), a = a_0*exp(g2z2), and b = b0*exp(g3z2)
+#' alpha, a, and b are replaced with alpha = alpha0*exp(-g1z1), a = a_0*exp(g2z2), and b = b0*exp(g3z2)
 #' while r remains unchanged. Note that in the current implementation, we constrain the covariate parameters
 #' and data for the lifetime process to be equal (g2=g3 and z2=z3).
 #' }

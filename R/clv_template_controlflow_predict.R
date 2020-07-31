@@ -40,7 +40,7 @@ clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, 
                                       dt.predictions = dt.predictions, verbose = verbose, ...)
   setkeyv(dt.predictions, "Id")
 
-  # Actuals ---------------------------------------------------------------------------------------------¨
+  # Actuals ---------------------------------------------------------------------------------------------
   has.actuals    <- clv.controlflow.predict.get.has.actuals(clv.fitted, dt.predictions = dt.predictions)
   dt.predictions <- clv.controlflow.predict.add.actuals(clv.fitted = clv.fitted, dt.predictions = dt.predictions,
                                                         has.actuals = has.actuals, verbose = verbose, ...)
