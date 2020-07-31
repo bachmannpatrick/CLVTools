@@ -1,6 +1,6 @@
 #include <RcppArmadillo.h>
 #include <math.h>
-#include "clv_vectorized.hpp"
+#include "clv_vectorized.h"
 
 arma::vec beta_ratio(const arma::vec& a, const arma::vec& b, const arma::vec& x, const arma::vec& y);
 

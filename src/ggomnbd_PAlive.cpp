@@ -1,6 +1,6 @@
 #include <RcppArmadillo.h>
 #include <math.h>
-#include "ggomnbd_LL.hpp"
+#include "ggomnbd_LL.h"
 
 //' @name ggomnbd_PAlive
 //'

@@ -2,8 +2,8 @@
 #include <math.h>
 #include <vector>
 
-#include "clv_vectorized.hpp"
-#include "pnbd_LL_ind.hpp"
+#include "clv_vectorized.h"
+#include "pnbd_LL_ind.h"
 
 //' @name pnbd_PAlive
 //'

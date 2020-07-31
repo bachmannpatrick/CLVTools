@@ -1,8 +1,8 @@
 #include <RcppArmadillo.h>
 #include <math.h>
-#include "ggomnbd_LL.hpp"
-#include "ggomnbd_PAlive.hpp"
-#include "ggomnbd_expectation.hpp"
+#include "ggomnbd_LL.h"
+#include "ggomnbd_PAlive.h"
+#include "ggomnbd_expectation.h"
 
 
 

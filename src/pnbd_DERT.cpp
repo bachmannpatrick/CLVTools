@@ -1,7 +1,7 @@
 #include <RcppArmadillo.h>
 #include <math.h>
-#include "pnbd_LL_ind.hpp"
-#include "clv_vectorized.hpp"
+#include "pnbd_LL_ind.h"
+#include "clv_vectorized.h"
 
 //' @name pnbd_DERT
 //'
