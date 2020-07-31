@@ -78,7 +78,8 @@ The smaller \code{r}, the stronger the heterogeneity of the purchase process.\cr
 The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.
 
 If no start parameters are given, r = 1, alpha = 1, beta = 1, b = 1, s = 1 is used.
-All model start parameters are required to be > 0.
+All model start parameters are required to be > 0. If no start values are given for the covariate parameters,
+0.1 is used.
 
 Note that the DERT expression has not been derived (yet) and it consequently is not possible to calculated
 values for DERT and CLV.

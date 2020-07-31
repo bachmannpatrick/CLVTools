@@ -22,7 +22,8 @@ setGeneric("bgnbd", def = function(clv.data, start.params.model=c(), optimx.args
 #' @template template_details_paramsbgnbd
 #'
 #' @details If no start parameters are given, r = 1, alpha = 3, a = 1, b = 3 is used.
-#' All model start parameters are required to be > 0.
+#' All model start parameters are required to be > 0. If no start values are given for the
+#' covariate parameters, 0.1 is used.
 #'
 #' Note that the DERT expression has not been derived (yet) and it consequently is not possible to calculated
 #' values for DERT and CLV.

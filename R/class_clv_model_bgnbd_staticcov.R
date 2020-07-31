@@ -16,10 +16,7 @@ clv.model.bgnbd.static.cov <- function(){
   return(new("clv.model.bgnbd.static.cov",
              clv.model.bgnbd.no.cov(),
              name.model = "BG/NBD with Static Covariates",
-             start.param.cov = 1,
-             optimx.defaults = list(method="L-BFGS-B",
-                                    itnmax = 3000)
-  ))
+             start.param.cov = 0.1))
 }
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
