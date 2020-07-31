@@ -119,8 +119,8 @@ arma::vec pnbd_nocov_LL_ind(const arma::vec& vLogparams,
   //    No covariates: Same alphas, betas for every customer
   arma::vec vAlpha_i(n), vBeta_i(n);
 
-  vAlpha_i.fill(alpha_0);
-  vBeta_i.fill(beta_0);
+  vAlpha_i = pnbd_nocov_alpha_i(alpha_0, n);
+  vBeta_i = pnbd_nocov_beta_i(beta_0, n);
 
 
   // Calculate LL ----------------------------------------------------
@@ -180,8 +180,8 @@ arma::vec pnbd_staticcov_LL_ind(const arma::vec& vParams,
   //    beta_i:  beta0  * exp(-cov.life  * cov.parama.life)
   arma::vec vAlpha_i(n), vBeta_i(n);
 
-  vAlpha_i = alpha_0 * arma::exp(((mCov_trans * (-1)) * vTrans_params));
-  vBeta_i  = beta_0  * arma::exp(((mCov_life  * (-1)) * vLife_params));
+  vAlpha_i = pnbd_staticcov_alpha_i(alpha_0, vTrans_params, mCov_trans);
+  vBeta_i  = pnbd_staticcov_beta_i(beta_0, vLife_params, mCov_life);
 
   // Calculate LL ----------------------------------------------------
   //    Calculate value for every customer
@@ -211,4 +211,24 @@ double pnbd_staticcov_LL_sum(const arma::vec& vParams,
                                         mCov_trans);
 
   return(-arma::sum(vLL));
+}
+
+arma::vec pnbd_nocov_alpha_i(const double alpha, const double n){
+  return clv::vec_fill(alpha, n);
+}
+
+arma::vec pnbd_nocov_beta_i(const double beta, const double n){
+  return clv::vec_fill(beta, n);
+}
+
+arma::vec pnbd_staticcov_alpha_i(const double alpha,
+                                 const arma::vec& vCovParams_trans,
+                                 const arma::mat& mCov_trans){
+  return alpha * arma::exp(((mCov_trans * (-1)) * vCovParams_trans));
+}
+
+arma::vec pnbd_staticcov_beta_i(const double beta,
+                                const arma::vec& vCovParams_life,
+                                const arma::mat& mCov_life){
+  return beta * arma::exp(((mCov_life  * (-1)) * vCovParams_life));
 }

@@ -156,24 +156,15 @@ arma::vec beta_ratio(const arma::vec& a, const arma::vec& b, const arma::vec& x,
 }
 
 arma::vec bgnbd_nocov_alpha_i(const double alpha, const int n){
-  arma::vec vAlpha_i(n);
-  vAlpha_i.fill(alpha);
-
-  return vAlpha_i;
+  return clv::vec_fill(alpha, n);
 }
 
 arma::vec bgnbd_nocov_a_i(const double a, const int n){
-  arma::vec vA_i(n);
-  vA_i.fill(a);
-
-  return vA_i;
+  return clv::vec_fill(a, n);
 }
 
 arma::vec bgnbd_nocov_b_i(const double b, const int n){
-  arma::vec vB_i(n);
-  vB_i.fill(b);
-
-  return vB_i;
+  return clv::vec_fill(b, n);
 }
 
 arma::vec bgnbd_staticcov_alpha_i(const double alpha,

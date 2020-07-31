@@ -27,8 +27,7 @@ arma::vec bgnbd_expectation(const double r,
                             const arma::vec& vA_i,
                             const arma::vec& vB_i,
                             const arma::vec& vT_i){
-  arma::vec vR(vAlpha_i.n_elem);
-  vR.fill(r);
+  arma::vec vR = clv::vec_fill(r, vAlpha_i.n_elem);
 
   arma::vec term1 = (vA_i + vB_i - 1)/(vA_i - 1);
   arma::vec term2 = arma::pow((vAlpha_i / (vAlpha_i + vT_i)),r);

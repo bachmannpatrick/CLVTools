@@ -2,6 +2,7 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_integration.h>
 #include "ggomnbd_LL.h"
+#include "clv_vectorized.h"
 
 arma::vec ggomnbd_integrate(const double r,
                             const double b,
@@ -223,27 +224,15 @@ double ggomnbd_staticcov_LL_sum(const arma::vec& vParams,
 }
 
 arma::vec ggomnbd_nocov_alpha_i(const double alpha, const double n){
-  arma::vec vAlpha_i(n);
-
-  vAlpha_i.fill(alpha);
-
-  return vAlpha_i;
+  return clv::vec_fill(alpha, n);
 }
 
 arma::vec ggomnbd_nocov_beta_i(const double beta, const double n){
-  arma::vec vBeta_i(n);
-
-  vBeta_i.fill(beta);
-
-  return vBeta_i;
+  return clv::vec_fill(beta, n);
 }
 
 arma::vec ggomnbd_nocov_r(const double r, const double n){
-  arma::vec vR(n);
-
-  vR.fill(r);
-
-  return vR;
+  return clv::vec_fill(r, n);
 }
 
 arma::vec ggomnbd_staticcov_alpha_i(const double alpha,

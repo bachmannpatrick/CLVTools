@@ -2,6 +2,7 @@
 #include <math.h>
 #include "pnbd_expectation.h"
 #include "clv_vectorized.h"
+#include "pnbd_LL_ind.h"
 
 //' @name pnbd_expectation
 //' @title Pareto/NBD: Unconditional Expectation
@@ -41,8 +42,8 @@ arma::vec pnbd_nocov_expectation(const double r,
   const double n = vT_i.n_elem;
   arma::vec vAlpha_i(n), vBeta_i(n);
 
-  vAlpha_i.fill(alpha_0);
-  vBeta_i.fill( beta_0);
+  vAlpha_i = pnbd_nocov_alpha_i(alpha_0, n);
+  vBeta_i = pnbd_nocov_beta_i(beta_0, n);
 
   return(pnbd_expectation(r,
                           s,
@@ -68,8 +69,8 @@ arma::vec pnbd_staticcov_expectation(const double r,
   //
   //    alpha_i: alpha0 * exp(-cov.trans * cov.params.trans)
   //    beta_i:  beta0  * exp(-cov.life  * cov.parama.life)
-  const arma::vec vAlpha_i = alpha_0 * arma::exp(((mCov_trans * (-1)) * vCovParams_trans));
-  const arma::vec vBeta_i  = beta_0  * arma::exp(((mCov_life  * (-1)) * vCovParams_life));
+  const arma::vec vAlpha_i = pnbd_staticcov_alpha_i(alpha_0, vCovParams_trans, mCov_trans);
+  const arma::vec vBeta_i  = pnbd_staticcov_beta_i(beta_0, vCovParams_life, mCov_life);
 
   return(pnbd_expectation(r,
                           s,
