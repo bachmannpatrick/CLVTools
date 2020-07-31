@@ -288,7 +288,8 @@ Analogously, we can estimate the model containing time-varying covariates. We re
 est.pnbd.dyn <- pnbd(clv.dyn, 
                      start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
                      start.params.life = c(Marketing=0.5, Gender=0.6, Channel=0.4),
-                     start.params.trans = c(Marketing=0.5, Gender=0.6, Channel=0.4))
+                     start.params.trans = c(Marketing=0.5, Gender=0.6, Channel=0.4), 
+                     optimx.args = list(control=list(trace=5))
 ```
 
 To inspect the estimated model we use `summary()`, however all other commands such as `print()`, `coef()`, `loglike()`, `confint()` and `vcov()` are also available. Now, output contains also parameters for the covariates for both processes. Since covariates are added separately for the purchase and the attrition process, there are also separate model parameters for the two processes. These parameters are directly interpretable as rate elasticity of the corresponding factors: A 1% change in a contextual factor $\bf{X}^{P}$ or $\bf{X}^{L}$ changes the purchase or the attrition rate by $\gamma_{purch}\bf{X}^{P}$ or $\gamma_{life}\bf{X}^{L}$ percent, respectively  [@Gupta1991]. In the example of the apparel retailer, we observe that female customer purchase significantly more (`trans.Gender=1.42576`). Note, that female customers are coded as 1, male customers as 0. Also customers acquired offline (coded as Channel=1), purchase more (`trans.Channel=0.40304`) and stay longer (`life.Channel=0.9343`). Make sure to check the Karush-Kuhn-Tucker optimality conditions of the first and second order [@KKT] (KKT1 and KKT1) before interpreting the parameters. If those criteria are not met, the optimizer has probably not arrived at an optimal solution. If this is the case it is usually a good idea to rerun the estimation using alternative starting values.
@@ -341,6 +342,7 @@ summary(est.pnbd.constr)
 
 ```{r doFuture, eval=FALSE}
   # disable multithreading for data.table (to avoid nested parallelism)
+  library(data.table)
   setDTthreads(1)
 
   library("doFuture")
