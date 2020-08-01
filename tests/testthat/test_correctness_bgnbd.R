@@ -25,13 +25,7 @@ context("Correctness - BG/NBD nocov - Expectation")
 test_that("Expectation in Rcpp matches expectation in R (nocov)", {
 
   # No cov ---------------------------------------------------------------------------------------------------
-  expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow,
-                                     date.format = "ymd", time.unit = "W", estimation.split = 38,
-                                     name.id = "Id", name.date = "Date", name.price = "Price"))
-
-
-  expect_silent(obj.fitted <- do.call(bgnbd, list(clv.data = clv.cdnow, verbose = FALSE)))
-
+  obj.fitted <- fct.testthat.correctness.clvfittedtransactions.nocov(method = bgnbd, cdnow = cdnow)
 
   params_i <- obj.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
 
@@ -55,16 +49,10 @@ test_that("Expectation in Rcpp matches expectation in R (nocov)", {
                                                                                 b = obj.fitted@prediction.params.model[["b"]],
                                                                                 vT_i = t_i)])}
 
-  dt.expectation.seq <- clv.time.expectation.periods(clv.time = obj.fitted@clv.data@clv.time,
-                                                     user.tp.end = 38)
-
-  result.R <- DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
-                            fct.expectation = fct.expectation.R, clv.time = obj.fitted@clv.data@clv.time)
-
-  result.Cpp <- DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
-                              fct.expectation = fct.expectation.Cpp, clv.time = obj.fitted@clv.data@clv.time)
-
-  expect_equal(result.R, result.Cpp)
+  fct.testthat.correctness.clvfittedtransactions.common(fct.expectation.Cpp = fct.expectation.Cpp,
+                                                        fct.expectation.R = fct.expectation.R,
+                                                        params_i = params_i,
+                                                        obj.fitted = obj.fitted)
 })
 
 context("Correctness - BG/NBD staticcov - Expectation")
@@ -72,18 +60,9 @@ context("Correctness - BG/NBD staticcov - Expectation")
 test_that("Expectation in Rcpp matches expectation in R (staticcov)", {
 
   # Static cov ---------------------------------------------------------------------------------------------------
-  expect_silent(clv.apparel <- clvdata(data.transactions = apparelTrans,
-                                       date.format = "ymd", time.unit = "W", estimation.split = 38,
-                                       name.id = "Id", name.date = "Date", name.price = "Price"))
-
-  clv.apparel.static <- SetStaticCovariates(clv.data = clv.apparel,
-                                            data.cov.life = apparelStaticCov,
-                                            data.cov.trans = apparelStaticCov,
-                                            names.cov.life = "Gender",
-                                            names.cov.trans = "Gender",
-                                            name.id = "Id")
-
-  expect_silent(obj.fitted <- do.call(bgnbd, list(clv.data = clv.apparel.static, verbose = FALSE)))
+  obj.fitted <- fct.testthat.correctness.clvfittedtransactions.staticcov(method = bgnbd,
+                                                                         apparelTrans = apparelTrans,
+                                                                         apparelStaticCov = apparelStaticCov)
 
   params_i <- obj.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
 
@@ -118,14 +97,8 @@ test_that("Expectation in Rcpp matches expectation in R (staticcov)", {
                                                                                    mCov_life = m.cov.data.life,
                                                                                    mCov_trans = m.cov.data.trans)])}
 
-  dt.expectation.seq <- clv.time.expectation.periods(clv.time = obj.fitted@clv.data@clv.time,
-                                                     user.tp.end = 38)
-
-  result.R <- DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
-                            fct.expectation = fct.expectation.R, clv.time = obj.fitted@clv.data@clv.time)
-
-  result.Cpp <- DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
-                              fct.expectation = fct.expectation.Cpp, clv.time = obj.fitted@clv.data@clv.time)
-
-  expect_equal(result.R, result.Cpp)
+  fct.testthat.correctness.clvfittedtransactions.common(fct.expectation.Cpp = fct.expectation.Cpp,
+                                                        fct.expectation.R = fct.expectation.R,
+                                                        params_i = params_i,
+                                                        obj.fitted = obj.fitted)
 })
