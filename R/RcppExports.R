@@ -414,23 +414,3 @@ pnbd_staticcov_PAlive <- function(r, alpha_0, s, beta_0, vX, vT_x, vT_cal, vCovP
     .Call(`_CLVTools_pnbd_staticcov_PAlive`, r, alpha_0, s, beta_0, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
 }
 
-#' @rdname old_pnbd_LL
-old_pnbd_nocov_LL_ind <- function(vLogparams, vX, vT_x, vT_cal) {
-    .Call(`_CLVTools_old_pnbd_nocov_LL_ind`, vLogparams, vX, vT_x, vT_cal)
-}
-
-#' @rdname old_pnbd_LL
-old_pnbd_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal) {
-    .Call(`_CLVTools_old_pnbd_nocov_LL_sum`, vLogparams, vX, vT_x, vT_cal)
-}
-
-#' @rdname old_pnbd_LL
-old_pnbd_staticcov_LL_ind <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans) {
-    .Call(`_CLVTools_old_pnbd_staticcov_LL_ind`, vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
-}
-
-#' @rdname old_pnbd_LL
-old_pnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans) {
-    .Call(`_CLVTools_old_pnbd_staticcov_LL_sum`, vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
-}
-
