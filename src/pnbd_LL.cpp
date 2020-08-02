@@ -48,8 +48,8 @@ arma::vec pnbd_LL_ind(const double r,
   //
   //  For large x, A0 as given in (19) and (20) will be (close to) 0
   //    Rewrite A0 as a1 * Atilde, where
-  //      a1      = (max(a,b) + tx)^(-(r+s+x))
-  //      Atilde  = 2F1() - 2F1() * ((max(a,b)+tx)/(max(a,b)+Tcal))^(r+s+x)
+  //      a1      = (max(alpha,beta) + tx)^(-(r+s+x))
+  //      Atilde  = 2F1() - 2F1() * ((max(alpha,beta)+tx)/(max(alpha,beta)+Tcal))^(r+s+x)
   //    This allows to log() the ^x in a1 and leaves one 2F1 in Atilde free from any x:
   //      log(A0) = log(a1) + log(Atilde)
   //
@@ -113,7 +113,7 @@ arma::vec pnbd_LL_ind(const double r,
 
 
   // . log(a1) ------------------------------------------------------------------------------
-  // log(a1) = log((max(a,b) + tx)^(-(r+s+x))) = -(r+s+x) * log(max(a,b) + tx)
+  // log(a1) = log((max(alpha,beta) + tx)^(-(r+s+x))) = -(r+s+x) * log(max(alpha,beta) + tx)
   arma::vec vLog_a1 = (-1 * (r + s + vX)) % arma::log(vMaxAB + vT_x);
 
   // . log(A0) ------------------------------------------------------------------------------
