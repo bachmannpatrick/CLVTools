@@ -94,8 +94,6 @@ arma::vec bgnbd_staticcov_PAlive(const double r,
 
   vAlpha_i = bgnbd_staticcov_alpha_i(alpha,
                                      vCovParams_trans,
-                                     vCovParams_life,
-                                     mCov_life,
                                      mCov_trans);
 
   vA_i  = bgnbd_staticcov_a_i(a,

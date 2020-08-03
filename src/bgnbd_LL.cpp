@@ -53,11 +53,9 @@ arma::vec bgnbd_nocov_LL_ind(const arma::vec& vLogparams,
 
   const unsigned int n = vX.n_elem;
 
-  arma::vec vAlpha_i(n), vA_i(n), vB_i(n);
-
-  vA_i = bgnbd_nocov_a_i(a_0, n);
-  vB_i = bgnbd_nocov_b_i(b_0, n);
-  vAlpha_i = bgnbd_nocov_alpha_i(alpha_0, n);
+  const arma::vec vA_i = bgnbd_nocov_a_i(a_0, n);
+  const arma::vec vB_i = bgnbd_nocov_b_i(b_0, n);
+  const arma::vec vAlpha_i = bgnbd_nocov_alpha_i(alpha_0, n);
 
   arma::vec vLL = bgnbd_LL_ind(r, vAlpha_i, vA_i, vB_i, vX, vT_x, vT_cal);
 
@@ -110,19 +108,16 @@ arma::vec bgnbd_staticcov_LL_ind(const arma::vec& vParams,
   //    alpha_i: alpha0 * exp(-cov.trans * cov.params.trans)
   //    a_i:  a0 * exp(cov.life * cov.param.life)
   //    b_i:  b0 * exp(cov.life * cov.param.life)
-  arma::vec vAlpha_i(n), vA_i(n), vB_i(n);
 
-  vAlpha_i = bgnbd_staticcov_alpha_i(alpha_0,
+  const arma::vec vAlpha_i = bgnbd_staticcov_alpha_i(alpha_0,
                                      vTrans_params,
-                                     vLife_params,
-                                     mCov_life,
                                      mCov_trans);
 
-  vA_i  = bgnbd_staticcov_a_i(a_0,
+  const arma::vec vA_i  = bgnbd_staticcov_a_i(a_0,
                               vLife_params,
                               mCov_life);
 
-  vB_i  = bgnbd_staticcov_b_i(b_0,
+  const arma::vec vB_i  = bgnbd_staticcov_b_i(b_0,
                               vLife_params,
                               mCov_life);
 
@@ -167,22 +162,20 @@ arma::vec bgnbd_nocov_b_i(const double b, const int n){
   return clv::vec_fill(b, n);
 }
 
-arma::vec bgnbd_staticcov_alpha_i(const double alpha,
+arma::vec bgnbd_staticcov_alpha_i(const double alpha_0,
                                   const arma::vec& vCovParams_trans,
-                                  const arma::vec& vCovParams_life,
-                                  const arma::mat& mCov_life,
                                   const arma::mat& mCov_trans){
-  return alpha * arma::exp((mCov_trans * (-1)) * vCovParams_trans);
+  return alpha_0 * arma::exp((mCov_trans * (-1)) * vCovParams_trans);
 }
 
-arma::vec bgnbd_staticcov_a_i(const double a,
+arma::vec bgnbd_staticcov_a_i(const double a_0,
                               const arma::vec& vCovParams_life,
                               const arma::mat& mCov_life){
-  return a * arma::exp(mCov_life * vCovParams_life);
+  return a_0 * arma::exp(mCov_life * vCovParams_life);
 }
 
-arma::vec bgnbd_staticcov_b_i(const double b,
+arma::vec bgnbd_staticcov_b_i(const double b_0,
                               const arma::vec& vCovParams_life,
                               const arma::mat& mCov_life){
-  return b * arma::exp(mCov_life * vCovParams_life);
+  return b_0 * arma::exp(mCov_life * vCovParams_life);
 }

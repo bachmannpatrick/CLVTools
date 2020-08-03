@@ -232,7 +232,7 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method, d
                                                                                                      m.fitted.static = obj.fitted.static)
 }
 
-fct.testthat.correctness.clvfittedtransactions.common <- function(fct.expectation.R, fct.expectation.Cpp, params_i, obj.fitted){
+fct.testthat.correctness.clvfittedtransactions.same.expectation.in.R.and.Cpp <- function(fct.expectation.R, fct.expectation.Cpp, params_i, obj.fitted){
   dt.expectation.seq <- clv.time.expectation.periods(clv.time = obj.fitted@clv.data@clv.time,
                                                      user.tp.end = 38)
 

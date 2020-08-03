@@ -46,11 +46,10 @@ arma::vec bgnbd_nocov_expectation(const double r,
 
   // Build alpha and beta --------------------------------------------------------
   const double n = vT_i.n_elem;
-  arma::vec vAlpha_i(n), vA_i(n), vB_i(n);
 
-  vA_i = bgnbd_nocov_a_i(a, n);
-  vB_i = bgnbd_nocov_b_i(b, n);
-  vAlpha_i = bgnbd_nocov_alpha_i(alpha, n);
+  const arma::vec vA_i = bgnbd_nocov_a_i(a, n);
+  const arma::vec vB_i = bgnbd_nocov_b_i(b, n);
+  const arma::vec vAlpha_i = bgnbd_nocov_alpha_i(alpha, n);
 
   return bgnbd_expectation(r,
                           vAlpha_i,
@@ -72,19 +71,15 @@ arma::vec bgnbd_staticcov_expectation(const double r,
                                      const arma::mat& mCov_trans){
   const double n = vT_i.n_elem;
 
-  arma::vec vAlpha_i(n), vA_i(n), vB_i(n);
-
-  vAlpha_i = bgnbd_staticcov_alpha_i(alpha,
+  const arma::vec vAlpha_i = bgnbd_staticcov_alpha_i(alpha,
                                      vCovParams_trans,
-                                     vCovParams_life,
-                                     mCov_life,
                                      mCov_trans);
 
-  vA_i  = bgnbd_staticcov_a_i(a,
+  const arma::vec vA_i  = bgnbd_staticcov_a_i(a,
                               vCovParams_life,
                               mCov_life);
 
-  vB_i  = bgnbd_staticcov_b_i(b,
+  const arma::vec vB_i  = bgnbd_staticcov_b_i(b,
                               vCovParams_life,
                               mCov_life);
 

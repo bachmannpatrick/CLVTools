@@ -54,6 +54,7 @@ context("Correctness - PNBD nocov - Expectation")
 test_that("Expectation in Rcpp matches expectation in R (nocov)", {
 
   # No cov ---------------------------------------------------------------------------------------------------
+  skip_on_cran()
   obj.fitted <- fct.testthat.correctness.clvfittedtransactions.nocov(method = pnbd,
                                                                      cdnow = cdnow)
 
@@ -85,6 +86,7 @@ context("Correctness - PNBD staticcov - Expectation")
 test_that("Expectation in Rcpp matches expectation in R (staticcov)", {
 
   # Static cov ---------------------------------------------------------------------------------------------------
+  skip_on_cran()
   obj.fitted <- fct.testthat.correctness.clvfittedtransactions.staticcov(method = pnbd,
                                                                          apparelTrans = apparelTrans,
                                                                          apparelStaticCov = apparelStaticCov)
@@ -114,10 +116,10 @@ test_that("Expectation in Rcpp matches expectation in R (staticcov)", {
                                                                                                vT_i = t_i,
                                                                                                vCovParams_trans = obj.fitted@prediction.params.trans,
                                                                                                vCovParams_life = obj.fitted@prediction.params.life,
-                                                                                               mCov_life = m.cov.data.trans,
-                                                                                               mCov_trans = m.cov.data.life)])}
+                                                                                               mCov_life = m.cov.data.life,
+                                                                                               mCov_trans = m.cov.data.trans)])}
 
-  fct.testthat.correctness.clvfittedtransactions.common(fct.expectation.Cpp = fct.expectation.Cpp,
+  fct.testthat.correctness.clvfittedtransactions.same.expectation.in.R.and.Cpp(fct.expectation.Cpp = fct.expectation.Cpp,
                                                         fct.expectation.R = fct.expectation.R,
                                                         params_i = params_i,
                                                         obj.fitted = obj.fitted)

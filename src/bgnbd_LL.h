@@ -41,10 +41,8 @@ arma::vec bgnbd_nocov_a_i(const double a, const int n);
 
 arma::vec bgnbd_nocov_b_i(const double b, const int n);
 
-arma::vec bgnbd_staticcov_alpha_i(const double alpha,
+arma::vec bgnbd_staticcov_alpha_i(const double alpha_0,
                                   const arma::vec& vCovParams_trans,
-                                  const arma::vec& vCovParams_life,
-                                  const arma::mat& mCov_life,
                                   const arma::mat& mCov_trans);
 
 arma::vec bgnbd_staticcov_a_i(const double a,

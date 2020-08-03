@@ -40,10 +40,9 @@ arma::vec pnbd_nocov_expectation(const double r,
 
   // Build alpha and beta --------------------------------------------------------
   const double n = vT_i.n_elem;
-  arma::vec vAlpha_i(n), vBeta_i(n);
 
-  vAlpha_i = pnbd_nocov_alpha_i(alpha_0, n);
-  vBeta_i = pnbd_nocov_beta_i(beta_0, n);
+  const arma::vec vAlpha_i = pnbd_nocov_alpha_i(alpha_0, n);
+  const arma::vec vBeta_i = pnbd_nocov_beta_i(beta_0, n);
 
   return(pnbd_expectation(r,
                           s,
@@ -66,9 +65,7 @@ arma::vec pnbd_staticcov_expectation(const double r,
 
   // Build alpha and beta -------------------------------------------
   //    With static covariates: alpha and beta different per customer
-  //
-  //    alpha_i: alpha0 * exp(-cov.trans * cov.params.trans)
-  //    beta_i:  beta0  * exp(-cov.life  * cov.parama.life)
+
   const arma::vec vAlpha_i = pnbd_staticcov_alpha_i(alpha_0, vCovParams_trans, mCov_trans);
   const arma::vec vBeta_i  = pnbd_staticcov_beta_i(beta_0, vCovParams_life, mCov_life);
 

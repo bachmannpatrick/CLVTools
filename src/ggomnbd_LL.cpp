@@ -132,10 +132,8 @@ arma::vec ggomnbd_nocov_LL_ind(const arma::vec& vLogparams,
 
   // Build alpha and beta --------------------------------------------
   //    No covariates: Same alphas, betas for every customer
-  arma::vec vAlpha_i(n), vBeta_i(n);
-
-  vAlpha_i = ggomnbd_nocov_alpha_i(alpha_0, n);
-  vBeta_i = ggomnbd_nocov_beta_i(beta_0, n);
+  const arma::vec vAlpha_i = ggomnbd_nocov_alpha_i(alpha_0, n);
+  const arma::vec vBeta_i = ggomnbd_nocov_beta_i(beta_0, n);
 
   return(ggomnbd_LL_ind(r, b, s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal));
 }
@@ -223,29 +221,29 @@ double ggomnbd_staticcov_LL_sum(const arma::vec& vParams,
   return(-arma::sum(vLL));
 }
 
-arma::vec ggomnbd_nocov_alpha_i(const double alpha, const double n){
-  return clv::vec_fill(alpha, n);
+arma::vec ggomnbd_nocov_alpha_i(const double alpha_0, const double n){
+  return clv::vec_fill(alpha_0, n);
 }
 
-arma::vec ggomnbd_nocov_beta_i(const double beta, const double n){
-  return clv::vec_fill(beta, n);
+arma::vec ggomnbd_nocov_beta_i(const double beta_0, const double n){
+  return clv::vec_fill(beta_0, n);
 }
 
 arma::vec ggomnbd_nocov_r(const double r, const double n){
   return clv::vec_fill(r, n);
 }
 
-arma::vec ggomnbd_staticcov_alpha_i(const double alpha,
+arma::vec ggomnbd_staticcov_alpha_i(const double alpha_0,
                                     const arma::vec& vCovParams_trans,
                                     const arma::mat& mCov_trans){
-   return alpha * arma::exp(((mCov_trans * (-1)) * vCovParams_trans));
+   return alpha_0 * arma::exp(((mCov_trans * (-1)) * vCovParams_trans));
 }
 
-arma::vec ggomnbd_staticcov_beta_i(const double beta,
+arma::vec ggomnbd_staticcov_beta_i(const double beta_0,
                                    const arma::vec& vCovParams_life,
                                    const arma::mat& mCov_life){
 
-  return beta * arma::exp(((mCov_life  * (-1)) * vCovParams_life));
+  return beta_0 * arma::exp(((mCov_life  * (-1)) * vCovParams_life));
 }
 
 arma::vec ggomnbd_staticcov_r(const double r, const double n){
