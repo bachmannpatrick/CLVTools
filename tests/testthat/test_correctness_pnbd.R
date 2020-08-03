@@ -74,7 +74,7 @@ test_that("Expectation in Rcpp matches expectation in R (nocov)", {
                                                                                            beta_0 = obj.fitted@prediction.params.model[["beta"]],
                                                                                            vT_i = t_i)])}
 
-  fct.testthat.correctness.clvfittedtransactions.common(fct.expectation.Cpp = fct.expectation.Cpp,
+  fct.testthat.correctness.clvfittedtransactions.same.expectation.in.R.and.Cpp(fct.expectation.Cpp = fct.expectation.Cpp,
                                                         fct.expectation.R = fct.expectation.R,
                                                         params_i = params_i,
                                                         obj.fitted = obj.fitted)
