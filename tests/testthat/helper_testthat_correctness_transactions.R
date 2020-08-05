@@ -244,24 +244,3 @@ fct.testthat.correctness.clvfittedtransactions.same.expectation.in.R.and.Cpp <- 
 
   expect_equal(result.R, result.Cpp)
 }
-
-fct.testthat.correctness.clvfittedtransactions.nocov <- function(method, cdnow){
-  expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow,
-                                     date.format = "ymd", time.unit = "W", estimation.split = 38,
-                                     name.id = "Id", name.date = "Date", name.price = "Price"))
-
-
-  expect_silent(obj.fitted <- do.call(method, list(clv.data = clv.cdnow, verbose = FALSE)))
-
-  return(obj.fitted)
-}
-
-fct.testthat.correctness.clvfittedtransactions.staticcov <- function(method, apparelTrans, apparelStaticCov){
-  clv.apparel.static <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = apparelTrans,
-                                                                    data.apparelStaticCov = apparelStaticCov,
-                                                                    estimation.split = 38)
-
-  expect_silent(obj.fitted <- do.call(method, list(clv.data = clv.apparel.static, verbose = FALSE)))
-
-  return(obj.fitted)
-}

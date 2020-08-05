@@ -26,7 +26,12 @@ test_that("Expectation in Rcpp matches expectation in R (nocov)", {
 
   # No cov ---------------------------------------------------------------------------------------------------
   skip_on_cran()
-  obj.fitted <- fct.testthat.correctness.clvfittedtransactions.nocov(method = bgnbd, cdnow = cdnow)
+  expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow,
+                                     date.format = "ymd", time.unit = "W", estimation.split = 38,
+                                     name.id = "Id", name.date = "Date", name.price = "Price"))
+
+
+  expect_silent(obj.fitted <- bgnbd(clv.data = clv.cdnow, verbose = FALSE))
 
   params_i <- obj.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
 
@@ -62,9 +67,11 @@ test_that("Expectation in Rcpp matches expectation in R (staticcov)", {
 
   # Static cov ---------------------------------------------------------------------------------------------------
   skip_on_cran()
-  obj.fitted <- fct.testthat.correctness.clvfittedtransactions.staticcov(method = bgnbd,
-                                                                         apparelTrans = apparelTrans,
-                                                                         apparelStaticCov = apparelStaticCov)
+  clv.apparel.static <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = apparelTrans,
+                                                                    data.apparelStaticCov = apparelStaticCov,
+                                                                    estimation.split = 38)
+
+  expect_silent(obj.fitted <- bgnbd(clv.data = clv.apparel.static, verbose = FALSE))
 
   params_i <- obj.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
 

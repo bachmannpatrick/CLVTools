@@ -47,11 +47,9 @@ arma::vec bgnbd_nocov_PAlive(const double r,
   //    No covariates: Same alpha, a and b for every customer
   const double n = vX.n_elem;
 
-  arma::vec vAlpha_i(n), vA_i(n), vB_i(n);
-
-  vA_i = bgnbd_nocov_a_i(a, n);
-  vB_i = bgnbd_nocov_b_i(b, n);
-  vAlpha_i = bgnbd_nocov_alpha_i(alpha, n);
+  const arma::vec vA_i = bgnbd_nocov_a_i(a, n);
+  const arma::vec vB_i = bgnbd_nocov_b_i(b, n);
+  const arma::vec vAlpha_i = bgnbd_nocov_alpha_i(alpha, n);
 
   return bgnbd_PAlive(r,
                       vAlpha_i,
@@ -90,17 +88,15 @@ arma::vec bgnbd_staticcov_PAlive(const double r,
   //  Static covariates: Different alpha, a and b for every customer
   const double n = vX.n_elem;
 
-  arma::vec vAlpha_i(n), vA_i(n), vB_i(n);
-
-  vAlpha_i = bgnbd_staticcov_alpha_i(alpha,
+  const arma::vec vAlpha_i = bgnbd_staticcov_alpha_i(alpha,
                                      vCovParams_trans,
                                      mCov_trans);
 
-  vA_i  = bgnbd_staticcov_a_i(a,
+  const arma::vec vA_i  = bgnbd_staticcov_a_i(a,
                               vCovParams_life,
                               mCov_life);
 
-  vB_i  = bgnbd_staticcov_b_i(b,
+  const arma::vec vB_i  = bgnbd_staticcov_b_i(b,
                               vCovParams_life,
                               mCov_life);
 
