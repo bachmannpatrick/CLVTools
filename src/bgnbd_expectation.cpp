@@ -69,7 +69,6 @@ arma::vec bgnbd_staticcov_expectation(const double r,
                                      const arma::vec& vCovParams_life,
                                      const arma::mat& mCov_life,
                                      const arma::mat& mCov_trans){
-  const double n = vT_i.n_elem;
 
   const arma::vec vAlpha_i = bgnbd_staticcov_alpha_i(alpha,
                                      vCovParams_trans,
