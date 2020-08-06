@@ -3,6 +3,7 @@
 #include "ggomnbd_LL.h"
 #include "ggomnbd_PAlive.h"
 #include "ggomnbd_expectation.h"
+#include "ggomnbd_CET.h"
 
 
 
@@ -88,8 +89,9 @@ arma::vec ggomnbd_nocov_CET(const double r,
   const double n = vX.n_elem;
   arma::vec vAlpha_i(n), vBeta_i(n);
 
-  vAlpha_i.fill(alpha_0);
-  vBeta_i.fill( beta_0);
+  vAlpha_i = ggomnbd_nocov_alpha_i(alpha_0, n);
+
+  vBeta_i = ggomnbd_nocov_beta_i(beta_0, n);
 
   return(ggomnbd_CET(r,b,s,dPeriods,vX,vT_x,vT_cal,vAlpha_i, vBeta_i));
 }
@@ -117,8 +119,9 @@ arma::vec ggomnbd_staticcov_CET(const double r,
   //    alpha_i: alpha0 * exp(-cov.trans * cov.params.trans)
   //    beta_i:  beta0  * exp(-cov.life  * cov.parama.life)
 
-  const arma::vec vAlpha_i = alpha_0 * arma::exp(((mCov_trans * (-1)) * vCovParams_trans));
-  const arma::vec vBeta_i  = beta_0  * arma::exp(((mCov_life  * (-1)) * vCovParams_life));
+  const arma::vec vAlpha_i = ggomnbd_staticcov_alpha_i(alpha_0, vCovParams_trans, mCov_trans);
+
+  const arma::vec vBeta_i  = ggomnbd_staticcov_beta_i(beta_0, vCovParams_life, mCov_life);
 
   return(ggomnbd_CET(r,b,s,dPeriods,vX,vT_x,vT_cal,vAlpha_i, vBeta_i));
 }

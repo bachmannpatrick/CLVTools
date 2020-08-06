@@ -120,7 +120,7 @@
       <h>40</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
-clv.model.put.newdata()</panel_attributes>
+clv.model.process.newdata()</panel_attributes>
     <additional_attributes>410.0;20.0;10.0;20.0</additional_attributes>
   </element>
   <element>
@@ -379,7 +379,7 @@ predict.clv.fitted()</panel_attributes>
       <h>40</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
-clv.model.predict.clv()</panel_attributes>
+clv.model.predict()</panel_attributes>
     <additional_attributes>410.0;20.0;10.0;20.0</additional_attributes>
   </element>
   <element>

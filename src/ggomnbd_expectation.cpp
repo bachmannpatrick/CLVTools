@@ -17,11 +17,10 @@ double ggomnbd_expectation_integrand(double tau, void * p_params){
 //' @name ggomnbd_expectation
 //' @title GGompertz/NBD: Unconditional Expectation
 //'
-//' @description Computes the expected number of repeat transactions in the interval (0, vT_i]
-//' for a randomly selected customer, where 0 is defined as the point when the customer came alive.
+//' @template template_expectation_description
 //'
 //' @template template_params_ggomnbd
-//' @param vT_i Number of periods since the customer came alive
+//' @template template_expectation_params
 //' @template template_params_rcppcovmatrix
 //' @template template_params_rcppvcovparams
 //'
@@ -30,6 +29,8 @@ double ggomnbd_expectation_integrand(double tau, void * p_params){
 //' @template template_details_rcppcovmatrix
 //'
 //' @template template_references_ggomnbd
+//'
+//' @template template_expectation_return
 //'
 arma::vec ggomnbd_expectation(const double b,
                               const double s,
@@ -67,11 +68,10 @@ arma::vec ggomnbd_nocov_expectation(const double r,
 
   // Build alpha and beta --------------------------------------------------------
   const double n = vT_i.n_elem;
-  arma::vec vAlpha_i(n), vBeta_i(n), vR(n);
 
-  vAlpha_i.fill(alpha_0);
-  vBeta_i.fill( beta_0);
-  vR.fill(r);
+  const arma::vec vAlpha_i = ggomnbd_nocov_alpha_i(alpha_0, n);
+  const arma::vec vBeta_i = ggomnbd_nocov_beta_i(beta_0, n);
+  const arma::vec vR = ggomnbd_nocov_r(r, n);
 
   return(ggomnbd_expectation(b,
                              s,
@@ -96,14 +96,11 @@ arma::vec ggomnbd_staticcov_expectation(const double r,
 
   // Build alpha and beta -------------------------------------------
   //    With static covariates: alpha and beta different per customer
-  //
-  //    alpha_i: alpha0 * exp(-cov.trans * cov.params.trans)
-  //    beta_i:  beta0  * exp(-cov.life  * cov.parama.life)
 
-  const arma::vec vAlpha_i = alpha_0 * arma::exp(((mCov_trans * (-1)) * vCovParams_trans));
-  const arma::vec vBeta_i  = beta_0  * arma::exp(((mCov_life  * (-1)) * vCovParams_life));
-  arma::vec vR(vAlpha_i.n_elem);
-  vR.fill(r);
+  const arma::vec vAlpha_i = ggomnbd_staticcov_alpha_i(alpha_0, vCovParams_trans, mCov_trans);
+  const arma::vec vBeta_i  = ggomnbd_staticcov_beta_i(beta_0, vCovParams_life, mCov_life);
+  const double n = vAlpha_i.n_elem;
+  const arma::vec vR = ggomnbd_staticcov_r(r, n);
 
   return(ggomnbd_expectation(b,
                              s,

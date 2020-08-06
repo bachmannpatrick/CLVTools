@@ -175,17 +175,16 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.static.co
   m.cov.data.trans <- clv.data.get.matrix.data.cov.trans(clv.data=clv.fitted@clv.data, correct.row.names=params_i$Id,
                                                          correct.col.names=names(clv.fitted@prediction.params.trans))
 
-  # all params exactly the same for all customers as there are no covariates
-  params_i[, r       := clv.fitted@prediction.params.model[["r"]]]
-  params_i[, s       := clv.fitted@prediction.params.model[["s"]]]
-
-  # Alpha is for trans, beta for live!
-  params_i[, alpha_i := clv.fitted@prediction.params.model[["alpha"]] * exp( -m.cov.data.trans %*% clv.fitted@prediction.params.trans)]
-  params_i[, beta_i  := clv.fitted@prediction.params.model[["beta"]]  * exp( -m.cov.data.life  %*% clv.fitted@prediction.params.life)]
-
-
   # To caluclate expectation at point t for customers alive in t, given in params_i.t
-  fct.expectation <- function(params_i.t) {return( params_i.t[, (r * beta_i)/(alpha_i * (s - 1)) * (1 - (beta_i/(beta_i + t_i))^(s - 1))] )}
+  fct.expectation <- function(params_i.t) {return(pnbd_staticcov_expectation(r = clv.fitted@prediction.params.model[["r"]],
+                                                                             s = clv.fitted@prediction.params.model[["s"]],
+                                                                             alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+                                                                             beta_0 = clv.fitted@prediction.params.model[["beta"]],
+                                                                             vT_i = params_i.t$t_i,
+                                                                             vCovParams_trans = clv.fitted@prediction.params.trans,
+                                                                             vCovParams_life = clv.fitted@prediction.params.life,
+                                                                             mCov_life = m.cov.data.trans,
+                                                                             mCov_trans = m.cov.data.life))}
 
   return(DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
                        fct.expectation = fct.expectation, clv.time = clv.fitted@clv.data@clv.time))

@@ -49,4 +49,83 @@ fct.testthat.correctness.dyncov(data.apparelTrans=apparelTrans, data.apparelDynC
 
 # ** Static cov??
 
+context("Correctness - PNBD nocov - Expectation")
 
+test_that("Expectation in Rcpp matches expectation in R (nocov)", {
+
+  # No cov ---------------------------------------------------------------------------------------------------
+  skip_on_cran()
+  expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow,
+                                     date.format = "ymd", time.unit = "W", estimation.split = 38,
+                                     name.id = "Id", name.date = "Date", name.price = "Price"))
+
+
+  expect_silent(obj.fitted <- pnbd(clv.data = clv.cdnow, verbose = FALSE))
+
+  params_i <- obj.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
+
+  # all params exactly the same for all customers because there are no covariates
+  params_i[, r       := obj.fitted@prediction.params.model[["r"]]]
+  params_i[, alpha_i := obj.fitted@prediction.params.model[["alpha"]]]
+  params_i[, s       := obj.fitted@prediction.params.model[["s"]]]
+  params_i[, beta_i  := obj.fitted@prediction.params.model[["beta"]]]
+
+  fct.expectation.R <- function(params_i.t) {return( params_i.t[, (r * beta_i)/(alpha_i * (s - 1)) * (1 - (beta_i/(beta_i + t_i))^(s - 1))] )}
+  fct.expectation.Cpp <- function(params_i.t) {return( params_i.t[, pnbd_nocov_expectation(r = obj.fitted@prediction.params.model[["r"]],
+                                                                                           s = obj.fitted@prediction.params.model[["s"]],
+                                                                                           alpha_0 = obj.fitted@prediction.params.model[["alpha"]],
+                                                                                           beta_0 = obj.fitted@prediction.params.model[["beta"]],
+                                                                                           vT_i = t_i)])}
+
+  fct.testthat.correctness.clvfittedtransactions.same.expectation.in.R.and.Cpp(fct.expectation.Cpp = fct.expectation.Cpp,
+                                                        fct.expectation.R = fct.expectation.R,
+                                                        params_i = params_i,
+                                                        obj.fitted = obj.fitted)
+
+})
+
+context("Correctness - PNBD staticcov - Expectation")
+
+test_that("Expectation in Rcpp matches expectation in R (staticcov)", {
+
+  # Static cov ---------------------------------------------------------------------------------------------------
+  skip_on_cran()
+  clv.apparel.static <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = apparelTrans,
+                                                                    data.apparelStaticCov = apparelStaticCov,
+                                                                    estimation.split = 38)
+
+  expect_silent(obj.fitted <- pnbd(clv.data = clv.apparel.static, verbose = FALSE))
+
+  params_i <- obj.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
+
+  m.cov.data.life  <- clv.data.get.matrix.data.cov.life(clv.data=obj.fitted@clv.data, correct.row.names=params_i$Id,
+                                                        correct.col.names=names(obj.fitted@prediction.params.life))
+  m.cov.data.trans <- clv.data.get.matrix.data.cov.trans(clv.data=obj.fitted@clv.data, correct.row.names=params_i$Id,
+                                                         correct.col.names=names(obj.fitted@prediction.params.trans))
+
+  # all params exactly the same for all customers as there are no covariates
+  params_i[, r       := obj.fitted@prediction.params.model[["r"]]]
+  params_i[, s       := obj.fitted@prediction.params.model[["s"]]]
+
+  # Alpha is for trans, beta for live!
+  params_i[, alpha_i := obj.fitted@prediction.params.model[["alpha"]] * exp( -m.cov.data.trans %*% obj.fitted@prediction.params.trans)]
+  params_i[, beta_i  := obj.fitted@prediction.params.model[["beta"]]  * exp( -m.cov.data.life  %*% obj.fitted@prediction.params.life)]
+
+
+  # To caluclate expectation at point t for customers alive in t, given in params_i.t
+  fct.expectation.R <- function(params_i.t) {return( params_i.t[, (r * beta_i)/(alpha_i * (s - 1)) * (1 - (beta_i/(beta_i + t_i))^(s - 1))] )}
+  fct.expectation.Cpp <- function(params_i.t) {return( params_i.t[, pnbd_staticcov_expectation(r = obj.fitted@prediction.params.model[["r"]],
+                                                                                               s = obj.fitted@prediction.params.model[["s"]],
+                                                                                               alpha_0 = obj.fitted@prediction.params.model[["alpha"]],
+                                                                                               beta_0 = obj.fitted@prediction.params.model[["beta"]],
+                                                                                               vT_i = t_i,
+                                                                                               vCovParams_trans = obj.fitted@prediction.params.trans,
+                                                                                               vCovParams_life = obj.fitted@prediction.params.life,
+                                                                                               mCov_life = m.cov.data.life,
+                                                                                               mCov_trans = m.cov.data.trans)])}
+
+  fct.testthat.correctness.clvfittedtransactions.same.expectation.in.R.and.Cpp(fct.expectation.Cpp = fct.expectation.Cpp,
+                                                        fct.expectation.R = fct.expectation.R,
+                                                        params_i = params_i,
+                                                        obj.fitted = obj.fitted)
+})

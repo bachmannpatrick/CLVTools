@@ -1,6 +1,7 @@
 #include <RcppArmadillo.h>
 #include <math.h>
 #include "clv_vectorized.h"
+#include "pnbd_LL_ind.h"
 
 
 //' @name pnbd_LL
@@ -116,10 +117,8 @@ arma::vec pnbd_nocov_LL_ind(const arma::vec& vLogparams,
 
   // Build alpha and beta --------------------------------------------
   //    No covariates: Same alphas, betas for every customer
-  arma::vec vAlpha_i(n), vBeta_i(n);
-
-  vAlpha_i.fill(alpha_0);
-  vBeta_i.fill(beta_0);
+  const arma::vec vAlpha_i = pnbd_nocov_alpha_i(alpha_0, n);
+  const arma::vec vBeta_i = pnbd_nocov_beta_i(beta_0, n);
 
 
   // Calculate LL ----------------------------------------------------
@@ -177,10 +176,8 @@ arma::vec pnbd_staticcov_LL_ind(const arma::vec& vParams,
   //
   //    alpha_i: alpha0 * exp(-cov.trans * cov.params.trans)
   //    beta_i:  beta0  * exp(-cov.life  * cov.parama.life)
-  arma::vec vAlpha_i(n), vBeta_i(n);
-
-  vAlpha_i = alpha_0 * arma::exp(((mCov_trans * (-1)) * vTrans_params));
-  vBeta_i  = beta_0  * arma::exp(((mCov_life  * (-1)) * vLife_params));
+  const arma::vec vAlpha_i = pnbd_staticcov_alpha_i(alpha_0, vTrans_params, mCov_trans);
+  const arma::vec vBeta_i  = pnbd_staticcov_beta_i(beta_0, vLife_params, mCov_life);
 
   // Calculate LL ----------------------------------------------------
   //    Calculate value for every customer
@@ -210,4 +207,24 @@ double pnbd_staticcov_LL_sum(const arma::vec& vParams,
                                         mCov_trans);
 
   return(-arma::sum(vLL));
+}
+
+arma::vec pnbd_nocov_alpha_i(const double alpha_0, const double n){
+  return clv::vec_fill(alpha_0, n);
+}
+
+arma::vec pnbd_nocov_beta_i(const double beta_0, const double n){
+  return clv::vec_fill(beta_0, n);
+}
+
+arma::vec pnbd_staticcov_alpha_i(const double alpha_0,
+                                 const arma::vec& vCovParams_trans,
+                                 const arma::mat& mCov_trans){
+  return alpha_0 * arma::exp(((mCov_trans * (-1)) * vCovParams_trans));
+}
+
+arma::vec pnbd_staticcov_beta_i(const double beta_0,
+                                const arma::vec& vCovParams_life,
+                                const arma::mat& mCov_life){
+  return beta_0 * arma::exp(((mCov_life  * (-1)) * vCovParams_life));
 }

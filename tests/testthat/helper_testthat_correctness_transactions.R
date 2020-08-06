@@ -231,3 +231,16 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method, d
   fct.testthat.correctness.clvfittedtransactions.staticcov.regularization.lambda.0.no.regularization(method = method, clv.apparel.staticcov = clv.apparel.staticcov,
                                                                                                      m.fitted.static = obj.fitted.static)
 }
+
+fct.testthat.correctness.clvfittedtransactions.same.expectation.in.R.and.Cpp <- function(fct.expectation.R, fct.expectation.Cpp, params_i, obj.fitted){
+  dt.expectation.seq <- clv.time.expectation.periods(clv.time = obj.fitted@clv.data@clv.time,
+                                                     user.tp.end = 38)
+
+  result.R <- DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
+                            fct.expectation = fct.expectation.R, clv.time = obj.fitted@clv.data@clv.time)
+
+  result.Cpp <- DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
+                              fct.expectation = fct.expectation.Cpp, clv.time = obj.fitted@clv.data@clv.time)
+
+  expect_equal(result.R, result.Cpp)
+}
