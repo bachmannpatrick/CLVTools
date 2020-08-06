@@ -11,11 +11,10 @@
 //'
 //' @template template_params_bgnbd
 //' @template template_expectation_params
-//' @template template_params_rcppcovmatrix
-//' @template template_params_rcppvcovparams
+//' @param vAlpha_i Vector of individual parameters alpha
+//' @param vA_i Vector of individual parameters a
+//' @param vB_i Vector of individual parameters b
 //'
-//' @templateVar name_params_cov_life vCovParams_life
-//' @templateVar name_params_cov_trans vCovParams_trans
 //' @template template_details_rcppcovmatrix
 //'
 //' @template template_references_bgnbd

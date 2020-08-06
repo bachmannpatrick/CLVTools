@@ -117,11 +117,10 @@ bgnbd_staticcov_PAlive <- function(r, alpha, a, b, vX, vT_x, vT_cal, vCovParams_
 #'
 #' @template template_params_bgnbd
 #' @template template_expectation_params
-#' @template template_params_rcppcovmatrix
-#' @template template_params_rcppvcovparams
+#' @param vAlpha_i Vector of individual parameters alpha
+#' @param vA_i Vector of individual parameters a
+#' @param vB_i Vector of individual parameters b
 #'
-#' @templateVar name_params_cov_life vCovParams_life
-#' @templateVar name_params_cov_trans vCovParams_trans
 #' @template template_details_rcppcovmatrix
 #'
 #' @template template_references_bgnbd
@@ -304,12 +303,8 @@ ggomnbd_nocov_PAlive <- function(r, alpha_0, b, s, beta_0, vX, vT_x, vT_cal) {
 #'
 #' @template template_params_ggomnbd
 #' @template template_expectation_params
-#' @template template_params_rcppcovmatrix
-#' @template template_params_rcppvcovparams
-#'
-#' @templateVar name_params_cov_life vCovParams_life
-#' @templateVar name_params_cov_trans vCovParams_trans
-#' @template template_details_rcppcovmatrix
+#' @param vAlpha_i Vector of individual parameters alpha
+#' @param vBeta_i Vector of individual parameters beta
 #'
 #' @template template_references_ggomnbd
 #'
@@ -480,6 +475,8 @@ pnbd_staticcov_PAlive <- function(r, alpha_0, s, beta_0, vX, vT_x, vT_cal, vCovP
 #'
 #' @template template_params_pnbd
 #' @template template_expectation_params
+#' @param vAlpha_i Vector of individual parameters alpha
+#' @param vBeta_i Vector of individual parameters beta
 #'
 #'
 #' @template template_references_pnbd

@@ -20,6 +20,10 @@ pnbd_staticcov_expectation(r, s, vAlpha_i, vBeta_i, vT_i)
 \item{beta_0}{scale parameter for the Gamma distribution for the lifetime process.}
 
 \item{vT_i}{Number of periods since the customer came alive}
+
+\item{vAlpha_i}{Vector of individual parameters alpha}
+
+\item{vBeta_i}{Vector of individual parameters beta}
 }
 \value{
 Returns the expected transaction values according to the chosen model.

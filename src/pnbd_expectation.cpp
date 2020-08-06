@@ -11,6 +11,8 @@
 //'
 //' @template template_params_pnbd
 //' @template template_expectation_params
+//' @param vAlpha_i Vector of individual parameters alpha
+//' @param vBeta_i Vector of individual parameters beta
 //'
 //'
 //' @template template_references_pnbd
