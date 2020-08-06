@@ -10,6 +10,8 @@
 #   exportMethods(fun)
 setGeneric(name = "predict")
 
+setGeneric(name = "pmf", def = function(clv.fitted, x, plot)
+  standardGeneric("pmf"))
 
 # Controlflows -------------------------------------------------------------------------------------------------
 # Steps performed by all models but different between base (no cov) and covariate models
@@ -149,6 +151,8 @@ setGeneric(name="clv.model.vcov.jacobi.diag", def=function(clv.model, clv.fitted
 setGeneric(name="clv.model.process.newdata", def=function(clv.model, clv.fitted, user.newdata, verbose)
   standardGeneric("clv.model.process.newdata"))
 
+setGeneric(name="clv.model.pmf", def=function(clv.model, clv.fitted, x)
+  standardGeneric("clv.model.pmf"))
 
 
 # . For covariate models -----------------------------------------------------------------------------------------------------------

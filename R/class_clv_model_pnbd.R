@@ -262,3 +262,7 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.no.cov"),
                        fct.expectation = fct.expectation, clv.time = clv.fitted@clv.data@clv.time))
 })
 
+setMethod("clv.model.pmf", signature=(clv.model="clv.model.pnbd.no.cov"), function(clv.model, clv.fitted, x){
+  summary(clv.fitted) # placeholder to see if generics work properly
+})
+
