@@ -2,6 +2,7 @@
 #include <math.h>
 #include "pnbd_LL_ind.h"
 #include "clv_vectorized.h"
+#include "pnbd_DERT.h"
 
 //' @name pnbd_DERT
 //'
@@ -86,8 +87,8 @@ arma::vec pnbd_nocov_DERT(const double r,
   //    No covariates: Same alphas, betas for every customer
   arma::vec vAlpha_i(n), vBeta_i(n);
 
-  vAlpha_i.fill(alpha_0);
-  vBeta_i.fill(beta_0);
+  vAlpha_i = pnbd_nocov_alpha_i(alpha_0, n);
+  vBeta_i = pnbd_nocov_beta_i(beta_0, n);
 
   // Calculate DERT -------------------------------------------------
   return pnbd_DERT_ind(r, s,
@@ -116,8 +117,8 @@ arma::vec pnbd_staticcov_DERT(const double r,
   // Build alpha and beta --------------------------------------------
   //    No covariates: Same alphas, betas for every customer
 
-  arma::vec vAlpha_i = alpha_0 * arma::exp(((mCov_trans * (-1)) * vCovParams_trans));
-  arma::vec vBeta_i  = beta_0  * arma::exp(((mCov_life  * (-1)) * vCovParams_life));
+  arma::vec vAlpha_i = pnbd_staticcov_alpha_i(alpha_0, vCovParams_trans, mCov_trans);
+  arma::vec vBeta_i  = pnbd_staticcov_beta_i(beta_0, vCovParams_life, mCov_life);
 
 
   // Calculate DERT --------------------------------------------------

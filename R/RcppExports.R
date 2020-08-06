@@ -98,6 +98,36 @@ bgnbd_staticcov_PAlive <- function(r, alpha, a, b, vX, vT_x, vT_cal, vCovParams_
     .Call(`_CLVTools_bgnbd_staticcov_PAlive`, r, alpha, a, b, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
 }
 
+#' @name bgnbd_expectation
+#' @title BG/NBD: Unconditional Expectation
+#'
+#' @template template_expectation_description
+#'
+#' @template template_params_bgnbd
+#' @template template_expectation_params
+#' @template template_params_rcppcovmatrix
+#' @template template_params_rcppvcovparams
+#'
+#' @templateVar name_params_cov_life vCovParams_life
+#' @templateVar name_params_cov_trans vCovParams_trans
+#' @template template_details_rcppcovmatrix
+#'
+#' @template template_references_bgnbd
+#'
+#' @template template_expectation_return
+#'
+NULL
+
+#' @rdname bgnbd_expectation
+bgnbd_nocov_expectation <- function(r, alpha, a, b, vT_i) {
+    .Call(`_CLVTools_bgnbd_nocov_expectation`, r, alpha, a, b, vT_i)
+}
+
+#' @rdname bgnbd_expectation
+bgnbd_staticcov_expectation <- function(r, alpha, a, b, vT_i, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans) {
+    .Call(`_CLVTools_bgnbd_staticcov_expectation`, r, alpha, a, b, vT_i, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans)
+}
+
 #' @title GSL Hypergeom 2f0 for equal length vectors
 #'
 #' @param vA Vector of values for parameter a
@@ -250,11 +280,10 @@ ggomnbd_nocov_PAlive <- function(r, alpha_0, b, s, beta_0, vX, vT_x, vT_cal) {
 #' @name ggomnbd_expectation
 #' @title GGompertz/NBD: Unconditional Expectation
 #'
-#' @description Computes the expected number of repeat transactions in the interval (0, vT_i]
-#' for a randomly selected customer, where 0 is defined as the point when the customer came alive.
+#' @template template_expectation_description
 #'
 #' @template template_params_ggomnbd
-#' @param vT_i Number of periods since the customer came alive
+#' @template template_expectation_params
 #' @template template_params_rcppcovmatrix
 #' @template template_params_rcppvcovparams
 #'
@@ -263,6 +292,8 @@ ggomnbd_nocov_PAlive <- function(r, alpha_0, b, s, beta_0, vX, vT_x, vT_cal) {
 #' @template template_details_rcppcovmatrix
 #'
 #' @template template_references_ggomnbd
+#'
+#' @template template_expectation_return
 #'
 NULL
 
@@ -412,5 +443,35 @@ pnbd_nocov_PAlive <- function(r, alpha_0, s, beta_0, vX, vT_x, vT_cal) {
 #' @rdname pnbd_PAlive
 pnbd_staticcov_PAlive <- function(r, alpha_0, s, beta_0, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life) {
     .Call(`_CLVTools_pnbd_staticcov_PAlive`, r, alpha_0, s, beta_0, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
+}
+
+#' @name pnbd_expectation
+#' @title Pareto/NBD: Unconditional Expectation
+#'
+#' @template template_expectation_description
+#'
+#' @template template_params_pnbd
+#' @template template_expectation_params
+#' @template template_params_rcppcovmatrix
+#' @template template_params_rcppvcovparams
+#'
+#' @templateVar name_params_cov_life vCovParams_life
+#' @templateVar name_params_cov_trans vCovParams_trans
+#' @template template_details_rcppcovmatrix
+#'
+#' @template template_references_pnbd
+#'
+#' @template template_expectation_return
+#'
+NULL
+
+#' @rdname pnbd_expectation
+pnbd_nocov_expectation <- function(r, s, alpha_0, beta_0, vT_i) {
+    .Call(`_CLVTools_pnbd_nocov_expectation`, r, s, alpha_0, beta_0, vT_i)
+}
+
+#' @rdname pnbd_expectation
+pnbd_staticcov_expectation <- function(r, s, alpha_0, beta_0, vT_i, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans) {
+    .Call(`_CLVTools_pnbd_staticcov_expectation`, r, s, alpha_0, beta_0, vT_i, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans)
 }
 
