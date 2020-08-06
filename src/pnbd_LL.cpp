@@ -164,10 +164,6 @@ arma::vec pnbd_nocov_LL_ind(const arma::vec& vLogparams,
   const arma::vec vAlpha_i = pnbd_nocov_alpha_i(alpha_0, n);
   const arma::vec vBeta_i = pnbd_nocov_beta_i(beta_0, n);
 
-
-  // Calculate LL ----------------------------------------------------
-  //    Calculate value for every customer
-
   arma::vec vLL = pnbd_LL_ind(r, s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal);
   return(vLL);
 }
@@ -184,8 +180,6 @@ double pnbd_nocov_LL_sum(const arma::vec& vLogparams,
                                     vX,
                                     vT_x,
                                     vT_cal);
-
-  // accu sums all elements, indifferent of axis
   return(-arma::sum(vLL));
 }
 
@@ -211,20 +205,11 @@ arma::vec pnbd_staticcov_LL_ind(const arma::vec& vParams,
   const double s        = exp(vModel_log_params(2));
   const double beta_0   = exp(vModel_log_params(3));
 
-  const double n = vX.n_elem;
-
-
-
   // Build alpha and beta --------------------------------------------
   //    With static covariates: alpha and beta different per customer
-  //
-  //    alpha_i: alpha0 * exp(-cov.trans * cov.params.trans)
-  //    beta_i:  beta0  * exp(-cov.life  * cov.parama.life)
   const arma::vec vAlpha_i = pnbd_staticcov_alpha_i(alpha_0, vTrans_params, mCov_trans);
   const arma::vec vBeta_i  = pnbd_staticcov_beta_i(beta_0, vLife_params, mCov_life);
 
-  // Calculate LL ----------------------------------------------------
-  //    Calculate value for every customer
   arma::vec vLL = pnbd_LL_ind(r, s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal);
 
   return(vLL);
