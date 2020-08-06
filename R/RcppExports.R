@@ -69,6 +69,18 @@ bgnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_tr
     .Call(`_CLVTools_bgnbd_staticcov_LL_sum`, vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
 
+bgnbd_staticcov_alpha_i <- function(alpha_0, vCovParams_trans, mCov_trans) {
+    .Call(`_CLVTools_bgnbd_staticcov_alpha_i`, alpha_0, vCovParams_trans, mCov_trans)
+}
+
+bgnbd_staticcov_a_i <- function(a_0, vCovParams_life, mCov_life) {
+    .Call(`_CLVTools_bgnbd_staticcov_a_i`, a_0, vCovParams_life, mCov_life)
+}
+
+bgnbd_staticcov_b_i <- function(b_0, vCovParams_life, mCov_life) {
+    .Call(`_CLVTools_bgnbd_staticcov_b_i`, b_0, vCovParams_life, mCov_life)
+}
+
 #' @name bgnbd_PAlive
 #'
 #' @templateVar name_model_full BG/NBD
@@ -124,8 +136,8 @@ bgnbd_nocov_expectation <- function(r, alpha, a, b, vT_i) {
 }
 
 #' @rdname bgnbd_expectation
-bgnbd_staticcov_expectation <- function(r, alpha, a, b, vT_i, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans) {
-    .Call(`_CLVTools_bgnbd_staticcov_expectation`, r, alpha, a, b, vT_i, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans)
+bgnbd_staticcov_expectation <- function(r, vAlpha_i, vA_i, vB_i, vT_i) {
+    .Call(`_CLVTools_bgnbd_staticcov_expectation`, r, vAlpha_i, vA_i, vB_i, vT_i)
 }
 
 #' @title GSL Hypergeom 2f0 for equal length vectors
@@ -248,6 +260,14 @@ ggomnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_
     .Call(`_CLVTools_ggomnbd_staticcov_LL_sum`, vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
 
+ggomnbd_staticcov_alpha_i <- function(alpha_0, vCovParams_trans, mCov_trans) {
+    .Call(`_CLVTools_ggomnbd_staticcov_alpha_i`, alpha_0, vCovParams_trans, mCov_trans)
+}
+
+ggomnbd_staticcov_beta_i <- function(beta_0, vCovParams_life, mCov_life) {
+    .Call(`_CLVTools_ggomnbd_staticcov_beta_i`, beta_0, vCovParams_life, mCov_life)
+}
+
 #' @name ggomnbd_PAlive
 #'
 #' @templateVar name_model_full GGompertz/NBD
@@ -303,8 +323,8 @@ ggomnbd_nocov_expectation <- function(r, alpha_0, b, s, beta_0, vT_i) {
 }
 
 #' @rdname ggomnbd_expectation
-ggomnbd_staticcov_expectation <- function(r, alpha_0, b, s, beta_0, vT_i, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans) {
-    .Call(`_CLVTools_ggomnbd_staticcov_expectation`, r, alpha_0, b, s, beta_0, vT_i, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans)
+ggomnbd_staticcov_expectation <- function(r, b, s, vAlpha_i, vBeta_i, vT_i) {
+    .Call(`_CLVTools_ggomnbd_staticcov_expectation`, r, b, s, vAlpha_i, vBeta_i, vT_i)
 }
 
 #' @name pnbd_CET
@@ -416,6 +436,14 @@ pnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_tra
     .Call(`_CLVTools_pnbd_staticcov_LL_sum`, vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
 
+pnbd_staticcov_alpha_i <- function(alpha_0, vCovParams_trans, mCov_trans) {
+    .Call(`_CLVTools_pnbd_staticcov_alpha_i`, alpha_0, vCovParams_trans, mCov_trans)
+}
+
+pnbd_staticcov_beta_i <- function(beta_0, vCovParams_life, mCov_life) {
+    .Call(`_CLVTools_pnbd_staticcov_beta_i`, beta_0, vCovParams_life, mCov_life)
+}
+
 #' @name pnbd_PAlive
 #'
 #' @templateVar name_model_full Pareto/NBD
@@ -452,12 +480,7 @@ pnbd_staticcov_PAlive <- function(r, alpha_0, s, beta_0, vX, vT_x, vT_cal, vCovP
 #'
 #' @template template_params_pnbd
 #' @template template_expectation_params
-#' @template template_params_rcppcovmatrix
-#' @template template_params_rcppvcovparams
 #'
-#' @templateVar name_params_cov_life vCovParams_life
-#' @templateVar name_params_cov_trans vCovParams_trans
-#' @template template_details_rcppcovmatrix
 #'
 #' @template template_references_pnbd
 #'
@@ -471,7 +494,7 @@ pnbd_nocov_expectation <- function(r, s, alpha_0, beta_0, vT_i) {
 }
 
 #' @rdname pnbd_expectation
-pnbd_staticcov_expectation <- function(r, s, alpha_0, beta_0, vT_i, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans) {
-    .Call(`_CLVTools_pnbd_staticcov_expectation`, r, s, alpha_0, beta_0, vT_i, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans)
+pnbd_staticcov_expectation <- function(r, s, vAlpha_i, vBeta_i, vT_i) {
+    .Call(`_CLVTools_pnbd_staticcov_expectation`, r, s, vAlpha_i, vBeta_i, vT_i)
 }
 

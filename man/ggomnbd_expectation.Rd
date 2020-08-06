@@ -8,18 +8,7 @@
 \usage{
 ggomnbd_nocov_expectation(r, alpha_0, b, s, beta_0, vT_i)
 
-ggomnbd_staticcov_expectation(
-  r,
-  alpha_0,
-  b,
-  s,
-  beta_0,
-  vT_i,
-  vCovParams_trans,
-  vCovParams_life,
-  mCov_life,
-  mCov_trans
-)
+ggomnbd_staticcov_expectation(r, b, s, vAlpha_i, vBeta_i, vT_i)
 }
 \arguments{
 \item{r}{shape parameter of the Gamma distribution of the purchase process.
@@ -36,13 +25,13 @@ The smaller s, the stronger the heterogeneity of customer lifetimes.}
 
 \item{vT_i}{Number of periods since the customer came alive}
 
-\item{vCovParams_trans}{Vector of estimated parameters for the transaction covariates.}
-
-\item{vCovParams_life}{Vector of estimated parameters for the lifetime covariates.}
+\item{mCov_trans}{Matrix containing the covariates data affecting the transaction process. One column for each covariate.}
 
 \item{mCov_life}{Matrix containing the covariates data affecting the lifetime process. One column for each covariate.}
 
-\item{mCov_trans}{Matrix containing the covariates data affecting the transaction process. One column for each covariate.}
+\item{vCovParams_trans}{Vector of estimated parameters for the transaction covariates.}
+
+\item{vCovParams_life}{Vector of estimated parameters for the lifetime covariates.}
 }
 \value{
 Returns the expected transaction values according to the chosen model.

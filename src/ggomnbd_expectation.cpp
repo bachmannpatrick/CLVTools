@@ -84,22 +84,13 @@ arma::vec ggomnbd_nocov_expectation(const double r,
 //' @rdname ggomnbd_expectation
 // [[Rcpp::export]]
 arma::vec ggomnbd_staticcov_expectation(const double r,
-                                        const double alpha_0,
                                         const double b,
                                         const double s,
-                                        const double beta_0,
-                                        const arma::vec& vT_i,
-                                        const arma::vec& vCovParams_trans,
-                                        const arma::vec& vCovParams_life,
-                                        const arma::mat& mCov_life,
-                                        const arma::mat& mCov_trans){
+                                        const arma::vec& vAlpha_i,
+                                        const arma::vec& vBeta_i,
+                                        const arma::vec& vT_i){
 
-  // Build alpha and beta -------------------------------------------
-  //    With static covariates: alpha and beta different per customer
-
-  const arma::vec vAlpha_i = ggomnbd_staticcov_alpha_i(alpha_0, vCovParams_trans, mCov_trans);
-  const arma::vec vBeta_i  = ggomnbd_staticcov_beta_i(beta_0, vCovParams_life, mCov_life);
-  const double n = vAlpha_i.n_elem;
+  const double n = vT_i.n_elem;
   const arma::vec vR = ggomnbd_staticcov_r(r, n);
 
   return(ggomnbd_expectation(b,

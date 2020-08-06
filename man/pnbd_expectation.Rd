@@ -8,17 +8,7 @@
 \usage{
 pnbd_nocov_expectation(r, s, alpha_0, beta_0, vT_i)
 
-pnbd_staticcov_expectation(
-  r,
-  s,
-  alpha_0,
-  beta_0,
-  vT_i,
-  vCovParams_trans,
-  vCovParams_life,
-  mCov_life,
-  mCov_trans
-)
+pnbd_staticcov_expectation(r, s, vAlpha_i, vBeta_i, vT_i)
 }
 \arguments{
 \item{r}{shape parameter of the Gamma distribution of the purchase process. The smaller r, the stronger the heterogeneity of the purchase process}
@@ -30,14 +20,6 @@ pnbd_staticcov_expectation(
 \item{beta_0}{scale parameter for the Gamma distribution for the lifetime process.}
 
 \item{vT_i}{Number of periods since the customer came alive}
-
-\item{vCovParams_trans}{Vector of estimated parameters for the transaction covariates.}
-
-\item{vCovParams_life}{Vector of estimated parameters for the lifetime covariates.}
-
-\item{mCov_life}{Matrix containing the covariates data affecting the lifetime process. One column for each covariate.}
-
-\item{mCov_trans}{Matrix containing the covariates data affecting the transaction process. One column for each covariate.}
 }
 \value{
 Returns the expected transaction values according to the chosen model.
@@ -45,17 +27,6 @@ Returns the expected transaction values according to the chosen model.
 \description{
 Computes the expected number of repeat transactions in the interval (0, vT_i]
 for a randomly selected customer, where 0 is defined as the point when the customer came alive.
-}
-\details{
-\code{mCov_trans} is a matrix containing the covariates data of
-the time-invariant covariates that affect the transaction process.
-Each column represents a different covariate. For every column a gamma parameter
-needs to added to \code{vCovParams_trans} at the respective position.
-
-\code{mCov_life} is a matrix containing the covariates data of
-the time-invariant covariates that affect the lifetime process.
-Each column represents a different covariate. For every column a gamma parameter
-needs to added to \code{vCovParams_life} at the respective position.
 }
 \references{
 Schmittlein DC, Morrison DG, Colombo R (1987). \dQuote{Counting Your Customers:
