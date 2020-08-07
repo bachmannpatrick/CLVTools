@@ -15,8 +15,6 @@
 //' @param vA_i Vector of individual parameters a
 //' @param vB_i Vector of individual parameters b
 //'
-//' @template template_details_rcppcovmatrix
-//'
 //' @template template_references_bgnbd
 //'
 //' @template template_expectation_return

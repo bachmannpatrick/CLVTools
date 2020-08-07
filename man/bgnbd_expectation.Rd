@@ -34,9 +34,6 @@ Returns the expected transaction values according to the chosen model.
 Computes the expected number of repeat transactions in the interval (0, vT_i]
 for a randomly selected customer, where 0 is defined as the point when the customer came alive.
 }
-\details{
-
-}
 \references{
 Fader PS, Hardie BGS, Lee, KL (2005). \dQuote{\dQuote{Counting Your Customers} the Easy Way:
 An Alternative to the Pareto/NBD Model} Marketing Science, 24(2), 275–284.
