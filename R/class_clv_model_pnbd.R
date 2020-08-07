@@ -262,7 +262,50 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.no.cov"),
                        fct.expectation = fct.expectation, clv.time = clv.fitted@clv.data@clv.time))
 })
 
-setMethod("clv.model.pmf", signature=(clv.model="clv.model.pnbd.no.cov"), function(clv.model, clv.fitted, x){
-  summary(clv.fitted) # placeholder to see if generics work properly
+setMethod("clv.model.pmf", signature=(clv.model="clv.model.pnbd.no.cov"), function(clv.model, clv.fitted, x, t){
+
+  r <- clv.fitted@prediction.params.model[["r"]]
+
+  alpha <- clv.fitted@prediction.params.model[["alpha"]]
+
+  beta <- clv.fitted@prediction.params.model[["beta"]]
+
+  s <- clv.fitted@prediction.params.model[["s"]]
+
+  part1.1 <- gamma(r + x)/(gamma(r) * factorial(x))
+
+  part1.2 <- (alpha / (alpha + t))^r
+
+  part1.3 <- (t / (alpha + t))^x
+
+  part1.4 <- (beta / (beta + t))^s
+
+  part1 <- part1.1 * part1.2 * part1.3 * part1.4
+
+  part2 <- alpha^r * beta^s *(beta(r+x, s+1)/beta(r,s))
+
+  if(alpha >= beta){
+    B1 <- vec_gsl_hyp2f1_e(r+s, s+1, r+s+x+1, (alpha-beta)/alpha)$value/(alpha^(r+s))
+  } else {
+    B1 <- (vec_gsl_hyp2f1_e(r+s, r+x, r+s+x+1, (beta-alpha)/beta))$value/(beta^(r+s))
+  }
+
+  B2 <- function(r, alpha, beta, s, x, i){
+    if(alpha >= beta){
+      result <- vec_gsl_hyp2f1_e(r+s+i, s+1, r+s+x+1, (alpha-beta)/(alpha+t))$value/((alpha+1)^(r+s+i))
+    } else {
+      result <- vec_gsl_hyp2f1_e(r+s+i, r+x, r+s+x+1, (beta-alpha)/(beta+1))$value/((beta+t)^(r+s+i))
+    }
+
+    return(result)
+  }
+
+
+  B2.total <- 0
+  for(i in 0:x){
+    B2.total <- B2.total + (gamma(r+s+i)*t^i)/(gamma(r+s) * factorial(i))*B2(r=r, alpha=alpha, beta=beta, s=s, x=x, i=i)
+  }
+
+  return(part1 + part2*(B1 - B2.total))
 })
 
