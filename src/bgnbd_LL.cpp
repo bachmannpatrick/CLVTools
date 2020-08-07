@@ -26,15 +26,12 @@ arma::vec bgnbd_LL_ind(const double r,
                        const arma::vec& vX,
                        const arma::vec& vT_x,
                        const arma::vec& vT_cal){
-  const unsigned int n = vX.n_elem;
 
-  arma::vec vA(n), vB(n), vBetaRatio(n);
+  const arma::vec vPart1 = r * arma::log(vAlpha_i) + arma::lgamma(r + vX) - std::lgamma(r) - (r + vX) % arma::log(vAlpha_i + vT_x);
 
-  vA = r * arma::log(vAlpha_i) + arma::lgamma(r + vX) - std::lgamma(r) - (r + vX) % arma::log(vAlpha_i + vT_x);
+  const arma::vec vPart2 = beta_ratio(vA_i, (vB_i+vX), vA_i, vB_i) % clv::vec_pow((vAlpha_i + vT_x)/(vAlpha_i + vT_cal), (r + vX)) + ((vX > 0)) % beta_ratio(vA_i + 1 , (vB_i + vX - 1), vA_i, vB_i);
 
-  vB = beta_ratio(vA_i, (vB_i+vX), vA_i, vB_i) % clv::vec_pow((vAlpha_i + vT_x)/(vAlpha_i + vT_cal), (r + vX)) + ((vX > 0)) % beta_ratio(vA_i + 1 , (vB_i + vX - 1), vA_i, vB_i);
-
-  arma::vec vLL = vA + arma::log(vB);
+  arma::vec vLL = vPart1 + arma::log(vPart2);
 
   return(vLL);
 }
@@ -97,9 +94,6 @@ arma::vec bgnbd_staticcov_LL_ind(const arma::vec& vParams,
   const double alpha_0  = exp(vModel_log_params(1));
   const double a_0      = exp(vModel_log_params(2));
   const double b_0      = exp(vModel_log_params(3));
-
-  const double n = vX.n_elem;
-
 
 
   // Build alpha, a and b --------------------------------------------
