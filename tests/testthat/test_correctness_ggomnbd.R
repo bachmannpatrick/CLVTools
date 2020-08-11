@@ -32,16 +32,34 @@ fct.testthat.correctness.clvfitted.correct.coefs(method = ggomnbd,
 
 
 # Compare vs Matlab code ---------------------------------------------------------------------------------------
-context("Correctness - GGompertz/NBD nocov - Expectation")
 
-expect_silent(clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
-                                          time.unit = "w", estimation.split = 40))
-expect_silent(clv.ggomnbd <- ggomnbd(clv.data.apparel, verbose = FALSE))
 
-expect_silent(clv.data.static.cov <- SetStaticCovariates(clv.data.apparel,
-                                                         data.cov.life = apparelStaticCov,names.cov.life = c("Gender", "Channel"),
-                                                         data.cov.trans = apparelStaticCov,names.cov.trans = c("Gender", "Channel")))
-expect_silent(clv.ggomnbd <- ggomnbd(clv.data.static.cov, verbose = FALSE))
+# Bemmaor and Glady: Implementing in Matlab paper, p.7
+# intg(i,j)=quadgk(@(tau)tau.*exp(bg.*tau).*(betag+exp(bg*tau)-1).^-(sg+1),0,t);
+# gg_xt_cum(i,j)=rg./ag. * (((betag./(betag+exp(bg*t)-1)).^sg).*t+bg.*sg.*betag.^sg.*intg(i,j));
+fct.ggomnbd.expectation <- function(r, alpha, beta, b, s, t_i){
+  term1 <- (r / alpha)
+  term2 <- ((beta / (beta+exp(b*t_i)-1) )^s) *(t_i)
+  term3 <- b * s * (beta^s)
+  term4 <- integrate(f = function(tau){tau * exp(b*tau) * ((beta + exp(b*tau) - 1)^(-(s+1)))},
+                     lower = 0, upper = t_i,
+                     rel.tol = 1e-8, abs.tol = 1e-8)$value
+
+  return(term1 * (term2 + (term3 * term4)))
+}
+
+fct.ggomnbd.expectation.R <- function(params_i.t){
+  return(params_i.t[, sapply(seq_along(t_i), function(i){
+    return(fct.ggomnbd.expectation(r=r[i],b=b[i],s=s[i], alpha=alpha_i[i], beta=beta_i[i], t_i=t_i[i]))})])
+}
+
+# To test expectation correctly, fake that some customers only come alive later
+apparelTrans.later <- copy(apparelTrans)
+apparelTrans.later[Id %in% c("1", "10", "100"), Date := Date + lubridate::weeks(10)]
+clv.apparel.static <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = apparelTrans.later,
+                                                                  data.apparelStaticCov = apparelStaticCov,
+                                                                  estimation.split = 38)
+expect_silent(clv.ggomnbd <- ggomnbd(clv.data = clv.apparel.static, verbose = FALSE))
 
 r     <- clv.ggomnbd@prediction.params.model[["r"]]
 alpha <- clv.ggomnbd@prediction.params.model[["alpha"]]
@@ -59,55 +77,51 @@ expect_silent(m.cov.data.trans <- clv.data.get.matrix.data.cov.trans(clv.data=cl
 expect_silent(alpha_i <- alpha * exp( -m.cov.data.trans %*% clv.ggomnbd@prediction.params.trans))
 expect_silent(beta_i  <- beta  * exp( -m.cov.data.life  %*% clv.ggomnbd@prediction.params.life))
 
-# .Expectation ------------------------------------------------------------------------------------------
-test_that("Expectation same result as previously existing R implementation", {
 
 
-  # Bemmaor and Glady: Implementing in Matlab paper, p.7
-  # intg(i,j)=quadgk(@(tau)tau.*exp(bg.*tau).*(betag+exp(bg*tau)-1).^-(sg+1),0,t);
-  # gg_xt_cum(i,j)=rg./ag. * (((betag./(betag+exp(bg*t)-1)).^sg).*t+bg.*sg.*betag.^sg.*intg(i,j));
+# . Expectation -----------------------------------------------------------------------------------------
+context("Correctness - GGompertz/NBD nocov - Expectation")
 
-  fct.ggomnbd.expectation <- function(r, alpha, beta, b, s, t_i){
-    term1 <- (r / alpha)
-    term2 <- ((beta / (beta+exp(b*t_i)-1) )^s) *(t_i)
-    term3 <- b * s * (beta^s)
-    term4 <- integrate(f = function(tau){tau * exp(b*tau) * ((beta + exp(b*tau) - 1)^(-(s+1)))},
-                       lower = 0, upper = t_i,
-                       rel.tol = 1e-8, abs.tol = 1e-8)$value
+test_that("Expectation in Rcpp matches expectation in R (nocov)", {
+  skip_on_cran()
 
-    return(term1 * (term2 + (term3 * term4)))
-  }
+  expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow,
+                                     date.format = "ymd", time.unit = "W", estimation.split = 38))
+  expect_silent(fitted.cdnow <- ggomnbd(clv.data = clv.cdnow, verbose = FALSE))
 
-  vec_t_i <- 0:50
-
-
-  # Nocov
-  expect_silent(expectation_R <- sapply(vec_t_i, fct.ggomnbd.expectation,
-                                        r=r, alpha=alpha, beta=beta, b= b,s=s))
-
-  expect_silent(expectation_Rcpp <- ggomnbd_nocov_expectation(r = r,alpha_0 = alpha,beta_0  = beta, b = b,s = s,
-                                                              vT_i = vec_t_i))
-  expect_equal(expectation_R, drop(expectation_Rcpp))
-
-
-
-
-  # Static cov
-  expect_silent(expectation_R <- sapply(seq(vec_t_i), function(i){
-    fct.ggomnbd.expectation(r = r,b = b,s = s,
-                            alpha = alpha_i[i], beta  = beta_i[i], t_i = vec_t_i[i])}))
-
-
-  expect_silent(expectation_Rcpp <- ggomnbd_staticcov_expectation(r = r,alpha_0 = alpha,beta_0  = beta, b = b,s = s,
-                                                                  vT_i    = vec_t_i,
-                                                                  vCovParams_trans = clv.ggomnbd@prediction.params.trans,
-                                                                  vCovParams_life  = clv.ggomnbd@prediction.params.life,
-                                                                  mCov_life  = m.cov.data.life[seq_along(vec_t_i), ],
-                                                                  mCov_trans = m.cov.data.trans[seq_along(vec_t_i), ]))
+  params_i <- fitted.cdnow@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
+  params_i[, r       := fitted.cdnow@prediction.params.model[["r"]]]
+  params_i[, alpha_i := fitted.cdnow@prediction.params.model[["alpha"]]]
+  params_i[, b       := fitted.cdnow@prediction.params.model[["b"]]]
+  params_i[, s       := fitted.cdnow@prediction.params.model[["s"]]]
+  params_i[, beta_i  := fitted.cdnow@prediction.params.model[["beta"]]]
 
   # Differences were verified to stem from numerical integration
-  expect_equal(expectation_R, drop(expectation_Rcpp), tolerance = 1e-4)
+  fct.testthat.correctness.clvfittedtransactions.same.expectation.in.R.and.Cpp(fct.expectation.R = fct.ggomnbd.expectation.R,
+                                                                               params_i = params_i,
+                                                                               obj.fitted = fitted.cdnow)
 })
+
+test_that("Expectation in Rcpp matches expectation in R (staticcov)", {
+  skip_on_cran()
+
+  params_i <- clv.ggomnbd@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
+  params_i[, r       := r]
+  params_i[, s       := s]
+  params_i[, b       := b]
+  params_i[, alpha_i := alpha_i]
+  params_i[, beta_i  := beta_i]
+
+  # Differences were verified to stem from numerical integration
+  fct.testthat.correctness.clvfittedtransactions.same.expectation.in.R.and.Cpp(fct.expectation.R = fct.ggomnbd.expectation.R,
+                                                                               params_i = params_i,
+                                                                               obj.fitted = clv.ggomnbd,
+                                                                               tolerance = 1e-6)
+})
+
+
+
+
 
 
 # .CET ------------------------------------------------------------------------------------------
@@ -119,7 +133,6 @@ test_that("Same result for CET as previous implementation based on matlab code",
   fct.ggomnbd.CET <- function(r, b, s, alpha_i, beta_i, x, t.x, Tcal, periods, palive){
     alpha_i <- alpha_i + x
     beta_i <- beta_i + exp(b * Tcal) - 1
-
 
     # From Matlab code:
     # gg_xt_cum_up(i)=p_i(i).*rstar./astar.*  (((betastar./(betastar+exp(bg*t)-1)).^sg).*t+bg.*sg.*betastar.^sg.*intgup_h(i));

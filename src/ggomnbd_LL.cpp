@@ -233,12 +233,14 @@ arma::vec ggomnbd_nocov_r(const double r, const double n){
   return clv::vec_fill(r, n);
 }
 
+// [[Rcpp::export]]
 arma::vec ggomnbd_staticcov_alpha_i(const double alpha_0,
                                     const arma::vec& vCovParams_trans,
                                     const arma::mat& mCov_trans){
    return alpha_0 * arma::exp(((mCov_trans * (-1)) * vCovParams_trans));
 }
 
+// [[Rcpp::export]]
 arma::vec ggomnbd_staticcov_beta_i(const double beta_0,
                                    const arma::vec& vCovParams_life,
                                    const arma::mat& mCov_life){

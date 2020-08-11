@@ -170,21 +170,25 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.static.co
 
   #calculate alpha_i, beta_i
   params_i <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
+
   m.cov.data.life  <- clv.data.get.matrix.data.cov.life(clv.data=clv.fitted@clv.data, correct.row.names=params_i$Id,
                                                         correct.col.names=names(clv.fitted@prediction.params.life))
   m.cov.data.trans <- clv.data.get.matrix.data.cov.trans(clv.data=clv.fitted@clv.data, correct.row.names=params_i$Id,
                                                          correct.col.names=names(clv.fitted@prediction.params.trans))
+  params_i[, alpha_i := pnbd_staticcov_alpha_i(alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+                                               vCovParams_trans = clv.fitted@prediction.params.trans,
+                                               mCov_trans = m.cov.data.trans)]
+  params_i[, beta_i  := pnbd_staticcov_beta_i(beta_0 = clv.fitted@prediction.params.model[["beta"]],
+                                              vCovParams_life = clv.fitted@prediction.params.life,
+                                              mCov_life = m.cov.data.life)]
 
   # To caluclate expectation at point t for customers alive in t, given in params_i.t
-  fct.expectation <- function(params_i.t) {return(pnbd_staticcov_expectation(r = clv.fitted@prediction.params.model[["r"]],
-                                                                             s = clv.fitted@prediction.params.model[["s"]],
-                                                                             alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
-                                                                             beta_0 = clv.fitted@prediction.params.model[["beta"]],
-                                                                             vT_i = params_i.t$t_i,
-                                                                             vCovParams_trans = clv.fitted@prediction.params.trans,
-                                                                             vCovParams_life = clv.fitted@prediction.params.life,
-                                                                             mCov_life = m.cov.data.trans,
-                                                                             mCov_trans = m.cov.data.life))}
+  fct.expectation <- function(params_i.t) {
+    return(drop(pnbd_staticcov_expectation(r        = clv.fitted@prediction.params.model[["r"]],
+                                           s        = clv.fitted@prediction.params.model[["s"]],
+                                           vAlpha_i = params_i.t$alpha_i,
+                                           vBeta_i  = params_i.t$beta_i,
+                                           vT_i     = params_i.t$t_i)))}
 
   return(DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
                        fct.expectation = fct.expectation, clv.time = clv.fitted@clv.data@clv.time))

@@ -156,18 +156,21 @@ arma::vec bgnbd_nocov_b_i(const double b, const int n){
   return clv::vec_fill(b, n);
 }
 
+// [[Rcpp::export]]
 arma::vec bgnbd_staticcov_alpha_i(const double alpha_0,
                                   const arma::vec& vCovParams_trans,
                                   const arma::mat& mCov_trans){
   return alpha_0 * arma::exp((mCov_trans * (-1)) * vCovParams_trans);
 }
 
+// [[Rcpp::export]]
 arma::vec bgnbd_staticcov_a_i(const double a_0,
                               const arma::vec& vCovParams_life,
                               const arma::mat& mCov_life){
   return a_0 * arma::exp(mCov_life * vCovParams_life);
 }
 
+// [[Rcpp::export]]
 arma::vec bgnbd_staticcov_b_i(const double b_0,
                               const arma::vec& vCovParams_life,
                               const arma::mat& mCov_life){
