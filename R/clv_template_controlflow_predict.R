@@ -1,13 +1,5 @@
 clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, ...){
 
-  # ***TODO: For development purposes only: All additional args have to be named!
-  l.elipsis <- list(...)
-  if(length(l.elipsis)>0){
-    names.ellipsis.args <- names(list(...))
-    stopifnot(!is.null(names.ellipsis.args))
-    stopifnot(all(nchar(names(list(...)))>0))
-  }
-
   # Check if can predict -----------------------------------------------------------------------------------------
   # Cannot predict if there are any NAs in any of the prediction.params
   clv.controlflow.check.prediction.params(clv.fitted = clv.fitted)
