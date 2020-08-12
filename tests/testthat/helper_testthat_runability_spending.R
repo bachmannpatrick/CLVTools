@@ -61,7 +61,7 @@ fct.testthat.runability.clvfittedspending <- function(name.model, method,
                                                              l.args.test.all.s3 = l.args.test.all.s3.cov)
 
   # And dyncov data as well (has holdout, but can use eith way)
-  fitted.dyncov    <- fct.helper.load.fitted.dyncov()
+  fitted.dyncov    <- fct.helper.dyncov.load.fitted()
   clv.data.dyn.cov <- fitted.dyncov@clv.data
 
   l.args.test.all.s3.dyncov <- list(full.names = param.names, clv.newdata.nohold = clv.data.dyn.cov,

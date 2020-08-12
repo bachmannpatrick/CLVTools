@@ -1,4 +1,4 @@
-fct.helper.quickfit.dyncov <- function(data.apparelTrans, data.apparelDynCov){
+fct.helper.dyncov.quickfit <- function(data.apparelTrans, data.apparelDynCov){
   # Create dyncov model, quickly
   expect_silent(clv.apparel <- clvdata(data.transactions = data.apparelTrans, date.format = "ymd",
                                        time.unit = "w",estimation.split = 38))
@@ -26,8 +26,8 @@ fct.helper.create.clvdata.apparel.dyncov <- function(data.apparelTrans,  data.ap
   return(clv.dyn)
 }
 
-fct.helper.load.fitted.dyncov <- function(){
-  # Created using helper.quickfit.dyncov
+fct.helper.dyncov.load.fitted <- function(){
+  # Created using fct.helper.dyncov.quickfit
   return(readRDS(file = "fitted_dyncov.rds"))
 }
 
@@ -54,7 +54,7 @@ fct.helper.dyncov.fit.LL.once <- function(clv.data, params){
 fct.testthat.correctness.dyncov.expectation <- function(data.apparelTrans, data.apparelDynCov){
   skip_on_cran()
 
-  clv.dyncov <- fct.helper.load.fitted.dyncov()
+  clv.dyncov <- fct.helper.dyncov.load.fitted()
 
   # For customer 1041, set all dyncov data to 0
   data.apparelDynCov <- copy(data.apparelDynCov)
@@ -64,7 +64,7 @@ fct.testthat.correctness.dyncov.expectation <- function(data.apparelTrans, data.
 
   clv.dyncov@clv.data@data.cov.life  <- copy(data.apparelDynCov)
   clv.dyncov@clv.data@data.cov.trans <- copy(data.apparelDynCov)
-  # clv.dyncov <- fct.helper.quickfit.dyncov(data.apparelTrans = data.apparelTrans, data.apparelDynCov = data.apparelDynCov)
+  # clv.dyncov <- fct.helper.dyncov.quickfit(data.apparelTrans = data.apparelTrans, data.apparelDynCov = data.apparelDynCov)
 
 
   # Same params for life and trans to check Bbar_i = Dbar_i
@@ -161,7 +161,7 @@ fct.testthat.correctness.dyncov.LL <- function(data.apparelTrans, data.apparelDy
   test_that("Dyncov LL yields correct intemdiate results",{
     skip_on_cran()
 
-    clv.dyncov <- fct.helper.load.fitted.dyncov()
+    clv.dyncov <- fct.helper.dyncov.load.fitted()
     params.model <- c(log.r=1, log.alpha=0, log.s=1.23, log.beta = 2.344)
 
     # Gamma=0 ------------------------------------------------------------------------------------------------
@@ -250,7 +250,7 @@ fct.testthat.correctness.dyncov.CET <- function(data.apparelTrans, data.apparelD
   data.apparelDynCov[, Gender    := sample(x = c(0, 1), size = 1), by="Id"]
   data.apparelDynCov[, Channel   := sample(x = c(0, 1), size = 1), by="Id"]
 
-  clv.dyncov <- fct.helper.load.fitted.dyncov()
+  clv.dyncov <- fct.helper.dyncov.load.fitted()
   clv.dyncov@clv.data@data.cov.life  <- copy(data.apparelDynCov)
   clv.dyncov@clv.data@data.cov.trans <- copy(data.apparelDynCov)
   clv.dyncov@prediction.params.life  <- c(Marketing = 1.23, Gender = 0.678, Channel = 2.34)
