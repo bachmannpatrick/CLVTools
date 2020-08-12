@@ -24,6 +24,9 @@
 #' # summary of the fitted model
 #' summary(apparel.<%=name_model_short%>)
 #'
+#' # Plot model vs empirical distribution
+#' plot(apparel.<%=name_model_short%>)
+#'
 #' # predict mean spending and compare against
 #' #    actuals in the holdout period
 #' predict(apparel.<%=name_model_short%>)

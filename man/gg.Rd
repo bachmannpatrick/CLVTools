@@ -47,8 +47,11 @@ Model parameters for the G/G model are \code{p, q, and gamma}. \cr
 If no start parameters are given, 1.0 is used for all model parameters. All parameters are required
 to be > 0.
 
+The Gamma-Gamma model cannot be estimated for data that contains negative prices.
+Customers with a mean spending of zero or a transaction count of zero are ignored during model fitting.
+
 \subsection{The G/G model}{
-The G/G model allows to predict a value for future customer transactions. Usually, the G/G model is used 
+The G/G model allows to predict a value for future customer transactions. Usually, the G/G model is used
 in combination with a probabilistic model predicting customer transaction such as the Pareto/NBD or the BG/NBD model.
 }
 }
@@ -78,6 +81,9 @@ coef(apparel.gg)
 
 # summary of the fitted model
 summary(apparel.gg)
+
+# Plot model vs empirical distribution
+plot(apparel.gg)
 
 # predict mean spending and compare against
 #    actuals in the holdout period

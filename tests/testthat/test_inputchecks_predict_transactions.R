@@ -1,14 +1,3 @@
-# # **TODO: Prediction end not a date/numeric/char (= same tests as for plot)
-# fct.helper.inputchecks.single.form.of.date <- function(){
-#   test_that("Fails for NA",{
-#
-#   })
-# }
-
-
-
-
-
 fct.testthat.inputchecks.clvfittedtransactions.predict.discountfactor.out.of.range <- function(clv.fitted.transactions){
   test_that("Fails if discount factor out of [0,1)", {
     skip_on_cran()
