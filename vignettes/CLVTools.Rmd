@@ -1,14 +1,14 @@
 ---
 title: "Walkthrough for the CLVTools Package"
-output: 
-  pdf_document: 
+output:
+  html_document:
+    df_print: paged
+  pdf_document:
     latex_engine: xelatex
     number_sections: yes
-vignette: >
-  %\VignetteIndexEntry{The CLVTools Package}
-  %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{knitr::rmarkdown}
 bibliography: bibliography.bib
+vignette: |
+  %\VignetteIndexEntry{The CLVTools Package} %\VignetteEncoding{UTF-8} %\VignetteEngine{knitr::rmarkdown}
 ---
 
 
