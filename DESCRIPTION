@@ -1,7 +1,7 @@
 Package: CLVTools
 Title: Tools for Customer Lifetime Value Estimation
 Version: 0.7.0
-Date: 2020-06-25
+Date: 2020-08-14
 Authors@R: c(
     person(given="Patrick", family="Bachmann",    email = "patrick.bachmann@business.uzh.ch", role = c("cre","aut")),
     person(given="Jeffrey", family="Naef",        email = "naef@stat.math.ethz.ch",role = "aut"),
