@@ -101,6 +101,9 @@ The smaller s, the stronger the heterogeneity of customer lifetimes. \cr
 The smaller r, the stronger the heterogeneity of the purchase process.\cr
 \code{alpha}: scale parameter of the Gamma distribution of the purchase process.
 
+Based on these parameters, the average purchase rate while customers are active
+is r/alpha and the average dropout rate is s/beta.
+
 Ideally, the starting parameters for r and s represent your best guess
 concerning the heterogeneity of customers in their buy and die rate.
 If covariates are included into the model additionally parameters for the
