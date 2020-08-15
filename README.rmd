@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 Today, customer lifetime value (CLV) is the central metric for valuing customers. It describes the long-term economic value of customers and gives managers an idea of how customers will evolve over time. To model CLVs in continuous non-contractual business settings such as retailers, probabilistic customer attrition models are the preferred choice in literature and practice. 
 
 
-The R package **CLVTools** provides an efficient and easy to use implementation framework for probabilistic customer attrition models in non-contractual settings. Building up on the learnings of other implementations, the package adopts S4 classes to allow constructing rich and rather complex models that nevertheless still are easy to apply for the end user. The framework is capable to accommodate a variety of probabilistic customer attrition models for non-contractual settings in continuous and discrete time.
+The R package `CLVTools` provides an efficient and easy to use implementation framework for probabilistic customer attrition models in non-contractual settings. Building up on the learnings of other implementations, the package adopts S4 classes to allow constructing rich and rather complex models that nevertheless still are easy to apply for the end user. The framework is capable to accommodate a variety of probabilistic customer attrition models for non-contractual settings in continuous and discrete time.
 
 Currently, CLVTools implements the following probabilistic models:
 
@@ -46,7 +46,7 @@ Currently, CLVTools implements the following probabilistic models:
 
 (8) Gamma/Gamma model to estimate customer spending (Colombo & Jiang 1999; Fader, Hardie & Lee 2005; Fader & Hardie 2013)
 
-In future versions of **CLVTools** the following models are added. See [GitHub Issues](https://github.com/bachmannpatrick/CLVTools/projects) for a time-line.
+In future versions of `CLVTools` the following models are added. See [GitHub Issues](https://github.com/bachmannpatrick/CLVTools/projects) for a time-line.
 
 (9) Standard BG/BB model (Fader, Hardie, & Shang 2010)
 
@@ -64,13 +64,13 @@ In addition the framework features a system of layers between the optimizer and 
 
 
 ## Installation 
-Install the most recent stable release from CRAN:
+Install the most recent **stable release from CRAN**:
      
 ```
 install.packages("CLVTools")
 ```
 
-Install the development version from GitHub (using the `devtools` package:
+Install the **development version from GitHub** (using the `devtools` package:
 ```
 devtools::install_github("bachmannpatrick/CLVTools", ref = "development")
 ```
