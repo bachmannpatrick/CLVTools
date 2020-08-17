@@ -12,7 +12,9 @@
 #'
 #' @description
 #' Plot the actual repeat transactions and overlay it with the repeat transaction as predicted
-#' by the fitted model (unconditional expectation).
+#' by the fitted model. Currently, following previous literature, the in-sample unconditional
+#' expectation is plotted in the holdout period. In the future, we might add the option to also
+#' plot the summed CET for the holdout period as an alternative evaluation metric.
 #'
 #' @template template_details_predictionend
 #'
