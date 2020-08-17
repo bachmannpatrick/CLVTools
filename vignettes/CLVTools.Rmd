@@ -7,8 +7,10 @@ output:
     latex_engine: xelatex
     number_sections: yes
 bibliography: bibliography.bib
-vignette: |
-  %\VignetteIndexEntry{The CLVTools Package} %\VignetteEncoding{UTF-8} %\VignetteEngine{knitr::rmarkdown}
+vignette: >
+  %\VignetteIndexEntry{The CLVTools Package} 
+  %\VignetteEncoding{UTF-8} 
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 
