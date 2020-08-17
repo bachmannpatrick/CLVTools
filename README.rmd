@@ -146,7 +146,7 @@ clv.apparel <- clvdata(apparelTrans,
 ```
 
 
-Be aware that probablististic models such as the ones implemented in CLVTools are usually applied to specific customer cohorts. That means, you analaze customer that have joined your company at the same time (usually same day, week, month, or quarter). For more information on cohort analysis, see also [here](https://en.wikipedia.org/wiki/Cohort_analysis). Consequently, the data apparelTrans in this example is not the full transaction records of a fashion retailer, but rather only the customer cohort of 250 customers purchasing for the first time at this business on the day of 2005-01-03. 
+Be aware that probabilistic models such as the ones implemented in CLVTools are usually applied to specific customer cohorts. That means, you analyze customer that have joined your company at the same time (usually same day, week, month, or quarter). For more information on cohort analysis, see also [here](https://en.wikipedia.org/wiki/Cohort_analysis). Consequently, the data apparelTrans in this example is not the full transaction records of a fashion retailer, but rather only the customer cohort of 250 customers purchasing for the first time at this business on the day of 2005-01-03. 
 
 As a first probabilistic latent attrition model we estimate the standard Pareto/NBD model and therefore, use the command `pnbd()` to fit the model and estimate model parameters. Other models such as the BG/NBD model (`bgnbd()`) and the GGomp/NBD (`ggomnbd()`) are also available.
 
