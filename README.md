@@ -77,7 +77,7 @@ Install the most recent **stable release from CRAN**:
     install.packages("CLVTools")
 
 Install the **development version from GitHub** (using the `devtools`
-package:
+package):
 
     devtools::install_github("bachmannpatrick/CLVTools", ref = "development")
 
