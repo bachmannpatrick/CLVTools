@@ -1,9 +1,9 @@
 # . clv.controlflow.estimate.check.inputs ------------------------------------------------------------------------------
 setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted,  start.params.model, optimx.args, verbose, # clv.fitted input args
-                                                                                                                                 names.cov.life, names.cov.trans,
-                                                                                                                                 start.params.life, start.params.trans,
-                                                                                                                                 reg.lambdas,
-                                                                                                                                 names.cov.constr, start.params.constr, cl, ...){
+                                                                                                                                                     names.cov.life, names.cov.trans,
+                                                                                                                                                     start.params.life, start.params.trans,
+                                                                                                                                                     reg.lambdas,
+                                                                                                                                                     names.cov.constr, start.params.constr, cl, ...){
 
   # check input for clv.fitted.transactions
   callNextMethod()
@@ -57,7 +57,7 @@ setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitte
 
   # Reduce to user's desired covariates only -----------------------------------------------------------
   clv.fitted@clv.data <- clv.data.reduce.covariates(clv.data=clv.fitted@clv.data, names.cov.life=names.cov.life,
-                                             names.cov.trans=names.cov.trans)
+                                                    names.cov.trans=names.cov.trans)
 
   # is regularization used? ---------------------------------------------------------------------------
   #   Yes:  Indicate and store lambdas
