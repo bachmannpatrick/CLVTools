@@ -41,7 +41,7 @@ test_that("Factor and char covariates result in same dummies",{
     expect_silent(dyn.char.life  <- do.call(SetDynamicCovariates, modifyList(l.data, alist(data.cov.life=apparelDynCov.char))))
     expect_silent(dyn.char.trans <- do.call(SetDynamicCovariates, modifyList(l.data, alist(data.cov.trans=apparelDynCov.char))))
     expect_silent(dyn.char.both  <- do.call(SetDynamicCovariates, modifyList(l.data, alist(data.cov.life=apparelDynCov.char,
-                                                                                               data.cov.trans=apparelDynCov.char))))
+                                                                                           data.cov.trans=apparelDynCov.char))))
 
     expect_silent(dyn.factor.life  <- do.call(SetDynamicCovariates, modifyList(l.data, alist(data.cov.life=apparelDynCov.factor))))
     expect_silent(dyn.factor.trans <- do.call(SetDynamicCovariates, modifyList(l.data, alist(data.cov.trans=apparelDynCov.factor))))
@@ -66,8 +66,8 @@ test_that("Cuts to correct range if more cov data before estimation start than n
   apparelDynCov.longer.lower <-
     data.table::rbindlist(list(apparelDynCov,
                                data.table::data.table(Id=1, Cov.Date = seq(from=apparelDynCov[, min(Cov.Date)]-lubridate::weeks(1),
-                                                   by="-1 weeks",length.out = 10),
-                              Marketing=1, Gender=0, Channel=1)), use.names = TRUE)
+                                                                           by="-1 weeks",length.out = 10),
+                                                      Marketing=1, Gender=0, Channel=1)), use.names = TRUE)
 
 
   fct.longer.lower.cov <- function(clv.data, dt.cov){
@@ -78,7 +78,7 @@ test_that("Cuts to correct range if more cov data before estimation start than n
     expect_message(dyn.longer.trans <- do.call(SetDynamicCovariates, modifyList(l.data, alist(data.cov.trans=dt.cov))),
                    regexp = "ransaction covariate data before")
     expect_message(dyn.longer.both  <- do.call(SetDynamicCovariates, modifyList(l.data, alist(data.cov.life=dt.cov,
-                                                                                           data.cov.trans=dt.cov))),
+                                                                                              data.cov.trans=dt.cov))),
                    regexp = "covariate data before")
 
     # verify data is cut for this Id like everybody' elses
@@ -105,8 +105,8 @@ test_that("Single cov data longer than other data requires all data to be this l
   apparelDynCov.longer.upper  <-
     data.table::rbindlist(list(apparelDynCov,
                                data.table::data.table(Id=1, Cov.Date = seq(from=apparelDynCov[, max(Cov.Date)]+lubridate::weeks(1),
-                                                   length.out = 100, by = "week"),
-                              Marketing=1, Gender=0, Channel=1)), use.names = TRUE)
+                                                                           length.out = 100, by = "week"),
+                                                      Marketing=1, Gender=0, Channel=1)), use.names = TRUE)
   fct.longer.upper.cov <- function(clv.data, dt.cov){
     expect_error(dyn.longer.life  <- do.call(SetDynamicCovariates, modifyList(l.data, alist(data.cov.life=dt.cov))),
                  regexp = "covariate data need to have the same number of Dates")
@@ -247,6 +247,30 @@ test_that("Converts categories to dummies - with numeric", {
 # test_that("Keeps numeric as numeric - no categories", {})
 # test_that("Keeps numeric as numeric - with categories", {})
 
+
+test_that("Cov data column names are changed to syntactically valid names", {
+  skip_on_cran()
+  fct.test.data.cols.renamed <- function(new.names){
+    apparelDynCov.named <- data.table::copy(apparelDynCov)
+    data.table::setnames(apparelDynCov.named,
+                         old = c("Marketing", "Gender", "Channel"), new=new.names)
+    expect_silent(clv.dyn.cov <- SetDynamicCovariates(clv.data = clv.data.apparel.withhold,
+                                                     data.cov.life  = apparelDynCov.named, names.cov.life = new.names,
+                                                     data.cov.trans = apparelDynCov.named, names.cov.trans = new.names,
+                                                     name.date = "Cov.Date"))
+    expect_true(setequal(colnames(clv.dyn.cov@data.cov.life),
+                         c(c("Id", "Cov.Date"), make.names(new.names))))
+    expect_true(setequal(colnames(clv.dyn.cov@data.cov.trans),
+                         c(c("Id", "Cov.Date"), make.names(new.names))))
+  }
+
+  # Previously failed for numeric names and spaces
+  fct.test.data.cols.renamed(c("1", "2", "33"))
+  fct.test.data.cols.renamed(c("1abc", "2xyz", ".3jik"))
+  fct.test.data.cols.renamed(c("1Marketin g", "Gender ", "Chan nel"))
+  fct.test.data.cols.renamed(c("Marketing ", " Gender", "Channe l"))
+
+})
 
 # Copied ----------------------------------------------------------------------------------------
 
