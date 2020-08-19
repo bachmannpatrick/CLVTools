@@ -271,7 +271,7 @@ check_user_data_namesconstr <- function(clv.fitted, names.cov.constr){
 check_user_data_emptyellipsis <- function(...){
 
   err.msg <- c()
-  if(length(list(...)) > 0)
+  if(...length() > 0)
     err.msg <- c(err.msg, "Any further parameters passed in ... are ignored because they are not needed!")
 
   return(err.msg)
