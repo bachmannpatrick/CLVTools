@@ -9,8 +9,8 @@ This class implements the functionalities and model-specific steps which are req
 to fit the Pareto/NBD model with dynamic covariates.
 }
 \seealso{
-Other clv model classes \link{clv.model-class}, \link{clv.model.pnbd.no.cov-class}, \link{clv.model.pnbd.static.cov-class}
+Other clv model classes \linkS4class{clv.model}, \linkS4class{clv.model.pnbd.no.cov}, \linkS4class{clv.model.pnbd.static.cov}
 
-Classes using its instance: \link{clv.fitted.dynamic.cov-class},
+Classes using its instance: \linkS4class{clv.fitted.transactions.dynamic.cov}
 }
 \keyword{internal}

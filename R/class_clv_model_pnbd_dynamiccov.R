@@ -4,9 +4,10 @@
 #' to fit the Pareto/NBD model with dynamic covariates.
 #'
 #' @keywords internal
-#' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.pnbd.no.cov-class}, \link{clv.model.pnbd.static.cov-class}
-#' @seealso Classes using its instance: \link{clv.fitted.dynamic.cov-class},
-#' @include all_generics.R class_clv_model.R class_clv_model_pnbd.R class_clv_model_pnbd_staticcov.R
+#' @seealso Other clv model classes \linkS4class{clv.model}, \linkS4class{clv.model.pnbd.no.cov}, \linkS4class{clv.model.pnbd.static.cov}
+#' @seealso Classes using its instance: \linkS4class{clv.fitted.transactions.dynamic.cov}
+#'
+#' @include all_generics.R class_clv_model_pnbd_staticcov.R
 setClass(Class = "clv.model.pnbd.dynamic.cov", contains = "clv.model.pnbd.static.cov")
 
 
@@ -29,31 +30,12 @@ clv.model.pnbd.dynamic.cov <- function(){
 
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
-# . clv.model.put.estimation.input ------------------------------------------------------------------------------------------------
-#' @importFrom methods callNextMethod
-setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, verbose, ...){
-  # Create walks - they are specific to the pnbd dyncov model
-
-  if(verbose)
-    message("Creating walks...")
-
-  l.walks <- pnbd_dyncov_makewalks(clv.data = clv.fitted@clv.data)
-
-  if(verbose)
-    message("Walks created.")
-
-  clv.fitted@data.walks.life  = l.walks[["data.walks.life"]]
-  clv.fitted@data.walks.trans = l.walks[["data.walks.trans"]]
-
-  return(callNextMethod())
-})
-
 
 # Override static cov implementation
 # . clv.model.prepare.optimx.args ------------------------------------------------------------------------------------------------
 #' @importFrom utils modifyList
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.pnbd.dynamic.cov"),
-          definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
+          definition = function(clv.model, clv.fitted, prepared.optimx.args){
 
             # Do not call the no.cov function because the LL is different
             x <- t.x <- T.cal <- NULL
@@ -105,9 +87,9 @@ setMethod(f = "clv.model.process.post.estimation", signature = signature(clv.mod
 })
 
 
-# . clv.model.put.newdata ------------------------------------------------------------------------------------------------
+# . clv.model.process.newdata ------------------------------------------------------------------------------------------------
 #' @importFrom methods callNextMethod
-setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, verbose){
+setMethod(f = "clv.model.process.newdata", signature = signature(clv.model = "clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, verbose){
   # do nocov preparations (new cbs only)
   clv.fitted <- callNextMethod()
 
@@ -144,13 +126,13 @@ setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.mo
 })
 
 
-# . clv.model.predict.clv ------------------------------------------------------------------------------------------------
-setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.dynamic.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
+# . clv.model.predict ------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict", signature(clv.model="clv.model.pnbd.dynamic.cov"), function(clv.model, clv.fitted, dt.predictions, verbose, continuous.discount.factor, ...){
 
   period.length <- period.last <- CET <- i.CET <- PAlive <- i.palive <-  DECT <- i.DECT <-  NULL
 
-  predict.number.of.periods <- dt.prediction[1, period.length]
-  tp.period.last <- dt.prediction[1, period.last]
+  predict.number.of.periods <- dt.predictions[1, period.length]
+  tp.period.last <- dt.predictions[1, period.last]
 
   if(verbose)
     message("Predicting for dyn cov model....")
@@ -158,14 +140,14 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.dynamic.c
 
   # Palive
   dt.palive <- pnbd_dyncov_palive(clv.fitted=clv.fitted)
-  dt.prediction[dt.palive, PAlive := i.palive, on="Id"]
+  dt.predictions[dt.palive, PAlive := i.palive, on="Id"]
 
 
   # CET
   dt.cet <- pnbd_dyncov_CET(clv.fitted = clv.fitted,
                             predict.number.of.periods = predict.number.of.periods,
                             prediction.end.date       = tp.period.last)
-  dt.prediction[dt.cet, CET := i.CET, on="Id"]
+  dt.predictions[dt.cet, CET := i.CET, on="Id"]
 
 
   # DECT
@@ -174,14 +156,14 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.pnbd.dynamic.c
                                 predict.number.of.periods  = predict.number.of.periods,
                                 prediction.end.date        = tp.period.last,
                                 continuous.discount.factor = continuous.discount.factor)
-    dt.prediction[dt.dect, DECT :=i.DECT, on="Id"]
+    dt.predictions[dt.dect, DECT :=i.DECT, on="Id"]
   }else{
     # If the discount factor is zero, the results correspond to CET
     #   DECT crashes for discount.factor = 0
-    dt.prediction[, DECT := CET]
+    dt.predictions[, DECT := CET]
   }
 
-  return(dt.prediction)
+  return(dt.predictions)
 })
 
 

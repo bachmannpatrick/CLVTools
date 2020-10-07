@@ -6,7 +6,7 @@
 #' # Fit standard <%=name_model_short%> model
 #' <%=name_model_short%>(clv.data.apparel)
 #'
-#' # Give initial guesses for the Model parameters
+#' # Give initial guesses for the model parameters
 #' <%=name_model_short%>(clv.data.apparel,
 #'      start.params.model = <%=vec_startparams_model%>)
 #'

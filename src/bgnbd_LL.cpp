@@ -1,9 +1,7 @@
 #include <RcppArmadillo.h>
 #include <math.h>
 #include "clv_vectorized.h"
-
-arma::vec beta_ratio(const arma::vec& a, const arma::vec& b, const arma::vec& x, const arma::vec& y);
-
+#include "bgnbd_LL.h"
 
 //' @name bgnbd_LL
 //'
@@ -28,15 +26,12 @@ arma::vec bgnbd_LL_ind(const double r,
                        const arma::vec& vX,
                        const arma::vec& vT_x,
                        const arma::vec& vT_cal){
-  const unsigned int n = vX.n_elem;
 
-  arma::vec vA(n), vB(n), vBetaRatio(n);
+  const arma::vec vPart1 = r * arma::log(vAlpha_i) + arma::lgamma(r + vX) - std::lgamma(r) - (r + vX) % arma::log(vAlpha_i + vT_x);
 
-  vA = r * arma::log(vAlpha_i) + arma::lgamma(r + vX) - std::lgamma(r) - (r + vX) % arma::log(vAlpha_i + vT_x);
+  const arma::vec vPart2 = beta_ratio(vA_i, (vB_i+vX), vA_i, vB_i) % clv::vec_pow((vAlpha_i + vT_x)/(vAlpha_i + vT_cal), (r + vX)) + ((vX > 0)) % beta_ratio(vA_i + 1 , (vB_i + vX - 1), vA_i, vB_i);
 
-  vB = beta_ratio(vA_i, (vB_i+vX), vA_i, vB_i) % clv::vec_pow((vAlpha_i + vT_x)/(vAlpha_i + vT_cal), (r + vX)) + ((vX > 0)) % beta_ratio(vA_i + 1 , (vB_i + vX - 1), vA_i, vB_i);
-
-  arma::vec vLL = vA + arma::log(vB);
+  arma::vec vLL = vPart1 + arma::log(vPart2);
 
   return(vLL);
 }
@@ -55,11 +50,9 @@ arma::vec bgnbd_nocov_LL_ind(const arma::vec& vLogparams,
 
   const unsigned int n = vX.n_elem;
 
-  arma::vec vAlpha_i(n), vA_i(n), vB_i(n);
-
-  vAlpha_i.fill(alpha_0);
-  vA_i.fill(a_0);
-  vB_i.fill(b_0);
+  const arma::vec vA_i = bgnbd_nocov_a_i(a_0, n);
+  const arma::vec vB_i = bgnbd_nocov_b_i(b_0, n);
+  const arma::vec vAlpha_i = bgnbd_nocov_alpha_i(alpha_0, n);
 
   arma::vec vLL = bgnbd_LL_ind(r, vAlpha_i, vA_i, vB_i, vX, vT_x, vT_cal);
 
@@ -102,9 +95,6 @@ arma::vec bgnbd_staticcov_LL_ind(const arma::vec& vParams,
   const double a_0      = exp(vModel_log_params(2));
   const double b_0      = exp(vModel_log_params(3));
 
-  const double n = vX.n_elem;
-
-
 
   // Build alpha, a and b --------------------------------------------
   //    With static covariates: alpha, a and b different per customer
@@ -112,11 +102,18 @@ arma::vec bgnbd_staticcov_LL_ind(const arma::vec& vParams,
   //    alpha_i: alpha0 * exp(-cov.trans * cov.params.trans)
   //    a_i:  a0 * exp(cov.life * cov.param.life)
   //    b_i:  b0 * exp(cov.life * cov.param.life)
-  arma::vec vAlpha_i(n), vA_i(n), vB_i(n);
 
-  vAlpha_i = alpha_0 * arma::exp(((mCov_trans * (-1)) * vTrans_params));
-  vA_i     = a_0     * arma::exp(((mCov_life          * vLife_params)));
-  vB_i     = b_0     * arma::exp(((mCov_life          * vLife_params)));
+  const arma::vec vAlpha_i = bgnbd_staticcov_alpha_i(alpha_0,
+                                     vTrans_params,
+                                     mCov_trans);
+
+  const arma::vec vA_i  = bgnbd_staticcov_a_i(a_0,
+                              vLife_params,
+                              mCov_life);
+
+  const arma::vec vB_i  = bgnbd_staticcov_b_i(b_0,
+                              vLife_params,
+                              mCov_life);
 
   // Calculate LL ----------------------------------------------------
   //    Calculate value for every customer
@@ -147,4 +144,35 @@ arma::vec beta_ratio(const arma::vec& a, const arma::vec& b, const arma::vec& x,
   return(arma::exp(arma::lgamma(a) + arma::lgamma(b) - arma::lgamma(a + b) - arma::lgamma(x) - arma::lgamma(y) + arma::lgamma(x+y)));
 }
 
+arma::vec bgnbd_nocov_alpha_i(const double alpha, const int n){
+  return clv::vec_fill(alpha, n);
+}
 
+arma::vec bgnbd_nocov_a_i(const double a, const int n){
+  return clv::vec_fill(a, n);
+}
+
+arma::vec bgnbd_nocov_b_i(const double b, const int n){
+  return clv::vec_fill(b, n);
+}
+
+// [[Rcpp::export]]
+arma::vec bgnbd_staticcov_alpha_i(const double alpha_0,
+                                  const arma::vec& vCovParams_trans,
+                                  const arma::mat& mCov_trans){
+  return alpha_0 * arma::exp((mCov_trans * (-1)) * vCovParams_trans);
+}
+
+// [[Rcpp::export]]
+arma::vec bgnbd_staticcov_a_i(const double a_0,
+                              const arma::vec& vCovParams_life,
+                              const arma::mat& mCov_life){
+  return a_0 * arma::exp(mCov_life * vCovParams_life);
+}
+
+// [[Rcpp::export]]
+arma::vec bgnbd_staticcov_b_i(const double b_0,
+                              const arma::vec& vCovParams_life,
+                              const arma::mat& mCov_life){
+  return b_0 * arma::exp(mCov_life * vCovParams_life);
+}

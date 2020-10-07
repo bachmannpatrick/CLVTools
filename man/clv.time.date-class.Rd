@@ -22,9 +22,6 @@ and stores all timepoints using data type \code{Date}.
 }}
 
 \seealso{
-For time unit implementations based on this class:
-\code{\link[CLVTools:clv.time.days-class]{clv.time.days}}
-\code{\link[CLVTools:clv.time.weeks-class]{clv.time.weeks}}
-\code{\link[CLVTools:clv.time.years-class]{clv.time.years}}
+For time unit implementations based on this class: \linkS4class{clv.time.days}, \linkS4class{clv.time.weeks}, \linkS4class{clv.time.years}
 }
 \keyword{internal}

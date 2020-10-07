@@ -47,12 +47,6 @@ test_that("Fails if Price is not numeric", {
   expect_error(clvdata(data.transactions = cdnow.notnum, time.unit = "w",date.format = "ymd"), regexp = "numeric")
 })
 
-test_that("Warns if Price are < 0", {
-  cdnow.zero <- data.table::copy(cdnow)
-  cdnow.zero[100, Price:= -1]
-  expect_warning(clvdata(data.transactions = cdnow.zero, time.unit = "w",date.format = "ymd"), regexp = "negative")
-})
-
 test_that("Fails if does not have the Id column", {
   cdnow.noid <- data.table::copy(cdnow)
   cdnow.noid[, Id := NULL]

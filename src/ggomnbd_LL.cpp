@@ -2,6 +2,7 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_integration.h>
 #include "ggomnbd_LL.h"
+#include "clv_vectorized.h"
 
 arma::vec ggomnbd_integrate(const double r,
                             const double b,
@@ -131,10 +132,8 @@ arma::vec ggomnbd_nocov_LL_ind(const arma::vec& vLogparams,
 
   // Build alpha and beta --------------------------------------------
   //    No covariates: Same alphas, betas for every customer
-  arma::vec vAlpha_i(n), vBeta_i(n);
-
-  vAlpha_i.fill(alpha_0);
-  vBeta_i.fill(beta_0);
+  const arma::vec vAlpha_i = ggomnbd_nocov_alpha_i(alpha_0, n);
+  const arma::vec vBeta_i = ggomnbd_nocov_beta_i(beta_0, n);
 
   return(ggomnbd_LL_ind(r, b, s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal));
 }
@@ -197,8 +196,9 @@ arma::vec ggomnbd_staticcov_LL_ind(const arma::vec& vParams,
   //    alpha_i: alpha0 * exp(-cov.trans * cov.params.trans)
   //    beta_i:  beta0  * exp(-cov.life  * cov.parama.life)
 
-  const arma::vec vAlpha_i = alpha_0 * arma::exp(((mCov_trans * (-1)) * vTrans_params));
-  const arma::vec vBeta_i  = beta_0  * arma::exp(((mCov_life  * (-1)) * vLife_params));
+  const arma::vec vAlpha_i = ggomnbd_staticcov_alpha_i(alpha_0, vTrans_params, mCov_trans);
+  const arma::vec vBeta_i  = ggomnbd_staticcov_beta_i(beta_0, vLife_params, mCov_life);
+
 
   return(ggomnbd_LL_ind(r,b,s,vAlpha_i,vBeta_i,vX,vT_x,vT_cal));
 }
@@ -219,4 +219,35 @@ double ggomnbd_staticcov_LL_sum(const arma::vec& vParams,
   const arma::vec vLL = ggomnbd_staticcov_LL_ind(vParams,vX,vT_x,vT_cal,mCov_life,mCov_trans);
 
   return(-arma::sum(vLL));
+}
+
+arma::vec ggomnbd_nocov_alpha_i(const double alpha_0, const double n){
+  return clv::vec_fill(alpha_0, n);
+}
+
+arma::vec ggomnbd_nocov_beta_i(const double beta_0, const double n){
+  return clv::vec_fill(beta_0, n);
+}
+
+arma::vec ggomnbd_nocov_r(const double r, const double n){
+  return clv::vec_fill(r, n);
+}
+
+// [[Rcpp::export]]
+arma::vec ggomnbd_staticcov_alpha_i(const double alpha_0,
+                                    const arma::vec& vCovParams_trans,
+                                    const arma::mat& mCov_trans){
+   return alpha_0 * arma::exp(((mCov_trans * (-1)) * vCovParams_trans));
+}
+
+// [[Rcpp::export]]
+arma::vec ggomnbd_staticcov_beta_i(const double beta_0,
+                                   const arma::vec& vCovParams_life,
+                                   const arma::mat& mCov_life){
+
+  return beta_0 * arma::exp(((mCov_life  * (-1)) * vCovParams_life));
+}
+
+arma::vec ggomnbd_staticcov_r(const double r, const double n){
+  return ggomnbd_nocov_r(r, n);
 }

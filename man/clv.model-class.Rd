@@ -27,8 +27,8 @@ to obtain a functional \code{clv.fitted} object.
 }}
 
 \seealso{
-CLV model subclasses  \link{clv.model.pnbd.no.cov-class}, \link{clv.model.pnbd.static.cov-class}, \link{clv.model.pnbd.dynamic.cov-class}
+CLV model subclasses with and without support for fitting with correlation \linkS4class{clv.model.with.correlation}, \linkS4class{clv.model.no.correlation}
 
-Class using its instances: \link{clv.fitted-class}
+Class using its instances: \linkS4class{clv.fitted}
 }
 \keyword{internal}

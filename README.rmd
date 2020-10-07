@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 Today, customer lifetime value (CLV) is the central metric for valuing customers. It describes the long-term economic value of customers and gives managers an idea of how customers will evolve over time. To model CLVs in continuous non-contractual business settings such as retailers, probabilistic customer attrition models are the preferred choice in literature and practice. 
 
 
-The R package **CLVTools** provides an efficient and easy to use implementation framework for probabilistic customer attrition models in non-contractual settings. Building up on the learnings of other implementations, the package adopts S4 classes to allow constructing rich and rather complex models that nevertheless still are easy to apply for the end user. The framework is capable to accommodate a variety of probabilistic customer attrition models for non-contractual settings in continuous and discrete time.
+The R package `CLVTools` provides an efficient and easy to use implementation framework for probabilistic customer attrition models in non-contractual settings. Building up on the learnings of other implementations, the package adopts S4 classes to allow constructing rich and rather complex models that nevertheless still are easy to apply for the end user. The framework is capable to accommodate a variety of probabilistic customer attrition models for non-contractual settings in continuous and discrete time.
 
 Currently, CLVTools implements the following probabilistic models:
 
@@ -44,11 +44,13 @@ Currently, CLVTools implements the following probabilistic models:
 
 (7) Gamma/Gompertz/NBD model with **time-invariant** contextual factors (Näf, Bachmann & Meierer 2020)
 
-In future versions of **CLVTools** the following models are added. See [GitHub Issues](https://github.com/bachmannpatrick/CLVTools/projects) for a time-line.
+(8) Gamma/Gamma model to estimate customer spending (Colombo & Jiang 1999; Fader, Hardie & Lee 2005; Fader & Hardie 2013)
 
-(8) Standard BG/BB model (Fader, Hardie, & Shang 2010)
+In future versions of `CLVTools` the following models are added. See [GitHub Issues](https://github.com/bachmannpatrick/CLVTools/projects) for a time-line.
 
-(9) Gamma/Gamma model to estimate customer spending (Colombo & Jiang 1999; Fader, Hardie & Lee 2005; Fader & Hardie 2013)
+(9) Standard BG/BB model (Fader, Hardie, & Shang 2010)
+
+
 
 
 In addition the framework features a system of layers between the optimizer and the log-likelihood function to allow the flexible addition of model extensions during the model fitting process. Currently these layers include:
@@ -57,27 +59,66 @@ In addition the framework features a system of layers between the optimizer and 
 
 - L2 regularization for parameters of contextual factors
 
-- Equality constraints between parameters of contextual for the purchase and the attrition process.
+- Equality constraints between parameters of contextual factors for the purchase and the attrition process.
 
 
 
-## Installation Instructions
-Install the stable version from CRAN:
+## Installation 
+Install the most recent **stable release from CRAN**:
      
 ```
 install.packages("CLVTools")
 ```
 
-Install the development version from GitHub:
+Install the **development version from GitHub** (using the `devtools` package):
 ```
 devtools::install_github("bachmannpatrick/CLVTools", ref = "development")
 ```
 
-Note that the package depends on RcppArmadillo and RcppGSL which will likely require additional setup steps in order to compile and install the CLVTools package from source.
+To **compile the package from source**, please be advised that `CLVTools` relies on an external C++ library called `GSL`. This library has to be installed on your computer to be able to compile `CLVTools`  from source. Follow these 3 steps:
+
+1. Update to the latest version of R.
+
+2. Install the external dependency (`GSL`):
+
+*For Linux:*
+: 
+```
+apt-get update
+apt-get install libgsl0-dev
+```
+If you are using an R Docker container with Linux (e.g. rocker/tidyverse), you can build up on these Docker images as follows 
+```
+FROM rocker/tidyverse
+RUN apt-get update -qq && apt-get -y install \
+	libgsl0-dev
+```
+Alternatively, follow the instruction in the section "Installing Dependencies external to the R system" at https://ropenscilabs.github.io/r-docker-tutorial/03-install-packages.html to install `GSL` in a running Docker container with Linux.
+
+
+*For Mac:*
+: 
+```
+brew install gsl
+```
+
+*For Windows:*
+: First, install `RTools` through https://cran.r-project.org/bin/windows/Rtools/ (> v4.0). Next, use the new `RTools` package manager to install the `GSL` library (see  https://github.com/r-windows/docs/blob/master/rtools40.md#readme) by using `pacman` through the `RTools Bash`:
+```
+pacman -S mingw-w64-{i686,x86_64}-gsl
+```
+
+3. Install the development version from source:
+```
+devtools::install_github("bachmannpatrick/CLVTools", ref = "development")
+```
+
+
+
 
 
 ## A Minimal Example
-For detailed instructions and all available options and model variations see the [Walkthrough](https://www.clvtools.com/articles/CLVTools.html) and the [manual](https://www.clvtools.com/reference/index.html).
+For detailed instructions and all available options and model variations see the detailed [walkthrough](https://www.clvtools.com/articles/CLVTools.html) and the [manual](https://www.clvtools.com/reference/index.html).
 
 Start by loading the package:
 ```{r load-library}
@@ -104,7 +145,10 @@ clv.apparel <- clvdata(apparelTrans,
                        name.price = "Price")
 ```
 
-To estimate the first probabilistic latent attrition model we start with the standard Pareto/NBD model and therefore use the command `pnbd()` to fit the model and estimate model parameters. Other models such as the BG/NBD model (`bgnbd()`) and the GGomp/NBD (`ggomnbd()`) are available.
+
+Be aware that probabilistic models such as the ones implemented in CLVTools are usually applied to specific customer cohorts. That means, you analyze customer that have joined your company at the same time (usually same day, week, month, or quarter). For more information on cohort analysis, see also [here](https://en.wikipedia.org/wiki/Cohort_analysis). Consequently, the data apparelTrans in this example is not the full transaction records of a fashion retailer, but rather only the customer cohort of 250 customers purchasing for the first time at this business on the day of 2005-01-03. 
+
+As a first probabilistic latent attrition model we estimate the standard Pareto/NBD model and therefore, use the command `pnbd()` to fit the model and estimate model parameters. Other models such as the BG/NBD model (`bgnbd()`) and the GGomp/NBD (`ggomnbd()`) are also available.
 
 ```{r estimate-model}
 est.pnbd <- pnbd(clv.data = clv.apparel)

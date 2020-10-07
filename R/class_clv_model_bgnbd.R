@@ -2,17 +2,12 @@
 #' @template template_class_clvmodelnocov
 #'
 #' @importFrom methods setClass
-#' @seealso Other clv model classes \link{clv.model-class}, \link{clv.model.bgnbd.static.cov-class}
-#' @seealso Classes using its instance: \link{clv.fitted-class}
-#' @include all_generics.R class_clv_model.R
-setClass(Class = "clv.model.bgnbd.no.cov", contains = "clv.model",
-         slots = list(),
-         prototype = list(
-           name.model = character(0),
-           names.original.params.model = character(0),
-           names.prefixed.params.model = character(0),
-           start.params.model = numeric(0)
-         ))
+#' @seealso Other clv model classes \linkS4class{clv.model}, \linkS4class{clv.model.bgnbd.static.cov}
+#' @seealso Classes using its instance: \linkS4class{clv.fitted}
+#'
+#' @include all_generics.R class_clv_model_nocorrelation.R
+setClass(Class = "clv.model.bgnbd.no.cov", contains = "clv.model.no.correlation")
+
 
 #' @importFrom methods new
 clv.model.bgnbd.no.cov <- function(){
@@ -25,7 +20,7 @@ clv.model.bgnbd.no.cov <- function(){
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
-setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, start.params.model, use.cor, start.param.cor, optimx.args, verbose, ...){
+setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, start.params.model, optimx.args, verbose, ...){
 
   err.msg <- c()
 
@@ -34,25 +29,12 @@ setMethod(f = "clv.model.check.input.args", signature = signature(clv.model="clv
     err.msg <- c(err.msg, "Please provide only model start parameters greater than 0 as they will be log()-ed for the optimization!")
   }
 
-
-  if(use.cor){
-    err.msg <- c(err.msg, "Correlation is not supported for the BG/NBD model")
-  }
-
-  if(length(list(...)) > 0){
-    stop("Any further parameters passed in ... are ignored because they are not needed by this model.", call. = FALSE)
-  }
-
   check_err_msg(err.msg)
-
 })
 
 
 # .clv.model.put.estimation.input --------------------------------------------------------------------------------------------------------
-setMethod(f = "clv.model.put.estimation.input", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, verbose, ...){
-  # nothing to put specifically for this model
-  return(clv.fitted)
-})
+# Nothing required, use clv.model.no.correlation
 
 # .clv.model.transform.start.params.model --------------------------------------------------------------------------------------------------------
 #' @importFrom stats setNames
@@ -69,7 +51,7 @@ setMethod("clv.model.backtransform.estimated.params.model", signature = signatur
 })
 
 # .clv.model.prepare.optimx.args --------------------------------------------------------------------------------------------------------
-setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args,...){
+setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args){
 
   # Only add LL function args, everything else is prepared already, incl. start parameters
   optimx.args <- modifyList(prepared.optimx.args,
@@ -94,8 +76,8 @@ setMethod("clv.model.process.post.estimation", signature = signature(clv.model="
 })
 
 
-# .clv.model.put.newdata --------------------------------------------------------------------------------------------------------
-setMethod(f = "clv.model.put.newdata", signature = signature(clv.model = "clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, verbose){
+# clv.model.process.newdata --------------------------------------------------------------------------------------------------------
+setMethod(f = "clv.model.process.newdata", signature = signature(clv.model = "clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, verbose){
   # clv.data in clv.fitted is already replaced with newdata here
   # Need to only redo cbs if given new data
   clv.fitted@cbs <- bgnbd_cbs(clv.data = clv.fitted@clv.data)
@@ -110,18 +92,11 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.no.cov")
 
   params_i <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
 
-  params_i[, r := clv.fitted@prediction.params.model[["r"]]]
-  params_i[, alpha := clv.fitted@prediction.params.model[["alpha"]]]
-  params_i[, a := clv.fitted@prediction.params.model[["a"]]]
-  params_i[, b := clv.fitted@prediction.params.model[["b"]]]
-
-  fct.bgnbd.expectation <- function(params_i.t){
-    term1 <- params_i.t[,(a + b - 1)/(a - 1)]
-    term2 <- params_i.t[,(alpha/(alpha + t_i))^r]
-    term3 <- params_i.t[, vec_gsl_hyp2f1_e(r, b, a+b-1, t_i/(alpha+t_i) )$value]
-
-    return(term1 * (1 - term2 * term3))
-  }
+  fct.bgnbd.expectation <- function(params_i.t){return(bgnbd_nocov_expectation(r = clv.fitted@prediction.params.model[["r"]],
+                                                                               alpha = clv.fitted@prediction.params.model[["alpha"]],
+                                                                               a = clv.fitted@prediction.params.model[["a"]],
+                                                                               b = clv.fitted@prediction.params.model[["b"]],
+                                                                               vT_i = params_i.t$t_i))}
 
   return(DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
                        fct.expectation = fct.bgnbd.expectation, clv.time = clv.fitted@clv.data@clv.time))
@@ -129,12 +104,12 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.no.cov")
 
 
 
-# .clv.model.predict.clv --------------------------------------------------------------------------------------------------------
+# clv.model.predict --------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
-setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgnbd.no.cov"), function(clv.model, clv.fitted, dt.prediction, continuous.discount.factor, verbose){
-  r <- alpha <- a <- b <- period.length <- CET <- PAlive <- DERT <- i.CET <- i.PAlive <- i.DERT <- x <- t.x <- T.cal <- NULL
+setMethod("clv.model.predict", signature(clv.model="clv.model.bgnbd.no.cov"), function(clv.model, clv.fitted, dt.predictions, verbose, continuous.discount.factor, ...){
+  r <- alpha <- a <- b <- period.length <- CET <- PAlive <- i.CET <- i.PAlive <- x <- t.x <- T.cal <- NULL
 
-  predict.number.of.periods <- dt.prediction[1, period.length]
+  predict.number.of.periods <- dt.predictions[1, period.length]
 
   # To ensure sorting, do everything in a single table
   dt.result <- copy(clv.fitted@cbs[, c("Id", "x", "t.x", "T.cal")])
@@ -158,15 +133,12 @@ setMethod("clv.model.predict.clv", signature(clv.model="clv.model.bgnbd.no.cov")
                                            vX = x,
                                            vT_x = t.x,
                                            vT_cal = T.cal)]
-  # Add DERT
-  dt.result[, DERT := 0]
 
   # Add results to prediction table, by matching Id
-  dt.prediction[dt.result, CET    := i.CET,    on = "Id"]
-  dt.prediction[dt.result, PAlive := i.PAlive, on = "Id"]
-  dt.prediction[dt.result, DERT   := i.DERT,   on = "Id"]
+  dt.predictions[dt.result, CET    := i.CET,    on = "Id"]
+  dt.predictions[dt.result, PAlive := i.PAlive, on = "Id"]
 
-  return(dt.prediction)
+  return(dt.predictions)
 })
 
 # .clv.model.vcov.jacobi.diag --------------------------------------------------------------------------------------------------------

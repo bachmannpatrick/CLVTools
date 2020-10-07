@@ -10,7 +10,7 @@
 \S4method{show}{clv.data.static.covariates}(object)
 }
 \description{
-Extends the class \code{\link[CLVTools:clv.data-class]{clv.data}} and adds slots to store data and names of
+Extends the class \linkS4class{clv.data} and adds slots to store data and names of
 static covariates for both processes.
 An object of this class then serves as input to fit models with static covariates.
 }
@@ -27,7 +27,7 @@ An object of this class then serves as input to fit models with static covariate
 }}
 
 \seealso{
-Definition of the parent class \code{\link[CLVTools:clv.data-class]{clv.data}}.
+Definition of the parent class \linkS4class{clv.data}.
 
 For fitting covariate models: \code{\link[CLVTools:pnbd]{pnbd}}
 }

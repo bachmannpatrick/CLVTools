@@ -31,7 +31,7 @@ SetDynamicCovariates(
 }
 \value{
 An object of class \code{clv.data.dynamic.covariates}.
-See the class definition \code{\link[CLVTools:clv.data.dynamic.covariates-class]{clv.data.dynamic.covariates}}
+See the class definition \linkS4class{clv.data.dynamic.covariates}
 for more details about the returned object.
 }
 \description{

@@ -10,9 +10,7 @@
 #' @slot timepoint.holdout.end Single \code{POSIXct} that stores the end of the holdout period.
 #' @slot timezone Single character vector indicating the enforced timezone when parsing inputs to timepoints.
 #' Defaults to UTC, but may be overwritten by a subclass to enforce a different timezone than UTC.
-#' @seealso
-#' For time unit implementations based on this class:
-#' \code{\link[CLVTools:clv.time.hours-class]{clv.time.hours}}
+#' @seealso For time unit implementations based on this class: \linkS4class{clv.time.hours}
 #'
 #'
 #' @include class_clv_time.R all_generics.R

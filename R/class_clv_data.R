@@ -1,7 +1,7 @@
 #' Transactional data to fit CLV models
 #'
 #' @description
-#' Stores the processed transactional data and holds an object of class \code{\link[CLVTools:clv.time-class]{clv.time}}
+#' Stores the processed transactional data and holds an object of class \linkS4class{clv.time}
 #' which stores further information about the split in an estimation and holdout sample.
 #'
 #' A \code{clv.data} object serves as input into the various model fitting functions.
@@ -14,7 +14,7 @@
 #' @slot has.spending Single logical whether the data contains information about the amount spent per transaction
 #' @slot has.holdout Single logical whether the data is split in a holdout and estimation period
 #'
-#' @seealso \code{\link[CLVTools:clv.time-class]{clv.time}}
+#' @seealso \linkS4class{clv.time}
 #'
 #' @keywords internal
 #' @include all_generics.R class_clv_time.R
@@ -68,6 +68,25 @@ clv.data.has.spending <- function(clv.data){
   return(clv.data@has.spending)
 }
 
+clv.data.has.negative.spending <- function(clv.data){
+  Price <- NULL
+
+  if(clv.data.has.spending(clv.data = clv.data) == FALSE)
+    return(FALSE)
+
+  return(clv.data@data.transactions[Price < 0, .N] > 0)
+}
+
+clv.data.get.transactions.in.estimation.period <- function(clv.data){
+  Date <- NULL
+  return(clv.data@data.transactions[Date <= clv.data@clv.time@timepoint.estimation.end])
+}
+
+clv.data.get.transactions.in.holdout.period <- function(clv.data){
+  Date <- NULL
+  stopifnot(clv.data.has.holdout(clv.data))
+  return(clv.data@data.transactions[Date >= clv.data@clv.time@timepoint.holdout.start])
+}
 
 clv.data.make.repeat.transactions <- function(dt.transactions){
   Date <- previous <- NULL
@@ -116,7 +135,7 @@ clv.data.mean.interpurchase.times <- function(clv.data, dt.transactions){
   Id <- num.trans <- Date <- NULL
 
   num.transactions <- dt.transactions[, list(num.trans = .N), by="Id"]
-  
+
   return(rbindlist(list(
     # 1 Transaction = NA
     dt.transactions[Id %in% num.transactions[num.trans == 1,Id], list(interp.time = NA_real_, Id)],
@@ -143,13 +162,13 @@ clv.data.make.descriptives <- function(clv.data){
 
   data.transactions.total      <- clv.data@data.transactions
 
-  data.transactions.estimation <- data.transactions.total[Date >= clv.time@timepoint.estimation.start &
-                                                            Date <= clv.time@timepoint.estimation.end]
-  if(clv.data.has.holdout(clv.data=clv.data))
-    data.transactions.holdout  <- data.transactions.total[Date >= clv.time@timepoint.holdout.start &
-                                                            Date <= clv.time@timepoint.holdout.end]
-  else
+  data.transactions.estimation <- clv.data.get.transactions.in.estimation.period(clv.data = clv.data)
+
+  if(clv.data.has.holdout(clv.data=clv.data)){
+    data.transactions.holdout  <- clv.data.get.transactions.in.holdout.period(clv.data = clv.data)
+  }else{
     data.transactions.holdout  <- data.transactions.estimation
+  }
 
   no.trans.by.cust.total       <- data.transactions.total[,      .N, by="Id"]
   no.trans.by.cust.estimation  <- data.transactions.estimation[, .N, by="Id"]
@@ -190,7 +209,7 @@ clv.data.make.descriptives <- function(clv.data){
            Holdout    = no.trans.by.cust.holdout[,    sd(N)],
            Total      = no.trans.by.cust.total[,      sd(N)]))
 
-  if(clv.data.has.spending(clv.data))
+  if(clv.data.has.spending(clv.data)){
     list.of.list <- c(list.of.list, list(
       "Mean Spending per Transaction"    =
         list(Estimation = data.transactions.estimation[, mean(Price)],
@@ -204,6 +223,7 @@ clv.data.make.descriptives <- function(clv.data){
         list(Estimation  = data.transactions.estimation[, sum(Price)],
              Holdout    = data.transactions.holdout[,     sum(Price)],
              Total      = data.transactions.total[,       sum(Price)])))
+  }
 
   #   Total:      buy exactly once, ever
   #   Estimation: buy exactly once, in estimation period
@@ -252,8 +272,9 @@ clv.data.make.descriptives <- function(clv.data){
   # No Holdout ------------------------------------------------------------------------------------
   #   Remove values in holdout if there is no holdout
   #   In this case, the estimation data was used
-  if(!clv.data.has.holdout(clv.data))
+  if(!clv.data.has.holdout(clv.data)){
     dt.summary[, "Holdout" := "-"]
+  }
 
   return(dt.summary)
 

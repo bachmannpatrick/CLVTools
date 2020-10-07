@@ -25,7 +25,6 @@ Defaults to UTC, but may be overwritten by a subclass to enforce a different tim
 }}
 
 \seealso{
-For time unit implementations based on this class:
-\code{\link[CLVTools:clv.time.hours-class]{clv.time.hours}}
+For time unit implementations based on this class: \linkS4class{clv.time.hours}
 }
 \keyword{internal}

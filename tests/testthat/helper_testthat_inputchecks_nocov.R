@@ -2,20 +2,20 @@ fct.testthat.inputchecks.startparamsmodel <- function(method, l.std.args, correc
 
   test_that("Fails if not vector", {
     expect_error(do.call(method, modifyList(l.std.args,
-                                               list(start.params.model = as.list(correct.params)))),
+                                            list(start.params.model = as.list(correct.params)))),
                  regexp = "numeric vector")
     expect_error(do.call(method, modifyList(l.std.args,
-                                               list(start.params.model = as.data.frame(correct.params)))),
+                                            list(start.params.model = as.data.frame(correct.params)))),
                  regexp = "numeric vector")
   })
 
   test_that("Fails if not numeric", {
     expect_error(do.call(method, modifyList(l.std.args,list(start.params.model =
-                                                                 setNames(as.character(correct.params), names.params)))),
+                                                              setNames(as.character(correct.params), names.params)))),
                  regexp = "numeric vector")
 
     expect_error(do.call(method, modifyList(l.std.args,list(start.params.model =
-                                                                 setNames(as.factor(as.character(correct.params)), names.params)))),
+                                                              setNames(as.factor(as.character(correct.params)), names.params)))),
                  regexp = "numeric vector")
   })
 
@@ -25,65 +25,38 @@ fct.testthat.inputchecks.startparamsmodel <- function(method, l.std.args, correc
   })
   test_that("Fails if named wrongly", {
     expect_error(do.call(method, modifyList(l.std.args,list(start.params.model =
-                                                                 setNames(correct.params, rep("a", length(names.params)))))),
+                                                              setNames(correct.params, rep("a", length(names.params)))))),
                  regexp = "Please provide the model")
   })
   test_that("Fails if single name missing", {
     expect_error(do.call(method, modifyList(l.std.args,list(start.params.model =
-                                                                 setNames(correct.params, c("",names.params[-1]))))),
+                                                              setNames(correct.params, c("",names.params[-1]))))),
                  regexp = "Please provide the model")
   })
   test_that("Fails if duplicate params", {
     expect_error(do.call(method, modifyList(l.std.args,list(start.params.model =
-                                                                 setNames(c(1, correct.params), c(names.params[1],names.params))))),
+                                                              setNames(c(1, correct.params), c(names.params[1],names.params))))),
                  regexp = "Please provide exactly")
   })
 
   test_that("Fails if unneded param", {
     expect_error(do.call(method, modifyList(l.std.args,list(start.params.model =
-                                                                 setNames(c(1, correct.params), c("abc",names.params))))),
+                                                              setNames(c(1, correct.params), c("abc",names.params))))),
                  regexp = "Please provide exactly")
   })
 
   test_that("Fails if any param NA", {
     expect_error(do.call(method, modifyList(l.std.args,list(start.params.model =
-                                                                 setNames(c(NA_real_, correct.params[-1]),
-                                                                          names.params)))),
+                                                              setNames(c(NA_real_, correct.params[-1]),
+                                                                       names.params)))),
                  regexp = "no NAs ")
   })
 }
 
 
-fct.testthat.inputchecks.usecor <- function(method, l.std.args, correct.param){
-  test_that("Fails if not logical", {
-
-    expect_error(do.call(method, modifyList(l.std.args,
-                                               list(use.cor = NULL), keep.null = TRUE)),
-                 regexp = "type logical")
-    expect_error(do.call(method, modifyList(l.std.args,
-                                               list(use.cor = as.list(correct.param)))),
-                 regexp = "type logical")
-    expect_error(do.call(method, modifyList(l.std.args,
-                                               list(use.cor = as.character(correct.param)))),
-                 regexp = "type logical")
-    expect_error(do.call(method, modifyList(l.std.args,
-                                               list(use.cor = as.factor(correct.param)))),
-                 regexp = "type logical")
-  })
-
-  test_that("Fails if more than 1", {
-    skip_on_cran()
-    expect_error(do.call(method, modifyList(l.std.args,
-                                               list(use.cor = rep(correct.param,2)))),
-                 regexp = "single element")
-  })
-
-  test_that("Fails if is NA", {
-    skip_on_cran()
-    expect_error(do.call(method, modifyList(l.std.args,
-                                               list(use.cor = NA))),
-                 regexp = "NA")
-  })
+fct.testthat.inputchecks.usecor <- function(method, l.std.args){
+  .fct.helper.inputchecks.single.logical(fct=method, l.std.args = l.std.args,
+                                         name.param = "use.cor", null.allowed = FALSE)
 }
 
 
@@ -93,50 +66,50 @@ fct.testthat.inputchecks.startparamcor <- function(method, l.std.args, correct.p
 
   test_that("Fails if not numeric vector", {
     expect_error(do.call(method, modifyList(l.std.args,
-                                               list(start.param.cor = as.list(correct.param)))),
+                                            list(start.param.cor = as.list(correct.param)))),
                  regexp = "numeric")
     expect_error(do.call(method, modifyList(l.std.args,
-                                               list(start.param.cor = as.data.frame(correct.param)))),
-                 regexp = "numeric")
-
-    expect_error(do.call(method, modifyList(l.std.args,
-                                               list(start.param.cor = as.character(correct.param)))),
+                                            list(start.param.cor = as.data.frame(correct.param)))),
                  regexp = "numeric")
 
     expect_error(do.call(method, modifyList(l.std.args,
-                                               list(start.param.cor = as.factor(correct.param)))),
+                                            list(start.param.cor = as.character(correct.param)))),
                  regexp = "numeric")
 
     expect_error(do.call(method, modifyList(l.std.args,
-                                               list(start.param.cor = TRUE))),
+                                            list(start.param.cor = as.factor(correct.param)))),
+                 regexp = "numeric")
+
+    expect_error(do.call(method, modifyList(l.std.args,
+                                            list(start.param.cor = TRUE))),
                  regexp = "numeric")
   })
 
   test_that("Fails if more than 1", {
     expect_error(do.call(method, modifyList(l.std.args,
-                                               list(start.param.cor = rep(correct.param,2)))),
+                                            list(start.param.cor = rep(correct.param,2)))),
                  regexp = "single")
   })
 
   test_that("Fails if is NA", {
     expect_error(do.call(method, modifyList(l.std.args,
-                                               list(start.param.cor = NA_real_))),
+                                            list(start.param.cor = NA_real_))),
                  regexp = "NA")
   })
 
   test_that("Fails if is out of [-1, 1]", {
     expect_error(do.call(method, modifyList(l.std.args,
-                                               list(start.param.cor = 42))),
+                                            list(start.param.cor = 42))),
                  regexp = "interval")
     expect_error(do.call(method, modifyList(l.std.args,
-                                               list(start.param.cor = -42))),
+                                            list(start.param.cor = -42))),
                  regexp = "interval")
   })
 
   test_that("Warning if given but use.cor = FALSE", {
     expect_error(do.call(method, modifyList(l.std.args,
-                                               list(start.param.cor = correct.param,
-                                                    use.cor=FALSE))),
+                                            list(start.param.cor = correct.param,
+                                                 use.cor=FALSE))),
                  regexp = "no correlation")
   })
 }
@@ -204,93 +177,149 @@ fct.testthat.inputchecks.nocov... <- function(method, l.std.args){
   })
 }
 
-fct.testthat.inputchecks.nocov.fails.for.start.params.subzero <- function(method, clv.data.no.holdout, clv.data.with.holdout, l.start.params.model)
-test_that("Fails for start params <= 0", {
-  lapply(l.start.params.model, fct.testthat.inputchecks.helper.expect.error.for.params, method = method, clv.data = clv.data.no.holdout)
-  lapply(l.start.params.model, fct.testthat.inputchecks.helper.expect.error.for.params, method = method, clv.data = clv.data.with.holdout)
-})
+fct.testthat.inputchecks.fails.for.start.params.subzero <- function(method, l.std.args, l.illegal.start.params.model){
+  test_that("Fails for start params <= 0", {
+    skip_on_cran()
+    for(single.illegal.start.params.model in l.illegal.start.params.model){
+      l.args <- modifyList(l.std.args, list(start.params.model = single.illegal.start.params.model))
+      expect_error(do.call(what = method, args = l.args), regexp = "greater")
+    }
+  })
+}
 
-fct.testthat.inputchecks.helper.expect.error.for.params <- function(start.params.model, method, clv.data){
-  l.args <- list(clv.data = clv.data, start.params.model = start.params.model)
+fct.testthat.inputchecks.cannot.fit.without.spending <- function(method, data.cdnow){
+  test_that("Cannot fit without spending data", {
+    skip_on_cran()
+    expect_silent(clv.cdnow.no.spending <- clvdata(data.cdnow, name.price = NULL, date.format = "ymd", time.unit = "w",
+                                                   estimation.split = 37))
+    expect_error(do.call(method, list(clv.data = clv.cdnow.no.spending, verbose=FALSE)),
+                 regexp = "spending data")
+  })
+}
 
-  expect_error(do.call(what = method, args = l.args), regexp = "greater")
+fct.testthat.inputchecks.cannot.predict.without.spending <- function(method, data.cdnow, is.spending.model){
+  test_that("Spending fit cannot predict on newdata that has no spending", {
+    skip_on_cran()
+
+    # Fit with spending
+    l.args <- list(clv.data = clvdata(data.cdnow, name.price = "Price", date.format = "ymd", time.unit = "w", estimation.split = 37),
+                   verbose = FALSE)
+    expect_silent(clv.spending <- do.call(what = method, args = l.args))
+
+    # Data without spending
+    expect_silent(clv.cdnow.nospending <- clvdata(data.cdnow, name.price = NULL, date.format = "ymd", time.unit = "w", estimation.split = 37))
+
+    if(is.spending.model){
+      expect_error(predict(clv.spending, newdata=clv.cdnow.nospending, verbose=FALSE),
+                   regexp = "needs to contain spending data")
+    }else{
+      # Have to manually force predict.spending
+      expect_error(predict(clv.spending, newdata=clv.cdnow.nospending, verbose=FALSE, predict.spending=TRUE),
+                   regexp = "there is no spending data")
+      # but works without spending
+      expect_silent(dt.pred <- predict(clv.spending, newdata=clv.cdnow.nospending, predict.spending=FALSE, verbose=FALSE))
+      expect_false(any(c("predicted.mean.spending","predicted.CLV") %in% colnames(dt.pred)))
+    }
+  })
 }
 
 
-fct.testthat.inputchecks.nocov.cannot.predict.without.spending <- function(method, cdnow, start.params.model)
-test_that("Spending fit cannot predict on newdata that has no spending", {
-  skip_on_cran()
-  l.args <- list(clv.data = clvdata(cdnow, name.price = "Price", date.format = "ymd", time.unit = "w", estimation.split = 37),
-                 verbose = FALSE)
-  # Spending fit
-  expect_silent(clv.spending <- do.call(what = method, args = l.args))
-  # Data without spending
-  expect_silent(clv.cdnow.nospending <- clvdata(cdnow, name.price = NULL, date.format = "ymd", time.unit = "w", estimation.split = 37))
-  expect_error(predict(clv.spending, newdata=clv.cdnow.nospending, verbose=FALSE, predict.spending=TRUE),
-               regexp = "there is no spending data")
 
-  # but works without spending
-  expect_silent(dt.pred <- predict(clv.spending, newdata=clv.cdnow.nospending, predict.spending=FALSE, verbose=FALSE))
-  expect_false(any(c("predicted.Spending","predicted.CLV") %in% colnames(dt.pred)))
-})
+fct.testthat.inputchecks.remove.first.transaction <- function(method, l.std.args){
+  .fct.helper.inputchecks.single.logical(fct=method, l.std.args = l.std.args,
+                                         name.param = "remove.first.transaction", null.allowed = FALSE)
+}
 
 
+.fct.testthat.inputchecks.clvfitted <- function(name.method, method,
+                                                l.std.args.noholdout, l.std.args.withholdout,
+                                                start.params.model, l.illegal.start.params.model, data.cdnow){
 
 
+  context(paste0("Inputchecks - ", name.method," nocov - Parameter start.params.model"))
+  fct.testthat.inputchecks.startparamsmodel(method = method,
+                                            l.std.args = l.std.args.noholdout,
+                                            correct.params = start.params.model,
+                                            names.params = names(start.params.model))
+  fct.testthat.inputchecks.startparamsmodel(method = method,
+                                            l.std.args = l.std.args.withholdout,
+                                            correct.params = start.params.model,
+                                            names.params = names(start.params.model))
 
 
-fct.testthat.inputchecks.nocov <- function(name.method, method, start.params.model, l.illegal.start.params.model,
-                                           has.cor, data.cdnow){
+  context(paste0("Inputchecks - ", name.method," nocov - Parameter optimx.args"))
+  fct.testthat.inputchecks.optimxargs(method = method, l.std.args = l.std.args.noholdout)
+  fct.testthat.inputchecks.optimxargs(method = method, l.std.args = l.std.args.withholdout)
 
-  expect_silent(clv.data.cdnow.no.holdout   <- clvdata(data.cdnow, date.format = "ymd", time.unit = "w"))
-  expect_silent(clv.data.cdnow.with.holdout <- clvdata(data.cdnow, date.format = "ymd", time.unit = "w"))
+  context(paste0("Inputchecks - ", name.method," nocov - Parameter ..."))
+  fct.testthat.inputchecks.nocov...(method = method, l.std.args = l.std.args.noholdout)
+  fct.testthat.inputchecks.nocov...(method = method, l.std.args = l.std.args.withholdout)
+
+
+  context(paste0("Inputchecks - ",name.method," nocov - Model specific"))
+  fct.testthat.inputchecks.fails.for.start.params.subzero(method = method, l.std.args = l.std.args.noholdout,
+                                                          l.illegal.start.params.model = l.illegal.start.params.model)
+  fct.testthat.inputchecks.fails.for.start.params.subzero(method = method, l.std.args = l.std.args.withholdout,
+                                                          l.illegal.start.params.model = l.illegal.start.params.model)
+}
+
+
+fct.testthat.inputchecks.clvfittedtransactions.nocov <- function(name.method, method, start.params.model, l.illegal.start.params.model,
+                                                                 has.cor, data.cdnow){
+
+  expect_silent(clv.data.cdnow.no.holdout   <- clvdata(data.cdnow, date.format = "ymd", time.unit = "w", estimation.split = NULL))
+  expect_silent(clv.data.cdnow.with.holdout <- clvdata(data.cdnow, date.format = "ymd", time.unit = "w", estimation.split = 37))
 
   l.std.args.noholdout   <- list(clv.data=clv.data.cdnow.no.holdout)
   l.std.args.withholdout <- list(clv.data=clv.data.cdnow.with.holdout)
 
-  context(paste0("Inputchecks - ", name.method," nocov - Parameter start.params.model"))
-  fct.testthat.inputchecks.startparamsmodel(method = method,
-                                           l.std.args = l.std.args.noholdout,
-                                           correct.params = start.params.model,
-                                           names.params = names(start.params.model))
-  fct.testthat.inputchecks.startparamsmodel(method = method,
-                                           l.std.args = l.std.args.withholdout,
-                                           correct.params = start.params.model,
-                                           names.params = names(start.params.model))
+  .fct.testthat.inputchecks.clvfitted(name.method=name.method, method=method, start.params.model=start.params.model,
+                                      l.std.args.noholdout=l.std.args.noholdout, l.std.args.withholdout=l.std.args.withholdout,
+                                      l.illegal.start.params.model=l.illegal.start.params.model, data.cdnow=data.cdnow)
 
 
-  context(paste0("Inputchecks - ", name.method," nocov - Parameter optimx.args"))
-  fct.testthat.inputchecks.optimxargs(method = method,
-                                     l.std.args = l.std.args.noholdout)
-  fct.testthat.inputchecks.optimxargs(method = method,
-                                     l.std.args = l.std.args.withholdout)
-
-  context(paste0("Inputchecks - ", name.method," nocov - Parameter ..."))
-  fct.testthat.inputchecks.nocov...(method = method,
-                                   l.std.args = l.std.args.noholdout)
-  fct.testthat.inputchecks.nocov...(method = method,
-                                   l.std.args = l.std.args.withholdout)
-
-  fct.testthat.inputchecks.nocov.cannot.predict.without.spending(method = method, cdnow = data.cdnow)
-
-
-  context(paste0("Inputchecks - ",name.method," nocov - Model specific"))
-
-  fct.testthat.inputchecks.nocov.fails.for.start.params.subzero(method = method,
-                                                                clv.data.no.holdout = clv.data.cdnow.no.holdout,
-                                                                clv.data.with.holdout = clv.data.cdnow.with.holdout,
-                                                                l.start.params.model = l.illegal.start.params.model)
-
+  fct.testthat.inputchecks.cannot.predict.without.spending(method = method, data.cdnow = data.cdnow, is.spending.model = FALSE)
 
   if(has.cor){
     context(paste0("Inputchecks - ",name.method," nocov - Parameter use.cor"))
-    fct.testthat.inputchecks.usecor(method = method, l.std.args = l.std.args.noholdout,   correct.param = TRUE)
-    fct.testthat.inputchecks.usecor(method = method, l.std.args = l.std.args.withholdout, correct.param = TRUE)
+    fct.testthat.inputchecks.usecor(method = method, l.std.args = l.std.args.noholdout)
+    fct.testthat.inputchecks.usecor(method = method, l.std.args = l.std.args.withholdout)
 
     context(paste0("Inputchecks - ",name.method," nocov - Parameter start.param.cor"))
     fct.testthat.inputchecks.startparamcor(method = method, l.std.args = l.std.args.noholdout,   correct.param = 0.5)
     fct.testthat.inputchecks.startparamcor(method = method, l.std.args = l.std.args.withholdout, correct.param = 0.5)
+  }else{
+    test_that("Fails for use.cor", {
+      expect_error(do.call(what = method,
+                           args = list(clv.data=clv.data.cdnow.with.holdout, use.cor = TRUE)),
+                   regexp = "ignored because they are not needed")
+    })
   }
-
-
 }
+
+
+fct.testthat.inputchecks.clvfittedspending.nocov <- function(name.method, method, start.params.model, l.illegal.start.params.model,
+                                                             data.cdnow){
+
+  expect_silent(clv.data.cdnow.no.holdout   <- clvdata(data.cdnow, date.format = "ymd", time.unit = "w", estimation.split = NULL))
+  expect_silent(clv.data.cdnow.with.holdout <- clvdata(data.cdnow, date.format = "ymd", time.unit = "w", estimation.split = 37))
+
+  l.std.args.noholdout   <- list(clv.data=clv.data.cdnow.no.holdout)
+  l.std.args.withholdout <- list(clv.data=clv.data.cdnow.with.holdout)
+
+  .fct.testthat.inputchecks.clvfitted(name.method=name.method, method=method, start.params.model=start.params.model,
+                                      l.std.args.noholdout=l.std.args.noholdout, l.std.args.withholdout=l.std.args.withholdout,
+                                      l.illegal.start.params.model=l.illegal.start.params.model, data.cdnow=data.cdnow)
+
+
+  context(paste0("Inputchecks - ",name.method," nocov - Parameter remove.first.transaction"))
+  fct.testthat.inputchecks.remove.first.transaction(method = method, l.std.args = l.std.args.noholdout)
+  fct.testthat.inputchecks.remove.first.transaction(method = method, l.std.args = l.std.args.withholdout)
+
+  context(paste0("Inputchecks - ",name.method," nocov - Parameter clvdata/newdata always have spending"))
+  fct.testthat.inputchecks.cannot.fit.without.spending(method = method, data.cdnow = data.cdnow)
+  fct.testthat.inputchecks.cannot.predict.without.spending(method = method, data.cdnow = data.cdnow, is.spending.model = TRUE)
+}
+
+
+

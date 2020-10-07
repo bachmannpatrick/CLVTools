@@ -1,7 +1,7 @@
 #' Transactional and dynamic covariates data to fit CLV models
 #'
 #' @description
-#' Extends the class \code{\link[CLVTools:clv.data.static.covariates-class]{clv.data.static.covariates}},
+#' Extends the class \linkS4class{clv.data.static.covariates},
 #' but adds no additional slots to it. The purpose of this class rather is to define different behaviors
 #' suitable for dynamic covariates.
 #'
@@ -16,7 +16,7 @@
 #' @slot names.cov.data.life Character vector with names of the dynamic lifetime covariates.
 #' @slot names.cov.data.trans Character vector with names of the dynamic transaction covariates.
 #'
-#' @seealso Definition of the parent class \code{\link[CLVTools:clv.data.static.covariates-class]{clv.data.static.covariates}}.
+#' @seealso Definition of the parent class \linkS4class{clv.data.static.covariates}.
 #' @seealso For fitting dynamic covariate models: \code{\link[CLVTools:pnbd]{pnbd}}
 #'
 # Corresponds to the column names of the \code{data.table} in slot data.cov.trans

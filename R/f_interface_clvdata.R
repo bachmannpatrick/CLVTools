@@ -53,7 +53,7 @@
 #'
 #' @return
 #' An object of class \code{clv.data}.
-#' See the class definition \code{\link[CLVTools:clv.data-class]{clv.data}}
+#' See the class definition \linkS4class{clv.data}
 #' for more details about the returned object.
 #'
 #' The function \code{summary} can be used to obtain and print a summary of the data.
@@ -119,7 +119,7 @@
 #' @export
 clvdata <- function(data.transactions, date.format, time.unit, estimation.split=NULL, name.id="Id", name.date="Date", name.price="Price"){
   # silence CRAN notes
-  Date <- Price <- Id <- date.first.actual.trans <- date.last.transaction <- x <- previous <- NULL
+  Date <- Price <- Id <- x <- previous <- date.first.actual.trans <- NULL
 
   cl <- match.call(expand.dots = TRUE)
 
@@ -153,10 +153,7 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
   if(!is.data.table(dt.trans))
     dt.trans <- setDT(dt.trans)
 
-  if(is.null(name.price))
-    has.spending <- FALSE
-  else
-    has.spending <- TRUE
+  has.spending <- (!is.null(name.price))
 
   # Reduce to named columns.
   #   This is needed if the data contains a column "Date"/"Id"/"Price" which is not actually selected
@@ -196,9 +193,8 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
 
   if(has.spending){
     dt.trans[, Price := as.numeric(Price)] # already checked that is numeric
-    if(dt.trans[Price<0, .N] > 0)
-      warning("Some Prices are negative! Some models might not work with this.", call. = FALSE)
   }
+
   setkeyv(dt.trans, cols = c("Id", "Date"))
 
 

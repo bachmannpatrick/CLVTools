@@ -57,12 +57,12 @@ If multiple optimization methods are specified, only the result of the last meth
 \item{reg.lambdas}{Named lambda parameters used for the L2 regularization of the lifetime and the transaction covariate parameters. Lambdas have to be >= 0.}
 }
 \value{
-\code{ggomnbd} returns an object of
-class \code{clv.ggomnbd}.
+Depending on the data object on which the model was fit, \code{ggomnbd} returns either an object of
+class \linkS4class{clv.ggomnbd} or \linkS4class{clv.ggomnbd.static.cov}.
 
 The function \code{\link[CLVTools:summary.clv.fitted]{summary}} can be used to obtain and print a summary of the results.
-The generic accessor functions \code{coefficients}, \code{fitted},
-\code{residuals}, \code{vcov}, \code{logLik}, \code{AIC}, \code{BIC}, and \code{nobs} are available.
+The generic accessor functions \code{coefficients}, \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}},
+\code{logLik}, \code{AIC}, \code{BIC}, and \code{nobs} are available.
 }
 \description{
 Fits Gamma-Gompertz/NBD models on transactional data with static and without covariates.
@@ -78,7 +78,11 @@ The smaller \code{r}, the stronger the heterogeneity of the purchase process.\cr
 The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.
 
 If no start parameters are given, r = 1, alpha = 1, beta = 1, b = 1, s = 1 is used.
-The model start parameters are required to be > 0.
+All model start parameters are required to be > 0. If no start values are given for the covariate parameters,
+0.1 is used.
+
+Note that the DERT expression has not been derived (yet) and it consequently is not possible to calculated
+values for DERT and CLV.
 
 \subsection{The Gamma-Gompertz/NBD model}{
 There are two key differences of the gamma/Gompertz/NBD (GGom/NBD) model compared to the relative to the well-known Pareto/NBD
@@ -97,7 +101,7 @@ clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
 # Fit standard ggomnbd model
 ggomnbd(clv.data.apparel)
 
-# Give initial guesses for the Model parameters
+# Give initial guesses for the model parameters
 ggomnbd(clv.data.apparel,
      start.params.model = c(r=0.5, alpha=15, b=5, beta=10, s=0.5))
 
@@ -156,11 +160,12 @@ Bemmaor AC, Glady N (2012). \dQuote{Modeling Purchasing Behavior with Sudden \dQ
 Lifetime Model} Management Science, 58(5), 1012-1021.
 }
 \seealso{
-\code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object
+\code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object, \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}}
+to add static covariates to an existing clv data object.
 
-\code{\link[CLVTools:predict.clv.fitted]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
+\code{\link[CLVTools:predict.clv.fitted.transactions]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
 
-\code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation as predicted by the fitted model
+\code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} to plot the unconditional expectation as predicted by the fitted model
 
-The generic functions \code{\link[CLVTools:summary.clv.fitted]{summary}} and \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
+The generic functions \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:summary.clv.fitted]{summary}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
 }

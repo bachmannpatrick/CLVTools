@@ -2,8 +2,8 @@
 #'
 #' @template template_clvdate_description
 #'
-#' @seealso  \code{\link[CLVTools:clv.time-class]{clv.time}}
-#' @seealso  \code{\link[CLVTools:clv.time.date-class]{clv.time.date}}
+#' @seealso  \linkS4class{clv.time}
+#' @seealso  \linkS4class{clv.time.date}
 #'
 #' @include class_clv_time.R class_clv_time_date.R all_generics.R
 #' @keywords internal

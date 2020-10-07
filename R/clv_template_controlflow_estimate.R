@@ -1,48 +1,25 @@
-#' @include class_clv_fitted.R all_generics.R
-#' @importFrom optimx optimx coef<-
-#' @importFrom utils modifyList
-#' @include all_generics.R
 clv.template.controlflow.estimate <- function(clv.fitted,
-                                              cl,
                                               start.params.model,
-                                              use.cor,
-                                              start.param.cor,
                                               optimx.args,
                                               verbose,
                                               ...){
 
-  # Input for covariate models, passed in "..."
-  # function(clv.fitted,
-  #          cl,
-  #          start.params.model=c(),
-  #          use.cor = FALSE,
-  #          start.param.cor=c(),
-  #          optimx.args=list(),
-  #          verbose = TRUE,
-  #          ... =
-  #          names.cov.life=c(), names.cov.trans=c(),
-  #          start.params.life=c(), start.params.trans=c(),
-  #          names.cov.constr=c(),
-  #          start.params.constr=c(),
-  #          reg.lambdas = c())
-
-
   # input checks ------------------------------------------------------------------------------------------
   #   checks for model first
-  clv.controlflow.estimate.check.inputs(clv.fitted=clv.fitted, start.params.model=start.params.model, use.cor=use.cor, start.param.cor=start.param.cor,
+  clv.controlflow.estimate.check.inputs(clv.fitted=clv.fitted, start.params.model=start.params.model,
                                         optimx.args=optimx.args, verbose=verbose, ...)
 
-  clv.model.check.input.args(clv.model=clv.fitted@clv.model, clv.fitted=clv.fitted, start.params.model=start.params.model, use.cor=use.cor, start.param.cor=start.param.cor,
+  clv.model.check.input.args(clv.model=clv.fitted@clv.model, clv.fitted=clv.fitted, start.params.model=start.params.model,
                              optimx.args=optimx.args, verbose=verbose, ...)
 
 
   # Store user input for estimation ----------------------------------------------------------------------------
-  clv.fitted <- clv.controlflow.estimate.put.inputs(clv.fitted=clv.fitted, cl=cl, use.cor=use.cor, start.param.cor=start.param.cor, ...)
-  clv.fitted <- clv.model.put.estimation.input(clv.model=clv.fitted@clv.model, clv.fitted=clv.fitted, verbose=verbose, ...)
+  clv.fitted           <- clv.controlflow.estimate.put.inputs(clv.fitted=clv.fitted, verbose=verbose, ...)
+  clv.fitted@clv.model <- clv.model.put.estimation.input(clv.model=clv.fitted@clv.model, ...)
 
 
   # Generate start params ---------------------------------------------------------------------------------------
-  start.params.all <- clv.controlflow.estimate.generate.start.params(clv.fitted=clv.fitted, start.params.model=start.params.model, start.param.cor=start.param.cor, verbose=verbose, ...)
+  start.params.all <- clv.controlflow.estimate.generate.start.params(clv.fitted=clv.fitted, start.params.model=start.params.model, verbose=verbose, ...)
 
 
   # prepare optimx args ------------------------------------------------------------------------------------------

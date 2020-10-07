@@ -9,7 +9,7 @@
 \S4method{show}{clv.data}(object)
 }
 \description{
-Stores the processed transactional data and holds an object of class \code{\link[CLVTools:clv.time-class]{clv.time}}
+Stores the processed transactional data and holds an object of class \linkS4class{clv.time}
 which stores further information about the split in an estimation and holdout sample.
 
 A \code{clv.data} object serves as input into the various model fitting functions.
@@ -33,6 +33,6 @@ A \code{clv.data} object serves as input into the various model fitting function
 }}
 
 \seealso{
-\code{\link[CLVTools:clv.time-class]{clv.time}}
+\linkS4class{clv.time}
 }
 \keyword{internal}

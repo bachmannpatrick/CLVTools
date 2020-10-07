@@ -23,6 +23,9 @@
 #' The smaller r, the stronger the heterogeneity of the purchase process.\cr
 #' \code{alpha}: scale parameter of the Gamma distribution of the purchase process.
 #'
+#' Based on these parameters, the average purchase rate while customers are active
+#' is r/alpha and the average dropout rate is s/beta.
+#'
 #' Ideally, the starting parameters for r and s represent your best guess
 #' concerning the heterogeneity of customers in their buy and die rate.
 #' If covariates are included into the model additionally parameters for the
@@ -67,29 +70,28 @@
 #' @note
 #' Fitting the Pareto/NBD model with dynamic covariates is for the most part implemented using \code{data.table} and to a smaller part further
 #' parallelized with the \code{foreach} package. Registering a
-#' parallel backend with \code{\link[doFuture]{doFuture}} or \code{\link[doParallel:doParallel-package]{doParallel}} before fitting the
+#' parallel backend with \code{\link[doFuture]{doFuture}} or \code{\link[doParallel]{doParallel}} before fitting the
 #' models allows to take advantage of this. If no parallel backend is set up, the \code{foreach} package gives a friendly reminder that
 #' it is executed sequentially. In case this is desired but no warning should be given, a parallel backend in sequential mode
 #' can be set up, for example package \code{doFuture} with \code{\link[future:plan]{plan("sequential")}}.
 #'
 #' The part executed with \code{foreach} also heavily relies on \code{data.table} which is natively parallelized already. When setting up
 #' the parallel backend, great care should be taken to reduce the overhead from this nested parallelism as otherwise it can \emph{increase} runtime.
-#' See \code{\link[data.table:openmp-utils]{setDTthreads}}, \code{\link[data.table:openmp-utils]{getDTthreads}},
+#' See \code{\link[data.table]{setDTthreads}}, \code{\link[data.table]{getDTthreads}},
 #' and \code{\link[future]{plan}} for information on how to do this.
 #'
 #' The Pareto/NBD model with dynamic covariates can currently not be fit with data that has a temporal resolution
 #' of less than one day (data that was built with time unit \code{hours}).
 #'
-#' @return
-#' Depending on the data object on which the model was fit, \code{pnbd} returns either an object of
-#' class \link[CLVTools:clv.pnbd-class]{clv.pnbd}, \link[CLVTools:clv.pnbd.static.cov-class]{clv.pnbd.static.cov}, or \link[CLVTools:clv.pnbd.dynamic.cov-class]{clv.pnbd.dynamic.cov}.
+#' @return Depending on the data object on which the model was fit, \code{pnbd} returns either an object of
+#' class \linkS4class{clv.pnbd}, \linkS4class{clv.pnbd.static.cov}, or \linkS4class{clv.pnbd.dynamic.cov}.
 #'
 #' @template template_clvfitted_returnvalue
 #'
-#' @template template_clvfitted_seealso
+#' @template template_clvfittedtransactions_seealso
 #' @seealso \code{\link[CLVTools:SetDynamicCovariates]{SetDynamicCovariates}} to add dynamic covariates on which the \code{pnbd} model can be fit.
 #'
-#' @seealso \code{\link[data.table:openmp-utils]{setDTthreads}}, \code{\link[data.table:openmp-utils]{getDTthreads}},\code{\link[doParallel:registerDoParallel]{registerDoParallel}},\code{\link[doFuture]{registerDoFuture}} for setting up parallel execution.
+#' @seealso \code{\link[data.table]{setDTthreads}}, \code{\link[data.table]{getDTthreads}},\code{\link[doParallel]{registerDoParallel}},\code{\link[doFuture]{registerDoFuture}} for setting up parallel execution.
 #'
 #' @template template_references_pnbd
 #'
@@ -153,12 +155,14 @@ setMethod("pnbd", signature = signature(clv.data="clv.data"), definition = funct
                                                                                     optimx.args=list(),
                                                                                     verbose=TRUE,...){
 
+  check_err_msg(check_user_data_emptyellipsis(...))
+
   cl  <- match.call(call = sys.call(-1), expand.dots = TRUE)
 
   obj <- clv.pnbd(cl=cl, clv.data=clv.data)
 
-  return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor,
-                                           start.param.cor = start.param.cor, optimx.args = optimx.args, verbose=verbose, ...))
+  return(clv.template.controlflow.estimate(clv.fitted=obj, start.params.model = start.params.model, use.cor = use.cor,
+                                           start.param.cor = start.param.cor, optimx.args = optimx.args, verbose=verbose))
 })
 
 #' @include class_clv_data_staticcovariates.R
@@ -174,17 +178,19 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.static.covariates"), 
                                                                                                       names.cov.constr=c(),start.params.constr=c(),
                                                                                                       reg.lambdas = c(), ...){
 
+  check_err_msg(check_user_data_emptyellipsis(...))
+
   cl  <- match.call(call = sys.call(-1), expand.dots = TRUE)
 
   obj <- clv.pnbd.static.cov(cl=cl, clv.data=clv.data)
 
   # Do the estimate controlflow / process steps with the static cov object
-  return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor, start.param.cor = start.param.cor,
+  return(clv.template.controlflow.estimate(clv.fitted=obj, start.params.model = start.params.model, use.cor = use.cor, start.param.cor = start.param.cor,
                                            optimx.args = optimx.args, verbose=verbose,
                                            names.cov.life=names.cov.life, names.cov.trans=names.cov.trans,
                                            start.params.life=start.params.life, start.params.trans=start.params.trans,
                                            names.cov.constr=names.cov.constr,start.params.constr=start.params.constr,
-                                           reg.lambdas = reg.lambdas, ...))
+                                           reg.lambdas = reg.lambdas))
 })
 
 
@@ -202,19 +208,21 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.dynamic.covariates"),
                                                                                                        names.cov.constr=c(),start.params.constr=c(),
                                                                                                        reg.lambdas = c(), ...){
 
-  cl  <- match.call(call = sys.call(-1), expand.dots = TRUE)
+  check_err_msg(check_user_data_emptyellipsis(...))
 
-  obj <- clv.pnbd.dynamic.cov(cl = cl, clv.data=clv.data)
+  cl  <- match.call(call = sys.call(-1), expand.dots = TRUE)
 
   if(is(clv.data@clv.time, "clv.time.datetime")){
     stop("This model currently cannot be fitted with data that has a temporal resolution of less than 1d (ie hours).")
   }
 
-  return(clv.template.controlflow.estimate(clv.fitted=obj, cl=cl, start.params.model = start.params.model, use.cor = use.cor, start.param.cor = start.param.cor,
+  obj <- clv.pnbd.dynamic.cov(cl = cl, clv.data=clv.data)
+
+  return(clv.template.controlflow.estimate(clv.fitted=obj, start.params.model = start.params.model, use.cor = use.cor, start.param.cor = start.param.cor,
                                            optimx.args = optimx.args, verbose=verbose,
                                            names.cov.life=names.cov.life, names.cov.trans=names.cov.trans,
                                            start.params.life=start.params.life, start.params.trans=start.params.trans,
                                            names.cov.constr=names.cov.constr,start.params.constr=start.params.constr,
-                                           reg.lambdas = reg.lambdas, ...))
+                                           reg.lambdas = reg.lambdas))
 })
 

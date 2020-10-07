@@ -1,6 +1,8 @@
 #include <RcppArmadillo.h>
 #include <math.h>
 #include "clv_vectorized.h"
+#include "bgnbd_CET.h"
+#include "bgnbd_LL.h"
 
 //' @name bgnbd_CET
 //'
@@ -54,9 +56,9 @@ arma::vec bgnbd_nocov_CET(const double r,
 
   arma::vec vAlpha_i(n), vA_i(n), vB_i(n);
 
-  vAlpha_i.fill(alpha);
-  vA_i.fill(a);
-  vB_i.fill(b);
+  vA_i = bgnbd_nocov_a_i(a, n);
+  vB_i = bgnbd_nocov_b_i(b, n);
+  vAlpha_i = bgnbd_nocov_alpha_i(alpha, n);
 
   return bgnbd_CET(r, vAlpha_i, vA_i, vB_i, dPeriods, vX, vT_x, vT_cal);
 }
@@ -75,17 +77,6 @@ arma::vec bgnbd_staticcov_CET(const double r,
                               const arma::vec& vCovParams_life,
                               const arma::mat& mCov_trans,
                               const arma::mat& mCov_life){
-
-
-  if(vCovParams_trans.n_elem != mCov_trans.n_cols)
-    throw std::out_of_range("Vector of transaction parameters need to have same length as number of columns in transaction covariates!");
-
-  if(vCovParams_life.n_elem != mCov_life.n_cols)
-    throw std::out_of_range("Vector of lifetime parameters need to have same length as number of columns in lifetime covariates!");
-
-  if((vX.n_elem != mCov_trans.n_rows) ||
-     (vX.n_elem != mCov_life.n_rows))
-    throw std::out_of_range("There need to be as many covariate rows as customers!");
 
 
   // Build alpha and beta --------------------------------------------

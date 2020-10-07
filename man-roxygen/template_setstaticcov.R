@@ -25,7 +25,7 @@
 #'
 #' @return
 #' An object of class \code{clv.data.static.covariates}.
-#' See the class definition \code{\link[CLVTools:clv.data.static.covariates-class]{clv.data.static.covariates}}
+#' See the class definition \linkS4class{clv.data.static.covariates}
 #' for more details about the returned object.
 #'
 #' @examples

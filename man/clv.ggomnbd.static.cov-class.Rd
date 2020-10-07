@@ -9,8 +9,8 @@ Output from fitting the GGompertz/NBD model on data with static covariates. It c
 estimation result and is returned to the user to use it as input to other methods such as
 to make predictions or plot the unconditional expectation.
 
-Inherits from \code{clv.fitted.static.cov} in order to execute all steps required for fitting a model
-with static covariates and it contains an instance of class \code{clv.model.ggomnbd.static.cov} which
+Inherits from \linkS4class{clv.fitted.transactions.static.cov} in order to execute all steps required for fitting a model
+with static covariates and it contains an instance of class \linkS4class{clv.model.ggomnbd.static.cov} which
 provides the required GGompertz/NBD (static covariates) specific functionalities.
 }
 \section{Slots}{
@@ -22,6 +22,6 @@ and as defined by the GGompertz/NBD model.}
 }}
 
 \seealso{
-\link{clv.fitted.static.cov-class}, \link{clv.model.ggomnbd.static.cov-class}, \link{clv.ggomnbd-class}
+\linkS4class{clv.fitted.transactions.static.cov}, \linkS4class{clv.model.ggomnbd.static.cov}, \linkS4class{clv.ggomnbd}
 }
 \keyword{internal}

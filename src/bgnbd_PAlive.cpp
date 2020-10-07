@@ -1,6 +1,8 @@
 #include <RcppArmadillo.h>
 #include <math.h>
 #include "clv_vectorized.h"
+#include "bgnbd_PAlive.h"
+#include "bgnbd_LL.h"
 
 //' @name bgnbd_PAlive
 //'
@@ -43,13 +45,11 @@ arma::vec bgnbd_nocov_PAlive(const double r,
 
   // Build alpha, a and b --------------------------------------------------------
   //    No covariates: Same alpha, a and b for every customer
+
   const double n = vX.n_elem;
-
-  arma::vec vAlpha_i(n), vA_i(n), vB_i(n);
-
-  vAlpha_i.fill(alpha);
-  vA_i.fill(a);
-  vB_i.fill(b);
+  const arma::vec vA_i = bgnbd_nocov_a_i(a, n);
+  const arma::vec vB_i = bgnbd_nocov_b_i(b, n);
+  const arma::vec vAlpha_i = bgnbd_nocov_alpha_i(alpha, n);
 
   return bgnbd_PAlive(r,
                       vAlpha_i,
@@ -73,26 +73,21 @@ arma::vec bgnbd_staticcov_PAlive(const double r,
                                  const arma::vec& vCovParams_life,
                                  const arma::mat& mCov_trans,
                                  const arma::mat& mCov_life){
-  if(vCovParams_trans.n_elem != mCov_trans.n_cols)
-    throw std::out_of_range("Vector of transaction parameters need to have same length as number of columns in transaction covariates!");
-
-  if(vCovParams_life.n_elem != mCov_life.n_cols)
-    throw std::out_of_range("Vector of lifetime parameters need to have same length as number of columns in lifetime covariates!");
-
-  if((vX.n_elem != mCov_trans.n_rows) ||
-     (vX.n_elem != mCov_life.n_rows))
-    throw std::out_of_range("There need to be as many covariate rows as customers!");
-
 
   // Build alpha a and b --------------------------------------------
   //  Static covariates: Different alpha, a and b for every customer
-  const double n = vX.n_elem;
 
-  arma::vec vAlpha_i(n), vA_i(n), vB_i(n);
+  const arma::vec vAlpha_i = bgnbd_staticcov_alpha_i(alpha,
+                                     vCovParams_trans,
+                                     mCov_trans);
 
-  vAlpha_i = alpha * arma::exp(((mCov_trans * (-1)) * vCovParams_trans));
-  vA_i     = a     * arma::exp((mCov_life           * vCovParams_life));
-  vB_i     = b     * arma::exp((mCov_life           * vCovParams_life));
+  const arma::vec vA_i  = bgnbd_staticcov_a_i(a,
+                              vCovParams_life,
+                              mCov_life);
+
+  const arma::vec vB_i  = bgnbd_staticcov_b_i(b,
+                              vCovParams_life,
+                              mCov_life);
 
   return bgnbd_PAlive(r,
                       vAlpha_i,

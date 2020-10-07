@@ -9,8 +9,8 @@ Output from fitting the BG/NBD model on data with static covariates. It constitu
 estimation result and is returned to the user to use it as input to other methods such as
 to make predictions or plot the unconditional expectation.
 
-Inherits from \code{clv.fitted.static.cov} in order to execute all steps required for fitting a model
-with static covariates and it contains an instance of class \code{clv.model.bgnbd.static.cov} which
+Inherits from \linkS4class{clv.fitted.transactions.static.cov} in order to execute all steps required for fitting a model
+with static covariates and it contains an instance of class \linkS4class{clv.model.bgnbd.static.cov} which
 provides the required BG/NBD (static covariates) specific functionalities.
 }
 \section{Slots}{
@@ -22,6 +22,6 @@ and as defined by the BG/NBD model.}
 }}
 
 \seealso{
-\link{clv.fitted.static.cov-class}, \link{clv.model.bgnbd.static.cov-class}, \link{clv.bgnbd-class}
+\linkS4class{clv.fitted.transactions.static.cov}, \linkS4class{clv.model.bgnbd.static.cov}, \linkS4class{clv.bgnbd}
 }
 \keyword{internal}

@@ -1,7 +1,7 @@
 #' Transactional and static covariates data to fit CLV models
 #'
 #'
-#' Extends the class \code{\link[CLVTools:clv.data-class]{clv.data}} and adds slots to store data and names of
+#' Extends the class \linkS4class{clv.data} and adds slots to store data and names of
 #' static covariates for both processes.
 #' An object of this class then serves as input to fit models with static covariates.
 #'
@@ -12,7 +12,7 @@
 #' @slot names.cov.data.trans Character vector with names of the static transaction covariates.
 #Corresponds to the column names of the \code{data.table} in slot data.cov.life
 #'
-#' @seealso Definition of the parent class \code{\link[CLVTools:clv.data-class]{clv.data}}.
+#' @seealso Definition of the parent class \linkS4class{clv.data}.
 #' @seealso For fitting covariate models: \code{\link[CLVTools:pnbd]{pnbd}}
 #'
 #'
@@ -113,27 +113,40 @@ clv.data.reduce.covariates <- function(clv.data, names.cov.life, names.cov.trans
 
 
 #' @importFrom stats model.frame model.matrix reformulate
-convert_userinput_covariatedata_dummies <- function(dt.cov.data, names.cov){
+convert_userinput_covariatedata <- function(dt.cov.data, names.cov){
+
+
+  # Make syntactically valid names
+  #   Rename data in order to be able to use model.frame() which requires legal names
+  original.cov.names <- names.cov
+  legal.cov.names    <- make.names(names.cov)
+  setnames(dt.cov.data, old = original.cov.names, new = legal.cov.names)
+
 
   # Use model.frame/model.matrix to convert cov data
-  #   numeric to numeric, char/factors to k-1 dummies
+  #   numeric stays numeric, char/factors to k-1 dummies
 
   # Always need intercept!
   #   to always get k-1 dummies, as no intercept implies k dummies in the
-  #   case of only a single catgorical covariate
-  f.covs <- reformulate(termlabels = names.cov,
+  #   case of only a single categorical covariate
+  f.covs <- reformulate(termlabels = legal.cov.names,
                         response = NULL,
                         intercept = TRUE)
 
   mf <- model.frame(f.covs, data = dt.cov.data)
   mm <- model.matrix(object = f.covs, data = dt.cov.data)
 
-  # Combine averything else (Id, maybe Cov.Date) and raw converted numeric covariate data
-  dt.cov <- cbind(dt.cov.data[, .SD, .SDcols=setdiff(colnames(dt.cov.data), names.cov)], # everything except cov data
-                  mm[, setdiff(colnames(mm), "(Intercept)"), drop=FALSE]) # everything except the Intercept
+  # Combine everything else (Id, maybe Cov.Date for dyncov) and raw converted numeric covariate data
+  dt.cov <- cbind(
+    # Id and Cov.Date from original data, everything except actual cov data
+    dt.cov.data[, .SD, .SDcols=setdiff(colnames(dt.cov.data), legal.cov.names)],
+    # everything except the Intercept: numeric, dummies, etc
+    mm[, setdiff(colnames(mm), "(Intercept)"), drop=FALSE])
 
-  names.cov <- setdiff(colnames(dt.cov), c("Id", "Cov.Date"))
+  # Read final names which in the case of dummies are completely different from
+  #   original.cov.names (or legal.cov.names)
+  final.names.cov <- setdiff(colnames(dt.cov), c("Id", "Cov.Date"))
 
-  return(list(data.cov = dt.cov, names.cov=names.cov))
+  return(list(data.cov = dt.cov, final.names.cov=final.names.cov))
 }
 

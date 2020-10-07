@@ -217,6 +217,7 @@ test_that("No price data gives correct object", {
 
   expect_silent(clv.cdnow <- clvdata(cdnow, date.format = "ymd", time.unit = "w", estimation.split = 37, name.price = NULL))
   expect_false(clv.cdnow@has.spending)
+  expect_false(clv.data.has.spending(clv.cdnow))
   expect_false("Price" %in% colnames(clv.cdnow@data.transactions))
   expect_false("Price" %in% colnames(clv.cdnow@data.repeat.trans))
   # also nothing in descriptives
@@ -227,6 +228,7 @@ test_that("Price data gives correct object", {
   skip_on_cran()
   expect_silent(clv.cdnow <- clvdata(cdnow, date.format = "ymd", time.unit = "w", estimation.split = 37, name.price = "Price"))
   expect_true(clv.cdnow@has.spending)
+  expect_true(clv.data.has.spending(clv.cdnow))
   expect_true("Price" %in% colnames(clv.cdnow@data.transactions))
   expect_true("Price" %in% colnames(clv.cdnow@data.repeat.trans))
   # also Spending info in descriptives
@@ -376,7 +378,6 @@ test_that("Zero-repeaters are removed", {
 
 
 
-
 test_that("Aggregating first and removing after removes all first transactions", {
   expect_silent(dt.trans <- data.table(Id =   c("1", "1", "1", "2", "2", "2"),
                                        Date = c(lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-02"),
@@ -394,4 +395,33 @@ test_that("Aggregating first and removing after removes all first transactions",
 
   expect_silent(clv.d <- clvdata(dt.trans, date.format = "ymd", time.unit = "w", estimation.split = NULL))
   expect_true(fsetequal(clv.d@data.repeat.trans, dt.trans.correct))
+})
+
+
+# summary ---------------------------------------------------------------------------------------------------------
+context("Correctness - clvdata - summary")
+test_that("Zero repeaters are counted correctly", {
+  skip_on_cran()
+
+  fct.verify.zero.repeaters <- function(date.estimation.split){
+    expect_silent(clv.cdnow <- clvdata(cdnow, date.format = "ymd", time.unit = "w", estimation.split = date.estimation.split))
+    expect_silent(res.sum <- summary(clv.cdnow))
+
+    if(!is.null(date.estimation.split)){
+      num.zero.rep <- cdnow[Date <= date.estimation.split, .N, by = "Id"][N == 1, .N]
+      perc.zero.rep <- round(num.zero.rep / cdnow[Date <= date.estimation.split, uniqueN(Id)], 2)
+      expect_true(num.zero.rep == res.sum$descriptives.transactions[Name == "Total # zero repeaters", as.numeric(Estimation)])
+      expect_true(perc.zero.rep == round(res.sum$descriptives.transactions[Name == "Percentage # zero repeaters", as.numeric(Estimation)], 2))
+    }else{
+      num.zero.rep <- cdnow[, .N, by = "Id"][N == 1, .N]
+      perc.zero.rep <- round(num.zero.rep / cdnow[, uniqueN(Id)], 2)
+      expect_true(num.zero.rep == res.sum$descriptives.transactions[Name == "Total # zero repeaters", as.numeric(Total)])
+      expect_true(perc.zero.rep == round(res.sum$descriptives.transactions[Name == "Percentage # zero repeaters", as.numeric(Total)], 2))
+    }
+  }
+
+  # Overall
+  fct.verify.zero.repeaters(date.estimation.split = NULL)
+  # In estimation period
+  fct.verify.zero.repeaters(date.estimation.split = lubridate::ymd("1997-09-17"))
 })

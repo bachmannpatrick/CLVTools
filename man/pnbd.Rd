@@ -83,7 +83,11 @@ If multiple optimization methods are specified, only the result of the last meth
 }
 \value{
 Depending on the data object on which the model was fit, \code{pnbd} returns either an object of
-class \link[CLVTools:clv.pnbd-class]{clv.pnbd}, \link[CLVTools:clv.pnbd.static.cov-class]{clv.pnbd.static.cov}, or \link[CLVTools:clv.pnbd.dynamic.cov-class]{clv.pnbd.dynamic.cov}.
+class \linkS4class{clv.pnbd}, \linkS4class{clv.pnbd.static.cov}, or \linkS4class{clv.pnbd.dynamic.cov}.
+
+The function \code{\link[CLVTools:summary.clv.fitted]{summary}} can be used to obtain and print a summary of the results.
+The generic accessor functions \code{coefficients}, \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}},
+\code{logLik}, \code{AIC}, \code{BIC}, and \code{nobs} are available.
 }
 \description{
 Fits Pareto/NBD models on transactional data with and without covariates.
@@ -96,6 +100,9 @@ The smaller s, the stronger the heterogeneity of customer lifetimes. \cr
 \code{r}: shape parameter of the Gamma distribution of the purchase process.
 The smaller r, the stronger the heterogeneity of the purchase process.\cr
 \code{alpha}: scale parameter of the Gamma distribution of the purchase process.
+
+Based on these parameters, the average purchase rate while customers are active
+is r/alpha and the average dropout rate is s/beta.
 
 Ideally, the starting parameters for r and s represent your best guess
 concerning the heterogeneity of customers in their buy and die rate.
@@ -141,14 +148,14 @@ the paper by Bachmann, Meierer and Näf (2020).
 \note{
 Fitting the Pareto/NBD model with dynamic covariates is for the most part implemented using \code{data.table} and to a smaller part further
 parallelized with the \code{foreach} package. Registering a
-parallel backend with \code{\link[doFuture]{doFuture}} or \code{\link[doParallel:doParallel-package]{doParallel}} before fitting the
+parallel backend with \code{\link[doFuture]{doFuture}} or \code{\link[doParallel]{doParallel}} before fitting the
 models allows to take advantage of this. If no parallel backend is set up, the \code{foreach} package gives a friendly reminder that
 it is executed sequentially. In case this is desired but no warning should be given, a parallel backend in sequential mode
 can be set up, for example package \code{doFuture} with \code{\link[future:plan]{plan("sequential")}}.
 
 The part executed with \code{foreach} also heavily relies on \code{data.table} which is natively parallelized already. When setting up
 the parallel backend, great care should be taken to reduce the overhead from this nested parallelism as otherwise it can \emph{increase} runtime.
-See \code{\link[data.table:openmp-utils]{setDTthreads}}, \code{\link[data.table:openmp-utils]{getDTthreads}},
+See \code{\link[data.table]{setDTthreads}}, \code{\link[data.table]{getDTthreads}},
 and \code{\link[future]{plan}} for information on how to do this.
 
 The Pareto/NBD model with dynamic covariates can currently not be fit with data that has a temporal resolution
@@ -163,7 +170,7 @@ clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
 # Fit standard pnbd model
 pnbd(clv.data.apparel)
 
-# Give initial guesses for the Model parameters
+# Give initial guesses for the model parameters
 pnbd(clv.data.apparel,
      start.params.model = c(r=0.5, alpha=15, s=0.5, beta=10))
 
@@ -267,13 +274,13 @@ URL \url{http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf}.
 \code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object, \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}}
 to add static covariates to an existing clv data object.
 
-\code{\link[CLVTools:predict.clv.fitted]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
+\code{\link[CLVTools:predict.clv.fitted.transactions]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
 
-\code{\link[CLVTools:plot.clv.fitted]{plot}} to plot the unconditional expectation as predicted by the fitted model
+\code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} to plot the unconditional expectation as predicted by the fitted model
 
 The generic functions \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:summary.clv.fitted]{summary}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
 
 \code{\link[CLVTools:SetDynamicCovariates]{SetDynamicCovariates}} to add dynamic covariates on which the \code{pnbd} model can be fit.
 
-\code{\link[data.table:openmp-utils]{setDTthreads}}, \code{\link[data.table:openmp-utils]{getDTthreads}},\code{\link[doParallel:registerDoParallel]{registerDoParallel}},\code{\link[doFuture]{registerDoFuture}} for setting up parallel execution.
+\code{\link[data.table]{setDTthreads}}, \code{\link[data.table]{getDTthreads}},\code{\link[doParallel]{registerDoParallel}},\code{\link[doFuture]{registerDoFuture}} for setting up parallel execution.
 }

@@ -3,6 +3,8 @@
 #include <vector>
 
 #include "pnbd_PAlive.h"
+#include "pnbd_CET.h"
+#include "pnbd_LL_ind.h"
 
 //' @name pnbd_CET
 //'
@@ -35,8 +37,7 @@ arma::vec pnbd_CET(const double r,
   const arma::vec vP2 = (1 - arma::pow((vBeta_i + vT_cal) / (vBeta_i + vT_cal + dPeriods), (s-1)));
   const arma::vec vP3 = vPAlive;
 
-  // eval is needed as evaluation could be delayed!
-  return (vP1 % vP2 % vP3).eval();
+  return vP1 % vP2 % vP3;
 }
 
 
@@ -58,8 +59,8 @@ arma::vec pnbd_nocov_CET(const double r,
 
   arma::vec vAlpha_i(n), vBeta_i(n);
 
-  vAlpha_i.fill(alpha_0);
-  vBeta_i.fill(beta_0);
+  vAlpha_i = pnbd_nocov_alpha_i(alpha_0, n);
+  vBeta_i = pnbd_nocov_beta_i(beta_0, n);
 
 
   // Calculate PAlive -------------------------------------------------------------
@@ -96,18 +97,6 @@ arma::vec pnbd_staticcov_CET(const double r,
                              const arma::mat& mCov_trans,
                              const arma::mat& mCov_life){
 
-
-  if(vCovParams_trans.n_elem != mCov_trans.n_cols)
-    throw std::out_of_range("Vector of transaction parameters need to have same length as number of columns in transaction covariates!");
-
-  if(vCovParams_life.n_elem != mCov_life.n_cols)
-    throw std::out_of_range("Vector of lifetime parameters need to have same length as number of columns in lifetime covariates!");
-
-  if((vX.n_elem != mCov_trans.n_rows) ||
-     (vX.n_elem != mCov_life.n_rows))
-    throw std::out_of_range("There need to be as many covariate rows as customers!");
-
-
   // Build alpha and beta --------------------------------------------
   //  Static covariates: Different alpha/beta for every customer
 
@@ -115,8 +104,8 @@ arma::vec pnbd_staticcov_CET(const double r,
 
   arma::vec vAlpha_i(n), vBeta_i(n);
 
-  vAlpha_i = alpha_0 * arma::exp(((mCov_trans * (-1)) * vCovParams_trans));
-  vBeta_i  = beta_0  * arma::exp(((mCov_life  * (-1)) * vCovParams_life));
+  vAlpha_i = pnbd_staticcov_alpha_i(alpha_0, vCovParams_trans, mCov_trans);
+  vBeta_i  = pnbd_staticcov_beta_i(beta_0, vCovParams_life, mCov_life);
 
 
   // Calculate PAlive -------------------------------------------------------------

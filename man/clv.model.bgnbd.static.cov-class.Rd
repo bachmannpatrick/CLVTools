@@ -9,8 +9,8 @@ This class implements the functionalities and model-specific steps which are req
 to fit the BG/NBD model with static covariates.
 }
 \seealso{
-Other clv model classes \link{clv.model-class}, \link{clv.model.bgnbd.no.cov-class}
+Other clv model classes \linkS4class{clv.model}, \linkS4class{clv.model.bgnbd.no.cov}
 
-Classes using its instance: \link{clv.fitted.static.cov-class},
+Classes using its instance: \linkS4class{clv.fitted.transactions.static.cov}
 }
 \keyword{internal}
