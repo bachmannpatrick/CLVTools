@@ -1,8 +1,10 @@
 pandoc: 2.7.3
-pkgdown: 1.5.1.9000
-pkgdown_sha: caf7cc74e008e8d0d6e53eeda93cd3cad3545bf2
-articles: []
-last_built: 2020-06-25T17:46Z
+pkgdown: 1.6.1.9000
+pkgdown_sha: e1e46f2e13c7efdb17bc4eae40bc3779c2b0b517
+articles:
+  CLVTools: CLVTools.html
+  internal_docu/internal_docu: internal_docu.html
+last_built: 2020-10-18T19:37Z
 urls:
   reference: https://www.clvtools.com/reference
   article: https://www.clvtools.com/articles

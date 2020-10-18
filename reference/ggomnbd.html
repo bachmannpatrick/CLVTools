@@ -82,19 +82,13 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../articles/CLVTools.html">Get started</a>
 </li>
 <li>
@@ -146,29 +140,29 @@
     </div>
 
     <pre class="usage"><span class='co'># S4 method for clv.data</span>
-<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/ggomnbd.html'>ggomnbd</a></span>(
-  <span class='kw'>clv.data</span>,
-  start.params.model = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  optimx.args = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  verbose = <span class='fl'>TRUE</span>,
-  <span class='kw'>...</span>
-)
+<span class='fu'>ggomnbd</span><span class='op'>(</span>
+  <span class='va'>clv.data</span>,
+  start.params.model <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,
+  optimx.args <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
+  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
 <span class='co'># S4 method for clv.data.static.covariates</span>
-<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/ggomnbd.html'>ggomnbd</a></span>(
-  <span class='kw'>clv.data</span>,
-  start.params.model = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  optimx.args = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  verbose = <span class='fl'>TRUE</span>,
-  names.cov.life = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  names.cov.trans = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  start.params.life = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  start.params.trans = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  names.cov.constr = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  start.params.constr = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  reg.lambdas = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>...</span>
-)</pre>
+<span class='fu'>ggomnbd</span><span class='op'>(</span>
+  <span class='va'>clv.data</span>,
+  start.params.model <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,
+  optimx.args <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
+  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  names.cov.life <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,
+  names.cov.trans <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,
+  start.params.life <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,
+  start.params.trans <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,
+  names.cov.constr <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,
+  start.params.constr <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,
+  reg.lambdas <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -226,11 +220,11 @@ If multiple optimization methods are specified, only the result of the last meth
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>ggomnbd</code> returns an object of
-class <code>clv.ggomnbd</code>.</p>
-<p>The function <code><a href='https://rdrr.io/pkg/CLVTools/man/summary.clv.fitted.html'>summary</a></code> can be used to obtain and print a summary of the results.
-The generic accessor functions <code>coefficients</code>, <code>fitted</code>,
-<code>residuals</code>, <code>vcov</code>, <code>logLik</code>, <code>AIC</code>, <code>BIC</code>, and <code>nobs</code> are available.</p>
+    <p>Depending on the data object on which the model was fit, <code>ggomnbd</code> returns either an object of
+class <a href='clv.ggomnbd-class.html'>clv.ggomnbd</a> or <a href='clv.ggomnbd.static.cov-class.html'>clv.ggomnbd.static.cov</a>.</p>
+<p>The function <code><a href='summary.clv.fitted.html'>summary</a></code> can be used to obtain and print a summary of the results.
+The generic accessor functions <code>coefficients</code>, <code><a href='vcov.clv.fitted.html'>vcov</a></code>, <code><a href='fitted.clv.fitted.html'>fitted</a></code>,
+<code>logLik</code>, <code>AIC</code>, <code>BIC</code>, and <code>nobs</code> are available.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Model parameters for the GGompertz /NBD model are <code>r, alpha, beta, b and s</code>. <br />
@@ -242,8 +236,11 @@ The smaller <code>r</code>, the stronger the heterogeneity of the purchase proce
 <code>s</code>: shape parameter of the Gamma distribution for the lifetime process.
 The smaller <code>s</code>, the stronger the heterogeneity of customer lifetimes.</p>
 <p>If no start parameters are given, r = 1, alpha = 1, beta = 1, b = 1, s = 1 is used.
-The model start parameters are required to be &gt; 0.</p>
-<h3>The Gamma-Gompertz/NBD model</h3>
+All model start parameters are required to be &gt; 0. If no start values are given for the covariate parameters,
+0.1 is used.</p>
+<p>Note that the DERT expression has not been derived (yet) and it consequently is not possible to calculated
+values for DERT and CLV.</p>
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>The Gamma-Gompertz/NBD model</h3>
 <p>There are two key differences of the gamma/Gompertz/NBD (GGom/NBD) model compared to the relative to the well-known Pareto/NBD
 model: (i) its probability density function can exhibit a mode at zero or an interior mode, and (ii) it can be skewed
 to the right or to the left. Therefore, the GGom/NBD model is more flexible than the Pareto/NBD model.
@@ -256,19 +253,21 @@ The GGom/NBD tends to be appropriate when firms are reputed and their offerings 
 Lifetime Model&#8221; Management Science, 58(5), 1012-1021.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='https://rdrr.io/pkg/CLVTools/man/clvdata.html'>clvdata</a></code> to create a clv data object</p>
-<p><code><a href='https://rdrr.io/pkg/CLVTools/man/predict.clv.fitted.html'>predict</a></code> to predict expected transactions, probability of being alive, and customer lifetime value for every customer</p>
-<p><code><a href='https://rdrr.io/pkg/CLVTools/man/plot.clv.fitted.html'>plot</a></code> to plot the unconditional expectation as predicted by the fitted model</p>
-<p>The generic functions <code><a href='https://rdrr.io/pkg/CLVTools/man/summary.clv.fitted.html'>summary</a></code> and <code><a href='https://rdrr.io/pkg/CLVTools/man/fitted.clv.fitted.html'>fitted</a></code>.</p></div>
+    <div class='dont-index'><p><code><a href='clvdata.html'>clvdata</a></code> to create a clv data object, <code><a href='SetStaticCovariates.html'>SetStaticCovariates</a></code>
+to add static covariates to an existing clv data object.</p>
+<p><code><a href='predict.clv.fitted.transactions.html'>predict</a></code> to predict expected transactions, probability of being alive, and customer lifetime value for every customer</p>
+<p><code><a href='plot.clv.fitted.transactions.html'>plot</a></code> to plot the unconditional expectation as predicted by the fitted model</p>
+<p>The generic functions <code><a href='vcov.clv.fitted.html'>vcov</a></code>, <code><a href='summary.clv.fitted.html'>summary</a></code>, <code><a href='fitted.clv.fitted.html'>fitted</a></code>.</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"apparelTrans"</span>)
-<span class='kw'>clv.data.apparel</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/clvdata.html'>clvdata</a></span>(<span class='kw'>apparelTrans</span>, date.format = <span class='st'>"ymd"</span>,
-                            time.unit = <span class='st'>"w"</span>, estimation.split = <span class='fl'>40</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"apparelTrans"</span><span class='op'>)</span>
+<span class='va'>clv.data.apparel</span> <span class='op'>&lt;-</span> <span class='fu'><a href='clvdata.html'>clvdata</a></span><span class='op'>(</span><span class='va'>apparelTrans</span>, date.format <span class='op'>=</span> <span class='st'>"ymd"</span>,
+                            time.unit <span class='op'>=</span> <span class='st'>"w"</span>, estimation.split <span class='op'>=</span> <span class='fl'>40</span><span class='op'>)</span>
 
 <span class='co'># Fit standard ggomnbd model</span>
-<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/ggomnbd.html'>ggomnbd</a></span>(<span class='kw'>clv.data.apparel</span>)</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; GGompertz/NBD Standard  Model
+<span class='fu'>ggomnbd</span><span class='op'>(</span><span class='va'>clv.data.apparel</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; GGompertz/NBD Standard Model
 #&gt; 
 #&gt; Call:
 #&gt; ggomnbd(clv.data = clv.data.apparel)
@@ -277,13 +276,11 @@ Lifetime Model&#8221; Management Science, 58(5), 1012-1021.</p>
 #&gt;         r      alpha          b          s       beta  
 #&gt; 7.865e-01  5.334e+00  4.903e-07  3.573e-01  5.703e-06  
 #&gt; KKT1: TRUE 
-#&gt; KKT2: FALSE 
-#&gt; 
-#&gt; Used Options:
-#&gt; Correlation:     FALSE </div><div class='input'>
-<span class='co'># Give initial guesses for the Model parameters</span>
-<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/ggomnbd.html'>ggomnbd</a></span>(<span class='kw'>clv.data.apparel</span>,
-     start.params.model = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(r=<span class='fl'>0.5</span>, alpha=<span class='fl'>15</span>, b=<span class='fl'>5</span>, beta=<span class='fl'>10</span>, s=<span class='fl'>0.5</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; GGompertz/NBD Standard  Model
+#&gt; KKT2: FALSE </div><div class='input'>
+<span class='co'># Give initial guesses for the model parameters</span>
+<span class='fu'>ggomnbd</span><span class='op'>(</span><span class='va'>clv.data.apparel</span>,
+     start.params.model <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>r<span class='op'>=</span><span class='fl'>0.5</span>, alpha<span class='op'>=</span><span class='fl'>15</span>, b<span class='op'>=</span><span class='fl'>5</span>, beta<span class='op'>=</span><span class='fl'>10</span>, s<span class='op'>=</span><span class='fl'>0.5</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; GGompertz/NBD Standard Model
 #&gt; 
 #&gt; Call:
 #&gt; ggomnbd(clv.data = clv.data.apparel, start.params.model = c(r = 0.5, 
@@ -293,17 +290,15 @@ Lifetime Model&#8221; Management Science, 58(5), 1012-1021.</p>
 #&gt;        r     alpha         b         s      beta  
 #&gt; 0.694315  4.918703  9.074435  0.001513  0.625261  
 #&gt; KKT1: TRUE 
-#&gt; KKT2: FALSE 
-#&gt; 
-#&gt; Used Options:
-#&gt; Correlation:     FALSE </div><div class='input'>
+#&gt; KKT2: FALSE </div><div class='input'>
 
 <span class='co'># pass additional parameters to the optimizer (optimx)</span>
 <span class='co'>#    Use Nelder-Mead as optimization method and print</span>
 <span class='co'>#    detailed information about the optimization process</span>
-<span class='kw'>apparel.ggomnbd</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/ggomnbd.html'>ggomnbd</a></span>(<span class='kw'>clv.data.apparel</span>,
-                     optimx.args = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(method=<span class='st'>"Nelder-Mead"</span>,
-                                        control=<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(trace=<span class='fl'>6</span>)))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; fn is  fn 
+<span class='va'>apparel.ggomnbd</span> <span class='op'>&lt;-</span> <span class='fu'>ggomnbd</span><span class='op'>(</span><span class='va'>clv.data.apparel</span>,
+                     optimx.args <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>method<span class='op'>=</span><span class='st'>"Nelder-Mead"</span>,
+                                        control<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>trace<span class='op'>=</span><span class='fl'>6</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; fn is  fn 
 #&gt; Looking for method =  Nelder-Mead 
 #&gt; Methods to be used:[1] "Nelder-Mead"
 #&gt; optcfg:$fname
@@ -386,7 +381,7 @@ Lifetime Model&#8221; Management Science, 58(5), 1012-1021.</p>
 #&gt;         all.other.args)
 #&gt;     return(do.call(what = interlayer_callnextinterlayer, args = interlayer.call.args))
 #&gt; }
-#&gt; &lt;bytecode: 0x7fe34ced29e8&gt;
+#&gt; &lt;bytecode: 0x7ffd4731d698&gt;
 #&gt; &lt;environment: namespace:CLVTools&gt;
 #&gt; 
 #&gt; $have.bounds
@@ -704,14 +699,16 @@ Lifetime Model&#8221; Management Science, 58(5), 1012-1021.</p>
 #&gt; 
 #&gt; $xtimes
 #&gt; user.self 
-#&gt;      0.56 
+#&gt;     0.496 
 #&gt; 
 #&gt; Assemble the answers</div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='input'>
 <span class='co'># estimated coefs</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span>(<span class='kw'>apparel.ggomnbd</span>)</div><div class='output co'>#&gt;            r        alpha            b            s         beta 
+<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>apparel.ggomnbd</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;            r        alpha            b            s         beta 
 #&gt; 6.925617e-01 4.913469e+00 1.299148e-04 4.291456e+02 4.070202e+00 </div><div class='input'>
 <span class='co'># summary of the fitted model</span>
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='kw'>apparel.ggomnbd</span>)</div><div class='output co'>#&gt; GGompertz/NBD Standard  Model 
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>apparel.ggomnbd</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; GGompertz/NBD Standard  Model 
 #&gt; 
 #&gt; Call:
 #&gt; ggomnbd(clv.data = clv.data.apparel, optimx.args = list(method = "Nelder-Mead", 
@@ -739,92 +736,90 @@ Lifetime Model&#8221; Management Science, 58(5), 1012-1021.</p>
 #&gt; KKT 1  TRUE       
 #&gt; KKT 2  FALSE      
 #&gt; fevals 536.0000   
-#&gt; Method Nelder-Mead
-#&gt; 
-#&gt; Used Options:                 
-#&gt; Correlation FALSE</div><div class='input'>
+#&gt; Method Nelder-Mead</div><div class='input'>
 <span class='co'># predict CLV etc for holdout period</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='kw'>apparel.ggomnbd</span>)</div><div class='output co'>#&gt; <span class='message'>Predicting from 2005-10-11 until (incl.) 2006-07-16 (39.86 Weeks).</span></div><div class='output co'>#&gt;        Id period.first period.last period.length actual.x actual.spending
-#&gt;   1:    1   2005-10-11  2006-07-16      39.85714        0            0.00
-#&gt;   2:   10   2005-10-11  2006-07-16      39.85714        0            0.00
-#&gt;   3:  100   2005-10-11  2006-07-16      39.85714       23         5086.44
-#&gt;   4: 1000   2005-10-11  2006-07-16      39.85714       23         4077.34
-#&gt;   5: 1001   2005-10-11  2006-07-16      39.85714       11         2914.10
-#&gt;  ---                                                                     
-#&gt; 246: 1219   2005-10-11  2006-07-16      39.85714       14         3233.78
-#&gt; 247:  122   2005-10-11  2006-07-16      39.85714        0            0.00
-#&gt; 248: 1220   2005-10-11  2006-07-16      39.85714        0            0.00
-#&gt; 249: 1221   2005-10-11  2006-07-16      39.85714        9         1322.94
-#&gt; 250: 1222   2005-10-11  2006-07-16      39.85714        0            0.00
-#&gt;         PAlive       CET DERT predicted.Spending predicted.CLV
-#&gt;   1: 0.4157734  1.799972    0           216.7955             0
-#&gt;   2: 0.3653550  4.370424    0           209.1146             0
-#&gt;   3: 0.8492175 21.278243    0           188.9758             0
-#&gt;   4: 0.9936311 24.359085    0           171.0913             0
-#&gt;   5: 0.3834394  7.927577    0           229.8529             0
-#&gt;  ---                                                          
-#&gt; 246: 0.9223629 14.914337    0           206.0859             0
-#&gt; 247: 0.4157734  1.799972    0           216.7955             0
-#&gt; 248: 0.4157734  1.799972    0           216.7955             0
-#&gt; 249: 0.8977081 15.832742    0           207.0518             0
-#&gt; 250: 0.3882902  3.413481    0           208.3194             0</div><div class='input'>
+<span class='fu'><a href='predict.clv.fitted.transactions.html'>predict</a></span><span class='op'>(</span><span class='va'>apparel.ggomnbd</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Predicting from 2005-10-11 until (incl.) 2006-07-16 (39.86 Weeks).</span></div><div class='output co'>#&gt; <span class='message'>Estimating gg model to predict spending...</span></div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt;        Id period.first period.last period.length actual.x actual.total.spending
+#&gt;   1:    1   2005-10-11  2006-07-16      39.85714        0                  0.00
+#&gt;   2:   10   2005-10-11  2006-07-16      39.85714        0                  0.00
+#&gt;   3:  100   2005-10-11  2006-07-16      39.85714       23                737.53
+#&gt;   4: 1000   2005-10-11  2006-07-16      39.85714       23               1069.91
+#&gt;   5: 1001   2005-10-11  2006-07-16      39.85714       11                364.00
+#&gt;  ---                                                                           
+#&gt; 246: 1219   2005-10-11  2006-07-16      39.85714       14                413.76
+#&gt; 247:  122   2005-10-11  2006-07-16      39.85714        0                  0.00
+#&gt; 248: 1220   2005-10-11  2006-07-16      39.85714        0                  0.00
+#&gt; 249: 1221   2005-10-11  2006-07-16      39.85714        9                302.65
+#&gt; 250: 1222   2005-10-11  2006-07-16      39.85714        0                  0.00
+#&gt;      predicted.mean.spending       CET    PAlive
+#&gt;   1:                39.95483  1.799972 0.4157734
+#&gt;   2:                55.23031  4.370424 0.3653550
+#&gt;   3:                43.57390 21.278243 0.8492175
+#&gt;   4:                41.60921 24.359085 0.9936311
+#&gt;   5:                45.58153  7.927577 0.3834394
+#&gt;  ---                                            
+#&gt; 246:                33.58728 14.914337 0.9223629
+#&gt; 247:                39.95483  1.799972 0.4157734
+#&gt; 248:                39.95483  1.799972 0.4157734
+#&gt; 249:                34.28958 15.832742 0.8977081
+#&gt; 250:                47.35500  3.413481 0.3882902</div><div class='input'>
 <span class='co'># predict CLV etc for the next 15 periods</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='kw'>apparel.ggomnbd</span>, prediction.end = <span class='fl'>15</span>)</div><div class='output co'>#&gt; <span class='message'>Predicting from 2005-10-11 until (incl.) 2006-01-23 (15 Weeks).</span></div><div class='output co'>#&gt;        Id period.first period.last period.length actual.x actual.spending
-#&gt;   1:    1   2005-10-11  2006-01-23            15        0            0.00
-#&gt;   2:   10   2005-10-11  2006-01-23            15        0            0.00
-#&gt;   3:  100   2005-10-11  2006-01-23            15       10         1516.83
-#&gt;   4: 1000   2005-10-11  2006-01-23            15       10         1980.30
-#&gt;   5: 1001   2005-10-11  2006-01-23            15        6         1673.55
-#&gt;  ---                                                                     
-#&gt; 246: 1219   2005-10-11  2006-01-23            15       11         2256.68
-#&gt; 247:  122   2005-10-11  2006-01-23            15        0            0.00
-#&gt; 248: 1220   2005-10-11  2006-01-23            15        0            0.00
-#&gt; 249: 1221   2005-10-11  2006-01-23            15        7         1180.04
-#&gt; 250: 1222   2005-10-11  2006-01-23            15        0            0.00
-#&gt;         PAlive        CET DERT predicted.Spending predicted.CLV
-#&gt;   1: 0.4157734  0.7946941    0           216.7955             0
-#&gt;   2: 0.3653550  1.9295576    0           209.1146             0
-#&gt;   3: 0.8492175  9.3944194    0           188.9758             0
-#&gt;   4: 0.9936311 10.7546219    0           171.0913             0
-#&gt;   5: 0.3834394  3.5000533    0           229.8529             0
-#&gt;  ---                                                           
-#&gt; 246: 0.9223629  6.5847324    0           206.0859             0
-#&gt; 247: 0.4157734  0.7946941    0           216.7955             0
-#&gt; 248: 0.4157734  0.7946941    0           216.7955             0
-#&gt; 249: 0.8977081  6.9902115    0           207.0518             0
-#&gt; 250: 0.3882902  1.5070640    0           208.3194             0</div><div class='input'><span class='co'># }</span>
+<span class='fu'><a href='predict.clv.fitted.transactions.html'>predict</a></span><span class='op'>(</span><span class='va'>apparel.ggomnbd</span>, prediction.end <span class='op'>=</span> <span class='fl'>15</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Predicting from 2005-10-11 until (incl.) 2006-01-23 (15 Weeks).</span></div><div class='output co'>#&gt; <span class='message'>Estimating gg model to predict spending...</span></div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt;        Id period.first period.last period.length actual.x actual.total.spending
+#&gt;   1:    1   2005-10-11  2006-01-23            15        0                  0.00
+#&gt;   2:   10   2005-10-11  2006-01-23            15        0                  0.00
+#&gt;   3:  100   2005-10-11  2006-01-23            15       10                224.71
+#&gt;   4: 1000   2005-10-11  2006-01-23            15       10                343.11
+#&gt;   5: 1001   2005-10-11  2006-01-23            15        6                206.65
+#&gt;  ---                                                                           
+#&gt; 246: 1219   2005-10-11  2006-01-23            15       11                325.05
+#&gt; 247:  122   2005-10-11  2006-01-23            15        0                  0.00
+#&gt; 248: 1220   2005-10-11  2006-01-23            15        0                  0.00
+#&gt; 249: 1221   2005-10-11  2006-01-23            15        7                158.46
+#&gt; 250: 1222   2005-10-11  2006-01-23            15        0                  0.00
+#&gt;      predicted.mean.spending        CET    PAlive
+#&gt;   1:                39.95483  0.7946941 0.4157734
+#&gt;   2:                55.23031  1.9295576 0.3653550
+#&gt;   3:                43.57390  9.3944194 0.8492175
+#&gt;   4:                41.60921 10.7546219 0.9936311
+#&gt;   5:                45.58153  3.5000533 0.3834394
+#&gt;  ---                                             
+#&gt; 246:                33.58728  6.5847324 0.9223629
+#&gt; 247:                39.95483  0.7946941 0.4157734
+#&gt; 248:                39.95483  0.7946941 0.4157734
+#&gt; 249:                34.28958  6.9902115 0.8977081
+#&gt; 250:                47.35500  1.5070640 0.3882902</div><div class='input'><span class='co'># }</span>
 <span class='co'># \donttest{</span>
 <span class='co'># To estimate the ggomnbd model with static covariates,</span>
 <span class='co'>#   add static covariates to the data</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"apparelStaticCov"</span>)
-<span class='kw'>clv.data.static.cov</span> <span class='op'>&lt;-</span>
- <span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/SetStaticCovariates.html'>SetStaticCovariates</a></span>(<span class='kw'>clv.data.apparel</span>,
-                     data.cov.life = <span class='kw'>apparelStaticCov</span>,
-                     names.cov.life = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Gender"</span>, <span class='st'>"Channel"</span>),
-                     data.cov.trans = <span class='kw'>apparelStaticCov</span>,
-                     names.cov.trans = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Gender"</span>, <span class='st'>"Channel"</span>))
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"apparelStaticCov"</span><span class='op'>)</span>
+<span class='va'>clv.data.static.cov</span> <span class='op'>&lt;-</span>
+ <span class='fu'><a href='SetStaticCovariates.html'>SetStaticCovariates</a></span><span class='op'>(</span><span class='va'>clv.data.apparel</span>,
+                     data.cov.life <span class='op'>=</span> <span class='va'>apparelStaticCov</span>,
+                     names.cov.life <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Gender"</span>, <span class='st'>"Channel"</span><span class='op'>)</span>,
+                     data.cov.trans <span class='op'>=</span> <span class='va'>apparelStaticCov</span>,
+                     names.cov.trans <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Gender"</span>, <span class='st'>"Channel"</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># Fit ggomnbd with static covariates</span>
-<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/ggomnbd.html'>ggomnbd</a></span>(<span class='kw'>clv.data.static.cov</span>)</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; GGompertz/NBD with Static Covariates  Model
+<span class='fu'>ggomnbd</span><span class='op'>(</span><span class='va'>clv.data.static.cov</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; GGompertz/NBD with Static Covariates Model
 #&gt; 
 #&gt; Call:
 #&gt; ggomnbd(clv.data = clv.data.static.cov)
 #&gt; 
 #&gt; Coefficients:
 #&gt;             r          alpha              b              s           beta  
-#&gt;       1.43107       35.52640        0.05541        0.15116        0.24240  
+#&gt;       1.43123       35.57345        0.05532        0.15114        0.24512  
 #&gt;   life.Gender   life.Channel   trans.Gender  trans.Channel  
-#&gt;       2.20859       -2.67490        1.43715        0.37278  
+#&gt;       2.22430       -2.67448        1.43832        0.37309  
 #&gt; KKT1: TRUE 
 #&gt; KKT2: TRUE 
-#&gt; 
-#&gt; Used Options:
-#&gt; Correlation:     FALSE 
 #&gt; Constraints:     FALSE 
 #&gt; Regularization:  FALSE </div><div class='input'>
 <span class='co'># Give initial guesses for both covariate parameters</span>
-<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/ggomnbd.html'>ggomnbd</a></span>(<span class='kw'>clv.data.static.cov</span>, start.params.trans = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(Gender=<span class='fl'>0.75</span>, Channel=<span class='fl'>0.7</span>),
-                   start.params.life  = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(Gender=<span class='fl'>0.5</span>, Channel=<span class='fl'>0.5</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; GGompertz/NBD with Static Covariates  Model
+<span class='fu'>ggomnbd</span><span class='op'>(</span><span class='va'>clv.data.static.cov</span>, start.params.trans <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>Gender<span class='op'>=</span><span class='fl'>0.75</span>, Channel<span class='op'>=</span><span class='fl'>0.7</span><span class='op'>)</span>,
+                   start.params.life  <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>Gender<span class='op'>=</span><span class='fl'>0.5</span>, Channel<span class='op'>=</span><span class='fl'>0.5</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; GGompertz/NBD with Static Covariates Model
 #&gt; 
 #&gt; Call:
 #&gt; ggomnbd(clv.data = clv.data.static.cov, start.params.life = c(Gender = 0.5, 
@@ -837,13 +832,11 @@ Lifetime Model&#8221; Management Science, 58(5), 1012-1021.</p>
 #&gt;       2.26738       -2.69762        1.44023        0.37271  
 #&gt; KKT1: TRUE 
 #&gt; KKT2: TRUE 
-#&gt; 
-#&gt; Used Options:
-#&gt; Correlation:     FALSE 
 #&gt; Constraints:     FALSE 
 #&gt; Regularization:  FALSE </div><div class='input'>
 <span class='co'># Use regularization</span>
-<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/ggomnbd.html'>ggomnbd</a></span>(<span class='kw'>clv.data.static.cov</span>, reg.lambdas = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(trans = <span class='fl'>5</span>, life=<span class='fl'>5</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; GGompertz/NBD with Static Covariates  Model
+<span class='fu'>ggomnbd</span><span class='op'>(</span><span class='va'>clv.data.static.cov</span>, reg.lambdas <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>trans <span class='op'>=</span> <span class='fl'>5</span>, life<span class='op'>=</span><span class='fl'>5</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; GGompertz/NBD with Static Covariates Model
 #&gt; 
 #&gt; Call:
 #&gt; ggomnbd(clv.data = clv.data.static.cov, reg.lambdas = c(trans = 5, 
@@ -851,19 +844,17 @@ Lifetime Model&#8221; Management Science, 58(5), 1012-1021.</p>
 #&gt; 
 #&gt; Coefficients:
 #&gt;             r          alpha              b              s           beta  
-#&gt;     7.927e-01      5.447e+00      4.684e-07      3.549e-01      5.348e-06  
+#&gt;     0.7926996      5.4497686      0.0000601      0.3591047      0.0007010  
 #&gt;   life.Gender   life.Channel   trans.Gender  trans.Channel  
-#&gt;    -4.784e-04     -2.250e-03      1.075e-02      8.734e-03  
+#&gt;    -0.0004862     -0.0023863      0.0106830      0.0087755  
 #&gt; KKT1: TRUE 
 #&gt; KKT2: FALSE 
-#&gt; 
-#&gt; Used Options:
-#&gt; Correlation:     FALSE 
 #&gt; Constraints:     FALSE 
 #&gt; Regularization:  TRUE </div><div class='input'>
 <span class='co'># Force the same coefficient to be used for both covariates</span>
-<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/ggomnbd.html'>ggomnbd</a></span>(<span class='kw'>clv.data.static.cov</span>, names.cov.constr = <span class='st'>"Gender"</span>,
-                   start.params.constr = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(Gender=<span class='fl'>0.5</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; GGompertz/NBD with Static Covariates  Model
+<span class='fu'>ggomnbd</span><span class='op'>(</span><span class='va'>clv.data.static.cov</span>, names.cov.constr <span class='op'>=</span> <span class='st'>"Gender"</span>,
+                   start.params.constr <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>Gender<span class='op'>=</span><span class='fl'>0.5</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; GGompertz/NBD with Static Covariates Model
 #&gt; 
 #&gt; Call:
 #&gt; ggomnbd(clv.data = clv.data.static.cov, names.cov.constr = "Gender", 
@@ -871,35 +862,31 @@ Lifetime Model&#8221; Management Science, 58(5), 1012-1021.</p>
 #&gt; 
 #&gt; Coefficients:
 #&gt;             r          alpha              b              s           beta  
-#&gt;       1.44961       34.84602        0.03586        0.18108        0.11873  
+#&gt;       1.44975       34.82124        0.03625        0.18018        0.11832  
 #&gt;  life.Channel  trans.Channel  constr.Gender  
-#&gt;      -2.26175        0.37993        1.39922  
+#&gt;      -2.27283        0.37961        1.39891  
 #&gt; KKT1: TRUE 
 #&gt; KKT2: TRUE 
-#&gt; 
-#&gt; Used Options:
-#&gt; Correlation:     FALSE 
 #&gt; Constraints:     TRUE 
 #&gt; Regularization:  FALSE </div><div class='input'>
 <span class='co'># Fit model only with the Channel covariate for life but</span>
 <span class='co'># keep all trans covariates as is</span>
-<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/ggomnbd.html'>ggomnbd</a></span>(<span class='kw'>clv.data.static.cov</span>, names.cov.life = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Channel"</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; GGompertz/NBD with Static Covariates  Model
+<span class='fu'>ggomnbd</span><span class='op'>(</span><span class='va'>clv.data.static.cov</span>, names.cov.life <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Channel"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; GGompertz/NBD with Static Covariates Model
 #&gt; 
 #&gt; Call:
 #&gt; ggomnbd(clv.data = clv.data.static.cov, names.cov.life = c("Channel"))
 #&gt; 
 #&gt; Coefficients:
 #&gt;             r          alpha              b              s           beta  
-#&gt;       1.53001       32.11224        0.09839        0.10211        0.01619  
+#&gt;       1.52883       32.06390        0.09904        0.10168        0.01608  
 #&gt;  life.Channel   trans.Gender  trans.Channel  
-#&gt;      -3.50196        1.28595        0.35031  
+#&gt;      -3.51559        1.28502        0.35036  
 #&gt; KKT1: TRUE 
 #&gt; KKT2: TRUE 
-#&gt; 
-#&gt; Used Options:
-#&gt; Correlation:     FALSE 
 #&gt; Constraints:     FALSE 
-#&gt; Regularization:  FALSE </div><div class='input'><span class='co'># }</span></div></pre>
+#&gt; Regularization:  FALSE </div><div class='input'><span class='co'># }</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -915,7 +902,7 @@ Lifetime Model&#8221; Management Science, 58(5), 1012-1021.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

@@ -81,19 +81,13 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../articles/CLVTools.html">Get started</a>
 </li>
 <li>
@@ -139,13 +133,36 @@
       <small>Source: <a href='https://github.com/bachmannpatrick/CLVTools/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="clvtools-060" class="section level1">
-<h1 class="page-header" data-toc-text="0.6.0">
-<a href="#clvtools-060" class="anchor"></a>CLVTools 0.6.0<small> 2020-06-24 </small>
+    <div id="clvtools-070" class="section level1">
+<h1 class="page-header" data-toc-text="0.7.0">
+<a href="#clvtools-070" class="anchor"></a>CLVTools 0.7.0<small> 2020-08-26 </small>
 </h1>
 <div id="new-features" class="section level3">
 <h3 class="hasAnchor">
 <a href="#new-features" class="anchor"></a>NEW FEATURES</h3>
+<ul>
+<li>Refactor the Gamma-Gamma (GG) model to predict mean spending per transaction into an independent model</li>
+<li>The prediction for transaction models can now be combined with separately fit spending models</li>
+<li>Write the unconditional expectation functions in Rcpp for faster plotting (Pareto/NBD and Beta-Geometric/NBD)</li>
+<li>Improved documentation and walkthrough</li>
+</ul>
+</div>
+<div id="bug-fixes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"></a>BUG FIXES</h3>
+<ul>
+<li>Pareto/NBD LogLikelihood: For the case Tcal = t.x and for the case alpha == beta</li>
+<li>Static or dynamic covariates with syntactically invalid names (spaces, start with numbers, etc) could not be fit</li>
+</ul>
+</div>
+</div>
+    <div id="clvtools-060" class="section level1">
+<h1 class="page-header" data-toc-text="0.6.0">
+<a href="#clvtools-060" class="anchor"></a>CLVTools 0.6.0<small> 2020-06-24 </small>
+</h1>
+<div id="new-features-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#new-features-1" class="anchor"></a>NEW FEATURES</h3>
 <ul>
 <li>Beta-Geometric/NBD (BG/NBD) model to predict repeat transactions without and with static covariates</li>
 <li>Gamma-Gompertz (GGompertz) model to predict repeat transactions without and with static covariates</li>
@@ -160,9 +177,9 @@
 <ul>
 <li>Initial release of the CLVTools package</li>
 </ul>
-<div id="new-features-1" class="section level3">
+<div id="new-features-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#new-features-1" class="anchor"></a>NEW FEATURES</h3>
+<a href="#new-features-2" class="anchor"></a>NEW FEATURES</h3>
 <ul>
 <li>Pareto/NBD model to predict repeat transactions without and with static or dynamic covariates</li>
 <li>Gamma-Gamma model to predict average spending</li>
@@ -189,7 +206,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

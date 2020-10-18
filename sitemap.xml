@@ -37,6 +37,9 @@
     <loc>https://www.clvtools.com/reference/bgnbd_PAlive.html</loc>
   </url>
   <url>
+    <loc>https://www.clvtools.com/reference/bgnbd_expectation.html</loc>
+  </url>
+  <url>
     <loc>https://www.clvtools.com/reference/cdnow.html</loc>
   </url>
   <url>
@@ -58,10 +61,19 @@
     <loc>https://www.clvtools.com/reference/clv.fitted-class.html</loc>
   </url>
   <url>
-    <loc>https://www.clvtools.com/reference/clv.fitted.dynamic.cov-class.html</loc>
+    <loc>https://www.clvtools.com/reference/clv.fitted.spending-class.html</loc>
   </url>
   <url>
-    <loc>https://www.clvtools.com/reference/clv.fitted.static.cov-class.html</loc>
+    <loc>https://www.clvtools.com/reference/clv.fitted.transactions-class.html</loc>
+  </url>
+  <url>
+    <loc>https://www.clvtools.com/reference/clv.fitted.transactions.dynamic.cov-class.html</loc>
+  </url>
+  <url>
+    <loc>https://www.clvtools.com/reference/clv.fitted.transactions.static.cov-class.html</loc>
+  </url>
+  <url>
+    <loc>https://www.clvtools.com/reference/clv.gg-class.html</loc>
   </url>
   <url>
     <loc>https://www.clvtools.com/reference/clv.ggomnbd-class.html</loc>
@@ -79,10 +91,16 @@
     <loc>https://www.clvtools.com/reference/clv.model.bgnbd.static.cov-class.html</loc>
   </url>
   <url>
+    <loc>https://www.clvtools.com/reference/clv.model.gg-class.html</loc>
+  </url>
+  <url>
     <loc>https://www.clvtools.com/reference/clv.model.ggomnbd.no.cov-class.html</loc>
   </url>
   <url>
     <loc>https://www.clvtools.com/reference/clv.model.ggomnbd.static.cov-class.html</loc>
+  </url>
+  <url>
+    <loc>https://www.clvtools.com/reference/clv.model.no.correlation-class.html</loc>
   </url>
   <url>
     <loc>https://www.clvtools.com/reference/clv.model.pnbd.dynamic.cov-class.html</loc>
@@ -92,6 +110,9 @@
   </url>
   <url>
     <loc>https://www.clvtools.com/reference/clv.model.pnbd.static.cov-class.html</loc>
+  </url>
+  <url>
+    <loc>https://www.clvtools.com/reference/clv.model.with.correlation-class.html</loc>
   </url>
   <url>
     <loc>https://www.clvtools.com/reference/clv.pnbd-class.html</loc>
@@ -130,6 +151,9 @@
     <loc>https://www.clvtools.com/reference/fitted.clv.fitted.html</loc>
   </url>
   <url>
+    <loc>https://www.clvtools.com/reference/gg.html</loc>
+  </url>
+  <url>
     <loc>https://www.clvtools.com/reference/gg_LL.html</loc>
   </url>
   <url>
@@ -157,7 +181,10 @@
     <loc>https://www.clvtools.com/reference/plot.clv.data.html</loc>
   </url>
   <url>
-    <loc>https://www.clvtools.com/reference/plot.clv.fitted.html</loc>
+    <loc>https://www.clvtools.com/reference/plot.clv.fitted.spending.html</loc>
+  </url>
+  <url>
+    <loc>https://www.clvtools.com/reference/plot.clv.fitted.transactions.html</loc>
   </url>
   <url>
     <loc>https://www.clvtools.com/reference/pnbd.html</loc>
@@ -175,7 +202,13 @@
     <loc>https://www.clvtools.com/reference/pnbd_PAlive.html</loc>
   </url>
   <url>
-    <loc>https://www.clvtools.com/reference/predict.clv.fitted.html</loc>
+    <loc>https://www.clvtools.com/reference/pnbd_expectation.html</loc>
+  </url>
+  <url>
+    <loc>https://www.clvtools.com/reference/predict.clv.fitted.spending.html</loc>
+  </url>
+  <url>
+    <loc>https://www.clvtools.com/reference/predict.clv.fitted.transactions.html</loc>
   </url>
   <url>
     <loc>https://www.clvtools.com/reference/summary.clv.data.html</loc>

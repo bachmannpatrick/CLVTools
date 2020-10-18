@@ -42,7 +42,7 @@
 <meta property="og:title" content="Calculate Variance-Covariance Matrix for CLV Models fitted with Maximum Likelihood Estimation — vcov.clv.fitted" />
 <meta property="og:description" content="Returns the variance-covariance matrix of the parameters of the fitted model object.
 The variance-covariance matrix is derived from the Hessian that results from the optimization procedure.
-First, the Moore–Penrose generalized inverse of the Hessian is used to obtain an estimate of the
+First, the Moore-Penrose generalized inverse of the Hessian is used to obtain an estimate of the
 variance-covariance matrix.
 Next, because some parameters may be transformed for the purpose of restricting their value during
 the log-likelihood estimation, the variance estimates are adapted to
@@ -91,19 +91,13 @@ If multiple estimation methods were used, the Hessian of the last method is used
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../articles/CLVTools.html">Get started</a>
 </li>
 <li>
@@ -153,7 +147,7 @@ If multiple estimation methods were used, the Hessian of the last method is used
     <div class="ref-description">
     <p>Returns the variance-covariance matrix of the parameters of the fitted model object.
 The variance-covariance matrix is derived from the Hessian that results from the optimization procedure.
-First, the Moore–Penrose generalized inverse of the Hessian is used to obtain an estimate of the
+First, the Moore-Penrose generalized inverse of the Hessian is used to obtain an estimate of the
 variance-covariance matrix.
 Next, because some parameters may be transformed for the purpose of restricting their value during
 the log-likelihood estimation, the variance estimates are adapted to
@@ -164,7 +158,7 @@ with standard settings to find the nearest positive definite matrix.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for clv.fitted</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span>(<span class='kw'>object</span>, <span class='kw'>...</span>)</pre>
+<span class='fu'><a href='https://rdrr.io/r/stats/vcov.html'>vcov</a></span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -202,7 +196,7 @@ The row and column names correspond to the parameter names given by the <code>co
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

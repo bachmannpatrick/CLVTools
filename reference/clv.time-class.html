@@ -85,19 +85,13 @@ and to do 'time-unit math'." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../articles/CLVTools.html">Get started</a>
 </li>
 <li>
@@ -152,7 +146,7 @@ and to do 'time-unit math'.</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for clv.time</span>
-<span class='fu'>show</span>(<span class='kw'>object</span>)</pre>
+<span class='fu'>show</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span></pre>
 
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
@@ -160,9 +154,9 @@ and to do 'time-unit math'.</p>
     <p>This encapsulation of all time unit functionality in one class allows for custom type of
 time units such as Bi-weekly or irregularly spaced time units.</p>
 <p><code>clv.time</code> is a virtual class and sub-classes implement the actual parsing and calculations.</p>
-<p><code><a href='https://rdrr.io/pkg/CLVTools/man/clv.time.date-class.html'>clv.time.date</a></code> uses data type <code>Date</code> for time units equal or
+<p><a href='clv.time.date-class.html'>clv.time.date</a> uses data type <code>Date</code> for time units equal or
 greater than a single day that do not require a time of day.</p>
-<p><code><a href='https://rdrr.io/pkg/CLVTools/man/clv.time.datetime-class.html'>clv.time.datetime</a></code> uses data type <code>POSIXct</code> for
+<p><a href='clv.time.datetime-class.html'>clv.time.datetime</a> uses data type <code>POSIXct</code> for
 time units smaller than a single day.</p>
     <h2 class="hasAnchor" id="slots"><a class="anchor" href="#slots"></a>Slots</h2>
 
@@ -188,10 +182,10 @@ time units smaller than a single day.</p>
 </dl>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='https://rdrr.io/pkg/CLVTools/man/summary.clv.time.html'>summary.clv.time</a></code> for a summary about an object of class <code>clv.time</code></p>
-<p><code><a href='https://rdrr.io/pkg/CLVTools/man/clv.time.days-class.html'>clv.time.days</a></code> for an implementation of time unit 'Days'</p>
-<p><code><a href='https://rdrr.io/pkg/CLVTools/man/clv.time.weeks-class.html'>clv.time.weeks</a></code> for an implementation of time unit 'Weeks'</p>
-<p><code><a href='https://rdrr.io/pkg/CLVTools/man/clv.time.years-class.html'>clv.time.years</a></code> for an implementation of time unit 'Years'</p></div>
+    <div class='dont-index'><p><a href='print.clv.time.html'>summary.clv.time</a> for a summary about an object of class <code>clv.time</code></p>
+<p><a href='clv.time.days-class.html'>clv.time.days</a> for an implementation of time unit 'Days'</p>
+<p><a href='clv.time.weeks-class.html'>clv.time.weeks</a> for an implementation of time unit 'Weeks'</p>
+<p><a href='clv.time.years-class.html'>clv.time.years</a> for an implementation of time unit 'Years'</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -208,7 +202,7 @@ time units smaller than a single day.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

@@ -85,19 +85,13 @@ At least 1 covariate is needed for both processes and no categorical covariate m
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../articles/CLVTools.html">Get started</a>
 </li>
 <li>
@@ -151,14 +145,14 @@ The returned object then can be used to fit models with static covariates.</p>
 <p>At least 1 covariate is needed for both processes and no categorical covariate may be of only a single category.</p>
     </div>
 
-    <pre class="usage"><span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/SetStaticCovariates.html'>SetStaticCovariates</a></span>(
-  <span class='kw'>clv.data</span>,
-  <span class='kw'>data.cov.life</span>,
-  <span class='kw'>data.cov.trans</span>,
-  <span class='kw'>names.cov.life</span>,
-  <span class='kw'>names.cov.trans</span>,
-  name.id = <span class='st'>"Id"</span>
-)</pre>
+    <pre class="usage"><span class='fu'>SetStaticCovariates</span><span class='op'>(</span>
+  <span class='va'>clv.data</span>,
+  <span class='va'>data.cov.life</span>,
+  <span class='va'>data.cov.trans</span>,
+  <span class='va'>names.cov.life</span>,
+  <span class='va'>names.cov.trans</span>,
+  name.id <span class='op'>=</span> <span class='st'>"Id"</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -192,7 +186,7 @@ The returned object then can be used to fit models with static covariates.</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>An object of class <code>clv.data.static.covariates</code>.
-See the class definition <code><a href='https://rdrr.io/pkg/CLVTools/man/clv.data.static.covariates-class.html'>clv.data.static.covariates</a></code>
+See the class definition <a href='clv.data.static.covariates-class.html'>clv.data.static.covariates</a>
 for more details about the returned object.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
@@ -205,24 +199,25 @@ to k-1 numeric dummy variables.</p>
     <pre class="examples"><div class='input'>
 <span class='co'># \donttest{</span>
 
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"apparelTrans"</span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"apparelStaticCov"</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"apparelTrans"</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"apparelStaticCov"</span><span class='op'>)</span>
 
 <span class='co'># Create a clv data object without covariates</span>
-<span class='kw'>clv.data.apparel</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/clvdata.html'>clvdata</a></span>(<span class='kw'>apparelTrans</span>, time.unit=<span class='st'>"w"</span>,
-                            date.format=<span class='st'>"ymd"</span>)
+<span class='va'>clv.data.apparel</span> <span class='op'>&lt;-</span> <span class='fu'><a href='clvdata.html'>clvdata</a></span><span class='op'>(</span><span class='va'>apparelTrans</span>, time.unit<span class='op'>=</span><span class='st'>"w"</span>,
+                            date.format<span class='op'>=</span><span class='st'>"ymd"</span><span class='op'>)</span>
 
 <span class='co'># Add static covariate data</span>
-<span class='kw'>clv.data.apparel.cov</span>  <span class='op'>&lt;-</span>
-   <span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/SetStaticCovariates.html'>SetStaticCovariates</a></span>(<span class='kw'>clv.data.apparel</span>,
-                       data.cov.life  = <span class='kw'>apparelStaticCov</span>,
-                       names.cov.life = <span class='st'>"Gender"</span>,
-                       data.cov.trans = <span class='kw'>apparelStaticCov</span>,
-                       names.cov.trans = <span class='st'>"Gender"</span>,
-                       name.id = <span class='st'>"Id"</span>)
+<span class='va'>clv.data.apparel.cov</span>  <span class='op'>&lt;-</span>
+   <span class='fu'>SetStaticCovariates</span><span class='op'>(</span><span class='va'>clv.data.apparel</span>,
+                       data.cov.life  <span class='op'>=</span> <span class='va'>apparelStaticCov</span>,
+                       names.cov.life <span class='op'>=</span> <span class='st'>"Gender"</span>,
+                       data.cov.trans <span class='op'>=</span> <span class='va'>apparelStaticCov</span>,
+                       names.cov.trans <span class='op'>=</span> <span class='st'>"Gender"</span>,
+                       name.id <span class='op'>=</span> <span class='st'>"Id"</span><span class='op'>)</span>
 
 <span class='co'># more summary output</span>
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='kw'>clv.data.apparel.cov</span>)</div><div class='output co'>#&gt; CLV Transaction Data with Static Covariates 
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>clv.data.apparel.cov</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; CLV Transaction Data with Static Covariates 
 #&gt;                                
 #&gt; Time unit         Weeks        
 #&gt; Estimation length 79.8571 Weeks
@@ -236,9 +231,9 @@ to k-1 numeric dummy variables.</p>
 #&gt; Total # Transactions               2257            -            2257      
 #&gt; Mean # Transactions per cust       9.028           -            9.028     
 #&gt; (SD)                               12.603          -            12.603    
-#&gt; Mean Spending per Transaction      221.254         -            221.254   
-#&gt; (SD)                               240.290         -            240.290   
-#&gt; Total Spending                     499371.070      -            499371.070
+#&gt; Mean Spending per Transaction      39.051          -            39.051    
+#&gt; (SD)                               50.503          -            50.503    
+#&gt; Total Spending                     88139.130       -            88139.130 
 #&gt; Total # zero repeaters             65              -            65        
 #&gt; Percentage # zero repeaters        0.260           -            0.260     
 #&gt; Mean Interpurchase time            9.462           -            9.462     
@@ -251,16 +246,17 @@ to k-1 numeric dummy variables.</p>
 #&gt;        # covs        1     
 #&gt; </div><div class='input'>
 <span class='co'># fit model with static covariates</span>
-<span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd.html'>pnbd</a></span>(<span class='kw'>clv.data.apparel.cov</span>)</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD with Static Covariates  Model
+<span class='fu'><a href='pnbd.html'>pnbd</a></span><span class='op'>(</span><span class='va'>clv.data.apparel.cov</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='output co'>#&gt; Pareto NBD with Static Covariates Model
 #&gt; 
 #&gt; Call:
 #&gt; pnbd(clv.data = clv.data.apparel.cov)
 #&gt; 
 #&gt; Coefficients:
 #&gt;            r         alpha             s          beta   life.Gender  
-#&gt;       1.1119       19.3934        0.4535       32.2620        1.0760  
+#&gt;       1.1126       19.4120        0.4541       32.3265        1.0757  
 #&gt; trans.Gender  
-#&gt;       1.3089  
+#&gt;       1.3096  
 #&gt; KKT1: TRUE 
 #&gt; KKT2: TRUE 
 #&gt; 
@@ -268,6 +264,7 @@ to k-1 numeric dummy variables.</p>
 #&gt; Correlation:     FALSE 
 #&gt; Constraints:     FALSE 
 #&gt; Regularization:  FALSE </div><div class='input'><span class='co'># }</span>
+
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -284,7 +281,7 @@ to k-1 numeric dummy variables.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

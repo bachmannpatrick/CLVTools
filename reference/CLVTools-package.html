@@ -91,19 +91,13 @@ businesses (i.e. customers' purchase history)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../articles/CLVTools.html">Get started</a>
 </li>
 <li>
@@ -185,14 +179,15 @@ at <a href='https://github.com/bachmannpatrick/CLVTools'>https://github.com/bach
     <pre class="examples"><div class='input'>
 <span class='co'># \donttest{</span>
 
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"cdnow"</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"cdnow"</span><span class='op'>)</span>
 
 <span class='co'># Create a CLV data object, split data in estimation and holdout sample</span>
-<span class='kw'>clv.data.cdnow</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/clvdata.html'>clvdata</a></span>(data.transactions = <span class='kw'>cdnow</span>, date.format = <span class='st'>"ymd"</span>,
-                          time.unit = <span class='st'>"week"</span>, estimation.split = <span class='fl'>39</span>, name.id = <span class='st'>"Id"</span>)
+<span class='va'>clv.data.cdnow</span> <span class='op'>&lt;-</span> <span class='fu'><a href='clvdata.html'>clvdata</a></span><span class='op'>(</span>data.transactions <span class='op'>=</span> <span class='va'>cdnow</span>, date.format <span class='op'>=</span> <span class='st'>"ymd"</span>,
+                          time.unit <span class='op'>=</span> <span class='st'>"week"</span>, estimation.split <span class='op'>=</span> <span class='fl'>39</span>, name.id <span class='op'>=</span> <span class='st'>"Id"</span><span class='op'>)</span>
 
 <span class='co'># summary of data</span>
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='kw'>clv.data.cdnow</span>)</div><div class='output co'>#&gt; CLV Transaction Data 
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>clv.data.cdnow</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; CLV Transaction Data 
 #&gt;                                 
 #&gt; Time unit         Weeks         
 #&gt; Estimation length 39.0000 Weeks 
@@ -215,9 +210,11 @@ at <a href='https://github.com/bachmannpatrick/CLVTools'>https://github.com/bach
 #&gt; (SD)                               7.772           6.256           14.533    
 #&gt; </div><div class='input'>
 <span class='co'># Fit a PNBD model without covariates on the first 39 periods</span>
-<span class='kw'>pnbd.cdnow</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/CLVTools/man/pnbd.html'>pnbd</a></span>(<span class='kw'>clv.data.cdnow</span>,
-                   start.params.model = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(r=<span class='fl'>0.5</span>, alpha=<span class='fl'>8</span>, s=<span class='fl'>0.5</span>, beta=<span class='fl'>10</span>))</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='input'><span class='co'># inspect fit</span>
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='kw'>pnbd.cdnow</span>)</div><div class='output co'>#&gt; Pareto NBD Standard  Model 
+<span class='va'>pnbd.cdnow</span> <span class='op'>&lt;-</span> <span class='fu'><a href='pnbd.html'>pnbd</a></span><span class='op'>(</span><span class='va'>clv.data.cdnow</span>,
+                   start.params.model <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>r<span class='op'>=</span><span class='fl'>0.5</span>, alpha<span class='op'>=</span><span class='fl'>8</span>, s<span class='op'>=</span><span class='fl'>0.5</span>, beta<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='input'><span class='co'># inspect fit</span>
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>pnbd.cdnow</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; Pareto NBD Standard  Model 
 #&gt; 
 #&gt; Call:
 #&gt; pnbd(clv.data = clv.data.cdnow, start.params.model = c(r = 0.5, 
@@ -250,10 +247,13 @@ at <a href='https://github.com/bachmannpatrick/CLVTools'>https://github.com/bach
 #&gt; Correlation FALSE</div><div class='input'>
 <span class='co'># Predict 10 periods (weeks) ahead from estimation end</span>
 <span class='co'>#   and compare to actuals in this period</span>
-<span class='kw'>pred.out</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span>(<span class='kw'>pnbd.cdnow</span>, prediction.end = <span class='fl'>10</span>)</div><div class='output co'>#&gt; <span class='message'>Predicting from 1997-10-02 until (incl.) 1997-12-10 (10 Weeks).</span></div><div class='input'>
+<span class='va'>pred.out</span> <span class='op'>&lt;-</span> <span class='fu'><a href='predict.clv.fitted.transactions.html'>predict</a></span><span class='op'>(</span><span class='va'>pnbd.cdnow</span>, prediction.end <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Predicting from 1997-10-02 until (incl.) 1997-12-10 (10 Weeks).</span></div><div class='output co'>#&gt; <span class='message'>Estimating gg model to predict spending...</span></div><div class='output co'>#&gt; <span class='message'>Starting estimation...</span></div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='input'>
 <span class='co'># Plot the fitted model to the actual repeat transactions</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='kw'>pnbd.cdnow</span>)</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 1998-07-05.</span></div><div class='img'><img src='CLVTools-package-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'><a href='plot.clv.fitted.transactions.html'>plot</a></span><span class='op'>(</span><span class='va'>pnbd.cdnow</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Plotting from 1997-01-01 until 1998-07-05.</span></div><div class='img'><img src='CLVTools-package-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># }</span>
+
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -270,7 +270,7 @@ at <a href='https://github.com/bachmannpatrick/CLVTools'>https://github.com/bach
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

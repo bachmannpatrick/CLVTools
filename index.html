@@ -45,18 +45,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="articles/CLVTools.html">Get started</a>
 </li>
@@ -105,7 +99,7 @@
 <h2 class="hasAnchor">
 <a href="#the-clvtools-package" class="anchor"></a>The CLVTools Package</h2>
 <p>Today, customer lifetime value (CLV) is the central metric for valuing customers. It describes the long-term economic value of customers and gives managers an idea of how customers will evolve over time. To model CLVs in continuous non-contractual business settings such as retailers, probabilistic customer attrition models are the preferred choice in literature and practice.</p>
-<p>The R package <strong>CLVTools</strong> provides an efficient and easy to use implementation framework for probabilistic customer attrition models in non-contractual settings. Building up on the learnings of other implementations, the package adopts S4 classes to allow constructing rich and rather complex models that nevertheless still are easy to apply for the end user. The framework is capable to accommodate a variety of probabilistic customer attrition models for non-contractual settings in continuous and discrete time.</p>
+<p>The R package <code>CLVTools</code> provides an efficient and easy to use implementation framework for probabilistic customer attrition models in non-contractual settings. Building up on the learnings of other implementations, the package adopts S4 classes to allow constructing rich and rather complex models that nevertheless still are easy to apply for the end user. The framework is capable to accommodate a variety of probabilistic customer attrition models for non-contractual settings in continuous and discrete time.</p>
 <p>Currently, CLVTools implements the following probabilistic models:</p>
 <p>1) Standard Pareto/NBD model (Schmittlein, Morrison &amp; Colombo 1987)</p>
 <p>2) Pareto/NBD model with <strong>time-invariant</strong> contextual factors (Fader &amp; Hardie 2007)</p>
@@ -114,84 +108,110 @@
 <p>5) BG/NBD model with <strong>time-invariant</strong> contextual factors (Fader &amp; Hardie 2007)</p>
 <p>6) Standard Gamma/Gompertz/NBD (Bemmaor &amp; Glady 2012)</p>
 <p>7) Gamma/Gompertz/NBD model with <strong>time-invariant</strong> contextual factors (Näf, Bachmann &amp; Meierer 2020)</p>
-<p>In future versions of <strong>CLVTools</strong> the following models are added. See <a href="https://github.com/bachmannpatrick/CLVTools/projects">GitHub Issues</a> for a time-line.</p>
-<p>8) Standard BG/BB model (Fader, Hardie, &amp; Shang 2010)</p>
-<p>9) Gamma/Gamma model to estimate customer spending (Colombo &amp; Jiang 1999; Fader, Hardie &amp; Lee 2005; Fader &amp; Hardie 2013)</p>
+<p>8) Gamma/Gamma model to estimate customer spending (Colombo &amp; Jiang 1999; Fader, Hardie &amp; Lee 2005; Fader &amp; Hardie 2013)</p>
+<p>In future versions of <code>CLVTools</code> the following models are added. See <a href="https://github.com/bachmannpatrick/CLVTools/projects">GitHub Issues</a> for a time-line.</p>
+<p>9) Standard BG/BB model (Fader, Hardie, &amp; Shang 2010)</p>
 <p>In addition the framework features a system of layers between the optimizer and the log-likelihood function to allow the flexible addition of model extensions during the model fitting process. Currently these layers include:</p>
 <ul>
 <li><p>Correlation of the purchase and the attrition process</p></li>
 <li><p>L2 regularization for parameters of contextual factors</p></li>
-<li><p>Equality constraints between parameters of contextual for the purchase and the attrition process.</p></li>
+<li><p>Equality constraints between parameters of contextual factors for the purchase and the attrition process.</p></li>
 </ul>
 </div>
-<div id="installation-instructions" class="section level2">
+<div id="installation" class="section level2">
 <h2 class="hasAnchor">
-<a href="#installation-instructions" class="anchor"></a>Installation Instructions</h2>
-<p>Install the stable version from CRAN:</p>
+<a href="#installation" class="anchor"></a>Installation</h2>
+<p>Install the most recent <strong>stable release from CRAN</strong>:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">install.packages</span>(<span class="st">"CLVTools"</span>)</span></code></pre></div>
-<p>Install the development version from GitHub:</p>
+<p>Install the <strong>development version from GitHub</strong> (using the <code>devtools</code> package):</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"bachmannpatrick/CLVTools"</span>, <span class="dt">ref =</span> <span class="st">"development"</span>)</span></code></pre></div>
-<p>Note that the package depends on RcppArmadillo and RcppGSL which will likely require additional setup steps in order to compile and install the CLVTools package from source.</p>
+<p>To <strong>compile the package from source</strong>, please be advised that <code>CLVTools</code> relies on an external C++ library called <code>GSL</code>. This library has to be installed on your computer to be able to compile <code>CLVTools</code> from source. Follow these 3 steps:</p>
+<ol>
+<li><p>Update to the latest version of R.</p></li>
+<li><p>Install the external dependency (<code>GSL</code>):</p></li>
+</ol>
+<!-- end list --><ul>
+<li>
+<p><em>For Linux:</em></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>apt<span class="op">-</span>get update</span>
+<span id="cb3-2"><a href="#cb3-2"></a>apt<span class="op">-</span>get install libgsl0<span class="op">-</span>dev</span></code></pre></div>
+<p>If you are using an R Docker container with Linux (e.g. rocker/tidyverse), you can build up on these Docker images as follows</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>FROM rocker<span class="op">/</span>tidyverse</span>
+<span id="cb4-2"><a href="#cb4-2"></a>RUN apt<span class="op">-</span>get update <span class="op">-</span>qq <span class="op">&amp;&amp;</span><span class="st"> </span>apt<span class="op">-</span>get <span class="op">-</span>y install \</span>
+<span id="cb4-3"><a href="#cb4-3"></a>libgsl0<span class="op">-</span>dev</span></code></pre></div>
+<p>Alternatively, follow the instruction in the section “Installing Dependencies external to the R system” at <a href="https://ropenscilabs.github.io/r-docker-tutorial/03-install-packages.html" class="uri">https://ropenscilabs.github.io/r-docker-tutorial/03-install-packages.html</a> to install <code>GSL</code> in a running Docker container with Linux.</p>
+</li>
+<li>
+<p><em>For Mac:</em></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>brew install gsl</span></code></pre></div>
+</li>
+<li>
+<p><em>For Windows:</em><br>
+First, install <code>RTools</code> through <a href="https://cran.r-project.org/bin/windows/Rtools/" class="uri">https://cran.r-project.org/bin/windows/Rtools/</a> (&gt; v4.0). Next, use the new <code>RTools</code> package manager to install the <code>GSL</code> library (see <a href="https://github.com/r-windows/docs/blob/master/rtools40.md#readme" class="uri">https://github.com/r-windows/docs/blob/master/rtools40.md#readme</a>) by using <code>pacman</code> through the <code>RTools Bash</code>:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>pacman <span class="op">-</span>S mingw<span class="op">-</span>w64<span class="op">-</span>{i686,x86_<span class="dv">64</span>}<span class="op">-</span>gsl</span></code></pre></div>
+</li>
+</ul>
+<!-- end list --><ol>
+<li>Install the development version from source:</li>
+</ol>
+<!-- end list --><div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"bachmannpatrick/CLVTools"</span>, <span class="dt">ref =</span> <span class="st">"development"</span>)</span></code></pre></div>
 </div>
 <div id="a-minimal-example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#a-minimal-example" class="anchor"></a>A Minimal Example</h2>
-<p>For detailed instructions and all available options and model variations see the <a href="https://www.clvtools.com/articles/CLVTools.html">Walkthrough</a> and the <a href="https://www.clvtools.com/reference/index.html">manual</a>.</p>
+<p>For detailed instructions and all available options and model variations see the detailed <a href="https://www.clvtools.com/articles/CLVTools.html">walkthrough</a> and the <a href="https://www.clvtools.com/reference/index.html">manual</a>.</p>
 <p>Start by loading the package:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st"><a href="https://github.com/bachmannpatrick/CLVTools">"CLVTools"</a></span>)
-</pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/bachmannpatrick/CLVTools">"CLVTools"</a></span><span class="op">)</span></pre></div>
 <p>As Input data <code>CLVTools</code> requires customers’ transaction history. Every transaction record consists of a purchase date and customer ID.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"apparelTrans"</span>)
-<span class="kw">apparelTrans</span>
+<div class="sourceCode" id="cb9"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"apparelTrans"</span><span class="op">)</span>
+<span class="va">apparelTrans</span>
 <span class="co">#&gt;         Id       Date  Price</span>
-<span class="co">#&gt;    1:    1 2005-01-03  26.95</span>
-<span class="co">#&gt;    2:   10 2005-01-03  38.95</span>
-<span class="co">#&gt;    3:   10 2005-02-25  93.73</span>
-<span class="co">#&gt;    4:   10 2005-04-05 224.96</span>
-<span class="co">#&gt;    5:  100 2005-01-03 104.95</span>
+<span class="co">#&gt;    1:    1 2005-01-03 230.30</span>
+<span class="co">#&gt;    2:   10 2005-01-03  84.39</span>
+<span class="co">#&gt;    3:   10 2005-02-25 131.07</span>
+<span class="co">#&gt;    4:   10 2005-04-05  86.43</span>
+<span class="co">#&gt;    5:  100 2005-01-03  11.49</span>
 <span class="co">#&gt;   ---                       </span>
-<span class="co">#&gt; 2349: 1221 2006-01-23  62.95</span>
-<span class="co">#&gt; 2350: 1221 2006-03-09  89.95</span>
-<span class="co">#&gt; 2351: 1221 2006-05-14  52.95</span>
-<span class="co">#&gt; 2352: 1222 2005-01-03   5.90</span>
-<span class="co">#&gt; 2353: 1222 2005-03-03  13.90</span>
-</pre></div>
+<span class="co">#&gt; 2349: 1221 2006-01-23  26.57</span>
+<span class="co">#&gt; 2350: 1221 2006-03-09 129.82</span>
+<span class="co">#&gt; 2351: 1221 2006-05-14  14.37</span>
+<span class="co">#&gt; 2352: 1222 2005-01-03  44.77</span>
+<span class="co">#&gt; 2353: 1222 2005-03-03  99.21</span></pre></div>
 <p>Before we estimate a model, we are required to initialize a data object using the <code><a href="reference/clvdata.html">clvdata()</a></code> command. The data object contains the prepared transactional data and is later used as input for model fitting. Additionally we specify options for the date and time units, estimation duration and variable names (see <a href="https://www.clvtools.com/articles/CLVTools.html">Walkthrough</a> for details). Make sure to store the generated object in a variable, e.g. in our example <code>clv.apparel</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="kw">clv.apparel</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/clvdata.html">clvdata</a></span>(<span class="kw">apparelTrans</span>,  
-                       date.format=<span class="st">"ymd"</span>, 
-                       time.unit = <span class="st">"week"</span>,
-                       estimation.split = <span class="fl">40</span>,
-                       name.id = <span class="st">"Id"</span>,
-                       name.date = <span class="st">"Date"</span>,
-                       name.price = <span class="st">"Price"</span>)
-</pre></div>
-<p>To estimate the first probabilistic latent attrition model we start with the standard Pareto/NBD model and therefore use the command <code><a href="reference/pnbd.html">pnbd()</a></code> to fit the model and estimate model parameters. Other models such as the BG/NBD model (<code><a href="reference/bgnbd.html">bgnbd()</a></code>) and the GGomp/NBD (<code><a href="reference/ggomnbd.html">ggomnbd()</a></code>) are available.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="kw">est.pnbd</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pnbd.html">pnbd</a></span>(clv.data = <span class="kw">clv.apparel</span>)
+<div class="sourceCode" id="cb10"><pre class="downlit">
+<span class="va">clv.apparel</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/clvdata.html">clvdata</a></span><span class="op">(</span><span class="va">apparelTrans</span>,  
+                       date.format<span class="op">=</span><span class="st">"ymd"</span>, 
+                       time.unit <span class="op">=</span> <span class="st">"week"</span>,
+                       estimation.split <span class="op">=</span> <span class="fl">40</span>,
+                       name.id <span class="op">=</span> <span class="st">"Id"</span>,
+                       name.date <span class="op">=</span> <span class="st">"Date"</span>,
+                       name.price <span class="op">=</span> <span class="st">"Price"</span><span class="op">)</span></pre></div>
+<p>Be aware that probabilistic models such as the ones implemented in CLVTools are usually applied to specific customer cohorts. That means, you analyze customer that have joined your company at the same time (usually same day, week, month, or quarter). For more information on cohort analysis, see also <a href="https://en.wikipedia.org/wiki/Cohort_analysis">here</a>. Consequently, the data apparelTrans in this example is not the full transaction records of a fashion retailer, but rather only the customer cohort of 250 customers purchasing for the first time at this business on the day of 2005-01-03.</p>
+<p>As a first probabilistic latent attrition model we estimate the standard Pareto/NBD model and therefore, use the command <code><a href="reference/pnbd.html">pnbd()</a></code> to fit the model and estimate model parameters. Other models such as the BG/NBD model (<code><a href="reference/bgnbd.html">bgnbd()</a></code>) and the GGomp/NBD (<code><a href="reference/ggomnbd.html">ggomnbd()</a></code>) are also available.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit">
+<span class="va">est.pnbd</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pnbd.html">pnbd</a></span><span class="op">(</span>clv.data <span class="op">=</span> <span class="va">clv.apparel</span><span class="op">)</span>
 <span class="co">#&gt; Starting estimation...</span>
 <span class="co">#&gt; Estimation finished!</span>
-<span class="kw">est.pnbd</span>
-<span class="co">#&gt; Pareto NBD Standard  Model</span>
+<span class="va">est.pnbd</span>
+<span class="co">#&gt; Pareto NBD Standard Model</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Call:</span>
 <span class="co">#&gt; pnbd(clv.data = clv.apparel)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Coefficients:</span>
 <span class="co">#&gt;       r    alpha        s     beta  </span>
-<span class="co">#&gt;  0.7867   5.3356   0.3574  11.6316  </span>
+<span class="co">#&gt;  0.7866   5.3349   0.3570  11.6152  </span>
 <span class="co">#&gt; KKT1: TRUE </span>
 <span class="co">#&gt; KKT2: TRUE </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Used Options:</span>
-<span class="co">#&gt; Correlation:     FALSE</span>
-</pre></div>
+<span class="co">#&gt; Correlation:     FALSE</span></pre></div>
 <p>You can always use <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> to get details on CLVTools object (also before they are estimated):</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
+<div class="sourceCode" id="cb12"><pre class="downlit">
 <span class="co">#Full detailed summary of the parameter estimates</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="kw">est.pnbd</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">est.pnbd</span><span class="op">)</span>
 <span class="co">#&gt; Pareto NBD Standard  Model </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Call:</span>
@@ -204,10 +224,10 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Coefficients:</span>
 <span class="co">#&gt;       Estimate Std. Error z-val Pr(&gt;|z|)    </span>
-<span class="co">#&gt; r       0.7867     0.1324 5.942 2.82e-09 ***</span>
-<span class="co">#&gt; alpha   5.3356     0.9028 5.910 3.42e-09 ***</span>
-<span class="co">#&gt; s       0.3574     0.1841 1.941   0.0523 .  </span>
-<span class="co">#&gt; beta   11.6316    10.6823 1.089   0.2762    </span>
+<span class="co">#&gt; r       0.7866     0.1324 5.942 2.81e-09 ***</span>
+<span class="co">#&gt; alpha   5.3349     0.9027 5.910 3.42e-09 ***</span>
+<span class="co">#&gt; s       0.3570     0.1838 1.943   0.0521 .  </span>
+<span class="co">#&gt; beta   11.6152    10.6598 1.090   0.2759    </span>
 <span class="co">#&gt; ---</span>
 <span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
 <span class="co">#&gt; </span>
@@ -217,53 +237,53 @@
 <span class="co">#&gt; BIC    5781.0257 </span>
 <span class="co">#&gt; KKT 1  TRUE      </span>
 <span class="co">#&gt; KKT 2  TRUE      </span>
-<span class="co">#&gt; fevals 20.0000   </span>
+<span class="co">#&gt; fevals 23.0000   </span>
 <span class="co">#&gt; Method L-BFGS-B  </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Used Options:                 </span>
-<span class="co">#&gt; Correlation FALSE</span>
-</pre></div>
-<p>Once the model parameters are estimated, we are able to predict future customer behavior on an individual level. To do so, we use <code><a href="https://rdrr.io/r/stats/predict.html">predict()</a></code> on the object with the estimated parameters (i.e. <code>est.pnbd</code>). In general, probabilistic customer attrition model predict three expected characteristics for every customer:</p>
+<span class="co">#&gt; Correlation FALSE</span></pre></div>
+<p>Once the model parameters are estimated, we are able to predict future customer behavior on an individual level. To do so, we use <code><a href="reference/predict.clv.fitted.transactions.html">predict()</a></code> on the object with the estimated parameters (i.e. <code>est.pnbd</code>). In general, probabilistic customer attrition model predict three expected characteristics for every customer:</p>
 <ul>
 <li>“conditional expected transactions” (CET), which is the number of transactions to expect form a customer during the prediction period,</li>
 <li>“probability of a customer being alive” (PAlive) at the end of the estimation period and</li>
 <li>“discounted expected residual transactions” (DERT) for every customer, which is the total number of transactions for the residual lifetime of a customer discounted to the end of the estimation period.</li>
 </ul>
 <p>If spending information was provided when initializing the clvdata-object, also “customer lifetime value” (CLV) is predicted.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="kw">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span>(<span class="kw">est.pnbd</span>)
+<div class="sourceCode" id="cb13"><pre class="downlit">
+<span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/predict.clv.fitted.transactions.html">predict</a></span><span class="op">(</span><span class="va">est.pnbd</span><span class="op">)</span>
 <span class="co">#&gt; Predicting from 2005-10-11 until (incl.) 2006-07-16 (39.86 Weeks).</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw">results</span>)
-<span class="co">#&gt;        Id period.first period.last period.length actual.x actual.spending</span>
-<span class="co">#&gt;   1:    1   2005-10-11  2006-07-16      39.85714        0            0.00</span>
-<span class="co">#&gt;   2:   10   2005-10-11  2006-07-16      39.85714        0            0.00</span>
-<span class="co">#&gt;   3:  100   2005-10-11  2006-07-16      39.85714       23         5086.44</span>
-<span class="co">#&gt;   4: 1000   2005-10-11  2006-07-16      39.85714       23         4077.34</span>
-<span class="co">#&gt;   5: 1001   2005-10-11  2006-07-16      39.85714       11         2914.10</span>
-<span class="co">#&gt;  ---                                                                     </span>
-<span class="co">#&gt; 246: 1219   2005-10-11  2006-07-16      39.85714       14         3233.78</span>
-<span class="co">#&gt; 247:  122   2005-10-11  2006-07-16      39.85714        0            0.00</span>
-<span class="co">#&gt; 248: 1220   2005-10-11  2006-07-16      39.85714        0            0.00</span>
-<span class="co">#&gt; 249: 1221   2005-10-11  2006-07-16      39.85714        9         1322.94</span>
-<span class="co">#&gt; 250: 1222   2005-10-11  2006-07-16      39.85714        0            0.00</span>
-<span class="co">#&gt;         PAlive        CET       DERT predicted.Spending predicted.CLV</span>
-<span class="co">#&gt;   1: 0.3571358  0.2212240 0.05848369           216.7955      12.67900</span>
-<span class="co">#&gt;   2: 0.4224409  0.9269543 0.24505345           209.1146      51.24426</span>
-<span class="co">#&gt;   3: 0.9155010 13.5430229 3.58028916           188.9758     676.58785</span>
-<span class="co">#&gt;   4: 0.9967760 13.1755612 3.48314547           171.0913     595.93576</span>
-<span class="co">#&gt;   5: 0.5096716  3.5263202 0.93223249           229.8529     214.27636</span>
-<span class="co">#&gt;  ---                                                                 </span>
-<span class="co">#&gt; 246: 0.9578990  3.6104399 0.95447073           206.0859     196.70295</span>
-<span class="co">#&gt; 247: 0.3571358  0.2212240 0.05848369           216.7955      12.67900</span>
-<span class="co">#&gt; 248: 0.3571358  0.2212240 0.05848369           216.7955      12.67900</span>
-<span class="co">#&gt; 249: 0.9433972  4.2986317 1.13640393           207.0518     235.29447</span>
-<span class="co">#&gt; 250: 0.4135069  0.5817466 0.15379292           208.3194      32.03804</span>
-</pre></div>
-<p><code>clvdata</code> objects may be plotted using the <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> command. Similar to <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code>, the output of <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> adapts to the current modeling step.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span>(<span class="kw">est.pnbd</span>)
-<span class="co">#&gt; Plotting from 2005-01-03 until 2006-07-16.</span>
-</pre></div>
+<span class="co">#&gt; Estimating gg model to predict spending...</span>
+<span class="co">#&gt; Starting estimation...</span>
+<span class="co">#&gt; Estimation finished!</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span>
+<span class="co">#&gt;        Id period.first period.last period.length actual.x actual.total.spending</span>
+<span class="co">#&gt;   1:    1   2005-10-11  2006-07-16      39.85714        0                  0.00</span>
+<span class="co">#&gt;   2:   10   2005-10-11  2006-07-16      39.85714        0                  0.00</span>
+<span class="co">#&gt;   3:  100   2005-10-11  2006-07-16      39.85714       23                737.53</span>
+<span class="co">#&gt;   4: 1000   2005-10-11  2006-07-16      39.85714       23               1069.91</span>
+<span class="co">#&gt;   5: 1001   2005-10-11  2006-07-16      39.85714       11                364.00</span>
+<span class="co">#&gt;  ---                                                                           </span>
+<span class="co">#&gt; 246: 1219   2005-10-11  2006-07-16      39.85714       14                413.76</span>
+<span class="co">#&gt; 247:  122   2005-10-11  2006-07-16      39.85714        0                  0.00</span>
+<span class="co">#&gt; 248: 1220   2005-10-11  2006-07-16      39.85714        0                  0.00</span>
+<span class="co">#&gt; 249: 1221   2005-10-11  2006-07-16      39.85714        9                302.65</span>
+<span class="co">#&gt; 250: 1222   2005-10-11  2006-07-16      39.85714        0                  0.00</span>
+<span class="co">#&gt;         PAlive        CET       DERT predicted.mean.spending predicted.CLV</span>
+<span class="co">#&gt;   1: 0.3571791  0.2212506 0.05848859                39.95483      2.336902</span>
+<span class="co">#&gt;   2: 0.4225636  0.9272819 0.24513121                55.23031     13.538672</span>
+<span class="co">#&gt;   3: 0.9155479 13.5448630 3.58064629                43.57390    156.022721</span>
+<span class="co">#&gt;   4: 0.9967780 13.1766970 3.48331993                41.60921    144.938180</span>
+<span class="co">#&gt;   5: 0.5098134  3.5275846 0.93253307                45.58153     42.506281</span>
+<span class="co">#&gt;  ---                                                                      </span>
+<span class="co">#&gt; 246: 0.9579241  3.6108002 0.95453149                33.58728     32.060115</span>
+<span class="co">#&gt; 247: 0.3571791  0.2212506 0.05848859                39.95483      2.336902</span>
+<span class="co">#&gt; 248: 0.3571791  0.2212506 0.05848859                39.95483      2.336902</span>
+<span class="co">#&gt; 249: 0.9434302  4.2991096 1.13648922                34.28958     38.969738</span>
+<span class="co">#&gt; 250: 0.4136156  0.5819279 0.15383529                47.35500      7.284870</span></pre></div>
+<p><code>clvdata</code> objects may be plotted using the <code><a href="reference/plot.clv.fitted.transactions.html">plot()</a></code> command. Similar to <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code>, the output of <code><a href="reference/plot.clv.fitted.transactions.html">plot()</a></code> adapts to the current modeling step.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit">
+<span class="fu"><a href="reference/plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">est.pnbd</span><span class="op">)</span>
+<span class="co">#&gt; Plotting from 2005-01-03 until 2006-07-16.</span></pre></div>
 <p><img src="reference/figures/README-plot-model-1.png" width="100%"></p>
 </div>
 <div id="contributions" class="section level2">
@@ -322,7 +342,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

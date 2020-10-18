@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Fitted CLV Model without covariates — clv.fitted-class • CLVTools</title>
+<title>Fitted model without covariates — clv.fitted-class • CLVTools</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,12 @@
 
 
 
-<meta property="og:title" content="Fitted CLV Model without covariates — clv.fitted-class" />
+<meta property="og:title" content="Fitted model without covariates — clv.fitted-class" />
 <meta property="og:description" content="The class stores the transaction data and various optimization outputs and options.
 It is created already when model fitting is initiated and is then used to perform no covariate specific steps
 during the estimation process.
-Created from an existing clv.data and clv.model object (or subclasses thereof)." />
+Serves as parent classes to fitted transaction and spending models.
+Created with an existing clv.data and clv.model object (or subclasses thereof)." />
 
 
 
@@ -85,19 +86,13 @@ Created from an existing clv.data and clv.model object (or subclasses thereof)."
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../articles/CLVTools.html">Get started</a>
 </li>
 <li>
@@ -139,7 +134,7 @@ Created from an existing clv.data and clv.model object (or subclasses thereof)."
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Fitted CLV Model without covariates</h1>
+    <h1>Fitted model without covariates</h1>
     <small class="dont-index">Source: <a href='https://github.com/bachmannpatrick/CLVTools/blob/master/R/class_clv_fitted.R'><code>R/class_clv_fitted.R</code></a>, <a href='https://github.com/bachmannpatrick/CLVTools/blob/master/R/f_s3generics_clvfitted.R'><code>R/f_s3generics_clvfitted.R</code></a></small>
     <div class="hidden name"><code>clv.fitted-class.Rd</code></div>
     </div>
@@ -147,12 +142,13 @@ Created from an existing clv.data and clv.model object (or subclasses thereof)."
     <div class="ref-description">
     <p>The class stores the transaction data and various optimization outputs and options.
 It is created already when model fitting is initiated and is then used to perform no covariate specific steps
-during the estimation process.</p>
-<p>Created from an existing clv.data and clv.model object (or subclasses thereof).</p>
+during the estimation process.
+Serves as parent classes to fitted transaction and spending models.</p>
+<p>Created with an existing clv.data and clv.model object (or subclasses thereof).</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for clv.fitted</span>
-<span class='fu'>show</span>(<span class='kw'>object</span>)</pre>
+<span class='fu'>show</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span></pre>
 
 
     <h2 class="hasAnchor" id="slots"><a class="anchor" href="#slots"></a>Slots</h2>
@@ -168,12 +164,6 @@ during the estimation process.</p>
 
 <dt><code>prediction.params.model</code></dt><dd><p>Numeric vector of the model parameters, set and used solely when predicting. Named after model parameters in original scale and derived from <code><a href='https://rdrr.io/r/stats/coef.html'>coef()</a></code>.</p></dd>
 
-<dt><code>estimation.used.correlation</code></dt><dd><p>Single boolean whether the correlation was estimated.</p></dd>
-
-<dt><code>name.prefixed.cor.param.m</code></dt><dd><p>Single character vector of the internal name used for the correlation parameter during optimization.</p></dd>
-
-<dt><code>name.correlation.cor</code></dt><dd><p>Single character vector of the external name used for the correlation parameter.</p></dd>
-
 <dt><code>optimx.estimation.output</code></dt><dd><p>A single object of class <code>optimx</code> as returned from method <code><a href='https://rdrr.io/pkg/optimx/man/optimx.html'>optimx::optimx</a></code> after optimizing the log-likelihood fitting the model.</p></dd>
 
 <dt><code>optimx.hessian</code></dt><dd><p>Single matrix that is the hessian extracted from the last row of the optimization output stored in the slot <code>optimx.estimation.output</code>.</p></dd>
@@ -181,7 +171,7 @@ during the estimation process.</p>
 </dl>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='https://rdrr.io/pkg/CLVTools/man/clv.fitted.static.cov-class.html'>clv.fitted.static.cov</a></code>, <code><a href='https://rdrr.io/pkg/CLVTools/man/clv.fitted.dynamic.cov-class.html'>clv.fitted.dynamic.cov</a></code></p></div>
+    <div class='dont-index'><p><a href='clv.fitted.spending-class.html'>clv.fitted.spending</a>, <a href='clv.fitted.transactions-class.html'>clv.fitted.transactions</a>, <a href='clv.fitted.transactions.static.cov-class.html'>clv.fitted.transactions.static.cov</a>, <a href='clv.fitted.transactions.dynamic.cov-class.html'>clv.fitted.transactions.dynamic.cov</a></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -198,7 +188,7 @@ during the estimation process.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>
