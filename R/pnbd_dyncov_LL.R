@@ -104,19 +104,19 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
   cbs[, dT:= data.work.trans[AuxTrans==T, d]]
 
 
+  names.walk.cols.trans <- grep(pattern = "adj.Walk", value=TRUE, fixed=TRUE, x=colnames(data.work.trans))
   data.work.trans.aux <- data.work.trans[AuxTrans==T]
-  names.walk.cols <- grep(pattern = "adj.Walk", value=TRUE, fixed=TRUE, x=colnames(data.work.trans.aux))
 
   # cbs[, B1:=.pnbd_dyncov_LL_Bi(data.work.trans.aux = data.work.trans[AuxTrans==T], cbs.t.x = t.x, i = 1)]
   cbs[, B1:=pnbd_dyncov_LL_Bi_cpp(i=1,
                                   t_x=t.x, d=data.work.trans.aux$d, delta=data.work.trans.aux$delta,
                                   n_walks=data.work.trans.aux$Num.Walk, max_walks=data.work.trans.aux$adj.Max.Walk,
-                                  walks = as.matrix(data.work.trans.aux[, .SD, .SDcols=names.walk.cols]))]
+                                  walks = as.matrix(data.work.trans.aux[, .SD, .SDcols=names.walk.cols.trans]))]
   # cbs[, BT:=.pnbd_dyncov_LL_Bi(data.work.trans.aux = data.work.trans[AuxTrans==T], cbs.t.x = t.x, i = data.work.trans[, max(Num.Walk)])]
   cbs[, BT:=pnbd_dyncov_LL_Bi_cpp(i=data.work.trans[, max(Num.Walk)],
                                   t_x=t.x, d=data.work.trans.aux$d, delta=data.work.trans.aux$delta,
                                   n_walks=data.work.trans.aux$Num.Walk, max_walks=data.work.trans.aux$adj.Max.Walk,
-                                  walks = as.matrix(data.work.trans.aux[, .SD, .SDcols=names.walk.cols]))]
+                                  walks = as.matrix(data.work.trans.aux[, .SD, .SDcols=names.walk.cols.trans]))]
 
   cbs[, a1:= Bjsum + B1 + A1T * (t.x + dT - 1)]
 
@@ -131,9 +131,34 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
   cbs[, C1T:= data.work.life[AuxTrans==T, adj.Walk1]]
 
   cbs[, CkT:= data.work.life[AuxTrans==T, adj.lifetime.cov.dyn]]
+  names.walk.cols.life <- grep(pattern = "adj.Walk", value=TRUE, fixed=TRUE, x=colnames(data.work.life))
+  data.work.life.real <- data.work.life[AuxTrans==FALSE]
+  data.work.life.aux  <- data.work.life[AuxTrans==TRUE]
 
-  cbs[, D1:= .pnbd_dyncov_LL_Di(data.work.life = data.work.life, i = 1)]
-  cbs[, DT:= .pnbd_dyncov_LL_Di(data.work.life = data.work.life, i = data.work.life[, max(Num.Walk)] ) ]
+  # cbs[, D1:= .pnbd_dyncov_LL_Di(data.work.life = data.work.life, i = 1)]
+  cbs[, D1:= pnbd_dyncov_LL_Di_cpp(i=1,
+                                   real_d=data.work.life.real$d,
+                                   real_n_walks=data.work.life.real$Num.Walk,
+                                   real_max_walks=data.work.life.real$Di.Max.Walk,
+                                   real_adj_walk1=data.work.life.real$adj.Walk1,
+                                   real_walks=as.matrix(data.work.life.real[, .SD, .SDcols=names.walk.cols.life]),
+                                   aux_d=data.work.life.aux$d,
+                                   aux_n_walks=data.work.life.aux$Num.Walk,
+                                   aux_max_walks=data.work.life.aux$Di.Max.Walk,
+                                   aux_walks=as.matrix(data.work.life.aux[, .SD, .SDcols=names.walk.cols.life]))]
+
+  # cbs[, DT:= .pnbd_dyncov_LL_Di(data.work.life = data.work.life, i = data.work.life[, max(Num.Walk)] ) ]
+  cbs[, DT:= pnbd_dyncov_LL_Di_cpp(i=data.work.life.real[, max(Num.Walk)],
+                                   real_d=data.work.life.real$d,
+                                   real_n_walks=data.work.life.real$Num.Walk,
+                                   real_max_walks=data.work.life.real$Di.Max.Walk,
+                                   real_adj_walk1=data.work.life.real$adj.Walk1,
+                                   real_walks=as.matrix(data.work.life.real[, .SD, .SDcols=names.walk.cols.life]),
+                                   aux_d=data.work.life.aux$d,
+                                   aux_n_walks=data.work.life.aux$Num.Walk,
+                                   aux_max_walks=data.work.life.aux$Di.Max.Walk,
+                                   aux_walks=as.matrix(data.work.life.aux[, .SD, .SDcols=names.walk.cols.life]))]
+
   cbs[, DkT:= CkT*T.cal + DT]
 
   cbs[, b1:=D1 + C1T*(t.x + dT - 1)]
@@ -223,7 +248,7 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
         cbs.i[, Bi:=pnbd_dyncov_LL_Bi_cpp(i=i,
                                         t_x=t.x, d=work.trans.i$d, delta=work.trans.i$delta,
                                         n_walks=work.trans.i$Num.Walk, max_walks=work.trans.i$adj.Max.Walk,
-                                        walks = as.matrix(work.trans.i[, .SD, .SDcols=names.walk.cols]))]
+                                        walks = as.matrix(work.trans.i[, .SD, .SDcols=names.walk.cols.trans]))]
 
         cbs.i[, ai:=Bjsum + Bi + Ai*(t.x + dT + (i-2))]
 
@@ -239,9 +264,22 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
         walk.lifetime.all.ids.i <- work.life.i[, Id]
         tmp.data.life <- data.work.life[Id %in% walk.lifetime.all.ids.i]
         tmp.data.life <- data.work.life[walk.lifetime.all.ids.i]
-        setkeyv(data.work.life, c("Id", "Date", "AuxTrans", "Num.Walk"))
+        setkeyv(tmp.data.life, c("Id", "Date", "AuxTrans", "Num.Walk"))
 
-        cbs.i[, Di:=.pnbd_dyncov_LL_Di(data.work.life = tmp.data.life, i = i)]
+        # cbs.i[, Di:=.pnbd_dyncov_LL_Di(data.work.life = tmp.data.life, i = i)]
+        tmp.data.life.real <- tmp.data.life[AuxTrans == FALSE]
+        tmp.data.life.aux <- tmp.data.life[AuxTrans == TRUE]
+        cbs.i[, Di:=pnbd_dyncov_LL_Di_cpp(i=i,
+                                          real_d=tmp.data.life.real$d,
+                                          real_n_walks=tmp.data.life.real$Num.Walk,
+                                          real_max_walks=tmp.data.life.real$Di.Max.Walk,
+                                          real_adj_walk1=tmp.data.life.real$adj.Walk1,
+                                          real_walks=as.matrix(tmp.data.life.real[, .SD, .SDcols=names.walk.cols.life]),
+                                          aux_d=tmp.data.life.aux$d,
+                                          aux_n_walks=tmp.data.life.aux$Num.Walk,
+                                          aux_max_walks=tmp.data.life.aux$Di.Max.Walk,
+                                          aux_walks=as.matrix(tmp.data.life.aux[, .SD, .SDcols=names.walk.cols.life]))]
+
         cbs.i[, bi:=Di + Ci*(t.x + dT + (i-2))]
 
         # Alpha & Beta ------------------------------------------------

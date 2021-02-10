@@ -659,12 +659,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // pnbd_dyncov_LL_Bi_cpp
-arma::vec pnbd_dyncov_LL_Bi_cpp(const int& i, const arma::vec& t_x, const arma::vec& d, const arma::vec& delta, const arma::ivec& n_walks, const arma::vec& max_walks, const arma::mat& walks);
+arma::vec pnbd_dyncov_LL_Bi_cpp(const int i, const arma::vec& t_x, const arma::vec& d, const arma::vec& delta, const arma::ivec& n_walks, const arma::vec& max_walks, const arma::mat& walks);
 RcppExport SEXP _CLVTools_pnbd_dyncov_LL_Bi_cpp(SEXP iSEXP, SEXP t_xSEXP, SEXP dSEXP, SEXP deltaSEXP, SEXP n_walksSEXP, SEXP max_walksSEXP, SEXP walksSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const int& >::type i(iSEXP);
+    Rcpp::traits::input_parameter< const int >::type i(iSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type t_x(t_xSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type d(dSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type delta(deltaSEXP);
@@ -672,6 +672,26 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::vec& >::type max_walks(max_walksSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type walks(walksSEXP);
     rcpp_result_gen = Rcpp::wrap(pnbd_dyncov_LL_Bi_cpp(i, t_x, d, delta, n_walks, max_walks, walks));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pnbd_dyncov_LL_Di_cpp
+arma::vec pnbd_dyncov_LL_Di_cpp(const int i, const arma::vec& real_d, const arma::vec& aux_d, const arma::ivec& real_n_walks, const arma::ivec& aux_n_walks, const arma::vec& real_max_walks, const arma::vec& aux_max_walks, const arma::vec& real_adj_walk1, const arma::mat& real_walks, const arma::mat& aux_walks);
+RcppExport SEXP _CLVTools_pnbd_dyncov_LL_Di_cpp(SEXP iSEXP, SEXP real_dSEXP, SEXP aux_dSEXP, SEXP real_n_walksSEXP, SEXP aux_n_walksSEXP, SEXP real_max_walksSEXP, SEXP aux_max_walksSEXP, SEXP real_adj_walk1SEXP, SEXP real_walksSEXP, SEXP aux_walksSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const int >::type i(iSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type real_d(real_dSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type aux_d(aux_dSEXP);
+    Rcpp::traits::input_parameter< const arma::ivec& >::type real_n_walks(real_n_walksSEXP);
+    Rcpp::traits::input_parameter< const arma::ivec& >::type aux_n_walks(aux_n_walksSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type real_max_walks(real_max_walksSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type aux_max_walks(aux_max_walksSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type real_adj_walk1(real_adj_walk1SEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type real_walks(real_walksSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type aux_walks(aux_walksSEXP);
+    rcpp_result_gen = Rcpp::wrap(pnbd_dyncov_LL_Di_cpp(i, real_d, aux_d, real_n_walks, aux_n_walks, real_max_walks, aux_max_walks, real_adj_walk1, real_walks, aux_walks));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -748,6 +768,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CLVTools_pnbd_nocov_PAlive", (DL_FUNC) &_CLVTools_pnbd_nocov_PAlive, 7},
     {"_CLVTools_pnbd_staticcov_PAlive", (DL_FUNC) &_CLVTools_pnbd_staticcov_PAlive, 11},
     {"_CLVTools_pnbd_dyncov_LL_Bi_cpp", (DL_FUNC) &_CLVTools_pnbd_dyncov_LL_Bi_cpp, 7},
+    {"_CLVTools_pnbd_dyncov_LL_Di_cpp", (DL_FUNC) &_CLVTools_pnbd_dyncov_LL_Di_cpp, 10},
     {"_CLVTools_pnbd_nocov_expectation", (DL_FUNC) &_CLVTools_pnbd_nocov_expectation, 5},
     {"_CLVTools_pnbd_staticcov_expectation", (DL_FUNC) &_CLVTools_pnbd_staticcov_expectation, 5},
     {NULL, NULL, 0}

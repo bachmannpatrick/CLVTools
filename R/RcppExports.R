@@ -470,6 +470,10 @@ pnbd_dyncov_LL_Bi_cpp <- function(i, t_x, d, delta, n_walks, max_walks, walks) {
     .Call(`_CLVTools_pnbd_dyncov_LL_Bi_cpp`, i, t_x, d, delta, n_walks, max_walks, walks)
 }
 
+pnbd_dyncov_LL_Di_cpp <- function(i, real_d, aux_d, real_n_walks, aux_n_walks, real_max_walks, aux_max_walks, real_adj_walk1, real_walks, aux_walks) {
+    .Call(`_CLVTools_pnbd_dyncov_LL_Di_cpp`, i, real_d, aux_d, real_n_walks, aux_n_walks, real_max_walks, aux_max_walks, real_adj_walk1, real_walks, aux_walks)
+}
+
 #' @name pnbd_expectation
 #' @title Pareto/NBD: Unconditional Expectation
 #'
