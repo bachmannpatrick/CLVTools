@@ -474,6 +474,14 @@ pnbd_dyncov_LL_Di_cpp <- function(i, real_d, aux_d, real_n_walks, aux_n_walks, r
     .Call(`_CLVTools_pnbd_dyncov_LL_Di_cpp`, i, real_d, aux_d, real_n_walks, aux_n_walks, real_max_walks, aux_max_walks, real_adj_walk1, real_walks, aux_walks)
 }
 
+hyp_alpha_ge_beta_cpp <- function(alpha_1, beta_1, alpha_2, beta_2, x, r, s) {
+    .Call(`_CLVTools_hyp_alpha_ge_beta_cpp`, alpha_1, beta_1, alpha_2, beta_2, x, r, s)
+}
+
+hyp_beta_g_alpha_cpp <- function(alpha_1, beta_1, alpha_2, beta_2, x, r, s) {
+    .Call(`_CLVTools_hyp_beta_g_alpha_cpp`, alpha_1, beta_1, alpha_2, beta_2, x, r, s)
+}
+
 #' @name pnbd_expectation
 #' @title Pareto/NBD: Unconditional Expectation
 #'

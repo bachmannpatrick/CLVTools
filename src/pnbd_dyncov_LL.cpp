@@ -175,5 +175,125 @@ arma::vec pnbd_dyncov_LL_Di_cpp(const int i,
 
 
 
+// [[Rcpp::export]]
+arma::vec hyp_alpha_ge_beta_cpp(const arma::vec& alpha_1,
+                                const arma::vec& beta_1,
+                                const arma::vec& alpha_2,
+                                const arma::vec& beta_2,
+                                const arma::vec& x,
+                                const double r,
+                                const double s)
+{
+  //C++ translation of .hyp.alpha.ge.beta
+  int n = x.n_elem;
+  arma::vec out(n);
+
+  if(n > 0){
+    arma::vec z1 = 1 - (beta_1/alpha_1);
+    arma::vec z2 = 1 - (beta_2/alpha_2);
+    arma::vec log_C = arma::lgamma(r + s + x + 1) +
+      std::lgamma(s) +
+      arma::lgamma(r + s + x) +
+      std::lgamma(s + 1);
+
+    for(int j = 0; j < n; j++){
+      gsl_sf_result gsl_res;
+      double hyp_z1;
+      double hyp_z2;
+
+      int status = gsl_sf_hyperg_2F1_e(r + s + x(j),
+                                       s + 1,
+                                       r + s + x(j) + 1,
+                                       z1(j), &gsl_res);
+      if(status == 11 || status == 1){
+        hyp_z1 = std::pow(1 - z1(j), r + x(j)) *
+          std::exp(log_C(j)) /
+            std::pow(beta_1(j), r + s + x(j));
+      }else{
+        hyp_z1 = gsl_res.val /
+          std::pow(alpha_1(j), r + s + x(j));
+      }
+
+      status = gsl_sf_hyperg_2F1_e(r + s + x(j),
+                                   s + 1,
+                                   r + s + x(j) + 1,
+                                   z2(j), &gsl_res);
+      if(status == 11 || status == 1){
+        hyp_z2 = std::pow(1 - z2(j), r + x(j)) *
+          std::exp(log_C(j)) /
+            std::pow(beta_2(j), r + s + x(j));
+      }else{
+        hyp_z2 = gsl_res.val /
+          std::pow(alpha_2(j), r + s + x(j));
+      }
+
+      out(j) = hyp_z1 - hyp_z2;
+
+    }
+  }
+
+  return(out);
+
+}
+
+// [[Rcpp::export]]
+arma::vec hyp_beta_g_alpha_cpp(const arma::vec& alpha_1,
+                               const arma::vec& beta_1,
+                               const arma::vec& alpha_2,
+                               const arma::vec& beta_2,
+                               const arma::vec& x,
+                               const double r,
+                               const double s)
+{
+  //C++ translation of .hyp.beta.e.alpha
+  int n = x.n_elem;
+  arma::vec out(n);
+
+  if(n > 0){
+    arma::vec z1 = 1 - (alpha_1/beta_1);
+    arma::vec z2 = 1 - (alpha_2/beta_2);
+    arma::vec log_C = arma::lgamma(r + s + x + 1) +
+      arma::lgamma(r + x + 1) +
+      arma::lgamma(r + s + x) +
+      arma::lgamma(r + x);
+
+    for(int j = 0; j < n; j++){
+      gsl_sf_result gsl_res;
+      double hyp_z1;
+      double hyp_z2;
+
+      int status = gsl_sf_hyperg_2F1_e(r + s + x(j),
+                                       r + x(j),
+                                       r + s + x(j) + 1,
+                                       z1(j), &gsl_res);
+      if(status == 11 || status == 1){
+        hyp_z1 = std::pow(1 - z1(j), s + 1) *
+          std::exp(log_C(j)) /
+            std::pow(alpha_1(j), r + s + x(j));
+      }else{
+        hyp_z1 = gsl_res.val /
+          std::pow(beta_1(j), r + s + x(j));
+      }
+
+      status = gsl_sf_hyperg_2F1_e(r + s + x(j),
+                                   r + x(j),
+                                   r + s + x(j) + 1,
+                                   z2(j), &gsl_res);
+      if(status == 11 || status == 1){
+        hyp_z2 = std::pow(1 - z2(j), s + 1) *
+          std::exp(log_C(j)) /
+            std::pow(alpha_2(j), r + s + x(j));
+      }else{
+        hyp_z2 = gsl_res.val /
+          std::pow(beta_2(j), r + s + x(j));
+      }
+
+      out(j) = hyp_z1 - hyp_z2;
+
+    }
+  }
+
+  return(out);
+}
 
 

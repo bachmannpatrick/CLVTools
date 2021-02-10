@@ -695,6 +695,40 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// hyp_alpha_ge_beta_cpp
+arma::vec hyp_alpha_ge_beta_cpp(const arma::vec& alpha_1, const arma::vec& beta_1, const arma::vec& alpha_2, const arma::vec& beta_2, const arma::vec& x, const double r, const double s);
+RcppExport SEXP _CLVTools_hyp_alpha_ge_beta_cpp(SEXP alpha_1SEXP, SEXP beta_1SEXP, SEXP alpha_2SEXP, SEXP beta_2SEXP, SEXP xSEXP, SEXP rSEXP, SEXP sSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type alpha_1(alpha_1SEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type beta_1(beta_1SEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type alpha_2(alpha_2SEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type beta_2(beta_2SEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const double >::type r(rSEXP);
+    Rcpp::traits::input_parameter< const double >::type s(sSEXP);
+    rcpp_result_gen = Rcpp::wrap(hyp_alpha_ge_beta_cpp(alpha_1, beta_1, alpha_2, beta_2, x, r, s));
+    return rcpp_result_gen;
+END_RCPP
+}
+// hyp_beta_g_alpha_cpp
+arma::vec hyp_beta_g_alpha_cpp(const arma::vec& alpha_1, const arma::vec& beta_1, const arma::vec& alpha_2, const arma::vec& beta_2, const arma::vec& x, const double r, const double s);
+RcppExport SEXP _CLVTools_hyp_beta_g_alpha_cpp(SEXP alpha_1SEXP, SEXP beta_1SEXP, SEXP alpha_2SEXP, SEXP beta_2SEXP, SEXP xSEXP, SEXP rSEXP, SEXP sSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type alpha_1(alpha_1SEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type beta_1(beta_1SEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type alpha_2(alpha_2SEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type beta_2(beta_2SEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const double >::type r(rSEXP);
+    Rcpp::traits::input_parameter< const double >::type s(sSEXP);
+    rcpp_result_gen = Rcpp::wrap(hyp_beta_g_alpha_cpp(alpha_1, beta_1, alpha_2, beta_2, x, r, s));
+    return rcpp_result_gen;
+END_RCPP
+}
 // pnbd_nocov_expectation
 arma::vec pnbd_nocov_expectation(const double r, const double s, const double alpha_0, const double beta_0, const arma::vec& vT_i);
 RcppExport SEXP _CLVTools_pnbd_nocov_expectation(SEXP rSEXP, SEXP sSEXP, SEXP alpha_0SEXP, SEXP beta_0SEXP, SEXP vT_iSEXP) {
@@ -769,6 +803,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CLVTools_pnbd_staticcov_PAlive", (DL_FUNC) &_CLVTools_pnbd_staticcov_PAlive, 11},
     {"_CLVTools_pnbd_dyncov_LL_Bi_cpp", (DL_FUNC) &_CLVTools_pnbd_dyncov_LL_Bi_cpp, 7},
     {"_CLVTools_pnbd_dyncov_LL_Di_cpp", (DL_FUNC) &_CLVTools_pnbd_dyncov_LL_Di_cpp, 10},
+    {"_CLVTools_hyp_alpha_ge_beta_cpp", (DL_FUNC) &_CLVTools_hyp_alpha_ge_beta_cpp, 7},
+    {"_CLVTools_hyp_beta_g_alpha_cpp", (DL_FUNC) &_CLVTools_hyp_beta_g_alpha_cpp, 7},
     {"_CLVTools_pnbd_nocov_expectation", (DL_FUNC) &_CLVTools_pnbd_nocov_expectation, 5},
     {"_CLVTools_pnbd_staticcov_expectation", (DL_FUNC) &_CLVTools_pnbd_staticcov_expectation, 5},
     {NULL, NULL, 0}

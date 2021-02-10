@@ -187,10 +187,17 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
   cbs.f2.num.e.1[, alpha_2 :=a1T + alpha_0]
   cbs.f2.num.e.1[, beta_2  := (b1T  + beta_0)*A1T/C1T]
   if(nrow(cbs.f2.num.e.1[alpha_1 >= beta_1]) > 0){
-    cbs.f2.num.e.1[alpha_1 >= beta_1, F2.1:= (A1T/C1T)^s * .hyp.alpha.ge.beta(.SD, r=r, s=s, alpha_0=alpha_0)]
+    # cbs.f2.num.e.1[alpha_1 >= beta_1, F2.1:= (A1T/C1T)^s * .hyp.alpha.ge.beta(.SD, r=r, s=s, alpha_0=alpha_0)]
+    cbs.f2.num.e.1[alpha_1 >= beta_1, F2.1:= (A1T/C1T)^s * hyp_alpha_ge_beta_cpp(alpha_1=alpha_1, beta_1=beta_1,
+                                                                                 alpha_2=alpha_2, beta_2=beta_2,
+                                                                                 x=x,r=r, s=s)]
+
   }
   if(nrow(cbs.f2.num.e.1[alpha_1 < beta_1]) > 0){
-    cbs.f2.num.e.1[alpha_1 <  beta_1, F2.1:= (A1T/C1T)^s * .hyp.beta.g.alpha(.SD, r=r, s=s, alpha_0=alpha_0)]
+    # cbs.f2.num.e.1[alpha_1 <  beta_1, F2.1:= (A1T/C1T)^s * .hyp.beta.g.alpha(.SD, r=r, s=s, alpha_0=alpha_0)]
+    cbs.f2.num.e.1[alpha_1 <  beta_1, F2.1:= (A1T/C1T)^s * hyp_beta_g_alpha_cpp(alpha_1=alpha_1, beta_1=beta_1,
+                                                                                alpha_2=alpha_2, beta_2=beta_2,
+                                                                                x=x,r=r, s=s)]
   }
 
 
@@ -203,10 +210,17 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
   cbs.f2.num.g.1[, beta_2:=(b1 + C1T + beta_0)*A1T/C1T]
 
   if(nrow(cbs.f2.num.g.1[alpha_1 >= beta_1]) > 0){
-    cbs.f2.num.g.1[alpha_1 >= beta_1, F2.1:= (A1T/C1T)^s * .hyp.alpha.ge.beta(cbs =.SD, r=r, s=s, alpha_0=alpha_0)]
+    # cbs.f2.num.g.1[alpha_1 >= beta_1, F2.1:= (A1T/C1T)^s * .hyp.alpha.ge.beta(cbs =.SD, r=r, s=s, alpha_0=alpha_0)]
+    cbs.f2.num.g.1[alpha_1 >= beta_1, F2.1:= (A1T/C1T)^s * hyp_alpha_ge_beta_cpp(alpha_1=alpha_1, beta_1=beta_1,
+                                                                                 alpha_2=alpha_2, beta_2=beta_2,
+                                                                                 x=x,r=r, s=s)]
+
   }
   if(nrow(cbs.f2.num.g.1[alpha_1 < beta_1]) > 0){
-    cbs.f2.num.g.1[alpha_1 < beta_1,  F2.1:= (A1T/C1T)^s * .hyp.beta.g.alpha(cbs =.SD, r=r, s=s, alpha_0=alpha_0)]
+    # cbs.f2.num.g.1[alpha_1 < beta_1,  F2.1:= (A1T/C1T)^s * .hyp.beta.g.alpha(cbs =.SD, r=r, s=s, alpha_0=alpha_0)]
+    cbs.f2.num.g.1[alpha_1 < beta_1,  F2.1:= (A1T/C1T)^s * hyp_beta_g_alpha_cpp(alpha_1=alpha_1, beta_1=beta_1,
+                                                                                alpha_2=alpha_2, beta_2=beta_2,
+                                                                                x=x,r=r, s=s)]
   }
 
 
@@ -218,10 +232,16 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
   cbs.f2.num.g.1[, beta_2:=  (bT + beta_0)*AkT/CkT]
 
   if(nrow(cbs.f2.num.g.1[alpha_1 >= beta_1]) > 0){
-    cbs.f2.num.g.1[alpha_1 >= beta_1, F2.2:= (AkT/CkT)^s * .hyp.alpha.ge.beta(cbs =.SD, r=r, s=s, alpha_0=alpha_0)]
+    # cbs.f2.num.g.1[alpha_1 >= beta_1, F2.2:= (AkT/CkT)^s * .hyp.alpha.ge.beta(cbs =.SD, r=r, s=s, alpha_0=alpha_0)]
+    cbs.f2.num.g.1[alpha_1 >= beta_1, F2.2:= (AkT/CkT)^s * hyp_alpha_ge_beta_cpp(alpha_1=alpha_1, beta_1=beta_1,
+                                                                                 alpha_2=alpha_2, beta_2=beta_2,
+                                                                                 x=x,r=r, s=s)]
   }
   if(nrow(cbs.f2.num.g.1[alpha_1 < beta_1]) > 0){
-    cbs.f2.num.g.1[alpha_1 < beta_1,  F2.2:= (AkT/CkT)^s * .hyp.beta.g.alpha(cbs =.SD, r=r, s=s, alpha_0=alpha_0)]
+    # cbs.f2.num.g.1[alpha_1 < beta_1,  F2.2:= (AkT/CkT)^s * .hyp.beta.g.alpha(cbs =.SD, r=r, s=s, alpha_0=alpha_0)]
+    cbs.f2.num.g.1[alpha_1 < beta_1,  F2.2:= (AkT/CkT)^s * hyp_beta_g_alpha_cpp(alpha_1=alpha_1, beta_1=beta_1,
+                                                                                alpha_2=alpha_2, beta_2=beta_2,
+                                                                                x=x,r=r, s=s)]
   }
 
 
@@ -289,10 +309,18 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
         cbs.i[, alpha_2:=ai + Ai + alpha_0]
         cbs.i[, beta_2:=(bi + Ci +beta_0)*Ai/Ci]
         if(nrow(cbs.i[alpha_1 >= beta_1]) > 0){
-          cbs.i[alpha_1 >= beta_1, F2.3:=(Ai/Ci)^(s) * .hyp.alpha.ge.beta(cbs=.SD, r=r, s=s, alpha_0=alpha_0)]
+          # cbs.i[alpha_1 >= beta_1, F2.3:=(Ai/Ci)^(s) * .hyp.alpha.ge.beta(cbs=.SD, r=r, s=s, alpha_0=alpha_0)]
+          cbs.i[alpha_1 >= beta_1, F2.3:=(Ai/Ci)^(s) * hyp_alpha_ge_beta_cpp(alpha_1=alpha_1, beta_1=beta_1,
+                                                                             alpha_2=alpha_2, beta_2=beta_2,
+                                                                             x=x, r=r, s=s)]
+
+
         }
         if(nrow(cbs.i[alpha_1 < beta_1]) > 0){
-          cbs.i[alpha_1 <  beta_1, F2.3:=(Ai/Ci)^(s) * .hyp.beta.g.alpha(cbs=.SD, r=r, s=s, alpha_0=alpha_0)]
+          # cbs.i[alpha_1 <  beta_1, F2.3:=(Ai/Ci)^(s) * .hyp.beta.g.alpha(cbs=.SD, r=r, s=s, alpha_0=alpha_0)]
+          cbs.i[alpha_1 <  beta_1, F2.3:=(Ai/Ci)^(s) * hyp_beta_g_alpha_cpp(alpha_1=alpha_1, beta_1=beta_1,
+                                                                            alpha_2=alpha_2, beta_2=beta_2,
+                                                                            x=x, r=r, s=s)]
         }
 
         #write results to separate vector because data.table (cbs.f2.num.g.1)
