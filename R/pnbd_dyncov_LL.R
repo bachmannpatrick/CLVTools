@@ -103,8 +103,20 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
 
   cbs[, dT:= data.work.trans[AuxTrans==T, d]]
 
-  cbs[, B1:=.pnbd_dyncov_LL_Bi(data.work.trans.aux = data.work.trans[AuxTrans==T], cbs.t.x = t.x, i = 1)]
-  cbs[, BT:=.pnbd_dyncov_LL_Bi(data.work.trans.aux = data.work.trans[AuxTrans==T], cbs.t.x = t.x, i = data.work.trans[, max(Num.Walk)])]
+
+  data.work.trans.aux <- data.work.trans[AuxTrans==T]
+  names.walk.cols <- grep(pattern = "adj.Walk", value=TRUE, fixed=TRUE, x=colnames(data.work.trans.aux))
+
+  # cbs[, B1:=.pnbd_dyncov_LL_Bi(data.work.trans.aux = data.work.trans[AuxTrans==T], cbs.t.x = t.x, i = 1)]
+  cbs[, B1:=pnbd_dyncov_LL_Bi_cpp(i=1,
+                                  t_x=t.x, d=data.work.trans.aux$d, delta=data.work.trans.aux$delta,
+                                  n_walks=data.work.trans.aux$Num.Walk, max_walks=data.work.trans.aux$adj.Max.Walk,
+                                  walks = as.matrix(data.work.trans.aux[, .SD, .SDcols=names.walk.cols]))]
+  # cbs[, BT:=.pnbd_dyncov_LL_Bi(data.work.trans.aux = data.work.trans[AuxTrans==T], cbs.t.x = t.x, i = data.work.trans[, max(Num.Walk)])]
+  cbs[, BT:=pnbd_dyncov_LL_Bi_cpp(i=data.work.trans[, max(Num.Walk)],
+                                  t_x=t.x, d=data.work.trans.aux$d, delta=data.work.trans.aux$delta,
+                                  n_walks=data.work.trans.aux$Num.Walk, max_walks=data.work.trans.aux$adj.Max.Walk,
+                                  walks = as.matrix(data.work.trans.aux[, .SD, .SDcols=names.walk.cols]))]
 
   cbs[, a1:= Bjsum + B1 + A1T * (t.x + dT - 1)]
 
@@ -208,7 +220,11 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
         # Transaction Process ------------------------------------------
         cbs.i[, Ai:= work.trans.i[, get(paste0("adj.Walk", i))]]
         cbs.i[is.na(Ai), Ai:=0]
-        cbs.i[, Bi:= .pnbd_dyncov_LL_Bi( data.work.trans.aux = work.trans.i, cbs.t.x = t.x, i = i)]
+        cbs.i[, Bi:=pnbd_dyncov_LL_Bi_cpp(i=i,
+                                        t_x=t.x, d=work.trans.i$d, delta=work.trans.i$delta,
+                                        n_walks=work.trans.i$Num.Walk, max_walks=work.trans.i$adj.Max.Walk,
+                                        walks = as.matrix(work.trans.i[, .SD, .SDcols=names.walk.cols]))]
+
         cbs.i[, ai:=Bjsum + Bi + Ai*(t.x + dT + (i-2))]
 
 

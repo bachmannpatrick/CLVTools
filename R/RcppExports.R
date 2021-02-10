@@ -466,6 +466,10 @@ pnbd_staticcov_PAlive <- function(r, alpha_0, s, beta_0, vX, vT_x, vT_cal, vCovP
     .Call(`_CLVTools_pnbd_staticcov_PAlive`, r, alpha_0, s, beta_0, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
 }
 
+pnbd_dyncov_LL_Bi_cpp <- function(i, t_x, d, delta, n_walks, max_walks, walks) {
+    .Call(`_CLVTools_pnbd_dyncov_LL_Bi_cpp`, i, t_x, d, delta, n_walks, max_walks, walks)
+}
+
 #' @name pnbd_expectation
 #' @title Pareto/NBD: Unconditional Expectation
 #'

@@ -658,6 +658,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// pnbd_dyncov_LL_Bi_cpp
+arma::vec pnbd_dyncov_LL_Bi_cpp(const int& i, const arma::vec& t_x, const arma::vec& d, const arma::vec& delta, const arma::ivec& n_walks, const arma::vec& max_walks, const arma::mat& walks);
+RcppExport SEXP _CLVTools_pnbd_dyncov_LL_Bi_cpp(SEXP iSEXP, SEXP t_xSEXP, SEXP dSEXP, SEXP deltaSEXP, SEXP n_walksSEXP, SEXP max_walksSEXP, SEXP walksSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const int& >::type i(iSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type t_x(t_xSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type d(dSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type delta(deltaSEXP);
+    Rcpp::traits::input_parameter< const arma::ivec& >::type n_walks(n_walksSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type max_walks(max_walksSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type walks(walksSEXP);
+    rcpp_result_gen = Rcpp::wrap(pnbd_dyncov_LL_Bi_cpp(i, t_x, d, delta, n_walks, max_walks, walks));
+    return rcpp_result_gen;
+END_RCPP
+}
 // pnbd_nocov_expectation
 arma::vec pnbd_nocov_expectation(const double r, const double s, const double alpha_0, const double beta_0, const arma::vec& vT_i);
 RcppExport SEXP _CLVTools_pnbd_nocov_expectation(SEXP rSEXP, SEXP sSEXP, SEXP alpha_0SEXP, SEXP beta_0SEXP, SEXP vT_iSEXP) {
@@ -730,6 +747,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CLVTools_pnbd_staticcov_beta_i", (DL_FUNC) &_CLVTools_pnbd_staticcov_beta_i, 3},
     {"_CLVTools_pnbd_nocov_PAlive", (DL_FUNC) &_CLVTools_pnbd_nocov_PAlive, 7},
     {"_CLVTools_pnbd_staticcov_PAlive", (DL_FUNC) &_CLVTools_pnbd_staticcov_PAlive, 11},
+    {"_CLVTools_pnbd_dyncov_LL_Bi_cpp", (DL_FUNC) &_CLVTools_pnbd_dyncov_LL_Bi_cpp, 7},
     {"_CLVTools_pnbd_nocov_expectation", (DL_FUNC) &_CLVTools_pnbd_nocov_expectation, 5},
     {"_CLVTools_pnbd_staticcov_expectation", (DL_FUNC) &_CLVTools_pnbd_staticcov_expectation, 5},
     {NULL, NULL, 0}
