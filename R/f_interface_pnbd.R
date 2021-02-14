@@ -18,10 +18,10 @@
 #' Model parameters for the Pareto/NBD model are \code{alpha, r, beta, and s}. \cr
 #' \code{s}: shape parameter of the Gamma distribution for the lifetime process.
 #' The smaller s, the stronger the heterogeneity of customer lifetimes. \cr
-#' \code{beta}: scale parameter for the Gamma distribution for the lifetime process. \cr
+#' \code{beta}: rate parameter for the Gamma distribution for the lifetime process. \cr
 #' \code{r}: shape parameter of the Gamma distribution of the purchase process.
 #' The smaller r, the stronger the heterogeneity of the purchase process.\cr
-#' \code{alpha}: scale parameter of the Gamma distribution of the purchase process.
+#' \code{alpha}: rate parameter of the Gamma distribution of the purchase process.
 #'
 #' Based on these parameters, the average purchase rate while customers are active
 #' is r/alpha and the average dropout rate is s/beta.
