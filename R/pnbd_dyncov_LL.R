@@ -256,14 +256,19 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
 
     F2.3.vecs <-
       # %dopar% also applies sequentially with a warning if no parallel backend registered
-      foreach(i = 2:max(cbs.f2.num.g.1$Num.Walk-1))%dopar%{
+      foreach(i = 2:max(cbs.f2.num.g.1$Num.Walk-1),
+              # Do not export any Rcpp functions (objects) to parallel processes because their
+              #   mempointers are not correct anymore there
+              .noexport = c("pnbd_dyncov_LL_Bi_cpp", "pnbd_dyncov_LL_Di_cpp",
+                            "hyp_alpha_ge_beta_cpp", "hyp_beta_g_alpha_cpp")
+              )%dopar%{
 
         work.trans.i <- data.work.trans[AuxTrans==T & ((Num.Walk-1) >= i)]
         work.life.i  <- data.work.life[AuxTrans==T & ((Num.Walk-1) >= i)]
         cbs.i        <- cbs.f2.num.g.1[Num.Walk-1 >= i]
 
         # Transaction Process ------------------------------------------
-        cbs.i[, Ai:= work.trans.i[, get(paste0("adj.Walk", i))]]
+        cbs.i[, Ai:= work.trans.i[[paste0("adj.Walk", i)]]]
         cbs.i[is.na(Ai), Ai:=0]
         cbs.i[, Bi:=pnbd_dyncov_LL_Bi_cpp(i=i,
                                         t_x=t.x, d=work.trans.i$d, delta=work.trans.i$delta,
@@ -275,7 +280,7 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
 
         # Lifetime Process ------------------------------------------
 
-        cbs.i[, Ci:=work.life.i[, get(paste0("adj.Walk", i))]]
+        cbs.i[, Ci:=work.life.i[[paste0("adj.Walk", i)]]]
         cbs.i[is.na(Ci), Ci:=0]
 
         # For Di: in the current implementation we also need to consider 0 to x.
@@ -284,6 +289,7 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
         walk.lifetime.all.ids.i <- work.life.i[, Id]
         tmp.data.life <- data.work.life[Id %in% walk.lifetime.all.ids.i]
         tmp.data.life <- data.work.life[walk.lifetime.all.ids.i]
+        # tmp.data.life <- data.work.life[walk.lifetime.all.ids.i]
         setkeyv(tmp.data.life, c("Id", "Date", "AuxTrans", "Num.Walk"))
 
         # cbs.i[, Di:=.pnbd_dyncov_LL_Di(data.work.life = tmp.data.life, i = i)]

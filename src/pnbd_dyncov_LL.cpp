@@ -1,3 +1,6 @@
+// The code in this file has been kindly donated by Elliot Shin Oblander
+// These functions serve as drop-in replacements for the previously existing R implementations
+
 #include "pnbd_dyncov_LL.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
