@@ -288,9 +288,8 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
         #  -> get all data (not only Num.Walk > i) for the IDs in work.life.i
         walk.lifetime.all.ids.i <- work.life.i[, Id]
         tmp.data.life <- data.work.life[Id %in% walk.lifetime.all.ids.i]
-        tmp.data.life <- data.work.life[walk.lifetime.all.ids.i]
         # tmp.data.life <- data.work.life[walk.lifetime.all.ids.i]
-        setkeyv(tmp.data.life, c("Id", "Date", "AuxTrans", "Num.Walk"))
+        # setkeyv(tmp.data.life, c("Id", "Date", "AuxTrans", "Num.Walk"))
 
         # cbs.i[, Di:=.pnbd_dyncov_LL_Di(data.work.life = tmp.data.life, i = i)]
         tmp.data.life.real <- tmp.data.life[AuxTrans == FALSE]
