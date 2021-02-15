@@ -1,5 +1,7 @@
 #ifndef CLV_VEC_HPP
 #define CLV_VEC_HPP
+
+#include <RcppArmadillo.h>
 #include <RcppGSL.h>
 #include <gsl/gsl_sf_hyperg.h>
 #include <gsl/gsl_errno.h>

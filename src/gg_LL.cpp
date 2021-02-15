@@ -1,4 +1,3 @@
-#include <RcppArmadillo.h>
 #include "gg_LL.h"
 
 // lbeta := lgamma(a) + lgamma(b) - lgamma(a+b)
