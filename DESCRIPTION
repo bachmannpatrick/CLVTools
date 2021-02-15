@@ -129,8 +129,6 @@ Collate:
     'pnbd_dyncov_CET.R'
     'pnbd_dyncov_DECT.R'
     'pnbd_dyncov_LL.R'
-    'pnbd_dyncov_LL_Bi.R'
-    'pnbd_dyncov_LL_Di.R'
     'pnbd_dyncov_createwalks.R'
     'pnbd_dyncov_expectation.R'
     'pnbd_dyncov_makewalks.R'
