@@ -2,7 +2,7 @@
 #define BGNBD_HPP
 
 #include <RcppArmadillo.h>
-#include <math.h>
+#include <cmath>
 #include "clv_vectorized.h"
 
 arma::vec bgnbd_PAlive(const double r,

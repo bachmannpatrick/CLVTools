@@ -173,7 +173,7 @@ arma::vec pnbd_DERT_ind(const double r,
   arma::vec vDERT = arma::exp(
     r * arma::log(vAlpha_i)
     + s * arma::log(vBeta_i)
-    + (s-1) * log(continuous_discount_factor)
+    + (s-1) * std::log(continuous_discount_factor)
     + arma::lgamma(r + vX + 1)
     + arma::log(vTerm)
     - std::lgamma(r)
@@ -432,9 +432,9 @@ arma::vec pnbd_LL_ind(const double r,
   // => log(L) = log(x) + max(log(y), log(z)) + log(exp(log(y)-max(log(y),log(z))) + exp(log(z)-max(log(y),log(z))))
   //    For t.x=Tcal: log(L)  = log(x) + log(y)
 
-  arma::vec vLog_x = r * log(vAlpha_i) + s * log(vBeta_i) - std::lgamma(r) + arma::lgamma(r + vX);
+  arma::vec vLog_x = r * arma::log(vAlpha_i) + s * arma::log(vBeta_i) - std::lgamma(r) + arma::lgamma(r + vX);
   arma::vec vLog_y = -(r + vX) % arma::log(vAlpha_i + vT_cal) - s * arma::log(vBeta_i + vT_cal);
-  arma::vec vLog_z = log(s) - arma::log(r + s + vX) + vLog_A0;
+  arma::vec vLog_z = std::log(s) - arma::log(r + s + vX) + vLog_A0;
 
   arma::vec vMaxLogYZ = arma::max(vLog_y, vLog_z);
 
@@ -455,10 +455,10 @@ arma::vec pnbd_nocov_LL_ind(const arma::vec& vLogparams,
                             const arma::vec& vT_x,
                             const arma::vec& vT_cal){
 
-  const double r       = exp(vLogparams(0));
-  const double alpha_0 = exp(vLogparams(1));
-  const double s       = exp(vLogparams(2));
-  const double beta_0  = exp(vLogparams(3));
+  const double r       = std::exp(vLogparams(0));
+  const double alpha_0 = std::exp(vLogparams(1));
+  const double s       = std::exp(vLogparams(2));
+  const double beta_0  = std::exp(vLogparams(3));
 
   const double n = vX.n_elem;
 
@@ -505,10 +505,10 @@ arma::vec pnbd_staticcov_LL_ind(const arma::vec& vParams,
   const arma::vec vLife_params      = vParams.subvec(4              , 4+no_cov_life                - 1);
   const arma::vec vTrans_params     = vParams.subvec(4 + no_cov_life, 4+no_cov_life + no_cov_trans - 1);
 
-  const double r        = exp(vModel_log_params(0));
-  const double alpha_0  = exp(vModel_log_params(1));
-  const double s        = exp(vModel_log_params(2));
-  const double beta_0   = exp(vModel_log_params(3));
+  const double r        = std::exp(vModel_log_params(0));
+  const double alpha_0  = std::exp(vModel_log_params(1));
+  const double s        = std::exp(vModel_log_params(2));
+  const double beta_0   = std::exp(vModel_log_params(3));
 
   // Build alpha and beta --------------------------------------------
   //    With static covariates: alpha and beta different per customer

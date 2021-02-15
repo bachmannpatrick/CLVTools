@@ -307,11 +307,11 @@ arma::vec ggomnbd_LL_ind(const double r,
                          const arma::vec& vT_x,
                          const arma::vec& vT_cal){
 
-  arma::vec vL1 = arma::lgamma(r + vX) - lgamma(r);
-  arma::vec vL2 = arma::lgamma(r + vX) - lgamma(r);
+  arma::vec vL1 = arma::lgamma(r + vX) - std::lgamma(r);
+  arma::vec vL2 = arma::lgamma(r + vX) - std::lgamma(r);
 
   vL1 += r * (arma::log(vAlpha_i) - arma::log(vAlpha_i + vT_cal)) + vX % (0.0-arma::log(vAlpha_i + vT_cal)) + s * (arma::log(vBeta_i)-arma::log(vBeta_i-1.0 + arma::exp(b*vT_cal))) ;
-  vL2 += std::log(b) + r *arma::log(vAlpha_i) + log(s) + s * arma::log(vBeta_i);
+  vL2 += std::log(b) + r *arma::log(vAlpha_i) + std::log(s) + s * arma::log(vBeta_i);
 
   const arma::vec vIntegrals = ggomnbd_integrate(r, b, s, vAlpha_i, vBeta_i,
                                                  vX,
@@ -327,7 +327,7 @@ arma::vec ggomnbd_LL_ind(const double r,
   //  max(a,b) + log(exp(a-max(a,b)) + exp(b-max(a,b)))
 
   const arma::vec vMaxPart = arma::max(vL1, vL2);
-  const arma::vec vLL = vMaxPart + arma::log(arma::exp(vL1 - vMaxPart) + exp(vL2 - vMaxPart));
+  const arma::vec vLL = vMaxPart + arma::log(arma::exp(vL1 - vMaxPart) + arma::exp(vL2 - vMaxPart));
 
   return(vLL);
 }
@@ -339,11 +339,11 @@ arma::vec ggomnbd_nocov_LL_ind(const arma::vec& vLogparams,
                                const arma::vec& vT_x,
                                const arma::vec& vT_cal){
 
-  const double r       = exp(vLogparams(0));
-  const double alpha_0 = exp(vLogparams(1));
-  const double b       = exp(vLogparams(2));
-  const double s       = exp(vLogparams(3));
-  const double beta_0  = exp(vLogparams(4));
+  const double r       = std::exp(vLogparams(0));
+  const double alpha_0 = std::exp(vLogparams(1));
+  const double b       = std::exp(vLogparams(2));
+  const double s       = std::exp(vLogparams(3));
+  const double beta_0  = std::exp(vLogparams(4));
 
   // n = number of elements / customers
   const double n = vX.n_elem;
@@ -393,11 +393,11 @@ arma::vec ggomnbd_staticcov_LL_ind(const arma::vec& vParams,
   //      Life + Trans cov    after model params
   //                          depends on num of cols in cov data
   // vParams have to be single vector because used by optimizer
-  const double r       = exp(vParams(0));
-  const double alpha_0 = exp(vParams(1));
-  const double b       = exp(vParams(2));
-  const double s       = exp(vParams(3));
-  const double beta_0  = exp(vParams(4));
+  const double r       = std::exp(vParams(0));
+  const double alpha_0 = std::exp(vParams(1));
+  const double b       = std::exp(vParams(2));
+  const double s       = std::exp(vParams(3));
+  const double beta_0  = std::exp(vParams(4));
 
   const int num_model_params = 5;
   const double num_cov_life  = mCov_life.n_cols;
@@ -501,8 +501,8 @@ arma::vec ggomnbd_PAlive(const double r,
 
   arma::vec vLL = ggomnbd_LL_ind(r, b ,s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal);
 
-  const arma::vec vP1 = arma::lgamma(r + vX) - lgamma(r);
-  const arma::vec vP2 = r * arma::log(vAlpha_i/(vAlpha_i + vT_cal)) + vX % arma::log(1/(vAlpha_i + vT_cal)) + s * arma::log(vBeta_i/(vBeta_i - 1 + exp(b * vT_cal)));
+  const arma::vec vP1 = arma::lgamma(r + vX) - std::lgamma(r);
+  const arma::vec vP2 = r * arma::log(vAlpha_i/(vAlpha_i + vT_cal)) + vX % arma::log(1/(vAlpha_i + vT_cal)) + s * arma::log(vBeta_i/(vBeta_i - 1 + arma::exp(b * vT_cal)));
   const arma::vec vP3 = vLL;
 
   return arma::exp(vP1 + vP2 - vP3);

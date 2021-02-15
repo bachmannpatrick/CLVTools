@@ -300,10 +300,10 @@ arma::vec bgnbd_nocov_LL_ind(const arma::vec& vLogparams,
                              const arma::vec& vT_x,
                              const arma::vec& vT_cal){
 
-  const double r         = exp(vLogparams(0));
-  const double alpha_0   = exp(vLogparams(1));
-  const double a_0       = exp(vLogparams(2));
-  const double b_0       = exp(vLogparams(3));
+  const double r         = std::exp(vLogparams(0));
+  const double alpha_0   = std::exp(vLogparams(1));
+  const double a_0       = std::exp(vLogparams(2));
+  const double b_0       = std::exp(vLogparams(3));
 
   const unsigned int n = vX.n_elem;
 
@@ -347,10 +347,10 @@ arma::vec bgnbd_staticcov_LL_ind(const arma::vec& vParams,
   const arma::vec vLife_params      = vParams.subvec(4              , 4+no_cov_life                - 1);
   const arma::vec vTrans_params     = vParams.subvec(4 + no_cov_life, 4+no_cov_life + no_cov_trans - 1);
 
-  const double r        = exp(vModel_log_params(0));
-  const double alpha_0  = exp(vModel_log_params(1));
-  const double a_0      = exp(vModel_log_params(2));
-  const double b_0      = exp(vModel_log_params(3));
+  const double r        = std::exp(vModel_log_params(0));
+  const double alpha_0  = std::exp(vModel_log_params(1));
+  const double a_0      = std::exp(vModel_log_params(2));
+  const double b_0      = std::exp(vModel_log_params(3));
 
 
   // Build alpha, a and b --------------------------------------------

@@ -2,7 +2,7 @@
 #define PNBD_HPP
 
 #include <RcppArmadillo.h>
-#include <math.h>
+#include <cmath>
 
 #include "clv_vectorized.h"
 

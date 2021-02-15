@@ -40,7 +40,7 @@ double gg_LL(const arma::vec& vLogparams,
   arma::uvec vNonZero = find((vX != 0.0) && (vM_x != 0.0));
 
   // arma::vec vLL(vX.n_elem);
-  arma::vec vLL = q * log(gamma)
+  arma::vec vLL = q * std::log(gamma)
     + ((p * vX(vNonZero) - 1) % arma::log(vM_x(vNonZero)))
     + ((p * vX(vNonZero)) % arma::log(vX(vNonZero)))
     - (p * vX(vNonZero) + q) % arma::log(gamma + vM_x(vNonZero) % vX(vNonZero))

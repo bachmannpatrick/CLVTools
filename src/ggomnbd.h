@@ -2,7 +2,8 @@
 #define GGOMNBD_HPP
 
 #include <RcppArmadillo.h>
-#include <math.h>
+#include <RcppGSL.h>
+#include <cmath>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_integration.h>
 
