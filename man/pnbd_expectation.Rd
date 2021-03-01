@@ -15,9 +15,9 @@ pnbd_staticcov_expectation(r, s, vAlpha_i, vBeta_i, vT_i)
 
 \item{s}{shape parameter of the Gamma distribution for the lifetime process. The smaller s, the stronger the heterogeneity of customer lifetimes}
 
-\item{alpha_0}{scale parameter of the Gamma distribution of the purchase process}
+\item{alpha_0}{rate parameter of the Gamma distribution of the purchase process}
 
-\item{beta_0}{scale parameter for the Gamma distribution for the lifetime process.}
+\item{beta_0}{rate parameter for the Gamma distribution for the lifetime process.}
 
 \item{vT_i}{Number of periods since the customer came alive}
 

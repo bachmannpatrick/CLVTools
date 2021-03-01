@@ -26,11 +26,11 @@ pnbd_staticcov_CET(
 \arguments{
 \item{r}{shape parameter of the Gamma distribution of the purchase process. The smaller r, the stronger the heterogeneity of the purchase process}
 
-\item{alpha_0}{scale parameter of the Gamma distribution of the purchase process}
+\item{alpha_0}{rate parameter of the Gamma distribution of the purchase process}
 
 \item{s}{shape parameter of the Gamma distribution for the lifetime process. The smaller s, the stronger the heterogeneity of customer lifetimes}
 
-\item{beta_0}{scale parameter for the Gamma distribution for the lifetime process.}
+\item{beta_0}{rate parameter for the Gamma distribution for the lifetime process.}
 
 \item{dPeriods}{number of periods to predict}
 

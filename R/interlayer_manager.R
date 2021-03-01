@@ -9,13 +9,16 @@
 #
 # LL.params needs to be the first argument as it will receive the parameters from the optimizer
 #' @importFrom utils modifyList
-interlayer_manager <- function(LL.params, LL.function.sum,
+interlayer_manager <- function(LL.params, LL.param.names.to.optimx, LL.function.sum,
                                use.interlayer.constr,
                                use.interlayer.reg, reg.lambda.trans, reg.lambda.life,
                                use.cor,
                                ...){
-
   all.other.args <- list(...)
+
+  # Parameter names are removed by some optimization methods
+  #   Add back because crucial for further interlayers
+  names(LL.params) <- LL.param.names.to.optimx
 
   # Put together the interlayers -----------------------------------------------
   #   Depends on the parameters given
