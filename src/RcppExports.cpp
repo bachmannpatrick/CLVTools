@@ -759,6 +759,39 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// F2_3_vecs_cpp
+arma::vec F2_3_vecs_cpp(const arma::ivec& n_walks_cbs, const arma::vec& dT_cbs, const arma::vec& Bjsum_cbs, const arma::vec& x_cbs, const arma::vec& t_x_cbs, const arma::ivec& n_walks_trans, const arma::mat& walks_trans, const arma::vec& d_trans, const arma::vec& delta_trans, const arma::vec& max_walks_trans, const arma::ivec& n_walks_life_real, const arma::vec& d_life_real, const arma::vec& max_walks_life_real, const arma::vec& adj_walk1_life_real, const arma::mat& walks_life_real, const arma::ivec& n_walks_life_aux, const arma::vec& d_life_aux, const arma::vec& max_walks_life_aux, const arma::mat& walks_life_aux, const double r, const double alpha, const double s, const double beta);
+RcppExport SEXP _CLVTools_F2_3_vecs_cpp(SEXP n_walks_cbsSEXP, SEXP dT_cbsSEXP, SEXP Bjsum_cbsSEXP, SEXP x_cbsSEXP, SEXP t_x_cbsSEXP, SEXP n_walks_transSEXP, SEXP walks_transSEXP, SEXP d_transSEXP, SEXP delta_transSEXP, SEXP max_walks_transSEXP, SEXP n_walks_life_realSEXP, SEXP d_life_realSEXP, SEXP max_walks_life_realSEXP, SEXP adj_walk1_life_realSEXP, SEXP walks_life_realSEXP, SEXP n_walks_life_auxSEXP, SEXP d_life_auxSEXP, SEXP max_walks_life_auxSEXP, SEXP walks_life_auxSEXP, SEXP rSEXP, SEXP alphaSEXP, SEXP sSEXP, SEXP betaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::ivec& >::type n_walks_cbs(n_walks_cbsSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type dT_cbs(dT_cbsSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type Bjsum_cbs(Bjsum_cbsSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type x_cbs(x_cbsSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type t_x_cbs(t_x_cbsSEXP);
+    Rcpp::traits::input_parameter< const arma::ivec& >::type n_walks_trans(n_walks_transSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type walks_trans(walks_transSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type d_trans(d_transSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type delta_trans(delta_transSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type max_walks_trans(max_walks_transSEXP);
+    Rcpp::traits::input_parameter< const arma::ivec& >::type n_walks_life_real(n_walks_life_realSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type d_life_real(d_life_realSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type max_walks_life_real(max_walks_life_realSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type adj_walk1_life_real(adj_walk1_life_realSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type walks_life_real(walks_life_realSEXP);
+    Rcpp::traits::input_parameter< const arma::ivec& >::type n_walks_life_aux(n_walks_life_auxSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type d_life_aux(d_life_auxSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type max_walks_life_aux(max_walks_life_auxSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type walks_life_aux(walks_life_auxSEXP);
+    Rcpp::traits::input_parameter< const double >::type r(rSEXP);
+    Rcpp::traits::input_parameter< const double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< const double >::type s(sSEXP);
+    Rcpp::traits::input_parameter< const double >::type beta(betaSEXP);
+    rcpp_result_gen = Rcpp::wrap(F2_3_vecs_cpp(n_walks_cbs, dT_cbs, Bjsum_cbs, x_cbs, t_x_cbs, n_walks_trans, walks_trans, d_trans, delta_trans, max_walks_trans, n_walks_life_real, d_life_real, max_walks_life_real, adj_walk1_life_real, walks_life_real, n_walks_life_aux, d_life_aux, max_walks_life_aux, walks_life_aux, r, alpha, s, beta));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_CLVTools_bgnbd_nocov_CET", (DL_FUNC) &_CLVTools_bgnbd_nocov_CET, 8},
@@ -807,6 +840,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CLVTools_pnbd_dyncov_LL_Di_cpp", (DL_FUNC) &_CLVTools_pnbd_dyncov_LL_Di_cpp, 10},
     {"_CLVTools_hyp_alpha_ge_beta_cpp", (DL_FUNC) &_CLVTools_hyp_alpha_ge_beta_cpp, 7},
     {"_CLVTools_hyp_beta_g_alpha_cpp", (DL_FUNC) &_CLVTools_hyp_beta_g_alpha_cpp, 7},
+    {"_CLVTools_F2_3_vecs_cpp", (DL_FUNC) &_CLVTools_F2_3_vecs_cpp, 23},
     {NULL, NULL, 0}
 };
 

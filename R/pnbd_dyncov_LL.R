@@ -254,95 +254,45 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
 
   if(nrow(cbs.f2.num.g.1) != 0){
 
-    F2.3.vecs <-
-      # %dopar% also applies sequentially with a warning if no parallel backend registered
-      foreach(i = 2:max(cbs.f2.num.g.1$Num.Walk-1),
-              # Do not export any Rcpp functions (objects) to parallel processes because their
-              #   mempointers are not correct anymore there
-              .noexport = c("pnbd_dyncov_LL_Bi_cpp", "pnbd_dyncov_LL_Di_cpp",
-                            "hyp_alpha_ge_beta_cpp", "hyp_beta_g_alpha_cpp")
-              )%dopar%{
+    work.trans.aux <- data.work.trans[AuxTrans==TRUE]
+    work.life.aux  <- data.work.life[AuxTrans==TRUE]
+    work.life.real  <- data.work.life[AuxTrans==FALSE]
 
-        work.trans.i <- data.work.trans[AuxTrans==T & ((Num.Walk-1) >= i)]
-        work.life.i  <- data.work.life[AuxTrans==T & ((Num.Walk-1) >= i)]
-        cbs.i        <- cbs.f2.num.g.1[Num.Walk-1 >= i]
+    F2.3.vec <- F2_3_vecs_cpp(# cbs
+                               n_walks_cbs = cbs.f2.num.g.1$Num.Walk,
+                               dT_cbs      = cbs.f2.num.g.1$dT,
+                               Bjsum_cbs   = cbs.f2.num.g.1$Bjsum,
+                               x_cbs       = cbs.f2.num.g.1$x,
+                               t_x_cbs     = cbs.f2.num.g.1$t.x,
 
-        # Transaction Process ------------------------------------------
-        cbs.i[, Ai:= work.trans.i[[paste0("adj.Walk", i)]]]
-        cbs.i[is.na(Ai), Ai:=0]
-        cbs.i[, Bi:=pnbd_dyncov_LL_Bi_cpp(i=i,
-                                        t_x=t.x, d=work.trans.i$d, delta=work.trans.i$delta,
-                                        n_walks=work.trans.i$Num.Walk, max_walks=work.trans.i$adj.Max.Walk,
-                                        walks = as.matrix(work.trans.i[, .SD, .SDcols=names.walk.cols.trans]))]
+                               # walks real
+                               n_walks_trans   = work.trans.aux$Num.Walk,
+                               d_trans         = work.trans.aux$d,
+                               delta_trans     = work.trans.aux$delta,
+                               max_walks_trans = work.trans.aux$adj.Max.Walk,
+                               walks_trans     = as.matrix(work.trans.aux[, .SD, .SDcols=names.walk.cols.trans]),
 
-        cbs.i[, ai:=Bjsum + Bi + Ai*(t.x + dT + (i-2))]
+                               # walks life real
+                               n_walks_life_real   = work.life.real$Num.Walk,
+                               d_life_real         = work.life.real$d,
+                               max_walks_life_real = work.life.real$Di.Max.Walk,
+                               adj_walk1_life_real = work.life.real$Di.adj.Walk1,
+                               walks_life_real     = as.matrix(work.life.real[, .SD, .SDcols=names.walk.cols.life]),
 
+                               # walks life aux
+                               n_walks_life_aux   = work.life.aux$Num.Walk,
+                               d_life_aux         = work.life.aux$d,
+                               max_walks_life_aux = work.life.aux$Di.Max.Walk,
+                               walks_life_aux     = as.matrix(work.life.aux[, .SD, .SDcols=names.walk.cols.life]),
 
-        # Lifetime Process ------------------------------------------
+                               # model params
+                               r=r, alpha=alpha_0,
+                               s=s, beta=beta_0)
 
-        cbs.i[, Ci:=work.life.i[[paste0("adj.Walk", i)]]]
-        cbs.i[is.na(Ci), Ci:=0]
+    cbs.f2.num.g.1$F2.3 <- F2.3.vec
 
-        # For Di: in the current implementation we also need to consider 0 to x.
-        # Problem; we need the first row for each customer as well (see above)
-        #  -> get all data (not only Num.Walk > i) for the IDs in work.life.i
-        walk.lifetime.all.ids.i <- work.life.i[, Id]
-        tmp.data.life <- data.work.life[Id %in% walk.lifetime.all.ids.i]
-        # tmp.data.life <- data.work.life[walk.lifetime.all.ids.i]
-        # setkeyv(tmp.data.life, c("Id", "Date", "AuxTrans", "Num.Walk"))
-
-        # cbs.i[, Di:=.pnbd_dyncov_LL_Di(data.work.life = tmp.data.life, i = i)]
-        tmp.data.life.real <- tmp.data.life[AuxTrans == FALSE]
-        tmp.data.life.aux <- tmp.data.life[AuxTrans == TRUE]
-        cbs.i[, Di:=pnbd_dyncov_LL_Di_cpp(i=i,
-                                          real_d=tmp.data.life.real$d,
-                                          real_n_walks=tmp.data.life.real$Num.Walk,
-                                          real_max_walks=tmp.data.life.real$Di.Max.Walk,
-                                          real_adj_walk1=tmp.data.life.real$adj.Walk1,
-                                          real_walks=as.matrix(tmp.data.life.real[, .SD, .SDcols=names.walk.cols.life]),
-                                          aux_d=tmp.data.life.aux$d,
-                                          aux_n_walks=tmp.data.life.aux$Num.Walk,
-                                          aux_max_walks=tmp.data.life.aux$Di.Max.Walk,
-                                          aux_walks=as.matrix(tmp.data.life.aux[, .SD, .SDcols=names.walk.cols.life]))]
-
-        cbs.i[, bi:=Di + Ci*(t.x + dT + (i-2))]
-
-        # Alpha & Beta ------------------------------------------------
-
-        cbs.i[, alpha_1:=ai + alpha_0]
-        cbs.i[, beta_1:=(bi + beta_0)*Ai/Ci]
-        cbs.i[, alpha_2:=ai + Ai + alpha_0]
-        cbs.i[, beta_2:=(bi + Ci +beta_0)*Ai/Ci]
-        if(nrow(cbs.i[alpha_1 >= beta_1]) > 0){
-          # cbs.i[alpha_1 >= beta_1, F2.3:=(Ai/Ci)^(s) * .hyp.alpha.ge.beta(cbs=.SD, r=r, s=s, alpha_0=alpha_0)]
-          cbs.i[alpha_1 >= beta_1, F2.3:=(Ai/Ci)^(s) * hyp_alpha_ge_beta_cpp(alpha_1=alpha_1, beta_1=beta_1,
-                                                                             alpha_2=alpha_2, beta_2=beta_2,
-                                                                             x=x, r=r, s=s)]
-
-
-        }
-        if(nrow(cbs.i[alpha_1 < beta_1]) > 0){
-          # cbs.i[alpha_1 <  beta_1, F2.3:=(Ai/Ci)^(s) * .hyp.beta.g.alpha(cbs=.SD, r=r, s=s, alpha_0=alpha_0)]
-          cbs.i[alpha_1 <  beta_1, F2.3:=(Ai/Ci)^(s) * hyp_beta_g_alpha_cpp(alpha_1=alpha_1, beta_1=beta_1,
-                                                                            alpha_2=alpha_2, beta_2=beta_2,
-                                                                            x=x, r=r, s=s)]
-        }
-
-        #write results to separate vector because data.table (cbs.f2.num.g.1)
-        # is manipulated by reference across threads! (ie shared memory) what may abort session
-
-        res <- rep_len(0, nrow(cbs.f2.num.g.1))
-        res[cbs.f2.num.g.1[, .I[Num.Walk-1 >= i]]] <- cbs.i$F2.3 #write at right position
-
-        return(res)
-
-      }#for
   }#if
 
-
-
-  # put together the results from the multiple cores again:
-  cbs.f2.num.g.1$F2.3 <- Reduce("+", F2.3.vecs)
 
   #Put F2 results together
   if(cbs[, any(Num.Walk == 1)])

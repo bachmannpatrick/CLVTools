@@ -63,4 +63,29 @@ arma::vec hyp_alpha_ge_beta_cpp(const arma::vec& alpha_1,
                                 const double s);
 
 
+arma::vec F2_3_vecs_cpp(const arma::ivec& n_walks_cbs,
+                        const arma::vec& dT_cbs,
+                        const arma::vec& Bjsum_cbs,
+                        const arma::vec& x_cbs,
+                        const arma::vec& t_x_cbs,
+                        const arma::ivec& n_walks_trans,
+                        const arma::mat& walks_trans,
+                        const arma::vec& d_trans,
+                        const arma::vec& delta_trans,
+                        const arma::vec& max_walks_trans,
+                        const arma::ivec& n_walks_life_real,
+                        const arma::vec& d_life_real,
+                        const arma::vec& max_walks_life_real,
+                        const arma::vec& adj_walk_life_real,
+                        const arma::mat& walks_life_real,
+                        const arma::ivec& n_walks_life_aux,
+                        const arma::vec& d_life_aux,
+                        const arma::vec& max_walks_life_aux,
+                        const arma::mat& walks_life_aux,
+                        const double r,
+                        const double alpha,
+                        const double s,
+                        const double beta);
+
+
 #endif

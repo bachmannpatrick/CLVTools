@@ -509,3 +509,7 @@ hyp_beta_g_alpha_cpp <- function(alpha_1, beta_1, alpha_2, beta_2, x, r, s) {
     .Call(`_CLVTools_hyp_beta_g_alpha_cpp`, alpha_1, beta_1, alpha_2, beta_2, x, r, s)
 }
 
+F2_3_vecs_cpp <- function(n_walks_cbs, dT_cbs, Bjsum_cbs, x_cbs, t_x_cbs, n_walks_trans, walks_trans, d_trans, delta_trans, max_walks_trans, n_walks_life_real, d_life_real, max_walks_life_real, adj_walk1_life_real, walks_life_real, n_walks_life_aux, d_life_aux, max_walks_life_aux, walks_life_aux, r, alpha, s, beta) {
+    .Call(`_CLVTools_F2_3_vecs_cpp`, n_walks_cbs, dT_cbs, Bjsum_cbs, x_cbs, t_x_cbs, n_walks_trans, walks_trans, d_trans, delta_trans, max_walks_trans, n_walks_life_real, d_life_real, max_walks_life_real, adj_walk1_life_real, walks_life_real, n_walks_life_aux, d_life_aux, max_walks_life_aux, walks_life_aux, r, alpha, s, beta)
+}
+

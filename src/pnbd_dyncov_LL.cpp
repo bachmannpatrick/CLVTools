@@ -300,3 +300,126 @@ arma::vec hyp_beta_g_alpha_cpp(const arma::vec& alpha_1,
 }
 
 
+
+
+
+
+// [[Rcpp::export]]
+arma::vec F2_3_vecs_cpp(const arma::ivec& n_walks_cbs,
+                        const arma::vec& dT_cbs,
+                        const arma::vec& Bjsum_cbs,
+                        const arma::vec& x_cbs,
+                        const arma::vec& t_x_cbs,
+                        const arma::ivec& n_walks_trans,
+                        const arma::mat& walks_trans,
+                        const arma::vec& d_trans,
+                        const arma::vec& delta_trans,
+                        const arma::vec& max_walks_trans,
+                        const arma::ivec& n_walks_life_real,
+                        const arma::vec& d_life_real,
+                        const arma::vec& max_walks_life_real,
+                        const arma::vec& adj_walk1_life_real,
+                        const arma::mat& walks_life_real,
+                        const arma::ivec& n_walks_life_aux,
+                        const arma::vec& d_life_aux,
+                        const arma::vec& max_walks_life_aux,
+                        const arma::mat& walks_life_aux,
+                        const double r,
+                        const double alpha,
+                        const double s,
+                        const double beta)
+{
+  //C++ translation of foreach/%dopar% loop over walks
+  //eventually should restructure so:
+  //outer loop is customers, inner loop is periods/Num.Walks
+  //will save a lot of memory by not making so many n-length temp objects
+
+  int imax = max(n_walks_cbs) - 1;
+  int n = n_walks_cbs.n_elem;
+  arma::vec res(n, arma::fill::zeros);
+
+  for(int i = 2; i <= imax; i++){
+    arma::uvec cbs_i_inds = arma::find(n_walks_cbs - 1 >= i);
+    arma::uvec trans_i_inds = arma::find(n_walks_trans - 1 >= i);
+    arma::uvec life_i_inds = arma::find(n_walks_life_aux - 1 >= i);
+
+    int n_trans = trans_i_inds.n_elem;
+    int n_life = life_i_inds.n_elem;
+
+    arma::vec Ai(n_trans, arma::fill::zeros);
+    for(int j = 0; j < n_trans; j++){
+      if(arma::is_finite(walks_trans(trans_i_inds(j), i - 1))){
+        Ai(j) = walks_trans(trans_i_inds(j), i - 1);
+      }
+    }
+
+    arma::vec Bi = pnbd_dyncov_LL_Bi_cpp(i,
+                                         t_x_cbs.rows(cbs_i_inds),
+                                         d_trans.rows(trans_i_inds),
+                                         delta_trans.rows(trans_i_inds),
+                                         n_walks_trans.rows(trans_i_inds),
+                                         max_walks_trans.rows(trans_i_inds),
+                                         walks_trans.rows(trans_i_inds));
+    arma::vec ai = Bjsum_cbs.rows(cbs_i_inds) + Bi +
+      Ai % (t_x_cbs.rows(cbs_i_inds) + dT_cbs.rows(cbs_i_inds) + i - 2);
+
+    arma::vec Ci(n_life, arma::fill::zeros);
+    for(int j = 0; j < n_life; j++){
+      if(arma::is_finite(walks_life_aux(life_i_inds(j),i - 1))){
+        Ci(j) = walks_life_aux(life_i_inds(j),i - 1);
+      }
+    }
+
+
+    arma::vec Di = pnbd_dyncov_LL_Di_cpp(i,
+                                         d_life_real.rows(life_i_inds),
+                                         d_life_aux.rows(life_i_inds),
+                                         n_walks_life_real.rows(life_i_inds),
+                                         n_walks_life_aux.rows(life_i_inds),
+                                         max_walks_life_real.rows(life_i_inds),
+                                         max_walks_life_aux.rows(life_i_inds),
+                                         adj_walk1_life_real.rows(life_i_inds),
+                                         walks_life_real.rows(life_i_inds),
+                                         walks_life_aux.rows(life_i_inds));
+
+    arma::vec bi = Di + Ci % (t_x_cbs.rows(cbs_i_inds) +
+      dT_cbs.rows(cbs_i_inds) + i - 2);
+
+    arma::vec alpha_1 = alpha + ai;
+    arma::vec beta_1 = (beta + bi) % Ai / Ci;
+    arma::vec alpha_2 = alpha + ai + Ai;
+    arma::vec beta_2 = (beta + bi + Ci) % Ai / Ci;
+
+    arma::uvec a_ge_b_inds = arma::find(alpha_1 >= beta_1);
+    arma::uvec b_g_a_inds = arma::find(beta_1 > alpha_1);
+
+    arma::vec F2_3(n_life);
+    arma::vec x_cbs_subset = x_cbs.rows(cbs_i_inds);
+
+    if(a_ge_b_inds.n_elem > 0){
+      F2_3.rows(a_ge_b_inds) = arma::pow(Ai.rows(a_ge_b_inds) / Ci.rows(a_ge_b_inds), s) %
+          hyp_alpha_ge_beta_cpp(alpha_1.rows(a_ge_b_inds),
+                                beta_1.rows(a_ge_b_inds),
+                                alpha_2.rows(a_ge_b_inds),
+                                beta_2.rows(a_ge_b_inds),
+                                x_cbs_subset.rows(a_ge_b_inds),
+                                r, s);
+    }
+
+    if(b_g_a_inds.n_elem > 0){
+      F2_3.rows(b_g_a_inds) = arma::pow(Ai.rows(b_g_a_inds) / Ci.rows(b_g_a_inds), s) %
+        hyp_beta_g_alpha_cpp(alpha_1.rows(b_g_a_inds),
+                             beta_1.rows(b_g_a_inds),
+                             alpha_2.rows(b_g_a_inds),
+                             beta_2.rows(b_g_a_inds),
+                             x_cbs_subset.rows(b_g_a_inds),
+                             r, s);
+    }
+
+    res.rows(cbs_i_inds) += F2_3;
+
+  }
+
+  return(res);
+
+}
