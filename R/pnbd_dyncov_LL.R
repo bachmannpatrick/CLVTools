@@ -10,7 +10,7 @@ pnbd_dyncov_LL_ind <- function(params, clv.fitted){
   return(cbsdata_ind[, LL])
 }
 
-#' @importFrom foreach foreach %dopar%
+
 pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=FALSE){
   # cran silence
   Num.Walk <- AuxTrans <- Di.Max.Walk <- adj.Max.Walk <- Di.adj.Walk1 <- adj.Walk1 <- A1T <- x <- A1sum <- AuxTrans <- transaction.cov.dyn <- Id <- Bjsum <- Bksum <- AkT <- NULL
@@ -103,8 +103,20 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
 
   cbs[, dT:= data.work.trans[AuxTrans==T, d]]
 
-  cbs[, B1:=.pnbd_dyncov_LL_Bi(data.work.trans.aux = data.work.trans[AuxTrans==T], cbs.t.x = t.x, i = 1)]
-  cbs[, BT:=.pnbd_dyncov_LL_Bi(data.work.trans.aux = data.work.trans[AuxTrans==T], cbs.t.x = t.x, i = data.work.trans[, max(Num.Walk)])]
+
+  names.walk.cols.trans <- grep(pattern = "adj.Walk", value=TRUE, fixed=TRUE, x=colnames(data.work.trans))
+  data.work.trans.aux <- data.work.trans[AuxTrans==T]
+
+  # cbs[, B1:=.pnbd_dyncov_LL_Bi(data.work.trans.aux = data.work.trans[AuxTrans==T], cbs.t.x = t.x, i = 1)]
+  cbs[, B1:=pnbd_dyncov_LL_Bi_cpp(i=1,
+                                  t_x=t.x, d=data.work.trans.aux$d, delta=data.work.trans.aux$delta,
+                                  n_walks=data.work.trans.aux$Num.Walk, max_walks=data.work.trans.aux$adj.Max.Walk,
+                                  walks = as.matrix(data.work.trans.aux[, .SD, .SDcols=names.walk.cols.trans]))]
+  # cbs[, BT:=.pnbd_dyncov_LL_Bi(data.work.trans.aux = data.work.trans[AuxTrans==T], cbs.t.x = t.x, i = data.work.trans[, max(Num.Walk)])]
+  cbs[, BT:=pnbd_dyncov_LL_Bi_cpp(i=data.work.trans[, max(Num.Walk)],
+                                  t_x=t.x, d=data.work.trans.aux$d, delta=data.work.trans.aux$delta,
+                                  n_walks=data.work.trans.aux$Num.Walk, max_walks=data.work.trans.aux$adj.Max.Walk,
+                                  walks = as.matrix(data.work.trans.aux[, .SD, .SDcols=names.walk.cols.trans]))]
 
   cbs[, a1:= Bjsum + B1 + A1T * (t.x + dT - 1)]
 
@@ -119,9 +131,34 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
   cbs[, C1T:= data.work.life[AuxTrans==T, adj.Walk1]]
 
   cbs[, CkT:= data.work.life[AuxTrans==T, adj.lifetime.cov.dyn]]
+  names.walk.cols.life <- grep(pattern = "adj.Walk", value=TRUE, fixed=TRUE, x=colnames(data.work.life))
+  data.work.life.real <- data.work.life[AuxTrans==FALSE]
+  data.work.life.aux  <- data.work.life[AuxTrans==TRUE]
 
-  cbs[, D1:= .pnbd_dyncov_LL_Di(data.work.life = data.work.life, i = 1)]
-  cbs[, DT:= .pnbd_dyncov_LL_Di(data.work.life = data.work.life, i = data.work.life[, max(Num.Walk)] ) ]
+  # cbs[, D1:= .pnbd_dyncov_LL_Di(data.work.life = data.work.life, i = 1)]
+  cbs[, D1:= pnbd_dyncov_LL_Di_cpp(i=1,
+                                   real_d=data.work.life.real$d,
+                                   real_n_walks=data.work.life.real$Num.Walk,
+                                   real_max_walks=data.work.life.real$Di.Max.Walk,
+                                   real_adj_walk1=data.work.life.real$adj.Walk1,
+                                   real_walks=as.matrix(data.work.life.real[, .SD, .SDcols=names.walk.cols.life]),
+                                   aux_d=data.work.life.aux$d,
+                                   aux_n_walks=data.work.life.aux$Num.Walk,
+                                   aux_max_walks=data.work.life.aux$Di.Max.Walk,
+                                   aux_walks=as.matrix(data.work.life.aux[, .SD, .SDcols=names.walk.cols.life]))]
+
+  # cbs[, DT:= .pnbd_dyncov_LL_Di(data.work.life = data.work.life, i = data.work.life[, max(Num.Walk)] ) ]
+  cbs[, DT:= pnbd_dyncov_LL_Di_cpp(i=data.work.life.real[, max(Num.Walk)],
+                                   real_d=data.work.life.real$d,
+                                   real_n_walks=data.work.life.real$Num.Walk,
+                                   real_max_walks=data.work.life.real$Di.Max.Walk,
+                                   real_adj_walk1=data.work.life.real$adj.Walk1,
+                                   real_walks=as.matrix(data.work.life.real[, .SD, .SDcols=names.walk.cols.life]),
+                                   aux_d=data.work.life.aux$d,
+                                   aux_n_walks=data.work.life.aux$Num.Walk,
+                                   aux_max_walks=data.work.life.aux$Di.Max.Walk,
+                                   aux_walks=as.matrix(data.work.life.aux[, .SD, .SDcols=names.walk.cols.life]))]
+
   cbs[, DkT:= CkT*T.cal + DT]
 
   cbs[, b1:=D1 + C1T*(t.x + dT - 1)]
@@ -150,10 +187,17 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
   cbs.f2.num.e.1[, alpha_2 :=a1T + alpha_0]
   cbs.f2.num.e.1[, beta_2  := (b1T  + beta_0)*A1T/C1T]
   if(nrow(cbs.f2.num.e.1[alpha_1 >= beta_1]) > 0){
-    cbs.f2.num.e.1[alpha_1 >= beta_1, F2.1:= (A1T/C1T)^s * .hyp.alpha.ge.beta(.SD, r=r, s=s, alpha_0=alpha_0)]
+    # cbs.f2.num.e.1[alpha_1 >= beta_1, F2.1:= (A1T/C1T)^s * .hyp.alpha.ge.beta(.SD, r=r, s=s, alpha_0=alpha_0)]
+    cbs.f2.num.e.1[alpha_1 >= beta_1, F2.1:= (A1T/C1T)^s * hyp_alpha_ge_beta_cpp(alpha_1=alpha_1, beta_1=beta_1,
+                                                                                 alpha_2=alpha_2, beta_2=beta_2,
+                                                                                 x=x,r=r, s=s)]
+
   }
   if(nrow(cbs.f2.num.e.1[alpha_1 < beta_1]) > 0){
-    cbs.f2.num.e.1[alpha_1 <  beta_1, F2.1:= (A1T/C1T)^s * .hyp.beta.g.alpha(.SD, r=r, s=s, alpha_0=alpha_0)]
+    # cbs.f2.num.e.1[alpha_1 <  beta_1, F2.1:= (A1T/C1T)^s * .hyp.beta.g.alpha(.SD, r=r, s=s, alpha_0=alpha_0)]
+    cbs.f2.num.e.1[alpha_1 <  beta_1, F2.1:= (A1T/C1T)^s * hyp_beta_g_alpha_cpp(alpha_1=alpha_1, beta_1=beta_1,
+                                                                                alpha_2=alpha_2, beta_2=beta_2,
+                                                                                x=x,r=r, s=s)]
   }
 
 
@@ -166,10 +210,17 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
   cbs.f2.num.g.1[, beta_2:=(b1 + C1T + beta_0)*A1T/C1T]
 
   if(nrow(cbs.f2.num.g.1[alpha_1 >= beta_1]) > 0){
-    cbs.f2.num.g.1[alpha_1 >= beta_1, F2.1:= (A1T/C1T)^s * .hyp.alpha.ge.beta(cbs =.SD, r=r, s=s, alpha_0=alpha_0)]
+    # cbs.f2.num.g.1[alpha_1 >= beta_1, F2.1:= (A1T/C1T)^s * .hyp.alpha.ge.beta(cbs =.SD, r=r, s=s, alpha_0=alpha_0)]
+    cbs.f2.num.g.1[alpha_1 >= beta_1, F2.1:= (A1T/C1T)^s * hyp_alpha_ge_beta_cpp(alpha_1=alpha_1, beta_1=beta_1,
+                                                                                 alpha_2=alpha_2, beta_2=beta_2,
+                                                                                 x=x,r=r, s=s)]
+
   }
   if(nrow(cbs.f2.num.g.1[alpha_1 < beta_1]) > 0){
-    cbs.f2.num.g.1[alpha_1 < beta_1,  F2.1:= (A1T/C1T)^s * .hyp.beta.g.alpha(cbs =.SD, r=r, s=s, alpha_0=alpha_0)]
+    # cbs.f2.num.g.1[alpha_1 < beta_1,  F2.1:= (A1T/C1T)^s * .hyp.beta.g.alpha(cbs =.SD, r=r, s=s, alpha_0=alpha_0)]
+    cbs.f2.num.g.1[alpha_1 < beta_1,  F2.1:= (A1T/C1T)^s * hyp_beta_g_alpha_cpp(alpha_1=alpha_1, beta_1=beta_1,
+                                                                                alpha_2=alpha_2, beta_2=beta_2,
+                                                                                x=x,r=r, s=s)]
   }
 
 
@@ -181,10 +232,16 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
   cbs.f2.num.g.1[, beta_2:=  (bT + beta_0)*AkT/CkT]
 
   if(nrow(cbs.f2.num.g.1[alpha_1 >= beta_1]) > 0){
-    cbs.f2.num.g.1[alpha_1 >= beta_1, F2.2:= (AkT/CkT)^s * .hyp.alpha.ge.beta(cbs =.SD, r=r, s=s, alpha_0=alpha_0)]
+    # cbs.f2.num.g.1[alpha_1 >= beta_1, F2.2:= (AkT/CkT)^s * .hyp.alpha.ge.beta(cbs =.SD, r=r, s=s, alpha_0=alpha_0)]
+    cbs.f2.num.g.1[alpha_1 >= beta_1, F2.2:= (AkT/CkT)^s * hyp_alpha_ge_beta_cpp(alpha_1=alpha_1, beta_1=beta_1,
+                                                                                 alpha_2=alpha_2, beta_2=beta_2,
+                                                                                 x=x,r=r, s=s)]
   }
   if(nrow(cbs.f2.num.g.1[alpha_1 < beta_1]) > 0){
-    cbs.f2.num.g.1[alpha_1 < beta_1,  F2.2:= (AkT/CkT)^s * .hyp.beta.g.alpha(cbs =.SD, r=r, s=s, alpha_0=alpha_0)]
+    # cbs.f2.num.g.1[alpha_1 < beta_1,  F2.2:= (AkT/CkT)^s * .hyp.beta.g.alpha(cbs =.SD, r=r, s=s, alpha_0=alpha_0)]
+    cbs.f2.num.g.1[alpha_1 < beta_1,  F2.2:= (AkT/CkT)^s * hyp_beta_g_alpha_cpp(alpha_1=alpha_1, beta_1=beta_1,
+                                                                                alpha_2=alpha_2, beta_2=beta_2,
+                                                                                x=x,r=r, s=s)]
   }
 
 
@@ -197,65 +254,45 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
 
   if(nrow(cbs.f2.num.g.1) != 0){
 
-    F2.3.vecs <-
-      # %dopar% also applies sequentially with a warning if no parallel backend registered
-      foreach(i = 2:max(cbs.f2.num.g.1$Num.Walk-1))%dopar%{
+    work.trans.aux <- data.work.trans[AuxTrans==TRUE]
+    work.life.aux  <- data.work.life[AuxTrans==TRUE]
+    work.life.real  <- data.work.life[AuxTrans==FALSE]
 
-        work.trans.i <- data.work.trans[AuxTrans==T & ((Num.Walk-1) >= i)]
-        work.life.i  <- data.work.life[AuxTrans==T & ((Num.Walk-1) >= i)]
-        cbs.i        <- cbs.f2.num.g.1[Num.Walk-1 >= i]
+    F2.3.vec <- F2_3_vecs_cpp(# cbs
+                               n_walks_cbs = cbs.f2.num.g.1$Num.Walk,
+                               dT_cbs      = cbs.f2.num.g.1$dT,
+                               Bjsum_cbs   = cbs.f2.num.g.1$Bjsum,
+                               x_cbs       = cbs.f2.num.g.1$x,
+                               t_x_cbs     = cbs.f2.num.g.1$t.x,
 
-        # Transaction Process ------------------------------------------
-        cbs.i[, Ai:= work.trans.i[, get(paste0("adj.Walk", i))]]
-        cbs.i[is.na(Ai), Ai:=0]
-        cbs.i[, Bi:= .pnbd_dyncov_LL_Bi( data.work.trans.aux = work.trans.i, cbs.t.x = t.x, i = i)]
-        cbs.i[, ai:=Bjsum + Bi + Ai*(t.x + dT + (i-2))]
+                               # walks real
+                               n_walks_trans   = work.trans.aux$Num.Walk,
+                               d_trans         = work.trans.aux$d,
+                               delta_trans     = work.trans.aux$delta,
+                               max_walks_trans = work.trans.aux$adj.Max.Walk,
+                               walks_trans     = as.matrix(work.trans.aux[, .SD, .SDcols=names.walk.cols.trans]),
 
+                               # walks life real
+                               n_walks_life_real   = work.life.real$Num.Walk,
+                               d_life_real         = work.life.real$d,
+                               max_walks_life_real = work.life.real$Di.Max.Walk,
+                               adj_walk1_life_real = work.life.real$Di.adj.Walk1,
+                               walks_life_real     = as.matrix(work.life.real[, .SD, .SDcols=names.walk.cols.life]),
 
-        # Lifetime Process ------------------------------------------
+                               # walks life aux
+                               n_walks_life_aux   = work.life.aux$Num.Walk,
+                               d_life_aux         = work.life.aux$d,
+                               max_walks_life_aux = work.life.aux$Di.Max.Walk,
+                               walks_life_aux     = as.matrix(work.life.aux[, .SD, .SDcols=names.walk.cols.life]),
 
-        cbs.i[, Ci:=work.life.i[, get(paste0("adj.Walk", i))]]
-        cbs.i[is.na(Ci), Ci:=0]
+                               # model params
+                               r=r, alpha=alpha_0,
+                               s=s, beta=beta_0)
 
-        # For Di: in the current implementation we also need to consider 0 to x.
-        # Problem; we need the first row for each customer as well (see above)
-        #  -> get all data (not only Num.Walk > i) for the IDs in work.life.i
-        walk.lifetime.all.ids.i <- work.life.i[, Id]
-        tmp.data.life <- data.work.life[Id %in% walk.lifetime.all.ids.i]
-        tmp.data.life <- data.work.life[walk.lifetime.all.ids.i]
-        setkeyv(data.work.life, c("Id", "Date", "AuxTrans", "Num.Walk"))
+    cbs.f2.num.g.1$F2.3 <- F2.3.vec
 
-        cbs.i[, Di:=.pnbd_dyncov_LL_Di(data.work.life = tmp.data.life, i = i)]
-        cbs.i[, bi:=Di + Ci*(t.x + dT + (i-2))]
-
-        # Alpha & Beta ------------------------------------------------
-
-        cbs.i[, alpha_1:=ai + alpha_0]
-        cbs.i[, beta_1:=(bi + beta_0)*Ai/Ci]
-        cbs.i[, alpha_2:=ai + Ai + alpha_0]
-        cbs.i[, beta_2:=(bi + Ci +beta_0)*Ai/Ci]
-        if(nrow(cbs.i[alpha_1 >= beta_1]) > 0){
-          cbs.i[alpha_1 >= beta_1, F2.3:=(Ai/Ci)^(s) * .hyp.alpha.ge.beta(cbs=.SD, r=r, s=s, alpha_0=alpha_0)]
-        }
-        if(nrow(cbs.i[alpha_1 < beta_1]) > 0){
-          cbs.i[alpha_1 <  beta_1, F2.3:=(Ai/Ci)^(s) * .hyp.beta.g.alpha(cbs=.SD, r=r, s=s, alpha_0=alpha_0)]
-        }
-
-        #write results to separate vector because data.table (cbs.f2.num.g.1)
-        # is manipulated by reference across threads! (ie shared memory) what may abort session
-
-        res <- rep_len(0, nrow(cbs.f2.num.g.1))
-        res[cbs.f2.num.g.1[, .I[Num.Walk-1 >= i]]] <- cbs.i$F2.3 #write at right position
-
-        return(res)
-
-      }#for
   }#if
 
-
-
-  # put together the results from the multiple cores again:
-  cbs.f2.num.g.1$F2.3 <- Reduce("+", F2.3.vecs)
 
   #Put F2 results together
   if(cbs[, any(Num.Walk == 1)])

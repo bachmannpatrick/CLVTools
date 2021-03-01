@@ -146,18 +146,6 @@ the paper by Bachmann, Meierer and Näf (2020).
 }
 }
 \note{
-Fitting the Pareto/NBD model with dynamic covariates is for the most part implemented using \code{data.table} and to a smaller part further
-parallelized with the \code{foreach} package. Registering a
-parallel backend with \code{\link[doFuture]{doFuture}} or \code{\link[doParallel]{doParallel}} before fitting the
-models allows to take advantage of this. If no parallel backend is set up, the \code{foreach} package gives a friendly reminder that
-it is executed sequentially. In case this is desired but no warning should be given, a parallel backend in sequential mode
-can be set up, for example package \code{doFuture} with \code{\link[future:plan]{plan("sequential")}}.
-
-The part executed with \code{foreach} also heavily relies on \code{data.table} which is natively parallelized already. When setting up
-the parallel backend, great care should be taken to reduce the overhead from this nested parallelism as otherwise it can \emph{increase} runtime.
-See \code{\link[data.table]{setDTthreads}}, \code{\link[data.table]{getDTthreads}},
-and \code{\link[future]{plan}} for information on how to do this.
-
 The Pareto/NBD model with dynamic covariates can currently not be fit with data that has a temporal resolution
 of less than one day (data that was built with time unit \code{hours}).
 }
@@ -240,13 +228,6 @@ clv.data.dyn.cov <-
                        names.cov.trans = c("Marketing", "Gender", "Channel"),
                        name.date = "Cov.Date")
 
-# Enable parallel execution of some parts of the dyncov LL
-library(doFuture)
-registerDoFuture()
-# avoid overhead from nested parallelism by setting up
-# appropriate to _your_ system
-setDTthreads(threads=8)
-plan("multisession", workers=2)
 
 # Fit PNBD with dynamic covariates
 pnbd(clv.data.dyn.cov)
@@ -281,6 +262,4 @@ to add static covariates to an existing clv data object.
 The generic functions \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:summary.clv.fitted]{summary}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
 
 \code{\link[CLVTools:SetDynamicCovariates]{SetDynamicCovariates}} to add dynamic covariates on which the \code{pnbd} model can be fit.
-
-\code{\link[data.table]{setDTthreads}}, \code{\link[data.table]{getDTthreads}},\code{\link[doParallel]{registerDoParallel}},\code{\link[doFuture]{registerDoFuture}} for setting up parallel execution.
 }

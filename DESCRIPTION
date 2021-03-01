@@ -33,7 +33,6 @@ Description:
     Further, we provide an implementation of the Gamma/Gamma model to model the spending process of individuals.
 Imports:
     data.table (>= 1.12.0),
-    foreach (>= 1.5.0),
     ggplot2 (>= 3.2.0),
     lubridate (>= 1.7.8), 
     Matrix (>= 1.2-17), 
@@ -43,8 +42,6 @@ Imports:
     utils
 Suggests:
     covr,
-    doFuture, 
-    doParallel,
     future,
     knitr,
     rmarkdown,
@@ -140,8 +137,6 @@ Collate:
     'pnbd_dyncov_CET.R'
     'pnbd_dyncov_DECT.R'
     'pnbd_dyncov_LL.R'
-    'pnbd_dyncov_LL_Bi.R'
-    'pnbd_dyncov_LL_Di.R'
     'pnbd_dyncov_createwalks.R'
     'pnbd_dyncov_expectation.R'
     'pnbd_dyncov_makewalks.R'
