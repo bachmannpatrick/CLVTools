@@ -284,7 +284,7 @@ est.pnbd.static <- pnbd(clv.static,
                          start.params.trans = c(Gender=0.6, Channel=0.4))
 ```
 
-Analogously, we can estimate the model containing time-varying covariates. We recommend to enable the built-in support for multithreading when estimating more complex models like this. See section [Multithreading](#multithreading).
+Analogously, we can estimate the model containing time-varying covariates.
 
 ```{r Dyn-cov-estimate, eval=FALSE}
 est.pnbd.dyn <- pnbd(clv.dyn, 
@@ -337,19 +337,6 @@ est.pnbd.constr <- pnbd(clv.static,
                          names.cov.constr=c("Gender"))
 summary(est.pnbd.constr)
 ```
-
-## Multithreading: Enable parallel processing for CLVTools {#multithreading}
-`CLVTools` supports parallel processing when estimating models containing time-varying covariates using the package `future` [@future] and the corresponding `foreach` [@foreach] parallel adapter `doFuture` [@doFuture]. To enable the distribution of the workload across all available cores, use execute the following commands before estimating the model (i.e. calling `pnbd()):
-
-```{r doFuture, eval=FALSE}
-  # disable multithreading for data.table (to avoid nested parallelism)
-  setDTthreads(1)
-
-  library("doFuture")
-  registerDoFuture()
-  plan("multisession")
-```
-To limit the number of parallel processes simultaneously executed, we can specify the number of workers `plan(multisession, workers = 2)`.
 
 # Customer Spending {#spending}
 Customer lifetime value (CLV) is composed of three components of every customer: the future level of transactions, expected attrition behaviour (i.e. probability of being alive) and the monetary value.

@@ -22,7 +22,6 @@ Description: Probabilistic latent customer attrition models (also known as "buy-
     <doi:10.1287/mnsc.1110.1461>. For reference to the Gamma/Gamma model, see Fader PS, Hardie BG, Lee K (2005) <doi:10.1509/jmkr.2005.42.4.415>.
 Imports:
     data.table (>= 1.12.0),
-    foreach (>= 1.5.0),
     ggplot2 (>= 3.2.0),
     lubridate (>= 1.7.8), 
     Matrix (>= 1.2-17), 
@@ -32,8 +31,6 @@ Imports:
     utils
 Suggests:
     covr,
-    doFuture, 
-    doParallel,
     future,
     knitr,
     rmarkdown,

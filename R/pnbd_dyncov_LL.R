@@ -10,7 +10,7 @@ pnbd_dyncov_LL_ind <- function(params, clv.fitted){
   return(cbsdata_ind[, LL])
 }
 
-#' @importFrom foreach foreach %dopar%
+
 pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=FALSE){
   # cran silence
   Num.Walk <- AuxTrans <- Di.Max.Walk <- adj.Max.Walk <- Di.adj.Walk1 <- adj.Walk1 <- A1T <- x <- A1sum <- AuxTrans <- transaction.cov.dyn <- Id <- Bjsum <- Bksum <- AkT <- NULL
