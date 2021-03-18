@@ -140,7 +140,7 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
                                    real_d=data.work.life.real$d,
                                    real_n_walks=data.work.life.real$Num.Walk,
                                    real_max_walks=data.work.life.real$Di.Max.Walk,
-                                   real_adj_walk1=data.work.life.real$adj.Walk1,
+                                   real_adj_walk1=data.work.life.real$Di.adj.Walk1,
                                    real_walks=as.matrix(data.work.life.real[, .SD, .SDcols=names.walk.cols.life]),
                                    aux_d=data.work.life.aux$d,
                                    aux_n_walks=data.work.life.aux$Num.Walk,
@@ -148,11 +148,11 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
                                    aux_walks=as.matrix(data.work.life.aux[, .SD, .SDcols=names.walk.cols.life]))]
 
   # cbs[, DT:= .pnbd_dyncov_LL_Di(data.work.life = data.work.life, i = data.work.life[, max(Num.Walk)] ) ]
-  cbs[, DT:= pnbd_dyncov_LL_Di_cpp(i=data.work.life.real[, max(Num.Walk)],
+  cbs[, DT:= pnbd_dyncov_LL_Di_cpp(i=data.work.life[, max(Num.Walk)],
                                    real_d=data.work.life.real$d,
                                    real_n_walks=data.work.life.real$Num.Walk,
                                    real_max_walks=data.work.life.real$Di.Max.Walk,
-                                   real_adj_walk1=data.work.life.real$adj.Walk1,
+                                   real_adj_walk1=data.work.life.real$Di.adj.Walk1,
                                    real_walks=as.matrix(data.work.life.real[, .SD, .SDcols=names.walk.cols.life]),
                                    aux_d=data.work.life.aux$d,
                                    aux_n_walks=data.work.life.aux$Num.Walk,
@@ -265,7 +265,7 @@ pnbd_dyncov_LL <- function(params, clv.fitted, return.all.intermediate.results=F
                                x_cbs       = cbs.f2.num.g.1$x,
                                t_x_cbs     = cbs.f2.num.g.1$t.x,
 
-                               # walks real
+                               # walks trans real
                                n_walks_trans   = work.trans.aux$Num.Walk,
                                d_trans         = work.trans.aux$d,
                                delta_trans     = work.trans.aux$delta,
