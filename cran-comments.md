@@ -1,14 +1,14 @@
 # Comment from the authors
-This is version 0.7 of the CLVTools package. We add general support for probabilistic models that predict mean spending per transaction and add the Gamma-Gamma model as a first. Two bugs were fixed in the log-likelihood function of the Pareto/NBD model and 1 bug when adding covariates to transaction data. Existing methods were refactored using Rcpp to decrease runtime.
-Further, documentation and walkthrough were improved in many places.
+This is version 0.8 of the CLVTools package. We drastically reduce runtime for the extended Pareto/NBD model by refactoring part of the log-likelihood in Rcpp. A bug was fixed which would not allow to use the optimization methods "nlm" and "nlminb" in optimx for our methods
+Further, documentation was improved.
 
 
 
 ## Test environments
 
 ## Testthat
-A total of 16'363 tests provide coverage of roughly 92 percent (covr) and ensure that all functionalities work correctly for all models in all settings
-* ubuntu 16.04, R 4.0.2 (on github-actions)
+A total of 16363 tests provide coverage of roughly 91.5 percent (covr) and ensure that all functionalities work correctly for all models in all settings
+* ubuntu 16.04, R 4.0.4 (on github-actions)
 * Winbuilder devel, release, and old-release
 * Windows Server 2008 R2 SP1, R-devel, 32/64 bit (rhub check_for_cran)
 * Debian Linux, R-devel, GCC  (rhub check_for_cran)

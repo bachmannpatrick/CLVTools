@@ -1,7 +1,7 @@
 Package: CLVTools
 Title: Tools for Customer Lifetime Value Estimation
 Version: 0.8.0
-Date: 2020-10-07
+Date: 2021-03-22
 Authors@R: c(
     person(given="Patrick", family="Bachmann",    email = "patrick.bachmann@business.uzh.ch", role = c("cre","aut")),
     person(given="Niels",   family="Kuebler",     email = "niels.kuebler@uzh.ch", role = "aut"),
@@ -14,7 +14,7 @@ Depends:
     R (>= 3.5.0),
     methods
 Description: 
-    This package implements state-of-the-art probabilistic modeling approaches to derive estimates of individual customer lifetime values (CLV).
+    A set of state-of-the-art probabilistic modeling approaches to derive estimates of individual customer lifetime values (CLV).
     Commonly, probabilistic approaches focus on modelling 3 processes, i.e. individuals' attrition, transaction, and spending process. 
     Latent customer attrition models, which are also known as "buy-'til-you-die models", model the attrition as well as the transaction process. 
     They are used to make inferences and predictions about transactional patterns of individual customers such as their future purchase behavior. 

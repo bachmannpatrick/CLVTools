@@ -1,3 +1,14 @@
+# CLVTools 0.8.0
+
+### NEW FEATURES
+* Partially refactor the LL of the extended Pareto/NBD in Rcpp with code kindly donated by Elliot Shin Oblander
+* Improved documentation 
+
+### BUG FIXES
+* Optimization methods nlm and nlminb can now be used. Thanks to Elliot Shin Oblander for reporting
+
+
+
 # CLVTools 0.7.0
 
 ### NEW FEATURES
