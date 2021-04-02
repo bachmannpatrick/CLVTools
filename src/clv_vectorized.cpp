@@ -1,5 +1,3 @@
-#include <RcppArmadillo.h>
-
 #include "clv_vectorized.h"
 
 
