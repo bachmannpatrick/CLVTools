@@ -45,6 +45,8 @@
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -66,9 +68,18 @@
 </script>
 
 
+<!-- dependencies from examples -->
+
+
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -82,7 +93,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0</span>
       </span>
     </div>
 
@@ -113,7 +124,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/bachmannpatrick/CLVTools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -239,14 +250,14 @@ covariate parameters, 0.1 is used.</p>
 values for DERT and CLV.</p>
 
 
-<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>The BG/NBD model</h3>
+<h3 class='hasAnchor' id='the-bg-nbd-model'><a class='anchor' href='#the-bg-nbd-model'></a>The BG/NBD model</h3>
 <p>The BG/NBD is an "easy" alternative to the Pareto/NBD model that is easier to implement. The BG/NBD model slight adapts
 the behavioral "story" associated with the Pareto/NBD model in order to simplify the implementation. The BG/NBD model uses a beta-geometric and
 exponential gamma mixture distributions to model customer behavior. The key difference to the Pareto/NBD model is that a customer can only
 churn right after a transaction. This simplifies computations significantly, however has the drawback that a customer cannot churn until he/she
 makes a transaction. The Pareto/NBD model assumes that a customer can churn at any time.</p>
 
-<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>BG/NBD model with static covariates</h3>
+<h3 class='hasAnchor' id='bg-nbd-model-with-static-covariates'><a class='anchor' href='#bg-nbd-model-with-static-covariates'></a>BG/NBD model with static covariates</h3>
 <p>The standard BG/NBD model captures heterogeneity was solely using Gamma distributions.
 However, often exogenous knowledge, such as for example customer demographics, is available.
 The supplementary knowledge may explain part of the heterogeneity among the customers and
@@ -376,11 +387,12 @@ to add static covariates to an existing clv data object.</p>
 #&gt; [1] FALSE
 #&gt; 
 #&gt; $ufn
-#&gt; function (LL.params, LL.function.sum, use.interlayer.constr, 
-#&gt;     use.interlayer.reg, reg.lambda.trans, reg.lambda.life, use.cor, 
-#&gt;     ...) 
+#&gt; function (LL.params, LL.param.names.to.optimx, LL.function.sum, 
+#&gt;     use.interlayer.constr, use.interlayer.reg, reg.lambda.trans, 
+#&gt;     reg.lambda.life, use.cor, ...) 
 #&gt; {
 #&gt;     all.other.args &lt;- list(...)
+#&gt;     names(LL.params) &lt;- LL.param.names.to.optimx
 #&gt;     interlayers.to.use &lt;- list(callLL = interlayer_callLL)
 #&gt;     if (use.cor == T &amp; !anyNA(use.cor)) 
 #&gt;         interlayers.to.use &lt;- c(correlation = interlayer_correlation, 
@@ -402,7 +414,7 @@ to add static covariates to an existing clv data object.</p>
 #&gt;         all.other.args)
 #&gt;     return(do.call(what = interlayer_callnextinterlayer, args = interlayer.call.args))
 #&gt; }
-#&gt; &lt;bytecode: 0x7ffd4731d698&gt;
+#&gt; &lt;bytecode: 0x7fb3a3faa4a8&gt;
 #&gt; &lt;environment: namespace:CLVTools&gt;
 #&gt; 
 #&gt; $have.bounds
@@ -615,7 +627,7 @@ to add static covariates to an existing clv data object.</p>
 #&gt; 
 #&gt; $xtimes
 #&gt; user.self 
-#&gt;     0.104 
+#&gt;     0.101 
 #&gt; 
 #&gt; Assemble the answers</div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='input'>
 <span class='co'># estimated coefs</span>
@@ -813,11 +825,11 @@ to add static covariates to an existing clv data object.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Patrick Bachmann, Jeffrey Naef, Patrik Schilter, Markus Meierer, Niels Kuebler.</p>
+  <p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, Elliot Oblander, Patrik Schilter.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -825,6 +837,8 @@ to add static covariates to an existing clv data object.</p>
 
   
 
+
+  
 
   </body>
 </html>

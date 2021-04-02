@@ -46,6 +46,8 @@ spending per transaction." />
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -67,9 +69,18 @@ spending per transaction." />
 </script>
 
 
+<!-- dependencies from examples -->
+
+
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -83,7 +94,7 @@ spending per transaction." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0</span>
       </span>
     </div>
 
@@ -114,7 +125,7 @@ spending per transaction." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/bachmannpatrick/CLVTools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -197,7 +208,7 @@ If no start parameters are given, 1.0 is used for all model parameters. All para
 to be &gt; 0.</p>
 <p>The Gamma-Gamma model cannot be estimated for data that contains negative prices.
 Customers with a mean spending of zero or a transaction count of zero are ignored during model fitting.</p>
-<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>The G/G model</h3>
+<h3 class='hasAnchor' id='the-g-g-model'><a class='anchor' href='#the-g-g-model'></a>The G/G model</h3>
 <p>The G/G model allows to predict a value for future customer transactions. Usually, the G/G model is used
 in combination with a probabilistic model predicting customer transaction such as the Pareto/NBD or the BG/NBD model.</p>
 
@@ -311,11 +322,12 @@ URL <a href='http://www.brucehardie.com/notes/025/gamma_gamma.pdf'>http://www.br
 #&gt; [1] FALSE
 #&gt; 
 #&gt; $ufn
-#&gt; function (LL.params, LL.function.sum, use.interlayer.constr, 
-#&gt;     use.interlayer.reg, reg.lambda.trans, reg.lambda.life, use.cor, 
-#&gt;     ...) 
+#&gt; function (LL.params, LL.param.names.to.optimx, LL.function.sum, 
+#&gt;     use.interlayer.constr, use.interlayer.reg, reg.lambda.trans, 
+#&gt;     reg.lambda.life, use.cor, ...) 
 #&gt; {
 #&gt;     all.other.args &lt;- list(...)
+#&gt;     names(LL.params) &lt;- LL.param.names.to.optimx
 #&gt;     interlayers.to.use &lt;- list(callLL = interlayer_callLL)
 #&gt;     if (use.cor == T &amp; !anyNA(use.cor)) 
 #&gt;         interlayers.to.use &lt;- c(correlation = interlayer_correlation, 
@@ -337,7 +349,7 @@ URL <a href='http://www.brucehardie.com/notes/025/gamma_gamma.pdf'>http://www.br
 #&gt;         all.other.args)
 #&gt;     return(do.call(what = interlayer_callnextinterlayer, args = interlayer.call.args))
 #&gt; }
-#&gt; &lt;bytecode: 0x7ffd4731d698&gt;
+#&gt; &lt;bytecode: 0x7fb3a3faa4a8&gt;
 #&gt; &lt;environment: namespace:CLVTools&gt;
 #&gt; 
 #&gt; $have.bounds
@@ -549,7 +561,7 @@ URL <a href='http://www.brucehardie.com/notes/025/gamma_gamma.pdf'>http://www.br
 #&gt; 
 #&gt; $xtimes
 #&gt; user.self 
-#&gt;     0.058 
+#&gt;     0.059 
 #&gt; 
 #&gt; Assemble the answers</div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='input'>
 <span class='co'># estimated coefs</span>
@@ -615,11 +627,11 @@ URL <a href='http://www.brucehardie.com/notes/025/gamma_gamma.pdf'>http://www.br
 
       <footer>
       <div class="copyright">
-  <p>Developed by Patrick Bachmann, Jeffrey Naef, Patrik Schilter, Markus Meierer, Niels Kuebler.</p>
+  <p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, Elliot Oblander, Patrik Schilter.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -627,6 +639,8 @@ URL <a href='http://www.brucehardie.com/notes/025/gamma_gamma.pdf'>http://www.br
 
   
 
+
+  
 
   </body>
 </html>

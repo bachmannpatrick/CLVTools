@@ -45,6 +45,8 @@
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -66,9 +68,18 @@
 </script>
 
 
+<!-- dependencies from examples -->
+
+
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -82,7 +93,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0</span>
       </span>
     </div>
 
@@ -113,7 +124,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/bachmannpatrick/CLVTools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -260,10 +271,10 @@ The generic accessor functions <code>coefficients</code>, <code><a href='vcov.cl
     <p>Model parameters for the Pareto/NBD model are <code>alpha, r, beta, and s</code>. <br />
 <code>s</code>: shape parameter of the Gamma distribution for the lifetime process.
 The smaller s, the stronger the heterogeneity of customer lifetimes. <br />
-<code>beta</code>: scale parameter for the Gamma distribution for the lifetime process. <br />
+<code>beta</code>: rate parameter for the Gamma distribution for the lifetime process. <br />
 <code>r</code>: shape parameter of the Gamma distribution of the purchase process.
 The smaller r, the stronger the heterogeneity of the purchase process.<br />
-<code>alpha</code>: scale parameter of the Gamma distribution of the purchase process.</p>
+<code>alpha</code>: rate parameter of the Gamma distribution of the purchase process.</p>
 <p>Based on these parameters, the average purchase rate while customers are active
 is r/alpha and the average dropout rate is s/beta.</p>
 <p>Ideally, the starting parameters for r and s represent your best guess
@@ -272,7 +283,7 @@ If covariates are included into the model additionally parameters for the
 covariates affecting the attrition and the purchase process are part of the model.</p>
 <p>If no start parameters are given, 1.0 is used for all model parameters and 0.1 for covariate parameters.
 The model start parameters are required to be &gt; 0.</p>
-<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>The Pareto/NBD model</h3>
+<h3 class='hasAnchor' id='the-pareto-nbd-model'><a class='anchor' href='#the-pareto-nbd-model'></a>The Pareto/NBD model</h3>
 <p>The Pareto/NBD is the first model addressing the issue of modeling customer purchases and
 attrition simultaneously for non-contractual settings. The model uses a Pareto distribution,
 a combination of an Exponential and a Gamma distribution, to explicitly model customers'
@@ -284,7 +295,7 @@ and "die". Customer attrition is unobserved. Inactive customers may not be react
 For technical details we refer to the original paper by Schmittlein, Morrison and Colombo
 (1987) and the detailed technical note of Fader and Hardie (2005).</p>
 
-<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Pareto/NBD model with static covariates</h3>
+<h3 class='hasAnchor' id='pareto-nbd-model-with-static-covariates'><a class='anchor' href='#pareto-nbd-model-with-static-covariates'></a>Pareto/NBD model with static covariates</h3>
 <p>The standard Pareto/NBD model captures heterogeneity was solely using Gamma distributions.
 However, often exogenous knowledge, such as for example customer demographics, is available.
 The supplementary knowledge may explain part of the heterogeneity among the customers and
@@ -293,7 +304,7 @@ parameter estimates for inference, i.e. identify and quantify effects of context
 on the two underlying purchase and attrition processes. For technical details we refer to
 the technical note by Fader and Hardie (2007).</p>
 
-<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Pareto/NBD model with dynamic covariates</h3>
+<h3 class='hasAnchor' id='pareto-nbd-model-with-dynamic-covariates'><a class='anchor' href='#pareto-nbd-model-with-dynamic-covariates'></a>Pareto/NBD model with dynamic covariates</h3>
 <p>In many real-world applications customer purchase and attrition behavior may be
 influenced by covariates that vary over time. In consequence, the timing of a purchase
 and the corresponding value of at covariate a that time becomes relevant. Time-varying
@@ -304,17 +315,7 @@ the paper by Bachmann, Meierer and Näf (2020).</p>
 
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>Fitting the Pareto/NBD model with dynamic covariates is for the most part implemented using <code>data.table</code> and to a smaller part further
-parallelized with the <code>foreach</code> package. Registering a
-parallel backend with <code><a href='https://rdrr.io/pkg/doFuture/man/doFuture.html'>doFuture</a></code> or <code><a href='https://rdrr.io/pkg/doParallel/man/doParallel-package.html'>doParallel</a></code> before fitting the
-models allows to take advantage of this. If no parallel backend is set up, the <code>foreach</code> package gives a friendly reminder that
-it is executed sequentially. In case this is desired but no warning should be given, a parallel backend in sequential mode
-can be set up, for example package <code>doFuture</code> with <code><a href='https://rdrr.io/pkg/future/man/plan.html'>plan("sequential")</a></code>.</p>
-<p>The part executed with <code>foreach</code> also heavily relies on <code>data.table</code> which is natively parallelized already. When setting up
-the parallel backend, great care should be taken to reduce the overhead from this nested parallelism as otherwise it can <em>increase</em> runtime.
-See <code><a href='https://Rdatatable.gitlab.io/data.table/reference/openmp-utils.html'>setDTthreads</a></code>, <code><a href='https://Rdatatable.gitlab.io/data.table/reference/openmp-utils.html'>getDTthreads</a></code>,
-and <code><a href='https://rdrr.io/pkg/future/man/plan.html'>plan</a></code> for information on how to do this.</p>
-<p>The Pareto/NBD model with dynamic covariates can currently not be fit with data that has a temporal resolution
+    <p>The Pareto/NBD model with dynamic covariates can currently not be fit with data that has a temporal resolution
 of less than one day (data that was built with time unit <code>hours</code>).</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
@@ -333,8 +334,7 @@ to add static covariates to an existing clv data object.</p>
 <p><code><a href='predict.clv.fitted.transactions.html'>predict</a></code> to predict expected transactions, probability of being alive, and customer lifetime value for every customer</p>
 <p><code><a href='plot.clv.fitted.transactions.html'>plot</a></code> to plot the unconditional expectation as predicted by the fitted model</p>
 <p>The generic functions <code><a href='vcov.clv.fitted.html'>vcov</a></code>, <code><a href='summary.clv.fitted.html'>summary</a></code>, <code><a href='fitted.clv.fitted.html'>fitted</a></code>.</p>
-<p><code><a href='SetDynamicCovariates.html'>SetDynamicCovariates</a></code> to add dynamic covariates on which the <code>pnbd</code> model can be fit.</p>
-<p><code><a href='https://Rdatatable.gitlab.io/data.table/reference/openmp-utils.html'>setDTthreads</a></code>, <code><a href='https://Rdatatable.gitlab.io/data.table/reference/openmp-utils.html'>getDTthreads</a></code>,<code><a href='https://rdrr.io/pkg/doParallel/man/registerDoParallel.html'>registerDoParallel</a></code>,<code><a href='https://rdrr.io/pkg/doFuture/man/registerDoFuture.html'>registerDoFuture</a></code> for setting up parallel execution.</p></div>
+<p><code><a href='SetDynamicCovariates.html'>SetDynamicCovariates</a></code> to add dynamic covariates on which the <code>pnbd</code> model can be fit.</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
@@ -438,11 +438,12 @@ to add static covariates to an existing clv data object.</p>
 #&gt; [1] FALSE
 #&gt; 
 #&gt; $ufn
-#&gt; function (LL.params, LL.function.sum, use.interlayer.constr, 
-#&gt;     use.interlayer.reg, reg.lambda.trans, reg.lambda.life, use.cor, 
-#&gt;     ...) 
+#&gt; function (LL.params, LL.param.names.to.optimx, LL.function.sum, 
+#&gt;     use.interlayer.constr, use.interlayer.reg, reg.lambda.trans, 
+#&gt;     reg.lambda.life, use.cor, ...) 
 #&gt; {
 #&gt;     all.other.args &lt;- list(...)
+#&gt;     names(LL.params) &lt;- LL.param.names.to.optimx
 #&gt;     interlayers.to.use &lt;- list(callLL = interlayer_callLL)
 #&gt;     if (use.cor == T &amp; !anyNA(use.cor)) 
 #&gt;         interlayers.to.use &lt;- c(correlation = interlayer_correlation, 
@@ -464,7 +465,7 @@ to add static covariates to an existing clv data object.</p>
 #&gt;         all.other.args)
 #&gt;     return(do.call(what = interlayer_callnextinterlayer, args = interlayer.call.args))
 #&gt; }
-#&gt; &lt;bytecode: 0x7ffd4731d698&gt;
+#&gt; &lt;bytecode: 0x7fb3a3faa4a8&gt;
 #&gt; &lt;environment: namespace:CLVTools&gt;
 #&gt; 
 #&gt; $have.bounds
@@ -660,7 +661,7 @@ to add static covariates to an existing clv data object.</p>
 #&gt; 
 #&gt; $xtimes
 #&gt; user.self 
-#&gt;     0.113 
+#&gt;      0.11 
 #&gt; 
 #&gt; Assemble the answers</div><div class='output co'>#&gt; <span class='message'>Estimation finished!</span></div><div class='input'>
 <span class='co'># estimated coefs</span>
@@ -895,13 +896,6 @@ to add static covariates to an existing clv data object.</p>
                        names.cov.trans <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Marketing"</span>, <span class='st'>"Gender"</span>, <span class='st'>"Channel"</span><span class='op'>)</span>,
                        name.date <span class='op'>=</span> <span class='st'>"Cov.Date"</span><span class='op'>)</span>
 
-<span class='co'># Enable parallel execution of some parts of the dyncov LL</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/HenrikBengtsson/doFuture'>doFuture</a></span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/pkg/doFuture/man/registerDoFuture.html'>registerDoFuture</a></span><span class='op'>(</span><span class='op'>)</span>
-<span class='co'># avoid overhead from nested parallelism by setting up</span>
-<span class='co'># appropriate to _your_ system</span>
-<span class='fu'>setDTthreads</span><span class='op'>(</span>threads<span class='op'>=</span><span class='fl'>8</span><span class='op'>)</span>
-<span class='fu'>plan</span><span class='op'>(</span><span class='st'>"multisession"</span>, workers<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>
 
 <span class='co'># Fit PNBD with dynamic covariates</span>
 <span class='fu'>pnbd</span><span class='op'>(</span><span class='va'>clv.data.dyn.cov</span><span class='op'>)</span>
@@ -924,11 +918,11 @@ to add static covariates to an existing clv data object.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Patrick Bachmann, Jeffrey Naef, Patrik Schilter, Markus Meierer, Niels Kuebler.</p>
+  <p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, Elliot Oblander, Patrik Schilter.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -936,6 +930,8 @@ to add static covariates to an existing clv data object.</p>
 
   
 
+
+  
 
   </body>
 </html>
