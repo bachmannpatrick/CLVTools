@@ -55,7 +55,7 @@ jobs:
 
             sudo apt-get install -y qpdf # qpdf needed on ubuntu
             sudo apt-get install texlive-xetex # for tinytex
-            sudo apt-get install pandoc-citeproc
+            sudo apt-get install pandoc # rmarkdown uses --citeproc flat depending on pandoc version
 
         - name: Install tinytex for linux and Mac
           if: runner.os != 'Windows'
@@ -64,13 +64,12 @@ jobs:
             tinytex::install_tinytex()
           shell: Rscript {0}
 
-        - name: Install gsl for mac
+        - name: Install gsl and pandoc for mac
           if: runner.os == 'macOS'
           run: |
             brew install gsl
             # pandoc to build vignette
-            brew install pandoc
-            # brew install pandoc-citeproc
+            brew install pandoc # rmarkdown uses --citeproc flat depending on pandoc version
 
         - name: Install package dependencies
           run: |
