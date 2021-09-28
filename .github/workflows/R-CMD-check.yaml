@@ -67,11 +67,12 @@ jobs:
           if: runner.os == 'macOS'
           run: |
             brew install gsl
+            # pandoc to build vignette
+            brew install pandoc
 
         - name: Install package dependencies
           run: |
             remotes::install_deps(dependencies = TRUE)
-            # remotes::install_cran(c("RcppGSL", "stringi"), repos = "https://cran.rstudio.com")
             remotes::install_cran("rcmdcheck", repos = "https://cran.rstudio.com")
             # remove because leads to NOTE. Does not exist on windows
             if(file.exists('depends.Rds')) {file.remove('depends.Rds')}
