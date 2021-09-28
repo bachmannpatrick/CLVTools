@@ -55,9 +55,10 @@ jobs:
 
             sudo apt-get install -y qpdf # qpdf needed on ubuntu
             sudo apt-get install texlive-xetex # for tinytex
+            sudo apt-get install pandoc-citeproc
 
-        - name: Install tinytex for linux (to build vignettes)
-          if: runner.os == 'Linux'
+        - name: Install tinytex for linux and Mac
+          if: runner.os != 'Windows'
           run: |
             install.packages('tinytex')
             tinytex::install_tinytex()
@@ -69,6 +70,7 @@ jobs:
             brew install gsl
             # pandoc to build vignette
             brew install pandoc
+            brew install pandoc-citeproc
 
         - name: Install package dependencies
           run: |
