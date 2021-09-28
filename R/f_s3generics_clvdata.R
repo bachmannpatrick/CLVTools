@@ -1,3 +1,42 @@
+#' @templateVar name_data_text Data Table
+#' @templateVar name_data_code data.table
+#' @templateVar name_res dt.trans
+#' @template template_clvdata_asdatax
+#' @template template_param_dots
+as.data.table.clv.data <- function(x,
+                                   Ids = NULL,
+                                   sample = c("both", "estimation", "holdout"),
+                                   ...){
+
+  check_err_msg(check_user_data_emptyellipsis(...))
+
+  dt.trans <- switch(match.arg(arg = tolower(sample),
+                               choices = c("both", "estimation", "holdout")),
+                     "both" = copy(x@data.transactions),
+                     "estimation" = clv.data.get.transactions.in.estimation.period(x),
+                     "holdout" = clv.data.get.transactions.in.holdout.period(x))
+
+  if(is.null(Ids)){
+    return(dt.trans)
+  }else{
+    # *** TODO: Should check whether Ids are really there?
+    return(dt.trans[Id %in% Ids])
+  }
+}
+
+#' @templateVar name_data_text Data Frame
+#' @templateVar name_data_code data.frame
+#' @templateVar name_res df.trans
+#' @template template_clvdata_asdatax
+#' @template template_param_dots
+as.data.frame.clv.data <- function(x,
+                                   Ids = NULL,
+                                   sample = c("both", "estimation", "holdout"),
+                                   ...){
+  return(as.data.frame(as.data.table.clv.data(x, Ids=Ids, sample=sample, ...=...)))
+}
+
+
 #' Number of observations
 #'
 #' The number of observations is defined as the number of unique customers in the transaction data.

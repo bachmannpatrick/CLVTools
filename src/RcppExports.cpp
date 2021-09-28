@@ -7,6 +7,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // bgnbd_nocov_CET
 arma::vec bgnbd_nocov_CET(const double r, const double alpha, const double a, const double b, const double dPeriods, const arma::vec& vX, const arma::vec& vT_x, const arma::vec& vT_cal);
 RcppExport SEXP _CLVTools_bgnbd_nocov_CET(SEXP rSEXP, SEXP alphaSEXP, SEXP aSEXP, SEXP bSEXP, SEXP dPeriodsSEXP, SEXP vXSEXP, SEXP vT_xSEXP, SEXP vT_calSEXP) {
