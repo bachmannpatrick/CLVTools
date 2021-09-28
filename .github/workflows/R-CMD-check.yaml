@@ -70,7 +70,7 @@ jobs:
             brew install gsl
             # pandoc to build vignette
             brew install pandoc
-            brew install pandoc-citeproc
+            # brew install pandoc-citeproc
 
         - name: Install package dependencies
           run: |
