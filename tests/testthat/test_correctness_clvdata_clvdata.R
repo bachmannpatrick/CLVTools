@@ -1,8 +1,6 @@
 data("cdnow")
 data("apparelTrans") # for years
 
-# context("Correctness - clvdata - clvdata")
-
 # estimation.split ---------------------------------------------------------------------
 context("Correctness - clvdata - estimation.split")
 
@@ -425,3 +423,74 @@ test_that("Zero repeaters are counted correctly", {
   # In estimation period
   fct.verify.zero.repeaters(date.estimation.split = lubridate::ymd("1997-09-17"))
 })
+
+
+# as.data.x ---------------------------------------------------------------------------------------------------------
+context("Correctness - clvdata - as.data.x")
+test_that("Correct data format is returned", {
+  skip_on_cran()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(data.cdnow=cdnow)
+
+  expect_false(is.data.table(as.data.frame(clv.cdnow)))
+  expect_true(is.data.frame(as.data.frame(clv.cdnow)))
+
+  expect_true(is.data.table(as.data.table(clv.cdnow)))
+  # expect_true(is.data.frame(as.data.table(clv.cdnow)))
+})
+
+
+test_that("Correct Ids are returned", {
+  skip_on_cran()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(data.cdnow=cdnow)
+  target.ids <- c("1", "2", "999")
+
+  expect_setequal(as.data.frame(clv.cdnow, Ids = target.ids)$Id, target.ids)
+  expect_setequal(as.data.table(clv.cdnow, Ids = target.ids)$Id, target.ids)
+
+  expect_warning(as.data.frame(clv.cdnow, Ids=c(target.ids, "abc")))
+  expect_warning(as.data.table(clv.cdnow, Ids=c(target.ids, "abc")))
+})
+
+test_that("Returns correct number of transactinons for given sample", {
+  skip_on_cran()
+
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(data.cdnow=cdnow)
+
+  fct.verify.correct.number.trans <- function(fct.as.data.x){
+    expect_true(nrow(fct.as.data.x(clv.cdnow)) == nrow(cdnow))
+    expect_true(nrow(fct.as.data.x(clv.cdnow)) == nrow(fct.as.data.x(clv.cdnow, sample="both")))
+
+    expect_true(nrow(fct.as.data.x(clv.cdnow, sample="estimation")) +
+                  nrow(fct.as.data.x(clv.cdnow, sample="holdout")) ==
+                  nrow(fct.as.data.x(clv.cdnow, sample="both")))
+  }
+
+  fct.verify.correct.number.trans(fct.as.data.x = as.data.frame)
+  fct.verify.correct.number.trans(fct.as.data.x = as.data.table)
+})
+
+test_that("Always returns a copy", {
+  skip_on_cran()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(data.cdnow=cdnow)
+  orig.address <- address(clv.cdnow@data.transactions)
+
+  # data.frame
+  expect_false(orig.address == address(as.data.frame(clv.cdnow, sample="both")))
+  expect_false(orig.address == address(as.data.frame(clv.cdnow, sample="estimation")))
+  expect_false(orig.address == address(as.data.frame(clv.cdnow, sample="holdout")))
+
+  expect_false(orig.address == address(as.data.frame(clv.cdnow, sample="both", Ids = "1")))
+  expect_false(orig.address == address(as.data.frame(clv.cdnow, sample="estimation", Ids = "1")))
+  expect_false(orig.address == address(as.data.frame(clv.cdnow, sample="holdout", Ids = "1")))
+
+  # data.table
+  expect_false(orig.address == address(as.data.table(clv.cdnow, sample="both")))
+  expect_false(orig.address == address(as.data.table(clv.cdnow, sample="estimation")))
+  expect_false(orig.address == address(as.data.table(clv.cdnow, sample="holdout")))
+
+  expect_false(orig.address == address(as.data.table(clv.cdnow, sample="both", Ids = "1")))
+  expect_false(orig.address == address(as.data.table(clv.cdnow, sample="estimation", Ids = "1")))
+  expect_false(orig.address == address(as.data.table(clv.cdnow, sample="holdout", Ids = "1")))
+})
+
+

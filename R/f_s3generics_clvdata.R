@@ -3,6 +3,7 @@
 #' @templateVar name_res dt.trans
 #' @template template_clvdata_asdatax
 #' @template template_param_dots
+#' @export
 as.data.table.clv.data <- function(x,
                                    Ids = NULL,
                                    sample = c("both", "estimation", "holdout"),
@@ -19,8 +20,13 @@ as.data.table.clv.data <- function(x,
   if(is.null(Ids)){
     return(dt.trans)
   }else{
-    # *** TODO: Should check whether Ids are really there?
-    return(dt.trans[Id %in% Ids])
+    dt.trans <- dt.trans[Id %in% Ids]
+
+    # ***TODO: Should stop whether all Ids are really there?
+    if(dt.trans[, uniqueN(Id)] != length(unique(Ids))){
+      warning("Not for all of the given Ids transaction data could be found")
+    }
+    return(dt.trans)
   }
 }
 
@@ -29,6 +35,7 @@ as.data.table.clv.data <- function(x,
 #' @templateVar name_res df.trans
 #' @template template_clvdata_asdatax
 #' @template template_param_dots
+#' @export
 as.data.frame.clv.data <- function(x,
                                    Ids = NULL,
                                    sample = c("both", "estimation", "holdout"),

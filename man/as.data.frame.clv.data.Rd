@@ -45,5 +45,4 @@ df.trans <- as.data.frame(clv.data.cdnow, Ids = c("1", "2", "999"))
 df.trans <- as.data.frame(clv.data.cdnow, Ids = c("1", "2", "999"),
                           sample="estimation")
 
-
 }

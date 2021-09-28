@@ -33,5 +33,3 @@
 #' <%=name_res%> <- as.<%=name_data_code%>(clv.data.cdnow, Ids = c("1", "2", "999"),
 #'                           sample="estimation")
 #'
-#'
-#' @export
