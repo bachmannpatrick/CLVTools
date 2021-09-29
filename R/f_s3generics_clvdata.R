@@ -183,3 +183,76 @@ setMethod(f = "show", signature = signature(object="clv.data"), definition = fun
   print(x=object)})
 
 
+
+#' Subsetting clv.data
+#'
+#' Returns a subset of the transaction data stored within the given \code{clv.data} object which meet conditions.
+#' The given expression are forwarded to the \code{data.table} of transactions.
+#' Possible rows to subset and select are \code{Id}, \code{Date}, and \code{Price} (if present).
+#'
+#' @param x \code{clv.data} to subset
+#' @param subset logical expression indicating rows to keep
+#' @param select expression indicating columns to keep
+#' @param ... further arguments passed to \code{data.table::subset}
+#'
+#' @return A copy of the \code{data.table} of transactions with columns \code{Id}, \code{Date}, and \code{Price} (if present).
+#'
+#' @seealso \code{data.table}'s \code{\link[data.table:subset]{subset}}
+#'
+#' @examples
+#' data(cdnow)
+#'
+#' clv.cdnow <- clvdata(cdnow,
+#'   date.format="ymd",
+#'   time.unit = "week",
+#'   estimation.split = "1997-09-30")
+#'
+#' # subset all transactions of customer "1"
+#' subset(clv.cdnow, Id=="1")
+#' subset(clv.cdnow, subset = Id=="1")
+#'
+#' # subset all transactions of customers "1", "2", and "999"
+#' subset(clv.cdnow, Id %in% c("1","2","999"))
+#'
+#' # subset all transactions on "1997-02-16"
+#' subset(clv.cdnow, Date == "1997-02-16")
+#'
+#' # subset all transactions between "1997-02-01" and "1997-02-16"
+#' subset(clv.cdnow, Date >= "1997-02-01" & Date <= "1997-02-16")
+#' # same using data.table's between
+#' subset(clv.cdnow, between(Date, "1997-02-01","1997-02-16"))
+#'
+#' # subset all transactions with a value between 50 and 100
+#' subset(clv.cdnow, Price >= 50 & Price <= 100)
+#' # same using data.table's between
+#' subset(clv.cdnow, between(Price, 50, 100))
+#'
+#' # only keep Id of transactions on "1997-02-16"
+#' subset(clv.cdnow, Date == "1997-02-16", "Id")
+#'
+#' @export
+subset.clv.data <- function(x,
+                            subset,
+                            select,
+                            # sample=c("both", "estimation", "holdout"),
+                            ...){
+  mf <- match.call(expand.dots = FALSE)
+  # only keep subset, select to call data.table
+
+  # replace object and function in call
+  mf[[1L]] <- quote(base::subset)
+  mf[["x"]] <- x@data.transactions
+  return(eval(mf, parent.frame()))
+
+  # NextMethod(object=x@data.transactions) # object has no S3 class attribute (vector)
+
+  # Does not work because subset and select are expressions
+  # dt.subset <- data.table:::subset.data.table(x=x@data.transactions, subset=subset, select=select, ...=...)
+  # return(dt.subset)
+  # if(isTRUE(all.equal(address(dt.subset),address(x@data.transactions))){
+  #   return(copy(dt.subset))
+  # }else{
+  #   return(dt.subset)
+  # }
+}
+
