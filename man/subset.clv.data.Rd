@@ -2,9 +2,10 @@
 % Please edit documentation in R/f_s3generics_clvdata.R
 \name{subset.clv.data}
 \alias{subset.clv.data}
+\alias{subset}
 \title{Subsetting clv.data}
 \usage{
-\method{subset}{clv.data}(x, subset, select, ...)
+\method{subset}{clv.data}(x, subset, select, sample = c("both", "estimation", "holdout"), ...)
 }
 \arguments{
 \item{x}{\code{clv.data} to subset}
@@ -13,10 +14,12 @@
 
 \item{select}{expression indicating columns to keep}
 
+\item{sample}{Name of sample for which transactions should be extracted,}
+
 \item{...}{further arguments passed to \code{data.table::subset}}
 }
 \value{
-A copy of the \code{data.table} of transactions with columns \code{Id}, \code{Date}, and \code{Price} (if present).
+A copy of the \code{data.table} of selected transactions. May contain columns \code{Id}, \code{Date}, and \code{Price}.
 }
 \description{
 Returns a subset of the transaction data stored within the given \code{clv.data} object which meet conditions.
@@ -31,22 +34,27 @@ clv.cdnow <- clvdata(cdnow,
   time.unit = "week",
   estimation.split = "1997-09-30")
 
-# subset all transactions of customer "1"
+# all transactions of customer "1"
 subset(clv.cdnow, Id=="1")
 subset(clv.cdnow, subset = Id=="1")
 
-# subset all transactions of customers "1", "2", and "999"
+# all transactions of customer "111" in the estimation period...
+subset(clv.cdnow, Id=="111", sample="estimation")
+# ... and in the holdout period
+subset(clv.cdnow, Id=="111", sample="holdout")
+
+# all transactions of customers "1", "2", and "999"
 subset(clv.cdnow, Id \%in\% c("1","2","999"))
 
-# subset all transactions on "1997-02-16"
+# all transactions on "1997-02-16"
 subset(clv.cdnow, Date == "1997-02-16")
 
-# subset all transactions between "1997-02-01" and "1997-02-16"
+# all transactions between "1997-02-01" and "1997-02-16"
 subset(clv.cdnow, Date >= "1997-02-01" & Date <= "1997-02-16")
 # same using data.table's between
 subset(clv.cdnow, between(Date, "1997-02-01","1997-02-16"))
 
-# subset all transactions with a value between 50 and 100
+# all transactions with a value between 50 and 100
 subset(clv.cdnow, Price >= 50 & Price <= 100)
 # same using data.table's between
 subset(clv.cdnow, between(Price, 50, 100))

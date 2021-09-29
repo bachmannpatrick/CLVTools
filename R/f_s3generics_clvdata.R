@@ -194,10 +194,13 @@ setMethod(f = "show", signature = signature(object="clv.data"), definition = fun
 #' @param subset logical expression indicating rows to keep
 #' @param select expression indicating columns to keep
 #' @param ... further arguments passed to \code{data.table::subset}
+#' @template template_param_sample
 #'
-#' @return A copy of the \code{data.table} of transactions with columns \code{Id}, \code{Date}, and \code{Price} (if present).
+#' @return A copy of the \code{data.table} of selected transactions. May contain columns \code{Id}, \code{Date}, and \code{Price}.
 #'
 #' @seealso \code{data.table}'s \code{\link[data.table:subset]{subset}}
+#'
+#' @aliases subset
 #'
 #' @examples
 #' data(cdnow)
@@ -207,22 +210,27 @@ setMethod(f = "show", signature = signature(object="clv.data"), definition = fun
 #'   time.unit = "week",
 #'   estimation.split = "1997-09-30")
 #'
-#' # subset all transactions of customer "1"
+#' # all transactions of customer "1"
 #' subset(clv.cdnow, Id=="1")
 #' subset(clv.cdnow, subset = Id=="1")
 #'
-#' # subset all transactions of customers "1", "2", and "999"
+#' # all transactions of customer "111" in the estimation period...
+#' subset(clv.cdnow, Id=="111", sample="estimation")
+#' # ... and in the holdout period
+#' subset(clv.cdnow, Id=="111", sample="holdout")
+#'
+#' # all transactions of customers "1", "2", and "999"
 #' subset(clv.cdnow, Id %in% c("1","2","999"))
 #'
-#' # subset all transactions on "1997-02-16"
+#' # all transactions on "1997-02-16"
 #' subset(clv.cdnow, Date == "1997-02-16")
 #'
-#' # subset all transactions between "1997-02-01" and "1997-02-16"
+#' # all transactions between "1997-02-01" and "1997-02-16"
 #' subset(clv.cdnow, Date >= "1997-02-01" & Date <= "1997-02-16")
 #' # same using data.table's between
 #' subset(clv.cdnow, between(Date, "1997-02-01","1997-02-16"))
 #'
-#' # subset all transactions with a value between 50 and 100
+#' # all transactions with a value between 50 and 100
 #' subset(clv.cdnow, Price >= 50 & Price <= 100)
 #' # same using data.table's between
 #' subset(clv.cdnow, between(Price, 50, 100))
@@ -234,14 +242,19 @@ setMethod(f = "show", signature = signature(object="clv.data"), definition = fun
 subset.clv.data <- function(x,
                             subset,
                             select,
-                            # sample=c("both", "estimation", "holdout"),
+                            sample=c("both", "estimation", "holdout"),
                             ...){
+
   mf <- match.call(expand.dots = FALSE)
-  # only keep subset, select to call data.table
 
   # replace object and function in call
   mf[[1L]] <- quote(base::subset)
-  mf[["x"]] <- x@data.transactions
+  mf[["x"]] <- switch(match.arg(sample, choices=c("both", "estimation", "holdout")),
+                      "both"       = x@data.transactions,
+                      "estimation" = clv.data.get.transactions.in.estimation.period(x),
+                      "holdout"    = clv.data.get.transactions.in.holdout.period(x))
+  # only keep subset, select to call data.table
+  mf <- mf[c(1L, match(c("x", "subset", "select", "..."), names(mf), 0L))]
   return(eval(mf, parent.frame()))
 
   # NextMethod(object=x@data.transactions) # object has no S3 class attribute (vector)
