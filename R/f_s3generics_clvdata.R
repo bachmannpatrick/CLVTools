@@ -10,9 +10,12 @@ as.data.table.clv.data <- function(x,
                                    ...){
 
   check_err_msg(check_user_data_emptyellipsis(...))
+  sample <- match.arg(arg = tolower(sample), choices = c("full", "estimation", "holdout"))
+  if(sample == "holdout" & !clv.data.has.holdout(x)){
+    check_err_msg("The given clv.data object has no holdout data!")
+  }
 
-  dt.trans <- switch(match.arg(arg = tolower(sample),
-                               choices = c("full", "estimation", "holdout")),
+  dt.trans <- switch(sample,
                      "full" = copy(x@data.transactions),
                      "estimation" = clv.data.get.transactions.in.estimation.period(x),
                      "holdout" = clv.data.get.transactions.in.holdout.period(x))
