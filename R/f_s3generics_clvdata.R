@@ -242,20 +242,20 @@ setMethod(f = "show", signature = signature(object="clv.data"), definition = fun
 subset.clv.data <- function(x,
                             subset,
                             select,
-                            sample=c("both", "estimation", "holdout"),
+                            sample=c("full", "estimation", "holdout"),
                             ...){
 
-  mf <- match.call(expand.dots = FALSE)
+  mc <- match.call(expand.dots = FALSE)
 
   # replace object and function in call
-  mf[[1L]] <- quote(base::subset)
-  mf[["x"]] <- switch(match.arg(sample, choices=c("both", "estimation", "holdout")),
-                      "both"       = x@data.transactions,
+  mc[[1L]] <- quote(base::subset)
+  mc[["x"]] <- switch(match.arg(sample, choices=c("full", "estimation", "holdout")),
+                      "full"       = x@data.transactions,
                       "estimation" = clv.data.get.transactions.in.estimation.period(x),
                       "holdout"    = clv.data.get.transactions.in.holdout.period(x))
   # only keep subset, select to call data.table
-  mf <- mf[c(1L, match(c("x", "subset", "select", "..."), names(mf), 0L))]
-  return(eval(mf, parent.frame()))
+  mc <- mc[c(1L, match(c("x", "subset", "select", "..."), names(mc), 0L))]
+  return(eval(mc, parent.frame()))
 
   # NextMethod(object=x@data.transactions) # object has no S3 class attribute (vector)
 
@@ -268,4 +268,15 @@ subset.clv.data <- function(x,
   #   return(dt.subset)
   # }
 }
+
+#' #'
+#' #' @export
+#' `[.clv.data` <- function(x, i, j, value){
+#'   mc <- match.call(expand.dots = FALSE)
+#'   print(names(mc))
+#'   mc[[1L]] <-  data.table:::`[.data.table` # base::`[`
+#'   mc[["x"]] <- x@data.transactions
+#'   print(names(mc))
+#'   return(eval(mc, parent.frame()))
+#' }
 

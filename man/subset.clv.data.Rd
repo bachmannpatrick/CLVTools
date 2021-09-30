@@ -5,7 +5,7 @@
 \alias{subset}
 \title{Subsetting clv.data}
 \usage{
-\method{subset}{clv.data}(x, subset, select, sample = c("both", "estimation", "holdout"), ...)
+\method{subset}{clv.data}(x, subset, select, sample = c("full", "estimation", "holdout"), ...)
 }
 \arguments{
 \item{x}{\code{clv.data} to subset}
