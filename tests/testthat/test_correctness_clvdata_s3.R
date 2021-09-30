@@ -1,12 +1,12 @@
 data("cdnow")
-data("apparelTrans")
 
 # subset ---------------------------------------------------------------------
 context("Correctness - clvdata - subset")
 
 test_that("Correct data selected", {
   skip_on_cran()
-  clv.cdnow <- fct.helper.create.clvdata.cdnow()
+  # with holdout
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
 
   # full
   # no arg same as full
@@ -45,11 +45,11 @@ test_that("Correct data selected", {
 
   # Date
   expect_true(isTRUE(all.equal(subset(clv.cdnow, between(Date, "1997-02-02", "1997-10-10"))[order(Id)],
-                               cdnow[Date>="1997-02-02" & Date <= "1997-10-10"][order(Id)])))
+                               cdnow[Date>="1997-02-02" & Date <= "1997-10-10", !"CDs"][order(Id)])))
 
   # Price
   expect_true(isTRUE(all.equal(subset(clv.cdnow, between(Price, 50, 100))[order(Id)],
-                               cdnow[Price >= 50 & Price <= 100][order(Id)])))
+                               cdnow[Price >= 50 & Price <= 100, !"CDs"][order(Id)])))
 
   # columns
   # full
@@ -65,20 +65,29 @@ test_that("Correct data selected", {
 
 })
 
+test_that("If no holdout, full and estimation are the same", {
+  skip_on_cran()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split=NULL)
+  expect_true(isTRUE(all.equal(subset(clv.cdnow, sample="full"),
+                               subset(clv.cdnow, sample="estimation"))))
+
+  # holdout fails
+  expect_error(subset(clv.cdnow, sample="holdout"), regexp = "no holdout data")
+})
+
+
 test_that("Same when argument positions are swapped", {
   skip_on_cran()
-  clv.cdnow <- fct.helper.create.clvdata.cdnow()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
 
   expect_true(isTRUE(all.equal(subset(clv.cdnow, Id=="111", c("Id", "Date")),
                                subset(clv.cdnow, select=c("Id", "Date"), Id=="111"))))
 })
 
 
-
-
 test_that("Always returns a copy of the data", {
   skip_on_cran()
-  clv.cdnow <- fct.helper.create.clvdata.cdnow()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
   orig.address <- address(clv.cdnow@data.transactions)
 
   # only both, holdout and estimation always return different object because different data
@@ -86,6 +95,7 @@ test_that("Always returns a copy of the data", {
   expect_false(address(subset(clv.cdnow, subset=Id=="1", sample="full")) == orig.address)
   expect_false(address(subset(clv.cdnow, select=Id=="1", sample="full")) == orig.address)
 })
+
 
 
 
