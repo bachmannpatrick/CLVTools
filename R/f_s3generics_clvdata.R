@@ -6,14 +6,14 @@
 #' @export
 as.data.table.clv.data <- function(x,
                                    Ids = NULL,
-                                   sample = c("both", "estimation", "holdout"),
+                                   sample = c("full", "estimation", "holdout"),
                                    ...){
 
   check_err_msg(check_user_data_emptyellipsis(...))
 
   dt.trans <- switch(match.arg(arg = tolower(sample),
-                               choices = c("both", "estimation", "holdout")),
-                     "both" = copy(x@data.transactions),
+                               choices = c("full", "estimation", "holdout")),
+                     "full" = copy(x@data.transactions),
                      "estimation" = clv.data.get.transactions.in.estimation.period(x),
                      "holdout" = clv.data.get.transactions.in.holdout.period(x))
 
@@ -38,7 +38,7 @@ as.data.table.clv.data <- function(x,
 #' @export
 as.data.frame.clv.data <- function(x,
                                    Ids = NULL,
-                                   sample = c("both", "estimation", "holdout"),
+                                   sample = c("full", "estimation", "holdout"),
                                    ...){
   return(as.data.frame(as.data.table.clv.data(x, Ids=Ids, sample=sample, ...=...)))
 }
