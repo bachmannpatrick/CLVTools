@@ -1,3 +1,4 @@
+#' @examples library(data.table)
 #' @templateVar name_data_text Data Table
 #' @templateVar name_data_code data.table
 #' @templateVar name_res dt.trans

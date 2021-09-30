@@ -12,7 +12,6 @@
 #' A \code{<%=name_data_code%>} with columns \code{Id}, \code{Date}, and \code{Price} (if present).
 #'
 #' @examples
-#'
 #' data("cdnow")
 #' clv.data.cdnow <- clvdata(data.transactions = cdnow,
 #'                           date.format="ymd",
