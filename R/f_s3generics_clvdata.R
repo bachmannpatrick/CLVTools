@@ -4,11 +4,14 @@
 #' @templateVar name_res dt.trans
 #' @template template_clvdata_asdatax
 #' @template template_param_dots
+#' @param keep.rownames Ignored
 #' @export
 as.data.table.clv.data <- function(x,
+                                   keep.rownames = FALSE,
                                    Ids = NULL,
                                    sample = c("full", "estimation", "holdout"),
                                    ...){
+  Id <- NULL
 
   check_err_msg(check_user_data_emptyellipsis(...))
   sample <- match.arg(arg = tolower(sample), choices = c("full", "estimation", "holdout"))
@@ -39,8 +42,12 @@ as.data.table.clv.data <- function(x,
 #' @templateVar name_res df.trans
 #' @template template_clvdata_asdatax
 #' @template template_param_dots
+#' @param row.names Ignored
+#' @param optional Ignored
 #' @export
 as.data.frame.clv.data <- function(x,
+                                   row.names = NULL,
+                                   optional = NULL,
                                    Ids = NULL,
                                    sample = c("full", "estimation", "holdout"),
                                    ...){

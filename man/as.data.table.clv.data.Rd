@@ -4,10 +4,18 @@
 \alias{as.data.table.clv.data}
 \title{Coerce to a Data Table}
 \usage{
-\method{as.data.table}{clv.data}(x, Ids = NULL, sample = c("full", "estimation", "holdout"), ...)
+\method{as.data.table}{clv.data}(
+  x,
+  keep.rownames = FALSE,
+  Ids = NULL,
+  sample = c("full", "estimation", "holdout"),
+  ...
+)
 }
 \arguments{
 \item{x}{An object of class \code{clv.data}.}
+
+\item{keep.rownames}{Ignored}
 
 \item{Ids}{Character vector of customer ids for which transactions should be extracted. \code{NULL} extracts all.}
 
