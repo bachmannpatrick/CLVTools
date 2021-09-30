@@ -10,9 +10,12 @@ as.data.table.clv.data <- function(x,
                                    ...){
 
   check_err_msg(check_user_data_emptyellipsis(...))
+  sample <- match.arg(arg = tolower(sample), choices = c("both", "estimation", "holdout"))
+  if(sample == "holdout" & !clv.data.has.holdout(x)){
+    check_err_msg("The given clv.data object has no holdout data!")
+  }
 
-  dt.trans <- switch(match.arg(arg = tolower(sample),
-                               choices = c("both", "estimation", "holdout")),
+  dt.trans <- switch(sample,
                      "both" = copy(x@data.transactions),
                      "estimation" = clv.data.get.transactions.in.estimation.period(x),
                      "holdout" = clv.data.get.transactions.in.holdout.period(x))
@@ -22,7 +25,7 @@ as.data.table.clv.data <- function(x,
   }else{
     dt.trans <- dt.trans[Id %in% Ids]
 
-    # ***TODO: Should stop whether all Ids are really there?
+    # ***TODO: Should stop instead of warn if not all Ids are there?
     if(dt.trans[, uniqueN(Id)] != length(unique(Ids))){
       warning("Not for all of the given Ids transaction data could be found")
     }
@@ -247,9 +250,14 @@ subset.clv.data <- function(x,
 
   mc <- match.call(expand.dots = FALSE)
 
+  sample <- match.arg(sample, choices=c("full", "estimation", "holdout"))
+  if(sample == "holdout" & !clv.data.has.holdout(x)){
+    check_err_msg("The given clv.data object has no holdout data!")
+  }
+
   # replace object and function in call
   mc[[1L]] <- quote(base::subset)
-  mc[["x"]] <- switch(match.arg(sample, choices=c("full", "estimation", "holdout")),
+  mc[["x"]] <- switch(sample,
                       "full"       = x@data.transactions,
                       "estimation" = clv.data.get.transactions.in.estimation.period(x),
                       "holdout"    = clv.data.get.transactions.in.holdout.period(x))
