@@ -55,6 +55,7 @@ fct.helper.test.runability.clv.data.plot <- function(clv.data){
 
 }
 
+
 fct.helper.test.runability.clv.data.others3 <- function(clv.data){
   test_that("nobs works", {
     expect_silent(nobs(clv.data))
@@ -67,6 +68,22 @@ fct.helper.test.runability.clv.data.others3 <- function(clv.data){
 
   test_that("show works", {
     expect_output(show(clv.data))
+  })
+
+  test_that("as.data.frame works", {
+    expect_true(is.data.frame(as.data.frame(clv.data)))
+    expect_true(is.data.frame(as.data.frame(clv.data, sample="estimation")))
+    if(clv.data.has.holdout(clv.data)){
+      expect_true(is.data.frame(as.data.frame(clv.data, sample="holdout")))
+      }
+  })
+
+  test_that("as.data.table works", {
+    expect_true(is.data.table(as.data.table(clv.data)))
+    expect_true(is.data.table(as.data.table(clv.data, sample="estimation")))
+    if(clv.data.has.holdout(clv.data)){
+      expect_true(is.data.table(as.data.table(clv.data, sample="holdout")))
+    }
   })
 }
 
