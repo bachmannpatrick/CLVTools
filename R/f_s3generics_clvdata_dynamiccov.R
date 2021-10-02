@@ -29,13 +29,17 @@ print.summary.clv.data.dynamic.covariates <- function(x, digits=max(3L, getOptio
   # print static cov part
   NextMethod()
 
-  # Print first and last day of cov data
-  .print.list(list("Cov Date first Life"  = clv.time.format.timepoint(clv.time=x$clv.time, timepoint=x$timepoint.first.cov.life),
-                   "Cov Date last  Life"  = clv.time.format.timepoint(clv.time=x$clv.time, timepoint=x$timepoint.last.cov.life),
-                   "Cov Date first Trans" = clv.time.format.timepoint(clv.time=x$clv.time, timepoint=x$timepoint.first.cov.trans),
-                   "Cov Date last  Trans" = clv.time.format.timepoint(clv.time=x$clv.time, timepoint=x$timepoint.last.cov.trans)))
+  # Do not print if interested in specific customers
+  if(is.null(x$selected.ids)){
 
-  cat("\n")
+    # Print first and last day of cov data
+    .print.list(list("Cov Date first Life"  = clv.time.format.timepoint(clv.time=x$clv.time, timepoint=x$timepoint.first.cov.life),
+                     "Cov Date last  Life"  = clv.time.format.timepoint(clv.time=x$clv.time, timepoint=x$timepoint.last.cov.life),
+                     "Cov Date first Trans" = clv.time.format.timepoint(clv.time=x$clv.time, timepoint=x$timepoint.first.cov.trans),
+                     "Cov Date last  Trans" = clv.time.format.timepoint(clv.time=x$clv.time, timepoint=x$timepoint.last.cov.trans)))
+
+    cat("\n")
+  }
 
   invisible(x)
 }

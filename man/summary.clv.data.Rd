@@ -10,7 +10,7 @@
 \alias{print.summary.clv.data.static.covariates}
 \title{Summarizing a CLV data object}
 \usage{
-\method{summary}{clv.data}(object, ...)
+\method{summary}{clv.data}(object, Id = NULL, ...)
 
 \method{print}{summary.clv.data}(x, digits = max(3L, getOption("digits") - 3L), ...)
 
@@ -25,7 +25,10 @@
 \arguments{
 \item{object}{A CLV data object containing transactional data and potentially also contextual factors.}
 
-\item{...}{Ignored.}
+\item{Id}{A character vector of customer ids for which the transaction data is summarized. Defaults to
+\code{NULL} for all customers.}
+
+\item{...}{Ignored}
 
 \item{x}{An object of class \code{"summary.clv.data"}, usually, a result of a call to \code{summary.clv.data}.}
 
@@ -39,6 +42,7 @@ class \code{summary.clv.data} and contains the elements:
 \item{summary.clv.tim}{Summary information about the stored \code{clv.time} object.}
 \item{descriptives.transactions}{A \code{data.table} with summary statistics of
 the transactions overall and in the estimation and holdout sample.}
+\item{selected.ids}{Ids for which the transaction data was summarized. \code{NULL} if for all.}
 
 For static covariates data, the list additionally is of class \code{summary.clv.data.static.covariates}
 and further contains the elements:
@@ -61,6 +65,12 @@ clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
 
 # summary of transaction data and split
 summary(clv.data.apparel)
+
+# transaction summary of customer "1219"
+summary(clv.data.apparel, Id="1219")
+
+# transaction summary of customers "1", "10", "100", and "1000"
+summary(clv.data.apparel, Id=c("1", "10", "100", "1000"))
 
 # add contextual factors
 data("apparelStaticCov")
