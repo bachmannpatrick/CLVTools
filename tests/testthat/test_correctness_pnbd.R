@@ -44,6 +44,20 @@ test_that("Can calculate numerically stable PAlive that produced NaNs in previou
 
 
 
+context("Correctness - PNBD nocov - DERT")
+
+test_that("Higher discount factor leads to smaller DERT", {
+  skip_on_cran()
+  expect_silent(p.cdnow <- pnbd(fct.helper.create.clvdata.cdnow(cdnow), verbose = FALSE))
+  expect_silent(dt.pred.1 <- predict(p.cdnow, continuous.discount.factor = 0.001,prediction.end = 6, verbose=FALSE))
+  expect_silent(dt.pred.2 <- predict(p.cdnow, continuous.discount.factor = 0.06, prediction.end = 6, verbose=FALSE))
+  expect_silent(dt.pred.3 <- predict(p.cdnow, continuous.discount.factor = 0.99, prediction.end = 6, verbose=FALSE))
+
+  expect_true(all(dt.pred.1$DERT > dt.pred.2$DERT))
+  expect_true(all(dt.pred.2$DERT > dt.pred.3$DERT))
+})
+
+
 # Dyncov ---------------------------------------------------------------------------------------
 fct.testthat.correctness.dyncov(data.apparelTrans=apparelTrans, data.apparelDynCov=apparelDynCov)
 
