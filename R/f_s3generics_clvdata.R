@@ -1,3 +1,60 @@
+#' @examples library(data.table)
+#' @templateVar name_data_text Data Table
+#' @templateVar name_data_code data.table
+#' @templateVar name_res dt.trans
+#' @template template_clvdata_asdatax
+#' @template template_param_dots
+#' @param keep.rownames Ignored
+#' @export
+as.data.table.clv.data <- function(x,
+                                   keep.rownames = FALSE,
+                                   Ids = NULL,
+                                   sample = c("full", "estimation", "holdout"),
+                                   ...){
+  Id <- NULL
+
+  check_err_msg(check_user_data_emptyellipsis(...))
+  sample <- match.arg(arg = tolower(sample), choices = c("full", "estimation", "holdout"))
+  if(sample == "holdout" & !clv.data.has.holdout(x)){
+    check_err_msg("The given clv.data object has no holdout data!")
+  }
+
+  dt.trans <- switch(sample,
+                     "full" = copy(x@data.transactions),
+                     "estimation" = clv.data.get.transactions.in.estimation.period(x),
+                     "holdout" = clv.data.get.transactions.in.holdout.period(x))
+
+  if(is.null(Ids)){
+    return(dt.trans)
+  }else{
+    dt.trans <- dt.trans[Id %in% Ids]
+
+    # ***TODO: Should stop instead of warn if not all Ids are there?
+    if(dt.trans[, uniqueN(Id)] != length(unique(Ids))){
+      warning("Not for all of the given Ids transaction data could be found")
+    }
+    return(dt.trans)
+  }
+}
+
+#' @templateVar name_data_text Data Frame
+#' @templateVar name_data_code data.frame
+#' @templateVar name_res df.trans
+#' @template template_clvdata_asdatax
+#' @template template_param_dots
+#' @param row.names Ignored
+#' @param optional Ignored
+#' @export
+as.data.frame.clv.data <- function(x,
+                                   row.names = NULL,
+                                   optional = NULL,
+                                   Ids = NULL,
+                                   sample = c("full", "estimation", "holdout"),
+                                   ...){
+  return(as.data.frame(as.data.table.clv.data(x, Ids=Ids, sample=sample, ...=...)))
+}
+
+
 #' Number of observations
 #'
 #' The number of observations is defined as the number of unique customers in the transaction data.
@@ -144,4 +201,108 @@ print.summary.clv.data <- function(x, digits=max(3L, getOption("digits")-3L), ..
 setMethod(f = "show", signature = signature(object="clv.data"), definition = function(object){
   print(x=object)})
 
+
+
+#' Subsetting clv.data
+#'
+#' Returns a subset of the transaction data stored within the given \code{clv.data} object which meet conditions.
+#' The given expression are forwarded to the \code{data.table} of transactions.
+#' Possible rows to subset and select are \code{Id}, \code{Date}, and \code{Price} (if present).
+#'
+#' @param x \code{clv.data} to subset
+#' @param subset logical expression indicating rows to keep
+#' @param select expression indicating columns to keep
+#' @param ... further arguments passed to \code{data.table::subset}
+#' @template template_param_sample
+#'
+#' @return A copy of the \code{data.table} of selected transactions. May contain columns \code{Id}, \code{Date}, and \code{Price}.
+#'
+#' @seealso \code{data.table}'s \code{\link[data.table:subset]{subset}}
+#'
+#' @aliases subset
+#'
+#' @examples
+#'
+#' library(data.table) # for between()
+#' data(cdnow)
+#'
+#' clv.cdnow <- clvdata(cdnow,
+#'   date.format="ymd",
+#'   time.unit = "week",
+#'   estimation.split = "1997-09-30")
+#'
+#' # all transactions of customer "1"
+#' subset(clv.cdnow, Id=="1")
+#' subset(clv.cdnow, subset = Id=="1")
+#'
+#' # all transactions of customer "111" in the estimation period...
+#' subset(clv.cdnow, Id=="111", sample="estimation")
+#' # ... and in the holdout period
+#' subset(clv.cdnow, Id=="111", sample="holdout")
+#'
+#' # all transactions of customers "1", "2", and "999"
+#' subset(clv.cdnow, Id %in% c("1","2","999"))
+#'
+#' # all transactions on "1997-02-16"
+#' subset(clv.cdnow, Date == "1997-02-16")
+#'
+#' # all transactions between "1997-02-01" and "1997-02-16"
+#' subset(clv.cdnow, Date >= "1997-02-01" & Date <= "1997-02-16")
+#' # same using data.table's between
+#' subset(clv.cdnow, between(Date, "1997-02-01","1997-02-16"))
+#'
+#' # all transactions with a value between 50 and 100
+#' subset(clv.cdnow, Price >= 50 & Price <= 100)
+#' # same using data.table's between
+#' subset(clv.cdnow, between(Price, 50, 100))
+#'
+#' # only keep Id of transactions on "1997-02-16"
+#' subset(clv.cdnow, Date == "1997-02-16", "Id")
+#'
+#' @export
+subset.clv.data <- function(x,
+                            subset,
+                            select,
+                            sample=c("full", "estimation", "holdout"),
+                            ...){
+
+  mc <- match.call(expand.dots = FALSE)
+
+  sample <- match.arg(sample, choices=c("full", "estimation", "holdout"))
+  if(sample == "holdout" & !clv.data.has.holdout(x)){
+    check_err_msg("The given clv.data object has no holdout data!")
+  }
+
+  # replace object and function in call
+  mc[[1L]] <- quote(base::subset)
+  mc[["x"]] <- switch(sample,
+                      "full"       = x@data.transactions,
+                      "estimation" = clv.data.get.transactions.in.estimation.period(x),
+                      "holdout"    = clv.data.get.transactions.in.holdout.period(x))
+  # only keep subset, select to call data.table
+  mc <- mc[c(1L, match(c("x", "subset", "select", "..."), names(mc), 0L))]
+  return(eval(mc, parent.frame()))
+
+  # NextMethod(object=x@data.transactions) # object has no S3 class attribute (vector)
+
+  # Does not work because subset and select are expressions
+  # dt.subset <- data.table:::subset.data.table(x=x@data.transactions, subset=subset, select=select, ...=...)
+  # return(dt.subset)
+  # if(isTRUE(all.equal(address(dt.subset),address(x@data.transactions))){
+  #   return(copy(dt.subset))
+  # }else{
+  #   return(dt.subset)
+  # }
+}
+
+#' #'
+#' #' @export
+#' `[.clv.data` <- function(x, i, j, value){
+#'   mc <- match.call(expand.dots = FALSE)
+#'   print(names(mc))
+#'   mc[[1L]] <-  data.table:::`[.data.table` # base::`[`
+#'   mc[["x"]] <- x@data.transactions
+#'   print(names(mc))
+#'   return(eval(mc, parent.frame()))
+#' }
 

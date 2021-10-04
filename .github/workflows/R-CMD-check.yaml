@@ -68,7 +68,7 @@ jobs:
         - name: Install gsl and pandoc for mac
           if: runner.os == 'macOS'
           run: |
-            brew install gsl
+            brew install gsl openssl
             # pandoc to build vignette
             brew install pandoc # rmarkdown uses --citeproc flat depending on pandoc version
 

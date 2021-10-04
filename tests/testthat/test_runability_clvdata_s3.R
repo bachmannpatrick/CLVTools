@@ -55,6 +55,7 @@ fct.helper.test.runability.clv.data.plot <- function(clv.data){
 
 }
 
+
 fct.helper.test.runability.clv.data.others3 <- function(clv.data){
   test_that("nobs works", {
     expect_silent(nobs(clv.data))
@@ -80,6 +81,33 @@ fct.helper.test.runability.clv.data.others3 <- function(clv.data){
     expect_silent(summary(clv.data, Id=ids))
     expect_silent(summary(clv.data, Id=ids, sample="estimation"))
   })
+
+  test_that("as.data.frame works", {
+    expect_true(is.data.frame(as.data.frame(clv.data)))
+    expect_true(is.data.frame(as.data.frame(clv.data, sample="estimation")))
+    if(clv.data.has.holdout(clv.data)){
+      expect_true(is.data.frame(as.data.frame(clv.data, sample="holdout")))
+      }
+  })
+
+  test_that("as.data.table works", {
+    expect_true(is.data.table(as.data.table(clv.data)))
+    expect_true(is.data.table(as.data.table(clv.data, sample="estimation")))
+    if(clv.data.has.holdout(clv.data)){
+      expect_true(is.data.table(as.data.table(clv.data, sample="holdout")))
+    }
+  })
+
+  test_that("subset works", {
+    expect_true(is.data.table(subset(clv.data, sample="estimation")))
+    expect_true(is.data.table(subset(clv.data, sample="full")))
+    # random Date, returns empty if not found
+    expect_true(is.data.table(subset(clv.data, Date>="1900-01-01", sample="estimation")))
+    if(clv.data.has.holdout(clv.data)){
+      expect_true(is.data.table(subset(clv.data, Date>="1900-01-01", sample="holdout")))
+    }
+  })
+
 }
 
 # This all falls under the context of runability for the fitted models
