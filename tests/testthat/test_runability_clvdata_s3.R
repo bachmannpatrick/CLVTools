@@ -70,6 +70,12 @@ fct.helper.test.runability.clv.data.others3 <- function(clv.data){
   })
 
   test_that("summary for selected customers works", {
+    # single id
+    id <- clv.data@data.transactions[, head(unique(Id), n=1)]
+    expect_silent(summary(clv.data, Id=id))
+    expect_silent(summary(clv.data, Id=id, sample="estimation"))
+
+    # multiple ids
     ids <- clv.data@data.transactions[, head(unique(Id), n=5)]
     expect_silent(summary(clv.data, Id=ids))
     expect_silent(summary(clv.data, Id=ids, sample="estimation"))
