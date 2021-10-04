@@ -164,11 +164,7 @@ arma::vec pnbd_DERT_ind(const double r,
   arma::vec vLL = pnbd_LL_ind(r, s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal);
 
   arma::vec vZ = continuous_discount_factor * (vBeta_i + vT_cal);
-
-  arma::vec vPart1 = (arma::pow(vZ, 1-s) / (s-1))  % clv::vec_x_hyp1F1(1, 2-s, vZ);
-  arma::vec vPart2 = std::tgamma(1-s) * clv::vec_x_hyp1F1(s, s, vZ);
-  //
-  arma::vec vTerm = vPart1 + vPart2;
+  arma::vec vTerm = clv::vec_x_kummerU(s, s, vZ);
 
   arma::vec vDERT = arma::exp(
     r * arma::log(vAlpha_i)
