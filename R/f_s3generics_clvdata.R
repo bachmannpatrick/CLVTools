@@ -144,12 +144,13 @@ print.clv.data.dynamic.covariates <- function(x, digits = max(3L, getOption("dig
 summary.clv.data <- function(object, Id=NULL, ...){
   res <- structure(list(), class="summary.clv.data")
 
-  res$name <- object@name
+  res$name             <- object@name
   res$clv.time         <- object@clv.time # needed for formatting when printing
   res$summary.clv.time <- summary(object@clv.time)
 
   res$descriptives.transactions <- clv.data.make.descriptives(clv.data=object, Ids = Id)
   res$selected.ids <- unique(Id)
+
   return(res)
 }
 

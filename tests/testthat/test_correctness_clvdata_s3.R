@@ -2,30 +2,75 @@ data("cdnow")
 
 # summary ---------------------------------------------------------------------------------------------------------
 context("Correctness - clvdata - summary")
-test_that("Zero repeaters are counted correctly", {
+# **** TODO: Zero-repeaters counted correctly *****
+# test_that("Zero repeaters are counted correctly", {
+#   skip_on_cran()
+#
+#   fct.verify.zero.repeaters <- function(date.estimation.split){
+#     expect_silent(clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split = date.estimation.split))
+#     expect_silent(res.sum <- summary(clv.cdnow))
+#
+#     # No zero-repeaters in estimation and holdout
+#     expect_true(res.sum$descriptives.transactions[Name == "Total # zero repeaters", "Estimation"] == "-")
+#     expect_true(res.sum$descriptives.transactions[Name == "Total # zero repeaters", "Holdout"] == "-")
+#
+#     if(!is.null(date.estimation.split)){
+#       num.zero.rep <- cdnow[Date <= date.estimation.split, .N, by = "Id"][N == 1, .N]
+#       perc.zero.rep <- round(num.zero.rep / cdnow[Date <= date.estimation.split, uniqueN(Id)], 2)
+#       expect_true(num.zero.rep == res.sum$descriptives.transactions[Name == "Total # zero repeaters", as.numeric(Total)])
+#       expect_true(perc.zero.rep == round(res.sum$descriptives.transactions[Name == "Percentage # zero repeaters", as.numeric(Total)], 2))
+#       print(res.sum$descriptives.transactions)
+#       print(num.zero.rep)
+#       print(perc.zero.rep)
+#     }else{
+#       num.zero.rep <- cdnow[, .N, by = "Id"][N == 1, .N]
+#       perc.zero.rep <- round(num.zero.rep / cdnow[, uniqueN(Id)], 2)
+#       expect_true(num.zero.rep == res.sum$descriptives.transactions[Name == "Total # zero repeaters", as.numeric(Total)])
+#       expect_true(perc.zero.rep == round(res.sum$descriptives.transactions[Name == "Percentage # zero repeaters", as.numeric(Total)], 2))
+#     }
+#   }
+#
+#   # Overall
+#   fct.verify.zero.repeaters(date.estimation.split = NULL)
+#   # In estimation period
+#   fct.verify.zero.repeaters(date.estimation.split = lubridate::ymd("1997-09-17"))
+# })
+
+test_that("Same transaction summary if all ids or NULL are given", {
   skip_on_cran()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+  expect_silent(res.sum.null <- summary(clv.cdnow, Id=NULL))
+  expect_silent(res.sum.all <- summary(clv.cdnow, Id=cdnow[, unique(Id)]))
+  expect_true(isTRUE(all.equal(res.sum.null$descriptives.transactions,
+                               res.sum.all$descriptives.transactions)))
+})
 
-  fct.verify.zero.repeaters <- function(date.estimation.split){
-    expect_silent(clv.cdnow <- clvdata(cdnow, date.format = "ymd", time.unit = "w", estimation.split = date.estimation.split))
-    expect_silent(res.sum <- summary(clv.cdnow))
+test_that("Correct Ids selected", {
+  skip_on_cran()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+  expect_silent(res.sum <- summary(clv.cdnow, Id=c("1", "2", "3")))
+  expect_true(setequal(res.sum$selected.ids, c("1", "2", "3")))
+  expect_true(length(unique(res.sum$selected.ids)) == length(res.sum$selected.ids))
+  # double
+  expect_silent(res.sum <- summary(clv.cdnow, Id=c("1", "2", "3", "3", "3")))
+  expect_true(setequal(res.sum$selected.ids, c("1", "2", "3")))
+  expect_true(length(unique(res.sum$selected.ids)) == length(res.sum$selected.ids))
+})
 
-    if(!is.null(date.estimation.split)){
-      num.zero.rep <- cdnow[Date <= date.estimation.split, .N, by = "Id"][N == 1, .N]
-      perc.zero.rep <- round(num.zero.rep / cdnow[Date <= date.estimation.split, uniqueN(Id)], 2)
-      expect_true(num.zero.rep == res.sum$descriptives.transactions[Name == "Total # zero repeaters", as.numeric(Estimation)])
-      expect_true(perc.zero.rep == round(res.sum$descriptives.transactions[Name == "Percentage # zero repeaters", as.numeric(Estimation)], 2))
-    }else{
-      num.zero.rep <- cdnow[, .N, by = "Id"][N == 1, .N]
-      perc.zero.rep <- round(num.zero.rep / cdnow[, uniqueN(Id)], 2)
-      expect_true(num.zero.rep == res.sum$descriptives.transactions[Name == "Total # zero repeaters", as.numeric(Total)])
-      expect_true(perc.zero.rep == round(res.sum$descriptives.transactions[Name == "Percentage # zero repeaters", as.numeric(Total)], 2))
-    }
-  }
+test_that("Different output if ids given", {
+  skip_on_cran()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+  expect_silent(df.desc.1 <- summary(clv.cdnow, Id="1")$descriptives.transactions)
+  expect_silent(df.desc.123 <- summary(clv.cdnow, Id=c("1", "2", "3"))$descriptives.transactions)
+  expect_false(isTRUE(all.equal(desc.1[, "Estimation"], desc.1[, "Estimation"])))
+  expect_false(isTRUE(all.equal(desc.1[, "Holdout"], desc.1[, "Holdout"])))
+  expect_false(isTRUE(all.equal(desc.1[, "Total"], desc.1[, "Total"])))
+})
 
-  # Overall
-  fct.verify.zero.repeaters(date.estimation.split = NULL)
-  # In estimation period
-  fct.verify.zero.repeaters(date.estimation.split = lubridate::ymd("1997-09-17"))
+test_that("Holdout is - if customer has no transactions in holdout period", {
+  skip_on_cran()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+  expect_true(all(summary(clv.cdnow, Id="2")$descriptives.transactions[, "Holdout"] == "-"))
 })
 
 
