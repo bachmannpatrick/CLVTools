@@ -189,9 +189,9 @@ clv.data.make.descriptives <- function(clv.data, Ids){
     }
 
     l.desc <- c(l.desc, list(
-      # Zero-repeaters can only be in Total ()
-      "Total # zero repeaters"        = if(sample.name == "Total"){dt.num.trans.by.cust[N == 1, uniqueN(Id)]}else{"-"},
-      "Percentage # zero repeaters"   = if(sample.name == "Total"){dt.num.trans.by.cust[, mean(N==1)]}else{"-"},
+      # Zero-repeaters can only be in Estimation ()
+      "Total # zero repeaters"        = if(sample.name == "Estimation"){dt.num.trans.by.cust[N == 1, uniqueN(Id)]}else{"-"},
+      "Percentage # zero repeaters"   = if(sample.name == "Estimation"){dt.num.trans.by.cust[, mean(N==1)]}else{"-"},
 
       # Inter-purchase time
       #   Remove NAs resulting from zero-repeaters
