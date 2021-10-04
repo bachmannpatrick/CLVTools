@@ -33,6 +33,7 @@ into a data.table.
 }
 \examples{
 library(data.table)
+
 data("cdnow")
 clv.data.cdnow <- clvdata(data.transactions = cdnow,
                           date.format="ymd",

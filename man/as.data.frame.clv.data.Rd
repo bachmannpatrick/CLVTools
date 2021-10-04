@@ -35,6 +35,7 @@ Extract a copy of the transaction data stored in the given clv.data object
 into a data.frame.
 }
 \examples{
+
 data("cdnow")
 clv.data.cdnow <- clvdata(data.transactions = cdnow,
                           date.format="ymd",

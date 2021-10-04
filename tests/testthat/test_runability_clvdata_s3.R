@@ -85,6 +85,16 @@ fct.helper.test.runability.clv.data.others3 <- function(clv.data){
       expect_true(is.data.table(as.data.table(clv.data, sample="holdout")))
     }
   })
+
+  test_that("subset works", {
+    expect_true(is.data.table(subset(clv.data, sample="estimation")))
+    expect_true(is.data.table(subset(clv.data, sample="full")))
+    # random Date, returns empty if not found
+    expect_true(is.data.table(subset(clv.data, Date>="1900-01-01", sample="estimation")))
+    if(clv.data.has.holdout(clv.data)){
+      expect_true(is.data.table(subset(clv.data, Date>="1900-01-01", sample="holdout")))
+    }
+  })
 }
 
 # This all falls under the context of runability for the fitted models
