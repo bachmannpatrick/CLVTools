@@ -111,6 +111,22 @@ arma::vec vec_x_hyp1F1(const double a, const double b, const arma::vec& vX){
 }
 
 
+// vec_kummerU ----------------------------------------------------
+arma::vec vec_x_kummerU(const double a, const double b, const arma::vec& vX){
+
+  // Do not abort in case of error
+  gsl_set_error_handler_off();
+
+  arma::vec vRes(vX);
+
+  arma::uword n = vX.n_elem;
+  for(arma::uword i = 0; i<n; i++)
+    vRes(i) = gsl_sf_hyperg_U(a, b, vX(i));
+
+  return(vRes);
+}
+
+
 // vec_pow --------------------------------------------------------
 //    element-by-element pow of the two given vectors
 arma::vec vec_pow(const arma::vec& vA, const arma::vec& vP){
