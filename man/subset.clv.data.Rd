@@ -27,6 +27,8 @@ The given expression are forwarded to the \code{data.table} of transactions.
 Possible rows to subset and select are \code{Id}, \code{Date}, and \code{Price} (if present).
 }
 \examples{
+
+library(data.table) # for between()
 data(cdnow)
 
 clv.cdnow <- clvdata(cdnow,

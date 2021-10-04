@@ -214,6 +214,8 @@ setMethod(f = "show", signature = signature(object="clv.data"), definition = fun
 #' @aliases subset
 #'
 #' @examples
+#'
+#' library(data.table) # for between()
 #' data(cdnow)
 #'
 #' clv.cdnow <- clvdata(cdnow,
