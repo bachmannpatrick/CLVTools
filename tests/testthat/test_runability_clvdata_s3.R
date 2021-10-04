@@ -68,6 +68,12 @@ fct.helper.test.runability.clv.data.others3 <- function(clv.data){
   test_that("show works", {
     expect_output(show(clv.data))
   })
+
+  test_that("summary for selected customers works", {
+    ids <- clv.data@data.transactions[, head(unique(Id), n=5)]
+    expect_silent(summary(clv.data, Id=ids))
+    expect_silent(summary(clv.data, Id=ids, sample="estimation"))
+  })
 }
 
 # This all falls under the context of runability for the fitted models
