@@ -73,13 +73,17 @@ fct.helper.test.runability.clv.data.others3 <- function(clv.data){
   test_that("as.data.frame works", {
     expect_true(is.data.frame(as.data.frame(clv.data)))
     expect_true(is.data.frame(as.data.frame(clv.data, sample="estimation")))
-    expect_true(is.data.frame(as.data.frame(clv.data, sample="holdout")))
+    if(clv.data.has.holdout(clv.data)){
+      expect_true(is.data.frame(as.data.frame(clv.data, sample="holdout")))
+      }
   })
 
   test_that("as.data.table works", {
     expect_true(is.data.table(as.data.table(clv.data)))
     expect_true(is.data.table(as.data.table(clv.data, sample="estimation")))
-    expect_true(is.data.table(as.data.table(clv.data, sample="holdout")))
+    if(clv.data.has.holdout(clv.data)){
+      expect_true(is.data.table(as.data.table(clv.data, sample="holdout")))
+    }
   })
 }
 

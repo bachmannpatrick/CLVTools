@@ -16,7 +16,7 @@ jobs:
 
       - name: Install gsl for mac
         run: |
-          brew install gsl
+          brew install gsl openssl
 
       - name: Query dependencies
         run: |

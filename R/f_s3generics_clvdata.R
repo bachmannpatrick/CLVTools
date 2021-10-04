@@ -1,22 +1,26 @@
+#' @examples library(data.table)
 #' @templateVar name_data_text Data Table
 #' @templateVar name_data_code data.table
 #' @templateVar name_res dt.trans
 #' @template template_clvdata_asdatax
 #' @template template_param_dots
+#' @param keep.rownames Ignored
 #' @export
 as.data.table.clv.data <- function(x,
+                                   keep.rownames = FALSE,
                                    Ids = NULL,
-                                   sample = c("both", "estimation", "holdout"),
+                                   sample = c("full", "estimation", "holdout"),
                                    ...){
+  Id <- NULL
 
   check_err_msg(check_user_data_emptyellipsis(...))
-  sample <- match.arg(arg = tolower(sample), choices = c("both", "estimation", "holdout"))
+  sample <- match.arg(arg = tolower(sample), choices = c("full", "estimation", "holdout"))
   if(sample == "holdout" & !clv.data.has.holdout(x)){
     check_err_msg("The given clv.data object has no holdout data!")
   }
 
   dt.trans <- switch(sample,
-                     "both" = copy(x@data.transactions),
+                     "full" = copy(x@data.transactions),
                      "estimation" = clv.data.get.transactions.in.estimation.period(x),
                      "holdout" = clv.data.get.transactions.in.holdout.period(x))
 
@@ -38,10 +42,14 @@ as.data.table.clv.data <- function(x,
 #' @templateVar name_res df.trans
 #' @template template_clvdata_asdatax
 #' @template template_param_dots
+#' @param row.names Ignored
+#' @param optional Ignored
 #' @export
 as.data.frame.clv.data <- function(x,
+                                   row.names = NULL,
+                                   optional = NULL,
                                    Ids = NULL,
-                                   sample = c("both", "estimation", "holdout"),
+                                   sample = c("full", "estimation", "holdout"),
                                    ...){
   return(as.data.frame(as.data.table.clv.data(x, Ids=Ids, sample=sample, ...=...)))
 }

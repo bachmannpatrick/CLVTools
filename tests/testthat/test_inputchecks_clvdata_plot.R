@@ -2,7 +2,7 @@ data("cdnow")
 
 context("Inputchecks - clvdata - plot")
 
-clv.cdnow <- fct.helper.create.clvdata.cdnow(estimation.split = NULL)
+clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split = NULL)
 
 l.std.args <- list(clv.cdnow)
 .fct.helper.inputchecks.single.logical(fct = plot, l.std.args = l.std.args, name.param = "cumulative")

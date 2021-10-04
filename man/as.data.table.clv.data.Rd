@@ -4,15 +4,23 @@
 \alias{as.data.table.clv.data}
 \title{Coerce to a Data Table}
 \usage{
-\method{as.data.table}{clv.data}(x, Ids = NULL, sample = c("both", "estimation", "holdout"), ...)
+\method{as.data.table}{clv.data}(
+  x,
+  keep.rownames = FALSE,
+  Ids = NULL,
+  sample = c("full", "estimation", "holdout"),
+  ...
+)
 }
 \arguments{
 \item{x}{An object of class \code{clv.data}.}
 
+\item{keep.rownames}{Ignored}
+
 \item{Ids}{Character vector of customer ids for which transactions should be extracted. \code{NULL} extracts all.}
 
 \item{sample}{Name of sample for which transactions should be extracted,
-either "estimation", "holdout", or "both". Defaults to both.}
+either "estimation", "holdout", or "full" (default).}
 
 \item{...}{Ignored}
 }
@@ -24,6 +32,7 @@ Extract a copy of the transaction data stored in the given clv.data object
 into a data.table.
 }
 \examples{
+library(data.table)
 
 data("cdnow")
 clv.data.cdnow <- clvdata(data.transactions = cdnow,

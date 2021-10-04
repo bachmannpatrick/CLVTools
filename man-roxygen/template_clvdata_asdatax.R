@@ -6,7 +6,7 @@
 #' @param x An object of class \code{clv.data}.
 #' @param Ids Character vector of customer ids for which transactions should be extracted. \code{NULL} extracts all.
 #' @param sample Name of sample for which transactions should be extracted,
-#' either "estimation", "holdout", or "both". Defaults to both.
+#' either "estimation", "holdout", or "full" (default).
 #'
 #' @return
 #' A \code{<%=name_data_code%>} with columns \code{Id}, \code{Date}, and \code{Price} (if present).

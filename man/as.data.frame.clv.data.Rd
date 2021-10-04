@@ -4,15 +4,26 @@
 \alias{as.data.frame.clv.data}
 \title{Coerce to a Data Frame}
 \usage{
-\method{as.data.frame}{clv.data}(x, Ids = NULL, sample = c("both", "estimation", "holdout"), ...)
+\method{as.data.frame}{clv.data}(
+  x,
+  row.names = NULL,
+  optional = NULL,
+  Ids = NULL,
+  sample = c("full", "estimation", "holdout"),
+  ...
+)
 }
 \arguments{
 \item{x}{An object of class \code{clv.data}.}
 
+\item{row.names}{Ignored}
+
+\item{optional}{Ignored}
+
 \item{Ids}{Character vector of customer ids for which transactions should be extracted. \code{NULL} extracts all.}
 
 \item{sample}{Name of sample for which transactions should be extracted,
-either "estimation", "holdout", or "both". Defaults to both.}
+either "estimation", "holdout", or "full" (default).}
 
 \item{...}{Ignored}
 }
