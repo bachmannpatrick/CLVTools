@@ -127,8 +127,19 @@ plot.clv.data <- function(x, prediction.end=NULL, cumulative=FALSE, plot=TRUE, v
 
 }
 
-
-#' @param ... Forwarded to \code{ggplot2::stat_density}
+#' Plot Density of Spending / Transaction Values
+#'
+#' Density plot of average spending per.
+#' Note that this includes every transaction and not only repeat-transactions.
+#'
+#' @param x object of class \code{clv.data}
+#' @param mean.spending xxxxxxxx
+#' @param color xxxxxxxx
+#' @template template_params_densityngeomdots
+#'
+#' @examples
+#'
+#'
 #' @importFrom stats density
 #' @export
 density.clv.data <- function(x, mean.spending=TRUE, color="black", geom="line", n=256, ...){

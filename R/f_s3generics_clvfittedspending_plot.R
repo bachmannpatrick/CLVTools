@@ -1,10 +1,7 @@
 #' @title Plot expected and actual mean spending per transaction
 #' @param x The fitted spending model to plot
-#' @param n Number of points at which the empirical and model density are calculated. Should be a power of two.
-#' @param geom The geometric object of ggplo2 to display the data. Forwarded to \link[ggplot2:stat_density]{ggplot2::stat_density}.
-#' @param ... Forwarded to \link[ggplot2:stat_density]{ggplot2::stat_density}.
 #' @template template_param_verbose
-#'
+#' @template template_params_densityngeomdots
 #'
 #' @description
 #' Compares the density of the observed average spending per transaction (empirical distribution) to the
