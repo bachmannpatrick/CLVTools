@@ -279,3 +279,35 @@ clv.data.make.descriptives <- function(clv.data){
   return(dt.summary)
 
 }
+
+
+clv.data.make.density.plot <- function(dt.data, mapping, labs_x, title, n, geom, ...){
+
+  p <- ggplot(data = dt.data) + stat_density(mapping = mapping, n = n, geom = geom, ...)
+
+  # Axis and title
+  p <- p + labs(x = labs_x, y="Density", title=title)
+
+  p <- p + theme(
+    plot.title = element_text(face = "bold", size = rel(1.5)),
+    text = element_text(),
+    panel.background = element_blank(),
+    panel.border = element_blank(),
+    plot.background  = element_rect(colour = NA),
+    axis.title   = element_text(face = "bold",size = rel(1)),
+    axis.title.y = element_text(angle=90,vjust =2),
+    axis.title.x = element_text(vjust = -0.2),
+    axis.text = element_text(),
+    axis.line = element_line(colour="black"),
+    axis.ticks = element_line(),
+    panel.grid.major = element_line(colour="#d2d2d2"),
+    panel.grid.minor = element_blank(),
+    legend.key = element_blank(),
+    legend.position = "bottom",
+    legend.direction = "horizontal",
+    legend.title = element_text(face="italic"),
+    strip.background=element_rect(colour="#d2d2d2",fill="#d2d2d2"),
+    strip.text = element_text(face="bold", size = rel(0.8)))
+
+  return(p)
+}

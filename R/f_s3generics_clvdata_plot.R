@@ -128,3 +128,28 @@ plot.clv.data <- function(x, prediction.end=NULL, cumulative=FALSE, plot=TRUE, v
 }
 
 
+#' @param ... Forwarded to \code{ggplot2::stat_density}
+#' @importFrom stats density
+#' @export
+density.clv.data <- function(x, mean.spending=TRUE, color="black", geom="line", n=256, ...){
+  Price <- Spending <- NULL
+
+  # only check non-ggplot inputs
+  check_err_msg(.check_user_data_single_boolean(mean.spending, var.name="mean.spending"))
+
+  if(mean.spending){
+    dt.spending <- x@data.transactions[, list(Spending = mean(Price)), by="Id"][, "Spending"]
+    title  <- "Density of Average Transaction Value"
+    labs_x <- "Average Value per Transaction"
+  }else{
+    dt.spending <- x@data.transactions[, list(Spending = Price)]
+    title  <- "Density of Transaction Value"
+    labs_x <- "Value per Transaction"
+  }
+
+  return(clv.data.make.density.plot(dt.data = dt.spending,
+                                    mapping = aes(x = Spending),
+                                    labs_x = labs_x, title = title,
+                                    # pass to stat_density
+                                    n = n, geom = geom, color=color, ...))
+}

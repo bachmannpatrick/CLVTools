@@ -42,7 +42,7 @@
 #' @importFrom ggplot2 ggplot aes stat_density geom_line labs theme scale_colour_manual guide_legend element_text element_rect element_blank element_line rel
 #' @method plot clv.fitted.spending
 #' @export
-plot.clv.fitted.spending <- function (x, n = 256, verbose=TRUE, ...) {
+plot.clv.fitted.spending <- function (x, n = 256, geom="line", verbose=TRUE, ...) {
    Spending <- NULL
 
    # Check inputs -----------------------------------------------------------------------------------------------------
@@ -57,7 +57,11 @@ plot.clv.fitted.spending <- function (x, n = 256, verbose=TRUE, ...) {
 
    # Plot customer's mean spending as density -------------------------------------------------------------------------
    dt.customer.mean.spending <- clv.fitted@cbs[x>0, "Spending"]
-   p <- ggplot(data = dt.customer.mean.spending) + stat_density(mapping = aes(x = Spending, colour = "Actual Mean Value per Transaction"), n = n, geom = "line")
+   p <- clv.data.make.density.plot(dt.data = dt.customer.mean.spending,
+                                   mapping = aes(x = Spending, colour = "Actual Mean Value per Transaction"),
+                                   labs_x = "Average Value per Transaction",
+                                   title = "Density of Average Transaction Value",
+                                   n = n, geom = geom, ...)
 
    # Overlay with model density ---------------------------------------------------------------------------------------
    p <- p + geom_line(stat = "function",
@@ -70,30 +74,6 @@ plot.clv.fitted.spending <- function (x, n = 256, verbose=TRUE, ...) {
    # Add legend
    columns <- setNames(c("black", "red"), c("Actual Mean Value per Transaction", clv.fitted@clv.model@name.model))
    p <- p + scale_colour_manual(name = "Legend", values = columns)
-
-   # Axis and title
-   p <- p + labs(x = "Average Value per Transaction", y= "Density", title= "Density of Average Transaction Value")
-
-   p <- p + theme(
-      plot.title = element_text(face = "bold", size = rel(1.5)),
-      text = element_text(),
-      panel.background = element_blank(),
-      panel.border = element_blank(),
-      plot.background  = element_rect(colour = NA),
-      axis.title   = element_text(face = "bold",size = rel(1)),
-      axis.title.y = element_text(angle=90,vjust =2),
-      axis.title.x = element_text(vjust = -0.2),
-      axis.text = element_text(),
-      axis.line = element_line(colour="black"),
-      axis.ticks = element_line(),
-      panel.grid.major = element_line(colour="#d2d2d2"),
-      panel.grid.minor = element_blank(),
-      legend.key = element_blank(),
-      legend.position = "bottom",
-      legend.direction = "horizontal",
-      legend.title = element_text(face="italic"),
-      strip.background=element_rect(colour="#d2d2d2",fill="#d2d2d2"),
-      strip.text = element_text(face="bold", size = rel(0.8)))
 
    return(p)
 }

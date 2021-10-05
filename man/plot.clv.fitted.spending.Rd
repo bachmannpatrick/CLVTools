@@ -5,9 +5,9 @@
 \alias{plot,clv.fitted.spending-method}
 \title{Plot expected and actual mean spending per transaction}
 \usage{
-\method{plot}{clv.fitted.spending}(x, n = 256, verbose = TRUE, ...)
+\method{plot}{clv.fitted.spending}(x, n = 256, geom = "line", verbose = TRUE, ...)
 
-\S4method{plot}{clv.fitted.spending}(x, n = 256, verbose = TRUE, ...)
+\S4method{plot}{clv.fitted.spending}(x, n = 256, geom = "line", verbose = TRUE, ...)
 }
 \arguments{
 \item{x}{The fitted spending model to plot}
