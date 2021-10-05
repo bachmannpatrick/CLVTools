@@ -221,3 +221,4 @@ as.clv.data <- function(x,
                         ...){
   UseMethod("as.clv.data", x)
 }
+
