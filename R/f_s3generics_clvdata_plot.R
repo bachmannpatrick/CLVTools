@@ -129,15 +129,35 @@ plot.clv.data <- function(x, prediction.end=NULL, cumulative=FALSE, plot=TRUE, v
 
 #' Plot Density of Spending / Transaction Values
 #'
-#' Density plot of average spending per.
-#' Note that this includes every transaction and not only repeat-transactions.
+#' Empirical Density plot of average spending per.
+#' Note that this in all cases includes every transaction and not only repeat-transactions.
 #'
 #' @param x object of class \code{clv.data}
-#' @param mean.spending xxxxxxxx
-#' @param color xxxxxxxx
+#' @param mean.spending Whether customer's mean spending per transaction (\code{TRUE}, default) or the
+#' value of every transaction in the data (\code{FALSE}) should be plotted.
+#' @param color Color of resulting geom.
 #' @template template_params_densityngeomdots
 #'
+#' @seealso \link[ggplot2:stat_density] for
+#' @seealso \link[CLVTools:gg] for model density overlaying the
+#'
 #' @examples
+#'
+#' data(cdnow)
+#' clv.data.cdnow <- clvdata(data.transactions = cdnow,
+#'                           date.format="ymd",
+#'                           time.unit = "w",
+#'                           estimation.split = 37)
+#'
+#' # plot customer's average transaction value
+#' density(clv.data.cdnow, mean.spending = TRUE)
+#'
+#' # distribution of the values of every transaction
+#' density(clv.data.cdnow, mean.spending = FALSE)
+#'
+#' # further modify plot
+#' p <- density(clv.data.cdnow)
+#' p + ggtitle("CDnow Average Spending")
 #'
 #'
 #' @importFrom stats density
