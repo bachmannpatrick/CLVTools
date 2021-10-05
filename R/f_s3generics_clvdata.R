@@ -301,9 +301,7 @@ subset.clv.data <- function(x,
 
 
 #' @include all_generics.R
-#' @template template_param_dots
-#' @param x Transaction data. See parameter \code{data.transactions}.
-#' @rdname clvdata
+#' @rdname as.clv.data
 #' @export
 as.clv.data.data.frame <- function(x,
                                    date.format="ymd", time.unit="weeks",
@@ -315,8 +313,8 @@ as.clv.data.data.frame <- function(x,
                  name.id = name.id, name.date = name.date, name.price = name.price))
 }
 
-
-#' @rdname clvdata
+#' @include all_generics.R
+#' @rdname as.clv.data
 #' @export
 as.clv.data.data.table <- function(x,
                                    date.format="ymd", time.unit="weeks",
