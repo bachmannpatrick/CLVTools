@@ -56,6 +56,25 @@ fct.helper.test.runability.clv.data.plot <- function(clv.data){
 }
 
 
+fct.helper.test.runability.clv.data.density <- function(clv.data){
+  test_that("density - spending, mean.spending=T", {
+    skip_on_cran()
+    expect_silent(density(clv.data, mean.spending=TRUE))
+  })
+
+  test_that("density - spending, mean.spending=F", {
+    skip_on_cran()
+    expect_silent(density(clv.data, mean.spending=FALSE))
+  })
+
+  test_that("density - spending, extra arguments", {
+    skip_on_cran()
+    # others and ... args
+    expect_silent(density(clv.data, color="yellow", geom="point", size=0.1))
+  })
+}
+
+
 fct.helper.test.runability.clv.data.others3 <- function(clv.data){
   test_that("nobs works", {
     expect_silent(nobs(clv.data))
@@ -135,6 +154,12 @@ fct.helper.test.runability.clv.data.plot(apparel.no.holdout.static.cov)
 fct.helper.test.runability.clv.data.plot(apparel.holdout.dyn.cov)
 fct.helper.test.runability.clv.data.plot(apparel.no.holdout.dyn.cov)
 
+fct.helper.test.runability.clv.data.density(apparel.holdout)
+fct.helper.test.runability.clv.data.density(apparel.no.holdout)
+fct.helper.test.runability.clv.data.density(apparel.holdout.static.cov)
+fct.helper.test.runability.clv.data.density(apparel.no.holdout.static.cov)
+fct.helper.test.runability.clv.data.density(apparel.holdout.dyn.cov)
+fct.helper.test.runability.clv.data.density(apparel.no.holdout.dyn.cov)
 
 fct.helper.test.runability.clv.data.summary(apparel.holdout)
 fct.helper.test.runability.clv.data.summary(apparel.no.holdout)

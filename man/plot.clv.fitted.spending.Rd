@@ -14,9 +14,11 @@
 
 \item{n}{Number of points at which the empirical and model density are calculated. Should be a power of two.}
 
+\item{geom}{The geometric object of ggplo2 to display the data. Forwarded to \link[ggplot2:stat_density]{ggplot2::stat_density}.}
+
 \item{verbose}{Show details about the running of the function.}
 
-\item{...}{Ignored}
+\item{...}{Forwarded to \link[ggplot2:stat_density]{ggplot2::stat_density}.}
 }
 \value{
 An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
