@@ -11,7 +11,6 @@
 #' @param name.date Column name of the transaction date in \code{data.transaction}.
 #' @param name.price Column name of price in \code{data.transaction}. NULL if no spending data is present.
 #'
-#'
 #' @description
 #' Creates a data object that contains the prepared transaction data and that is used as input for
 #' model fitting. The transaction data may be split in an estimation and holdout sample if desired.
@@ -92,7 +91,7 @@
 #' # summary of the transaction data
 #' summary(clv.data.cdnow)
 #'
-#' # plot the transaction data
+#' # plot the total number of transactions per period
 #' plot(clv.data.cdnow)
 #'
 #' # create data with the weekly periods defined to

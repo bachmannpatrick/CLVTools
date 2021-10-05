@@ -191,3 +191,14 @@ setGeneric("clv.time.ceiling.date", function(clv.time, timepoint)
 setGeneric("clv.time.format.timepoint", function(clv.time, timepoint)
   standardGeneric("clv.time.format.timepoint"))
 
+
+
+# S3 Generics ---------------------------------------------------------------
+#' @export
+as.clv.data <- function(x,
+                        date.format="ymd", time.unit="weeks",
+                        estimation.split = NULL,
+                        name.id="Id", name.date="Date", name.price="Price",
+                        ...){
+  UseMethod("as.clv.data", x)
+}
