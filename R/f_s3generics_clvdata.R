@@ -287,14 +287,41 @@ subset.clv.data <- function(x,
   # }
 }
 
-#' #'
-#' #' @export
-#' `[.clv.data` <- function(x, i, j, value){
-#'   mc <- match.call(expand.dots = FALSE)
-#'   print(names(mc))
-#'   mc[[1L]] <-  data.table:::`[.data.table` # base::`[`
-#'   mc[["x"]] <- x@data.transactions
-#'   print(names(mc))
-#'   return(eval(mc, parent.frame()))
-#' }
+#
+#
+# `[.clv.data` <- function(x, i, j, value){
+#   mc <- match.call(expand.dots = FALSE)
+#   print(names(mc))
+#   mc[[1L]] <-  data.table:::`[.data.table` # base::`[`
+#   mc[["x"]] <- x @ data.transactions
+#   print(names(mc))
+#   return(eval(mc, parent.frame()))
+# }
 
+
+
+#' @include all_generics.R
+#' @rdname as.clv.data
+#' @export
+as.clv.data.data.frame <- function(x,
+                                   date.format="ymd", time.unit="weeks",
+                                   estimation.split = NULL,
+                                   name.id="Id", name.date="Date", name.price="Price",
+                                   ...){
+  return(clvdata(data.transactions = x,
+                 date.format = date.format, time.unit = time.unit, estimation.split = estimation.split,
+                 name.id = name.id, name.date = name.date, name.price = name.price))
+}
+
+#' @include all_generics.R
+#' @rdname as.clv.data
+#' @export
+as.clv.data.data.table <- function(x,
+                                   date.format="ymd", time.unit="weeks",
+                                   estimation.split = NULL,
+                                   name.id="Id", name.date="Date", name.price="Price",
+                                   ...){
+  return(clvdata(data.transactions = x,
+                 date.format = date.format, time.unit = time.unit, estimation.split = estimation.split,
+                 name.id = name.id, name.date = name.date, name.price = name.price))
+}

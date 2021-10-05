@@ -244,3 +244,9 @@ test_that("Works with estimation.split as Date: char/date/posixct", {
                         data.transactions = cdnow, date.format = "ymd"), "ignored")
 })
 
+
+test_that("Works when called from as.clv.data()", {
+  skip_on_cran()
+  expect_silent(as.clv.data(as.data.frame(cdnow)))
+  expect_silent(as.clv.data(as.data.table(cdnow)))
+})
