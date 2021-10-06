@@ -127,19 +127,21 @@ plot.clv.data <- function(x, prediction.end=NULL, cumulative=FALSE, plot=TRUE, v
 
 }
 
-#' Plot Density of Spending / Transaction Values
+#' Plot the Density of Transaction Values
 #'
-#' Empirical Density plot of average spending per.
-#' Note that this in all cases includes every transaction and not only repeat-transactions.
+#' Plot the empirical density of either customer's average spending per transaction or the value
+#' of every transaction in the data.
+#' Note that in all cases this includes all transactions and not only repeat-transactions.
 #'
 #' @param x object of class \code{clv.data}
 #' @param mean.spending Whether customer's mean spending per transaction (\code{TRUE}, default) or the
 #' value of every transaction in the data (\code{FALSE}) should be plotted.
-#' @param color Color of resulting geom.
+#' @param color Color of resulting geom object in the plot.
 #' @template template_params_densityngeomdots
 #'
-#' @seealso \link[ggplot2:stat_density] for
-#' @seealso \link[CLVTools:gg] for model density overlaying the
+#' @seealso \link[ggplot2:stat_density]{ggplot2::stat_density} for possible arguments to \code{...}
+#' @seealso \link[CLVTools:gg]{gg} to fit customer's average spending per transaction
+#' with the \code{Gamma-Gamma} model.
 #'
 #' @examples
 #'

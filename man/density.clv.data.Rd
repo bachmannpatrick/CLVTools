@@ -2,16 +2,17 @@
 % Please edit documentation in R/f_s3generics_clvdata_plot.R
 \name{density.clv.data}
 \alias{density.clv.data}
-\title{Plot Density of Spending / Transaction Values}
+\title{Plot the Density of Transaction Values}
 \usage{
 \method{density}{clv.data}(x, mean.spending = TRUE, color = "black", geom = "line", n = 256, ...)
 }
 \arguments{
 \item{x}{object of class \code{clv.data}}
 
-\item{mean.spending}{xxxxxxxx}
+\item{mean.spending}{Whether customer's mean spending per transaction (\code{TRUE}, default) or the
+value of every transaction in the data (\code{FALSE}) should be plotted.}
 
-\item{color}{xxxxxxxx}
+\item{color}{Color of resulting geom object in the plot.}
 
 \item{geom}{The geometric object of ggplo2 to display the data. Forwarded to \link[ggplot2:stat_density]{ggplot2::stat_density}.}
 
@@ -20,10 +21,33 @@
 \item{...}{Forwarded to \link[ggplot2:stat_density]{ggplot2::stat_density}.}
 }
 \description{
-Density plot of average spending per.
-Note that this includes every transaction and not only repeat-transactions.
+Plot the empirical density of either customer's average spending per transaction or the value
+of every transaction in the data.
+Note that in all cases this includes all transactions and not only repeat-transactions.
 }
 \examples{
 
+data(cdnow)
+clv.data.cdnow <- clvdata(data.transactions = cdnow,
+                          date.format="ymd",
+                          time.unit = "w",
+                          estimation.split = 37)
 
+# plot customer's average transaction value
+density(clv.data.cdnow, mean.spending = TRUE)
+
+# distribution of the values of every transaction
+density(clv.data.cdnow, mean.spending = FALSE)
+
+# further modify plot
+p <- density(clv.data.cdnow)
+p + ggtitle("CDnow Average Spending")
+
+
+}
+\seealso{
+\link[ggplot2:stat_density]{ggplot2::stat_density} for possible arguments to \code{...}
+
+\link[CLVTools:gg]{gg} to fit customer's average spending per transaction
+with the \code{Gamma-Gamma} model.
 }
