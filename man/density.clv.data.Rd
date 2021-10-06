@@ -27,7 +27,9 @@ Note that in all cases this includes all transactions and not only repeat-transa
 }
 \examples{
 
+library(ggplot2) # for ggtitle()
 data(cdnow)
+
 clv.data.cdnow <- clvdata(data.transactions = cdnow,
                           date.format="ymd",
                           time.unit = "w",

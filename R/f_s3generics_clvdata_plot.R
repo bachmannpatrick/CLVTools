@@ -145,7 +145,9 @@ plot.clv.data <- function(x, prediction.end=NULL, cumulative=FALSE, plot=TRUE, v
 #'
 #' @examples
 #'
+#' library(ggplot2) # for ggtitle()
 #' data(cdnow)
+#'
 #' clv.data.cdnow <- clvdata(data.transactions = cdnow,
 #'                           date.format="ymd",
 #'                           time.unit = "w",
