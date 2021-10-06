@@ -259,3 +259,14 @@ clv.data.plot.density.spending <- function(x, sample, mean.spending, plot, verbo
     return(dt.spending)
   }
 }
+
+clv.data.plot.density.interpurchase.time <- function(clv.data, geom, color,){
+  # interpurchase time in given period
+  dt.mean.interp <- clv.data.mean.interpurchase.times(clv.data=clv.data,
+                                                      dt.transactions=clv.data@data.transactions)
+
+  # only such with repeat-transaction
+  dt.mean.interp <- dt.mean.interp[!is.na(interp.time)]
+
+  return(clv.data.plot.)
+}
