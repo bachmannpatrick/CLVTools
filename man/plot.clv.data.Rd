@@ -6,8 +6,12 @@
 \usage{
 \method{plot}{clv.data}(
   x,
+  which = c("", ""),
   prediction.end = NULL,
   cumulative = FALSE,
+  sample = c("estimation", "full", "holdout"),
+  geom = "line",
+  color = "black",
   plot = TRUE,
   verbose = TRUE,
   ...

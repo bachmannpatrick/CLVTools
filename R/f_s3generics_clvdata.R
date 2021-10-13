@@ -14,15 +14,9 @@ as.data.table.clv.data <- function(x,
   Id <- NULL
 
   check_err_msg(check_user_data_emptyellipsis(...))
-  sample <- match.arg(arg = tolower(sample), choices = c("full", "estimation", "holdout"))
-  if(sample == "holdout" & !clv.data.has.holdout(x)){
-    check_err_msg("The given clv.data object has no holdout data!")
-  }
 
-  dt.trans <- switch(sample,
-                     "full" = copy(x@data.transactions),
-                     "estimation" = clv.data.get.transactions.in.estimation.period(x),
-                     "holdout" = clv.data.get.transactions.in.holdout.period(x))
+  dt.trans <- clv.data.select.sample.data(clv.data=x, sample=sample,
+                                          choices = c("full", "estimation", "holdout"))
 
   if(is.null(Ids)){
     return(dt.trans)
@@ -260,17 +254,10 @@ subset.clv.data <- function(x,
 
   mc <- match.call(expand.dots = FALSE)
 
-  sample <- match.arg(sample, choices=c("full", "estimation", "holdout"))
-  if(sample == "holdout" & !clv.data.has.holdout(x)){
-    check_err_msg("The given clv.data object has no holdout data!")
-  }
-
   # replace object and function in call
   mc[[1L]] <- quote(base::subset)
-  mc[["x"]] <- switch(sample,
-                      "full"       = x@data.transactions,
-                      "estimation" = clv.data.get.transactions.in.estimation.period(x),
-                      "holdout"    = clv.data.get.transactions.in.holdout.period(x))
+  mc[["x"]] <- clv.data.select.sample.data(clv.data=x, sample=sample,
+                                           choices = c("full", "estimation", "holdout"))
   # only keep subset, select to call data.table
   mc <- mc[c(1L, match(c("x", "subset", "select", "..."), names(mc), 0L))]
   return(eval(mc, parent.frame()))
@@ -286,17 +273,6 @@ subset.clv.data <- function(x,
   #   return(dt.subset)
   # }
 }
-
-#
-#
-# `[.clv.data` <- function(x, i, j, value){
-#   mc <- match.call(expand.dots = FALSE)
-#   print(names(mc))
-#   mc[[1L]] <-  data.table:::`[.data.table` # base::`[`
-#   mc[["x"]] <- x @ data.transactions
-#   print(names(mc))
-#   return(eval(mc, parent.frame()))
-# }
 
 
 

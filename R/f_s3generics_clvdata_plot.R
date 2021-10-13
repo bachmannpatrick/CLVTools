@@ -53,7 +53,68 @@
 #' @include all_generics.R class_clv_data.R
 #' @method plot clv.data
 #' @export
-plot.clv.data <- function(x, prediction.end=NULL, cumulative=FALSE, plot=TRUE, verbose=TRUE, ...){
+plot.clv.data <- function(x, which=c("", ""),
+                          # tracking plot
+                          prediction.end=NULL, cumulative=FALSE,
+                          # density
+                          sample=c("estimation", "full", "holdout"),
+                          geom="line", color="black",
+                          # general
+                          plot=TRUE, verbose=TRUE, ...){
+
+  return(clv.data.plot.tracking(x=x, prediction.end = prediction.end, cumulative = cumulative,
+                                plot = plot, verbose = verbose, ...=...))
+}
+
+#' Plot the Density of Transaction Values
+#'
+#' Plot the empirical density of either customer's average spending per transaction or the value
+#' of every transaction in the data.
+#' Note that in all cases this includes all transactions and not only repeat-transactions.
+#'
+#' @param x object of class \code{clv.data}
+#' @param mean.spending Whether customer's mean spending per transaction (\code{TRUE}, default) or the
+#' value of every transaction in the data (\code{FALSE}) should be plotted.
+#' @param color Color of resulting geom object in the plot.
+#' @template template_params_densityngeomdots
+#'
+#' @seealso \link[ggplot2:stat_density]{ggplot2::stat_density} for possible arguments to \code{...}
+#' @seealso \link[CLVTools:gg]{gg} to fit customer's average spending per transaction
+#' with the \code{Gamma-Gamma} model.
+#'
+#' @examples
+#'
+#' library(ggplot2) # for ggtitle()
+#' data(cdnow)
+#'
+#' clv.data.cdnow <- clvdata(data.transactions = cdnow,
+#'                           date.format="ymd",
+#'                           time.unit = "w",
+#'                           estimation.split = 37)
+#'
+#' # plot customer's average transaction value
+#' density(clv.data.cdnow, mean.spending = TRUE)
+#'
+#' # distribution of the values of every transaction
+#' density(clv.data.cdnow, mean.spending = FALSE)
+#'
+#' # further modify plot
+#' p <- density(clv.data.cdnow)
+#' p + ggtitle("CDnow Average Spending")
+#'
+#'
+#' @importFrom stats density
+#' @export
+density.clv.data <- function(x, mean.spending=TRUE,
+                             sample=c("estimation", "full", "holdout"),
+                             color="black", geom="line", ...){
+  return(clv.data.plot.density.spending(x = x, sample=sample, mean.spending = mean.spending,
+                                        color = color, geom=geom, ...))
+}
+
+
+
+clv.data.plot.tracking <- function(x, prediction.end, cumulative, plot, verbose, ...){
 
   period.until <- period.num <- NULL
 
@@ -124,60 +185,40 @@ plot.clv.data <- function(x, prediction.end=NULL, cumulative=FALSE, plot=TRUE, v
   # Plot table with formatting, label etc
   line.colors <- setNames(object = "black", nm = label.transactions)
   return(clv.controlflow.plot.make.plot(dt.data = dt.plot, clv.data = x, line.colors = line.colors))
-
 }
 
-#' Plot the Density of Transaction Values
-#'
-#' Plot the empirical density of either customer's average spending per transaction or the value
-#' of every transaction in the data.
-#' Note that in all cases this includes all transactions and not only repeat-transactions.
-#'
-#' @param x object of class \code{clv.data}
-#' @param mean.spending Whether customer's mean spending per transaction (\code{TRUE}, default) or the
-#' value of every transaction in the data (\code{FALSE}) should be plotted.
-#' @param color Color of resulting geom object in the plot.
-#' @template template_params_densityngeomdots
-#'
-#' @seealso \link[ggplot2:stat_density]{ggplot2::stat_density} for possible arguments to \code{...}
-#' @seealso \link[CLVTools:gg]{gg} to fit customer's average spending per transaction
-#' with the \code{Gamma-Gamma} model.
-#'
-#' @examples
-#'
-#' library(ggplot2) # for ggtitle()
-#' data(cdnow)
-#'
-#' clv.data.cdnow <- clvdata(data.transactions = cdnow,
-#'                           date.format="ymd",
-#'                           time.unit = "w",
-#'                           estimation.split = 37)
-#'
-#' # plot customer's average transaction value
-#' density(clv.data.cdnow, mean.spending = TRUE)
-#'
-#' # distribution of the values of every transaction
-#' density(clv.data.cdnow, mean.spending = FALSE)
-#'
-#' # further modify plot
-#' p <- density(clv.data.cdnow)
-#' p + ggtitle("CDnow Average Spending")
-#'
-#'
-#' @importFrom stats density
-#' @export
-density.clv.data <- function(x, mean.spending=TRUE, color="black", geom="line", n=256, ...){
+
+# default.choices might differ in order
+clv.data.select.sample.data <- function(clv.data, sample, choices){
+  message("sample:")
+  print(sample)
+  print(tolower(sample))
+  sample <- match.arg(arg = tolower(sample), choices = choices)
+  if(sample == "holdout" & !clv.data.has.holdout(clv.data)){
+    check_err_msg("The given clv.data object has no holdout data!")
+  }
+
+  return(switch(sample,
+                "full" = copy(clv.data@data.transactions),
+                "estimation" = clv.data.get.transactions.in.estimation.period(clv.data),
+                "holdout" = clv.data.get.transactions.in.holdout.period(clv.data)))
+}
+
+clv.data.plot.density.spending <- function(x, sample, mean.spending, color, geom, ...){
   Price <- Spending <- NULL
 
   # only check non-ggplot inputs
   check_err_msg(.check_user_data_single_boolean(mean.spending, var.name="mean.spending"))
 
+  dt.trans <- clv.data.select.sample.data(clv.data = x, sample = sample,
+                                          choices=c("estimation", "full", "holdout"))
+
   if(mean.spending){
-    dt.spending <- x@data.transactions[, list(Spending = mean(Price)), by="Id"][, "Spending"]
+    dt.spending <- dt.trans[, list(Spending = mean(Price)), by="Id"][, "Spending"]
     title  <- "Density of Average Transaction Value"
     labs_x <- "Average Value per Transaction"
   }else{
-    dt.spending <- x@data.transactions[, list(Spending = Price)]
+    dt.spending <- dt.trans[, list(Spending = Price)]
     title  <- "Density of Transaction Value"
     labs_x <- "Value per Transaction"
   }
@@ -186,5 +227,5 @@ density.clv.data <- function(x, mean.spending=TRUE, color="black", geom="line", 
                                     mapping = aes(x = Spending),
                                     labs_x = labs_x, title = title,
                                     # pass to stat_density
-                                    n = n, geom = geom, color=color, ...))
+                                    geom = geom, color=color, ...))
 }

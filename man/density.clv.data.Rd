@@ -4,7 +4,14 @@
 \alias{density.clv.data}
 \title{Plot the Density of Transaction Values}
 \usage{
-\method{density}{clv.data}(x, mean.spending = TRUE, color = "black", geom = "line", n = 256, ...)
+\method{density}{clv.data}(
+  x,
+  mean.spending = TRUE,
+  sample = c("estimation", "full", "holdout"),
+  color = "black",
+  geom = "line",
+  ...
+)
 }
 \arguments{
 \item{x}{object of class \code{clv.data}}
@@ -16,9 +23,9 @@ value of every transaction in the data (\code{FALSE}) should be plotted.}
 
 \item{geom}{The geometric object of ggplo2 to display the data. Forwarded to \link[ggplot2:stat_density]{ggplot2::stat_density}.}
 
-\item{n}{Number of points at which the empirical and model density are calculated. Should be a power of two.}
-
 \item{...}{Forwarded to \link[ggplot2:stat_density]{ggplot2::stat_density}.}
+
+\item{n}{Number of points at which the empirical and model density are calculated. Should be a power of two.}
 }
 \description{
 Plot the empirical density of either customer's average spending per transaction or the value

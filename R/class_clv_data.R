@@ -281,9 +281,9 @@ clv.data.make.descriptives <- function(clv.data){
 }
 
 
-clv.data.make.density.plot <- function(dt.data, mapping, labs_x, title, n, geom, ...){
+clv.data.make.density.plot <- function(dt.data, mapping, labs_x, title, geom, ...){
 
-  p <- ggplot(data = dt.data) + stat_density(mapping = mapping, n = n, geom = geom, ...)
+  p <- ggplot(data = dt.data) + stat_density(mapping = mapping, geom = geom, ...)
 
   # Axis and title
   p <- p + labs(x = labs_x, y="Density", title=title)
