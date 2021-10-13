@@ -1,7 +1,7 @@
 Package: CLVTools
 Title: Tools for Customer Lifetime Value Estimation
-Version: 0.8.0
-Date: 2021-03-22
+Version: 0.8.1
+Date: 2021-10-13
 Authors@R: c(
     person(given="Patrick", family="Bachmann",    email = "patrick.bachmann@business.uzh.ch", role = c("cre","aut")),
     person(given="Niels",   family="Kuebler",     email = "niels.kuebler@uzh.ch", role = "aut"),
@@ -34,8 +34,8 @@ Description:
 Imports:
     data.table (>= 1.12.0),
     ggplot2 (>= 3.2.0),
-    lubridate (>= 1.7.8), 
-    Matrix (>= 1.2-17), 
+    lubridate (>= 1.7.8),
+    Matrix (>= 1.2-17),
     MASS,
     optimx (>= 2019-12.02),
     Rcpp(>= 0.12.12),

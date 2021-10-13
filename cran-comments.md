@@ -1,6 +1,5 @@
 # Comment from the authors
-This is version 0.8 of the CLVTools package. We drastically reduce runtime for the extended Pareto/NBD model by refactoring part of the log-likelihood in Rcpp. A bug was fixed which would not allow to use the optimization methods "nlm" and "nlminb" in optimx for our methods
-Further, documentation was improved.
+This is version 0.8.1 of the CLVTools package. It fixes an import issue with Rcpp after package lubridate does no longer use Rcpp. This caused the package to fail tests on CRAN and threatens to remove it from CRAN in the coming days. The changes in this version address this.
 
 
 
