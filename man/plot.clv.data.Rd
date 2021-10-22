@@ -6,12 +6,13 @@
 \usage{
 \method{plot}{clv.data}(
   x,
-  which = c("", ""),
+  which = c("tracking", "spending"),
   prediction.end = NULL,
   cumulative = FALSE,
   sample = c("estimation", "full", "holdout"),
   geom = "line",
   color = "black",
+  mean.spending = TRUE,
   plot = TRUE,
   verbose = TRUE,
   ...

@@ -53,17 +53,29 @@
 #' @include all_generics.R class_clv_data.R
 #' @method plot clv.data
 #' @export
-plot.clv.data <- function(x, which=c("", ""),
+plot.clv.data <- function(x, which=c("tracking", "spending"),
                           # tracking plot
                           prediction.end=NULL, cumulative=FALSE,
                           # density
                           sample=c("estimation", "full", "holdout"),
                           geom="line", color="black",
+                          # spending density
+                          mean.spending=TRUE,
                           # general
                           plot=TRUE, verbose=TRUE, ...){
 
-  return(clv.data.plot.tracking(x=x, prediction.end = prediction.end, cumulative = cumulative,
-                                plot = plot, verbose = verbose, ...=...))
+  # TODO: input checks for which, plot, verbose, geom, color, sample
+  # check_err_msg(NULL)
+
+  return(
+    switch(EXPR = match.arg(arg=which, choices = c("tracking", "spending"), several.ok = FALSE),
+           "tracking" =
+             clv.data.plot.tracking(x=x, prediction.end = prediction.end, cumulative = cumulative,
+                                    plot = plot, verbose = verbose, ...=...),
+         "spending" =
+           clv.data.plot.density.spending(x = x, sample=sample, mean.spending = mean.spending,
+                                          plot = plot, verbose=verbose,
+                                          color = color, geom=geom, ...)))
 }
 
 #' Plot the Density of Transaction Values
@@ -219,14 +231,13 @@ clv.data.make.density.plot <- function(dt.data, mapping, labs_x, title, geom, ..
 }
 
 
-clv.data.plot.density.spending <- function(x, sample, mean.spending, color, geom, ...){
+clv.data.plot.density.spending <- function(x, sample, mean.spending, plot, verbose, color, geom, ...){
   Price <- Spending <- NULL
 
   # only check non-ggplot inputs
   check_err_msg(.check_user_data_single_boolean(mean.spending, var.name="mean.spending"))
 
-  dt.trans <- clv.data.select.sample.data(clv.data = x, sample = sample,
-                                          choices=c("estimation", "full", "holdout"))
+  dt.trans <- clv.data.select.sample.data(clv.data = x, sample = sample, choices=c("estimation", "full", "holdout"))
 
   if(mean.spending){
     dt.spending <- dt.trans[, list(Spending = mean(Price)), by="Id"][, "Spending"]
@@ -238,9 +249,13 @@ clv.data.plot.density.spending <- function(x, sample, mean.spending, color, geom
     labs_x <- "Value per Transaction"
   }
 
-  return(clv.data.make.density.plot(dt.data = dt.spending,
-                                    mapping = aes(x = Spending),
-                                    labs_x = labs_x, title = title,
-                                    # pass to stat_density
-                                    geom = geom, color=color, ...))
+  if(plot){
+    return(clv.data.make.density.plot(dt.data = dt.spending,
+                                      mapping = aes(x = Spending),
+                                      labs_x = labs_x, title = title,
+                                      # pass to stat_density
+                                      geom = geom, color=color, ...))
+  }else{
+    return(dt.trans)
+  }
 }
