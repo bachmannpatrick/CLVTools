@@ -92,7 +92,7 @@
 #' @include all_generics.R class_clv_data.R
 #' @method plot clv.data
 #' @export
-plot.clv.data <- function(x, which=c("tracking", "spending"),
+plot.clv.data <- function(x, which=c("tracking", "spending", "interpurchasetime"),
                           # tracking plot
                           prediction.end=NULL, cumulative=FALSE,
                           # density
@@ -112,14 +112,18 @@ plot.clv.data <- function(x, which=c("tracking", "spending"),
   check_err_msg(err.msg)
 
   return(
-    switch(EXPR = match.arg(arg=which, choices = c("tracking", "spending"), several.ok = FALSE),
+    switch(EXPR = match.arg(arg=which, choices = c("tracking", "spending", "interpurchasetime"), several.ok = FALSE),
            "tracking" =
              clv.data.plot.tracking(x=x, prediction.end = prediction.end, cumulative = cumulative,
                                     plot = plot, verbose = verbose, ...=...),
          "spending" =
            clv.data.plot.density.spending(x = x, sample=sample, mean.spending = mean.spending,
                                           plot = plot, verbose=verbose,
-                                          color = color, geom=geom, ...)))
+                                          color = color, geom=geom, ...),
+         "interpurchasetime" =
+           clv.data.plot.density.interpurchase.time(clv.data = x, sample=sample, plot=plot, verbose=verbose,
+                                                    color=color, geom=geom, ...)
+         ))
 }
 
 
@@ -260,13 +264,26 @@ clv.data.plot.density.spending <- function(x, sample, mean.spending, plot, verbo
   }
 }
 
-clv.data.plot.density.interpurchase.time <- function(clv.data, geom, color,){
+#' @importFrom ggplot2 aes_string
+clv.data.plot.density.interpurchase.time <- function(clv.data, sample,
+                                                     plot, verbose, color, geom, ...){
+  dt.trans <- clv.data.select.sample.data(clv.data=clv.data, sample=sample, choices=c("estimation", "full", "holdout"))
+
   # interpurchase time in given period
-  dt.mean.interp <- clv.data.mean.interpurchase.times(clv.data=clv.data,
-                                                      dt.transactions=clv.data@data.transactions)
+  dt.mean.interp <- clv.data.mean.interpurchase.times(clv.data=clv.data, dt.transactions=dt.trans)
 
   # only such with repeat-transaction
   dt.mean.interp <- dt.mean.interp[!is.na(interp.time)]
+  setcolorder(dt.mean.interp, c("Id", "interp.time"))
+  setnames(dt.mean.interp, old="interp.time", new="mean.interpurchase.time")
 
-  return(clv.data.plot.)
+  if(plot){
+    return(clv.data.make.density.plot(dt.data = dt.mean.interp,
+                                      mapping = aes_string(x = "mean.interpurchase.time"),
+                                      labs_x = "Mean Interpurchase Time",
+                                      title = "Density of Customer's Mean Time between Transactions",
+                                      geom = geom, color = color, ...))
+  }else{
+    return(dt.mean.interp)
+  }
 }
