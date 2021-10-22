@@ -1,6 +1,7 @@
 #' @title Plot actual repeat transactions
 #' @param x The clv data object to plot
-#' @param which Which plot to produce, either "tracking" or "spending". May be abbreviated.
+#' @param which Which plot to produce, either "tracking" or "spending". May be abbreviated
+#' but only one may be selected. Defaults to "tracking".
 #' @param cumulative Whether the cumulative actual repeat transactions should be plotted.
 #' @param plot Whether a plot should be created or only the assembled data returned.
 #' @template template_param_sample
