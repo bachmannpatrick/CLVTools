@@ -1,7 +1,7 @@
 Package: CLVTools
 Title: Tools for Customer Lifetime Value Estimation
 Version: 0.8.1
-Date: 2021-03-22
+Date: 2021-10-13
 Authors@R: c(
     person(given="Patrick", family="Bachmann",    email = "patrick.bachmann@business.uzh.ch", role = c("cre","aut")),
     person(given="Niels",   family="Kuebler",     email = "niels.kuebler@uzh.ch", role = "aut"),
@@ -34,10 +34,11 @@ Description:
 Imports:
     data.table (>= 1.12.0),
     ggplot2 (>= 3.2.0),
-    lubridate (>= 1.7.8), 
-    Matrix (>= 1.2-17), 
+    lubridate (>= 1.7.8),
+    Matrix (>= 1.2-17),
     MASS,
     optimx (>= 2019-12.02),
+    Rcpp(>= 0.12.12),
     stats,
     utils
 Suggests:
@@ -51,7 +52,7 @@ URL: https://github.com/bachmannpatrick/CLVTools
 BugReports: https://github.com/bachmannpatrick/CLVTools/issues
 NeedsCompilation: yes
 SystemRequirements: C++11
-LinkingTo: Rcpp(>= 0.12.12), RcppArmadillo (>= 0.9.500.2.0), RcppGSL (>= 0.3.7)
+LinkingTo: Rcpp, RcppArmadillo (>= 0.9.500.2.0), RcppGSL (>= 0.3.7)
 LazyLoad: yes
 Encoding: UTF-8
 Collate: 
@@ -141,5 +142,5 @@ Collate:
     'pnbd_dyncov_expectation.R'
     'pnbd_dyncov_makewalks.R'
     'pnbd_dyncov_palive.R'
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 VignetteBuilder: knitr

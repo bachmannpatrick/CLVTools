@@ -1,3 +1,10 @@
+# CLVTools 0.8.1
+
+### BUG FIXES
+* Fix importing issue after package lubridate does no longer use Rcpp
+
+
+
 # CLVTools 0.8.0
 
 ### NEW FEATURES
