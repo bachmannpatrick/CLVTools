@@ -1,5 +1,6 @@
 #' @title Plot expected and actual mean spending per transaction
 #' @param x The fitted spending model to plot
+#' @param n Number of points at which the empirical and model density are calculated. Should be a power of two.
 #' @template template_param_verbose
 #' @template template_params_densityngeomdots
 #'

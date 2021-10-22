@@ -1,10 +1,20 @@
 #' @title Plot actual repeat transactions
 #' @param x The clv data object to plot
+#' @param which Which plot to produce, either "tracking" or "spending". May be abbreviated.
 #' @param cumulative Whether the cumulative actual repeat transactions should be plotted.
 #' @param plot Whether a plot should be created or only the assembled data returned.
+#' @template template_param_sample
 #' @template template_param_predictionend
 #' @template template_param_verbose
-#' @template template_param_dots
+#' @param mean.spending Whether customer's mean spending per transaction (\code{TRUE}, default) or the
+#' value of every transaction in the data (\code{FALSE}) should be plotted.
+#' @param color Color of resulting geom object in the plot.
+#' @template template_params_densityngeomdots
+#'
+#'
+#' @seealso \link[ggplot2:stat_density]{ggplot2::stat_density} for possible arguments to \code{...}
+#' @seealso \link[CLVTools:gg]{gg} to fit customer's average spending per transaction
+#' with the \code{Gamma-Gamma} model.
 #'
 #' @description
 #' Plots the actual repeat transactions for the given CLV data object.
@@ -14,6 +24,12 @@
 #' @details If there are no repeat transactions until \code{prediction.end}, only the time for which there is data
 #' is plotted. If the data is returned (i.e. with argument \code{plot=FALSE}), the respective rows
 #' contain \code{NA} in column \code{Number of Repeat Transactions}.
+#'
+#' Plot the Density of Transaction Values
+#'
+#' Plot the empirical density of either customer's average spending per transaction or the value
+#' of every transaction in the data (after aggregating transactions of the same customer on the same day).
+#' Note that in all cases this includes all transactions and not only repeat-transactions.
 #'
 #' @return
 #' An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
@@ -25,14 +41,17 @@
 #'
 #'
 #' @examples
-#'
+#' library(ggplot2) # for ggtitle()
 #' data("cdnow")
 #' clv.data.cdnow <- clvdata(cdnow, time.unit="w",
 #'                           estimation.split=37,
 #'                           date.format="ymd")
 #'
+#' ### TRACKING PLOT
 #' # Plot the actual repeat transactions
 #' plot(clv.data.cdnow)
+#' # same, explicitly
+#' plot(clv.data.cdnow, which="tracking")
 #'
 #' # plot cumulative repeat transactions
 #' plot(clv.data.cdnow, cumulative=TRUE)
@@ -41,12 +60,23 @@
 #' gg.cdnow <- plot(clv.data.cdnow)
 #'
 #' # change Title
-#' library(ggplot2)
 #' gg.cdnow + ggtitle("CDnow repeat transactions")
 #'
 #' # Dont return a plot but only the data from
 #' #   which it would have been created
 #' dt.plot.data <- plot(clv.data.cdnow, plot=FALSE)
+#'
+#'
+#' ### SPENDING DENSITY
+#' # plot customer's average transaction value
+#' plot(clv.data.cdnow, which="spending", mean.spending = TRUE)
+#'
+#' # distribution of the values of every transaction
+#' plot(clv.data.cdnow, which="spending", mean.spending = FALSE)
+#'
+#' # further modify plot
+#' p <- plot(clv.data.cdnow, which="spending")
+#' p + ggtitle("CDnow Average Spending")
 #'
 #'
 #' @importFrom graphics plot
@@ -64,8 +94,12 @@ plot.clv.data <- function(x, which=c("tracking", "spending"),
                           # general
                           plot=TRUE, verbose=TRUE, ...){
 
-  # TODO: input checks for which, plot, verbose, geom, color, sample
-  # check_err_msg(NULL)
+  # **** TODO: input checks for which, sample
+  # do not check ggplot inputs (geom, color)
+  err.msg <- c()
+  err.msg <- c(err.msg, .check_user_data_single_boolean(b=plot, var.name="plot"))
+  err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
+  check_err_msg(err.msg)
 
   return(
     switch(EXPR = match.arg(arg=which, choices = c("tracking", "spending"), several.ok = FALSE),
@@ -77,53 +111,6 @@ plot.clv.data <- function(x, which=c("tracking", "spending"),
                                           plot = plot, verbose=verbose,
                                           color = color, geom=geom, ...)))
 }
-
-#' Plot the Density of Transaction Values
-#'
-#' Plot the empirical density of either customer's average spending per transaction or the value
-#' of every transaction in the data.
-#' Note that in all cases this includes all transactions and not only repeat-transactions.
-#'
-#' @param x object of class \code{clv.data}
-#' @param mean.spending Whether customer's mean spending per transaction (\code{TRUE}, default) or the
-#' value of every transaction in the data (\code{FALSE}) should be plotted.
-#' @param color Color of resulting geom object in the plot.
-#' @template template_params_densityngeomdots
-#'
-#' @seealso \link[ggplot2:stat_density]{ggplot2::stat_density} for possible arguments to \code{...}
-#' @seealso \link[CLVTools:gg]{gg} to fit customer's average spending per transaction
-#' with the \code{Gamma-Gamma} model.
-#'
-#' @examples
-#'
-#' library(ggplot2) # for ggtitle()
-#' data(cdnow)
-#'
-#' clv.data.cdnow <- clvdata(data.transactions = cdnow,
-#'                           date.format="ymd",
-#'                           time.unit = "w",
-#'                           estimation.split = 37)
-#'
-#' # plot customer's average transaction value
-#' density(clv.data.cdnow, mean.spending = TRUE)
-#'
-#' # distribution of the values of every transaction
-#' density(clv.data.cdnow, mean.spending = FALSE)
-#'
-#' # further modify plot
-#' p <- density(clv.data.cdnow)
-#' p + ggtitle("CDnow Average Spending")
-#'
-#'
-#' @importFrom stats density
-#' @export
-density.clv.data <- function(x, mean.spending=TRUE,
-                             sample=c("estimation", "full", "holdout"),
-                             color="black", geom="line", ...){
-  return(clv.data.plot.density.spending(x = x, sample=sample, mean.spending = mean.spending,
-                                        color = color, geom=geom, ...))
-}
-
 
 
 clv.data.plot.tracking <- function(x, prediction.end, cumulative, plot, verbose, ...){
@@ -139,8 +126,6 @@ clv.data.plot.tracking <- function(x, prediction.end, cumulative, plot, verbose,
   err.msg <- c()
   err.msg <- c(err.msg, check_user_data_emptyellipsis(...))
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=cumulative, var.name="cumulative"))
-  err.msg <- c(err.msg, .check_user_data_single_boolean(b=plot, var.name="plot"))
-  err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
   err.msg <- c(err.msg, check_user_data_predictionend(clv.fitted=x, prediction.end=prediction.end))
   check_err_msg(err.msg)
 

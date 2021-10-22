@@ -21,15 +21,26 @@
 \arguments{
 \item{x}{The clv data object to plot}
 
+\item{which}{Which plot to produce, either "tracking" or "spending". May be abbreviated.}
+
 \item{prediction.end}{Until what point in time to predict. This can be the number of periods (numeric) or a form of date/time object. See details.}
 
 \item{cumulative}{Whether the cumulative actual repeat transactions should be plotted.}
+
+\item{sample}{Name of sample for which transactions should be extracted,}
+
+\item{geom}{The geometric object of ggplo2 to display the data. Forwarded to \link[ggplot2:stat_density]{ggplot2::stat_density}.}
+
+\item{color}{Color of resulting geom object in the plot.}
+
+\item{mean.spending}{Whether customer's mean spending per transaction (\code{TRUE}, default) or the
+value of every transaction in the data (\code{FALSE}) should be plotted.}
 
 \item{plot}{Whether a plot should be created or only the assembled data returned.}
 
 \item{verbose}{Show details about the running of the function.}
 
-\item{...}{Ignored}
+\item{...}{Forwarded to \link[ggplot2:stat_density]{ggplot2::stat_density}.}
 }
 \value{
 An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
@@ -61,16 +72,25 @@ If \code{prediction.end} indicates a timepoint on which to end, this timepoint i
 If there are no repeat transactions until \code{prediction.end}, only the time for which there is data
 is plotted. If the data is returned (i.e. with argument \code{plot=FALSE}), the respective rows
 contain \code{NA} in column \code{Number of Repeat Transactions}.
+
+Plot the Density of Transaction Values
+
+Plot the empirical density of either customer's average spending per transaction or the value
+of every transaction in the data (after aggregating transactions of the same customer on the same day).
+Note that in all cases this includes all transactions and not only repeat-transactions.
 }
 \examples{
-
+library(ggplot2) # for ggtitle()
 data("cdnow")
 clv.data.cdnow <- clvdata(cdnow, time.unit="w",
                           estimation.split=37,
                           date.format="ymd")
 
+### TRACKING PLOT
 # Plot the actual repeat transactions
 plot(clv.data.cdnow)
+# same, explicitly
+plot(clv.data.cdnow, which="tracking")
 
 # plot cumulative repeat transactions
 plot(clv.data.cdnow, cumulative=TRUE)
@@ -79,7 +99,6 @@ plot(clv.data.cdnow, cumulative=TRUE)
 gg.cdnow <- plot(clv.data.cdnow)
 
 # change Title
-library(ggplot2)
 gg.cdnow + ggtitle("CDnow repeat transactions")
 
 # Dont return a plot but only the data from
@@ -87,4 +106,22 @@ gg.cdnow + ggtitle("CDnow repeat transactions")
 dt.plot.data <- plot(clv.data.cdnow, plot=FALSE)
 
 
+### SPENDING DENSITY
+# plot customer's average transaction value
+plot(clv.data.cdnow, which="spending", mean.spending = TRUE)
+
+# distribution of the values of every transaction
+plot(clv.data.cdnow, which="spending", mean.spending = FALSE)
+
+# further modify plot
+p <- plot(clv.data.cdnow, which="spending")
+p + ggtitle("CDnow Average Spending")
+
+
+}
+\seealso{
+\link[ggplot2:stat_density]{ggplot2::stat_density} for possible arguments to \code{...}
+
+\link[CLVTools:gg]{gg} to fit customer's average spending per transaction
+with the \code{Gamma-Gamma} model.
 }
