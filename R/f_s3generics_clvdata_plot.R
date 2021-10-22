@@ -216,7 +216,7 @@ clv.data.make.density.plot <- function(dt.data, mapping, labs_x, title, geom, ..
   return(p)
 }
 
-
+#' @importFrom ggplot2 aes
 clv.data.plot.density.spending <- function(x, sample, mean.spending, plot, verbose, color, geom, ...){
   Price <- Spending <- NULL
 
