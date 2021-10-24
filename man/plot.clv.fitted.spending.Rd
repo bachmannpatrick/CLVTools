@@ -5,20 +5,18 @@
 \alias{plot,clv.fitted.spending-method}
 \title{Plot expected and actual mean spending per transaction}
 \usage{
-\method{plot}{clv.fitted.spending}(x, n = 256, geom = "line", verbose = TRUE, ...)
+\method{plot}{clv.fitted.spending}(x, n = 256, verbose = TRUE, ...)
 
-\S4method{plot}{clv.fitted.spending}(x, n = 256, geom = "line", verbose = TRUE, ...)
+\S4method{plot}{clv.fitted.spending}(x, n = 256, verbose = TRUE, ...)
 }
 \arguments{
 \item{x}{The fitted spending model to plot}
 
 \item{n}{Number of points at which the empirical and model density are calculated. Should be a power of two.}
 
-\item{geom}{The geometric object of ggplo2 to display the data. Forwarded to \link[ggplot2:stat_density]{ggplot2::stat_density}.}
-
 \item{verbose}{Show details about the running of the function.}
 
-\item{...}{Forwarded to \link[ggplot2:stat_density]{ggplot2::stat_density}.}
+\item{...}{Ignored}
 }
 \value{
 An object of class \code{ggplot} from package \code{ggplot2} is returned by default.

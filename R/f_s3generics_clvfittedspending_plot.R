@@ -2,7 +2,7 @@
 #' @param x The fitted spending model to plot
 #' @param n Number of points at which the empirical and model density are calculated. Should be a power of two.
 #' @template template_param_verbose
-#' @template template_params_densityngeomdots
+#' @template template_param_dots
 #'
 #' @description
 #' Compares the density of the observed average spending per transaction (empirical distribution) to the
@@ -42,16 +42,17 @@
 #' @importFrom ggplot2 ggplot aes stat_density geom_line labs theme scale_colour_manual guide_legend element_text element_rect element_blank element_line rel
 #' @method plot clv.fitted.spending
 #' @export
-plot.clv.fitted.spending <- function (x, n = 256, geom="line", verbose=TRUE, ...) {
+plot.clv.fitted.spending <- function (x, n = 256, verbose=TRUE, ...) {
    Spending <- NULL
 
    # Check inputs -----------------------------------------------------------------------------------------------------
    err.msg <- c()
-   err.msg <- c(err.msg, check_user_data_emptyellipsis(...))
    err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
    err.msg <- c(err.msg, .check_user_data_single_numeric(n=n, var.name="n"))
+   err.msg <- c(err.msg, check_user_data_emptyellipsis(...))
    check_err_msg(err.msg = err.msg)
 
+   # readability
    clv.fitted <- x
 
 
@@ -61,7 +62,8 @@ plot.clv.fitted.spending <- function (x, n = 256, geom="line", verbose=TRUE, ...
                                    mapping = aes(x = Spending, colour = "Actual Mean Value per Transaction"),
                                    labs_x = "Average Value per Transaction",
                                    title = "Density of Average Transaction Value",
-                                   n = n, geom = geom, ...)
+                                   color="black", geom = "line",
+                                   n = n)
 
    # Overlay with model density ---------------------------------------------------------------------------------------
    p <- p + geom_line(stat = "function",
