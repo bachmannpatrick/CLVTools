@@ -24,24 +24,25 @@
 \item{which}{Which plot to produce, either "tracking" or "spending". May be abbreviated
 but only one may be selected. Defaults to "tracking".}
 
-\item{prediction.end}{Until what point in time to predict. This can be the number of periods (numeric) or a form of date/time object. See details.}
+\item{prediction.end}{"tracking": Until what point in time to plot. This can be the number of periods (numeric) or a form of date/time object. See details.}
 
-\item{cumulative}{Tracking: Whether the cumulative actual repeat transactions should be plotted.}
+\item{cumulative}{"tracking": Whether the cumulative actual repeat transactions should be plotted.}
 
-\item{sample}{Name of the sample for which the plot should be made. Not available for the tracking plot.}
+\item{sample}{Name of the sample for which the plot should be made. Not for "tracking".}
 
-\item{geom}{The geometric object of ggplo2 to display the data. Forwarded to \link[ggplot2:stat_density]{ggplot2::stat_density}.}
+\item{geom}{The geometric object of ggplot2 to display the data. Forwarded to
+\link[ggplot2:stat_density]{ggplot2::stat_density}. Not for "tracking".}
 
-\item{color}{Color of resulting geom object in the plot.}
+\item{color}{Color of resulting geom object in the plot. Not for "tracking".}
 
-\item{mean.spending}{Spending: Whether customer's mean spending per transaction (\code{TRUE}, default) or the
+\item{mean.spending}{"spending": Whether customer's mean spending per transaction (\code{TRUE}, default) or the
 value of every transaction in the data (\code{FALSE}) should be plotted.}
 
 \item{plot}{Whether a plot should be created or only the assembled data returned.}
 
 \item{verbose}{Show details about the running of the function.}
 
-\item{...}{Forwarded to \link[ggplot2:stat_density]{ggplot2::stat_density}.}
+\item{...}{Forwarded to \link[ggplot2:stat_density]{ggplot2::stat_density}. Not for "tracking".}
 }
 \value{
 An object of class \code{ggplot} from package \code{ggplot2} is returned by default.

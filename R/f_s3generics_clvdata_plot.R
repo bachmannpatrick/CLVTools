@@ -3,15 +3,18 @@
 #' @param x The clv.data object to plot
 #' @param which Which plot to produce, either "tracking" or "spending". May be abbreviated
 #' but only one may be selected. Defaults to "tracking".
-#' @param cumulative Tracking: Whether the cumulative actual repeat transactions should be plotted.
+#' @param cumulative "tracking": Whether the cumulative actual repeat transactions should be plotted.
 #' @param plot Whether a plot should be created or only the assembled data returned.
-#' @param sample Name of the sample for which the plot should be made. Not available for the tracking plot.
-#' @template template_param_predictionend
+#' @param sample Name of the sample for which the plot should be made. Not for "tracking".
+# @template template_param_predictionend
+#' @param prediction.end "tracking": Until what point in time to plot. This can be the number of periods (numeric) or a form of date/time object. See details.
 #' @template template_param_verbose
-#' @param mean.spending Spending: Whether customer's mean spending per transaction (\code{TRUE}, default) or the
+#' @param mean.spending "spending": Whether customer's mean spending per transaction (\code{TRUE}, default) or the
 #' value of every transaction in the data (\code{FALSE}) should be plotted.
-#' @param color Color of resulting geom object in the plot.
-#' @template template_params_densityngeomdots
+#' @param color Color of resulting geom object in the plot. Not for "tracking".
+#' @param geom The geometric object of ggplot2 to display the data. Forwarded to
+#' \link[ggplot2:stat_density]{ggplot2::stat_density}. Not for "tracking".
+#' @param ... Forwarded to \link[ggplot2:stat_density]{ggplot2::stat_density}. Not for "tracking".
 #'
 #' @seealso \link[ggplot2:stat_density]{ggplot2::stat_density} for possible arguments to \code{...}
 #' @seealso \link[CLVTools:gg]{gg} to fit customer's average spending per transaction
@@ -31,7 +34,6 @@
 #' of every transaction in the data, after aggregating transactions of the same customer on the same day.
 #' Note that in all cases this includes all transactions and not only repeat-transactions.
 #' }
-#'
 #'
 #' @template template_details_predictionend
 #'
@@ -100,7 +102,7 @@ plot.clv.data <- function(x, which=c("tracking", "spending"),
                           # general
                           plot=TRUE, verbose=TRUE, ...){
 
-  # **** TODO: input checks for which, sample
+  # **** TODO: input checks for which
   # do not check ggplot inputs (geom, color)
   err.msg <- c()
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=plot, var.name="plot"))
@@ -226,10 +228,15 @@ clv.data.plot.density.spending <- function(x, sample, mean.spending, plot, verbo
   Price <- Spending <- NULL
 
   # only check non-ggplot inputs
-  check_err_msg(.check_user_data_single_boolean(mean.spending, var.name="mean.spending"))
+  err.msg <- c()
+  err.msg <- c(err.msg, .check_user_data_single_boolean(mean.spending, var.name="mean.spending"))
+  err.msg <- c(err.msg, check_userinput_datanocov_sample(sample=sample, default.choices=c("estimation", "full", "holdout")))
+  check_err_msg(err.msg)
 
+  # get transaction data data
   dt.trans <- clv.data.select.sample.data(clv.data = x, sample = sample, choices=c("estimation", "full", "holdout"))
 
+  # Calculate spending
   if(mean.spending){
     dt.spending <- dt.trans[, list(Spending = mean(Price)), by="Id"][, "Spending"]
     title  <- "Density of Average Transaction Value"
