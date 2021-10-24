@@ -41,7 +41,6 @@ test_that("spending - specific args",{
 
 test_that("spending - cannot select holdout data if none present", {
   skip_on_cran()
-  # sample - holdout and no holdout data
   expect_error(plot(clv.cdnow.nohold, which="spending", sample="holdout"), regexp = "has no holdout data")
 })
 

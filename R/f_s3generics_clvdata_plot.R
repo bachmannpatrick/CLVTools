@@ -5,9 +5,10 @@
 #' but only one may be selected. Defaults to "tracking".
 #' @param cumulative "tracking": Whether the cumulative actual repeat transactions should be plotted.
 #' @param plot Whether a plot should be created or only the assembled data returned.
-#' @param sample Name of the sample for which the plot should be made. Not for "tracking".
+#' @param sample Name of the sample for which the plot should be made. Defaults to "estimation". Not for "tracking".
 # @template template_param_predictionend
-#' @param prediction.end "tracking": Until what point in time to plot. This can be the number of periods (numeric) or a form of date/time object. See details.
+#' @param prediction.end "tracking": Until what point in time to plot. This can be the number of periods (numeric) or
+#' a form of date/time object. See details.
 #' @template template_param_verbose
 #' @param mean.spending "spending": Whether customer's mean spending per transaction (\code{TRUE}, default) or the
 #' value of every transaction in the data (\code{FALSE}) should be plotted.
