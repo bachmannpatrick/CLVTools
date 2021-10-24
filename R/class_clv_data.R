@@ -284,6 +284,9 @@ clv.data.make.descriptives <- function(clv.data){
 
 # default.choices might differ in order
 clv.data.select.sample.data <- function(clv.data, sample, choices){
+  # check if sample is valid
+  check_err_msg(.check_userinput_matcharg(char=sample, choices=choices, var.name="sample"))
+
   sample <- match.arg(arg = tolower(sample), choices = choices)
   if(sample == "holdout" & !clv.data.has.holdout(clv.data)){
     check_err_msg("The given clv.data object has no holdout data!")

@@ -107,6 +107,7 @@ plot.clv.data <- function(x, which=c("tracking", "spending"),
   err.msg <- c()
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=plot, var.name="plot"))
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
+  err.msg <- c(err.msg, .check_userinput_matcharg(char=which, choices=c("tracking", "spending"), var.name="which"))
   check_err_msg(err.msg)
 
   return(
@@ -228,9 +229,9 @@ clv.data.plot.density.spending <- function(x, sample, mean.spending, plot, verbo
   Price <- Spending <- NULL
 
   # only check non-ggplot inputs
+  # sample is checked in select.sample.data
   err.msg <- c()
   err.msg <- c(err.msg, .check_user_data_single_boolean(mean.spending, var.name="mean.spending"))
-  err.msg <- c(err.msg, check_userinput_datanocov_sample(sample=sample, default.choices=c("estimation", "full", "holdout")))
   check_err_msg(err.msg)
 
   # get transaction data data

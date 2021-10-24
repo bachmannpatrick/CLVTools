@@ -172,27 +172,28 @@ check_userinput_datanocov_namescov <- function(names.cov, data.cov.df, name.of.c
   return(err.msg)
 }
 
-
-check_userinput_datanocov_sample <- function(sample, default.choices){
-  if(is.null(sample))
-    return("Parameter sample cannot be NULL!")
-  if(!is.character(sample))
-    return("sample needs to be of type character (text)!")
+.check_userinput_matcharg <- function(char, choices, var.name){
+  if(is.null(char))
+    return(paste0("Parameter ",var.name, " cannot be NULL!"))
+  if(!is.character(char))
+    return(paste0(var.name, " needs to be of type character (text)!"))
 
   err.msg <- c()
-  if(anyNA(sample))
-    err.msg <- c(err.msg, "sample may not contain any NA!")
+  if(anyNA(char))
+    err.msg <- c(err.msg, paste0(var.name, " may not contain any NA!"))
 
-  # use pmatch to match the input againts the possible samples
+  # use pmatch to match the input against the possible choices
   #   match.arg would throw undescriptive error if not found
   #   this also accounts for empty texts
 
   if(length(err.msg) == 0) # may fail ungracefully if inproper input
-    if(!all(pmatch(x=tolower(sample), table=tolower(default.choices), nomatch = FALSE)))
-      err.msg <- c(err.msg, paste0("Please choose one of the following samples: ", paste(default.choices, collapse = ", "), "!"))
+    if(!all(pmatch(x=tolower(char), table=tolower(choices), nomatch = FALSE)))
+      err.msg <- c(err.msg, paste0("Please choose one of the following values for ",var.name,": ",
+                                   paste(choices, collapse = ", "), "!"))
 
   return(err.msg)
 }
+
 
 check_userinput_datanocov_datastaticcov <- function(clv.data, dt.data.static.cov, names.cov, name.of.covariate){
   err.msg <- c()
