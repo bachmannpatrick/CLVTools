@@ -1,24 +1,37 @@
-#' @title Plot actual repeat transactions
-#' @param x The clv data object to plot
+#' @title Plot Diagnostics for the Transaction data in a clv.data Object
+#'
+#' @param x The clv.data object to plot
 #' @param which Which plot to produce, either "tracking" or "spending". May be abbreviated
 #' but only one may be selected. Defaults to "tracking".
-#' @param cumulative Whether the cumulative actual repeat transactions should be plotted.
+#' @param cumulative Tracking: Whether the cumulative actual repeat transactions should be plotted.
 #' @param plot Whether a plot should be created or only the assembled data returned.
-#' @template template_param_sample
+#' @param sample Name of the sample for which the plot should be made. Not available for the tracking plot.
 #' @template template_param_predictionend
 #' @template template_param_verbose
-#' @param mean.spending Whether customer's mean spending per transaction (\code{TRUE}, default) or the
+#' @param mean.spending Spending: Whether customer's mean spending per transaction (\code{TRUE}, default) or the
 #' value of every transaction in the data (\code{FALSE}) should be plotted.
 #' @param color Color of resulting geom object in the plot.
 #' @template template_params_densityngeomdots
 #'
-#'
 #' @seealso \link[ggplot2:stat_density]{ggplot2::stat_density} for possible arguments to \code{...}
 #' @seealso \link[CLVTools:gg]{gg} to fit customer's average spending per transaction
-#' with the \code{Gamma-Gamma} model.
+#' with the \code{Gamma-Gamma} model
+#' @seealso \link[CLVTools:plot.clv.fitted.transactions]{plot} to plot fitted transaction models
 #'
 #' @description
-#' Plots the actual repeat transactions for the given CLV data object.
+#' Depending on the value of parameter \code{which}, one of the following plots will be produced:
+#'
+#' \subsection{Tracking Plot}{
+#' Plot the aggregated repeat transactions per period over the given time-horizon (\code{prediction.end}).
+#' See Details for the definition of plotting periods.
+#' }
+#'
+#' \subsection{Spending Plot}{
+#' Plot the empirical density of either customer's average spending per transaction or the value
+#' of every transaction in the data, after aggregating transactions of the same customer on the same day.
+#' Note that in all cases this includes all transactions and not only repeat-transactions.
+#' }
+#'
 #'
 #' @template template_details_predictionend
 #'
@@ -26,23 +39,19 @@
 #' is plotted. If the data is returned (i.e. with argument \code{plot=FALSE}), the respective rows
 #' contain \code{NA} in column \code{Number of Repeat Transactions}.
 #'
-#' Plot the Density of Transaction Values
-#'
-#' Plot the empirical density of either customer's average spending per transaction or the value
-#' of every transaction in the data (after aggregating transactions of the same customer on the same day).
-#' Note that in all cases this includes all transactions and not only repeat-transactions.
-#'
 #' @return
 #' An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
-#' If the parameter \code{plot} is \code{FALSE}, the data that would have been melted and used to
-#' create the plot is returned. It is a \code{data.table} which contains the following columns:
+#' If the parameter \code{plot} is \code{FALSE}, the data that would have been used to
+#' create the plot is returned. Depending on which plot was selected, this is a \code{data.table}
+#' which contains some of the following columns:
+#' \item{Id}{Customer Id}
 #' \item{period.until}{The timepoint that marks the end (up until and including) of the period to which the data in this row refers.}
-#' \item{Number of Repeat Transactions}{The number of actual repeat transactions in
-#' the period that ends at \code{period.until}.}
+#' \item{Number of Repeat Transactions}{The number of actual repeat transactions in the period that ends at \code{period.until}.}
+#' \item{Spending}{Spending as defined by parameter \code{mean.spending}.}
 #'
 #'
 #' @examples
-#' library(ggplot2) # for ggtitle()
+#'
 #' data("cdnow")
 #' clv.data.cdnow <- clvdata(cdnow, time.unit="w",
 #'                           estimation.split=37,
@@ -58,8 +67,8 @@
 #' plot(clv.data.cdnow, cumulative=TRUE)
 #'
 #' # Dont automatically plot but tweak further
+#' library(ggplot2) # for ggtitle()
 #' gg.cdnow <- plot(clv.data.cdnow)
-#'
 #' # change Title
 #' gg.cdnow + ggtitle("CDnow repeat transactions")
 #'
@@ -74,10 +83,6 @@
 #'
 #' # distribution of the values of every transaction
 #' plot(clv.data.cdnow, which="spending", mean.spending = FALSE)
-#'
-#' # further modify plot
-#' p <- plot(clv.data.cdnow, which="spending")
-#' p + ggtitle("CDnow Average Spending")
 #'
 #'
 #' @importFrom graphics plot

@@ -9,6 +9,7 @@
 #' model's distribution of mean transaction spending (weighted by the actual number of transactions).
 #'
 #' @seealso \code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} for transaction models
+#' @seealso \code{\link[CLVTools:plot.clv.data]{plot}} for transaction diagnostics of \code{clv.data} objects
 #'
 #' @return
 #' An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
