@@ -200,3 +200,61 @@ test_that("Always returns a copy of the data", {
 
 
 
+
+# plot ---------------------------------------------------------------------
+context("Correctness - clvdata - plot")
+
+test_that("Spending plot - different data for different sample", {
+  skip_on_cran()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+
+  expect_silent(dt.none       <- plot(clv.cdnow, which="spending", plot=FALSE, verbose=FALSE))
+  expect_silent(dt.estimation <- plot(clv.cdnow, which="spending", sample="estimation", plot=FALSE, verbose=FALSE))
+  expect_silent(dt.full       <- plot(clv.cdnow, which="spending", sample="full", plot=FALSE, verbose=FALSE))
+  expect_silent(dt.holdout    <- plot(clv.cdnow, which="spending", sample="holdout", plot=FALSE, verbose=FALSE))
+
+  # estimation is default
+  expect_true(isTRUE(all.equal(dt.none, dt.estimation)))
+  # all differs to all others
+  expect_false(isTRUE(all.equal(dt.estimation, dt.full)))
+  expect_false(isTRUE(all.equal(dt.estimation, dt.holdout)))
+  expect_false(isTRUE(all.equal(dt.full, dt.holdout)))
+})
+
+
+test_that("Spending plot - ggplot styling works correctly", {
+  skip_on_cran()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+
+  # defaults to line
+  expect_silent(gg.default <- plot(clv.cdnow, which="spending", verbose=FALSE))
+  expect_silent(gg.dots    <- plot(clv.cdnow, which="spending", verbose=FALSE, size=0.1))
+  expect_silent(gg.geom    <- plot(clv.cdnow, which="spending", verbose=FALSE, geom="point"))
+  # args passed in ...
+  expect_silent(gg.color   <- plot(clv.cdnow, which="spending", verbose=FALSE, color="green"))
+
+  expect_s3_class(gg.default$layers[[1]]$geom, "GeomLine")
+  expect_s3_class(gg.geom$layers[[1]]$geom, "GeomPoint")
+  expect_true(gg.dots$layers[[1]]$aes_params[["size"]] == 0.1)
+  expect_true(gg.color$layers[[1]]$aes_params[["colour"]] == "green")
+})
+
+test_that("Spending plot - correct num plotted", {
+  skip_on_cran()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+
+  # mean.spending = TRUE
+  expect_silent(dt.plot <- plot(clv.cdnow,mean.spending=TRUE, sample="full", which="spending", plot=FALSE, verbose=FALSE))
+  expect_setequal(colnames(dt.plot), c("Id", "Spending"))
+  expect_true(nrow(dt.plot) == clv.cdnow@data.transactions[, uniqueN(Id)])
+  expect_setequal(dt.plot$Id, clv.cdnow@data.transactions[, unique(Id)])
+
+  # mean.spending = FALSE
+  #   num trans: Every transaction after aggregating same id/date
+  expect_silent(dt.plot <- plot(clv.cdnow, mean.spending=FALSE, sample="full", plot=FALSE, verbose=FALSE, which="spending"))
+  expect_setequal(colnames(dt.plot), c("Id", "Spending"))
+  expect_true(nrow(dt.plot) == nrow(clv.data.aggregate.transactions(cdnow, has.spending = TRUE)))
+  expect_setequal(dt.plot$Id, clv.cdnow@data.transactions[, unique(Id)])
+})
+
+
