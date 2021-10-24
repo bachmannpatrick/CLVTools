@@ -239,11 +239,11 @@ clv.data.plot.density.spending <- function(x, sample, mean.spending, plot, verbo
 
   # Calculate spending
   if(mean.spending){
-    dt.spending <- dt.trans[, list(Spending = mean(Price)), by="Id"][, "Spending"]
+    dt.spending <- dt.trans[, list(Spending = mean(Price)), by="Id"]
     title  <- "Density of Average Transaction Value"
     labs_x <- "Average Value per Transaction"
   }else{
-    dt.spending <- dt.trans[, list(Spending = Price)]
+    dt.spending <- dt.trans[, list(Spending = Price, Id)]
     title  <- "Density of Transaction Value"
     labs_x <- "Value per Transaction"
   }
@@ -255,6 +255,6 @@ clv.data.plot.density.spending <- function(x, sample, mean.spending, plot, verbo
                                       # pass to stat_density
                                       geom = geom, color=color, ...))
   }else{
-    return(dt.trans)
+    return(dt.spending)
   }
 }
