@@ -247,7 +247,7 @@ clv.data.make.density.plot <- function(dt.data, mapping, labs_x, title, geom, ..
 
 #' @importFrom ggplot2 aes
 clv.data.plot.density.spending <- function(x, sample, mean.spending, plot, verbose, color, geom, ...){
-  Price <- Spending <- NULL
+  Id <- Price <- Spending <- NULL
 
   # only check non-ggplot inputs
   # sample is checked in select.sample.data
@@ -281,7 +281,7 @@ clv.data.plot.density.spending <- function(x, sample, mean.spending, plot, verbo
 #' @importFrom ggplot2 aes_string
 clv.data.plot.density.interpurchase.time <- function(clv.data, sample,
                                                      plot, verbose, color, geom, ...){
-
+  interp.time <- NULL
   dt.trans <- clv.data.select.sample.data(clv.data=clv.data, sample=sample, choices=c("estimation", "full", "holdout"))
 
   # interpurchase time in given period
