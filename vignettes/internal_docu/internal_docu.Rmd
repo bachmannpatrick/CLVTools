@@ -1,13 +1,3 @@
----
-title: "Internal Package Documentation"
-output: pdf_document
-vignette: >
-  %\VignetteIndexEntry{Internal Package Documentation}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
-
-
 coefficients
 logging of params is only a trick to restrict parameters to > 0. This trick in the estimation however affects coef(optimx), hessian and vcov.
 Save as exp()ed coefs to ensure can be used readily in all kind of prediction functions.
