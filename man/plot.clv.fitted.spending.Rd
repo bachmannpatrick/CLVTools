@@ -60,4 +60,6 @@ URL \url{http://www.brucehardie.com/notes/025/gamma_gamma.pdf}.
 }
 \seealso{
 \code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} for transaction models
+
+\code{\link[CLVTools:plot.clv.data]{plot}} for transaction diagnostics of \code{clv.data} objects
 }

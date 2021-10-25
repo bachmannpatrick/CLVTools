@@ -19,10 +19,15 @@ fct.helper.test.runability.clv.data.summary <- function(clv.data){
 }
 
 
-fct.helper.test.runability.clv.data.plot <- function(clv.data){
+fct.helper.test.runability.clv.data.trackingplot <- function(clv.data){
   test_that("plot, no options", {
     skip_on_cran()
     expect_message(plot(clv.data), regexp = "Plotting")
+  })
+
+  test_that("plot, explicit", {
+    skip_on_cran()
+    expect_silent(plot(clv.data, which="tracking", verbose=FALSE))
   })
 
   test_that("plot, cumulative = FALSE", {
@@ -52,7 +57,45 @@ fct.helper.test.runability.clv.data.plot <- function(clv.data){
     skip_on_cran()
     expect_silent(plot(clv.data, verbose=FALSE))
   })
+}
 
+
+fct.helper.test.runability.clv.data.plotspending <- function(clv.data){
+  test_that("plot - spending, mean.spending=T", {
+    skip_on_cran()
+    expect_silent(plot(clv.data, which="spending", mean.spending=TRUE))
+  })
+
+  test_that("plot - spending, mean.spending=F", {
+    skip_on_cran()
+    expect_silent(plot(clv.data, which="spending", mean.spending=FALSE))
+  })
+
+  test_that("plot - spending, sample", {
+    skip_on_cran()
+    expect_silent(plot(clv.data, which="spending", sample="estimation"))
+    expect_silent(plot(clv.data, which="spending", sample="full"))
+    if(clv.data.has.holdout(clv.data)){
+      expect_silent(plot(clv.data, which="spending", sample="holdout"))
+    }
+  })
+
+  test_that("plot - spending, extra arguments", {
+    skip_on_cran()
+    # others and ... args
+    expect_silent(plot(clv.data, which="spending", color="yellow", geom="point", size=0.1))
+  })
+
+  test_that("plot - spending, plot=FALSE", {
+    skip_on_cran()
+    # others and ... args
+    expect_silent(dt.plot <- plot(clv.data, which="spending", mean.spending=TRUE, plot=FALSE))
+    expect_s3_class(dt.plot, "data.table")
+    expect_setequal(colnames(dt.plot), c("Id", "Spending"))
+    # always returns Id
+    expect_silent(dt.plot <- plot(clv.data, which="spending", mean.spending=FALSE, plot=FALSE))
+    expect_setequal(colnames(dt.plot), c("Id", "Spending"))
+  })
 }
 
 
@@ -127,29 +170,18 @@ expect_silent(apparel.no.holdout.dyn.cov     <- SetDynamicCovariates(clv.data = 
                                                                       name.date = "Cov.Date"))
 
 
-
-fct.helper.test.runability.clv.data.plot(apparel.holdout)
-fct.helper.test.runability.clv.data.plot(apparel.no.holdout)
-fct.helper.test.runability.clv.data.plot(apparel.holdout.static.cov)
-fct.helper.test.runability.clv.data.plot(apparel.no.holdout.static.cov)
-fct.helper.test.runability.clv.data.plot(apparel.holdout.dyn.cov)
-fct.helper.test.runability.clv.data.plot(apparel.no.holdout.dyn.cov)
-
-
-fct.helper.test.runability.clv.data.summary(apparel.holdout)
-fct.helper.test.runability.clv.data.summary(apparel.no.holdout)
-fct.helper.test.runability.clv.data.summary(apparel.holdout.static.cov)
-fct.helper.test.runability.clv.data.summary(apparel.no.holdout.static.cov)
-fct.helper.test.runability.clv.data.summary(apparel.holdout.dyn.cov)
-fct.helper.test.runability.clv.data.summary(apparel.no.holdout.dyn.cov)
-
-fct.helper.test.runability.clv.data.others3(apparel.holdout)
-fct.helper.test.runability.clv.data.others3(apparel.no.holdout)
-fct.helper.test.runability.clv.data.others3(apparel.holdout.static.cov)
-fct.helper.test.runability.clv.data.others3(apparel.no.holdout.static.cov)
-fct.helper.test.runability.clv.data.others3(apparel.holdout.dyn.cov)
-fct.helper.test.runability.clv.data.others3(apparel.no.holdout.dyn.cov)
+fct.helper.test.runability.clv.data.runall <- function(clv.data){
+  fct.helper.test.runability.clv.data.trackingplot(clv.data)
+  fct.helper.test.runability.clv.data.plotspending(clv.data)
+  fct.helper.test.runability.clv.data.summary(clv.data)
+  fct.helper.test.runability.clv.data.others3(clv.data)
+}
 
 
-
+fct.helper.test.runability.clv.data.runall(apparel.holdout)
+fct.helper.test.runability.clv.data.runall(apparel.no.holdout)
+fct.helper.test.runability.clv.data.runall(apparel.holdout.static.cov)
+fct.helper.test.runability.clv.data.runall(apparel.no.holdout.static.cov)
+fct.helper.test.runability.clv.data.runall(apparel.holdout.dyn.cov)
+fct.helper.test.runability.clv.data.runall(apparel.no.holdout.dyn.cov)
 

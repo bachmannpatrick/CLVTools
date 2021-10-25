@@ -279,3 +279,21 @@ clv.data.make.descriptives <- function(clv.data){
   return(dt.summary)
 
 }
+
+
+
+# default.choices might differ in order
+clv.data.select.sample.data <- function(clv.data, sample, choices){
+  # check if sample is valid
+  check_err_msg(.check_userinput_matcharg(char=sample, choices=choices, var.name="sample"))
+
+  sample <- match.arg(arg = tolower(sample), choices = choices)
+  if(sample == "holdout" & !clv.data.has.holdout(clv.data)){
+    check_err_msg("The given clv.data object has no holdout data!")
+  }
+
+  return(switch(sample,
+                "full" = copy(clv.data@data.transactions),
+                "estimation" = clv.data.get.transactions.in.estimation.period(clv.data),
+                "holdout" = clv.data.get.transactions.in.holdout.period(clv.data)))
+}
