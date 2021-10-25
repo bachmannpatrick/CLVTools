@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.clvtools.com/404.html</loc>
+  </url>
+  <url>
+    <loc>https://www.clvtools.com/articles/CLVTools.html</loc>
+  </url>
+  <url>
+    <loc>https://www.clvtools.com/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>https://www.clvtools.com/articles/internal_docu/internal_docu.html</loc>
+  </url>
+  <url>
+    <loc>https://www.clvtools.com/authors.html</loc>
+  </url>
+  <url>
     <loc>https://www.clvtools.com/index.html</loc>
+  </url>
+  <url>
+    <loc>https://www.clvtools.com/news/index.html</loc>
   </url>
   <url>
     <loc>https://www.clvtools.com/reference/CLVTools-package.html</loc>
@@ -20,6 +38,15 @@
   </url>
   <url>
     <loc>https://www.clvtools.com/reference/apparelTrans.html</loc>
+  </url>
+  <url>
+    <loc>https://www.clvtools.com/reference/as.clv.data.html</loc>
+  </url>
+  <url>
+    <loc>https://www.clvtools.com/reference/as.data.frame.clv.data.html</loc>
+  </url>
+  <url>
+    <loc>https://www.clvtools.com/reference/as.data.table.clv.data.html</loc>
   </url>
   <url>
     <loc>https://www.clvtools.com/reference/bgbb.html</loc>
@@ -172,6 +199,9 @@
     <loc>https://www.clvtools.com/reference/ggomnbd_expectation.html</loc>
   </url>
   <url>
+    <loc>https://www.clvtools.com/reference/index.html</loc>
+  </url>
+  <url>
     <loc>https://www.clvtools.com/reference/nobs.clv.data.html</loc>
   </url>
   <url>
@@ -211,6 +241,9 @@
     <loc>https://www.clvtools.com/reference/predict.clv.fitted.transactions.html</loc>
   </url>
   <url>
+    <loc>https://www.clvtools.com/reference/subset.clv.data.html</loc>
+  </url>
+  <url>
     <loc>https://www.clvtools.com/reference/summary.clv.data.html</loc>
   </url>
   <url>
@@ -227,11 +260,5 @@
   </url>
   <url>
     <loc>https://www.clvtools.com/reference/vec_gsl_hyp2f1_e.html</loc>
-  </url>
-  <url>
-    <loc>https://www.clvtools.com/articles/CLVTools.html</loc>
-  </url>
-  <url>
-    <loc>https://www.clvtools.com/articles/internal_docu/internal_docu.html</loc>
   </url>
 </urlset>

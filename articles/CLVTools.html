@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
       </span>
     </div>
 
@@ -97,9 +97,9 @@
 
     
     
-<div id="prerequisites-setup-the-r-environment" class="section level1">
-<h1 class="hasAnchor">
-<a href="#prerequisites-setup-the-r-environment" class="anchor"></a>Prerequisites: Setup the R environment</h1>
+<div class="section level1">
+<h1 id="prerequisites-setup-the-r-environment">Prerequisites: Setup the R environment<a class="anchor" aria-label="anchor" href="#prerequisites-setup-the-r-environment"></a>
+</h1>
 <p>Install the stable version from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"CLVTools"</span><span class="op">)</span></code></pre></div>
@@ -111,9 +111,9 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/bachmannpatrick/CLVTools" class="external-link">"CLVTools"</a></span><span class="op">)</span></code></pre></div>
 <p>#Apply the <code>CLVTools</code> Package</p>
-<div id="general-workflow" class="section level2">
-<h2 class="hasAnchor">
-<a href="#general-workflow" class="anchor"></a>General workflow</h2>
+<div class="section level2">
+<h2 id="general-workflow">General workflow<a class="anchor" aria-label="anchor" href="#general-workflow"></a>
+</h2>
 <p>Independent of the probabilistic model applied in <code>CLVTools</code>, the general workflow consists of three main steps:</p>
 <ol style="list-style-type: decimal">
 <li><p>Create a <code>clv.data</code> object containing the dataset and required meta-information such as date formats and column names in the dataset. After initializing the object, there is the option to add additional information on covariates in a separate step.</p></li>
@@ -122,13 +122,13 @@
 </ol>
 <p>Reporting and plotting results is facilitated by the implementation of well-known generic methods such as <code><a href="../reference/plot.clv.fitted.transactions.html">plot()</a></code>, <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>. These commands adapt their output according to the model state and may be used at any point of the workﬂow.</p>
 </div>
-<div id="load-sample-data-provided-in-the-package" class="section level2">
-<h2 class="hasAnchor">
-<a href="#load-sample-data-provided-in-the-package" class="anchor"></a>Load sample data provided in the package</h2>
+<div class="section level2">
+<h2 id="load-sample-data-provided-in-the-package">Load sample data provided in the package<a class="anchor" aria-label="anchor" href="#load-sample-data-provided-in-the-package"></a>
+</h2>
 <p>As Input data <code>CLVTools</code> requires customers’ transaction history. Every transaction record consists of a purchase date and customer ID. Optionally, the price of the transaction may be included to allow for prediction of future customer spending using an additional Gamma/Gamma model<span class="citation">(Fader, Hardie, and Lee 2005b; Colombo and Jiang 1999)</span>. Using the full history of transaction data allows for comprehensive plots and summary statistics, which allow the identification of possible issues prior to model estimation. Data may be provided as <code>data.frame</code> or <code>data.table</code> <span class="citation">(Dowle and Srinivasan 2019)</span>.</p>
 <p>It is common practice to split time series data into two parts, an estimation and a holdout period. The model is estimated based on the data from the estimation period while the data from the holdout period allows to rigorously assess model performance. Once model performance is checked on known data one can proceed to predict data without a holdout period. The length of the estimation period is heavily dependent on the characteristics of the analyzed dataset. We recommend to choose an estimation period that contains in minimum the length of the average inter-purchase time. Note that all customers in the dataset need to purchase at least once during the estimation period, i.e. these models do not account for prospects who have not yet a purchase record.</p>
 <p>Some models included in <code>CLVTools</code> allow to model the impact of covariates. These covariates may explain heterogeneity among the customers and therefore increase the predictive accuracy of the model. At the same time we may also identify and quantify the effects of these covariates on customer purchase and customer attrition. <code>CLVTools</code> distinguishes between time-invariant and time-varying covariates. Time-invariant covariates include customer characteristics such as demographics that do not change over time. Time-varying covariates are allowed to change over time. They include for example direct marketing information or seasonal patterns.</p>
-<p>For the following example, we use simulated data comparable to data from a retailer in the apparel industry. The dataset contains transactional detail records for every customer consisting of customer id, date of purchase and the total monetary value of the transaction.The apparel dataset is available in the <code>CLVTools</code> package. Use the <code><a href="https://rdrr.io/r/utils/data.html" class="external-link">data(apparelTrans)</a></code> to load it:</p>
+<p>For the following example, we use simulated data comparable to data from a retailer in the apparel industry. The dataset contains transactional detail records for every customer consisting of customer id, date of purchase and the total monetary value of the transaction.The apparel dataset is available in the <code>CLVTools</code> package. Use the <code>data(apparelTrans)</code> to load it:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelTrans"</span><span class="op">)</span>
 <span class="va">apparelTrans</span>
@@ -145,9 +145,9 @@
 <span class="co">#&gt; 2352: 1222 2005-01-03  44.77</span>
 <span class="co">#&gt; 2353: 1222 2005-03-03  99.21</span></code></pre></div>
 </div>
-<div id="clvdata" class="section level2">
-<h2 class="hasAnchor">
-<a href="#clvdata" class="anchor"></a>Initialize the CLV-Object</h2>
+<div class="section level2">
+<h2 id="clvdata">Initialize the CLV-Object<a class="anchor" aria-label="anchor" href="#clvdata"></a>
+</h2>
 <p>Before we estimate a model, we are required to initialize a data object using the <code><a href="../reference/clvdata.html">clvdata()</a></code> command. The data object contains the prepared transactional data and is later used as input for model fitting. Make sure to store the generated object in a variable, e.g. in our example <code>clv.apparel</code>.</p>
 <p>Be aware that probabilistic models such as the ones implemented in CLVTools are usually applied to specific customer cohorts. That means, you analyze customer that have joined your company at the same time (usually same day, week, month, or quarter). For more information on cohort analysis, see also <a href="https://en.wikipedia.org/wiki/Cohort_analysis" class="external-link">here</a>. Consequently, the data apparelTrans in this example is not the full transaction records of a fashion retailer, but rather only the customer cohort of 250 customers purchasing for the first time at this business on the day of 2005-01-03. This has to be done before initializing a data object using the <code><a href="../reference/clvdata.html">clvdata()</a></code> command.</p>
 <p>Through the argument <code>data.transactions</code> a <code>data.frame</code> or <code>data.table</code> which contains the transaction records, is specified. In our example this is <code>data.transactions=apparelTrans</code>. The argument <code>date.format</code> is used to indicate the format of the date variable in the data used. The date format in the apparel dataset is given as “year-month-day” (i.e., “2005-01-03”), therefore we set <code>date.format="ymd"</code>. Other combinations such as <code>date.format="dmy"</code> are possible. See the documentation of <code>lubridate</code> <span class="citation">(Grolemund and Wickham 2011)</span> for all details. <code>time.unit</code> is the scale used to measure time between two dates. For this dataset and in most other cases The argument <code>time.unit="week"</code> is the preferred choice. Abbreviations may be used (i.e. “w”). <code>estimation.split</code> indicates the length of the estimation period. Either the length of the estimation period (in previous specified time units) or the date at which the estimation period ends can be specified. If no value is provided, the whole dataset is used as estimation period (i.e. no holdout period). In this example, we use an estimation period of 40 weeks. Finally, the three name arguments indicate the column names for customer ID, date and price in the supplied dataset. Note that the price column is optional.</p>
@@ -160,9 +160,9 @@
                        name.date <span class="op">=</span> <span class="st">"Date"</span>,
                        name.price <span class="op">=</span> <span class="st">"Price"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="check-the-clvdata-object" class="section level2">
-<h2 class="hasAnchor">
-<a href="#check-the-clvdata-object" class="anchor"></a>Check the <code>clvdata</code> Object</h2>
+<div class="section level2">
+<h2 id="check-the-clvdata-object">Check the <code>clvdata</code> Object<a class="anchor" aria-label="anchor" href="#check-the-clvdata-object"></a>
+</h2>
 <p>To get details on the <code>clvdata</code> object, print it to the console.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">clv.apparel</span>
@@ -212,10 +212,10 @@
 <span class="co">#&gt; Mean Interpurchase time            7.361           5.756           9.462     </span>
 <span class="co">#&gt; (SD)                               6.791           6.394           12.266</span></code></pre></div>
 </div>
-<div id="estimate" class="section level2">
-<h2 class="hasAnchor">
-<a href="#estimate" class="anchor"></a>Estimate Model Parameters</h2>
-<p>After initializing the object, we are able to estimate the first probabilistic latent attrition model. We start with the standard Pareto/NBD model <span class="citation">(Schmittlein, Morrison, and Colombo 1987)</span> and therefore use the command <code><a href="../reference/pnbd.html">pnbd()</a></code> to fit the model and estimate model parameters. <code>clv.data</code> specifies the initialized object prepared in the last step. Optionally, starting values for the model parameters and control settings for the optimization algorithm may be provided: The argument <code>start.params.model</code> allows to assign a vector (e.g. <code><a href="https://rdrr.io/r/base/c.html" class="external-link">c(alpha=1, beta=2, s=1, beta=2)</a></code> in the case of the Pareto/NBD model) of starting values for the optimization. This is useful if prior knowledge on the parameters of the distributions are available. By default starting values are set to 1 for all parameters. The argument <code>optimx.args</code> provides an option to control settings for the optimization routine. It passes a list of arguments to the optimizer. All options known from the package <code>optimx</code> <span class="citation">(Nash and Varadhan 2011; Nash 2014)</span> may be used. This option enables users to specify specific optimization algorithms, set upper and/or lower limits or enable tracing information on the progress of the optimization. In the case of the standard Pareto/NBD model, <code>CLVTools</code> uses by default the optimization method <code>L-BFGS-G</code> <span class="citation">(Byrd et al. 1995)</span>. If the result of the optimization is in-feasible, the optimization automatically switches to the more robust but often slower <code>Nelder-Mead</code> method <span class="citation">(Nelder and Mead 1965)</span>. <code>verbose</code> shows additional output.</p>
+<div class="section level2">
+<h2 id="estimate">Estimate Model Parameters<a class="anchor" aria-label="anchor" href="#estimate"></a>
+</h2>
+<p>After initializing the object, we are able to estimate the first probabilistic latent attrition model. We start with the standard Pareto/NBD model <span class="citation">(Schmittlein, Morrison, and Colombo 1987)</span> and therefore use the command <code><a href="../reference/pnbd.html">pnbd()</a></code> to fit the model and estimate model parameters. <code>clv.data</code> specifies the initialized object prepared in the last step. Optionally, starting values for the model parameters and control settings for the optimization algorithm may be provided: The argument <code>start.params.model</code> allows to assign a vector (e.g. <code>c(alpha=1, beta=2, s=1, beta=2)</code> in the case of the Pareto/NBD model) of starting values for the optimization. This is useful if prior knowledge on the parameters of the distributions are available. By default starting values are set to 1 for all parameters. The argument <code>optimx.args</code> provides an option to control settings for the optimization routine. It passes a list of arguments to the optimizer. All options known from the package <code>optimx</code> <span class="citation">(Nash and Varadhan 2011; Nash 2014)</span> may be used. This option enables users to specify specific optimization algorithms, set upper and/or lower limits or enable tracing information on the progress of the optimization. In the case of the standard Pareto/NBD model, <code>CLVTools</code> uses by default the optimization method <code>L-BFGS-G</code> <span class="citation">(Byrd et al. 1995)</span>. If the result of the optimization is in-feasible, the optimization automatically switches to the more robust but often slower <code>Nelder-Mead</code> method <span class="citation">(Nelder and Mead 1965)</span>. <code>verbose</code> shows additional output.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">est.pnbd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pnbd.html">pnbd</a></span><span class="op">(</span>clv.data <span class="op">=</span> <span class="va">clv.apparel</span><span class="op">)</span>
 <span class="co">#&gt; Starting estimation...</span>
@@ -241,7 +241,7 @@
                      optimx.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>control<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>trace<span class="op">=</span><span class="fl">5</span><span class="op">)</span>,
                                        method<span class="op">=</span><span class="st">"Nelder-Mead"</span> 
                                        <span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>Parameter estimates may be reported by either printing the estimated object (i.e. <code>est.pnbd</code>) directly in the console or by calling <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary(est.pnbd)</a></code> to get a more detailed report including the likelihood value as well as AIC and BIC. Alternatively parameters may be directly extracted using <code><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef(est.pnbd)</a></code>. Also <code>loglik()</code>, <code><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint()</a></code> and <code><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov()</a></code> are available to directly access the Loglikelihood value, confidence intervals for the parameters and to calculate the Variance-Covariance Matrix for the fitted model. For the standard Pareto/NBD model, we get 4 parameters <span class="math inline">\(r, \alpha, s\)</span> and <span class="math inline">\(\beta\)</span>. where <span class="math inline">\(r,\alpha\)</span> represent the shape and scale parameter of the gamma distribution that determines the purchase rate and <span class="math inline">\(s,\beta\)</span> of the attrition rate across individual customers. <span class="math inline">\(r/\alpha\)</span> can be interpreted as the mean purchase and <span class="math inline">\(s/\beta\)</span> as the mean attrition rate. A significance level is provided for each parameter estimates. In the case of the apparelTrans dataset we observe a an average purchase rate of <span class="math inline">\(r/\alpha=0.147\)</span> transactions and an average attrition rate of <span class="math inline">\(s/\beta=0.031\)</span> per customer per week. KKT 1 and 2 indicate the Karush-Kuhn-Tucker optimality conditions of the first and second order <span class="citation">(Kuhn and Tucker 1951)</span>. If those criteria are not met, the optimizer has probably not arrived at an optimal solution. If this is the case it is usually a good idea to rerun the estimation using alternative starting values.</p>
+<p>Parameter estimates may be reported by either printing the estimated object (i.e. <code>est.pnbd</code>) directly in the console or by calling <code>summary(est.pnbd)</code> to get a more detailed report including the likelihood value as well as AIC and BIC. Alternatively parameters may be directly extracted using <code>coef(est.pnbd)</code>. Also <code>loglik()</code>, <code><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint()</a></code> and <code><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov()</a></code> are available to directly access the Loglikelihood value, confidence intervals for the parameters and to calculate the Variance-Covariance Matrix for the fitted model. For the standard Pareto/NBD model, we get 4 parameters <span class="math inline">\(r, \alpha, s\)</span> and <span class="math inline">\(\beta\)</span>. where <span class="math inline">\(r,\alpha\)</span> represent the shape and scale parameter of the gamma distribution that determines the purchase rate and <span class="math inline">\(s,\beta\)</span> of the attrition rate across individual customers. <span class="math inline">\(r/\alpha\)</span> can be interpreted as the mean purchase and <span class="math inline">\(s/\beta\)</span> as the mean attrition rate. A significance level is provided for each parameter estimates. In the case of the apparelTrans dataset we observe a an average purchase rate of <span class="math inline">\(r/\alpha=0.147\)</span> transactions and an average attrition rate of <span class="math inline">\(s/\beta=0.031\)</span> per customer per week. KKT 1 and 2 indicate the Karush-Kuhn-Tucker optimality conditions of the first and second order <span class="citation">(Kuhn and Tucker 1951)</span>. If those criteria are not met, the optimizer has probably not arrived at an optimal solution. If this is the case it is usually a good idea to rerun the estimation using alternative starting values.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#Full detailed summary of the parameter estimates</span>
 <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est.pnbd</span><span class="op">)</span>
@@ -356,9 +356,9 @@
                      optimx.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>control<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>trace<span class="op">=</span><span class="fl">5</span><span class="op">)</span>,
                                        method<span class="op">=</span><span class="st">"Nelder-Mead"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="predict" class="section level2">
-<h2 class="hasAnchor">
-<a href="#predict" class="anchor"></a>Predict Customer Behavior</h2>
+<div class="section level2">
+<h2 id="predict">Predict Customer Behavior<a class="anchor" aria-label="anchor" href="#predict"></a>
+</h2>
 <p>Once the model parameters are estimated, we are able to predict future customer behavior on an individual level. To do so, we use <code><a href="../reference/predict.clv.fitted.transactions.html">predict()</a></code> on the object with the estimated parameters (i.e. <code>est.pnbd</code>). The prediction period may be varied by specifying <code>prediction.end</code>. It is possible to provide either an end-date or a duration using the same time unit as specified when initializing the object (i.e <code>prediction.end = "2006-05-08"</code> or <code>prediction.end = 30</code>). By default, the prediction is made until the end of the dataset specified in the <code><a href="../reference/clvdata.html">clvdata()</a></code> command. The argument <code>continuous.discount.factor</code> allows to adjust the discount rate used to estimated the discounted expected transactions (DERT). The default value is <code>0.1</code> (=10%). Probabilistic customer attrition model predict in general three expected characteristics for every customer:</p>
 <ul>
 <li>“conditional expected transactions” (CET), which is the number of transactions to expect form a customer during the prediction period,</li>
@@ -410,9 +410,9 @@
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/predict.clv.fitted.transactions.html">predict</a></span><span class="op">(</span><span class="va">est.pnbd</span>, prediction.end <span class="op">=</span> <span class="st">"2006-05-08"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="plot-transactions" class="section level2">
-<h2 class="hasAnchor">
-<a href="#plot-transactions" class="anchor"></a>Plot Transactions</h2>
+<div class="section level2">
+<h2 id="plot-transactions">Plot Transactions<a class="anchor" aria-label="anchor" href="#plot-transactions"></a>
+</h2>
 <p><code>clvdata</code> objects may be plotted using the <code><a href="../reference/plot.clv.fitted.transactions.html">plot()</a></code> command. Similar to <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>, the output of <code><a href="../reference/plot.clv.fitted.transactions.html">plot()</a></code> adapts to the current modeling step. It provides a descriptive plot of the actual transactional data if the model has not yet been fitted. Once the model has been estimated, <code><a href="../reference/plot.clv.fitted.transactions.html">plot()</a></code> provides an aggregated incremental tracking plot of the actual data and the model based on the estimated parameters. The time-span for the plot may be altered using the <code>prediction.end</code> argument by providing either a duration or an end date. By default the plot is generated for the entire time-span of the provided dataset specified in the <code><a href="../reference/clvdata.html">clvdata()</a></code> command. The dashed line indicates the end of the estimation period. Alternatively cumulative actual and expected transactions can be plotted by setting <code>cumulative</code> to <code>TRUE</code>. The argument <code>transactions</code> disable for plotting actual transactions (<code>transactions=FALSE</code>). For further plotting options see the documentation.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">est.pnbd</span><span class="op">)</span>
@@ -424,11 +424,11 @@
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">est.pnbd</span>, prediction.end <span class="op">=</span> <span class="st">"2006-05-08"</span>, cumulative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="covariates" class="section level2">
-<h2 class="hasAnchor">
-<a href="#covariates" class="anchor"></a>Covariates</h2>
+<div class="section level2">
+<h2 id="covariates">Covariates<a class="anchor" aria-label="anchor" href="#covariates"></a>
+</h2>
 <p><code>CLVTools</code> provides the option to include covariates into probabilistic customer attrition models. Covariates may affect the purchase or the attrition process, or both. It is also possible to include different covariates for the two processes. However, support for covariates is dependent on the model. Not all implemented models provide the option for covariates. In general, <code>CLVTools</code> distinguishes between two types of covariates: time-invariant and time-varying. The former include factors that do not change over time such as customer demographics or customer acquisition information. The latter may change over time and include marketing activities or seasonal patterns.</p>
-<p>Data for time-invariant covariates must contain a unique customer ID and a single value for each covariate. It should be supplied as a <code>data.frame</code> or <code>data.table</code>. In the example of the apparel retailer we use demographic information “gender” as time-invariant and information on the acquisition channel as covariate for both, the purchase and the attrition process. Use the <code><a href="https://rdrr.io/r/utils/data.html" class="external-link">data("apparelStaticCov")</a></code> command to load the time-invariant covariates. In this example gender is coded as a dummy variable with <code>male=0</code> and <code>female=1</code> and channel with <code>online=0</code> and <code>offline=1</code>.</p>
+<p>Data for time-invariant covariates must contain a unique customer ID and a single value for each covariate. It should be supplied as a <code>data.frame</code> or <code>data.table</code>. In the example of the apparel retailer we use demographic information “gender” as time-invariant and information on the acquisition channel as covariate for both, the purchase and the attrition process. Use the <code>data("apparelStaticCov")</code> command to load the time-invariant covariates. In this example gender is coded as a dummy variable with <code>male=0</code> and <code>female=1</code> and channel with <code>online=0</code> and <code>offline=1</code>.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelStaticCov"</span><span class="op">)</span>
 <span class="va">apparelStaticCov</span>
@@ -444,7 +444,7 @@
 <span class="co">#&gt; 248: 1220      0       0</span>
 <span class="co">#&gt; 249: 1221      1       1</span>
 <span class="co">#&gt; 250: 1222      1       0</span></code></pre></div>
-<p>Data for time-varying covariates requires a time-series of covariate values for every customer. I.e. if the time-varying covariates are allowed to change every week, a value for every customer for every week is required. Note that all contextual factors are required to use the same time intervals for the time-series. In the example of the apparel retailer we use information on direct marketing (<code>Marekting</code>) as time-varying covariate. Additionally, we add gender as time-invariant contextual factors. Note that the data structure of invariant covariates needs to be aligned with the structure of time-varying covariate. Use <code><a href="https://rdrr.io/r/utils/data.html" class="external-link">data("apparelDynCov")</a></code> command to load</p>
+<p>Data for time-varying covariates requires a time-series of covariate values for every customer. I.e. if the time-varying covariates are allowed to change every week, a value for every customer for every week is required. Note that all contextual factors are required to use the same time intervals for the time-series. In the example of the apparel retailer we use information on direct marketing (<code>Marekting</code>) as time-varying covariate. Additionally, we add gender as time-invariant contextual factors. Note that the data structure of invariant covariates needs to be aligned with the structure of time-varying covariate. Use <code>data("apparelDynCov")</code> command to load</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelDynCov"</span><span class="op">)</span>
 <span class="va">apparelDynCov</span>
@@ -535,9 +535,9 @@
 <span class="co">#&gt; Constraint covs FALSE</span></code></pre></div>
 <p>To predict future customer behavior we use <code><a href="../reference/predict.clv.fitted.transactions.html">predict()</a></code>. Note that dependent on the model, the predicted metrics may differ. For example, in the case of the Pareto/NBD model with time-varying covariates, instead of DERT, DECT is predicted. DECT only covers a finite time horizon in contrast to DERT. Time-varying covariates must be provided for the entire prediction period. If the data initially provided in the <code><a href="../reference/SetDynamicCovariates.html">SetDynamicCovariates()</a></code> command does not cover the complete prediction period, the argument <code>new.data</code> offers the ability to supply new data for the time-varying covariates in the from of a <code>clvdata</code> object.</p>
 </div>
-<div id="add-correlation-to-the-model" class="section level2">
-<h2 class="hasAnchor">
-<a href="#add-correlation-to-the-model" class="anchor"></a>Add Correlation to the model</h2>
+<div class="section level2">
+<h2 id="add-correlation-to-the-model">Add Correlation to the model<a class="anchor" aria-label="anchor" href="#add-correlation-to-the-model"></a>
+</h2>
 <p>To relax the assumption of independence between the purchase and the attrition process, <code>CLVTools</code> provides the option to specify the argument <code>use.cor</code> in the command t fit the model (i.e. <code>pnbd</code>). In case of <code>use.cor=TRUE</code>, a Sarmanov approach is used to correlate the two processes. <code>start.param.cor</code> allows to optionally specify a starting value for the correlation parameter.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">est.pnbd.cor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pnbd.html">pnbd</a></span><span class="op">(</span><span class="va">clv.apparel</span>, 
@@ -545,9 +545,9 @@
 <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est.pnbd.cor</span><span class="op">)</span></code></pre></div>
 <p>The parameter <code>Cor(life,trans)</code> is added to the parameter estimates that may be directly interpreted as a correlation. In the example of the apparel retailer the correlation parameter is not significant and the correlation is very close to zero, indicating that the purchase and the attrition process are independent.</p>
 </div>
-<div id="advanced-options-for-contextual-factors" class="section level2">
-<h2 class="hasAnchor">
-<a href="#advanced-options-for-contextual-factors" class="anchor"></a>Advanced Options for Contextual Factors</h2>
+<div class="section level2">
+<h2 id="advanced-options-for-contextual-factors">Advanced Options for Contextual Factors<a class="anchor" aria-label="anchor" href="#advanced-options-for-contextual-factors"></a>
+</h2>
 <p><code>CLVTools</code> provides two additional estimation options for models containing covariates (time-invariant or time-varying): regularization and constraints for the parameters of the covariates. Both options are included in the command to fit the model (i.e., <code><a href="../reference/pnbd.html">pnbd()</a></code>. Support for this option is dependent on the model. They may be used simultaneously.</p>
 <ul>
 <li>The argument <code>reg.lambdas</code> provides the possibility to specify separate <code>\lambda_{reg}</code> for the two processes (i.e. <code>reg.lambdas = c(trans=100, life=100)</code>. The larger the <code>\lambda_{reg}</code> the stronger the effects of the regularization. Regularization only affects the parameters of the covariates.</li>
@@ -646,17 +646,17 @@
 <span class="co">#&gt;    Constraint params Gender</span></code></pre></div>
 </div>
 </div>
-<div id="spending" class="section level1">
-<h1 class="hasAnchor">
-<a href="#spending" class="anchor"></a>Customer Spending</h1>
+<div class="section level1">
+<h1 id="spending">Customer Spending<a class="anchor" aria-label="anchor" href="#spending"></a>
+</h1>
 <p>Customer lifetime value (CLV) is composed of three components of every customer: the future level of transactions, expected attrition behaviour (i.e. probability of being alive) and the monetary value. While probabilistic latent attrition models provide metrics for the first two components, they do not predict customer spending. To predict customer spending an additional model is required. The <code>CLVTools</code>package features the Gamma/Gamma (G/G) <span class="citation">(Fader, Hardie, and Lee 2005b; Colombo and Jiang 1999)</span> model for predicting customer spending. For convenience, the <code><a href="../reference/predict.clv.fitted.transactions.html">predict()</a></code> command allows to automatically predict customer spending for all latent attrition models using the option <code>predict.spending=TRUE</code> (see section <a href="#spending">Customer Spending</a>). However, to provide more options and more granular insights the Gamma/Gamma model can be estimated independently. In the following, we discuss how to estimate a Gamma/Gamma model using <code>CLVTools</code>.</p>
 <p>The general workflow remains identical. It consists of the three main steps: (1) creating a <code>clv.data</code> object containing the dataset and required meta-information, (2) fitting the model on the provided data and (3) predicting future customer purchase behavior based on the fitted model.</p>
 <p>Reporting and plotting results is facilitated by the implementation of well-known generic methods such as <code><a href="../reference/plot.clv.fitted.transactions.html">plot()</a></code>, <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>.</p>
-<div id="load-sample-data-provided-in-the-package-1" class="section level2">
-<h2 class="hasAnchor">
-<a href="#load-sample-data-provided-in-the-package-1" class="anchor"></a>Load sample data provided in the package</h2>
+<div class="section level2">
+<h2 id="load-sample-data-provided-in-the-package-1">Load sample data provided in the package<a class="anchor" aria-label="anchor" href="#load-sample-data-provided-in-the-package-1"></a>
+</h2>
 <p>For estimating customer spending <code>CLVTools</code> requires customers’ transaction history including price. Every transaction record consists of a purchase date,customer ID and the price of the transaction. Data may be provided as <code>data.frame</code> or <code>data.table</code> <span class="citation">(Dowle and Srinivasan 2019)</span>. Currently, the Gamma/Gamma model does not allow for covariates.</p>
-<p>We use again simulated data comparable to data from a retailer in the apparel industry. The apparel dataset is available in the <code>CLVTools</code> package. We use the <code><a href="https://rdrr.io/r/utils/data.html" class="external-link">data(apparelTrans)</a></code> to load it and initialize a data object using the <code><a href="../reference/clvdata.html">clvdata()</a></code> command. For details see section <a href="#clvdata">Initialize the CLV-Object</a>.</p>
+<p>We use again simulated data comparable to data from a retailer in the apparel industry. The apparel dataset is available in the <code>CLVTools</code> package. We use the <code>data(apparelTrans)</code> to load it and initialize a data object using the <code><a href="../reference/clvdata.html">clvdata()</a></code> command. For details see section <a href="#clvdata">Initialize the CLV-Object</a>.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelTrans"</span><span class="op">)</span>
 <span class="va">apparelTrans</span>
@@ -681,10 +681,10 @@
                        name.date <span class="op">=</span> <span class="st">"Date"</span>,
                        name.price <span class="op">=</span> <span class="st">"Price"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="estimate-model-parameters" class="section level2">
-<h2 class="hasAnchor">
-<a href="#estimate-model-parameters" class="anchor"></a>Estimate Model Parameters</h2>
-<p>To estimate the Gamma/Gamma spending model, we use the command <code><a href="../reference/gg.html">gg()</a></code> on the initialized <code>clvdata</code> object. <code>clv.data</code> specifies the initialized object prepared in the last step. Optionally, starting values for the model parameters and control settings for the optimization algorithm may be provided: The argument <code>start.params.model</code> allows to assign a vector of starting values for the optimization (i.e <code><a href="https://rdrr.io/r/base/c.html" class="external-link">c(p=1, q=2, gamma=1)</a></code> for the the Gamma/Gamma model). This is useful if prior knowledge on the parameters of the distributions are available. By default starting values are set to 1 for all parameters. The argument <code>optimx.args</code> provides an option to control settings for the optimization routine (see section <a href="#estimate">Estimate Model Parameters</a>).</p>
+<div class="section level2">
+<h2 id="estimate-model-parameters">Estimate Model Parameters<a class="anchor" aria-label="anchor" href="#estimate-model-parameters"></a>
+</h2>
+<p>To estimate the Gamma/Gamma spending model, we use the command <code><a href="../reference/gg.html">gg()</a></code> on the initialized <code>clvdata</code> object. <code>clv.data</code> specifies the initialized object prepared in the last step. Optionally, starting values for the model parameters and control settings for the optimization algorithm may be provided: The argument <code>start.params.model</code> allows to assign a vector of starting values for the optimization (i.e <code>c(p=1, q=2, gamma=1)</code> for the the Gamma/Gamma model). This is useful if prior knowledge on the parameters of the distributions are available. By default starting values are set to 1 for all parameters. The argument <code>optimx.args</code> provides an option to control settings for the optimization routine (see section <a href="#estimate">Estimate Model Parameters</a>).</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">est.gg</span><span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg.html">gg</a></span><span class="op">(</span>clv.data <span class="op">=</span> <span class="va">clv.apparel</span><span class="op">)</span>
 <span class="co">#&gt; Starting estimation...</span>
@@ -717,9 +717,9 @@
 <span class="co">#&gt; KKT1: TRUE </span>
 <span class="co">#&gt; KKT2: TRUE</span></code></pre></div>
 </div>
-<div id="predictspending" class="section level2">
-<h2 class="hasAnchor">
-<a href="#predictspending" class="anchor"></a>Predict Customer Spending</h2>
+<div class="section level2">
+<h2 id="predictspending">Predict Customer Spending<a class="anchor" aria-label="anchor" href="#predictspending"></a>
+</h2>
 <p>Once the model parameters are estimated, we are able to predict future customer mean spending on an individual level. To do so, we use <code><a href="../reference/predict.clv.fitted.transactions.html">predict()</a></code> on the object with the estimated parameters (i.e. <code>est.gg</code>). Note that there is no need to specify a prediction period as we predict mean spending.</p>
 <p>In general, probabilistic spending models predict the following expected characteristic for every customer:</p>
 <ul>
@@ -743,16 +743,16 @@
 <span class="co">#&gt; 249: 1221             33.62778                31.27807</span>
 <span class="co">#&gt; 250: 1222              0.00000                47.27699</span></code></pre></div>
 </div>
-<div id="plot-spendings" class="section level2">
-<h2 class="hasAnchor">
-<a href="#plot-spendings" class="anchor"></a>Plot Spendings</h2>
+<div class="section level2">
+<h2 id="plot-spendings">Plot Spendings<a class="anchor" aria-label="anchor" href="#plot-spendings"></a>
+</h2>
 <p>an estimated spending model object (i.e. <code>est.gg</code>) may be plotted using the <code><a href="../reference/plot.clv.fitted.transactions.html">plot()</a></code> command. The plot provides a comparison of the estimated and actual density of customer spending. The argument <code>plot.interpolation.points</code> allows to adjust the number of interpolation points in density graph.</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">est.gg</span><span class="op">)</span></code></pre></div>
 <p><img src="CLVTools_files/figure-html/spending-plot-model4-1.png" width="100%"></p>
-<div id="literature" class="section level3 unnumbered">
-<h3 class="hasAnchor">
-<a href="#literature" class="anchor"></a>Literature</h3>
+<div class="section level3 unnumbered">
+<h3 id="literature">Literature<a class="anchor" aria-label="anchor" href="#literature"></a>
+</h3>
 <div id="refs" class="references">
 <div id="ref-Bemmaor2012a">
 <p>Bemmaor, Albert. C., and Nicolas Glady. 2012. “Modeling Purchasing Behavior with Sudden "Death": A Flexible Customer Lifetime Model.” <em>Management Science</em> 58 (5): 1012–21.</p>
@@ -763,7 +763,7 @@
 <div id="ref-Colombo1999">
 <p>Colombo, Richard, and Weina Jiang. 1999. “A stochastic RFM model.” <em>Journal of Interactive Marketing</em> 13 (3): 2–12.</p>
 </div>
-<div id="ref-data-table">
+<div id="ref-data.table">
 <p>Dowle, Matt, and Arun Srinivasan. 2019. <em>Data.table: Extension of ’Data.frame’</em>. <a href="https://CRAN.R-project.org/package=data.table" class="external-link">https://CRAN.R-project.org/package=data.table</a>.</p>
 </div>
 <div id="ref-Fader2005c">
@@ -819,7 +819,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9001.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
 </div>
 
       </footer>
