@@ -57,6 +57,7 @@ jobs:
             sudo apt-get install -y qpdf # qpdf needed on ubuntu
             sudo apt-get install texlive-xetex # for tinytex
             sudo apt-get install pandoc pandoc-citeproc # ubuntu 20.04 repo only has pandoc 2.5 and therefore requires separate pandoc-citeproc
+            sudo apt-get install ghostscript
 
         - name: Install tinytex for linux and Mac
           if: runner.os != 'Windows'
@@ -68,7 +69,7 @@ jobs:
         - name: Install gsl and pandoc for mac
           if: runner.os == 'macOS'
           run: |
-            brew install gsl openssl
+            brew install gsl openssl ghostscript
             # pandoc to build vignette
             brew install pandoc # rmarkdown uses --citeproc flat depending on pandoc version
 
