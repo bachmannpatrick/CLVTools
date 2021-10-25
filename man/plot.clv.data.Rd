@@ -21,7 +21,7 @@
 \arguments{
 \item{x}{The clv.data object to plot}
 
-\item{which}{Which plot to produce, either "tracking" or "spending". May be abbreviated
+\item{which}{Which plot to produce, either "tracking", "spending" or "interpurchasetime". May be abbreviated
 but only one may be selected. Defaults to "tracking".}
 
 \item{prediction.end}{"tracking": Until what point in time to plot. This can be the number of periods (numeric) or
@@ -47,13 +47,15 @@ value of every transaction in the data (\code{FALSE}) should be plotted.}
 }
 \value{
 An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
-If the parameter \code{plot} is \code{FALSE}, the data that would have been used to
-create the plot is returned. Depending on which plot was selected, this is a \code{data.table}
+If \code{plot=FALSE}, the data that would have been used to create the plot is returned.
+Depending on which plot was selected, this is a \code{data.table}
 which contains some of the following columns:
 \item{Id}{Customer Id}
 \item{period.until}{The timepoint that marks the end (up until and including) of the period to which the data in this row refers.}
 \item{Number of Repeat Transactions}{The number of actual repeat transactions in the period that ends at \code{period.until}.}
 \item{Spending}{Spending as defined by parameter \code{mean.spending}.}
+\item{mean.interpurchase.time}{Mean number of periods between transactions per customer,
+excluding customers without repeat-transactions.}
 }
 \description{
 Depending on the value of parameter \code{which}, one of the following plots will be produced:
@@ -65,8 +67,14 @@ See Details for the definition of plotting periods.
 
 \subsection{Spending Plot}{
 Plot the empirical density of either customer's average spending per transaction or the value
-of every transaction in the data, after aggregating transactions of the same customer on the same day.
+of every transaction in the data, after aggregating transactions of the same customer on a single time point.
 Note that in all cases this includes all transactions and not only repeat-transactions.
+}
+
+\subsection{Interpurchase Time Plot}{
+Plot the empirical density of customer's mean time (in number of periods) between transactions,
+after aggregating transactions of the same customer on a single time point.
+Note that customers without repeat-transactions are removed.
 }
 }
 \details{
@@ -122,6 +130,12 @@ plot(clv.data.cdnow, which="spending", mean.spending = TRUE)
 
 # distribution of the values of every transaction
 plot(clv.data.cdnow, which="spending", mean.spending = FALSE)
+
+
+### INTERPURCHASE TIME DENSITY
+# plot as small points, in blue
+plot(clv.data.cdnow, which="interpurchasetime",
+     geom="point", color="blue", size=0.02)
 
 
 }

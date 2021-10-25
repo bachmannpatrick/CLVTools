@@ -1,7 +1,7 @@
 #' @title Plot Diagnostics for the Transaction data in a clv.data Object
 #'
 #' @param x The clv.data object to plot
-#' @param which Which plot to produce, either "tracking" or "spending". May be abbreviated
+#' @param which Which plot to produce, either "tracking", "spending" or "interpurchasetime". May be abbreviated
 #' but only one may be selected. Defaults to "tracking".
 #' @param cumulative "tracking": Whether the cumulative actual repeat transactions should be plotted.
 #' @param plot Whether a plot should be created or only the assembled data returned.
@@ -32,8 +32,14 @@
 #'
 #' \subsection{Spending Plot}{
 #' Plot the empirical density of either customer's average spending per transaction or the value
-#' of every transaction in the data, after aggregating transactions of the same customer on the same day.
+#' of every transaction in the data, after aggregating transactions of the same customer on a single time point.
 #' Note that in all cases this includes all transactions and not only repeat-transactions.
+#' }
+#'
+#' \subsection{Interpurchase Time Plot}{
+#' Plot the empirical density of customer's mean time (in number of periods) between transactions,
+#' after aggregating transactions of the same customer on a single time point.
+#' Note that customers without repeat-transactions are removed.
 #' }
 #'
 #' @template template_details_predictionend
@@ -44,13 +50,15 @@
 #'
 #' @return
 #' An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
-#' If the parameter \code{plot} is \code{FALSE}, the data that would have been used to
-#' create the plot is returned. Depending on which plot was selected, this is a \code{data.table}
+#' If \code{plot=FALSE}, the data that would have been used to create the plot is returned.
+#' Depending on which plot was selected, this is a \code{data.table}
 #' which contains some of the following columns:
 #' \item{Id}{Customer Id}
 #' \item{period.until}{The timepoint that marks the end (up until and including) of the period to which the data in this row refers.}
 #' \item{Number of Repeat Transactions}{The number of actual repeat transactions in the period that ends at \code{period.until}.}
 #' \item{Spending}{Spending as defined by parameter \code{mean.spending}.}
+#' \item{mean.interpurchase.time}{Mean number of periods between transactions per customer,
+#' excluding customers without repeat-transactions.}
 #'
 #'
 #' @examples
@@ -88,6 +96,12 @@
 #' plot(clv.data.cdnow, which="spending", mean.spending = FALSE)
 #'
 #'
+#' ### INTERPURCHASE TIME DENSITY
+#' # plot as small points, in blue
+#' plot(clv.data.cdnow, which="interpurchasetime",
+#'      geom="point", color="blue", size=0.02)
+#'
+#'
 #' @importFrom graphics plot
 #' @include all_generics.R class_clv_data.R
 #' @method plot clv.data
@@ -103,12 +117,12 @@ plot.clv.data <- function(x, which=c("tracking", "spending", "interpurchasetime"
                           # general
                           plot=TRUE, verbose=TRUE, ...){
 
-  # **** TODO: input checks for which
   # do not check ggplot inputs (geom, color)
   err.msg <- c()
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=plot, var.name="plot"))
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
-  err.msg <- c(err.msg, .check_userinput_matcharg(char=which, choices=c("tracking", "spending"), var.name="which"))
+  err.msg <- c(err.msg, .check_userinput_matcharg(char=which, choices=c("tracking", "spending", "interpurchasetime"),
+                                                  var.name="which"))
   check_err_msg(err.msg)
 
   return(
@@ -121,7 +135,8 @@ plot.clv.data <- function(x, which=c("tracking", "spending", "interpurchasetime"
                                           plot = plot, verbose=verbose,
                                           color = color, geom=geom, ...),
          "interpurchasetime" =
-           clv.data.plot.density.interpurchase.time(clv.data = x, sample=sample, plot=plot, verbose=verbose,
+           clv.data.plot.density.interpurchase.time(clv.data = x, sample=sample,
+                                                    plot=plot, verbose=verbose,
                                                     color=color, geom=geom, ...)
          ))
 }
@@ -235,9 +250,7 @@ clv.data.plot.density.spending <- function(x, sample, mean.spending, plot, verbo
 
   # only check non-ggplot inputs
   # sample is checked in select.sample.data
-  err.msg <- c()
-  err.msg <- c(err.msg, .check_user_data_single_boolean(mean.spending, var.name="mean.spending"))
-  check_err_msg(err.msg)
+  check_err_msg(.check_user_data_single_boolean(mean.spending, var.name="mean.spending"))
 
   # get transaction data data
   dt.trans <- clv.data.select.sample.data(clv.data = x, sample = sample, choices=c("estimation", "full", "holdout"))
@@ -267,6 +280,7 @@ clv.data.plot.density.spending <- function(x, sample, mean.spending, plot, verbo
 #' @importFrom ggplot2 aes_string
 clv.data.plot.density.interpurchase.time <- function(clv.data, sample,
                                                      plot, verbose, color, geom, ...){
+
   dt.trans <- clv.data.select.sample.data(clv.data=clv.data, sample=sample, choices=c("estimation", "full", "holdout"))
 
   # interpurchase time in given period
@@ -277,10 +291,12 @@ clv.data.plot.density.interpurchase.time <- function(clv.data, sample,
   setcolorder(dt.mean.interp, c("Id", "interp.time"))
   setnames(dt.mean.interp, old="interp.time", new="mean.interpurchase.time")
 
+  labs_x <- paste0("Mean Interpurchase Time (",clv.data@clv.time@name.time.unit,")")
+
   if(plot){
     return(clv.data.make.density.plot(dt.data = dt.mean.interp,
                                       mapping = aes_string(x = "mean.interpurchase.time"),
-                                      labs_x = "Mean Interpurchase Time",
+                                      labs_x = labs_x,
                                       title = "Density of Customer's Mean Time between Transactions",
                                       geom = geom, color = color, ...))
   }else{
