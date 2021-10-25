@@ -65,41 +65,40 @@
 #' @examples
 #'
 #' data("cdnow")
-#' clv.data.cdnow <- clvdata(cdnow, time.unit="w",
-#'                           estimation.split=37,
-#'                           date.format="ymd")
+#' clv.cdnow <- clvdata(cdnow, time.unit="w",estimation.split=37,
+#'                      date.format="ymd")
 #'
 #' ### TRACKING PLOT
 #' # Plot the actual repeat transactions
-#' plot(clv.data.cdnow)
+#' plot(clv.cdnow)
 #' # same, explicitly
-#' plot(clv.data.cdnow, which="tracking")
+#' plot(clv.cdnow, which="tracking")
 #'
 #' # plot cumulative repeat transactions
-#' plot(clv.data.cdnow, cumulative=TRUE)
+#' plot(clv.cdnow, cumulative=TRUE)
 #'
 #' # Dont automatically plot but tweak further
 #' library(ggplot2) # for ggtitle()
-#' gg.cdnow <- plot(clv.data.cdnow)
+#' gg.cdnow <- plot(clv.cdnow)
 #' # change Title
 #' gg.cdnow + ggtitle("CDnow repeat transactions")
 #'
 #' # Dont return a plot but only the data from
 #' #   which it would have been created
-#' dt.plot.data <- plot(clv.data.cdnow, plot=FALSE)
+#' dt.plot.data <- plot(clv.cdnow, plot=FALSE)
 #'
 #'
 #' ### SPENDING DENSITY
 #' # plot customer's average transaction value
-#' plot(clv.data.cdnow, which="spending", mean.spending = TRUE)
+#' plot(clv.cdnow, which="spending", mean.spending = TRUE)
 #'
 #' # distribution of the values of every transaction
-#' plot(clv.data.cdnow, which="spending", mean.spending = FALSE)
+#' plot(clv.cdnow, which="spending", mean.spending = FALSE)
 #'
 #'
 #' ### INTERPURCHASE TIME DENSITY
 #' # plot as small points, in blue
-#' plot(clv.data.cdnow, which="interpurchasetime",
+#' plot(clv.cdnow, which="interpurchasetime",
 #'      geom="point", color="blue", size=0.02)
 #'
 #'
