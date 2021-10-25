@@ -5,7 +5,8 @@
 #' but only one may be selected. Defaults to "tracking".
 #' @param cumulative "tracking": Whether the cumulative actual repeat transactions should be plotted.
 #' @param plot Whether a plot should be created or only the assembled data returned.
-#' @param sample Name of the sample for which the plot should be made. Defaults to "estimation". Not for "tracking".
+#' @param sample Name of the sample for which the plot should be made, either
+#' "estimation", "full", or "holdout". Defaults to "estimation". Not for "tracking".
 # @template template_param_predictionend
 #' @param prediction.end "tracking": Until what point in time to plot. This can be the number of periods (numeric) or
 #' a form of date/time object. See details.
@@ -58,7 +59,7 @@
 #' \item{Number of Repeat Transactions}{The number of actual repeat transactions in the period that ends at \code{period.until}.}
 #' \item{Spending}{Spending as defined by parameter \code{mean.spending}.}
 #' \item{mean.interpurchase.time}{Mean number of periods between transactions per customer,
-#' excluding customers without repeat-transactions.}
+#' excluding customers with no repeat-transactions.}
 #'
 #'
 #' @examples

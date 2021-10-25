@@ -29,7 +29,8 @@ a form of date/time object. See details.}
 
 \item{cumulative}{"tracking": Whether the cumulative actual repeat transactions should be plotted.}
 
-\item{sample}{Name of the sample for which the plot should be made. Defaults to "estimation". Not for "tracking".}
+\item{sample}{Name of the sample for which the plot should be made, either
+"estimation", "full", or "holdout". Defaults to "estimation". Not for "tracking".}
 
 \item{geom}{The geometric object of ggplot2 to display the data. Forwarded to
 \link[ggplot2:stat_density]{ggplot2::stat_density}. Not for "tracking".}
@@ -55,7 +56,7 @@ which contains some of the following columns:
 \item{Number of Repeat Transactions}{The number of actual repeat transactions in the period that ends at \code{period.until}.}
 \item{Spending}{Spending as defined by parameter \code{mean.spending}.}
 \item{mean.interpurchase.time}{Mean number of periods between transactions per customer,
-excluding customers without repeat-transactions.}
+excluding customers with no repeat-transactions.}
 }
 \description{
 Depending on the value of parameter \code{which}, one of the following plots will be produced:
