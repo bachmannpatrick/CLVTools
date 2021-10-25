@@ -73,17 +73,17 @@ fct.helper.test.runability.clv.data.plotspending <- function(clv.data){
 
   test_that("plot - spending, sample", {
     skip_on_cran()
-    expect_silent(plot(clv.data, which="spending", sample="estimation"))
-    expect_silent(plot(clv.data, which="spending", sample="full"))
+    expect_silent(plot(clv.data, which="spending", sample="estimation", verbose=FALSE))
+    expect_silent(plot(clv.data, which="spending", sample="full", verbose=FALSE))
     if(clv.data.has.holdout(clv.data)){
-      expect_silent(plot(clv.data, which="spending", sample="holdout"))
+      expect_silent(plot(clv.data, which="spending", sample="holdout", verbose=FALSE))
     }
   })
 
   test_that("plot - spending, extra arguments", {
     skip_on_cran()
     # others and ... args
-    expect_silent(plot(clv.data, which="spending", color="yellow", geom="point", size=0.1))
+    expect_silent(plot(clv.data, which="spending", color="yellow", geom="point", size=0.1, verbose=FALSE))
   })
 
   test_that("plot - spending, plot=FALSE", {
@@ -98,6 +98,31 @@ fct.helper.test.runability.clv.data.plotspending <- function(clv.data){
   })
 }
 
+
+
+fct.helper.test.runability.clv.data.plotinterpurchasetime <- function(clv.data){
+  test_that("plot - interpurchasetime, extra arguments", {
+    skip_on_cran()
+    expect_silent(plot(clv.data, which="interpurchasetime", size=0.02, color="green", geom="point", verbose=FALSE))
+  })
+
+  test_that("plot - interpurchasetime, sample", {
+    skip_on_cran()
+    expect_silent(plot(clv.data, which="interpurchasetime", sample="estimation", verbose=FALSE))
+    expect_silent(plot(clv.data, which="interpurchasetime", sample="full", verbose=FALSE))
+    if(clv.data.has.holdout(clv.data)){
+      expect_silent(plot(clv.data, which="interpurchasetime", sample="holdout", verbose=FALSE))
+    }
+  })
+
+  test_that("plot - interpurchasetime, plot=FALSE", {
+    skip_on_cran()
+    # others and ... args
+    expect_silent(dt.plot <- plot(clv.data, which="interpurchasetime", plot=FALSE, verbose=FALSE))
+    expect_s3_class(dt.plot, "data.table")
+    expect_setequal(colnames(dt.plot), c("Id", "mean.interpurchase.time"))
+  })
+}
 
 fct.helper.test.runability.clv.data.others3 <- function(clv.data){
   test_that("nobs works", {
@@ -175,6 +200,7 @@ fct.helper.test.runability.clv.data.runall <- function(clv.data){
   fct.helper.test.runability.clv.data.plotspending(clv.data)
   fct.helper.test.runability.clv.data.summary(clv.data)
   fct.helper.test.runability.clv.data.others3(clv.data)
+  fct.helper.test.runability.clv.data.plotinterpurchasetime(clv.data)
 }
 
 
