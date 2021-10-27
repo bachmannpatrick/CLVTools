@@ -13,10 +13,10 @@
   count.repeat.trans = TRUE,
   count.remaining = TRUE,
   label.remaining = "10+",
+  mean.spending = TRUE,
   sample = c("estimation", "full", "holdout"),
   geom = "line",
   color = "black",
-  mean.spending = TRUE,
   plot = TRUE,
   verbose = TRUE,
   ...
@@ -41,6 +41,9 @@ a form of date/time object. See details.}
 
 \item{label.remaining}{"numtrans": Label for the last bar, if \code{count.remaining=TRUE}.}
 
+\item{mean.spending}{"spending": Whether customer's mean spending per transaction (\code{TRUE}, default) or the
+value of every transaction in the data (\code{FALSE}) should be plotted.}
+
 \item{sample}{Name of the sample for which the plot should be made, either
 "estimation", "full", or "holdout". Defaults to "estimation". Not for "tracking".}
 
@@ -48,9 +51,6 @@ a form of date/time object. See details.}
 \link[ggplot2:stat_density]{ggplot2::stat_density}. Not for "tracking".}
 
 \item{color}{Color of resulting geom object in the plot. Not for "tracking".}
-
-\item{mean.spending}{"spending": Whether customer's mean spending per transaction (\code{TRUE}, default) or the
-value of every transaction in the data (\code{FALSE}) should be plotted.}
 
 \item{plot}{Whether a plot should be created or only the assembled data returned.}
 
@@ -173,9 +173,6 @@ plot(clv.cdnow, which="interpurchasetime",
 }
 \seealso{
 \link[ggplot2:stat_density]{ggplot2::stat_density} for possible arguments to \code{...}
-
-\link[CLVTools:gg]{gg} to fit customer's average spending per transaction
-with the \code{Gamma-Gamma} model
 
 \link[CLVTools:plot.clv.fitted.transactions]{plot} to plot fitted transaction models
 }

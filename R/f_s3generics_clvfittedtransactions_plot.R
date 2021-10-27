@@ -33,7 +33,6 @@
 #' for which the expectation is calculated and plotted therefore is not \code{prediction.end}
 #' but the start of the first time unit after \code{prediction.end}.
 #'
-#'
 #' @seealso \code{\link[CLVTools:plot.clv.fitted.spending]{plot}} for spending models
 #' @seealso \code{\link[CLVTools:plot.clv.data]{plot}} for transaction diagnostics of \code{clv.data} objects
 #'
