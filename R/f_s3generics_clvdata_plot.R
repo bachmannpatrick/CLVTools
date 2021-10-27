@@ -65,8 +65,6 @@
 #'
 #'
 #' @seealso \link[ggplot2:stat_density]{ggplot2::stat_density} for possible arguments to \code{...}
-#' @seealso \link[CLVTools:gg]{gg} to fit customer's average spending per transaction
-#' with the \code{Gamma-Gamma} model
 #' @seealso \link[CLVTools:plot.clv.fitted.transactions]{plot} to plot fitted transaction models
 #'
 #'
@@ -146,12 +144,12 @@ plot.clv.data <- function(x, which=c("tracking", "numtrans", "spending", "interp
                           # numtrans
                           trans.bins=0:9, count.repeat.trans=TRUE, count.remaining=TRUE,
                           label.remaining="10+",
-                          # density
-                          sample=c("estimation", "full", "holdout"),
-                          geom="line", color="black",
                           # spending density
                           mean.spending=TRUE,
-                          # general
+                          # all density
+                          sample=c("estimation", "full", "holdout"),
+                          geom="line", color="black",
+                          # all plots
                           plot=TRUE, verbose=TRUE, ...){
 
   # do not check ggplot inputs (geom, color)
