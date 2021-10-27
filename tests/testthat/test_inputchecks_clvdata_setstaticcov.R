@@ -363,7 +363,7 @@ test_that("Fails if not in transaction data", {
 
 test_that("Has default argument Id",{
   default.arg <- eval(formals(SetStaticCovariates)[["name.id"]])
-  expect_is(default.arg, "character")
+  expect_true(is.character(default.arg))
   expect_true(default.arg == "Id")
 })
 
