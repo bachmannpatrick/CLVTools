@@ -24,7 +24,7 @@
 #' "estimation", "full", or "holdout". Defaults to "estimation". Not for "tracking".
 #' @param color Color of resulting geom object in the plot. Not for "tracking".
 #' @param geom The geometric object of ggplot2 to display the data. Forwarded to
-#' \link[ggplot2:stat_density]{ggplot2::stat_density}. Not for "tracking".
+#' \link[ggplot2:stat_density]{ggplot2::stat_density}. Not for "tracking" and "numtrans".
 #' @param ... Forwarded to \link[ggplot2:stat_density]{ggplot2::stat_density} ("spending", "interpurchasetime")
 #' or \link[ggplot2:geom_bar]{ggplot2::geom_bar} ("numtrans"). Not for "tracking".
 #'
