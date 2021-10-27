@@ -110,7 +110,7 @@ fct.helper.test.runability.clv.data.plotnumtrans <- function(clv.data){
     expect_s3_class(dt.plot, "data.table")
     expect_setequal(colnames(dt.plot), c("num.transactions", "num.customers"))
 
-    # expect_is is deprecated and expect_type does not get factor
+    # expect_type does not get factor
     expect_true(is.factor(dt.plot$num.transactions))
     expect_true(is.integer(dt.plot$num.customers))
     expect_false(anyNA(dt.plot))
