@@ -69,7 +69,7 @@ check_userinput_datanocov_transbins <- function(trans.bins, count.repeat.trans){
     return("trans.bins has to contain values!")
 
   if(!is.numeric(trans.bins))
-    return("trans.bins has to be a numeric vector!")
+    return("trans.bins has to be a vector of integers!")
 
   # all integers
   if(!all(trans.bins == as.integer(trans.bins))){

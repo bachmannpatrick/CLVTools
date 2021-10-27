@@ -48,7 +48,7 @@ value of every transaction in the data (\code{FALSE}) should be plotted.}
 "estimation", "full", or "holdout". Defaults to "estimation". Not for "tracking".}
 
 \item{geom}{The geometric object of ggplot2 to display the data. Forwarded to
-\link[ggplot2:stat_density]{ggplot2::stat_density}. Not for "tracking".}
+\link[ggplot2:stat_density]{ggplot2::stat_density}. Not for "tracking" and "numtrans".}
 
 \item{color}{Color of resulting geom object in the plot. Not for "tracking".}
 
