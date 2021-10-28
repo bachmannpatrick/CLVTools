@@ -153,8 +153,6 @@ plot(clv.cdnow, which="numtrans", )
 plot(clv.cdnow, which="numtrans", count.repeat.trans = FALSE,
      trans.bins=1:10)
 
-# Do not plot
-
 
 ### SPENDING DENSITY
 # plot customer's average transaction value

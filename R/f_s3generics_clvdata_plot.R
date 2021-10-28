@@ -117,8 +117,6 @@
 #' plot(clv.cdnow, which="numtrans", count.repeat.trans = FALSE,
 #'      trans.bins=1:10)
 #'
-#' # Do not plot
-#'
 #'
 #' ### SPENDING DENSITY
 #' # plot customer's average transaction value
@@ -430,5 +428,4 @@ clv.data.plot.barplot.numtrans <- function(clv.data, count.repeat.trans, count.r
     return(clv.data.plot.add.theme(p))
   }
 }
-
 
