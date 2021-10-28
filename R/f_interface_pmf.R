@@ -1,6 +1,5 @@
-pmf.clv.fitted <- function(clv.fitted, x, plot = FALSE){
-
-  return(clv.template.controlflow.pmf(clv.fitted=clv.fitted, x=x, plot=plot))
+pmf.clv.fitted.transactions <- function(object, x=0:5){
+  return(clv.template.controlflow.pmf(clv.fitted=object, x=x, plot=plot))
 }
 
 #' @example {
@@ -39,4 +38,4 @@ pmf.clv.fitted <- function(clv.fitted, x, plot = FALSE){
 #' 10   0.001919501     5/2357   = 0.00212134
 #'
 #' @exportMethod pmf
-setMethod(f = "pmf", signature = signature(clv.fitted="clv.fitted"), definition = pmf.clv.fitted)
+setMethod(f = "pmf", signature = signature(object="clv.fitted.transactions"), definition = pmf.clv.fitted.transactions)

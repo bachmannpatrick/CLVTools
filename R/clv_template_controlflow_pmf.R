@@ -1,11 +1,10 @@
 clv.template.controlflow.pmf <- function(clv.fitted, x, plot = FALSE){
-  i <- 1
-  res <- rep(0, length(x))
 
-  for(ind.x in x){
-    res[i] <- clv.model.pmf(clv.model = clv.fitted@clv.model, clv.fitted = clv.fitted, x = ind.x, t = clv.fitted@cbs[,T.cal])
-    i <- i + 1
-  }
+  l.res.pmf <- lapply(x, function(i){
+    dt.pmf <- clv.model.pmf(clv.model = clv.fitted@clv.model, clv.fitted = clv.fitted, x = i)
+    # measure.vars = NULL: all except id vars
+    return(melt(dt.pmf, id.vars="Id", measure.vars=NULL, variable.name="pmf", na.rm=FALSE))
+  })
 
-  return(res)
+  return(dcast(rbindlist(l.res.pmf), Id~pmf))
 }
