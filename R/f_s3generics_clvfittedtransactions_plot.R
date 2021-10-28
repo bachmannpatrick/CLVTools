@@ -15,6 +15,7 @@
 #' by the fitted model. Currently, following previous literature, the in-sample unconditional
 #' expectation is plotted in the holdout period. In the future, we might add the option to also
 #' plot the summed CET for the holdout period as an alternative evaluation metric.
+#' See \code{\link[CLVTools:plot.clv.data]{plot.clv.data}} to plot more nuanced diagnostics for the transaction data only.
 #'
 #' @template template_details_predictionend
 #'
@@ -31,7 +32,6 @@
 #' If \code{prediction.end} does not coincide with the start of a time unit, the last timepoint
 #' for which the expectation is calculated and plotted therefore is not \code{prediction.end}
 #' but the start of the first time unit after \code{prediction.end}.
-#'
 #'
 #' @seealso \code{\link[CLVTools:plot.clv.fitted.spending]{plot}} for spending models
 #' @seealso \code{\link[CLVTools:plot.clv.data]{plot}} for transaction diagnostics of \code{clv.data} objects

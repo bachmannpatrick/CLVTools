@@ -204,6 +204,43 @@ test_that("Always returns a copy of the data", {
 # plot ---------------------------------------------------------------------
 context("Correctness - clvdata - plot")
 
+# . numtrans ---------------------------------------------------------------
+test_that("Numtrans plot - actual trans has no 0", {
+  skip_on_cran()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+
+  expect_silent(dt.plot <- plot(clv.cdnow, which="numtrans",
+                                count.repeat.trans=FALSE, trans.bins=c(1,2,3),
+                                plot=FALSE, verbose=FALSE))
+  expect_false(any(levels(dt.plot$num.transactions) == "0"))
+
+  # but does with repeat trans
+  expect_silent(dt.plot <- plot(clv.cdnow, which="numtrans", count.repeat.trans=TRUE,
+                                plot=FALSE, verbose=FALSE))
+  expect_true(any(levels(dt.plot$num.transactions) == "0"))
+})
+
+test_that("Numtrans plot - remaining label is the highest level and disappears it not needed", {
+  skip_on_cran()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+
+  expect_silent(dt.plot <- plot(clv.cdnow, which="numtrans",
+                                trans.bins=0:10, label.remaining="AbC123",
+                                count.remaining=TRUE,
+                                plot=FALSE, verbose=FALSE))
+  expect_true(max(levels(dt.plot$num.transactions)) == "AbC123")
+
+  # but disappears if not needed
+  expect_silent(dt.plot <- plot(clv.cdnow, which="numtrans",
+                                trans.bins=0:10, label.remaining="AbC123",
+                                count.remaining=FALSE,
+                                plot=FALSE, verbose=FALSE))
+  expect_true(max(as.numeric(levels(dt.plot$num.transactions))) == 10)
+})
+
+
+
+# . spending ---------------------------------------------------------------
 test_that("Spending plot - different data for different sample", {
   skip_on_cran()
   clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
@@ -258,9 +295,11 @@ test_that("Spending plot - correct num plotted", {
 })
 
 
+# . interpurchasetime -----------------------------------------------------------
+
 test_that("Interpurchasetime plot - zero-repeaters removed", {
   skip_on_cran()
-  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow, )
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
 
   expect_silent(dt.plot <- plot(clv.cdnow, which="interpurchasetime", sample="estimation", plot=FALSE, verbose=FALSE))
   expect_s3_class(dt.plot, "data.table")
@@ -272,3 +311,5 @@ test_that("Interpurchasetime plot - zero-repeaters removed", {
   expect_true(dt.plot[, uniqueN(Id)] == nrow(dt.plot))
   expect_true(nrow(dt.plot) == nobs(clv.cdnow) - 1432) # 1432: num zero-repeaters from summary() for split=37, 1411 for split=39
 })
+
+

@@ -59,6 +59,66 @@ fct.helper.test.runability.clv.data.trackingplot <- function(clv.data){
   })
 }
 
+fct.helper.test.runability.clv.data.plotnumtrans <- function(clv.data){
+  test_that("plot - numtrans, trans.bins", {
+    skip_on_cran()
+    # real and integer vec, and single
+    expect_silent(plot(clv.data, which="numtrans", trans.bins=3, verbose=FALSE))
+    expect_silent(plot(clv.data, which="numtrans", trans.bins=c(1,2,3), verbose=FALSE))
+    expect_silent(plot(clv.data, which="numtrans", trans.bins=3:250, verbose=FALSE))
+    # works from 0 and 1
+    expect_silent(plot(clv.data, which="numtrans", trans.bins=0:10, count.repeat.trans=TRUE, verbose=FALSE))
+    expect_silent(plot(clv.data, which="numtrans", trans.bins=1:10, count.repeat.trans=FALSE, verbose=FALSE))
+  })
+
+  test_that("plot - numtrans, count.repeat.trans", {
+    skip_on_cran()
+    expect_silent(plot(clv.data, which="numtrans", count.repeat.trans=TRUE, verbose=FALSE))
+    # bins starting from 1
+    expect_silent(plot(clv.data, which="numtrans", count.repeat.trans=FALSE, trans.bins=1:10, verbose=FALSE))
+  })
+
+  test_that("plot - numtrans, count.remaining", {
+    skip_on_cran()
+    expect_silent(plot(clv.data, which="numtrans", count.remaining=TRUE, verbose=FALSE))
+    # bins starting from 1
+    expect_silent(plot(clv.data, which="numtrans", count.remaining=FALSE, verbose=FALSE))
+  })
+
+  test_that("plot - numtrans, count.remaining", {
+    skip_on_cran()
+    expect_silent(plot(clv.data, which="numtrans", count.remaining=TRUE, label.remaining="abc", verbose=FALSE))
+  })
+
+  test_that("plot - numtrans, sample", {
+    skip_on_cran()
+    expect_silent(plot(clv.data, which="numtrans", sample="estimation", verbose=FALSE))
+    expect_silent(plot(clv.data, which="numtrans", sample="full", verbose=FALSE))
+    if(clv.data.has.holdout(clv.data)){
+      expect_silent(plot(clv.data, which="numtrans", sample="holdout", verbose=FALSE))
+    }
+  })
+
+  test_that("plot - numtrans, extra arguments do not cause error", {
+    skip_on_cran()
+    expect_silent(plot(clv.data, which="numtrans", color="blue", verbose=FALSE))
+  })
+
+  test_that("plot - numtrans, plot=FALSE", {
+    skip_on_cran()
+    expect_silent(dt.plot <- plot(clv.data, which="numtrans", plot=FALSE, verbose=FALSE))
+    expect_s3_class(dt.plot, "data.table")
+    expect_setequal(colnames(dt.plot), c("num.transactions", "num.customers"))
+
+    # expect_type does not get factor
+    expect_true(is.factor(dt.plot$num.transactions))
+    expect_true(is.integer(dt.plot$num.customers))
+    expect_false(anyNA(dt.plot))
+    expect_true(length(unique(levels(dt.plot$num.transactions))) ==
+                  length(levels(dt.plot$num.transactions)))
+
+  })
+}
 
 fct.helper.test.runability.clv.data.plotspending <- function(clv.data){
   test_that("plot - spending, mean.spending=T", {
@@ -88,7 +148,6 @@ fct.helper.test.runability.clv.data.plotspending <- function(clv.data){
 
   test_that("plot - spending, plot=FALSE", {
     skip_on_cran()
-    # others and ... args
     expect_silent(dt.plot <- plot(clv.data, which="spending", mean.spending=TRUE, plot=FALSE))
     expect_s3_class(dt.plot, "data.table")
     expect_setequal(colnames(dt.plot), c("Id", "Spending"))
@@ -197,6 +256,7 @@ expect_silent(apparel.no.holdout.dyn.cov     <- SetDynamicCovariates(clv.data = 
 
 fct.helper.test.runability.clv.data.runall <- function(clv.data){
   fct.helper.test.runability.clv.data.trackingplot(clv.data)
+  fct.helper.test.runability.clv.data.plotnumtrans(clv.data)
   fct.helper.test.runability.clv.data.plotspending(clv.data)
   fct.helper.test.runability.clv.data.summary(clv.data)
   fct.helper.test.runability.clv.data.others3(clv.data)
