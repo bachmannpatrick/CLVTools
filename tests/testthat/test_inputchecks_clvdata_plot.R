@@ -44,3 +44,8 @@ test_that("spending - cannot select holdout data if none present", {
   expect_error(plot(clv.cdnow.nohold, which="spending", sample="holdout"), regexp = "has no holdout data")
 })
 
+test_that("interpurchasetime - cannot select holdout data if none present", {
+  skip_on_cran()
+  expect_error(plot(clv.cdnow.nohold, which="interpurchasetime", sample="holdout"), regexp = "has no holdout data")
+})
+

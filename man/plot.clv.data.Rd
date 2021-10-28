@@ -6,7 +6,7 @@
 \usage{
 \method{plot}{clv.data}(
   x,
-  which = c("tracking", "spending"),
+  which = c("tracking", "spending", "interpurchasetime"),
   prediction.end = NULL,
   cumulative = FALSE,
   sample = c("estimation", "full", "holdout"),
@@ -21,7 +21,7 @@
 \arguments{
 \item{x}{The clv.data object to plot}
 
-\item{which}{Which plot to produce, either "tracking" or "spending". May be abbreviated
+\item{which}{Which plot to produce, either "tracking", "spending" or "interpurchasetime". May be abbreviated
 but only one may be selected. Defaults to "tracking".}
 
 \item{prediction.end}{"tracking": Until what point in time to plot. This can be the number of periods (numeric) or
@@ -29,7 +29,8 @@ a form of date/time object. See details.}
 
 \item{cumulative}{"tracking": Whether the cumulative actual repeat transactions should be plotted.}
 
-\item{sample}{Name of the sample for which the plot should be made. Defaults to "estimation". Not for "tracking".}
+\item{sample}{Name of the sample for which the plot should be made, either
+"estimation", "full", or "holdout". Defaults to "estimation". Not for "tracking".}
 
 \item{geom}{The geometric object of ggplot2 to display the data. Forwarded to
 \link[ggplot2:stat_density]{ggplot2::stat_density}. Not for "tracking".}
@@ -47,13 +48,15 @@ value of every transaction in the data (\code{FALSE}) should be plotted.}
 }
 \value{
 An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
-If the parameter \code{plot} is \code{FALSE}, the data that would have been used to
-create the plot is returned. Depending on which plot was selected, this is a \code{data.table}
+If \code{plot=FALSE}, the data that would have been used to create the plot is returned.
+Depending on which plot was selected, this is a \code{data.table}
 which contains some of the following columns:
 \item{Id}{Customer Id}
 \item{period.until}{The timepoint that marks the end (up until and including) of the period to which the data in this row refers.}
 \item{Number of Repeat Transactions}{The number of actual repeat transactions in the period that ends at \code{period.until}.}
 \item{Spending}{Spending as defined by parameter \code{mean.spending}.}
+\item{mean.interpurchase.time}{Mean number of periods between transactions per customer,
+excluding customers with no repeat-transactions.}
 }
 \description{
 Depending on the value of parameter \code{which}, one of the following plots will be produced:
@@ -65,8 +68,14 @@ See Details for the definition of plotting periods.
 
 \subsection{Spending Plot}{
 Plot the empirical density of either customer's average spending per transaction or the value
-of every transaction in the data, after aggregating transactions of the same customer on the same day.
+of every transaction in the data, after aggregating transactions of the same customer on a single time point.
 Note that in all cases this includes all transactions and not only repeat-transactions.
+}
+
+\subsection{Interpurchase Time Plot}{
+Plot the empirical density of customer's mean time (in number of periods) between transactions,
+after aggregating transactions of the same customer on a single time point.
+Note that customers without repeat-transactions are removed.
 }
 }
 \details{
@@ -92,36 +101,41 @@ contain \code{NA} in column \code{Number of Repeat Transactions}.
 \examples{
 
 data("cdnow")
-clv.data.cdnow <- clvdata(cdnow, time.unit="w",
-                          estimation.split=37,
-                          date.format="ymd")
+clv.cdnow <- clvdata(cdnow, time.unit="w",estimation.split=37,
+                     date.format="ymd")
 
 ### TRACKING PLOT
 # Plot the actual repeat transactions
-plot(clv.data.cdnow)
+plot(clv.cdnow)
 # same, explicitly
-plot(clv.data.cdnow, which="tracking")
+plot(clv.cdnow, which="tracking")
 
 # plot cumulative repeat transactions
-plot(clv.data.cdnow, cumulative=TRUE)
+plot(clv.cdnow, cumulative=TRUE)
 
 # Dont automatically plot but tweak further
 library(ggplot2) # for ggtitle()
-gg.cdnow <- plot(clv.data.cdnow)
+gg.cdnow <- plot(clv.cdnow)
 # change Title
 gg.cdnow + ggtitle("CDnow repeat transactions")
 
 # Dont return a plot but only the data from
 #   which it would have been created
-dt.plot.data <- plot(clv.data.cdnow, plot=FALSE)
+dt.plot.data <- plot(clv.cdnow, plot=FALSE)
 
 
 ### SPENDING DENSITY
 # plot customer's average transaction value
-plot(clv.data.cdnow, which="spending", mean.spending = TRUE)
+plot(clv.cdnow, which="spending", mean.spending = TRUE)
 
 # distribution of the values of every transaction
-plot(clv.data.cdnow, which="spending", mean.spending = FALSE)
+plot(clv.cdnow, which="spending", mean.spending = FALSE)
+
+
+### INTERPURCHASE TIME DENSITY
+# plot as small points, in blue
+plot(clv.cdnow, which="interpurchasetime",
+     geom="point", color="blue", size=0.02)
 
 
 }

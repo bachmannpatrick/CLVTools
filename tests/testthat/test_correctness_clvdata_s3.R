@@ -258,3 +258,17 @@ test_that("Spending plot - correct num plotted", {
 })
 
 
+test_that("Interpurchasetime plot - zero-repeaters removed", {
+  skip_on_cran()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow, )
+
+  expect_silent(dt.plot <- plot(clv.cdnow, which="interpurchasetime", sample="estimation", plot=FALSE, verbose=FALSE))
+  expect_s3_class(dt.plot, "data.table")
+  expect_setequal(colnames(dt.plot), c("Id", "mean.interpurchase.time"))
+  expect_false(anyNA(dt.plot))
+  expect_true(dt.plot[mean.interpurchase.time>0,  .N] >  0)
+  expect_true(dt.plot[mean.interpurchase.time<=0, .N] == 0)
+  # Ids are unique
+  expect_true(dt.plot[, uniqueN(Id)] == nrow(dt.plot))
+  expect_true(nrow(dt.plot) == nobs(clv.cdnow) - 1432) # 1432: num zero-repeaters from summary() for split=37, 1411 for split=39
+})
