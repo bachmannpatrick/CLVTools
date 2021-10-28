@@ -7,6 +7,7 @@
 #' @description
 #' Compares the density of the observed average spending per transaction (empirical distribution) to the
 #' model's distribution of mean transaction spending (weighted by the actual number of transactions).
+#' See \code{\link[CLVTools:plot.clv.data]{plot.clv.data}} to plot more nuanced diagnostics for the transaction data only.
 #'
 #' @seealso \code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} for transaction models
 #' @seealso \code{\link[CLVTools:plot.clv.data]{plot}} for transaction diagnostics of \code{clv.data} objects

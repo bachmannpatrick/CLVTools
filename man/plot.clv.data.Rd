@@ -157,8 +157,6 @@ plot(clv.cdnow, which="numtrans", trans.bins=0:15,
 plot(clv.cdnow, which="numtrans", count.repeat.trans = FALSE,
      trans.bins=1:9)
 
-# Do not plot
-
 
 ### SPENDING DENSITY
 # plot customer's average transaction value
@@ -176,7 +174,10 @@ plot(clv.cdnow, which="interpurchasetime",
 
 }
 \seealso{
-\link[ggplot2:stat_density]{ggplot2::stat_density} for possible arguments to \code{...}
+\link[ggplot2:stat_density]{ggplot2::stat_density} and \link[ggplot2:geom_bar]{ggplot2::geom_bar}
+for possible arguments to \code{...}
 
 \link[CLVTools:plot.clv.fitted.transactions]{plot} to plot fitted transaction models
+
+\link[CLVTools:plot.clv.fitted.spending]{plot} to plot fitted spending models
 }

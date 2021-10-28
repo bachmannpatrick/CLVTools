@@ -64,9 +64,10 @@
 #' contain \code{NA} in column \code{Number of Repeat Transactions}.
 #'
 #'
-#' @seealso \link[ggplot2:stat_density]{ggplot2::stat_density} for possible arguments to \code{...}
+#' @seealso \link[ggplot2:stat_density]{ggplot2::stat_density} and \link[ggplot2:geom_bar]{ggplot2::geom_bar}
+#' for possible arguments to \code{...}
 #' @seealso \link[CLVTools:plot.clv.fitted.transactions]{plot} to plot fitted transaction models
-#'
+#' @seealso \link[CLVTools:plot.clv.fitted.spending]{plot} to plot fitted spending models
 #'
 #' @return
 #' An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
@@ -120,8 +121,6 @@
 #' #  Note that the bins have to be adapted to start from 1
 #' plot(clv.cdnow, which="numtrans", count.repeat.trans = FALSE,
 #'      trans.bins=1:9)
-#'
-#' # Do not plot
 #'
 #'
 #' ### SPENDING DENSITY
