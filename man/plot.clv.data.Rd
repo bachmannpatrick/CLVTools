@@ -146,12 +146,16 @@ dt.plot.data <- plot(clv.cdnow, plot=FALSE)
 
 
 ### NUM CUSTOMERS WITH NUM TRANSACTION
-plot(clv.cdnow, which="numtrans", )
+plot(clv.cdnow, which="numtrans")
 
-# Count customers with
-#  Note that the bins are to be adapted to start from 1
+# Bins from 0 to 15, all remaining in bin labelled "16+"
+plot(clv.cdnow, which="numtrans", trans.bins=0:15,
+     label.remaining="16+")
+
+# Count all transactions, not only repeat
+#  Note that the bins have to be adapted to start from 1
 plot(clv.cdnow, which="numtrans", count.repeat.trans = FALSE,
-     trans.bins=1:10)
+     trans.bins=1:9)
 
 # Do not plot
 
