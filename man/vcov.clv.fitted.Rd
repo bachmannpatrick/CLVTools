@@ -18,7 +18,7 @@ The row and column names correspond to the parameter names given by the \code{co
 \description{
 Returns the variance-covariance matrix of the parameters of the fitted model object.
 The variance-covariance matrix is derived from the Hessian that results from the optimization procedure.
-First, the Moore–Penrose generalized inverse of the Hessian is used to obtain an estimate of the
+First, the Moore-Penrose generalized inverse of the Hessian is used to obtain an estimate of the
 variance-covariance matrix.
 Next, because some parameters may be transformed for the purpose of restricting their value during
 the log-likelihood estimation, the variance estimates are adapted to

@@ -274,7 +274,7 @@ test_that("Fails if not in transaction data", {
 
 test_that("Has default argument Id",{
   default.arg <- eval(formals(clvdata)[["name.id"]])
-  expect_is(default.arg, "character")
+  expect_true(is.character(default.arg))
   expect_true(default.arg == "Id")
 })
 
@@ -323,7 +323,7 @@ test_that("Fails if not in transaction data", {
 
 test_that("Has default argument Date",{
   default.arg <- eval(formals(clvdata)[["name.date"]])
-  expect_is(default.arg, "character")
+  expect_true(is.character(default.arg))
   expect_true(default.arg == "Date")
 })
 
@@ -373,7 +373,7 @@ test_that("Fails if not in transaction data", {
 
 test_that("Has default argument Price",{
   default.arg <- eval(formals(clvdata)[["name.price"]])
-  expect_is(default.arg, "character")
+  expect_true(is.character(default.arg))
   expect_true(default.arg == "Price")
 })
 
@@ -383,7 +383,7 @@ test_that("Has default argument Price",{
 # Parameter verbose ------------------------------------------------------------------------------------
 # test_that("Has default argument verbose",{
 #   default.arg <- eval(formals(clvdata)[["verbose"]])
-#   expect_is(default.arg, "logical")
+#   expect_true(is.logical(default.arg))
 #   expect_true(default.arg)
 # })
 

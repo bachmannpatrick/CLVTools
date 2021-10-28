@@ -62,7 +62,7 @@ SetStaticCovariates <- function(clv.data, data.cov.life, data.cov.trans, names.c
   data.cov.trans[, Id := .convert_userinput_dataid(Id)]
 
   # Make static cov specific checks on covariate data
-  #   only after if is DT because heavily relies on it for efficency
+  #   only after if is DT because heavily relies on it for efficiency
   #   only after Id is character because needed to compare to data.transaction Id
   check_err_msg(check_userinput_datanocov_datastaticcov(clv.data = clv.data, dt.data.static.cov = data.cov.life,  names.cov = names.cov.life, name.of.covariate="Lifetime"))
   check_err_msg(check_userinput_datanocov_datastaticcov(clv.data = clv.data, dt.data.static.cov = data.cov.trans,  names.cov = names.cov.trans, name.of.covariate="Transaction"))
@@ -70,13 +70,14 @@ SetStaticCovariates <- function(clv.data, data.cov.life, data.cov.trans, names.c
 
   # Make cov data --------------------------------------------------------------------------
   #   keep numbers, char/factors to dummies
-  l.covs.life  <- convert_userinput_covariatedata_dummies(dt.cov.data=data.cov.life,  names.cov=names.cov.life)
-  l.covs.trans <- convert_userinput_covariatedata_dummies(dt.cov.data=data.cov.trans, names.cov=names.cov.trans)
+  #   input data.cov.X is renamed by ref to legal names
+  l.covs.life  <- convert_userinput_covariatedata(dt.cov.data=data.cov.life,  names.cov=names.cov.life)
+  l.covs.trans <- convert_userinput_covariatedata(dt.cov.data=data.cov.trans, names.cov=names.cov.trans)
 
   data.cov.life  <- l.covs.life$data.cov
   data.cov.trans <- l.covs.trans$data.cov
-  names.cov.data.life  <- l.covs.life$names.cov
-  names.cov.data.trans <- l.covs.trans$names.cov
+  names.cov.data.life  <- l.covs.life$final.names.cov
+  names.cov.data.trans <- l.covs.trans$final.names.cov
 
   setkeyv(data.cov.life,  cols = "Id")
   setkeyv(data.cov.trans, cols = "Id")

@@ -1,3 +1,34 @@
+# CLVTools 0.8.1
+
+### BUG FIXES
+* Fix importing issue after package lubridate does no longer use Rcpp
+
+
+
+# CLVTools 0.8.0
+
+### NEW FEATURES
+* Partially refactor the LL of the extended Pareto/NBD in Rcpp with code kindly donated by Elliot Shin Oblander
+* Improved documentation 
+
+### BUG FIXES
+* Optimization methods nlm and nlminb can now be used. Thanks to Elliot Shin Oblander for reporting
+
+
+
+# CLVTools 0.7.0
+
+### NEW FEATURES
+* Refactor the Gamma-Gamma (GG) model to predict mean spending per transaction into an independent model
+* The prediction for transaction models can now be combined with separately fit spending models
+* Write the unconditional expectation functions in Rcpp for faster plotting (Pareto/NBD and Beta-Geometric/NBD)
+* Improved documentation and walkthrough
+
+### BUG FIXES
+* Pareto/NBD LogLikelihood: For the case Tcal = t.x and for the case alpha == beta
+* Static or dynamic covariates with syntactically invalid names (spaces, start with numbers, etc) could not be fit
+
+
 # CLVTools 0.6.0
 
 ### NEW FEATURES

@@ -17,10 +17,7 @@ clv.model.ggomnbd.static.cov <- function(){
   return(new("clv.model.ggomnbd.static.cov",
              clv.model.ggomnbd.no.cov(),
              name.model = "GGompertz/NBD with Static Covariates",
-             start.param.cov = 1,
-             optimx.defaults = list(method = "L-BFGS-B",
-                                    itnmax = 3000)
-  ))
+             start.param.cov = 0.1))
 }
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
@@ -82,17 +79,20 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.ggomnbd.static
   m.cov.data.trans <- clv.data.get.matrix.data.cov.trans(clv.data=clv.fitted@clv.data, correct.row.names=params_i$Id,
                                                          correct.col.names=names(clv.fitted@prediction.params.trans))
 
+  params_i[, alpha_i := ggomnbd_staticcov_alpha_i(alpha_0          = clv.fitted@prediction.params.model[["alpha"]],
+                                                  vCovParams_trans = clv.fitted@prediction.params.trans,
+                                                  mCov_trans       = m.cov.data.trans)]
+  params_i[, beta_i := ggomnbd_staticcov_beta_i(beta_0          = clv.fitted@prediction.params.model[["beta"]],
+                                                vCovParams_life = clv.fitted@prediction.params.life,
+                                                mCov_life       = m.cov.data.life)]
+
   fct.expectation <- function(params_i.t){
     return(drop(ggomnbd_staticcov_expectation(r       = clv.fitted@prediction.params.model[["r"]],
-                                              alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
-                                              beta_0  = clv.fitted@prediction.params.model[["beta"]],
                                               b       = clv.fitted@prediction.params.model[["b"]],
                                               s       = clv.fitted@prediction.params.model[["s"]],
-                                              vT_i    = params_i.t$t_i,
-                                              vCovParams_trans = clv.fitted@prediction.params.trans,
-                                              vCovParams_life  = clv.fitted@prediction.params.life,
-                                              mCov_life  = m.cov.data.life,
-                                              mCov_trans = m.cov.data.trans)))
+                                              vAlpha_i= params_i.t$alpha_i,
+                                              vBeta_i = params_i.t$beta_i,
+                                              vT_i    = params_i.t$t_i)))
   }
 
   return(DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,

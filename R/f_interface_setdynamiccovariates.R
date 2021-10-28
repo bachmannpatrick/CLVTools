@@ -157,14 +157,14 @@ SetDynamicCovariates <- function(clv.data, data.cov.life, data.cov.trans, names.
 
   # Convert the covariate data to dummies ---------------------------------------------------------------
   #   keep numbers, char/factors to dummies
-  l.covs.life  <- convert_userinput_covariatedata_dummies(dt.cov.data = data.cov.life,  names.cov=names.cov.life)
-  l.covs.trans <- convert_userinput_covariatedata_dummies(dt.cov.data = data.cov.trans, names.cov=names.cov.trans)
+  l.covs.life  <- convert_userinput_covariatedata(dt.cov.data = data.cov.life,  names.cov=names.cov.life)
+  l.covs.trans <- convert_userinput_covariatedata(dt.cov.data = data.cov.trans, names.cov=names.cov.trans)
 
   # The cov names now are different because of the dummies!
   data.cov.life  <- l.covs.life$data.cov
   data.cov.trans <- l.covs.trans$data.cov
-  names.cov.life  <- l.covs.life$names.cov
-  names.cov.trans <- l.covs.trans$names.cov
+  names.cov.life  <- l.covs.life$final.names.cov
+  names.cov.trans <- l.covs.trans$final.names.cov
 
   setkeyv(data.cov.life,  cols = c("Id", "Cov.Date"))
   setkeyv(data.cov.trans, cols = c("Id", "Cov.Date"))

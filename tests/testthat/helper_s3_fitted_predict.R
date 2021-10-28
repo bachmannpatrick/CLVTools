@@ -127,11 +127,14 @@ fct.testthat.runability.clvfittedtransactions.predict <- function(fitted.transac
   if(!DERT.not.implemented){
     test_that("Works with discount factor", {
       skip_on_cran()
-      expect_silent(dt.pred.1 <- predict(fitted.transactions, continuous.discount.factor = 0,    prediction.end = 6, verbose=FALSE))
+      expect_silent(dt.pred.1 <- predict(fitted.transactions, continuous.discount.factor = 0.001,prediction.end = 6, verbose=FALSE))
       expect_silent(dt.pred.2 <- predict(fitted.transactions, continuous.discount.factor = 0.06, prediction.end = 6, verbose=FALSE))
       expect_silent(dt.pred.3 <- predict(fitted.transactions, continuous.discount.factor = 0.99, prediction.end = 6, verbose=FALSE))
       expect_false(isTRUE(all.equal(dt.pred.1, dt.pred.2)))
       expect_false(isTRUE(all.equal(dt.pred.2, dt.pred.3)))
+      expect_true(dt.pred.1[, all(is.finite(DERT))])
+      expect_true(dt.pred.2[, all(is.finite(DERT))])
+      expect_true(dt.pred.3[, all(is.finite(DERT))])
     })
   }
 

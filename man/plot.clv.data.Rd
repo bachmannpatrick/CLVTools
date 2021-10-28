@@ -2,40 +2,102 @@
 % Please edit documentation in R/f_s3generics_clvdata_plot.R
 \name{plot.clv.data}
 \alias{plot.clv.data}
-\title{Plot actual repeat transactions}
+\title{Plot Diagnostics for the Transaction data in a clv.data Object}
 \usage{
 \method{plot}{clv.data}(
   x,
+  which = c("tracking", "numtrans", "spending", "interpurchasetime"),
   prediction.end = NULL,
   cumulative = FALSE,
+  trans.bins = 0:9,
+  count.repeat.trans = TRUE,
+  count.remaining = TRUE,
+  label.remaining = "10+",
+  mean.spending = TRUE,
+  sample = c("estimation", "full", "holdout"),
+  geom = "line",
+  color = "black",
   plot = TRUE,
   verbose = TRUE,
   ...
 )
 }
 \arguments{
-\item{x}{The clv data object to plot}
+\item{x}{The clv.data object to plot}
 
-\item{prediction.end}{Until what point in time to predict. This can be the number of periods (numeric) or a form of date/time object. See details.}
+\item{which}{Which plot to produce, either "tracking", "numtrans", "spending" or "interpurchasetime".
+May be abbreviated but only one may be selected. Defaults to "tracking".}
 
-\item{cumulative}{Whether the cumulative actual repeat transactions should be plotted.}
+\item{prediction.end}{"tracking": Until what point in time to plot. This can be the number of periods (numeric) or
+a form of date/time object. See details.}
+
+\item{cumulative}{"tracking": Whether the cumulative actual repeat transactions should be plotted.}
+
+\item{trans.bins}{"numtrans": Vector of integers indicating the number of transactions (x axis) for which the customers should be counted.}
+
+\item{count.repeat.trans}{"numtrans": Whether repeat transactions (TRUE, default) or all transactions (FALSE) should be counted.}
+
+\item{count.remaining}{"numtrans": Whether the customers which are not captured with \code{trans.bins} should be counted in a separate last bar.}
+
+\item{label.remaining}{"numtrans": Label for the last bar, if \code{count.remaining=TRUE}.}
+
+\item{mean.spending}{"spending": Whether customer's mean spending per transaction (\code{TRUE}, default) or the
+value of every transaction in the data (\code{FALSE}) should be plotted.}
+
+\item{sample}{Name of the sample for which the plot should be made, either
+"estimation", "full", or "holdout". Defaults to "estimation". Not for "tracking".}
+
+\item{geom}{The geometric object of ggplot2 to display the data. Forwarded to
+\link[ggplot2:stat_density]{ggplot2::stat_density}. Not for "tracking" and "numtrans".}
+
+\item{color}{Color of resulting geom object in the plot. Not for "tracking".}
 
 \item{plot}{Whether a plot should be created or only the assembled data returned.}
 
 \item{verbose}{Show details about the running of the function.}
 
-\item{...}{Ignored}
+\item{...}{Forwarded to \link[ggplot2:stat_density]{ggplot2::stat_density} ("spending", "interpurchasetime")
+or \link[ggplot2:geom_bar]{ggplot2::geom_bar} ("numtrans"). Not for "tracking".}
 }
 \value{
 An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
-If the parameter \code{plot} is \code{FALSE}, the data that would have been melted and used to
-create the plot is returned. It is a \code{data.table} which contains the following columns:
+If \code{plot=FALSE}, the data that would have been used to create the plot is returned.
+Depending on which plot was selected, this is a \code{data.table}
+which contains some of the following columns:
+\item{Id}{Customer Id}
 \item{period.until}{The timepoint that marks the end (up until and including) of the period to which the data in this row refers.}
-\item{Number of Repeat Transactions}{The number of actual repeat transactions in
-the period that ends at \code{period.until}.}
+\item{Number of Repeat Transactions}{The number of actual repeat transactions in the period that ends at \code{period.until}.}
+\item{Spending}{Spending as defined by parameter \code{mean.spending}.}
+\item{mean.interpurchase.time}{Mean number of periods between transactions per customer,
+excluding customers with no repeat-transactions.}
+\item{num.transactions}{The number of (repeat) transactions, depending on \code{count.repeat.trans}.}
+\item{num.customers}{The number of customers.}
 }
 \description{
-Plots the actual repeat transactions for the given CLV data object.
+Depending on the value of parameter \code{which}, one of the following plots will be produced:
+
+\subsection{Tracking Plot}{
+Plot the aggregated repeat transactions per period over the given time-horizon (\code{prediction.end}).
+See Details for the definition of plotting periods.
+}
+
+\subsection{Number of Transactions Plot}{
+Plot the distribution of transactions or repeat transactions per customer, after aggregating transactions
+of the same customer on a single time point.
+Note that if \code{trans.bins} is changed, \code{label.remaining} usually needs to be adapted as well.
+}
+
+\subsection{Spending Plot}{
+Plot the empirical density of either customer's average spending per transaction or the value
+of every transaction in the data, after aggregating transactions of the same customer on a single time point.
+Note that in all cases this includes all transactions and not only repeat-transactions.
+}
+
+\subsection{Interpurchase Time Plot}{
+Plot the empirical density of customer's mean time (in number of periods) between transactions,
+after aggregating transactions of the same customer on a single time point.
+Note that customers without repeat-transactions are removed.
+}
 }
 \details{
 \code{prediction.end} indicates until when to predict or plot and can be given as either
@@ -60,26 +122,62 @@ contain \code{NA} in column \code{Number of Repeat Transactions}.
 \examples{
 
 data("cdnow")
-clv.data.cdnow <- clvdata(cdnow, time.unit="w",
-                          estimation.split=37,
-                          date.format="ymd")
+clv.cdnow <- clvdata(cdnow, time.unit="w",estimation.split=37,
+                     date.format="ymd")
 
+### TRACKING PLOT
 # Plot the actual repeat transactions
-plot(clv.data.cdnow)
+plot(clv.cdnow)
+# same, explicitly
+plot(clv.cdnow, which="tracking")
 
 # plot cumulative repeat transactions
-plot(clv.data.cdnow, cumulative=TRUE)
+plot(clv.cdnow, cumulative=TRUE)
 
 # Dont automatically plot but tweak further
-gg.cdnow <- plot(clv.data.cdnow)
-
+library(ggplot2) # for ggtitle()
+gg.cdnow <- plot(clv.cdnow)
 # change Title
-library(ggplot2)
 gg.cdnow + ggtitle("CDnow repeat transactions")
 
 # Dont return a plot but only the data from
 #   which it would have been created
-dt.plot.data <- plot(clv.data.cdnow, plot=FALSE)
+dt.plot.data <- plot(clv.cdnow, plot=FALSE)
 
 
+### NUM CUSTOMERS WITH NUM TRANSACTION
+plot(clv.cdnow, which="numtrans")
+
+# Bins from 0 to 15, all remaining in bin labelled "16+"
+plot(clv.cdnow, which="numtrans", trans.bins=0:15,
+     label.remaining="16+")
+
+# Count all transactions, not only repeat
+#  Note that the bins have to be adapted to start from 1
+plot(clv.cdnow, which="numtrans", count.repeat.trans = FALSE,
+     trans.bins=1:9)
+
+
+### SPENDING DENSITY
+# plot customer's average transaction value
+plot(clv.cdnow, which="spending", mean.spending = TRUE)
+
+# distribution of the values of every transaction
+plot(clv.cdnow, which="spending", mean.spending = FALSE)
+
+
+### INTERPURCHASE TIME DENSITY
+# plot as small points, in blue
+plot(clv.cdnow, which="interpurchasetime",
+     geom="point", color="blue", size=0.02)
+
+
+}
+\seealso{
+\link[ggplot2:stat_density]{ggplot2::stat_density} and \link[ggplot2:geom_bar]{ggplot2::geom_bar}
+for possible arguments to \code{...}
+
+\link[CLVTools:plot.clv.fitted.transactions]{plot} to plot fitted transaction models
+
+\link[CLVTools:plot.clv.fitted.spending]{plot} to plot fitted spending models
 }

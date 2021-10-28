@@ -1,4 +1,4 @@
-#' @templateVar name_model_full GammaGamma
+#' @templateVar name_model_full Gamma-Gamma
 #' @templateVar name_class_clvmodel clv.model.gg
 #' @template template_class_clvfittedspendingmodels
 #'

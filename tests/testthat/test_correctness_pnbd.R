@@ -44,16 +44,27 @@ test_that("Can calculate numerically stable PAlive that produced NaNs in previou
 
 
 
+context("Correctness - PNBD nocov - DERT")
+
+test_that("Higher discount factor leads to smaller DERT", {
+  skip_on_cran()
+  expect_silent(p.cdnow <- pnbd(fct.helper.create.clvdata.cdnow(cdnow), verbose = FALSE))
+  expect_silent(dt.pred.1 <- predict(p.cdnow, continuous.discount.factor = 0.001,prediction.end = 6, verbose=FALSE))
+  expect_silent(dt.pred.2 <- predict(p.cdnow, continuous.discount.factor = 0.06, prediction.end = 6, verbose=FALSE))
+  expect_silent(dt.pred.3 <- predict(p.cdnow, continuous.discount.factor = 0.99, prediction.end = 6, verbose=FALSE))
+
+  expect_true(all(dt.pred.1$DERT > dt.pred.2$DERT))
+  expect_true(all(dt.pred.2$DERT > dt.pred.3$DERT))
+})
+
+
 # Dyncov ---------------------------------------------------------------------------------------
 fct.testthat.correctness.dyncov(data.apparelTrans=apparelTrans, data.apparelDynCov=apparelDynCov)
-
-# ** Static cov??
 
 context("Correctness - PNBD nocov - Expectation")
 
 test_that("Expectation in Rcpp matches expectation in R (nocov)", {
 
-  # No cov ---------------------------------------------------------------------------------------------------
   skip_on_cran()
   expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow,
                                      date.format = "ymd", time.unit = "W", estimation.split = 38,
@@ -71,16 +82,10 @@ test_that("Expectation in Rcpp matches expectation in R (nocov)", {
   params_i[, beta_i  := obj.fitted@prediction.params.model[["beta"]]]
 
   fct.expectation.R <- function(params_i.t) {return( params_i.t[, (r * beta_i)/(alpha_i * (s - 1)) * (1 - (beta_i/(beta_i + t_i))^(s - 1))] )}
-  fct.expectation.Cpp <- function(params_i.t) {return( params_i.t[, pnbd_nocov_expectation(r = obj.fitted@prediction.params.model[["r"]],
-                                                                                           s = obj.fitted@prediction.params.model[["s"]],
-                                                                                           alpha_0 = obj.fitted@prediction.params.model[["alpha"]],
-                                                                                           beta_0 = obj.fitted@prediction.params.model[["beta"]],
-                                                                                           vT_i = t_i)])}
 
-  fct.testthat.correctness.clvfittedtransactions.same.expectation.in.R.and.Cpp(fct.expectation.Cpp = fct.expectation.Cpp,
-                                                        fct.expectation.R = fct.expectation.R,
-                                                        params_i = params_i,
-                                                        obj.fitted = obj.fitted)
+  fct.testthat.correctness.clvfittedtransactions.same.expectation.in.R.and.Cpp(fct.expectation.R = fct.expectation.R,
+                                                                               params_i = params_i,
+                                                                               obj.fitted = obj.fitted)
 
 })
 
@@ -88,9 +93,11 @@ context("Correctness - PNBD staticcov - Expectation")
 
 test_that("Expectation in Rcpp matches expectation in R (staticcov)", {
 
-  # Static cov ---------------------------------------------------------------------------------------------------
   skip_on_cran()
-  clv.apparel.static <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = apparelTrans,
+  # To test correctly, fake that some customers only come alive later
+  apparelTrans.later <- copy(apparelTrans)
+  apparelTrans.later[Id %in% c("1", "10", "100"), Date := Date + lubridate::weeks(10)]
+  clv.apparel.static <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = apparelTrans.later,
                                                                     data.apparelStaticCov = apparelStaticCov,
                                                                     estimation.split = 38)
 
@@ -111,21 +118,10 @@ test_that("Expectation in Rcpp matches expectation in R (staticcov)", {
   params_i[, alpha_i := obj.fitted@prediction.params.model[["alpha"]] * exp( -m.cov.data.trans %*% obj.fitted@prediction.params.trans)]
   params_i[, beta_i  := obj.fitted@prediction.params.model[["beta"]]  * exp( -m.cov.data.life  %*% obj.fitted@prediction.params.life)]
 
-
   # To caluclate expectation at point t for customers alive in t, given in params_i.t
   fct.expectation.R <- function(params_i.t) {return( params_i.t[, (r * beta_i)/(alpha_i * (s - 1)) * (1 - (beta_i/(beta_i + t_i))^(s - 1))] )}
-  fct.expectation.Cpp <- function(params_i.t) {return( params_i.t[, pnbd_staticcov_expectation(r = obj.fitted@prediction.params.model[["r"]],
-                                                                                               s = obj.fitted@prediction.params.model[["s"]],
-                                                                                               alpha_0 = obj.fitted@prediction.params.model[["alpha"]],
-                                                                                               beta_0 = obj.fitted@prediction.params.model[["beta"]],
-                                                                                               vT_i = t_i,
-                                                                                               vCovParams_trans = obj.fitted@prediction.params.trans,
-                                                                                               vCovParams_life = obj.fitted@prediction.params.life,
-                                                                                               mCov_life = m.cov.data.life,
-                                                                                               mCov_trans = m.cov.data.trans)])}
 
-  fct.testthat.correctness.clvfittedtransactions.same.expectation.in.R.and.Cpp(fct.expectation.Cpp = fct.expectation.Cpp,
-                                                        fct.expectation.R = fct.expectation.R,
-                                                        params_i = params_i,
-                                                        obj.fitted = obj.fitted)
+  fct.testthat.correctness.clvfittedtransactions.same.expectation.in.R.and.Cpp(fct.expectation.R = fct.expectation.R,
+                                                                               params_i = params_i,
+                                                                               obj.fitted = obj.fitted)
 })

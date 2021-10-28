@@ -21,15 +21,41 @@
 #'
 NULL
 
-#' @rdname bgnbd_CET
-bgnbd_nocov_CET <- function(r, alpha, a, b, dPeriods, vX, vT_x, vT_cal) {
-    .Call(`_CLVTools_bgnbd_nocov_CET`, r, alpha, a, b, dPeriods, vX, vT_x, vT_cal)
-}
+#' @name bgnbd_expectation
+#' @title BG/NBD: Unconditional Expectation
+#'
+#' @template template_expectation_description
+#'
+#' @template template_params_bgnbd
+#' @template template_expectation_params
+#' @param vAlpha_i Vector of individual parameters alpha
+#' @param vA_i Vector of individual parameters a
+#' @param vB_i Vector of individual parameters b
+#'
+#' @template template_references_bgnbd
+#'
+#' @template template_expectation_return
+#'
+NULL
 
-#' @rdname bgnbd_CET
-bgnbd_staticcov_CET <- function(r, alpha, a, b, dPeriods, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life) {
-    .Call(`_CLVTools_bgnbd_staticcov_CET`, r, alpha, a, b, dPeriods, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
-}
+#' @name bgnbd_PAlive
+#'
+#' @templateVar name_model_full BG/NBD
+#' @templateVar name_model_short bgnbd
+#' @template template_titledescriptionreturn_palive
+#'
+#' @template template_params_bgnbd
+#' @template template_params_rcppxtxtcal
+#' @template template_params_rcppcovmatrix
+#' @template template_params_rcppvcovparams
+#'
+#' @templateVar name_params_cov_life vCovParams_life
+#' @templateVar name_params_cov_trans vCovParams_trans
+#' @template template_details_rcppcovmatrix
+#'
+#' @template template_references_bgnbd
+#'
+NULL
 
 #' @name bgnbd_LL
 #'
@@ -48,6 +74,36 @@ bgnbd_staticcov_CET <- function(r, alpha, a, b, dPeriods, vX, vT_x, vT_cal, vCov
 #' @template template_references_bgnbd
 #'
 NULL
+
+#' @rdname bgnbd_CET
+bgnbd_nocov_CET <- function(r, alpha, a, b, dPeriods, vX, vT_x, vT_cal) {
+    .Call(`_CLVTools_bgnbd_nocov_CET`, r, alpha, a, b, dPeriods, vX, vT_x, vT_cal)
+}
+
+#' @rdname bgnbd_CET
+bgnbd_staticcov_CET <- function(r, alpha, a, b, dPeriods, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life) {
+    .Call(`_CLVTools_bgnbd_staticcov_CET`, r, alpha, a, b, dPeriods, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
+}
+
+#' @rdname bgnbd_expectation
+bgnbd_nocov_expectation <- function(r, alpha, a, b, vT_i) {
+    .Call(`_CLVTools_bgnbd_nocov_expectation`, r, alpha, a, b, vT_i)
+}
+
+#' @rdname bgnbd_expectation
+bgnbd_staticcov_expectation <- function(r, vAlpha_i, vA_i, vB_i, vT_i) {
+    .Call(`_CLVTools_bgnbd_staticcov_expectation`, r, vAlpha_i, vA_i, vB_i, vT_i)
+}
+
+#' @rdname bgnbd_PAlive
+bgnbd_nocov_PAlive <- function(r, alpha, a, b, vX, vT_x, vT_cal) {
+    .Call(`_CLVTools_bgnbd_nocov_PAlive`, r, alpha, a, b, vX, vT_x, vT_cal)
+}
+
+#' @rdname bgnbd_PAlive
+bgnbd_staticcov_PAlive <- function(r, alpha, a, b, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life) {
+    .Call(`_CLVTools_bgnbd_staticcov_PAlive`, r, alpha, a, b, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
+}
 
 #' @rdname bgnbd_LL
 bgnbd_nocov_LL_ind <- function(vLogparams, vX, vT_x, vT_cal) {
@@ -69,63 +125,16 @@ bgnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_tr
     .Call(`_CLVTools_bgnbd_staticcov_LL_sum`, vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
 
-#' @name bgnbd_PAlive
-#'
-#' @templateVar name_model_full BG/NBD
-#' @templateVar name_model_short bgnbd
-#' @template template_titledescriptionreturn_palive
-#'
-#' @template template_params_bgnbd
-#' @template template_params_rcppxtxtcal
-#' @template template_params_rcppcovmatrix
-#' @template template_params_rcppvcovparams
-#'
-#' @templateVar name_params_cov_life vCovParams_life
-#' @templateVar name_params_cov_trans vCovParams_trans
-#' @template template_details_rcppcovmatrix
-#'
-#' @template template_references_bgnbd
-#'
-NULL
-
-#' @rdname bgnbd_PAlive
-bgnbd_nocov_PAlive <- function(r, alpha, a, b, vX, vT_x, vT_cal) {
-    .Call(`_CLVTools_bgnbd_nocov_PAlive`, r, alpha, a, b, vX, vT_x, vT_cal)
+bgnbd_staticcov_alpha_i <- function(alpha_0, vCovParams_trans, mCov_trans) {
+    .Call(`_CLVTools_bgnbd_staticcov_alpha_i`, alpha_0, vCovParams_trans, mCov_trans)
 }
 
-#' @rdname bgnbd_PAlive
-bgnbd_staticcov_PAlive <- function(r, alpha, a, b, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life) {
-    .Call(`_CLVTools_bgnbd_staticcov_PAlive`, r, alpha, a, b, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
+bgnbd_staticcov_a_i <- function(a_0, vCovParams_life, mCov_life) {
+    .Call(`_CLVTools_bgnbd_staticcov_a_i`, a_0, vCovParams_life, mCov_life)
 }
 
-#' @name bgnbd_expectation
-#' @title BG/NBD: Unconditional Expectation
-#'
-#' @template template_expectation_description
-#'
-#' @template template_params_bgnbd
-#' @template template_expectation_params
-#' @template template_params_rcppcovmatrix
-#' @template template_params_rcppvcovparams
-#'
-#' @templateVar name_params_cov_life vCovParams_life
-#' @templateVar name_params_cov_trans vCovParams_trans
-#' @template template_details_rcppcovmatrix
-#'
-#' @template template_references_bgnbd
-#'
-#' @template template_expectation_return
-#'
-NULL
-
-#' @rdname bgnbd_expectation
-bgnbd_nocov_expectation <- function(r, alpha, a, b, vT_i) {
-    .Call(`_CLVTools_bgnbd_nocov_expectation`, r, alpha, a, b, vT_i)
-}
-
-#' @rdname bgnbd_expectation
-bgnbd_staticcov_expectation <- function(r, alpha, a, b, vT_i, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans) {
-    .Call(`_CLVTools_bgnbd_staticcov_expectation`, r, alpha, a, b, vT_i, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans)
+bgnbd_staticcov_b_i <- function(b_0, vCovParams_life, mCov_life) {
+    .Call(`_CLVTools_bgnbd_staticcov_b_i`, b_0, vCovParams_life, mCov_life)
 }
 
 #' @title GSL Hypergeom 2f0 for equal length vectors
@@ -200,15 +209,21 @@ gg_LL <- function(vLogparams, vX, vM_x) {
 #'
 NULL
 
-#' @rdname ggomnbd_CET
-ggomnbd_nocov_CET <- function(r, alpha_0, b, s, beta_0, dPeriods, vX, vT_x, vT_cal) {
-    .Call(`_CLVTools_ggomnbd_nocov_CET`, r, alpha_0, b, s, beta_0, dPeriods, vX, vT_x, vT_cal)
-}
-
-#' @rdname ggomnbd_CET
-ggomnbd_staticcov_CET <- function(r, alpha_0, b, s, beta_0, dPeriods, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans) {
-    .Call(`_CLVTools_ggomnbd_staticcov_CET`, r, alpha_0, b, s, beta_0, dPeriods, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans)
-}
+#' @name ggomnbd_expectation
+#' @title GGompertz/NBD: Unconditional Expectation
+#'
+#' @template template_expectation_description
+#'
+#' @template template_params_ggomnbd
+#' @template template_expectation_params
+#' @param vAlpha_i Vector of individual parameters alpha
+#' @param vBeta_i Vector of individual parameters beta
+#'
+#' @template template_references_ggomnbd
+#'
+#' @template template_expectation_return
+#'
+NULL
 
 #' @name ggomnbd_LL
 #'
@@ -227,6 +242,45 @@ ggomnbd_staticcov_CET <- function(r, alpha_0, b, s, beta_0, dPeriods, vX, vT_x, 
 #' @template template_references_ggomnbd
 #'
 NULL
+
+#' @name ggomnbd_PAlive
+#'
+#' @templateVar name_model_full GGompertz/NBD
+#' @templateVar name_model_short ggomnbd
+#' @template template_titledescriptionreturn_palive
+#'
+#' @template template_params_ggomnbd
+#' @template template_params_rcppxtxtcal
+#' @template template_params_rcppcovmatrix
+#' @template template_params_rcppvcovparams
+#'
+#' @templateVar name_params_cov_life vCovParams_life
+#' @templateVar name_params_cov_trans vCovParams_trans
+#' @template template_details_rcppcovmatrix
+#'
+#' @template template_references_ggomnbd
+#'
+NULL
+
+#' @rdname ggomnbd_CET
+ggomnbd_nocov_CET <- function(r, alpha_0, b, s, beta_0, dPeriods, vX, vT_x, vT_cal) {
+    .Call(`_CLVTools_ggomnbd_nocov_CET`, r, alpha_0, b, s, beta_0, dPeriods, vX, vT_x, vT_cal)
+}
+
+#' @rdname ggomnbd_CET
+ggomnbd_staticcov_CET <- function(r, alpha_0, b, s, beta_0, dPeriods, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans) {
+    .Call(`_CLVTools_ggomnbd_staticcov_CET`, r, alpha_0, b, s, beta_0, dPeriods, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans)
+}
+
+#' @rdname ggomnbd_expectation
+ggomnbd_nocov_expectation <- function(r, alpha_0, b, s, beta_0, vT_i) {
+    .Call(`_CLVTools_ggomnbd_nocov_expectation`, r, alpha_0, b, s, beta_0, vT_i)
+}
+
+#' @rdname ggomnbd_expectation
+ggomnbd_staticcov_expectation <- function(r, b, s, vAlpha_i, vBeta_i, vT_i) {
+    .Call(`_CLVTools_ggomnbd_staticcov_expectation`, r, b, s, vAlpha_i, vBeta_i, vT_i)
+}
 
 #' @rdname ggomnbd_LL
 ggomnbd_nocov_LL_ind <- function(vLogparams, vX, vT_x, vT_cal) {
@@ -248,24 +302,13 @@ ggomnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_
     .Call(`_CLVTools_ggomnbd_staticcov_LL_sum`, vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
 
-#' @name ggomnbd_PAlive
-#'
-#' @templateVar name_model_full GGompertz/NBD
-#' @templateVar name_model_short ggomnbd
-#' @template template_titledescriptionreturn_palive
-#'
-#' @template template_params_ggomnbd
-#' @template template_params_rcppxtxtcal
-#' @template template_params_rcppcovmatrix
-#' @template template_params_rcppvcovparams
-#'
-#' @templateVar name_params_cov_life vCovParams_life
-#' @templateVar name_params_cov_trans vCovParams_trans
-#' @template template_details_rcppcovmatrix
-#'
-#' @template template_references_ggomnbd
-#'
-NULL
+ggomnbd_staticcov_alpha_i <- function(alpha_0, vCovParams_trans, mCov_trans) {
+    .Call(`_CLVTools_ggomnbd_staticcov_alpha_i`, alpha_0, vCovParams_trans, mCov_trans)
+}
+
+ggomnbd_staticcov_beta_i <- function(beta_0, vCovParams_life, mCov_life) {
+    .Call(`_CLVTools_ggomnbd_staticcov_beta_i`, beta_0, vCovParams_life, mCov_life)
+}
 
 #' @rdname ggomnbd_PAlive
 ggomnbd_staticcov_PAlive <- function(r, alpha_0, b, s, beta_0, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans) {
@@ -275,36 +318,6 @@ ggomnbd_staticcov_PAlive <- function(r, alpha_0, b, s, beta_0, vX, vT_x, vT_cal,
 #' @rdname ggomnbd_PAlive
 ggomnbd_nocov_PAlive <- function(r, alpha_0, b, s, beta_0, vX, vT_x, vT_cal) {
     .Call(`_CLVTools_ggomnbd_nocov_PAlive`, r, alpha_0, b, s, beta_0, vX, vT_x, vT_cal)
-}
-
-#' @name ggomnbd_expectation
-#' @title GGompertz/NBD: Unconditional Expectation
-#'
-#' @template template_expectation_description
-#'
-#' @template template_params_ggomnbd
-#' @template template_expectation_params
-#' @template template_params_rcppcovmatrix
-#' @template template_params_rcppvcovparams
-#'
-#' @templateVar name_params_cov_life vCovParams_life
-#' @templateVar name_params_cov_trans vCovParams_trans
-#' @template template_details_rcppcovmatrix
-#'
-#' @template template_references_ggomnbd
-#'
-#' @template template_expectation_return
-#'
-NULL
-
-#' @rdname ggomnbd_expectation
-ggomnbd_nocov_expectation <- function(r, alpha_0, b, s, beta_0, vT_i) {
-    .Call(`_CLVTools_ggomnbd_nocov_expectation`, r, alpha_0, b, s, beta_0, vT_i)
-}
-
-#' @rdname ggomnbd_expectation
-ggomnbd_staticcov_expectation <- function(r, alpha_0, b, s, beta_0, vT_i, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans) {
-    .Call(`_CLVTools_ggomnbd_staticcov_expectation`, r, alpha_0, b, s, beta_0, vT_i, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans)
 }
 
 #' @name pnbd_CET
@@ -326,16 +339,6 @@ ggomnbd_staticcov_expectation <- function(r, alpha_0, b, s, beta_0, vT_i, vCovPa
 #' @template template_references_pnbd
 #'
 NULL
-
-#' @rdname pnbd_CET
-pnbd_nocov_CET <- function(r, alpha_0, s, beta_0, dPeriods, vX, vT_x, vT_cal) {
-    .Call(`_CLVTools_pnbd_nocov_CET`, r, alpha_0, s, beta_0, dPeriods, vX, vT_x, vT_cal)
-}
-
-#' @rdname pnbd_CET
-pnbd_staticcov_CET <- function(r, alpha_0, s, beta_0, dPeriods, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life) {
-    .Call(`_CLVTools_pnbd_staticcov_CET`, r, alpha_0, s, beta_0, dPeriods, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
-}
 
 #' @name pnbd_DERT
 #'
@@ -368,15 +371,22 @@ pnbd_staticcov_CET <- function(r, alpha_0, s, beta_0, dPeriods, vX, vT_x, vT_cal
 #'
 NULL
 
-#' @rdname pnbd_DERT
-pnbd_nocov_DERT <- function(r, alpha_0, s, beta_0, continuous_discount_factor, vX, vT_x, vT_cal) {
-    .Call(`_CLVTools_pnbd_nocov_DERT`, r, alpha_0, s, beta_0, continuous_discount_factor, vX, vT_x, vT_cal)
-}
-
-#' @rdname pnbd_DERT
-pnbd_staticcov_DERT <- function(r, alpha_0, s, beta_0, continuous_discount_factor, vX, vT_x, vT_cal, mCov_life, mCov_trans, vCovParams_life, vCovParams_trans) {
-    .Call(`_CLVTools_pnbd_staticcov_DERT`, r, alpha_0, s, beta_0, continuous_discount_factor, vX, vT_x, vT_cal, mCov_life, mCov_trans, vCovParams_life, vCovParams_trans)
-}
+#' @name pnbd_expectation
+#' @title Pareto/NBD: Unconditional Expectation
+#'
+#' @template template_expectation_description
+#'
+#' @template template_params_pnbd
+#' @template template_expectation_params
+#' @param vAlpha_i Vector of individual parameters alpha
+#' @param vBeta_i Vector of individual parameters beta
+#'
+#'
+#' @template template_references_pnbd
+#'
+#' @template template_expectation_return
+#'
+NULL
 
 #' @name pnbd_LL
 #'
@@ -395,6 +405,55 @@ pnbd_staticcov_DERT <- function(r, alpha_0, s, beta_0, continuous_discount_facto
 #' @template template_references_pnbd
 #'
 NULL
+
+#' @name pnbd_PAlive
+#'
+#' @templateVar name_model_full Pareto/NBD
+#' @templateVar name_model_short pnbd
+#' @template template_titledescriptionreturn_palive
+#'
+#' @template template_params_pnbd
+#' @template template_params_rcppxtxtcal
+#' @template template_params_rcppcovmatrix
+#' @template template_params_rcppvcovparams
+#'
+#' @templateVar name_params_cov_life vCovParams_life
+#' @templateVar name_params_cov_trans vCovParams_trans
+#' @template template_details_rcppcovmatrix
+#'
+#' @template template_references_pnbd
+#'
+NULL
+
+#' @rdname pnbd_CET
+pnbd_nocov_CET <- function(r, alpha_0, s, beta_0, dPeriods, vX, vT_x, vT_cal) {
+    .Call(`_CLVTools_pnbd_nocov_CET`, r, alpha_0, s, beta_0, dPeriods, vX, vT_x, vT_cal)
+}
+
+#' @rdname pnbd_CET
+pnbd_staticcov_CET <- function(r, alpha_0, s, beta_0, dPeriods, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life) {
+    .Call(`_CLVTools_pnbd_staticcov_CET`, r, alpha_0, s, beta_0, dPeriods, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
+}
+
+#' @rdname pnbd_DERT
+pnbd_nocov_DERT <- function(r, alpha_0, s, beta_0, continuous_discount_factor, vX, vT_x, vT_cal) {
+    .Call(`_CLVTools_pnbd_nocov_DERT`, r, alpha_0, s, beta_0, continuous_discount_factor, vX, vT_x, vT_cal)
+}
+
+#' @rdname pnbd_DERT
+pnbd_staticcov_DERT <- function(r, alpha_0, s, beta_0, continuous_discount_factor, vX, vT_x, vT_cal, mCov_life, mCov_trans, vCovParams_life, vCovParams_trans) {
+    .Call(`_CLVTools_pnbd_staticcov_DERT`, r, alpha_0, s, beta_0, continuous_discount_factor, vX, vT_x, vT_cal, mCov_life, mCov_trans, vCovParams_life, vCovParams_trans)
+}
+
+#' @rdname pnbd_expectation
+pnbd_nocov_expectation <- function(r, s, alpha_0, beta_0, vT_i) {
+    .Call(`_CLVTools_pnbd_nocov_expectation`, r, s, alpha_0, beta_0, vT_i)
+}
+
+#' @rdname pnbd_expectation
+pnbd_staticcov_expectation <- function(r, s, vAlpha_i, vBeta_i, vT_i) {
+    .Call(`_CLVTools_pnbd_staticcov_expectation`, r, s, vAlpha_i, vBeta_i, vT_i)
+}
 
 #' @rdname pnbd_LL
 pnbd_nocov_LL_ind <- function(vLogparams, vX, vT_x, vT_cal) {
@@ -416,24 +475,13 @@ pnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_tra
     .Call(`_CLVTools_pnbd_staticcov_LL_sum`, vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
 
-#' @name pnbd_PAlive
-#'
-#' @templateVar name_model_full Pareto/NBD
-#' @templateVar name_model_short pnbd
-#' @template template_titledescriptionreturn_palive
-#'
-#' @template template_params_pnbd
-#' @template template_params_rcppxtxtcal
-#' @template template_params_rcppcovmatrix
-#' @template template_params_rcppvcovparams
-#'
-#' @templateVar name_params_cov_life vCovParams_life
-#' @templateVar name_params_cov_trans vCovParams_trans
-#' @template template_details_rcppcovmatrix
-#'
-#' @template template_references_pnbd
-#'
-NULL
+pnbd_staticcov_alpha_i <- function(alpha_0, vCovParams_trans, mCov_trans) {
+    .Call(`_CLVTools_pnbd_staticcov_alpha_i`, alpha_0, vCovParams_trans, mCov_trans)
+}
+
+pnbd_staticcov_beta_i <- function(beta_0, vCovParams_life, mCov_life) {
+    .Call(`_CLVTools_pnbd_staticcov_beta_i`, beta_0, vCovParams_life, mCov_life)
+}
 
 #' @rdname pnbd_PAlive
 pnbd_nocov_PAlive <- function(r, alpha_0, s, beta_0, vX, vT_x, vT_cal) {
@@ -445,33 +493,23 @@ pnbd_staticcov_PAlive <- function(r, alpha_0, s, beta_0, vX, vT_x, vT_cal, vCovP
     .Call(`_CLVTools_pnbd_staticcov_PAlive`, r, alpha_0, s, beta_0, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
 }
 
-#' @name pnbd_expectation
-#' @title Pareto/NBD: Unconditional Expectation
-#'
-#' @template template_expectation_description
-#'
-#' @template template_params_pnbd
-#' @template template_expectation_params
-#' @template template_params_rcppcovmatrix
-#' @template template_params_rcppvcovparams
-#'
-#' @templateVar name_params_cov_life vCovParams_life
-#' @templateVar name_params_cov_trans vCovParams_trans
-#' @template template_details_rcppcovmatrix
-#'
-#' @template template_references_pnbd
-#'
-#' @template template_expectation_return
-#'
-NULL
-
-#' @rdname pnbd_expectation
-pnbd_nocov_expectation <- function(r, s, alpha_0, beta_0, vT_i) {
-    .Call(`_CLVTools_pnbd_nocov_expectation`, r, s, alpha_0, beta_0, vT_i)
+pnbd_dyncov_LL_Bi_cpp <- function(i, t_x, d, delta, n_walks, max_walks, walks) {
+    .Call(`_CLVTools_pnbd_dyncov_LL_Bi_cpp`, i, t_x, d, delta, n_walks, max_walks, walks)
 }
 
-#' @rdname pnbd_expectation
-pnbd_staticcov_expectation <- function(r, s, alpha_0, beta_0, vT_i, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans) {
-    .Call(`_CLVTools_pnbd_staticcov_expectation`, r, s, alpha_0, beta_0, vT_i, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans)
+pnbd_dyncov_LL_Di_cpp <- function(i, real_d, aux_d, real_n_walks, aux_n_walks, real_max_walks, aux_max_walks, real_adj_walk1, real_walks, aux_walks) {
+    .Call(`_CLVTools_pnbd_dyncov_LL_Di_cpp`, i, real_d, aux_d, real_n_walks, aux_n_walks, real_max_walks, aux_max_walks, real_adj_walk1, real_walks, aux_walks)
+}
+
+hyp_alpha_ge_beta_cpp <- function(alpha_1, beta_1, alpha_2, beta_2, x, r, s) {
+    .Call(`_CLVTools_hyp_alpha_ge_beta_cpp`, alpha_1, beta_1, alpha_2, beta_2, x, r, s)
+}
+
+hyp_beta_g_alpha_cpp <- function(alpha_1, beta_1, alpha_2, beta_2, x, r, s) {
+    .Call(`_CLVTools_hyp_beta_g_alpha_cpp`, alpha_1, beta_1, alpha_2, beta_2, x, r, s)
+}
+
+F2_3_vecs_cpp <- function(n_walks_cbs, dT_cbs, Bjsum_cbs, x_cbs, t_x_cbs, n_walks_trans, walks_trans, d_trans, delta_trans, max_walks_trans, n_walks_life_real, d_life_real, max_walks_life_real, adj_walk1_life_real, walks_life_real, n_walks_life_aux, d_life_aux, max_walks_life_aux, walks_life_aux, r, alpha, s, beta) {
+    .Call(`_CLVTools_F2_3_vecs_cpp`, n_walks_cbs, dT_cbs, Bjsum_cbs, x_cbs, t_x_cbs, n_walks_trans, walks_trans, d_trans, delta_trans, max_walks_trans, n_walks_life_real, d_life_real, max_walks_life_real, adj_walk1_life_real, walks_life_real, n_walks_life_aux, d_life_aux, max_walks_life_aux, walks_life_aux, r, alpha, s, beta)
 }
 

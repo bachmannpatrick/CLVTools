@@ -3,13 +3,6 @@ clv.template.controlflow.estimate <- function(clv.fitted,
                                               optimx.args,
                                               verbose,
                                               ...){
-  # ***TODO: For development purposes only: All additional args have to be named!
-  l.elipsis <- list(...)
-  if(length(l.elipsis)>0){
-    names.ellipsis.args <- names(list(...))
-    stopifnot(!is.null(names.ellipsis.args))
-    stopifnot(all(nchar(names(list(...)))>0))
-  }
 
   # input checks ------------------------------------------------------------------------------------------
   #   checks for model first
@@ -34,7 +27,11 @@ clv.template.controlflow.estimate <- function(clv.fitted,
   prepared.optimx.args <- clv.controlflow.estimate.prepare.optimx.args(clv.fitted=clv.fitted, start.params.all=start.params.all)
   prepared.optimx.args <- clv.model.prepare.optimx.args(clv.model=clv.fitted@clv.model, clv.fitted=clv.fitted, prepared.optimx.args=prepared.optimx.args)
 
-  # No matter what the (model) defaults, the user arguments are written ontop of what is generated
+  # Parameter names are removed by some optimx methods
+  #   Save only after all parameters were prepared
+  prepared.optimx.args[["LL.param.names.to.optimx"]] <- names(prepared.optimx.args$par)
+
+  # No matter what the (model) defaults, the user arguments are written on top of what is generated
   prepared.optimx.args <- modifyList(prepared.optimx.args, optimx.args, keep.null = FALSE)
 
 

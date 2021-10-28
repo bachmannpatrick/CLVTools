@@ -46,6 +46,7 @@
 #'
 #' @docType package
 #' @useDynLib CLVTools, .registration=TRUE
+#' @importFrom Rcpp evalCpp
 #' @import data.table
 #' @importFrom methods setClass
 "_PACKAGE"

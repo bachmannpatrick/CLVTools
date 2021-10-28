@@ -78,7 +78,8 @@ The smaller \code{r}, the stronger the heterogeneity of the purchase process.\cr
 The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.
 
 If no start parameters are given, r = 1, alpha = 1, beta = 1, b = 1, s = 1 is used.
-All model start parameters are required to be > 0.
+All model start parameters are required to be > 0. If no start values are given for the covariate parameters,
+0.1 is used.
 
 Note that the DERT expression has not been derived (yet) and it consequently is not possible to calculated
 values for DERT and CLV.
@@ -161,6 +162,8 @@ Lifetime Model} Management Science, 58(5), 1012-1021.
 \seealso{
 \code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object, \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}}
 to add static covariates to an existing clv data object.
+
+\link[CLVTools:gg]{gg} to fit customer's average spending per transaction with the \code{Gamma-Gamma} model
 
 \code{\link[CLVTools:predict.clv.fitted.transactions]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
 

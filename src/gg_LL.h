@@ -1,6 +1,9 @@
 #ifndef GG_LL_HPP
 #define GG_LL_HPP
 
+#include <RcppArmadillo.h>
+#include <cmath>
+
 arma::vec lbeta(const arma::vec& a, const double b);
 
 double gg_LL(const arma::vec& vLogparams,

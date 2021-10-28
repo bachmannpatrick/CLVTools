@@ -36,6 +36,57 @@ check_err_msg <- function(err.msg){
   return(as.character(id.data))
 }
 
+.check_userinput_matcharg <- function(char, choices, var.name){
+  if(is.null(char))
+    return(paste0("Parameter ",var.name, " cannot be NULL!"))
+  if(!is.character(char))
+    return(paste0(var.name, " needs to be of type character (text)!"))
+
+  err.msg <- c()
+  if(anyNA(char))
+    err.msg <- c(err.msg, paste0(var.name, " may not contain any NA!"))
+
+  # use pmatch to match the input against the possible choices
+  #   match.arg would throw undescriptive error if not found
+  #   this also accounts for empty texts
+
+  if(length(err.msg) == 0) # may fail ungracefully if inproper input
+    if(!all(pmatch(x=tolower(char), table=tolower(choices), nomatch = FALSE)))
+      err.msg <- c(err.msg, paste0("Please choose one of the following values for ",var.name,": ",
+                                   paste(choices, collapse = ", "), "!"))
+
+  return(err.msg)
+}
+
+check_userinput_datanocov_transbins <- function(trans.bins, count.repeat.trans){
+  if(is.null(trans.bins))
+    return("trans.bins cannot be NULL!")
+
+  if(anyNA(trans.bins))
+    return("trans.bins cannot contain any NA values!")
+
+  if(length(trans.bins) == 0)
+    return("trans.bins has to contain values!")
+
+  if(!is.numeric(trans.bins))
+    return("trans.bins has to be a vector of integers!")
+
+  # all integers
+  if(!all(trans.bins == as.integer(trans.bins))){
+    return("trans.bins must be all integers!")
+  }
+
+  if(count.repeat.trans){
+    if(any(trans.bins < 0))
+      return("trans.bins has to be positive integers (>=0)!")
+  }else{
+    if(any(trans.bins < 1))
+      return("trans.bins has to be strictly positive integers (>=1)!")
+  }
+
+  return(c())
+}
+
 check_userinput_datanocov_columnname <- function(name.col, data){
 
   if(is.null(name.col))

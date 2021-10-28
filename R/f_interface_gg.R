@@ -19,8 +19,11 @@
 #' If no start parameters are given, 1.0 is used for all model parameters. All parameters are required
 #' to be > 0.
 #'
+#' The Gamma-Gamma model cannot be estimated for data that contains negative prices.
+#' Customers with a mean spending of zero or a transaction count of zero are ignored during model fitting.
+#'
 #' \subsection{The G/G model}{
-#' The G/G model allows to predict a value for future customer transactions. Usually, the G/G model is used 
+#' The G/G model allows to predict a value for future customer transactions. Usually, the G/G model is used
 #' in combination with a probabilistic model predicting customer transaction such as the Pareto/NBD or the BG/NBD model.
 #' }
 #'
@@ -30,7 +33,7 @@
 #' @template template_clvfitted_returnvalue
 #'
 #' @seealso \code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object.
-#'
+#' @seealso \code{\link[CLVTools:plot.clv.data]{plot}} to plot diagnostics of the transaction data, incl. of spending.
 #' @seealso \code{\link[CLVTools:predict.clv.fitted.spending]{predict}} to predict expected mean spending for every customer.
 #' @seealso \code{\link[CLVTools:plot.clv.fitted.spending]{plot}} to plot the density of customer's mean transaction value compared to the model's prediction.
 #'
@@ -62,7 +65,7 @@ setMethod("gg", signature = signature(clv.data="clv.data"), definition = functio
   err.msg <- c()
   err.msg <- c(err.msg, check_user_data_emptyellipsis(...))
 
-  # Check here already because needed to build cbs (remove.first.transaction and data)
+  # Check here already because inputs are already needed to build the cbs (remove.first.transaction and data)
   err.msg <- c(err.msg, .check_user_data_single_boolean(remove.first.transaction, var.name = "remove.first.transaction"))
   err.msg <- c(err.msg, check_user_data_containsspendingdata(clv.data = clv.data))
   check_err_msg(err.msg)

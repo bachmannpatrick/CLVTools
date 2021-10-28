@@ -10,25 +10,28 @@ on:
       - 'release**'
       - 'development'
 jobs:
-  tests-ubuntu-16-04-R-release:
-    runs-on: ubuntu-16.04
+  tests-ubuntu-20-04-R-release:
+    runs-on: ubuntu-20.04
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       # to install binaries on ubuntu
-      RSPM: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"
+      RSPM: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"
     steps:
       - uses: actions/checkout@v2
       - uses: r-lib/actions/setup-r@master
         with:
-          r-version: 'release'
+          r-version: release
+
       - name: Install system dependencies
         env:
           RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
         run: |
-          Rscript -e "install.packages(c('remotes', 'rcmdcheck'))"
-          Rscript -e "remotes::install_github('r-hub/sysreqs')"
-          sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
-          sudo -s eval "$sysreqs"
+          Rscript -e "install.packages(c('remotes'))"
+          while read -r cmd
+          do
+            eval sudo $cmd
+          done < <(Rscript -e 'writeLines(remotes::system_requirements(os="ubuntu", os_release="20.04"))')
+
       - name: Install package dependencies
         run: |
           remotes::install_deps(dependencies = TRUE) # installs binaries
@@ -50,6 +53,6 @@ jobs:
             print("Not on release branch: Dont run all tests (skip_on_ci())")
           }
 
-          reporter <- RstudioReporter$new() # has to be defined outside capture.output to still print
+          reporter <- RStudioReporter$new() # has to be defined outside capture.output to still print
           capture.output(devtools::test(reporter = reporter, stop_on_failure=TRUE, stop_on_warning=TRUE))
         shell: Rscript {0}

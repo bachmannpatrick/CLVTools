@@ -7,16 +7,18 @@ name: pkgdown
 jobs:
   pkgdown:
     runs-on: macOS-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v2
 
-      - uses: r-lib/actions/setup-r@master
-
       - uses: r-lib/actions/setup-pandoc@master
 
-      - name: Install gsl for mac
+      - uses: r-lib/actions/setup-r@master
+
+      - name: Install dependencies for mac
         run: |
-          brew install gsl
+          brew install gsl openssl
 
       - name: Query dependencies
         run: |

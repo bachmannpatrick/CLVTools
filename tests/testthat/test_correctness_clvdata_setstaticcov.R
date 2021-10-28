@@ -181,16 +181,47 @@ test_that("Keeps numeric as numeric - with categories", {
 })
 
 
+# Covariate names are legal --------------------------------------------------------
+test_that("Cov data column names are changed to syntactically valid names", {
+  skip_on_cran()
+  fct.test.data.cols.renamed <- function(new.names){
+    apparelStaticCov.named <- data.table::copy(apparelStaticCov)
+    data.table::setnames(apparelStaticCov.named, old = c("Gender", "Channel"), new=new.names)
+    expect_silent(static.cov <- SetStaticCovariates(clv.data = clv.data.apparel.withhold,
+                                                    data.cov.life  = apparelStaticCov.named, names.cov.life = new.names,
+                                                    data.cov.trans = apparelStaticCov.named, names.cov.trans = new.names))
+    expect_true(setequal(colnames(static.cov@data.cov.life),
+                         c("Id", make.names(new.names))))
+    expect_true(setequal(colnames(static.cov@data.cov.trans),
+                         c("Id", make.names(new.names))))
+  }
+
+  # Previously failed for numeric names and spaces
+  fct.test.data.cols.renamed(c("1", "2"))
+  fct.test.data.cols.renamed(c("1abc", "2xyz"))
+  fct.test.data.cols.renamed(c("Gender ", "Chan nel"))
+  fct.test.data.cols.renamed(c(" Gender", "Channe l"))
+
+})
+
+
 # Copied ---------------------------------------------------------------------------
-test_that("Cov data was properly copied", {
+test_that("Data was properly copied", {
   skip_on_cran()
   expect_silent(static.cov <- SetStaticCovariates(clv.data = clv.data.apparel.withhold,
                                                         data.cov.life  = apparelStaticCov, names.cov.life = "Gender",
                                                         data.cov.trans = apparelStaticCov, names.cov.trans = "Gender"))
+  # Cov data
   expect_false(isTRUE(all.equal(data.table::address(static.cov@data.cov.life),
                                 data.table::address(apparelStaticCov))))
   expect_false(isTRUE(all.equal(data.table::address(static.cov@data.cov.trans),
                                 data.table::address(apparelStaticCov))))
+
+  # And also transaction data
+  expect_false(isTRUE(all.equal(data.table::address(static.cov@data.transactions),
+                                data.table::address(clv.data.apparel.withhold@data.transactions))))
+  expect_false(isTRUE(all.equal(data.table::address(static.cov@data.repeat.trans),
+                                data.table::address(clv.data.apparel.withhold@data.repeat.trans))))
 })
 
 

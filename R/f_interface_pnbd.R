@@ -18,10 +18,13 @@
 #' Model parameters for the Pareto/NBD model are \code{alpha, r, beta, and s}. \cr
 #' \code{s}: shape parameter of the Gamma distribution for the lifetime process.
 #' The smaller s, the stronger the heterogeneity of customer lifetimes. \cr
-#' \code{beta}: scale parameter for the Gamma distribution for the lifetime process. \cr
+#' \code{beta}: rate parameter for the Gamma distribution for the lifetime process. \cr
 #' \code{r}: shape parameter of the Gamma distribution of the purchase process.
 #' The smaller r, the stronger the heterogeneity of the purchase process.\cr
-#' \code{alpha}: scale parameter of the Gamma distribution of the purchase process.
+#' \code{alpha}: rate parameter of the Gamma distribution of the purchase process.
+#'
+#' Based on these parameters, the average purchase rate while customers are active
+#' is r/alpha and the average dropout rate is s/beta.
 #'
 #' Ideally, the starting parameters for r and s represent your best guess
 #' concerning the heterogeneity of customers in their buy and die rate.
@@ -65,17 +68,6 @@
 #' }
 #'
 #' @note
-#' Fitting the Pareto/NBD model with dynamic covariates is for the most part implemented using \code{data.table} and to a smaller part further
-#' parallelized with the \code{foreach} package. Registering a
-#' parallel backend with \code{\link[doFuture]{doFuture}} or \code{\link[doParallel:doParallel-package]{doParallel}} before fitting the
-#' models allows to take advantage of this. If no parallel backend is set up, the \code{foreach} package gives a friendly reminder that
-#' it is executed sequentially. In case this is desired but no warning should be given, a parallel backend in sequential mode
-#' can be set up, for example package \code{doFuture} with \code{\link[future:plan]{plan("sequential")}}.
-#'
-#' The part executed with \code{foreach} also heavily relies on \code{data.table} which is natively parallelized already. When setting up
-#' the parallel backend, great care should be taken to reduce the overhead from this nested parallelism as otherwise it can \emph{increase} runtime.
-#' See \code{\link[data.table:openmp-utils]{setDTthreads}}, \code{\link[data.table:openmp-utils]{getDTthreads}},
-#' and \code{\link[future]{plan}} for information on how to do this.
 #'
 #' The Pareto/NBD model with dynamic covariates can currently not be fit with data that has a temporal resolution
 #' of less than one day (data that was built with time unit \code{hours}).
@@ -88,7 +80,6 @@
 #' @template template_clvfittedtransactions_seealso
 #' @seealso \code{\link[CLVTools:SetDynamicCovariates]{SetDynamicCovariates}} to add dynamic covariates on which the \code{pnbd} model can be fit.
 #'
-#' @seealso \code{\link[data.table:openmp-utils]{setDTthreads}}, \code{\link[data.table:openmp-utils]{getDTthreads}},\code{\link[doParallel:registerDoParallel]{registerDoParallel}},\code{\link[doFuture]{registerDoFuture}} for setting up parallel execution.
 #'
 #' @template template_references_pnbd
 #'
@@ -116,13 +107,6 @@
 #'                        names.cov.trans = c("Marketing", "Gender", "Channel"),
 #'                        name.date = "Cov.Date")
 #'
-#' # Enable parallel execution of some parts of the dyncov LL
-#' library(doFuture)
-#' registerDoFuture()
-#' # avoid overhead from nested parallelism by setting up
-#' # appropriate to _your_ system
-#' setDTthreads(threads=8)
-#' plan("multisession", workers=2)
 #'
 #' # Fit PNBD with dynamic covariates
 #' pnbd(clv.data.dyn.cov)
@@ -209,11 +193,11 @@ setMethod("pnbd", signature = signature(clv.data="clv.data.dynamic.covariates"),
 
   cl  <- match.call(call = sys.call(-1), expand.dots = TRUE)
 
-  obj <- clv.pnbd.dynamic.cov(cl = cl, clv.data=clv.data)
-
   if(is(clv.data@clv.time, "clv.time.datetime")){
     stop("This model currently cannot be fitted with data that has a temporal resolution of less than 1d (ie hours).")
   }
+
+  obj <- clv.pnbd.dynamic.cov(cl = cl, clv.data=clv.data)
 
   return(clv.template.controlflow.estimate(clv.fitted=obj, start.params.model = start.params.model, use.cor = use.cor, start.param.cor = start.param.cor,
                                            optimx.args = optimx.args, verbose=verbose,

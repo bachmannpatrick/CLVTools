@@ -1,8 +1,6 @@
 data("cdnow")
 data("apparelTrans") # for years
 
-# context("Correctness - clvdata - clvdata")
-
 # estimation.split ---------------------------------------------------------------------
 context("Correctness - clvdata - estimation.split")
 
@@ -378,7 +376,6 @@ test_that("Zero-repeaters are removed", {
 
 
 
-
 test_that("Aggregating first and removing after removes all first transactions", {
   expect_silent(dt.trans <- data.table(Id =   c("1", "1", "1", "2", "2", "2"),
                                        Date = c(lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-02"),
@@ -397,3 +394,5 @@ test_that("Aggregating first and removing after removes all first transactions",
   expect_silent(clv.d <- clvdata(dt.trans, date.format = "ymd", time.unit = "w", estimation.split = NULL))
   expect_true(fsetequal(clv.d@data.repeat.trans, dt.trans.correct))
 })
+
+

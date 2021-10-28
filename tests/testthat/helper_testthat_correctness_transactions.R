@@ -232,15 +232,16 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method, d
                                                                                                      m.fitted.static = obj.fitted.static)
 }
 
-fct.testthat.correctness.clvfittedtransactions.same.expectation.in.R.and.Cpp <- function(fct.expectation.R, fct.expectation.Cpp, params_i, obj.fitted){
-  dt.expectation.seq <- clv.time.expectation.periods(clv.time = obj.fitted@clv.data@clv.time,
-                                                     user.tp.end = 38)
+fct.testthat.correctness.clvfittedtransactions.same.expectation.in.R.and.Cpp <- function(fct.expectation.R, params_i, obj.fitted, tolerance=testthat_tolerance()){
 
-  result.R <- DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
-                            fct.expectation = fct.expectation.R, clv.time = obj.fitted@clv.data@clv.time)
+  # dt.expectation.seq has to be copied for calling expectation as otherwise the same table is overwritten!
+  dt.expectation.seq <- clv.time.expectation.periods(clv.time = obj.fitted@clv.data@clv.time, user.tp.end = 38)
 
-  result.Cpp <- DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
-                              fct.expectation = fct.expectation.Cpp, clv.time = obj.fitted@clv.data@clv.time)
+  expect_silent(result.R <- DoExpectation(dt.expectation.seq = copy(dt.expectation.seq), params_i = params_i,
+                                          fct.expectation = fct.expectation.R, clv.time = obj.fitted@clv.data@clv.time))
 
-  expect_equal(result.R, result.Cpp)
+  expect_silent(result.Rcpp.model <- clv.model.expectation(clv.model = obj.fitted@clv.model, clv.fitted = obj.fitted,
+                                                           dt.expectation.seq = copy(dt.expectation.seq), verbose = FALSE))
+
+  expect_equal(result.R, result.Rcpp.model, tolerance = tolerance)
 }
