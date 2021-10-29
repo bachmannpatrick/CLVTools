@@ -26,6 +26,25 @@ clv.model.pnbd.static.cov <- function(){
              start.param.cov = 0.1))
 }
 
+clv.model.pnbd.static.cov.get.alpha_i <- function(clv.fitted){
+  dt.alpha_i <- clv.fitted@cbs[, "Id"]
+  m.cov.data.trans <- clv.data.get.matrix.data.cov.trans(clv.data=clv.fitted@clv.data, correct.row.names=dt.alpha_i$Id,
+                                                         correct.col.names=names(clv.fitted@prediction.params.trans))
+  dt.alpha_i[, alpha_i := pnbd_staticcov_alpha_i(alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+                                                 vCovParams_trans = clv.fitted@prediction.params.trans,
+                                                 mCov_trans = m.cov.data.trans)]
+  return(dt.alpha_i)
+}
+
+clv.model.pnbd.static.cov.get.beta_i <- function(clv.fitted){
+  dt.beta_i <- clv.fitted@cbs[, "Id"]
+  m.cov.data.life <- clv.data.get.matrix.data.cov.life(clv.data=clv.fitted@clv.data, correct.row.names=dt.beta_i$Id,
+                                                       correct.col.names=names(clv.fitted@prediction.params.life))
+  dt.beta_i[, beta_i := pnbd_staticcov_beta_i(beta_0 = clv.fitted@prediction.params.model[["beta"]],
+                                              vCovParams_life = clv.fitted@prediction.params.life,
+                                              mCov_life = m.cov.data.life)]
+  return(dt.beta_i)
+}
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
 
@@ -165,22 +184,15 @@ setMethod("clv.model.predict", signature(clv.model="clv.model.pnbd.static.cov"),
 
 # . clv.model.expectation -----------------------------------------------------------------------------------------------------
 setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.static.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
-
-  r<-s<-alpha_i<-beta_i <- T.cal <- t_i <- NULL
+  r <- s <- alpha_i <- beta_i <- i.alpha_i <- i.beta_i <- T.cal <- t_i <- NULL
 
   #calculate alpha_i, beta_i
-  params_i <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
+  params_i   <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
+  dt.alpha_i <- clv.model.pnbd.static.cov.get.alpha_i(clv.fitted)
+  dt.beta_i  <- clv.model.pnbd.static.cov.get.beta_i(clv.fitted)
 
-  m.cov.data.life  <- clv.data.get.matrix.data.cov.life(clv.data=clv.fitted@clv.data, correct.row.names=params_i$Id,
-                                                        correct.col.names=names(clv.fitted@prediction.params.life))
-  m.cov.data.trans <- clv.data.get.matrix.data.cov.trans(clv.data=clv.fitted@clv.data, correct.row.names=params_i$Id,
-                                                         correct.col.names=names(clv.fitted@prediction.params.trans))
-  params_i[, alpha_i := pnbd_staticcov_alpha_i(alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
-                                               vCovParams_trans = clv.fitted@prediction.params.trans,
-                                               mCov_trans = m.cov.data.trans)]
-  params_i[, beta_i  := pnbd_staticcov_beta_i(beta_0 = clv.fitted@prediction.params.model[["beta"]],
-                                              vCovParams_life = clv.fitted@prediction.params.life,
-                                              mCov_life = m.cov.data.life)]
+  params_i[dt.alpha_i, alpha_i := i.alpha_i, on="Id"]
+  params_i[dt.beta_i,  beta_i  := i.beta_i,  on="Id"]
 
   # To caluclate expectation at point t for customers alive in t, given in params_i.t
   fct.expectation <- function(params_i.t) {
@@ -194,5 +206,24 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.static.co
                        fct.expectation = fct.expectation, clv.time = clv.fitted@clv.data@clv.time))
 })
 
+setMethod("clv.model.pmf", signature=(clv.model="clv.model.pnbd.static.cov"), function(clv.model, clv.fitted, x){
+  Id <- T.cal <- pmf.x <- alpha_i <- beta_i <- i.alpha_i <- i.beta_i <- NULL
 
+  dt.res <- clv.fitted@cbs[, list(Id, T.cal)]
+  dt.alpha_i <- clv.model.pnbd.static.cov.get.alpha_i(clv.fitted)
+  dt.beta_i <- clv.model.pnbd.static.cov.get.beta_i(clv.fitted)
+  dt.res[dt.alpha_i, alpha_i := i.alpha_i, on="Id"]
+  dt.res[dt.beta_i,  beta_i  := i.beta_i,  on="Id"]
+
+  dt.res[, pmf.x := pnbd_staticcov_pmf(r = clv.fitted@prediction.params.model[["r"]],
+                                       s = clv.fitted@prediction.params.model[["s"]],
+                                       vAlpha_i = alpha_i,
+                                       vBeta_i = beta_i,
+                                       vT = T.cal,
+                                       x = x)]
+
+  dt.res <- dt.res[, list(Id, pmf.x)]
+  setnames(dt.res, "pmf.x", paste0("pmf.x.", x))
+  return(dt.res)
+})
 

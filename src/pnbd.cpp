@@ -687,12 +687,6 @@ arma::vec pnbd_pmf(const double r,
 
   const arma::vec vPart2 = arma::exp(r * arma::log(vAlpha_i) + s*arma::log(vBeta_i) + clv::lbeta(r+x, s+1) - clv::lbeta(r,s));
 
-  // arma::vec vB1(size(vAlpha_i), arma::fill::zeros);
-  // arma::uword n = vAlpha_i.n_elem;
-  // for(arma::uword i = 0; i<n; i++){
-  //   if()
-  //   vB1(i) =
-  // }
 
   const arma::vec vAbsAB = arma::abs(vAlpha_i - vBeta_i);
   const arma::vec vMaxAB = arma::max(vAlpha_i, vBeta_i);
@@ -726,7 +720,7 @@ arma::vec pnbd_pmf(const double r,
 
 
 // [[Rcpp::export]]
-arma::vec Rcpp_pnbd_nocov_pmf(const double r,
+arma::vec pnbd_nocov_pmf(const double r,
                         const double alpha_0,
                         const double s,
                         const double beta_0,
@@ -744,7 +738,7 @@ arma::vec Rcpp_pnbd_nocov_pmf(const double r,
 
 
 // [[Rcpp::export]]
-arma::vec Rcpp_pnbd_staticcov_pmf(const double r,
+arma::vec pnbd_staticcov_pmf(const double r,
                              const double s,
                              const int x,
                              const arma::vec& vAlpha_i,
