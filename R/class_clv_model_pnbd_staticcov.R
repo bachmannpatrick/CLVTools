@@ -27,6 +27,8 @@ clv.model.pnbd.static.cov <- function(){
 }
 
 clv.model.pnbd.static.cov.get.alpha_i <- function(clv.fitted){
+  alpha_i <- NULL
+
   dt.alpha_i <- clv.fitted@cbs[, "Id"]
   m.cov.data.trans <- clv.data.get.matrix.data.cov.trans(clv.data=clv.fitted@clv.data, correct.row.names=dt.alpha_i$Id,
                                                          correct.col.names=names(clv.fitted@prediction.params.trans))
@@ -37,6 +39,8 @@ clv.model.pnbd.static.cov.get.alpha_i <- function(clv.fitted){
 }
 
 clv.model.pnbd.static.cov.get.beta_i <- function(clv.fitted){
+  beta_i <- NULL
+
   dt.beta_i <- clv.fitted@cbs[, "Id"]
   m.cov.data.life <- clv.data.get.matrix.data.cov.life(clv.data=clv.fitted@clv.data, correct.row.names=dt.beta_i$Id,
                                                        correct.col.names=names(clv.fitted@prediction.params.life))

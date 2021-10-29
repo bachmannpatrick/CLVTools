@@ -10,8 +10,6 @@
 #   exportMethods(fun)
 setGeneric(name = "predict")
 
-setGeneric(name = "pmf", def = function(object, x=0:5)
-  standardGeneric("pmf"))
 
 # Controlflows -------------------------------------------------------------------------------------------------
 # Steps performed by all models but different between base (no cov) and covariate models

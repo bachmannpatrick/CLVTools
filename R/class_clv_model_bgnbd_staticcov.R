@@ -20,6 +20,8 @@ clv.model.bgnbd.static.cov <- function(){
 }
 
 clv.model.bgnbd.static.cov.get.alpha_i <- function(clv.fitted){
+  alpha_i <- NULL
+
   dt.alpha_i <- clv.fitted@cbs[, "Id"]
   m.cov.data.trans <- clv.data.get.matrix.data.cov.trans(clv.data=clv.fitted@clv.data, correct.row.names=dt.alpha_i$Id,
                                                          correct.col.names=names(clv.fitted@prediction.params.trans))
@@ -31,6 +33,8 @@ clv.model.bgnbd.static.cov.get.alpha_i <- function(clv.fitted){
 }
 
 clv.model.bgnbd.static.cov.get.a_i <- function(clv.fitted){
+  a_i <- NULL
+
   dt.a_i <- clv.fitted@cbs[, "Id"]
   m.cov.data.life  <- clv.data.get.matrix.data.cov.life(clv.data=clv.fitted@clv.data, correct.row.names=dt.a_i$Id,
                                                         correct.col.names=names(clv.fitted@prediction.params.life))
@@ -42,6 +46,8 @@ clv.model.bgnbd.static.cov.get.a_i <- function(clv.fitted){
 }
 
 clv.model.bgnbd.static.cov.get.b_i <- function(clv.fitted){
+  b_i <- NULL
+
   dt.b_i <- clv.fitted@cbs[, "Id"]
   m.cov.data.life  <- clv.data.get.matrix.data.cov.life(clv.data=clv.fitted@clv.data, correct.row.names=dt.b_i$Id,
                                                         correct.col.names=names(clv.fitted@prediction.params.life))
@@ -100,7 +106,7 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
 
 # . clv.model.expectation -----------------------------------------------------------------------------------------------------
 setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.static.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
-  r <- alpha_i <- a_i <- b_i <- date.first.repeat.trans<- date.first.actual.trans <- T.cal <- t_i<- period.first.trans<-NULL
+  r <- alpha_i <- i.alpha_i <- a_i <- i.a_i <- b_i <- i.b_i <- date.first.repeat.trans<- date.first.actual.trans <- T.cal <- t_i<- period.first.trans<-NULL
 
   params_i <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
   dt.alpha_i <- clv.model.bgnbd.static.cov.get.alpha_i(clv.fitted)
@@ -125,7 +131,7 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.static.c
 # . clv.model.pmf --------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
 setMethod("clv.model.pmf", signature=(clv.model="clv.model.bgnbd.static.cov"), function(clv.model, clv.fitted, x){
-  Id <- T.cal <- pmf.x <- NULL
+  Id <- T.cal <- pmf.x <- alpha_i <-i.alpha_i <- a_i <- i.a_i <- b_i <- i.b_i <- NULL
 
   dt.res <- clv.fitted@cbs[, c("Id", "T.cal")]
   dt.alpha_i <- clv.model.bgnbd.static.cov.get.alpha_i(clv.fitted)
