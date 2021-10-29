@@ -125,6 +125,14 @@ bgnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_tr
     .Call(`_CLVTools_bgnbd_staticcov_LL_sum`, vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
 
+bgnbd_nocov_PMF <- function(r, alpha, a, b, x, vT) {
+    .Call(`_CLVTools_bgnbd_nocov_PMF`, r, alpha, a, b, x, vT)
+}
+
+bgnbd_staticcov_PMF <- function(r, x, vAlpha_i, vA_i, vB_i, vT) {
+    .Call(`_CLVTools_bgnbd_staticcov_PMF`, r, x, vAlpha_i, vA_i, vB_i, vT)
+}
+
 bgnbd_staticcov_alpha_i <- function(alpha_0, vCovParams_trans, mCov_trans) {
     .Call(`_CLVTools_bgnbd_staticcov_alpha_i`, alpha_0, vCovParams_trans, mCov_trans)
 }

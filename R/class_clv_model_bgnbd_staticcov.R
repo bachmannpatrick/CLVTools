@@ -19,6 +19,40 @@ clv.model.bgnbd.static.cov <- function(){
              start.param.cov = 0.1))
 }
 
+clv.model.bgnbd.static.cov.get.alpha_i <- function(clv.fitted){
+  dt.alpha_i <- clv.fitted@cbs[, "Id"]
+  m.cov.data.trans <- clv.data.get.matrix.data.cov.trans(clv.data=clv.fitted@clv.data, correct.row.names=dt.alpha_i$Id,
+                                                         correct.col.names=names(clv.fitted@prediction.params.trans))
+
+  dt.alpha_i[, alpha_i := bgnbd_staticcov_alpha_i(alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+                                                vCovParams_trans = clv.fitted@prediction.params.trans,
+                                                mCov_trans = m.cov.data.trans)]
+  return(dt.alpha_i)
+}
+
+clv.model.bgnbd.static.cov.get.a_i <- function(clv.fitted){
+  dt.a_i <- clv.fitted@cbs[, "Id"]
+  m.cov.data.life  <- clv.data.get.matrix.data.cov.life(clv.data=clv.fitted@clv.data, correct.row.names=dt.a_i$Id,
+                                                        correct.col.names=names(clv.fitted@prediction.params.life))
+
+  dt.a_i[, a_i := bgnbd_staticcov_a_i(a_0 = clv.fitted@prediction.params.model[["a"]],
+                                      vCovParams_life = clv.fitted@prediction.params.life,
+                                      mCov_life = m.cov.data.life)]
+  return(dt.a_i)
+}
+
+clv.model.bgnbd.static.cov.get.b_i <- function(clv.fitted){
+  dt.b_i <- clv.fitted@cbs[, "Id"]
+  m.cov.data.life  <- clv.data.get.matrix.data.cov.life(clv.data=clv.fitted@clv.data, correct.row.names=dt.b_i$Id,
+                                                        correct.col.names=names(clv.fitted@prediction.params.life))
+
+  dt.b_i[, b_i := bgnbd_staticcov_b_i(b_0 = clv.fitted@prediction.params.model[["b"]],
+                                      vCovParams_life = clv.fitted@prediction.params.life,
+                                      mCov_life = m.cov.data.life)]
+  return(dt.b_i)
+}
+
+
 # Methods --------------------------------------------------------------------------------------------------------------------------------
 # . clv.model.check.input.args ----------------------------------------------------------------------------------------------------------
 # Use nocov
@@ -69,20 +103,12 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.static.c
   r <- alpha_i <- a_i <- b_i <- date.first.repeat.trans<- date.first.actual.trans <- T.cal <- t_i<- period.first.trans<-NULL
 
   params_i <- clv.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
-  m.cov.data.life  <- clv.data.get.matrix.data.cov.life(clv.data=clv.fitted@clv.data, correct.row.names=params_i$Id,
-                                                        correct.col.names=names(clv.fitted@prediction.params.life))
-  m.cov.data.trans <- clv.data.get.matrix.data.cov.trans(clv.data=clv.fitted@clv.data, correct.row.names=params_i$Id,
-                                                         correct.col.names=names(clv.fitted@prediction.params.trans))
-
-  params_i[, alpha_i := bgnbd_staticcov_alpha_i(alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
-                                                vCovParams_trans = clv.fitted@prediction.params.trans,
-                                                mCov_trans = m.cov.data.trans)]
-  params_i[, a_i := bgnbd_staticcov_a_i(a_0 = clv.fitted@prediction.params.model[["a"]],
-                                        vCovParams_life = clv.fitted@prediction.params.life,
-                                        mCov_life = m.cov.data.life)]
-  params_i[, b_i := bgnbd_staticcov_b_i(b_0 = clv.fitted@prediction.params.model[["b"]],
-                                        vCovParams_life = clv.fitted@prediction.params.life,
-                                        mCov_life = m.cov.data.life)]
+  dt.alpha_i <- clv.model.bgnbd.static.cov.get.alpha_i(clv.fitted)
+  dt.a_i <- clv.model.bgnbd.static.cov.get.a_i(clv.fitted)
+  dt.b_i <- clv.model.bgnbd.static.cov.get.b_i(clv.fitted)
+  params_i[dt.alpha_i, alpha_i := i.alpha_i, on="Id"]
+  params_i[dt.a_i, a_i := i.a_i, on="Id"]
+  params_i[dt.b_i, b_i := i.b_i, on="Id"]
 
   # Alpha is for trans, a and b for live!
   fct.bgnbd.expectation <- function(params_i.t){
@@ -95,6 +121,29 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.static.c
   return(DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
                        fct.expectation = fct.bgnbd.expectation, clv.time = clv.fitted@clv.data@clv.time))
 })
+
+# . clv.model.pmf --------------------------------------------------------------------------------------------------------
+#' @include all_generics.R
+setMethod("clv.model.pmf", signature=(clv.model="clv.model.bgnbd.static.cov"), function(clv.model, clv.fitted, x){
+  Id <- T.cal <- pmf.x <- NULL
+
+  dt.res <- clv.fitted@cbs[, c("Id", "T.cal")]
+  dt.alpha_i <- clv.model.bgnbd.static.cov.get.alpha_i(clv.fitted)
+  dt.a_i <- clv.model.bgnbd.static.cov.get.a_i(clv.fitted)
+  dt.b_i <- clv.model.bgnbd.static.cov.get.b_i(clv.fitted)
+  dt.res[dt.alpha_i, alpha_i := i.alpha_i, on="Id"]
+  dt.res[dt.a_i, a_i := i.a_i, on="Id"]
+  dt.res[dt.b_i, b_i := i.b_i, on="Id"]
+
+  dt.res[, pmf.x := bgnbd_staticcov_PMF(x = x, r = clv.fitted@prediction.params.model[["r"]],
+                                        vAlpha_i = alpha_i, vA_i = a_i, vB_i = b_i,
+                                        vT = T.cal)]
+
+  dt.res <- dt.res[, list(Id, pmf.x)]
+  setnames(dt.res, "pmf.x", paste0("pmf.x.", x))
+  return(dt.res)
+})
+
 
 # . clv.model.predict -----------------------------------------------------------------------------------------------------
 setMethod("clv.model.predict", signature(clv.model="clv.model.bgnbd.static.cov"), function(clv.model, clv.fitted, dt.predictions, verbose, continuous.discount.factor, ...){

@@ -103,6 +103,24 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.no.cov")
 })
 
 
+# . clv.model.pmf --------------------------------------------------------------------------------------------------------
+#' @include all_generics.R
+setMethod("clv.model.pmf", signature=(clv.model="clv.model.bgnbd.no.cov"), function(clv.model, clv.fitted, x){
+  Id <- T.cal <- pmf.x <- NULL
+
+  dt.res <- clv.fitted@cbs[, list(Id, T.cal)]
+  dt.res[, pmf.x := bgnbd_nocov_PMF(r = clv.fitted@prediction.params.model[["r"]],
+                                    alpha = clv.fitted@prediction.params.model[["alpha"]],
+                                    a = clv.fitted@prediction.params.model[["a"]],
+                                    b = clv.fitted@prediction.params.model[["b"]],
+                                    vT = T.cal,
+                                    x = x)]
+
+  dt.res <- dt.res[, list(Id, pmf.x)]
+  setnames(dt.res, "pmf.x", paste0("pmf.x.", x))
+  return(dt.res)
+})
+
 
 # clv.model.predict --------------------------------------------------------------------------------------------------------
 #' @include all_generics.R

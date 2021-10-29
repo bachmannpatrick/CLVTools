@@ -266,16 +266,15 @@ setMethod("clv.model.pmf", signature=(clv.model="clv.model.pnbd.no.cov"), functi
   Id <- T.cal <- pmf.x <- NULL
 
   dt.res <- clv.fitted@cbs[, list(Id, T.cal)]
-
   dt.res[, pmf.x := pnbd_nocov_pmf(r = clv.fitted@prediction.params.model[["r"]],
                                    alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
                                    s = clv.fitted@prediction.params.model[["s"]],
                                    beta_0 = clv.fitted@prediction.params.model[["beta"]],
                                    vT = T.cal,
                                    x = x)]
+
   dt.res <- dt.res[, list(Id, pmf.x)]
   setnames(dt.res, "pmf.x", paste0("pmf.x.", x))
-
   return(dt.res)
 })
 

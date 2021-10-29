@@ -398,7 +398,7 @@ double bgnbd_staticcov_LL_sum(const arma::vec& vParams,
 }
 
 arma::vec bgnbd_PMF(const double r,
-                    const uint x,
+                    const unsigned int x,
                     const arma::vec& vAlpha_i,
                     const arma::vec& vA_i,
                     const arma::vec& vB_i,
@@ -413,7 +413,7 @@ arma::vec bgnbd_PMF(const double r,
     // Sum Ai
     arma::vec vAsum(size(vAlpha_i), arma::fill::zeros);
     // from 0 up to and including x-1
-    for(uint j=0; j<=x-1; j++){
+    for(unsigned int j=0; j<=x-1; j++){
       vAsum += arma::exp(std::lgamma(r + j) - std::lgamma(r) - std::lgamma(j+1) +
         j*(arma::log(vT)-arma::log(vAlpha_i + vT)));
     }
@@ -434,31 +434,28 @@ arma::vec bgnbd_nocov_PMF(const double r,
                           const double alpha,
                           const double a,
                           const double b,
+                          const unsigned int x,
                           const arma::vec& vT){
 
   const arma::vec vA_i = bgnbd_nocov_a_i(a, vT.n_elem);
   const arma::vec vB_i = bgnbd_nocov_b_i(b, vT.n_elem);
   const arma::vec vAlpha_i = bgnbd_nocov_alpha_i(alpha, vT.n_elem);
 
-  return bgnbd_expectation(r,
-                           vAlpha_i,
-                           vA_i,
-                           vB_i,
-                           vT);
+  return(bgnbd_PMF(r, x,
+                   vAlpha_i,vA_i,vB_i,
+                   vT));
 }
 
 // [[Rcpp::export]]
 arma::vec bgnbd_staticcov_PMF(const double r,
+                              const unsigned int x,
                               const arma::vec& vAlpha_i,
                               const arma::vec& vA_i,
                               const arma::vec& vB_i,
                               const arma::vec& vT){
-
-  return(bgnbd_expectation(r,
-                           vAlpha_i,
-                           vA_i,
-                           vB_i,
-                           vT_i));
+  return(bgnbd_PMF(r, x,
+                   vAlpha_i,vA_i,vB_i,
+                   vT));
 }
 
 arma::vec lbeta_ratio(const arma::vec& a, const arma::vec& b, const arma::vec& x, const arma::vec& y){
