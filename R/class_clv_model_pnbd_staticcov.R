@@ -206,6 +206,8 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.static.co
                        fct.expectation = fct.expectation, clv.time = clv.fitted@clv.data@clv.time))
 })
 
+
+# . clv.model.pmf -----------------------------------------------------------------------------------------------------
 setMethod("clv.model.pmf", signature=(clv.model="clv.model.pnbd.static.cov"), function(clv.model, clv.fitted, x){
   Id <- T.cal <- pmf.x <- alpha_i <- beta_i <- i.alpha_i <- i.beta_i <- NULL
 
@@ -215,7 +217,7 @@ setMethod("clv.model.pmf", signature=(clv.model="clv.model.pnbd.static.cov"), fu
   dt.res[dt.alpha_i, alpha_i := i.alpha_i, on="Id"]
   dt.res[dt.beta_i,  beta_i  := i.beta_i,  on="Id"]
 
-  dt.res[, pmf.x := pnbd_staticcov_pmf(r = clv.fitted@prediction.params.model[["r"]],
+  dt.res[, pmf.x := pnbd_staticcov_PMF(r = clv.fitted@prediction.params.model[["r"]],
                                        s = clv.fitted@prediction.params.model[["s"]],
                                        vAlpha_i = alpha_i,
                                        vBeta_i = beta_i,

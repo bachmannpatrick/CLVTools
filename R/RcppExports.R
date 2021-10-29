@@ -501,12 +501,12 @@ pnbd_staticcov_PAlive <- function(r, alpha_0, s, beta_0, vX, vT_x, vT_cal, vCovP
     .Call(`_CLVTools_pnbd_staticcov_PAlive`, r, alpha_0, s, beta_0, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
 }
 
-pnbd_nocov_pmf <- function(r, alpha_0, s, beta_0, x, vT) {
-    .Call(`_CLVTools_pnbd_nocov_pmf`, r, alpha_0, s, beta_0, x, vT)
+pnbd_nocov_PMF <- function(r, alpha_0, s, beta_0, x, vT) {
+    .Call(`_CLVTools_pnbd_nocov_PMF`, r, alpha_0, s, beta_0, x, vT)
 }
 
-pnbd_staticcov_pmf <- function(r, s, x, vAlpha_i, vBeta_i, vT) {
-    .Call(`_CLVTools_pnbd_staticcov_pmf`, r, s, x, vAlpha_i, vBeta_i, vT)
+pnbd_staticcov_PMF <- function(r, s, x, vAlpha_i, vBeta_i, vT) {
+    .Call(`_CLVTools_pnbd_staticcov_PMF`, r, s, x, vAlpha_i, vBeta_i, vT)
 }
 
 pnbd_dyncov_LL_Bi_cpp <- function(i, t_x, d, delta, n_walks, max_walks, walks) {

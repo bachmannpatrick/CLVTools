@@ -671,7 +671,7 @@ arma::vec pnbd_staticcov_PAlive(const double r,
 }
 
 
-arma::vec pnbd_pmf(const double r,
+arma::vec pnbd_PMF(const double r,
                    const double s,
                    const int x,
                    const arma::vec& vT,
@@ -720,12 +720,12 @@ arma::vec pnbd_pmf(const double r,
 
 
 // [[Rcpp::export]]
-arma::vec pnbd_nocov_pmf(const double r,
-                        const double alpha_0,
-                        const double s,
-                        const double beta_0,
-                        const int x,
-                        const arma::vec& vT){
+arma::vec pnbd_nocov_PMF(const double r,
+                         const double alpha_0,
+                         const double s,
+                         const double beta_0,
+                         const int x,
+                         const arma::vec& vT){
 
     // Build alpha and beta --------------------------------------------------------
     const double n = vT.n_elem;
@@ -733,17 +733,17 @@ arma::vec pnbd_nocov_pmf(const double r,
     const arma::vec vAlpha_i = pnbd_nocov_alpha_i(alpha_0, n);
     const arma::vec vBeta_i = pnbd_nocov_beta_i(beta_0, n);
 
-    return(pnbd_pmf(r, s, x, vT, vAlpha_i, vBeta_i));
+    return(pnbd_PMF(r, s, x, vT, vAlpha_i, vBeta_i));
   }
 
 
 // [[Rcpp::export]]
-arma::vec pnbd_staticcov_pmf(const double r,
+arma::vec pnbd_staticcov_PMF(const double r,
                              const double s,
                              const int x,
                              const arma::vec& vAlpha_i,
                              const arma::vec& vBeta_i,
                              const arma::vec& vT){
 
-  return(pnbd_pmf(r, s, x, vT, vAlpha_i, vBeta_i));
+  return(pnbd_PMF(r, s, x, vT, vAlpha_i, vBeta_i));
 }
