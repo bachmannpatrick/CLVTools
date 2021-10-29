@@ -123,11 +123,9 @@ arma::vec vec_pow(const arma::vec& vA, const arma::vec& vP){
   return(vRes);
 }
 
-arma::vec vec_fill(const double number, const double repetitions){
-  arma::vec vResult(repetitions);
-
-  vResult.fill(number);
-
+arma::vec vec_fill(const double d, const arma::uword n){
+  arma::vec vResult(n);
+  vResult.fill(d);
   return vResult;
 }
 
