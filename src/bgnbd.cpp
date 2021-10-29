@@ -52,9 +52,9 @@ arma::vec bgnbd_nocov_CET(const double r,
 
   arma::vec vAlpha_i(n), vA_i(n), vB_i(n);
 
-  vA_i = bgnbd_nocov_a_i(a, n);
-  vB_i = bgnbd_nocov_b_i(b, n);
-  vAlpha_i = bgnbd_nocov_alpha_i(alpha, n);
+  vA_i = clv::vec_fill(a, n);
+  vB_i = clv::vec_fill(b, n);
+  vAlpha_i = clv::vec_fill(alpha, n);
 
   return bgnbd_CET(r, vAlpha_i, vA_i, vB_i, dPeriods, vX, vT_x, vT_cal);
 }
@@ -132,9 +132,9 @@ arma::vec bgnbd_nocov_expectation(const double r,
   // Build alpha and beta --------------------------------------------------------
   const double n = vT_i.n_elem;
 
-  const arma::vec vA_i = bgnbd_nocov_a_i(a, n);
-  const arma::vec vB_i = bgnbd_nocov_b_i(b, n);
-  const arma::vec vAlpha_i = bgnbd_nocov_alpha_i(alpha, n);
+  const arma::vec vA_i = clv::vec_fill(a, n);
+  const arma::vec vB_i = clv::vec_fill(b, n);
+  const arma::vec vAlpha_i = clv::vec_fill(alpha, n);
 
   return bgnbd_expectation(r,
                            vAlpha_i,
@@ -205,9 +205,9 @@ arma::vec bgnbd_nocov_PAlive(const double r,
   //    No covariates: Same alpha, a and b for every customer
 
   const double n = vX.n_elem;
-  const arma::vec vA_i = bgnbd_nocov_a_i(a, n);
-  const arma::vec vB_i = bgnbd_nocov_b_i(b, n);
-  const arma::vec vAlpha_i = bgnbd_nocov_alpha_i(alpha, n);
+  const arma::vec vA_i = clv::vec_fill(a, n);
+  const arma::vec vB_i = clv::vec_fill(b, n);
+  const arma::vec vAlpha_i = clv::vec_fill(alpha, n);
 
   return bgnbd_PAlive(r,
                       vAlpha_i,
@@ -307,9 +307,9 @@ arma::vec bgnbd_nocov_LL_ind(const arma::vec& vLogparams,
 
   const unsigned int n = vX.n_elem;
 
-  const arma::vec vA_i = bgnbd_nocov_a_i(a_0, n);
-  const arma::vec vB_i = bgnbd_nocov_b_i(b_0, n);
-  const arma::vec vAlpha_i = bgnbd_nocov_alpha_i(alpha_0, n);
+  const arma::vec vA_i = clv::vec_fill(a_0, n);
+  const arma::vec vB_i = clv::vec_fill(b_0, n);
+  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, n);
 
   arma::vec vLL = bgnbd_LL_ind(r, vAlpha_i, vA_i, vB_i, vX, vT_x, vT_cal);
 
@@ -397,21 +397,77 @@ double bgnbd_staticcov_LL_sum(const arma::vec& vParams,
   return(-arma::sum(vLL));
 }
 
+
+arma::vec bgnbd_PMF(const double r,
+                    const unsigned int x,
+                    const arma::vec& vAlpha_i,
+                    const arma::vec& vA_i,
+                    const arma::vec& vB_i,
+                    const arma::vec& vT){
+  const arma::vec vLogPart1 = lbeta_ratio(vA_i, vB_i+x, vA_i, vB_i) +
+    std::lgamma(r + x) - std::lgamma(r) - std::lgamma(x+1) +
+    r * (arma::log(vAlpha_i) - arma::log(vAlpha_i + vT)) +
+    x * (arma::log(vT) - arma::log(vAlpha_i+vT));
+  const arma::vec vPart1 = arma::exp(vLogPart1);
+
+  if(x > 0){
+    // Sum Ai
+    arma::vec vAsum(size(vAlpha_i), arma::fill::zeros);
+    // from 0 up to and including x-1
+    for(unsigned int j=0; j<=x-1; j++){
+      vAsum += arma::exp(std::lgamma(r + j) - std::lgamma(r) - std::lgamma(j+1) +
+        j*(arma::log(vT)-arma::log(vAlpha_i + vT)));
+    }
+
+    const arma::vec vPart2 = beta_ratio(vA_i+1, vB_i+x-1, vA_i, vB_i) %
+      (1.0 - arma::exp(
+          r*(arma::log(vAlpha_i) - arma::log(vAlpha_i + vT)) +
+            arma::log(vAsum)));
+
+    return(vPart1 + vPart2);
+  }else{
+    return(vPart1);
+  }
+}
+
+// [[Rcpp::export]]
+arma::vec bgnbd_nocov_PMF(const double r,
+                          const double alpha,
+                          const double a,
+                          const double b,
+                          const unsigned int x,
+                          const arma::vec& vT){
+
+  const arma::vec vA_i = clv::vec_fill(a, vT.n_elem);
+  const arma::vec vB_i = clv::vec_fill(b, vT.n_elem);
+  const arma::vec vAlpha_i = clv::vec_fill(alpha, vT.n_elem);
+
+  return(bgnbd_PMF(r, x,
+                   vAlpha_i,vA_i,vB_i,
+                   vT));
+}
+
+// [[Rcpp::export]]
+arma::vec bgnbd_staticcov_PMF(const double r,
+                              const unsigned int x,
+                              const arma::vec& vAlpha_i,
+                              const arma::vec& vA_i,
+                              const arma::vec& vB_i,
+                              const arma::vec& vT){
+  return(bgnbd_PMF(r, x,
+                   vAlpha_i,vA_i,vB_i,
+                   vT));
+}
+
+arma::vec lbeta_ratio(const arma::vec& a, const arma::vec& b, const arma::vec& x, const arma::vec& y){
+  return(arma::lgamma(a) + arma::lgamma(b) - arma::lgamma(a + b) - arma::lgamma(x) - arma::lgamma(y) + arma::lgamma(x+y));
+}
+
+
 arma::vec beta_ratio(const arma::vec& a, const arma::vec& b, const arma::vec& x, const arma::vec& y){
   return(arma::exp(arma::lgamma(a) + arma::lgamma(b) - arma::lgamma(a + b) - arma::lgamma(x) - arma::lgamma(y) + arma::lgamma(x+y)));
 }
 
-arma::vec bgnbd_nocov_alpha_i(const double alpha, const int n){
-  return clv::vec_fill(alpha, n);
-}
-
-arma::vec bgnbd_nocov_a_i(const double a, const int n){
-  return clv::vec_fill(a, n);
-}
-
-arma::vec bgnbd_nocov_b_i(const double b, const int n){
-  return clv::vec_fill(b, n);
-}
 
 // [[Rcpp::export]]
 arma::vec bgnbd_staticcov_alpha_i(const double alpha_0,
