@@ -266,20 +266,24 @@ setMethod("clv.model.pmf", signature=(clv.model="clv.model.pnbd.no.cov"), functi
 
   Id <- T.cal <- t <- NULL
 
-  dt.res <- clv.fitted@cbs[, list(Id=Id, t=T.cal)]
+  dt.res <- clv.fitted@cbs[, list(Id, T.cal)]
   dt.res[, r     := clv.fitted@prediction.params.model[["r"]]]
   dt.res[, alpha_i := clv.fitted@prediction.params.model[["alpha"]]]
   dt.res[, beta_i  := clv.fitted@prediction.params.model[["beta"]]]
   dt.res[, s     := clv.fitted@prediction.params.model[["s"]]]
 
   pnbd_nocov_pmf <- function(r, alpha, s, beta, t){
-    part1.1 <- gamma(r + x)/(gamma(r) * factorial(x))
-    part1.2 <- (alpha / (alpha + t))^r
-    part1.3 <- (t / (alpha + t))^x
-    part1.4 <- (beta / (beta + t))^s
+    # replace log(factorial(n)) with lgamma(n+1)
+    log.part1.1 <- lgamma(r + x) - lgamma(r) - lgamma(x+1)
+    log.part1.2 <- r*(log(alpha) - log(alpha + t))
+    log.part1.3 <- x*(log(t) - log(alpha + t))
+    log.part1.4 <- s*(log(beta) - log(beta + t))
 
-    part1 <- part1.1 * part1.2 * part1.3 * part1.4
-    part2 <- alpha^r * beta^s *(beta(r+x, s+1)/beta(r,s))
+    log.part1 <- log.part1.1 + log.part1.2 + log.part1.3 + log.part1.4
+    part1 <- exp(log.part1)
+
+    log.part2 <- r*log(alpha) + s*log(beta) + lbeta(r+x, s+1) - lbeta(r,s)
+    part2 <- exp(log.part2)
 
     if(alpha >= beta){
       B1 <- vec_gsl_hyp2f1_e(r+s, s+1, r+s+x+1, (alpha-beta)/alpha)$value/(alpha^(r+s))
@@ -287,23 +291,32 @@ setMethod("clv.model.pmf", signature=(clv.model="clv.model.pnbd.no.cov"), functi
       B1 <- (vec_gsl_hyp2f1_e(r+s, r+x, r+s+x+1, (beta-alpha)/beta))$value/(beta^(r+s))
     }
 
-    B2 <- function(x, i){
+    B2 <- function(i){
       if(alpha >= beta){
-        return(vec_gsl_hyp2f1_e(r+s+i, s+1, r+s+x+1, (alpha-beta)/(alpha+t))$value/((alpha+1)^(r+s+i)))
+        return(vec_gsl_hyp2f1_e(r+s+i, s+1, r+s+x+1, (alpha-beta)/(alpha+t))$value/((alpha+t)^(r+s+i)))
       }else{
-        return(vec_gsl_hyp2f1_e(r+s+i, r+x, r+s+x+1, (beta-alpha)/(beta+1))$value/((beta+t)^(r+s+i)))
+        return(vec_gsl_hyp2f1_e(r+s+i, r+x, r+s+x+1, (beta-alpha)/(beta+t))$value/((beta+t)^(r+s+i)))
       }
     }
 
     B2.total <- 0
     for(i in 0:x){
-      B2.total <- B2.total + (gamma(r+s+i)*t^i)/(gamma(r+s) * factorial(i))*B2(x=x, i=i)
+      # replace log(factorial(n)) with lgamma(n+1)
+      #   (gamma(r+s+i)*t^i)/(gamma(r+s) * factorial(i)) * B2(x=x, i=i)
+      log.B2.part <- lgamma(r+s+i) + i*log(t) - lgamma(r+s) - lgamma(i+1)
+      B2.total <- B2.total + exp(log.B2.part) * B2(i=i)
     }
 
     return(part1 + part2*(B1 - B2.total))
   }
 
-  dt.res[, pmf.x := pnbd_nocov_pmf(r=r, alpha=alpha_i, s=s, beta=beta_i, t=t), by="Id"]
+  # dt.res[, pmf.x := pnbd_nocov_pmf(r=r, alpha=alpha_i, s=s, beta=beta_i, t=t), by="Id"]
+  dt.res[, pmf.x := Rcpp_pnbd_nocov_pmf(r=clv.fitted@prediction.params.model[["r"]],
+                                        alpha_0=clv.fitted@prediction.params.model[["alpha"]],
+                                        s=clv.fitted@prediction.params.model[["s"]],
+                                        beta_0=clv.fitted@prediction.params.model[["beta"]],
+                                        vT=T.cal,
+                                        x=x)]
   dt.res <- dt.res[, list(Id, pmf.x)]
   setnames(dt.res, "pmf.x", paste0("pmf.x.", x))
 

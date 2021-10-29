@@ -2,7 +2,7 @@ pmf.clv.fitted.transactions <- function(object, x=0:5){
   return(clv.template.controlflow.pmf(clv.fitted=object, x=x, plot=plot))
 }
 
-#' @example {
+#' @examples {
 #' library("CLVTools")
 #' data("cdnow")
 #'
