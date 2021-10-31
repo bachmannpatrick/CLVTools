@@ -13,5 +13,5 @@
 \item{x}{Integer vector}
 }
 \description{
-Calculate P(X(t)=x), the probability to make exactly x transactions in the interval [0, t) (xxxx or ]??).
+Calculate P(X(t)=x), the probability to make exactly x repeat transactions in the interval (0, T].
 }

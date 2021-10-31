@@ -6,7 +6,7 @@
 #'
 #'
 #' @description
-#' Calculate P(X(t)=x), the probability to make exactly x repeat transactions in the interval (0, t].
+#' Calculate P(X(t)=x), the probability to make exactly x repeat transactions in the interval (0, T].
 #'
 NULL
 

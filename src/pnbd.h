@@ -156,8 +156,8 @@ arma::vec pnbd_staticcov_PAlive(const double r,
 
 arma::vec pnbd_PMF(const double r,
                    const double s,
-                   const int x,
-                   const arma::vec& vT,
+                   const unsigned int x,
+                   const arma::vec& vT_i,
                    const arma::vec& vAlpha_i,
                    const arma::vec& vBeta_i);
 
@@ -166,14 +166,14 @@ arma::vec pnbd_nocov_PMF(const double r,
                          const double s,
                          const double beta_0,
                          const int x,
-                         const arma::vec& vT);
+                         const arma::vec& vT_i);
 
 arma::vec pnbd_staticcov_PMF(const double r,
                              const double s,
                              const int x,
                              const arma::vec& vAlpha_i,
                              const arma::vec& vBeta_i,
-                             const arma::vec& vT);
+                             const arma::vec& vT_i);
 
 
 #endif

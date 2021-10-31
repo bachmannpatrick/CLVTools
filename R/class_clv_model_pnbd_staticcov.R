@@ -225,7 +225,7 @@ setMethod("clv.model.pmf", signature=(clv.model="clv.model.pnbd.static.cov"), fu
                                        s = clv.fitted@prediction.params.model[["s"]],
                                        vAlpha_i = alpha_i,
                                        vBeta_i = beta_i,
-                                       vT = T.cal,
+                                       vT_i = T.cal,
                                        x = x)]
 
   dt.res <- dt.res[, list(Id, pmf.x)]

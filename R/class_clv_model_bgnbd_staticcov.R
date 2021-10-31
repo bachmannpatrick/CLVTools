@@ -143,7 +143,7 @@ setMethod("clv.model.pmf", signature=(clv.model="clv.model.bgnbd.static.cov"), f
 
   dt.res[, pmf.x := bgnbd_staticcov_PMF(x = x, r = clv.fitted@prediction.params.model[["r"]],
                                         vAlpha_i = alpha_i, vA_i = a_i, vB_i = b_i,
-                                        vT = T.cal)]
+                                        vT_i = T.cal)]
 
   dt.res <- dt.res[, list(Id, pmf.x)]
   setnames(dt.res, "pmf.x", paste0("pmf.x.", x))

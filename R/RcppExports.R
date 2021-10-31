@@ -75,6 +75,17 @@ NULL
 #'
 NULL
 
+#' @name bgnbd_pmf
+#' @templateVar name_model_full BG/NBD
+#' @template template_pmf_titledescreturnpmfparams
+#' @template template_params_bgnbd
+#' @param vAlpha_i Vector of individual parameters alpha
+#' @param vA_i Vector of individual parameters a
+#' @param vB_i Vector of individual parameters b
+#' @template template_references_bgnbd
+#'
+NULL
+
 #' @rdname bgnbd_CET
 bgnbd_nocov_CET <- function(r, alpha, a, b, dPeriods, vX, vT_x, vT_cal) {
     .Call(`_CLVTools_bgnbd_nocov_CET`, r, alpha, a, b, dPeriods, vX, vT_x, vT_cal)
@@ -125,12 +136,14 @@ bgnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_tr
     .Call(`_CLVTools_bgnbd_staticcov_LL_sum`, vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
 
-bgnbd_nocov_PMF <- function(r, alpha, a, b, x, vT) {
-    .Call(`_CLVTools_bgnbd_nocov_PMF`, r, alpha, a, b, x, vT)
+#' @rdname bgnbd_pmf
+bgnbd_nocov_PMF <- function(r, alpha, a, b, x, vT_i) {
+    .Call(`_CLVTools_bgnbd_nocov_PMF`, r, alpha, a, b, x, vT_i)
 }
 
-bgnbd_staticcov_PMF <- function(r, x, vAlpha_i, vA_i, vB_i, vT) {
-    .Call(`_CLVTools_bgnbd_staticcov_PMF`, r, x, vAlpha_i, vA_i, vB_i, vT)
+#' @rdname bgnbd_pmf
+bgnbd_staticcov_PMF <- function(r, x, vAlpha_i, vA_i, vB_i, vT_i) {
+    .Call(`_CLVTools_bgnbd_staticcov_PMF`, r, x, vAlpha_i, vA_i, vB_i, vT_i)
 }
 
 bgnbd_staticcov_alpha_i <- function(alpha_0, vCovParams_trans, mCov_trans) {
@@ -433,6 +446,30 @@ NULL
 #'
 NULL
 
+#' @title Pareto/NBD: Probability Mass Function (PMF)
+#'
+#' @description Calculate P(X(t)=x), the probability that a randomly selected customer
+#' makes exactly x transactions in the interval (0, t].
+#'
+NULL
+
+#' @param x The number of transactions to calculate the probability for (unsigned integer).
+#' @param vT_i Number of periods since the customer came alive.
+#'
+#' @return Returns a vector of probabilities.
+#'
+NULL
+
+#' @name pnbd_pmf
+#' @templateVar name_model_full Pareto/NBD
+#' @template template_pmf_titledescreturnpmfparams
+#' @template template_params_pnbd
+#' @param vAlpha_i Vector of individual parameters alpha.
+#' @param vBeta_i Vector of individual parameters beta.
+#' @template template_references_pnbd
+#'
+NULL
+
 #' @rdname pnbd_CET
 pnbd_nocov_CET <- function(r, alpha_0, s, beta_0, dPeriods, vX, vT_x, vT_cal) {
     .Call(`_CLVTools_pnbd_nocov_CET`, r, alpha_0, s, beta_0, dPeriods, vX, vT_x, vT_cal)
@@ -501,12 +538,14 @@ pnbd_staticcov_PAlive <- function(r, alpha_0, s, beta_0, vX, vT_x, vT_cal, vCovP
     .Call(`_CLVTools_pnbd_staticcov_PAlive`, r, alpha_0, s, beta_0, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
 }
 
-pnbd_nocov_PMF <- function(r, alpha_0, s, beta_0, x, vT) {
-    .Call(`_CLVTools_pnbd_nocov_PMF`, r, alpha_0, s, beta_0, x, vT)
+#' @rdname pnbd_pmf
+pnbd_nocov_PMF <- function(r, alpha_0, s, beta_0, x, vT_i) {
+    .Call(`_CLVTools_pnbd_nocov_PMF`, r, alpha_0, s, beta_0, x, vT_i)
 }
 
-pnbd_staticcov_PMF <- function(r, s, x, vAlpha_i, vBeta_i, vT) {
-    .Call(`_CLVTools_pnbd_staticcov_PMF`, r, s, x, vAlpha_i, vBeta_i, vT)
+#' @rdname pnbd_pmf
+pnbd_staticcov_PMF <- function(r, s, x, vAlpha_i, vBeta_i, vT_i) {
+    .Call(`_CLVTools_pnbd_staticcov_PMF`, r, s, x, vAlpha_i, vBeta_i, vT_i)
 }
 
 pnbd_dyncov_LL_Bi_cpp <- function(i, t_x, d, delta, n_walks, max_walks, walks) {

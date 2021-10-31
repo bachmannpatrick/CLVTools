@@ -170,7 +170,7 @@ bgnbd(clv.data.static.cov, names.cov.life = c("Channel"))
 }
 }
 \references{
-Fader PS, Hardie BGS, Lee, KL (2005). \dQuote{\dQuote{Counting Your Customers} the Easy Way:
+Fader PS, Hardie BGS, Lee KL (2005). \dQuote{\dQuote{Counting Your Customers} the Easy Way:
 An Alternative to the Pareto/NBD Model} Marketing Science, 24(2), 275–284.
 
 Fader PS, Hardie BGS (2013). \dQuote{Overcoming the BG/NBD Model’s #NUM! Error Problem}
@@ -179,6 +179,9 @@ URL \url{http://brucehardie.com/notes/027/bgnbd_num_error.pdf}.
 Fader PS, Hardie BGS (2007). \dQuote{Incorporating time-invariant covariates into the
 Pareto/NBD and BG/NBD models.}
 URL \url{http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf}.
+
+Fader PS, Hardie BGS, Lee KL (2007). \dQuote{Creating a Fit Histogram for the BG/NBD Model}
+URL \url{https://www.brucehardie.com/notes/014/bgnbd_fit_histogram.pdf}
 }
 \seealso{
 \code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object, \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}}

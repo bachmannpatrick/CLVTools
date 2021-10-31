@@ -397,16 +397,25 @@ double bgnbd_staticcov_LL_sum(const arma::vec& vParams,
   return(-arma::sum(vLL));
 }
 
+//' @name bgnbd_pmf
+//' @templateVar name_model_full BG/NBD
+//' @template template_pmf_titledescreturnpmfparams
+//' @template template_params_bgnbd
+//' @param vAlpha_i Vector of individual parameters alpha
+//' @param vA_i Vector of individual parameters a
+//' @param vB_i Vector of individual parameters b
+//' @template template_references_bgnbd
+//'
 arma::vec bgnbd_PMF(const double r,
                     const unsigned int x,
                     const arma::vec& vAlpha_i,
                     const arma::vec& vA_i,
                     const arma::vec& vB_i,
-                    const arma::vec& vT){
+                    const arma::vec& vT_i){
   const arma::vec vLogPart1 = lbeta_ratio(vA_i, vB_i+x, vA_i, vB_i) +
     std::lgamma(r + x) - std::lgamma(r) - std::lgamma(x+1) +
-    r * (arma::log(vAlpha_i) - arma::log(vAlpha_i + vT)) +
-    x * (arma::log(vT) - arma::log(vAlpha_i+vT));
+    r * (arma::log(vAlpha_i) - arma::log(vAlpha_i + vT_i)) +
+    x * (arma::log(vT_i) - arma::log(vAlpha_i+vT_i));
   const arma::vec vPart1 = arma::exp(vLogPart1);
 
   if(x > 0){
@@ -415,12 +424,12 @@ arma::vec bgnbd_PMF(const double r,
     // from 0 up to and including x-1
     for(unsigned int j=0; j<=x-1; j++){
       vAsum += arma::exp(std::lgamma(r + j) - std::lgamma(r) - std::lgamma(j+1) +
-        j*(arma::log(vT)-arma::log(vAlpha_i + vT)));
+        j*(arma::log(vT_i)-arma::log(vAlpha_i + vT_i)));
     }
 
     const arma::vec vPart2 = beta_ratio(vA_i+1, vB_i+x-1, vA_i, vB_i) %
       (1.0 - arma::exp(
-          r*(arma::log(vAlpha_i) - arma::log(vAlpha_i + vT)) +
+          r*(arma::log(vAlpha_i) - arma::log(vAlpha_i + vT_i)) +
             arma::log(vAsum)));
 
     return(vPart1 + vPart2);
@@ -429,33 +438,35 @@ arma::vec bgnbd_PMF(const double r,
   }
 }
 
+//' @rdname bgnbd_pmf
 // [[Rcpp::export]]
 arma::vec bgnbd_nocov_PMF(const double r,
                           const double alpha,
                           const double a,
                           const double b,
                           const unsigned int x,
-                          const arma::vec& vT){
+                          const arma::vec& vT_i){
 
-  const arma::vec vA_i = bgnbd_nocov_a_i(a, vT.n_elem);
-  const arma::vec vB_i = bgnbd_nocov_b_i(b, vT.n_elem);
-  const arma::vec vAlpha_i = bgnbd_nocov_alpha_i(alpha, vT.n_elem);
+  const arma::vec vA_i = bgnbd_nocov_a_i(a, vT_i.n_elem);
+  const arma::vec vB_i = bgnbd_nocov_b_i(b, vT_i.n_elem);
+  const arma::vec vAlpha_i = bgnbd_nocov_alpha_i(alpha, vT_i.n_elem);
 
   return(bgnbd_PMF(r, x,
                    vAlpha_i,vA_i,vB_i,
-                   vT));
+                   vT_i));
 }
 
+//' @rdname bgnbd_pmf
 // [[Rcpp::export]]
 arma::vec bgnbd_staticcov_PMF(const double r,
                               const unsigned int x,
                               const arma::vec& vAlpha_i,
                               const arma::vec& vA_i,
                               const arma::vec& vB_i,
-                              const arma::vec& vT){
+                              const arma::vec& vT_i){
   return(bgnbd_PMF(r, x,
                    vAlpha_i,vA_i,vB_i,
-                   vT));
+                   vT_i));
 }
 
 arma::vec lbeta_ratio(const arma::vec& a, const arma::vec& b, const arma::vec& x, const arma::vec& y){
