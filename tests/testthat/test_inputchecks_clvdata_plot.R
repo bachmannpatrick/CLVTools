@@ -52,7 +52,7 @@ test_that("numtrans - trans.bins is valid", {
   expect_error(plot(clv.cdnow.nohold, which="numtrans", trans.bins=c(1,2, NA_integer_)), regexp = "contain any NA")
   expect_error(plot(clv.cdnow.nohold, which="numtrans", trans.bins=numeric(0)), regexp = "has to contain")
   expect_error(plot(clv.cdnow.nohold, which="numtrans", trans.bins=integer(0)), regexp = "has to contain")
-  expect_error(plot(clv.cdnow.nohold, which="numtrans", trans.bins="123"), regexp = "vector of integers")
+  expect_error(plot(clv.cdnow.nohold, which="numtrans", trans.bins="123"), regexp = "vector of integer numbers")
 
   # cannot be negative, ever
   expect_error(plot(clv.cdnow.nohold, which="numtrans", trans.bins=c(-1,1,2), count.repeat.trans=TRUE), regexp = "positive")

@@ -169,5 +169,7 @@ to add static covariates to an existing clv data object.
 
 \code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} to plot the unconditional expectation as predicted by the fitted model
 
+\code{\link[CLVTools:pmf.clv.fitted.transactions]{pmf}} for the probability to make exactly x transactions in the estimation period, given by the probability mass function (PMF).
+
 The generic functions \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:summary.clv.fitted]{summary}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
 }

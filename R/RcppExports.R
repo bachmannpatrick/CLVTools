@@ -446,20 +446,6 @@ NULL
 #'
 NULL
 
-#' @title Pareto/NBD: Probability Mass Function (PMF)
-#'
-#' @description Calculate P(X(t)=x), the probability that a randomly selected customer
-#' makes exactly x transactions in the interval (0, t].
-#'
-NULL
-
-#' @param x The number of transactions to calculate the probability for (unsigned integer).
-#' @param vT_i Number of periods since the customer came alive.
-#'
-#' @return Returns a vector of probabilities.
-#'
-NULL
-
 #' @name pnbd_pmf
 #' @templateVar name_model_full Pareto/NBD
 #' @template template_pmf_titledescreturnpmfparams

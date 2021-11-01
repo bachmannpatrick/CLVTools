@@ -9,6 +9,16 @@
   return(err.msg)
 }
 
+check_user_data_pmfx <- function(x){
+  err.msg <- .check_userinput_integer_vector(vec.int=x, var.name="x")
+  if(length(err.msg))
+    return(err.msg)
+
+  if(any(x < 0)){
+    return("x has to be a vector of all positive integers (>=0)!")
+  }
+  return(c())
+}
 
 # Can be
 #     - NULL (= all in holdout)
