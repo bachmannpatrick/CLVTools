@@ -1,7 +1,7 @@
 fct.helper.has.pmf <- function(clv.fitted.transactions){
-  return(is(clv.fitted, "clv.fitted.transactions") &
-           !is(clv.fitted, "clv.ggomnbd") & !is(clv.fitted, "clv.ggomnbd.static.cov") &
-           !is(clv.fitted, "clv.pnbd.dynamic.cov"))
+  return(is(clv.fitted.transactions, "clv.fitted.transactions") &
+           !is(clv.fitted.transactions, "clv.ggomnbd") & !is(clv.fitted.transactions, "clv.ggomnbd.static.cov") &
+           !is(clv.fitted.transactions, "clv.pnbd.dynamic.cov"))
 }
 
 .fct.helper.s3.fitted.coef <- function(clv.fitted, full.names){
