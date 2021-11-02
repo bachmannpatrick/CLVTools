@@ -15,7 +15,7 @@ check_user_data_pmfx <- function(x){
     return(err.msg)
 
   if(any(x < 0)){
-    return("x has to be a vector of all positive integers (>=0)!")
+    return("x has to be a vector of all positive integer numbers (>=0)!")
   }
   return(c())
 }
