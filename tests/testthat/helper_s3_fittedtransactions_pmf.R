@@ -20,6 +20,6 @@ fct.testthat.runability.clvfittedtransactions.pmf <- function(fitted.transaction
     expect_true(length(colnames(dt.pmf)) == 6)
 
     expect_false(anyNA(dt.pmf))
-    expect_true(all(dt.pmf >= 0 & dt.pmf <= 1))
+    expect_true(all(dt.pmf[, !"Id"] >= 0 & dt.pmf[, !"Id"] <= 1))
   })
 }
