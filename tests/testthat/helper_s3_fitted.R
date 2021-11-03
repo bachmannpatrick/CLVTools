@@ -1,3 +1,9 @@
+fct.helper.has.pmf <- function(clv.fitted.transactions){
+  return(is(clv.fitted.transactions, "clv.fitted.transactions") &
+           !is(clv.fitted.transactions, "clv.ggomnbd") & !is(clv.fitted.transactions, "clv.ggomnbd.static.cov") &
+           !is(clv.fitted.transactions, "clv.pnbd.dynamic.cov"))
+}
+
 .fct.helper.s3.fitted.coef <- function(clv.fitted, full.names){
 
   expect_silent(res.coef <- coef(clv.fitted))
@@ -243,6 +249,9 @@ fct.helper.clvfittedtransactions.all.s3 <- function(clv.fitted, full.names,
   fct.testthat.runability.clvfittedtransactions.predict(fitted.transactions = clv.fitted, clv.newdata.nohold=clv.newdata.nohold,
                                                         clv.newdata.withhold=clv.newdata.withhold, DERT.not.implemented=DERT.not.implemented)
 
+  if(fct.helper.has.pmf(clv.fitted)){
+    fct.testthat.runability.clvfittedtransactions.pmf(fitted.transactions=clv.fitted)
+  }
 }
 
 

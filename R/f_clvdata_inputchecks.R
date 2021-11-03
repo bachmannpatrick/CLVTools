@@ -58,30 +58,38 @@ check_err_msg <- function(err.msg){
   return(err.msg)
 }
 
-check_userinput_datanocov_transbins <- function(trans.bins, count.repeat.trans){
-  if(is.null(trans.bins))
-    return("trans.bins cannot be NULL!")
+.check_userinput_integer_vector <- function(vec.int, var.name){
+  if(is.null(vec.int))
+    return(paste0(var.name, " cannot be NULL!"))
 
-  if(anyNA(trans.bins))
-    return("trans.bins cannot contain any NA values!")
+  if(anyNA(vec.int))
+    return(paste0(var.name, " cannot contain any NA values!"))
 
-  if(length(trans.bins) == 0)
-    return("trans.bins has to contain values!")
+  if(length(vec.int) == 0)
+    return(paste0(var.name, " has to contain values!"))
 
-  if(!is.numeric(trans.bins))
-    return("trans.bins has to be a vector of integers!")
+  if(!is.numeric(vec.int))
+    return(paste0(var.name, " has to be a vector of integer numbers!"))
 
   # all integers
-  if(!all(trans.bins == as.integer(trans.bins))){
-    return("trans.bins must be all integers!")
+  if(!all(vec.int == as.integer(vec.int))){
+    return(paste0(var.name, " must be all integer numbers!"))
   }
+  return(c())
+}
+
+check_userinput_datanocov_transbins <- function(trans.bins, count.repeat.trans){
+
+  err.msg <- .check_userinput_integer_vector(vec.int=trans.bins, var.name="trans.bins")
+  if(length(err.msg))
+    return(err.msg)
 
   if(count.repeat.trans){
     if(any(trans.bins < 0))
-      return("trans.bins has to be positive integers (>=0)!")
+      return("trans.bins has to be a vector of positive integers (>=0)!")
   }else{
     if(any(trans.bins < 1))
-      return("trans.bins has to be strictly positive integers (>=1)!")
+      return("trans.bins has to be a vector of strictly positive integers (>=1)!")
   }
 
   return(c())

@@ -12,7 +12,7 @@ fct.testthat.correctness.clvfittedtransactions(name.model = "PNBD", method=pnbd,
                                                kkt2.true = TRUE)
 
 
-# # Recover parameters ---------------------------------------------------------------------------------
+# Recover parameters ---------------------------------------------------------------------------------
 context("Correctness - PNBD nocov - Recover parameters")
 
 # As also reported to compare against bgnbd in Fader, Hardie, Lee (2005)
@@ -27,7 +27,7 @@ fct.testthat.correctness.clvfitted.nocov.correct.se(method = pnbd,
                                                     params.nocov.se = c(r=0.0476264, alpha=0.8427222, s=0.1872594, beta=6.2105448))
 
 
-
+# nocov - PAlive --------------------------------------------------------------------------------
 context("Correctness - PNBD nocov - PAlive")
 
 test_that("Can calculate numerically stable PAlive that produced NaNs in previous implementation", {
@@ -44,6 +44,7 @@ test_that("Can calculate numerically stable PAlive that produced NaNs in previou
 
 
 
+# nocov - DERT --------------------------------------------------------------------------------
 context("Correctness - PNBD nocov - DERT")
 
 test_that("Higher discount factor leads to smaller DERT", {
@@ -61,6 +62,7 @@ test_that("Higher discount factor leads to smaller DERT", {
 # Dyncov ---------------------------------------------------------------------------------------
 fct.testthat.correctness.dyncov(data.apparelTrans=apparelTrans, data.apparelDynCov=apparelDynCov)
 
+# nocov expectation ----------------------------------------------------------------------------
 context("Correctness - PNBD nocov - Expectation")
 
 test_that("Expectation in Rcpp matches expectation in R (nocov)", {
@@ -89,6 +91,8 @@ test_that("Expectation in Rcpp matches expectation in R (nocov)", {
 
 })
 
+
+# staticcov expectation --------------------------------------------------------------------------
 context("Correctness - PNBD staticcov - Expectation")
 
 test_that("Expectation in Rcpp matches expectation in R (staticcov)", {
@@ -125,3 +129,6 @@ test_that("Expectation in Rcpp matches expectation in R (staticcov)", {
                                                                                params_i = params_i,
                                                                                obj.fitted = obj.fitted)
 })
+
+
+

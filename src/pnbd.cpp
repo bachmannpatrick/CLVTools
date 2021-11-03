@@ -670,3 +670,89 @@ arma::vec pnbd_staticcov_PAlive(const double r,
                      vBeta_i);
 }
 
+
+//' @name pnbd_pmf
+//' @templateVar name_model_full Pareto/NBD
+//' @template template_pmf_titledescreturnpmfparams
+//' @template template_params_pnbd
+//' @param vAlpha_i Vector of individual parameters alpha.
+//' @param vBeta_i Vector of individual parameters beta.
+//' @template template_references_pnbd
+//'
+arma::vec pnbd_PMF(const double r,
+                   const double s,
+                   const unsigned int x,
+                   const arma::vec& vT_i,
+                   const arma::vec& vAlpha_i,
+                   const arma::vec& vBeta_i){
+
+  // replace log(factorial(n)) with lgamma(n+1)
+  const double vlogPart1_1 = std::lgamma(r + x) - std::lgamma(r) - std::lgamma(x+1);
+  const arma::vec vLogPart1_2 = r * (arma::log(vAlpha_i) - arma::log(vAlpha_i + vT_i));
+  const arma::vec vLogPart1_3 = x * (arma::log(vT_i) - arma::log(vAlpha_i + vT_i));
+  const arma::vec vLogPart1_4 = s * (arma::log(vBeta_i) - arma::log(vBeta_i + vT_i));
+  const arma::vec vPart1 = arma::exp(vlogPart1_1 + vLogPart1_2 + vLogPart1_3 + vLogPart1_4);
+
+  const arma::vec vPart2 = arma::exp(r * arma::log(vAlpha_i) + s*arma::log(vBeta_i) + clv::lbeta(r+x, s+1) - clv::lbeta(r,s));
+
+
+  const arma::vec vAbsAB = arma::abs(vAlpha_i - vBeta_i);
+  const arma::vec vMaxAB = arma::max(vAlpha_i, vBeta_i);
+  arma::vec vRS(size(vAlpha_i)); vRS.fill(r+s);
+  const arma::vec vRSX1 = vRS + x + 1.0;
+
+  arma::vec vHypArgB(size(vAlpha_i));
+  vHypArgB.fill(r + x);
+  vHypArgB(find(vAlpha_i >= vBeta_i)).fill(s + 1);
+
+  const arma::vec vB1 = clv::vec_hyp2F1(vRS, vHypArgB, vRSX1, vAbsAB/vMaxAB) / arma::pow(vMaxAB, r+s);
+
+
+  arma::vec vB2total(arma::size(vAlpha_i), arma::fill::zeros);
+  arma::vec vRSI(arma::size(vAlpha_i), arma::fill::zeros);
+  arma::vec B2part;
+
+  for(int i=0; i<=x; i++){
+    // replace log(factorial(n)) with lgamma(n+1)
+    //  (gamma(r+s+i)*t^i)/(gamma(r+s) * factorial(i)) * B2(i=i)
+    B2part = arma::exp(std::lgamma(r+s+i) + i*arma::log(vT_i) - std::lgamma(r+s) - std::lgamma(i+1));
+
+    vRSI.fill(r+s+i);
+    vB2total += B2part % (clv::vec_hyp2F1(vRSI, vHypArgB, vRSX1, vAbsAB/(vMaxAB+vT_i)) / arma::pow(vMaxAB+vT_i, r+s+i));
+  }
+
+  return(vPart1 + vPart2 % (vB1 - vB2total));
+}
+
+
+
+//' @rdname pnbd_pmf
+// [[Rcpp::export]]
+arma::vec pnbd_nocov_PMF(const double r,
+                         const double alpha_0,
+                         const double s,
+                         const double beta_0,
+                         const int x,
+                         const arma::vec& vT_i){
+
+    // Build alpha and beta --------------------------------------------------------
+    const double n = vT_i.n_elem;
+
+    const arma::vec vAlpha_i = pnbd_nocov_alpha_i(alpha_0, n);
+    const arma::vec vBeta_i = pnbd_nocov_beta_i(beta_0, n);
+
+    return(pnbd_PMF(r, s, x, vT_i, vAlpha_i, vBeta_i));
+  }
+
+
+//' @rdname pnbd_pmf
+// [[Rcpp::export]]
+arma::vec pnbd_staticcov_PMF(const double r,
+                             const double s,
+                             const int x,
+                             const arma::vec& vAlpha_i,
+                             const arma::vec& vBeta_i,
+                             const arma::vec& vT_i){
+
+  return(pnbd_PMF(r, s, x, vT_i, vAlpha_i, vBeta_i));
+}

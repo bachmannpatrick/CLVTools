@@ -131,4 +131,14 @@ arma::vec vec_fill(const double number, const double repetitions){
   return vResult;
 }
 
+
+// lbeta := lgamma(a) + lgamma(b) - lgamma(a+b)
+arma::vec vec_lbeta(const arma::vec& a, const double b){
+  return (arma::lgamma(a) + std::lgamma(b) - arma::lgamma(a+b));
+}
+
+double lbeta(const double a, const double b){
+  return (std::lgamma(a) + std::lgamma(b) - std::lgamma(a+b));
+}
+
 }
