@@ -96,14 +96,116 @@
 #' @method plot clv.fitted.transactions
 #' @aliases plot
 #' @export
-plot.clv.fitted.transactions <- function (x, prediction.end=NULL, newdata=NULL, cumulative=FALSE, transactions=TRUE, label=NULL, plot=TRUE, verbose=TRUE,...) {
+plot.clv.fitted.transactions <- function (x, which=c("tracking", "pmf"),
+                                          # tracking
+                                          prediction.end=NULL, newdata=NULL, cumulative=FALSE, transactions=TRUE, label=NULL,
+                                          # pmf
+                                          trans.bins = 0:10,
+                                          # general
+                                          plot=TRUE, verbose=TRUE,...) {
   period.until <- period.num <- NULL
 
 
   # Check if can plot -----------------------------------------------------------------------------------------
   # Cannot plot if there are any NAs in any of the prediction.params
   clv.controlflow.check.prediction.params(clv.fitted = x)
+  err.msg <- c()
+  err.msg <- c(err.msg, .check_userinput_matcharg(char=which, choices=c("tracking","pmf"), var.name="which"))
+  err.msg <- c(err.msg, check_user_data_emptyellipsis(...))
+  check_err_msg(err.msg)
 
+
+  return(switch(match.arg(which, c("tracking","pmf")),
+    "tracking" = clv.fitted.transactions.plot.tracking(x=x, newdata=newdata, prediction.end=prediction.end,
+                                                       cumulative=cumulative, transactions=transactions,
+                                                       label=label, plot=plot, verbose=verbose),
+    "pmf" = clv.fitted.transactions.plot.barplot.pmf(x=x, trans.bins=trans.bins,
+                                                     plot=plot, verbose=verbose)))
+}
+
+#' @exportMethod plot
+#' @include class_clv_fitted.R
+#' @rdname plot.clv.fitted.transactions
+setMethod("plot", signature(x="clv.fitted.transactions"), definition = plot.clv.fitted.transactions)
+
+
+#' @importFrom ggplot2 ggplot aes geom_line geom_vline labs theme scale_fill_manual guide_legend element_text element_rect element_blank element_line rel
+clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
+  # cran silence
+  period.until <- value <- variable <- NULL
+
+  # Melt everything except what comes from the standard expectation table
+  meas.vars   <- setdiff(colnames(dt.data), c("period.num", "period.until"))
+  data.melted <- melt(data=dt.data, id.vars = c("period.until"),
+                      variable.factor = FALSE, na.rm = TRUE,
+                      measure.vars = meas.vars)
+
+  p <- ggplot(data = data.melted, aes(x=period.until, y=value, colour=variable)) + geom_line()
+
+  # Add holdout line if there is a holdout period
+  if(clv.data.has.holdout(clv.data)){
+    p <- p + geom_vline(xintercept = as.numeric(clv.data@clv.time@timepoint.holdout.start),
+                        linetype="dashed", show.legend = FALSE)
+  }
+
+  # Variable color and name
+  p <- p + scale_fill_manual(values = line.colors,
+                             aesthetics = c("color", "fill"),
+                             guide = guide_legend(title="Legend"))
+
+  # Axis and title
+  p <- p + labs(x = "Date", y= "Number of Repeat Transactions", title= paste0(clv.time.tu.to.ly(clv.time=clv.data@clv.time), " tracking plot"),
+                subtitle = paste0("Estimation end: ",  clv.time.format.timepoint(clv.time=clv.data@clv.time, timepoint=clv.data@clv.time@timepoint.estimation.end)))
+
+  p <- p + theme(
+    plot.title = element_text(face = "bold", size = rel(1.5)),
+    text = element_text(),
+    panel.background = element_blank(),
+    panel.border = element_blank(),
+    plot.background  = element_rect(colour = NA),
+    axis.title   = element_text(face = "bold",size = rel(1)),
+    axis.title.y = element_text(angle=90,vjust =2),
+    axis.title.x = element_text(vjust = -0.2),
+    axis.text = element_text(),
+    axis.line = element_line(colour="black"),
+    axis.ticks = element_line(),
+    panel.grid.major = element_line(colour="#d2d2d2"),
+    panel.grid.minor = element_blank(),
+    legend.key = element_blank(),
+    legend.position = "bottom",
+    legend.direction = "horizontal",
+    legend.title = element_text(face="italic"),
+    strip.background=element_rect(colour="#d2d2d2",fill="#d2d2d2"),
+    strip.text = element_text(face="bold", size = rel(0.8)))
+
+  return(p)
+}
+
+# clv.controlflow.plot.get.data ---------------------------------------------------------------
+setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.fitted.transactions"), definition = function(obj, dt.expectation.seq, cumulative, verbose){
+
+  expectation <- i.expectation <- NULL
+
+  #   Pass copy of expectation table file because will be modified and contain column named expecation
+  dt.model.expectation <- clv.model.expectation(clv.model=obj@clv.model, clv.fitted=obj, dt.expectation.seq=copy(dt.expectation.seq),
+                                                verbose = verbose)
+
+  # Only the expectation data
+  dt.model.expectation <- dt.model.expectation[, c("period.until", "expectation")]
+
+  if(cumulative)
+    dt.model.expectation[, expectation := cumsum(expectation)]
+
+  # add expectation to plot data
+  #   name columns by model
+  dt.expectation.seq[dt.model.expectation, expectation := i.expectation, on = "period.until"]
+  return(dt.expectation.seq)
+})
+
+
+# Tracking plot --------------------------------------------------------------------------------------------
+clv.fitted.transactions.plot.tracking <- function(x, newdata, prediction.end, cumulative, transactions,
+                                                  label, plot, verbose, ...){
 
   # Newdata ------------------------------------------------------------------------------------------------
   # Because many of the following steps refer to the data stored in the fitted model,
@@ -128,7 +230,6 @@ plot.clv.fitted.transactions <- function (x, prediction.end=NULL, newdata=NULL, 
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=transactions, var.name="transactions"))
   err.msg <- c(err.msg, check_user_data_predictionend(clv.fitted=x, prediction.end=prediction.end))
-  err.msg <- c(err.msg, check_user_data_emptyellipsis(...))
   if(!is.null(label)) # null is allowed = std. model name
     err.msg <- c(err.msg, .check_userinput_single_character(char=label, var.name="label"))
   check_err_msg(err.msg)
@@ -218,81 +319,68 @@ plot.clv.fitted.transactions <- function (x, prediction.end=NULL, newdata=NULL, 
   return(clv.controlflow.plot.make.plot(dt.data = dt.plot, clv.data = x@clv.data, line.colors = line.colors))
 }
 
-#' @importFrom ggplot2 ggplot aes geom_line geom_vline labs theme scale_fill_manual guide_legend element_text element_rect element_blank element_line rel
-clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
-  # cran silence
-  period.until <- value <- variable <- NULL
 
-  # Melt everything except what comes from the standard expectation table
-  meas.vars   <- setdiff(colnames(dt.data), c("period.num", "period.until"))
-  data.melted <- melt(data=dt.data, id.vars = c("period.until"),
-                      variable.factor = FALSE, na.rm = TRUE,
-                      measure.vars = meas.vars)
+# PMF plot -----------------------------------------------------------------------------------------------
+#' @importFrom ggplot2 ggplot geom_col aes_string position_dodge2 guide_legend
+clv.fitted.transactions.plot.barplot.pmf <- function(x, trans.bins, plot, verbose){
+  pmf.x <- pmf.value <- expected.transactions <- NULL
+  # *** TODO: separate check, different param name ***
+  check_err_msg(check_user_data_pmfx(trans.bins))
 
-  p <- ggplot(data = data.melted, aes(x=period.until, y=value, colour=variable)) + geom_line()
+  # Collect actual transactions
+  dt.actuals <- plot(x@clv.data, which="frequency", plot=FALSE, verbose=FALSE,
+                     trans.bins=trans.bins, count.repeat.trans=TRUE,
+                     count.remaining=FALSE) #, label.remaining = "remaining")
 
-  # Add holdout line if there is a holdout period
-  if(clv.data.has.holdout(clv.data)){
-    p <- p + geom_vline(xintercept = as.numeric(clv.data@clv.time@timepoint.holdout.start),
-                        linetype="dashed", show.legend = FALSE)
+  # Collect pmf values
+  #   are per customer, aggregate per x
+  dt.pmf <- pmf(x, x=trans.bins)
+  dt.pmf <- melt(dt.pmf, id.vars = "Id", variable.factor = FALSE,
+                 variable.name="pmf.x", value.name="pmf.value")
+  dt.pmf <- dt.pmf[, list(expected.customers = sum(pmf.value)), by="pmf.x"]
+
+  # Add num expected trans for each num.transactions
+  #   match on separate char representation of num.transactions to keep it as ordered factor
+  dt.pmf[,           char.num.transactions := gsub(x=pmf.x, pattern="pmf.x.", replacement="")]
+  dt.actuals[,       char.num.transactions := as.character(num.transactions)]
+  dt.actuals[dt.pmf, expected.customers    := i.expected.customers, on = "char.num.transactions"]
+  dt.actuals[, char.num.transactions := NULL]
+
+  dt.actuals[, num.customers := as.numeric(num.customers)] # integer, leads to melt warning
+  setnames(dt.actuals, "num.customers", "actual.num.customers")
+
+  if(!plot){
+    return(dt.actuals)
+  }else{
+    dt.plot <- melt(dt.actuals, id.vars="num.transactions", variable.factor=FALSE)
+    dt.plot[variable=="actual.num.customers", variable := "Actual Number of Repeat Transactions"]
+    dt.plot[variable=="expected.customers",   variable := x@clv.model@name.model]
+
+    p <- ggplot(dt.plot)+geom_col(aes_string(x="num.transactions", fill="variable", y="value"),
+                                  width = 0.5, position=position_dodge2(width = 0.9))
+
+    # add count annotation
+    p <- p + geom_text(aes_string(group="variable", label = "round(value, digits=1)",
+                                  x = "num.transactions", y = "value"),
+                       position = position_dodge2(width = 0.5),
+                       vjust = -0.6,
+                       size = rel(3))
+
+    # rename scale / variable names
+    #   do not rename DT colnames to keep consistent with return docu
+
+    # Variable color and name
+    p <- p + scale_fill_manual(values = setNames(object = c("black", "red"),
+                                                 nm = c("Actual Number of Repeat Transactions",
+                                                        x@clv.model@name.model)),
+                               aesthetics = c("color", "fill"),
+                               guide = guide_legend(title="Legend"))
+
+    # Axis and title
+    p <- p + labs(x = "Number of Repeat Transactions", y="Number of Customers",
+                  title="Frequency of Repeat Transactions in the Estimation Period")
+
+    return(clv.data.plot.add.theme(p))
   }
-
-  # Variable color and name
-  p <- p + scale_fill_manual(values = line.colors,
-                             aesthetics = c("color", "fill"),
-                             guide = guide_legend(title="Legend"))
-
-  # Axis and title
-  p <- p + labs(x = "Date", y= "Number of Repeat Transactions", title= paste0(clv.time.tu.to.ly(clv.time=clv.data@clv.time), " tracking plot"),
-                subtitle = paste0("Estimation end: ",  clv.time.format.timepoint(clv.time=clv.data@clv.time, timepoint=clv.data@clv.time@timepoint.estimation.end)))
-
-  p <- p + theme(
-    plot.title = element_text(face = "bold", size = rel(1.5)),
-    text = element_text(),
-    panel.background = element_blank(),
-    panel.border = element_blank(),
-    plot.background  = element_rect(colour = NA),
-    axis.title   = element_text(face = "bold",size = rel(1)),
-    axis.title.y = element_text(angle=90,vjust =2),
-    axis.title.x = element_text(vjust = -0.2),
-    axis.text = element_text(),
-    axis.line = element_line(colour="black"),
-    axis.ticks = element_line(),
-    panel.grid.major = element_line(colour="#d2d2d2"),
-    panel.grid.minor = element_blank(),
-    legend.key = element_blank(),
-    legend.position = "bottom",
-    legend.direction = "horizontal",
-    legend.title = element_text(face="italic"),
-    strip.background=element_rect(colour="#d2d2d2",fill="#d2d2d2"),
-    strip.text = element_text(face="bold", size = rel(0.8)))
-
-  return(p)
 }
 
-# . clv.controlflow.plot.get.data ---------------------------------------------------------------
-setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.fitted.transactions"), definition = function(obj, dt.expectation.seq, cumulative, verbose){
-
-  expectation <- i.expectation <- NULL
-
-  #   Pass copy of expectation table file because will be modified and contain column named expecation
-  dt.model.expectation <- clv.model.expectation(clv.model=obj@clv.model, clv.fitted=obj, dt.expectation.seq=copy(dt.expectation.seq),
-                                                verbose = verbose)
-
-  # Only the expectation data
-  dt.model.expectation <- dt.model.expectation[, c("period.until", "expectation")]
-
-  if(cumulative)
-    dt.model.expectation[, expectation := cumsum(expectation)]
-
-  # add expectation to plot data
-  #   name columns by model
-  dt.expectation.seq[dt.model.expectation, expectation := i.expectation, on = "period.until"]
-  return(dt.expectation.seq)
-})
-
-
-#' @exportMethod plot
-#' @include class_clv_fitted.R
-#' @rdname plot.clv.fitted.transactions
-setMethod("plot", signature(x="clv.fitted.transactions"), definition = plot.clv.fitted.transactions)

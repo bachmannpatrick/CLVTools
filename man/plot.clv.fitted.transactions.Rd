@@ -8,11 +8,13 @@
 \usage{
 \method{plot}{clv.fitted.transactions}(
   x,
+  which = c("tracking", "pmf"),
   prediction.end = NULL,
   newdata = NULL,
   cumulative = FALSE,
   transactions = TRUE,
   label = NULL,
+  trans.bins = 0:10,
   plot = TRUE,
   verbose = TRUE,
   ...
@@ -20,11 +22,13 @@
 
 \S4method{plot}{clv.fitted.transactions}(
   x,
+  which = c("tracking", "pmf"),
   prediction.end = NULL,
   newdata = NULL,
   cumulative = FALSE,
   transactions = TRUE,
   label = NULL,
+  trans.bins = 0:10,
   plot = TRUE,
   verbose = TRUE,
   ...
