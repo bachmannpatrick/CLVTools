@@ -111,10 +111,6 @@ double pnbd_staticcov_LL_sum(const arma::vec& vParams,
                              const arma::mat& mCov_life,
                              const arma::mat& mCov_trans);
 
-arma::vec pnbd_nocov_alpha_i(const double alpha_0, const double n);
-
-arma::vec pnbd_nocov_beta_i(const double beta_0, const double n);
-
 arma::vec pnbd_staticcov_alpha_i(const double alpha_0,
                                  const arma::vec& vCovParams_trans,
                                  const arma::mat& mCov_trans);
@@ -165,12 +161,12 @@ arma::vec pnbd_nocov_PMF(const double r,
                          const double alpha_0,
                          const double s,
                          const double beta_0,
-                         const int x,
+                         const unsigned int x,
                          const arma::vec& vT_i);
 
 arma::vec pnbd_staticcov_PMF(const double r,
                              const double s,
-                             const int x,
+                             const unsigned int x,
                              const arma::vec& vAlpha_i,
                              const arma::vec& vBeta_i,
                              const arma::vec& vT_i);

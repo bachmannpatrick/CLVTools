@@ -726,7 +726,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // pnbd_nocov_PMF
-arma::vec pnbd_nocov_PMF(const double r, const double alpha_0, const double s, const double beta_0, const int x, const arma::vec& vT_i);
+arma::vec pnbd_nocov_PMF(const double r, const double alpha_0, const double s, const double beta_0, const unsigned int x, const arma::vec& vT_i);
 RcppExport SEXP _CLVTools_pnbd_nocov_PMF(SEXP rSEXP, SEXP alpha_0SEXP, SEXP sSEXP, SEXP beta_0SEXP, SEXP xSEXP, SEXP vT_iSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -735,21 +735,21 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type alpha_0(alpha_0SEXP);
     Rcpp::traits::input_parameter< const double >::type s(sSEXP);
     Rcpp::traits::input_parameter< const double >::type beta_0(beta_0SEXP);
-    Rcpp::traits::input_parameter< const int >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const unsigned int >::type x(xSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vT_i(vT_iSEXP);
     rcpp_result_gen = Rcpp::wrap(pnbd_nocov_PMF(r, alpha_0, s, beta_0, x, vT_i));
     return rcpp_result_gen;
 END_RCPP
 }
 // pnbd_staticcov_PMF
-arma::vec pnbd_staticcov_PMF(const double r, const double s, const int x, const arma::vec& vAlpha_i, const arma::vec& vBeta_i, const arma::vec& vT_i);
+arma::vec pnbd_staticcov_PMF(const double r, const double s, const unsigned int x, const arma::vec& vAlpha_i, const arma::vec& vBeta_i, const arma::vec& vT_i);
 RcppExport SEXP _CLVTools_pnbd_staticcov_PMF(SEXP rSEXP, SEXP sSEXP, SEXP xSEXP, SEXP vAlpha_iSEXP, SEXP vBeta_iSEXP, SEXP vT_iSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const double >::type r(rSEXP);
     Rcpp::traits::input_parameter< const double >::type s(sSEXP);
-    Rcpp::traits::input_parameter< const int >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const unsigned int >::type x(xSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vAlpha_i(vAlpha_iSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vBeta_i(vBeta_iSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vT_i(vT_iSEXP);

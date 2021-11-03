@@ -429,13 +429,14 @@ arma::vec bgnbd_staticcov_PMF(const double r,
                    vT_i));
 }
 
+// Calculate log(Beta(a,b)/Beta(x,y))
 arma::vec lbeta_ratio(const arma::vec& a, const arma::vec& b, const arma::vec& x, const arma::vec& y){
   return(arma::lgamma(a) + arma::lgamma(b) - arma::lgamma(a + b) - arma::lgamma(x) - arma::lgamma(y) + arma::lgamma(x+y));
 }
 
-
+// Calculate Beta(a,b)/Beta(x,y)
 arma::vec beta_ratio(const arma::vec& a, const arma::vec& b, const arma::vec& x, const arma::vec& y){
-  return(arma::exp(arma::lgamma(a) + arma::lgamma(b) - arma::lgamma(a + b) - arma::lgamma(x) - arma::lgamma(y) + arma::lgamma(x+y)));
+  return(arma::exp(lbeta_ratio(a, b, x, y)));
 }
 
 

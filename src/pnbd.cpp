@@ -679,7 +679,7 @@ arma::vec pnbd_PMF(const double r,
   arma::vec vRSI(arma::size(vAlpha_i), arma::fill::zeros);
   arma::vec B2part;
 
-  for(int i=0; i<=x; i++){
+  for(unsigned int i=0; i<=x; i++){
     // replace log(factorial(n)) with lgamma(n+1)
     //  (gamma(r+s+i)*t^i)/(gamma(r+s) * factorial(i)) * B2(i=i)
     B2part = arma::exp(std::lgamma(r+s+i) + i*arma::log(vT_i) - std::lgamma(r+s) - std::lgamma(i+1));
@@ -697,9 +697,9 @@ arma::vec pnbd_nocov_PMF(const double r,
                          const double alpha_0,
                          const double s,
                          const double beta_0,
-                         const int x,
+                         const unsigned int x,
                          const arma::vec& vT_i){
-  
+
     const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vT_i.n_elem);
     const arma::vec vBeta_i = clv::vec_fill(beta_0, vT_i.n_elem);
 
@@ -711,7 +711,7 @@ arma::vec pnbd_nocov_PMF(const double r,
 // [[Rcpp::export]]
 arma::vec pnbd_staticcov_PMF(const double r,
                              const double s,
-                             const int x,
+                             const unsigned int x,
                              const arma::vec& vAlpha_i,
                              const arma::vec& vBeta_i,
                              const arma::vec& vT_i){
