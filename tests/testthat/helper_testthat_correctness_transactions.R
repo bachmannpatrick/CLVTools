@@ -131,6 +131,54 @@ fct.testthat.correctness.clvfittedtransactions.CET.0.for.no.prediction.period <-
 }
 
 
+fct.testthat.correctness.clvfittedtransactions.pmf.more.x.more.p <- function(clv.fitted){
+  test_that("PMF - more x = more p",{
+    skip_on_cran()
+    expect_silent(dt.pmf <- pmf(clv.fitted, x=0:5))
+    expect_silent(dt.pmf.more <- pmf(clv.fitted, x=0:6))
+    expect_true(all(rowSums(dt.pmf.more[, !"Id"]) > rowSums(dt.pmf[, !"Id"])))
+  })
+}
+
+fct.testthat.correctness.clvfittedtransactions.pmf.valid.values <- function(clv.fitted){
+  test_that("PMF - only valid values",{
+    skip_on_cran()
+    expect_silent(dt.pmf <- pmf(clv.fitted, x=0:20))
+    expect_true(all(rowSums(dt.pmf[, !"Id"]) <= 1))
+    expect_true(all(dt.pmf[, !"Id"] >= 0))
+    expect_true(all(dt.pmf[, !"Id"] <= 1))
+    expect_false(anyNA(dt.pmf))
+  })
+}
+
+fct.testthat.correctness.clvfittedtransactions.pmf.only.depends.on.Tcal <- function(clv.fitted){
+  test_that("PMF - value only depend on T.cal", {
+    skip_on_cran()
+    expect_silent(dt.pmf <- pmf(clv.fitted, x=0:10))
+    dt.pmf[clv.fitted@cbs, T.cal := T.cal, on="Id"]
+    # varies by others (x, t.x) because they vary by T.cal
+    #   by=Tcal already accounts for grouping additionally by x, t.x
+    dt.pmf.melted <- melt(dt.pmf, id.vars="T.cal", measure.vars = paste0("pmf.x.", 0:10))
+    # single value per Tcal (and pmf.x)
+    expect_true(all(dt.pmf.melted[, .(num.vals = uniqueN(value)), by=c("T.cal", "variable")][,"num.vals"] == 1))
+    # different value per Tcal (per pmf.x) <=> as many different pmf values as there are Tcal, per pmf.x
+    expect_true(all(dt.pmf.melted[, .(num.vals = uniqueN(value)), by="variable"][,"num.vals"] == clv.fitted@cbs[, uniqueN(T.cal)]))
+  })
+}
+
+
+fct.testthat.correctness.clvfittedtransactions.pmf.smaller.p.the.larger.Tcal.for.x0 <- function(clv.fitted){
+  # For x=0, pmf has to get smaller the longer t <=> "The more opportunity to transact, the lower the probability to make 0 transaction"
+  #  PNBD P(X=0)d/dt  = -(l/exp((l+m)t)) < 0, for all t>0
+  #  BGNBD P(X=0)d/dt = -(m/exp(m*t)) < 0, for all t>0
+  expect_silent(dt.pmf <- pmf(clv.fitted, x=0))
+  dt.pmf[clv.fitted@cbs, T.cal := T.cal, on="Id"]
+  # strictly decreasing p(X=0) with larger T.cal
+  expect_false(unique(dt.pmf[, c("pmf.x.0", "T.cal")])[order(-T.cal),
+                                                       is.unsorted(pmf.x.0, strictly = TRUE)])
+}
+
+
 fct.testthat.correctness.clvfittedtransactions.staticcov.fitting.sample.predicting.full.data.equal <- function(method, apparelTrans, apparelStaticCov, clv.apparel.staticcov){
   test_that("Fitting with sample but predicting full data yields same results as predicting sample only", {
     skip_on_cran()
@@ -197,6 +245,14 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method, d
 
   fct.testthat.correctness.clvfittedtransactions.nocov.newdata.fitting.sample.predicting.full.data.equal(method = method, cdnow = data.cdnow, clv.cdnow = clv.cdnow)
   fct.testhat.correctness.clvfittedtransactions.same.spending.as.independent.spending.model(method = method, clv.data = clv.cdnow)
+
+  if(fct.helper.has.pmf(obj.fitted)){
+    context(paste0("Correctness - ",name.model," nocov - pmf"))
+    fct.testthat.correctness.clvfittedtransactions.pmf.more.x.more.p(clv.fitted = obj.fitted)
+    fct.testthat.correctness.clvfittedtransactions.pmf.valid.values(clv.fitted = obj.fitted)
+    fct.testthat.correctness.clvfittedtransactions.pmf.only.depends.on.Tcal(clv.fitted = obj.fitted)
+    fct.testthat.correctness.clvfittedtransactions.pmf.smaller.p.the.larger.Tcal.for.x0(clv.fitted = obj.fitted)
+  }
 
 
   # Static cov ------------------------------------------------------------------------------------------------

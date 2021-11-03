@@ -172,4 +172,10 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.dynamic.c
   return(pnbd_dyncov_expectation(clv.fitted=clv.fitted, dt.expectation.seq=dt.expectation.seq, verbose=verbose))
 })
 
+# . clv.model.pmf --------------------------------------------------------------------------------------------------------
+#' @include all_generics.R
+setMethod("clv.model.pmf", signature=(clv.model="clv.model.pnbd.dynamic.cov"), function(clv.model, clv.fitted, x){
+  stop("PMF is not available for pnbd with dynamic covariates!", call.=FALSE)
+})
+
 

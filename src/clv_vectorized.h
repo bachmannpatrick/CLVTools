@@ -22,6 +22,10 @@ arma::vec vec_pow(const arma::vec& vA, const arma::vec& vP);
 
 arma::vec vec_fill(const double d, const arma::uword n);
 
+arma::vec vec_lbeta(const arma::vec& a, const double b);
+
+double lbeta(const double a, const double b);
+
 }
 
 #endif

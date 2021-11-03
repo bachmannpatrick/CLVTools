@@ -110,6 +110,12 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.ggomnbd.no.cov
                        fct.expectation = fct.expectation, clv.time = clv.fitted@clv.data@clv.time))
 })
 
+# . clv.model.pmf --------------------------------------------------------------------------------------------------------
+setMethod("clv.model.pmf", signature=(clv.model="clv.model.ggomnbd.no.cov"), function(clv.model, clv.fitted, x){
+  stop("PMF is not available for ggomnbd!", call.=FALSE)
+})
+
+# . clv.model.predict --------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
 setMethod("clv.model.predict", signature(clv.model="clv.model.ggomnbd.no.cov"), function(clv.model, clv.fitted, dt.predictions, verbose, continuous.discount.factor, ...){
   r <- alpha <- b <- s <- beta <- x <- t.x <- T.cal <- PAlive <- i.PAlive <- CET <- i.CET <- period.length <- NULL
