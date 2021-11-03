@@ -6,7 +6,7 @@
 \usage{
 \method{plot}{clv.data}(
   x,
-  which = c("tracking", "numtrans", "spending", "interpurchasetime"),
+  which = c("tracking", "frequency", "spending", "interpurchasetime"),
   prediction.end = NULL,
   cumulative = FALSE,
   trans.bins = 0:9,
@@ -25,7 +25,7 @@
 \arguments{
 \item{x}{The clv.data object to plot}
 
-\item{which}{Which plot to produce, either "tracking", "numtrans", "spending" or "interpurchasetime".
+\item{which}{Which plot to produce, either "tracking", "frequency", "spending" or "interpurchasetime".
 May be abbreviated but only one may be selected. Defaults to "tracking".}
 
 \item{prediction.end}{"tracking": Until what point in time to plot. This can be the number of periods (numeric) or
@@ -33,13 +33,13 @@ a form of date/time object. See details.}
 
 \item{cumulative}{"tracking": Whether the cumulative actual repeat transactions should be plotted.}
 
-\item{trans.bins}{"numtrans": Vector of integers indicating the number of transactions (x axis) for which the customers should be counted.}
+\item{trans.bins}{"frequency": Vector of integers indicating the number of transactions (x axis) for which the customers should be counted.}
 
-\item{count.repeat.trans}{"numtrans": Whether repeat transactions (TRUE, default) or all transactions (FALSE) should be counted.}
+\item{count.repeat.trans}{"frequency": Whether repeat transactions (TRUE, default) or all transactions (FALSE) should be counted.}
 
-\item{count.remaining}{"numtrans": Whether the customers which are not captured with \code{trans.bins} should be counted in a separate last bar.}
+\item{count.remaining}{"frequency": Whether the customers which are not captured with \code{trans.bins} should be counted in a separate last bar.}
 
-\item{label.remaining}{"numtrans": Label for the last bar, if \code{count.remaining=TRUE}.}
+\item{label.remaining}{"frequency": Label for the last bar, if \code{count.remaining=TRUE}.}
 
 \item{mean.spending}{"spending": Whether customer's mean spending per transaction (\code{TRUE}, default) or the
 value of every transaction in the data (\code{FALSE}) should be plotted.}
@@ -48,7 +48,7 @@ value of every transaction in the data (\code{FALSE}) should be plotted.}
 "estimation", "full", or "holdout". Defaults to "estimation". Not for "tracking".}
 
 \item{geom}{The geometric object of ggplot2 to display the data. Forwarded to
-\link[ggplot2:stat_density]{ggplot2::stat_density}. Not for "tracking" and "numtrans".}
+\link[ggplot2:stat_density]{ggplot2::stat_density}. Not for "tracking" and "frequency".}
 
 \item{color}{Color of resulting geom object in the plot. Not for "tracking".}
 
@@ -57,7 +57,7 @@ value of every transaction in the data (\code{FALSE}) should be plotted.}
 \item{verbose}{Show details about the running of the function.}
 
 \item{...}{Forwarded to \link[ggplot2:stat_density]{ggplot2::stat_density} ("spending", "interpurchasetime")
-or \link[ggplot2:geom_bar]{ggplot2::geom_bar} ("numtrans"). Not for "tracking".}
+or \link[ggplot2:geom_bar]{ggplot2::geom_bar} ("frequency"). Not for "tracking".}
 }
 \value{
 An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
@@ -81,7 +81,7 @@ Plot the aggregated repeat transactions per period over the given time-horizon (
 See Details for the definition of plotting periods.
 }
 
-\subsection{Number of Transactions Plot}{
+\subsection{Frequency Plot}{
 Plot the distribution of transactions or repeat transactions per customer, after aggregating transactions
 of the same customer on a single time point.
 Note that if \code{trans.bins} is changed, \code{label.remaining} usually needs to be adapted as well.
@@ -145,16 +145,16 @@ gg.cdnow + ggtitle("CDnow repeat transactions")
 dt.plot.data <- plot(clv.cdnow, plot=FALSE)
 
 
-### NUM CUSTOMERS WITH NUM TRANSACTION
-plot(clv.cdnow, which="numtrans")
+### FREQUENCY PLOT
+plot(clv.cdnow, which="frequency")
 
 # Bins from 0 to 15, all remaining in bin labelled "16+"
-plot(clv.cdnow, which="numtrans", trans.bins=0:15,
+plot(clv.cdnow, which="frequency", trans.bins=0:15,
      label.remaining="16+")
 
 # Count all transactions, not only repeat
 #  Note that the bins have to be adapted to start from 1
-plot(clv.cdnow, which="numtrans", count.repeat.trans = FALSE,
+plot(clv.cdnow, which="frequency", count.repeat.trans = FALSE,
      trans.bins=1:9)
 
 

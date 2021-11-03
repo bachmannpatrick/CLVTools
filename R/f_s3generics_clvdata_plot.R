@@ -1,7 +1,7 @@
 #' @title Plot Diagnostics for the Transaction data in a clv.data Object
 #'
 #' @param x The clv.data object to plot
-#' @param which Which plot to produce, either "tracking", "numtrans", "spending" or "interpurchasetime".
+#' @param which Which plot to produce, either "tracking", "frequency", "spending" or "interpurchasetime".
 #' May be abbreviated but only one may be selected. Defaults to "tracking".
 #'
 #' @template template_param_verbose
@@ -12,10 +12,10 @@
 #' @param prediction.end "tracking": Until what point in time to plot. This can be the number of periods (numeric) or
 #' a form of date/time object. See details.
 #'
-#' @param trans.bins "numtrans": Vector of integers indicating the number of transactions (x axis) for which the customers should be counted.
-#' @param count.repeat.trans "numtrans": Whether repeat transactions (TRUE, default) or all transactions (FALSE) should be counted.
-#' @param count.remaining "numtrans": Whether the customers which are not captured with \code{trans.bins} should be counted in a separate last bar.
-#' @param label.remaining "numtrans": Label for the last bar, if \code{count.remaining=TRUE}.
+#' @param trans.bins "frequency": Vector of integers indicating the number of transactions (x axis) for which the customers should be counted.
+#' @param count.repeat.trans "frequency": Whether repeat transactions (TRUE, default) or all transactions (FALSE) should be counted.
+#' @param count.remaining "frequency": Whether the customers which are not captured with \code{trans.bins} should be counted in a separate last bar.
+#' @param label.remaining "frequency": Label for the last bar, if \code{count.remaining=TRUE}.
 #'
 #' @param mean.spending "spending": Whether customer's mean spending per transaction (\code{TRUE}, default) or the
 #' value of every transaction in the data (\code{FALSE}) should be plotted.
@@ -24,9 +24,9 @@
 #' "estimation", "full", or "holdout". Defaults to "estimation". Not for "tracking".
 #' @param color Color of resulting geom object in the plot. Not for "tracking".
 #' @param geom The geometric object of ggplot2 to display the data. Forwarded to
-#' \link[ggplot2:stat_density]{ggplot2::stat_density}. Not for "tracking" and "numtrans".
+#' \link[ggplot2:stat_density]{ggplot2::stat_density}. Not for "tracking" and "frequency".
 #' @param ... Forwarded to \link[ggplot2:stat_density]{ggplot2::stat_density} ("spending", "interpurchasetime")
-#' or \link[ggplot2:geom_bar]{ggplot2::geom_bar} ("numtrans"). Not for "tracking".
+#' or \link[ggplot2:geom_bar]{ggplot2::geom_bar} ("frequency"). Not for "tracking".
 #'
 #'
 #'
@@ -38,7 +38,7 @@
 #' See Details for the definition of plotting periods.
 #' }
 #'
-#' \subsection{Number of Transactions Plot}{
+#' \subsection{Frequency Plot}{
 # Plot distribution of the number of customers having the number of transactions.
 #' Plot the distribution of transactions or repeat transactions per customer, after aggregating transactions
 #' of the same customer on a single time point.
@@ -110,16 +110,16 @@
 #' dt.plot.data <- plot(clv.cdnow, plot=FALSE)
 #'
 #'
-#' ### NUM CUSTOMERS WITH NUM TRANSACTION
-#' plot(clv.cdnow, which="numtrans")
+#' ### FREQUENCY PLOT
+#' plot(clv.cdnow, which="frequency")
 #'
 #' # Bins from 0 to 15, all remaining in bin labelled "16+"
-#' plot(clv.cdnow, which="numtrans", trans.bins=0:15,
+#' plot(clv.cdnow, which="frequency", trans.bins=0:15,
 #'      label.remaining="16+")
 #'
 #' # Count all transactions, not only repeat
 #' #  Note that the bins have to be adapted to start from 1
-#' plot(clv.cdnow, which="numtrans", count.repeat.trans = FALSE,
+#' plot(clv.cdnow, which="frequency", count.repeat.trans = FALSE,
 #'      trans.bins=1:9)
 #'
 #'
@@ -141,10 +141,10 @@
 #' @include all_generics.R class_clv_data.R
 #' @method plot clv.data
 #' @export
-plot.clv.data <- function(x, which=c("tracking", "numtrans", "spending", "interpurchasetime"),
+plot.clv.data <- function(x, which=c("tracking", "frequency", "spending", "interpurchasetime"),
                           # tracking plot
                           prediction.end=NULL, cumulative=FALSE,
-                          # numtrans
+                          # frequency
                           trans.bins=0:9, count.repeat.trans=TRUE, count.remaining=TRUE,
                           label.remaining="10+",
                           # spending density
@@ -159,12 +159,12 @@ plot.clv.data <- function(x, which=c("tracking", "numtrans", "spending", "interp
   err.msg <- c()
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=plot, var.name="plot"))
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
-  err.msg <- c(err.msg, .check_userinput_matcharg(char=which, choices=c("tracking", "numtrans", "spending", "interpurchasetime"),
+  err.msg <- c(err.msg, .check_userinput_matcharg(char=which, choices=c("tracking", "frequency", "spending", "interpurchasetime"),
                                                   var.name="which"))
   check_err_msg(err.msg)
 
   return(
-    switch(EXPR = match.arg(arg=which, choices = c("tracking", "numtrans", "spending", "interpurchasetime"),
+    switch(EXPR = match.arg(arg=which, choices = c("tracking", "frequency", "spending", "interpurchasetime"),
                             several.ok = FALSE),
            "tracking" =
              clv.data.plot.tracking(x=x, prediction.end = prediction.end, cumulative = cumulative,
@@ -177,8 +177,8 @@ plot.clv.data <- function(x, which=c("tracking", "numtrans", "spending", "interp
            clv.data.plot.density.interpurchase.time(clv.data = x, sample=sample,
                                                     plot=plot, verbose=verbose,
                                                     color=color, geom=geom, ...),
-         "numtrans" =
-           clv.data.plot.barplot.numtrans(clv.data = x, sample=sample,
+         "frequency" =
+           clv.data.plot.barplot.frequency(clv.data = x, sample=sample,
                                           trans.bins=trans.bins,
                                           count.repeat.trans=count.repeat.trans,
                                           label.remaining=label.remaining,
@@ -356,7 +356,7 @@ clv.data.plot.density.interpurchase.time <- function(clv.data, sample,
 
 
 #' @importFrom ggplot2 ggplot geom_col aes_string labs geom_text position_dodge rel
-clv.data.plot.barplot.numtrans <- function(clv.data, count.repeat.trans, count.remaining, label.remaining, trans.bins,
+clv.data.plot.barplot.frequency <- function(clv.data, count.repeat.trans, count.remaining, label.remaining, trans.bins,
                                            sample, plot, verbose, color, ...){
   x <- num.customers <- num.transactions <- NULL
 

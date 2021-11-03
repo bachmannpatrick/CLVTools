@@ -21,7 +21,7 @@ for one value in \code{x}.
 }
 \description{
 Calculate P(X(t)=x), the probability to make exactly x repeat transactions in
-the interval (0, T] (the estimation period). Note that T is T.cal, the observation period which
+the interval (0, T] (the estimation period). Note that T is the observation period T.cal which
 differs by customer.
 }
 \examples{

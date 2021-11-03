@@ -33,35 +33,35 @@ test_that("tracking - Stops for unneeded parameters", {
 })
 
 
-# . numtrans specific args -------------------------------------------------------------------------------
-.fct.helper.inputchecks.single.logical(fct = plot, l.std.args = list(clv.cdnow.nohold, which="numtrans"),
+# . frequency specific args -------------------------------------------------------------------------------
+.fct.helper.inputchecks.single.logical(fct = plot, l.std.args = list(clv.cdnow.nohold, which="frequency"),
                                        name.param = "count.repeat.trans")
-.fct.helper.inputchecks.single.logical(fct = plot, l.std.args = list(clv.cdnow.nohold, which="numtrans"),
+.fct.helper.inputchecks.single.logical(fct = plot, l.std.args = list(clv.cdnow.nohold, which="frequency"),
                                        name.param = "count.remaining")
 
-test_that("numtrans - label.remaining is single character", {
-  expect_error(plot(clv.cdnow.nohold, which="numtrans", label.remaining=NA_character_), regexp = "may not contain")
-  expect_error(plot(clv.cdnow.nohold, which="numtrans", label.remaining=NULL), regexp = "of type character")
-  expect_error(plot(clv.cdnow.nohold, which="numtrans", label.remaining=character(0)), regexp = "single element")
-  expect_error(plot(clv.cdnow.nohold, which="numtrans", label.remaining=c("10+", ">10")), regexp = "single element")
+test_that("frequency - label.remaining is single character", {
+  expect_error(plot(clv.cdnow.nohold, which="frequency", label.remaining=NA_character_), regexp = "may not contain")
+  expect_error(plot(clv.cdnow.nohold, which="frequency", label.remaining=NULL), regexp = "of type character")
+  expect_error(plot(clv.cdnow.nohold, which="frequency", label.remaining=character(0)), regexp = "single element")
+  expect_error(plot(clv.cdnow.nohold, which="frequency", label.remaining=c("10+", ">10")), regexp = "single element")
 })
 
-test_that("numtrans - trans.bins is valid", {
+test_that("frequency - trans.bins is valid", {
   # no foolish input
-  expect_error(plot(clv.cdnow.nohold, which="numtrans", trans.bins=NULL), regexp = "cannot")
-  expect_error(plot(clv.cdnow.nohold, which="numtrans", trans.bins=c(1,2, NA_integer_)), regexp = "contain any NA")
-  expect_error(plot(clv.cdnow.nohold, which="numtrans", trans.bins=numeric(0)), regexp = "has to contain")
-  expect_error(plot(clv.cdnow.nohold, which="numtrans", trans.bins=integer(0)), regexp = "has to contain")
-  expect_error(plot(clv.cdnow.nohold, which="numtrans", trans.bins="123"), regexp = "vector of integer numbers")
+  expect_error(plot(clv.cdnow.nohold, which="frequency", trans.bins=NULL), regexp = "cannot")
+  expect_error(plot(clv.cdnow.nohold, which="frequency", trans.bins=c(1,2, NA_integer_)), regexp = "contain any NA")
+  expect_error(plot(clv.cdnow.nohold, which="frequency", trans.bins=numeric(0)), regexp = "has to contain")
+  expect_error(plot(clv.cdnow.nohold, which="frequency", trans.bins=integer(0)), regexp = "has to contain")
+  expect_error(plot(clv.cdnow.nohold, which="frequency", trans.bins="123"), regexp = "vector of integer numbers")
 
   # cannot be negative, ever
-  expect_error(plot(clv.cdnow.nohold, which="numtrans", trans.bins=c(-1,1,2), count.repeat.trans=TRUE), regexp = "positive")
-  expect_error(plot(clv.cdnow.nohold, which="numtrans", trans.bins=c(-1,1,2), count.repeat.trans=FALSE), regexp = "positive")
+  expect_error(plot(clv.cdnow.nohold, which="frequency", trans.bins=c(-1,1,2), count.repeat.trans=TRUE), regexp = "positive")
+  expect_error(plot(clv.cdnow.nohold, which="frequency", trans.bins=c(-1,1,2), count.repeat.trans=FALSE), regexp = "positive")
   # cannot be zero if not doing repeat
-  expect_error(plot(clv.cdnow.nohold, which="numtrans", trans.bins=c(0,1,2), count.repeat.trans=FALSE), regexp = "strictly positive")
+  expect_error(plot(clv.cdnow.nohold, which="frequency", trans.bins=c(0,1,2), count.repeat.trans=FALSE), regexp = "strictly positive")
   # has to be integers, always
-  expect_error(plot(clv.cdnow.nohold, which="numtrans", trans.bins=c(1.1,2,3), count.repeat.trans=FALSE), regexp = "integer")
-  expect_error(plot(clv.cdnow.nohold, which="numtrans", trans.bins=c(1,2,3.3), count.repeat.trans=TRUE), regexp = "integer")
+  expect_error(plot(clv.cdnow.nohold, which="frequency", trans.bins=c(1.1,2,3), count.repeat.trans=FALSE), regexp = "integer")
+  expect_error(plot(clv.cdnow.nohold, which="frequency", trans.bins=c(1,2,3.3), count.repeat.trans=TRUE), regexp = "integer")
 })
 
 
