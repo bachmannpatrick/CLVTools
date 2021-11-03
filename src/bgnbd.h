@@ -124,12 +124,6 @@ arma::vec bgnbd_staticcov_PMF(const double r,
                               const arma::vec& vB_i,
                               const arma::vec& vT_i);
 
-arma::vec bgnbd_nocov_alpha_i(const double alpha, const int n);
-
-arma::vec bgnbd_nocov_a_i(const double a, const int n);
-
-arma::vec bgnbd_nocov_b_i(const double b, const int n);
-
 arma::vec bgnbd_staticcov_alpha_i(const double alpha_0,
                                   const arma::vec& vCovParams_trans,
                                   const arma::mat& mCov_trans);
