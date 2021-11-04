@@ -55,7 +55,7 @@
 #'
 #' @seealso \code{\link[CLVTools:plot.clv.fitted.spending]{plot.clv.fitted.spending}} for diagnostics of spending models
 #' @seealso \code{\link[CLVTools:plot.clv.data]{plot.clv.data}} for transaction diagnostics of \code{clv.data} objects
-#' @seealso \code{\link[CLVTools:pmf.clv.data]{pmf}} for the values on which the PMF plot is based
+#' @seealso \code{\link[CLVTools:pmf]{pmf}} for the values on which the PMF plot is based
 #'
 #'
 #' @return
@@ -343,7 +343,7 @@ clv.fitted.transactions.plot.tracking <- function(x, newdata, prediction.end, cu
 # PMF plot -----------------------------------------------------------------------------------------------
 #' @importFrom ggplot2 ggplot geom_col aes_string position_dodge2 guide_legend scale_x_discrete
 clv.fitted.transactions.plot.barplot.pmf <- function(x, trans.bins, transactions, label, plot, verbose){
-  pmf.x <- pmf.value  <- expected.customers <- i.expected.customers <- NULL
+  pmf.x <- pmf.value  <- actual.num.customers <- expected.customers <- i.expected.customers <- NULL
   num.customers <- num.transactions <- char.num.transactions <- variable <- NULL
 
   check_err_msg(check_user_data_integer_vector_greater0(vec=trans.bins, var.name="x"))

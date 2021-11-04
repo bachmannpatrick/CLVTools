@@ -186,5 +186,5 @@ plot(pnbd.cdnow, which="pmf", trans.bins=5:15)
 
 \code{\link[CLVTools:plot.clv.data]{plot.clv.data}} for transaction diagnostics of \code{clv.data} objects
 
-\code{\link[CLVTools:pmf.clv.data]{pmf}} for the values on which the PMF plot is based
+\code{\link[CLVTools:pmf]{pmf}} for the values on which the PMF plot is based
 }
