@@ -1,27 +1,40 @@
 
-#' @title Plot expected and actual repeat transactions
-#' @param x The fitted clv model to plot
-#' @param newdata An object of class clv.data for which the plotting should be made with the fitted model. If none or NULL is given, the plot is made for the data on which the model was fit.
-#' @param transactions Whether the actual observed repeat transactions should be plotted.
-#' @param cumulative Whether the cumulative expected (and actual) transactions should be plotted.
-#' @param plot Whether a plot should be created or only the assembled data is returned.
-#' @param label Character string to label the model in the legend
+#' @title Plot Diagnostics for a Fitted Transaction Model
+#' @param x The fitted transaction model to plot
+#' @param which Which plot to produce, either "tracking" or "pmf". May be abbreviated but only one may be selected. Defaults to "tracking".
+#'
+#' @param cumulative "tracking": Whether the cumulative expected (and actual) transactions should be plotted.
 #' @template template_param_predictionend
+#'
+#' @param trans.bins "pmf": Vector of positive integer numbers (>=0) indicating the number of repeat transactions (x axis) to plot.
+#'
+#' @param newdata An object of class clv.data for which the plotting should be made with the fitted model.
+#' If none or NULL is given, the plot is made for the data on which the model was fit.
+#' @param transactions Whether the actual observed repeat transactions should be plotted.
+#' @param label Character string to label the model in the legend.
+#' @param plot Whether a plot is created or only the assembled data is returned.
 #' @template template_param_verbose
 #' @template template_param_dots
 #'
 #' @description
+#' See \code{\link[CLVTools:plot.clv.data]{plot.clv.data}} to plot more nuanced diagnostics for the transaction data only.
+#' Depending on the value of parameter which, one of the following plots will be produced:
+#' \subsection{Tracking Plot}{
 #' Plot the actual repeat transactions and overlay it with the repeat transaction as predicted
 #' by the fitted model. Currently, following previous literature, the in-sample unconditional
 #' expectation is plotted in the holdout period. In the future, we might add the option to also
 #' plot the summed CET for the holdout period as an alternative evaluation metric.
-#' See \code{\link[CLVTools:plot.clv.data]{plot.clv.data}} to plot more nuanced diagnostics for the transaction data only.
+#' Note that only whole periods can be plotted and that the prediction end might not exactly match \code{prediction.end}.
+#' See the Note section for more details.
+#' }
+#'
+#' \subsection{PMF Plot}{
+#' xxxx compare the actual with predicted number fo customers in the estimation period.
+#' and compare with the number of customers which are expected to have this many repeat transactions,
+#' as predicted by the fitted model.
+#' }
 #'
 #' @template template_details_predictionend
-#'
-#' @details Note that only whole periods can be plotted and that the prediction end might not exactly match \code{prediction.end}.
-#' See the Note section for more details.
-#'
 #' @template template_details_newdata
 #'
 #'
@@ -38,7 +51,7 @@
 #'
 #' @return
 #' An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
-#' If the parameter \code{plot} is \code{FALSE}, the data that would have been melted and used to
+#' If the parameter \code{plot} is \code{FALSE}, the data that would have been used to
 #' create the plot is returned. It is a \code{data.table} which contains the following columns:
 #' \item{period.until}{The timepoint that marks the end (up until and including) of the period to which the data in this row refers.}
 #' \item{Number of Repeat Transactions}{The number of actual repeat transactions in
@@ -91,6 +104,7 @@
 # p.m2 <- plot(pnbd.cdnow.cov, transactions = FALSE)
 # p.m1 + geom_line(mapping=p.m2$mapping, data=p.m2$data,
 #                  color="blue")
+#
 #' @importFrom graphics plot
 #' @include class_clv_fitted.R
 #' @method plot clv.fitted.transactions
@@ -103,6 +117,22 @@ plot.clv.fitted.transactions <- function (x, which=c("tracking", "pmf"),
                                           trans.bins = 0:10,
                                           # general
                                           plot=TRUE, verbose=TRUE,...) {
+
+  # Check inputs ------------------------------------------------------------------------------------------------------
+  # Do before replacing newdata as it may be costly
+
+  # Cannot plot if there are any NAs in any of the prediction.params
+  clv.controlflow.check.prediction.params(clv.fitted = x)
+
+  err.msg <- c()
+  err.msg <- c(err.msg, .check_userinput_matcharg(char=which, choices=c("tracking", "pmf"), var.name="which"))
+  err.msg <- c(err.msg, .check_user_data_single_boolean(b=transactions, var.name="transactions"))
+  err.msg <- c(err.msg, .check_user_data_single_boolean(b=plot, var.name="plot"))
+  err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
+  err.msg <- c(err.msg, check_user_data_emptyellipsis(...))
+  if(!is.null(label)) # null is allowed = std. model name
+    err.msg <- c(err.msg, .check_userinput_single_character(char=label, var.name="label"))
+  check_err_msg(err.msg)
 
   # Newdata ------------------------------------------------------------------------------------------------
   # Because many of the following steps refer to the data stored in the fitted model,
@@ -120,21 +150,13 @@ plot.clv.fitted.transactions <- function (x, which=c("tracking", "pmf"),
   }
 
 
-  # Check if can plot -----------------------------------------------------------------------------------------
-  # Cannot plot if there are any NAs in any of the prediction.params
-  clv.controlflow.check.prediction.params(clv.fitted = x)
-  err.msg <- c()
-  err.msg <- c(err.msg, .check_userinput_matcharg(char=which, choices=c("tracking","pmf"), var.name="which"))
-  err.msg <- c(err.msg, check_user_data_emptyellipsis(...))
-  check_err_msg(err.msg)
 
-
-  return(switch(match.arg(which, c("tracking","pmf")),
+  return(switch(match.arg(arg = which, choices = c("tracking","pmf")),
     "tracking" = clv.fitted.transactions.plot.tracking(x=x, newdata=newdata, prediction.end=prediction.end,
                                                        cumulative=cumulative, transactions=transactions,
                                                        label=label, plot=plot, verbose=verbose),
-    "pmf" = clv.fitted.transactions.plot.barplot.pmf(x=x, trans.bins=trans.bins,
-                                                     plot=plot, verbose=verbose)))
+    "pmf" = clv.fitted.transactions.plot.barplot.pmf(x=x, trans.bins=trans.bins, transactions=transactions,
+                                                     label=label, plot=plot, verbose=verbose)))
 }
 
 #' @exportMethod plot
@@ -204,12 +226,7 @@ clv.fitted.transactions.plot.tracking <- function(x, newdata, prediction.end, cu
   # Check inputs ------------------------------------------------------------------------------------------------------
   err.msg <- c()
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=cumulative, var.name="cumulative"))
-  err.msg <- c(err.msg, .check_user_data_single_boolean(b=plot, var.name="plot"))
-  err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
-  err.msg <- c(err.msg, .check_user_data_single_boolean(b=transactions, var.name="transactions"))
   err.msg <- c(err.msg, check_user_data_predictionend(clv.fitted=x, prediction.end=prediction.end))
-  if(!is.null(label)) # null is allowed = std. model name
-    err.msg <- c(err.msg, .check_userinput_single_character(char=label, var.name="label"))
   check_err_msg(err.msg)
 
 
@@ -267,15 +284,12 @@ clv.fitted.transactions.plot.tracking <- function(x, newdata, prediction.end, cu
   #   To be sure to have all dates, merge data on original dates
 
   dt.dates.expectation[, period.num := NULL]
+  dt.dates.expectation[dt.expectation, (label.model.expectation) := get(label.model.expectation), on="period.until"]
 
   if(transactions){
-    dt.dates.expectation[dt.expectation, (label.model.expectation) := get(label.model.expectation), on="period.until"]
     dt.dates.expectation[dt.repeat.trans, (label.transactions) := get(label.transactions), on="period.until"]
-    dt.plot <- dt.dates.expectation
-  }else{
-    dt.dates.expectation[dt.expectation, (label.model.expectation) := get(label.model.expectation), on="period.until"]
-    dt.plot <- dt.dates.expectation
   }
+  dt.plot <- dt.dates.expectation
 
   # data.table does not print when returned because it is returned directly after last [:=]
   # " if a := is used inside a function with no DT[] before the end of the function, then the next
@@ -284,29 +298,33 @@ clv.fitted.transactions.plot.tracking <- function(x, newdata, prediction.end, cu
   dt.plot[]
 
   # Only plot if needed
-  if(!plot)
+  if(!plot){
     return(dt.plot)
+  }else{
+    if(transactions){
+      line.colors <- setNames(object = c("black", "red"),
+                              nm = c(label.transactions, label.model.expectation))
+    }else{
+      line.colors <- setNames(object = "red", nm = label.model.expectation)
+    }
 
-  if(transactions)
-    line.colors <- setNames(object = c("black", "red"),
-                            nm = c(label.transactions, label.model.expectation))
-  else
-    line.colors <- setNames(object = "red", nm = label.model.expectation)
+    # Plot table with formatting, label etc
+    return(clv.controlflow.plot.make.plot(dt.data = dt.plot, clv.data = x@clv.data, line.colors = line.colors))
+  }
 
-  # Plot table with formatting, label etc
-  return(clv.controlflow.plot.make.plot(dt.data = dt.plot, clv.data = x@clv.data, line.colors = line.colors))
 }
 
 
 # PMF plot -----------------------------------------------------------------------------------------------
 #' @importFrom ggplot2 ggplot geom_col aes_string position_dodge2 guide_legend scale_x_discrete
-clv.fitted.transactions.plot.barplot.pmf <- function(x, trans.bins, plot, verbose){
+clv.fitted.transactions.plot.barplot.pmf <- function(x, trans.bins, transactions, label, plot, verbose){
   pmf.x <- pmf.value  <- expected.customers <- i.expected.customers <- NULL
   num.customers <- num.transactions <- char.num.transactions <- variable <- NULL
 
   check_err_msg(check_user_data_integer_vector_greater0(vec=trans.bins, var.name="x"))
 
-  # Collect actual transactions
+  # Always work with the actuals from plot() as basis to have ordered factors
+  #   Collect actual transactions
   dt.actuals <- plot(x@clv.data, which="frequency", plot=FALSE, verbose=FALSE,
                      trans.bins=trans.bins, count.repeat.trans=TRUE,
                      count.remaining=FALSE) #, label.remaining = "remaining")
@@ -328,12 +346,31 @@ clv.fitted.transactions.plot.barplot.pmf <- function(x, trans.bins, plot, verbos
   dt.actuals[, num.customers := as.numeric(num.customers)] # integer, leads to melt warning
   setnames(dt.actuals, "num.customers", "actual.num.customers")
 
+  if(!transactions){
+    # Drop actuals if not needed
+    dt.actuals[, actual.num.customers := NULL]
+  }
+
   if(!plot){
     return(dt.actuals)
   }else{
+
+    if(is.null(label)){
+      label.model <- x@clv.model@name.model
+    }else{
+      label.model <- label
+    }
+
     dt.plot <- melt(dt.actuals, id.vars="num.transactions", variable.factor=FALSE)
-    dt.plot[variable=="actual.num.customers", variable := "Actual Number of Repeat Transactions"]
-    dt.plot[variable=="expected.customers",   variable := x@clv.model@name.model]
+    dt.plot[variable=="expected.customers",   variable := label.model]
+
+    if(transactions){
+      dt.plot[variable=="actual.num.customers", variable := "Actual Number of Repeat Transactions"]
+      lines.color <- setNames(object = c("black", "red"),
+                              nm = c("Actual Number of Repeat Transactions", label.model))
+    }else{
+      lines.color <- setNames(object = "red", nm = label.model)
+    }
 
     p <- ggplot(dt.plot)+geom_col(aes_string(x="num.transactions", fill="variable", y="value"),
                                   width = 0.5, position=position_dodge2(width = 0.9))
@@ -346,9 +383,7 @@ clv.fitted.transactions.plot.barplot.pmf <- function(x, trans.bins, plot, verbos
                        size = rel(3))
 
     # Variable color and name
-    p <- p + scale_fill_manual(values = setNames(object = c("black", "red"),
-                                                 nm = c("Actual Number of Repeat Transactions",
-                                                        x@clv.model@name.model)),
+    p <- p + scale_fill_manual(values = lines.color,
                                aesthetics = c("color", "fill"),
                                guide = guide_legend(title="Legend"))
 

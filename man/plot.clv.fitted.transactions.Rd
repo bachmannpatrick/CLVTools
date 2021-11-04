@@ -4,7 +4,7 @@
 \alias{plot.clv.fitted.transactions}
 \alias{plot}
 \alias{plot,clv.fitted.transactions-method}
-\title{Plot expected and actual repeat transactions}
+\title{Plot Diagnostics for a Fitted Transaction Model}
 \usage{
 \method{plot}{clv.fitted.transactions}(
   x,
@@ -35,19 +35,24 @@
 )
 }
 \arguments{
-\item{x}{The fitted clv model to plot}
+\item{x}{The fitted transaction model to plot}
+
+\item{which}{Which plot to produce, either "tracking" or "pmf". May be abbreviated but only one may be selected. Defaults to "tracking".}
 
 \item{prediction.end}{Until what point in time to predict. This can be the number of periods (numeric) or a form of date/time object. See details.}
 
-\item{newdata}{An object of class clv.data for which the plotting should be made with the fitted model. If none or NULL is given, the plot is made for the data on which the model was fit.}
+\item{newdata}{An object of class clv.data for which the plotting should be made with the fitted model.
+If none or NULL is given, the plot is made for the data on which the model was fit.}
 
-\item{cumulative}{Whether the cumulative expected (and actual) transactions should be plotted.}
+\item{cumulative}{"tracking": Whether the cumulative expected (and actual) transactions should be plotted.}
 
 \item{transactions}{Whether the actual observed repeat transactions should be plotted.}
 
-\item{label}{Character string to label the model in the legend}
+\item{label}{Character string to label the model in the legend.}
 
-\item{plot}{Whether a plot should be created or only the assembled data is returned.}
+\item{trans.bins}{"pmf": Vector of positive integer numbers (>=0) indicating the number of repeat transactions (x axis) to plot.}
+
+\item{plot}{Whether a plot is created or only the assembled data is returned.}
 
 \item{verbose}{Show details about the running of the function.}
 
@@ -55,7 +60,7 @@
 }
 \value{
 An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
-If the parameter \code{plot} is \code{FALSE}, the data that would have been melted and used to
+If the parameter \code{plot} is \code{FALSE}, the data that would have been used to
 create the plot is returned. It is a \code{data.table} which contains the following columns:
 \item{period.until}{The timepoint that marks the end (up until and including) of the period to which the data in this row refers.}
 \item{Number of Repeat Transactions}{The number of actual repeat transactions in
@@ -63,11 +68,22 @@ the period that ends at \code{period.until}. Only if \code{transactions} is \cod
 \item{"Name of Model" or "label"}{The value of the unconditional expectation for the period that ends on \code{period.until}.}
 }
 \description{
+See \code{\link[CLVTools:plot.clv.data]{plot.clv.data}} to plot more nuanced diagnostics for the transaction data only.
+Depending on the value of parameter which, one of the following plots will be produced:
+\subsection{Tracking Plot}{
 Plot the actual repeat transactions and overlay it with the repeat transaction as predicted
 by the fitted model. Currently, following previous literature, the in-sample unconditional
 expectation is plotted in the holdout period. In the future, we might add the option to also
 plot the summed CET for the holdout period as an alternative evaluation metric.
-See \code{\link[CLVTools:plot.clv.data]{plot.clv.data}} to plot more nuanced diagnostics for the transaction data only.
+Note that only whole periods can be plotted and that the prediction end might not exactly match \code{prediction.end}.
+See the Note section for more details.
+}
+
+\subsection{PMF Plot}{
+xxxx compare the actual with predicted number fo customers in the estimation period.
+and compare with the number of customers which are expected to have this many repeat transactions,
+as predicted by the fitted model.
+}
 }
 \details{
 \code{prediction.end} indicates until when to predict or plot and can be given as either
@@ -84,9 +100,6 @@ of the first prediction period is Monday 2019-01-02. Each prediction period incl
 the first prediction period therefore will end on, and include, Sunday 2019-01-08. Subsequent prediction periods
 again start on Mondays and end on Sundays.
 If \code{prediction.end} indicates a timepoint on which to end, this timepoint is included in the prediction period.
-
-Note that only whole periods can be plotted and that the prediction end might not exactly match \code{prediction.end}.
-See the Note section for more details.
 
 The \code{newdata} argument has to be a clv data object of the exact same class as the data object
 on which the model was fit. In case the model was fit with covariates, \code{newdata} needs to contain identically

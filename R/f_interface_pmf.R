@@ -2,7 +2,7 @@
 #'
 #' @title Probability Mass Function
 #' @param object The fitted transaction model.
-#' @param x Vector of positive integer numbers (>=1) indicating the number of transactions x for
+#' @param x Vector of positive integer numbers (>=0) indicating the number of repeat transactions x for
 #' which the PMF should be calculated.
 #'
 #' @description

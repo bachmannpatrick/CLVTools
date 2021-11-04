@@ -10,7 +10,7 @@
 \arguments{
 \item{object}{The fitted transaction model.}
 
-\item{x}{Vector of positive integer numbers (>=1) indicating the number of transactions x for
+\item{x}{Vector of positive integer numbers (>=0) indicating the number of repeat transactions x for
 which the PMF should be calculated.}
 }
 \value{
