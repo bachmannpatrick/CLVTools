@@ -59,7 +59,6 @@ setGeneric(name = "pmf", def = function(object, x=0:5)
 #' @include class_clv_fitted_transactions.R
 #' @rdname pmf
 setMethod(f = "pmf", signature = signature(object="clv.fitted.transactions"), definition = function(object, x=0:5){
-  check_err_msg(check_user_data_pmfx(x=x))
-  x <- sort(unique(x))
-  return(clv.template.controlflow.pmf(clv.fitted=object, x=x, plot=plot))
+  check_err_msg(check_user_data_integer_vector_greater0(vec=x, var.name="x"))
+  return(clv.template.controlflow.pmf(clv.fitted=object, x=x))
 })

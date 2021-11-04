@@ -103,7 +103,21 @@ plot.clv.fitted.transactions <- function (x, which=c("tracking", "pmf"),
                                           trans.bins = 0:10,
                                           # general
                                           plot=TRUE, verbose=TRUE,...) {
-  period.until <- period.num <- NULL
+
+  # Newdata ------------------------------------------------------------------------------------------------
+  # Because many of the following steps refer to the data stored in the fitted model,
+  #   it first is replaced with newdata before any other steps are done
+  if(!is.null(newdata)){
+    # check newdata
+    clv.controlflow.check.newdata(clv.fitted = x, user.newdata = newdata, prediction.end=prediction.end)
+
+    # Replace data in model with newdata
+    #   Deep copy to not change user input
+    x@clv.data <- copy(newdata)
+
+    # Do model dependent steps of adding newdata
+    x <- clv.model.process.newdata(clv.model = x@clv.model, clv.fitted=x, verbose=verbose)
+  }
 
 
   # Check if can plot -----------------------------------------------------------------------------------------
@@ -157,28 +171,7 @@ clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
   p <- p + labs(x = "Date", y= "Number of Repeat Transactions", title= paste0(clv.time.tu.to.ly(clv.time=clv.data@clv.time), " tracking plot"),
                 subtitle = paste0("Estimation end: ",  clv.time.format.timepoint(clv.time=clv.data@clv.time, timepoint=clv.data@clv.time@timepoint.estimation.end)))
 
-  p <- p + theme(
-    plot.title = element_text(face = "bold", size = rel(1.5)),
-    text = element_text(),
-    panel.background = element_blank(),
-    panel.border = element_blank(),
-    plot.background  = element_rect(colour = NA),
-    axis.title   = element_text(face = "bold",size = rel(1)),
-    axis.title.y = element_text(angle=90,vjust =2),
-    axis.title.x = element_text(vjust = -0.2),
-    axis.text = element_text(),
-    axis.line = element_line(colour="black"),
-    axis.ticks = element_line(),
-    panel.grid.major = element_line(colour="#d2d2d2"),
-    panel.grid.minor = element_blank(),
-    legend.key = element_blank(),
-    legend.position = "bottom",
-    legend.direction = "horizontal",
-    legend.title = element_text(face="italic"),
-    strip.background=element_rect(colour="#d2d2d2",fill="#d2d2d2"),
-    strip.text = element_text(face="bold", size = rel(0.8)))
-
-  return(p)
+  return(clv.data.plot.add.default.theme(p))
 }
 
 # clv.controlflow.plot.get.data ---------------------------------------------------------------
@@ -206,22 +199,7 @@ setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.fitt
 # Tracking plot --------------------------------------------------------------------------------------------
 clv.fitted.transactions.plot.tracking <- function(x, newdata, prediction.end, cumulative, transactions,
                                                   label, plot, verbose, ...){
-
-  # Newdata ------------------------------------------------------------------------------------------------
-  # Because many of the following steps refer to the data stored in the fitted model,
-  #   it first is replaced with newdata before any other steps are done
-  if(!is.null(newdata)){
-    # check newdata
-    clv.controlflow.check.newdata(clv.fitted = x, user.newdata = newdata, prediction.end=prediction.end)
-
-    # Replace data in model with newdata
-    #   Deep copy to not change user input
-    x@clv.data <- copy(newdata)
-
-    # Do model dependent steps of adding newdata
-    x <- clv.model.process.newdata(clv.model = x@clv.model, clv.fitted=x, verbose=verbose)
-  }
-
+  period.until <- period.num <- NULL
 
   # Check inputs ------------------------------------------------------------------------------------------------------
   err.msg <- c()
@@ -321,11 +299,12 @@ clv.fitted.transactions.plot.tracking <- function(x, newdata, prediction.end, cu
 
 
 # PMF plot -----------------------------------------------------------------------------------------------
-#' @importFrom ggplot2 ggplot geom_col aes_string position_dodge2 guide_legend
+#' @importFrom ggplot2 ggplot geom_col aes_string position_dodge2 guide_legend scale_x_discrete
 clv.fitted.transactions.plot.barplot.pmf <- function(x, trans.bins, plot, verbose){
-  pmf.x <- pmf.value <- expected.transactions <- NULL
-  # *** TODO: separate check, different param name ***
-  check_err_msg(check_user_data_pmfx(trans.bins))
+  pmf.x <- pmf.value  <- expected.customers <- i.expected.customers <- NULL
+  num.customers <- num.transactions <- char.num.transactions <- variable <- NULL
+
+  check_err_msg(check_user_data_integer_vector_greater0(vec=trans.bins, var.name="x"))
 
   # Collect actual transactions
   dt.actuals <- plot(x@clv.data, which="frequency", plot=FALSE, verbose=FALSE,
@@ -366,9 +345,6 @@ clv.fitted.transactions.plot.barplot.pmf <- function(x, trans.bins, plot, verbos
                        vjust = -0.6,
                        size = rel(3))
 
-    # rename scale / variable names
-    #   do not rename DT colnames to keep consistent with return docu
-
     # Variable color and name
     p <- p + scale_fill_manual(values = setNames(object = c("black", "red"),
                                                  nm = c("Actual Number of Repeat Transactions",
@@ -376,11 +352,14 @@ clv.fitted.transactions.plot.barplot.pmf <- function(x, trans.bins, plot, verbos
                                aesthetics = c("color", "fill"),
                                guide = guide_legend(title="Legend"))
 
+    # # show missing values as 0 (if there are)
+    p <- p + scale_x_discrete(na.translate=TRUE, na.value=0)
+
     # Axis and title
     p <- p + labs(x = "Number of Repeat Transactions", y="Number of Customers",
                   title="Frequency of Repeat Transactions in the Estimation Period")
 
-    return(clv.data.plot.add.theme(p))
+    return(clv.data.plot.add.default.theme(p, custom = list(axis.text.x = element_text(face="bold"))))
   }
 }
 

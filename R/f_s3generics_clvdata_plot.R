@@ -188,9 +188,10 @@ plot.clv.data <- function(x, which=c("tracking", "frequency", "spending", "inter
          ))
 }
 
-#' @importFrom ggplot2 rel
-clv.data.plot.add.theme <- function(p){
-  return(p + theme(
+#' @importFrom ggplot2 theme rel element_text element_blank element_rect element_line
+#' @importFrom utils modifyList
+clv.data.plot.add.default.theme <- function(p, custom=list()){
+  l.default.args <- list(
     plot.title = element_text(face = "bold", size = rel(1.5)),
     text = element_text(),
     panel.background = element_blank(),
@@ -209,7 +210,12 @@ clv.data.plot.add.theme <- function(p){
     legend.direction = "horizontal",
     legend.title = element_text(face="italic"),
     strip.background=element_rect(colour="#d2d2d2",fill="#d2d2d2"),
-    strip.text = element_text(face="bold", size = rel(0.8))))
+    strip.text = element_text(face="bold", size = rel(0.8)))
+
+  # Overwrite with custom args
+  l.default.args <- modifyList(l.default.args, custom)
+
+  return(p + do.call(what=theme, args = l.default.args))
 }
 
 
@@ -291,7 +297,7 @@ clv.data.make.density.plot <- function(dt.data, mapping, labs_x, title, geom, ..
   # Axis and title
   p <- p + labs(x = labs_x, y="Density", title=title)
 
-  return(clv.data.plot.add.theme(p))
+  return(clv.data.plot.add.default.theme(p))
 }
 
 #' @importFrom ggplot2 aes
@@ -430,7 +436,8 @@ clv.data.plot.barplot.frequency <- function(clv.data, count.repeat.trans, count.
                        vjust = -0.6,
                        size = rel(3))
 
-    return(clv.data.plot.add.theme(p))
+    # Standard theme, but make x ticks for the bins bold (num repeat trans)
+    return(clv.data.plot.add.default.theme(p, custom = list(axis.text.x = element_text(face="bold"))))
   }
 }
 
