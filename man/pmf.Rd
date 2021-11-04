@@ -56,4 +56,6 @@ pmf(pnbd.cdnow, x=0:10)
 \seealso{
 The model fitting functions \code{\link[CLVTools:pnbd]{pnbd},
 \link[CLVTools:bgnbd]{bgnbd}, \link[CLVTools:ggomnbd]{ggomnbd}}.
+
+
 }

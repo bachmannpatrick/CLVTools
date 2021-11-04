@@ -10,11 +10,11 @@
   x,
   which = c("tracking", "pmf"),
   prediction.end = NULL,
-  newdata = NULL,
   cumulative = FALSE,
+  trans.bins = 0:10,
+  newdata = NULL,
   transactions = TRUE,
   label = NULL,
-  trans.bins = 0:10,
   plot = TRUE,
   verbose = TRUE,
   ...
@@ -24,33 +24,33 @@
   x,
   which = c("tracking", "pmf"),
   prediction.end = NULL,
-  newdata = NULL,
   cumulative = FALSE,
+  trans.bins = 0:10,
+  newdata = NULL,
   transactions = TRUE,
   label = NULL,
-  trans.bins = 0:10,
   plot = TRUE,
   verbose = TRUE,
   ...
 )
 }
 \arguments{
-\item{x}{The fitted transaction model to plot}
+\item{x}{The fitted transaction model for which to produce diagnostic plots}
 
 \item{which}{Which plot to produce, either "tracking" or "pmf". May be abbreviated but only one may be selected. Defaults to "tracking".}
 
 \item{prediction.end}{Until what point in time to predict. This can be the number of periods (numeric) or a form of date/time object. See details.}
 
+\item{cumulative}{"tracking": Whether the cumulative expected (and actual) transactions should be plotted.}
+
+\item{trans.bins}{"pmf": Vector of positive integer numbers (>=0) indicating the number of repeat transactions (x axis) to plot.}
+
 \item{newdata}{An object of class clv.data for which the plotting should be made with the fitted model.
 If none or NULL is given, the plot is made for the data on which the model was fit.}
-
-\item{cumulative}{"tracking": Whether the cumulative expected (and actual) transactions should be plotted.}
 
 \item{transactions}{Whether the actual observed repeat transactions should be plotted.}
 
 \item{label}{Character string to label the model in the legend.}
-
-\item{trans.bins}{"pmf": Vector of positive integer numbers (>=0) indicating the number of repeat transactions (x axis) to plot.}
 
 \item{plot}{Whether a plot is created or only the assembled data is returned.}
 
@@ -60,16 +60,25 @@ If none or NULL is given, the plot is made for the data on which the model was f
 }
 \value{
 An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
-If the parameter \code{plot} is \code{FALSE}, the data that would have been used to
-create the plot is returned. It is a \code{data.table} which contains the following columns:
+If \code{plot=FALSE}, the data that would have been used to create the plot is returned.
+Depending on which plot was selected, this is a data.table which contains the
+following columns:
+
+For the Tracking plot:
 \item{period.until}{The timepoint that marks the end (up until and including) of the period to which the data in this row refers.}
 \item{Number of Repeat Transactions}{The number of actual repeat transactions in
 the period that ends at \code{period.until}. Only if \code{transactions} is \code{TRUE}.}
 \item{"Name of Model" or "label"}{The value of the unconditional expectation for the period that ends on \code{period.until}.}
+
+For the PMF plot:
+\item{num.transactions}{The number of observed repeat transactions in the estimation period (as ordered factor).}
+\item{actual.num.customers}{The actual number of customers which have the respective number of repeat transactions.}
+\item{expected.customers}{The number of customers which are expected to have the respective number of repeat transactions, as by the fitted model.}
 }
 \description{
+Depending on the value of parameter which, one of the following plots will be produced.
 See \code{\link[CLVTools:plot.clv.data]{plot.clv.data}} to plot more nuanced diagnostics for the transaction data only.
-Depending on the value of parameter which, one of the following plots will be produced:
+
 \subsection{Tracking Plot}{
 Plot the actual repeat transactions and overlay it with the repeat transaction as predicted
 by the fitted model. Currently, following previous literature, the in-sample unconditional
@@ -80,9 +89,15 @@ See the Note section for more details.
 }
 
 \subsection{PMF Plot}{
-xxxx compare the actual with predicted number fo customers in the estimation period.
+The expected number is the sum of all customer's PMF value for a single transaction count
+based on the probability mass function (PMF)
+the probability to make exactly x repeat transactions in the estimation period
+xxxx compare the actual with the expected number of customers which are, in the estimation period.
+sum pmf values
+Plot the actual and expected number of customers which make given repeat transaction in the estimation period
+
 and compare with the number of customers which are expected to have this many repeat transactions,
-as predicted by the fitted model.
+as by the fitted model.
 }
 }
 \details{
@@ -130,6 +145,7 @@ pnbd.cdnow <- pnbd(clvdata(cdnow, time.unit="w",
                            estimation.split=37,
                            date.format="ymd"))
 
+## TRACKING PLOT
 # Plot actual repeat transaction, overlayed with the
 #  expected repeat transactions as by the fitted model
 plot(pnbd.cdnow)
@@ -137,7 +153,7 @@ plot(pnbd.cdnow)
 # Plot cumulative expected transactions of only the model
 plot(pnbd.cdnow, cumulative=TRUE, transactions=FALSE)
 
-# Plot forecast until 2001-10-21
+# Plot until 2001-10-21
 plot(pnbd.cdnow, prediction.end = "2001-10-21")
 
 # Plot until 2001-10-21, as date
@@ -156,11 +172,19 @@ library("ggplot2")
 gg.pnbd.cdnow <- plot(pnbd.cdnow)
 gg.pnbd.cdnow + ggtitle("PNBD on CDnow")
 
+## PMF PLOT
+plot(pnbd.cdnow, which="pmf")
+
+# for 5 to 15 bins
+plot(pnbd.cdnow, which="pmf", trans.bins=5:15)
+
 }
 
 }
 \seealso{
-\code{\link[CLVTools:plot.clv.fitted.spending]{plot}} for spending models
+\code{\link[CLVTools:plot.clv.fitted.spending]{plot.clv.fitted.spending}} for diagnostics of spending models
 
-\code{\link[CLVTools:plot.clv.data]{plot}} for transaction diagnostics of \code{clv.data} objects
+\code{\link[CLVTools:plot.clv.data]{plot.clv.data}} for transaction diagnostics of \code{clv.data} objects
+
+\code{\link[CLVTools:pmf.clv.data]{pmf}} for the values on which the PMF plot is based
 }
