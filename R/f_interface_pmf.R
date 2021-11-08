@@ -19,7 +19,7 @@
 #'
 #' @seealso The model fitting functions \code{\link[CLVTools:pnbd]{pnbd},
 #' \link[CLVTools:bgnbd]{bgnbd}, \link[CLVTools:ggomnbd]{ggomnbd}}.
-#' @seealso \code{\link[CLVTools:plot.clv.fitted.transactions]{plot} to visually compare
+#' @seealso \code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} to visually compare
 #' the PMF values against actuals.
 #'
 #' @examples

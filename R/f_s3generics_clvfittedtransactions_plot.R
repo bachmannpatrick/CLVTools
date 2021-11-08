@@ -30,15 +30,14 @@
 #' }
 #'
 #' \subsection{PMF Plot}{
-#' The expected number is the sum of all customer's PMF value for a single transaction count
-#' based on the probability mass function (PMF)
-#' the probability to make exactly x repeat transactions in the estimation period
-#' xxxx compare the actual with the expected number of customers which are, in the estimation period.
-#' sum pmf values
-#' Plot the actual and expected number of customers which make given repeat transaction in the estimation period
+# Plot the actual number of customers which made a given number of repeat transactions in the estimation period
+# and compare it to the expected number, as by the fitted model.
+#
+#' Plot the actual and expected number of customers which made a given number of repeat
+#' transaction in the estimation period. The expected number is based on the PMF of the fitted model,
+#' the probability to make exactly a given number of repeat transactions in the estimation period.
+#' For each bin, the expected number is the sum of all customers' individual PMF value.
 #'
-#' and compare with the number of customers which are expected to have this many repeat transactions,
-#' as by the fitted model.
 #' }
 #'
 #' @template template_details_predictionend

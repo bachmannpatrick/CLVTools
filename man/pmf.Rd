@@ -57,5 +57,6 @@ pmf(pnbd.cdnow, x=0:10)
 The model fitting functions \code{\link[CLVTools:pnbd]{pnbd},
 \link[CLVTools:bgnbd]{bgnbd}, \link[CLVTools:ggomnbd]{ggomnbd}}.
 
-
+\code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} to visually compare
+the PMF values against actuals.
 }
