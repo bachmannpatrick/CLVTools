@@ -57,11 +57,17 @@ jobs:
           if: runner.os == 'Windows'
           run: |
             pacman -Sy
-            pacman -S mingw-w64-gsl
+            pacman -Sl
+            pacman -S mingw-w64-{i686,x86_64}-gsl
 
         - uses: r-lib/actions/setup-r-dependencies@v1
           with:
             extra-packages: rcmdcheck
+
+        - name: Actually install tinytex
+          run: |
+            tinytex::install_tinytex()
+          shell: Rscript {0}
 
         # - uses: r-lib/actions/check-r-package@v1
 
