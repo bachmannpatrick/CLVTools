@@ -56,9 +56,9 @@ jobs:
         - name: Install Windows system dependencies
           if: runner.os == 'Windows'
           run: |
-            pacman -Sy
+            # pacman -Sy # Update repo index
             pacman -Sl
-            pacman -S mingw-w64-{i686,x86_64}-gsl
+            # pacman -S mingw-w64-{i686,x86_64}-gsl # install gsl
 
         - uses: r-lib/actions/setup-r-dependencies@v1
           with:
