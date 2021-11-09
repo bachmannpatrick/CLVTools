@@ -43,10 +43,7 @@ jobs:
             RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
           run: |
             sudo apt-get update
-            sudo apt-get install -y qpdf # qpdf needed on ubuntu
-            sudo apt-get install texlive-xetex # for tinytex
-            # sudo apt-get install pandoc pandoc-citeproc # ubuntu 20.04 repo only has pandoc 2.5 and therefore requires separate pandoc-citeproc
-            sudo apt-get install ghostscript
+            sudo apt-get install -y qpdf texlive-xetex ghostscript
 
         - name: Install mac system dependencies
           if: runner.os == 'macOS'
@@ -56,31 +53,19 @@ jobs:
         - name: Install Windows system dependencies
           if: runner.os == 'Windows'
           run: |
-            # pacman -Sl
             pacman -Sy # Update repo index
             pacman -S --noconfirm mingw-w64-x86_64-gsl mingw-w64-i686-gsl mingw-w64-ucrt-x86_64-gsl
-            # pacman -S --noconfirm mingw-w64-{i686,x86_64}-gsl # install gsl
+            # pacman -S --noconfirm mingw-w64-{i686,x86_64}-gsl
 
         - uses: r-lib/actions/setup-r-dependencies@v1
           with:
             extra-packages: rcmdcheck
 
-        - name: Actually install tinytex
-          run: |
-            tinytex::install_tinytex()
-          shell: Rscript {0}
+        - uses: r-lib/actions/setup-tinytex@v1
 
         - uses: r-lib/actions/check-r-package@v1
-
-        # - name: Check on Mac / ubuntu
-        #   if: runner.os != 'Windows'
-        #   run: rcmdcheck::rcmdcheck(args = c("--no-tests", "--as-cran", "--no-manual"), error_on = "warning", check_dir = "check")
-        #   shell: Rscript {0}
-        #
-        # - name: Check on Windows, without install and vignette
-        #   if: runner.os == 'Windows'
-        #   run: rcmdcheck::rcmdcheck(args = c("--no-install", "--no-build-vignettes","--no-vignettes","--ignore-vignettes","--no-tests", "--as-cran", "--no-manual"), build_args = c("--no-build-vignettes"), error_on = "warning", check_dir = "check")
-        #   shell: Rscript {0}
+          with:
+            args: '"--no-manual", "--as-cran", "--no-tests"'
 
         - name: Upload check results
           if: failure()
