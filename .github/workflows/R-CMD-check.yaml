@@ -53,13 +53,11 @@ jobs:
           run: |
             brew install gsl openssl ghostscript
 
-        - name: Install tinytex on linux and Mac
-          if: runner.os != 'Windows'
+        - name: Install Windows system dependencies
+          if: runner.os == 'Windows'
           run: |
-            install.packages('tinytex')
-            tinytex::install_tinytex()
-          shell: Rscript {0}
-
+            pacman -Sy
+            pacman -S mingw-w64-gsl
 
         - uses: r-lib/actions/setup-r-dependencies@v1
           with:
