@@ -16,70 +16,56 @@ jobs:
       matrix:
         config:
           - {os: macOS-latest,   r: 'devel'}
-          - {os: windows-latest, r: 'devel'}
           - {os: macOS-latest,   r: 'release'}
+          - {os: windows-latest, r: 'devel'}
           - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-20.04,   r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-latest,   r: 'release'}
+          - {os: ubuntu-latest,   r: 'oldrel-1'}
     env:
-        R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-        RSPM: ${{ matrix.config.rspm }}
+        GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+        R_KEEP_PKG_SOURCE: yes
 
     steps:
         - uses: actions/checkout@v2
-        - uses: r-lib/actions/setup-r@master
-          with:
-            r-version: ${{ matrix.config.r }}
-        - name: Query dependencies
-          run: |
-            install.packages('remotes')
-            saveRDS(remotes::dev_package_deps(dependencies = TRUE), "depends.Rds", version = 2)
-          shell: Rscript {0}
 
-        - name: Cache R packages
-          if: runner.os != 'Windows'
-          uses: actions/cache@v1
-          with:
-            path: ${{ env.R_LIBS_USER }}
-            key: ${{ runner.os }}-r-${{ matrix.config.r }}-${{ hashFiles('depends.Rds') }}
-            restore-keys: ${{ runner.os }}-r-${{ matrix.config.r }}-
+        - uses: r-lib/actions/setup-pandoc@v1
 
-        - name: Install system dependencies
+        - uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
+
+        - name: Install linux system dependencies
           if: runner.os == 'Linux'
           env:
             RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
           run: |
-            while read -r cmd
-            do
-              eval sudo $cmd
-            done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
-
             sudo apt-get update
             sudo apt-get install -y qpdf # qpdf needed on ubuntu
             sudo apt-get install texlive-xetex # for tinytex
-            sudo apt-get install pandoc pandoc-citeproc # ubuntu 20.04 repo only has pandoc 2.5 and therefore requires separate pandoc-citeproc
+            # sudo apt-get install pandoc pandoc-citeproc # ubuntu 20.04 repo only has pandoc 2.5 and therefore requires separate pandoc-citeproc
             sudo apt-get install ghostscript
 
-        - name: Install tinytex for linux and Mac
+        - name: Install mac system dependencies
+          if: runner.os == 'macOS'
+          run: |
+            brew install gsl openssl ghostscript
+
+        - name: Install tinytex on linux and Mac
           if: runner.os != 'Windows'
           run: |
             install.packages('tinytex')
             tinytex::install_tinytex()
           shell: Rscript {0}
 
-        - name: Install gsl and pandoc for mac
-          if: runner.os == 'macOS'
-          run: |
-            brew install gsl openssl ghostscript
-            # pandoc to build vignette
-            brew install pandoc # rmarkdown uses --citeproc flat depending on pandoc version
 
-        - name: Install package dependencies
-          run: |
-            remotes::install_deps(dependencies = TRUE)
-            remotes::install_cran("rcmdcheck", repos = "https://cran.rstudio.com")
-            # remove because leads to NOTE. Does not exist on windows
-            if(file.exists('depends.Rds')) {file.remove('depends.Rds')}
-          shell: Rscript {0}
+        - uses: r-lib/actions/setup-r-dependencies@v1
+        with:
+          extra-packages: rcmdcheck
+
+        # - uses: r-lib/actions/check-r-package@v1
 
         - name: Check on Mac / ubuntu
           if: runner.os != 'Windows'
