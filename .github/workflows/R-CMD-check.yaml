@@ -53,17 +53,15 @@ jobs:
           run: |
             brew install gsl openssl ghostscript
 
-
-        - name: Update pacman index
-          if: runner.os == 'Windows'
-          run: |
-            pacman -Sy # Update repo index
-
         - name: Install Windows system dependencies
           if: runner.os == 'Windows'
           run: |
-            pacman -Sl
+            # pacman -Sl
+            pacman -Sy # Update repo index
+            pacman -S mingw-w64-x86_64-gsl
             # pacman -S mingw-w64-{i686,x86_64}-gsl # install gsl
+            # pacman -S mingw-w64-i686-gsl
+            # pacman -S mingw-w64-ucrt-x86_64-gsl
 
         - uses: r-lib/actions/setup-r-dependencies@v1
           with:
