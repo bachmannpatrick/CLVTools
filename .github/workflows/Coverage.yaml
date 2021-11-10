@@ -1,33 +1,22 @@
 name: coverage
 on: pull_request # default to types [opened, synchronize, reopened]
 jobs:
-  coverage-ubuntu-20-04-R-release:
-    runs-on: ubuntu-20.04
+  coverage-ubuntu-latest:
+    runs-on: ubuntu-latest
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      # to install binaries on ubuntu
-      RSPM: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
       - uses: actions/checkout@v2
-      - uses: r-lib/actions/setup-r@master
+
+      - uses: r-lib/actions/setup-r@v1
         with:
-          r-version: release
+          use-public-rspm: true
 
-      - name: Install system dependencies
-        env:
-          RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
-        run: |
-          Rscript -e "install.packages(c('remotes'))"
-          while read -r cmd
-          do
-            eval sudo $cmd
-          done < <(Rscript -e 'writeLines(remotes::system_requirements(os="ubuntu", os_release="20.04"))')
-
-      - name: Install package dependencies
-        run: |
-          remotes::install_deps(dependencies = TRUE) # installs binaries
-          # testthat and covr are part of package's Suggests and installed as package dependency.
-        shell: Rscript {0}
+      - uses: r-lib/actions/setup-r-dependencies@v1
+        with:
+          extra-packages: covr
 
       - name: Test coverage
         # run: covr::codecov() # uploads to codecov.io
