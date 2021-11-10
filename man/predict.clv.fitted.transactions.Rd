@@ -31,7 +31,7 @@
 
 \item{newdata}{A clv data object for which predictions should be made with the fitted model. If none or NULL is given, predictions are made for the data on which the model was fit.}
 
-\item{prediction.end}{Until what point in time to predict. This can be the number of periods (numeric) or a form of date/time object. See details.}
+\item{prediction.end}{{} Until what point in time to predict. This can be the number of periods (numeric) or a form of date/time object. See details.}
 
 \item{predict.spending}{Whether and how to predict spending and based on it also CLV, if possible. See details.}
 

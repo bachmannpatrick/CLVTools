@@ -39,7 +39,7 @@
 
 \item{which}{Which plot to produce, either "tracking" or "pmf". May be abbreviated but only one may be selected. Defaults to "tracking".}
 
-\item{prediction.end}{Until what point in time to predict. This can be the number of periods (numeric) or a form of date/time object. See details.}
+\item{prediction.end}{"tracking": Until what point in time to plot. This can be the number of periods (numeric) or a form of date/time object. See details.}
 
 \item{cumulative}{"tracking": Whether the cumulative expected (and actual) transactions should be plotted.}
 

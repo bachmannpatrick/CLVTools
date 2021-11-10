@@ -9,7 +9,7 @@
 \arguments{
 \item{object}{A fitted clv model for which the unconditional expectation is desired.}
 
-\item{prediction.end}{Until what point in time to predict. This can be the number of periods (numeric) or a form of date/time object. See details.}
+\item{prediction.end}{{} Until what point in time to predict. This can be the number of periods (numeric) or a form of date/time object. See details.}
 
 \item{verbose}{Show details about the running of the function.}
 

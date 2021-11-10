@@ -8,9 +8,9 @@
 #' @param plot Whether a plot should be created or only the assembled data returned.
 #'
 #' @param cumulative "tracking": Whether the cumulative actual repeat transactions should be plotted.
-# @template template_param_predictionend
-#' @param prediction.end "tracking": Until what point in time to plot. This can be the number of periods (numeric) or
-#' a form of date/time object. See details.
+#' @templateVar prefix "tracking":
+#' @templateVar plot_or_predict plot
+#' @template template_param_predictionend
 #'
 #' @param trans.bins "frequency": Vector of integers indicating the number of transactions (x axis) for which the customers should be counted.
 #' @param count.repeat.trans "frequency": Whether repeat transactions (TRUE, default) or all transactions (FALSE) should be counted.
@@ -416,6 +416,11 @@ clv.data.plot.barplot.frequency <- function(clv.data, count.repeat.trans, count.
   dt.bins[, num.transactions := factor(num.transactions, levels = levels.bins, ordered = TRUE)]
 
   if(!plot){
+    # data.table does not print when returned because it is returned directly after last [:=]
+    # " if a := is used inside a function with no DT[] before the end of the function, then the next
+    #   time DT or print(DT) is typed at the prompt, nothing will be printed. A repeated DT or print(DT)
+    #   will print. To avoid this: include a DT[] after the last := in your function."
+    dt.bins[]
     return(dt.bins)
   }else{
     #   use geom_col because geom_bar does the counting itself

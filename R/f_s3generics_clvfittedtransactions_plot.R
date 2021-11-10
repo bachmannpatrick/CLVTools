@@ -4,6 +4,8 @@
 #' @param which Which plot to produce, either "tracking" or "pmf". May be abbreviated but only one may be selected. Defaults to "tracking".
 #'
 #' @param cumulative "tracking": Whether the cumulative expected (and actual) transactions should be plotted.
+#' @templateVar prefix "tracking":
+#' @templateVar plot_or_predict plot
 #' @template template_param_predictionend
 #'
 #' @param trans.bins "pmf": Vector of positive integer numbers (>=0) indicating the number of repeat transactions (x axis) to plot.
@@ -345,7 +347,10 @@ clv.fitted.transactions.plot.barplot.pmf <- function(x, trans.bins, transactions
   pmf.x <- pmf.value  <- actual.num.customers <- expected.customers <- i.expected.customers <- NULL
   num.customers <- num.transactions <- char.num.transactions <- variable <- NULL
 
-  check_err_msg(check_user_data_integer_vector_greater0(vec=trans.bins, var.name="x"))
+  check_err_msg(check_user_data_integer_vector_greater0(vec=trans.bins, var.name="trans.bins"))
+
+  # also done in plot.clv.data and pmf() but do explicitly
+  trans.bins <- sort(unique(trans.bins))
 
   # Always work with the actuals from plot() as basis to have ordered factors
   #   Collect actual transactions
