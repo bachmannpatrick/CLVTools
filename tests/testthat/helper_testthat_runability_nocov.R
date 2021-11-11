@@ -60,7 +60,7 @@ fct.helper.create.fake.newdata.nocov <- function(data, estimation.split){
 
 
 fct.testthat.runability.nocov <- function(name.model, method, cdnow,
-                                          has.DERT, has.cor,
+                                          has.cor,
                                           start.params.model,
                                           failed.optimization.methods.expected.message){
 
@@ -75,7 +75,7 @@ fct.testthat.runability.nocov <- function(name.model, method, cdnow,
 
   param.names <- names(start.params.model)
   l.args.test.all.s3 <- list(full.names = param.names, clv.newdata.nohold = clv.newdata.nohold,
-                             clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = !has.DERT)
+                             clv.newdata.withhold = clv.newdata.withhold)
 
   # Common tests ------------------------------------------------------------------------------------------------------------
   fct.testthat.runability.clvfitted.out.of.the.box.no.hold(method = method, clv.data.noholdout = clv.data.cdnow.noholdout,
@@ -110,14 +110,12 @@ fct.testthat.runability.nocov <- function(name.model, method, cdnow,
                                                   clv.data.holdout = clv.data.cdnow.withholdout,
                                                   clv.newdata.nohold = clv.newdata.nohold,
                                                   clv.newdata.withhold = clv.newdata.withhold,
-                                                  DERT.not.implemented = !has.DERT,
                                                   names.params.model = names(start.params.model))
 
     fct.testthat.runability.common.works.with.cor.start.params(method = method,
                                                                clv.data.holdout = clv.data.cdnow.withholdout,
                                                                clv.newdata.nohold = clv.newdata.nohold,
                                                                clv.newdata.withhold = clv.newdata.withhold,
-                                                               DERT.not.implemented = !has.DERT,
                                                                names.params.model = names(start.params.model))
   }
 }

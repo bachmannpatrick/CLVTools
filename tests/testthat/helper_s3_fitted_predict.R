@@ -1,5 +1,4 @@
-fct.testthat.runability.clvfittedtransactions.predict <- function(fitted.transactions, clv.newdata.nohold, clv.newdata.withhold,
-                                                         DERT.not.implemented){
+fct.testthat.runability.clvfittedtransactions.predict <- function(fitted.transactions, clv.newdata.nohold, clv.newdata.withhold){
 
 
   # Only for models which were fit with heldout data
@@ -100,7 +99,7 @@ fct.testthat.runability.clvfittedtransactions.predict <- function(fitted.transac
     #   all columns > 0
     expect_true(dt.pred[, all(.SD >= (0 - sqrt(.Machine$double.eps)) | is.na(.SD))])
     expect_true(all(c("Id", "CET", "PAlive") %in% colnames(dt.pred)))
-    if(DERT.not.implemented){
+    if(!fct.helper.has.DERT(fitted.transactions)){
       expect_false("DERT" %in% colnames(dt.pred) | "DECT" %in% colnames(dt.pred))
     }else{
       expect_true("DERT" %in% colnames(dt.pred) | "DECT" %in% colnames(dt.pred))
@@ -124,7 +123,7 @@ fct.testthat.runability.clvfittedtransactions.predict <- function(fitted.transac
   })
 
 
-  if(!DERT.not.implemented){
+  if(fct.helper.has.DERT(fitted.transactions)){
     test_that("Works with discount factor", {
       skip_on_cran()
       expect_silent(dt.pred.1 <- predict(fitted.transactions, continuous.discount.factor = 0.001,prediction.end = 6, verbose=FALSE))

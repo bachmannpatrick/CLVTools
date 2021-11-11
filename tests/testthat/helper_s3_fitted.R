@@ -4,6 +4,15 @@ fct.helper.has.pmf <- function(clv.fitted.transactions){
            !is(clv.fitted.transactions, "clv.pnbd.dynamic.cov"))
 }
 
+
+fct.helper.has.DERT <- function(clv.fitted.transactions){
+  if(is(clv.fitted.transactions, "clv.pnbd")){
+    return(TRUE)
+  }else{
+    return(FALSE)
+  }
+}
+
 .fct.helper.s3.fitted.coef <- function(clv.fitted, full.names){
 
   expect_silent(res.coef <- coef(clv.fitted))
@@ -238,8 +247,7 @@ fct.helper.has.pmf <- function(clv.fitted.transactions){
 
 
 fct.helper.clvfittedtransactions.all.s3 <- function(clv.fitted, full.names,
-                                                    clv.newdata.nohold, clv.newdata.withhold,
-                                                    DERT.not.implemented){
+                                                    clv.newdata.nohold, clv.newdata.withhold){
 
   .fct.helper.clvfitted.all.s3(clv.fitted = clv.fitted, full.names = full.names)
 
@@ -247,7 +255,7 @@ fct.helper.clvfittedtransactions.all.s3 <- function(clv.fitted, full.names,
                                                      clv.newdata.withhold=clv.newdata.withhold)
 
   fct.testthat.runability.clvfittedtransactions.predict(fitted.transactions = clv.fitted, clv.newdata.nohold=clv.newdata.nohold,
-                                                        clv.newdata.withhold=clv.newdata.withhold, DERT.not.implemented=DERT.not.implemented)
+                                                        clv.newdata.withhold=clv.newdata.withhold)
 
   if(fct.helper.has.pmf(clv.fitted)){
     fct.testthat.runability.clvfittedtransactions.pmf(fitted.transactions=clv.fitted)
