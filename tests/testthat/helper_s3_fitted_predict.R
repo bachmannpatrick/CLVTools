@@ -99,10 +99,10 @@ fct.testthat.runability.clvfittedtransactions.predict <- function(fitted.transac
     #   all columns > 0
     expect_true(dt.pred[, all(.SD >= (0 - sqrt(.Machine$double.eps)) | is.na(.SD))])
     expect_true(all(c("Id", "CET", "PAlive") %in% colnames(dt.pred)))
-    if(!fct.helper.has.DERT(fitted.transactions)){
-      expect_false("DERT" %in% colnames(dt.pred) | "DECT" %in% colnames(dt.pred))
-    }else{
+    if(fct.helper.has.DERT(fitted.transactions)){
       expect_true("DERT" %in% colnames(dt.pred) | "DECT" %in% colnames(dt.pred))
+    }else{
+      expect_false("DERT" %in% colnames(dt.pred) | "DECT" %in% colnames(dt.pred))
     }
 
     if(clv.data.has.holdout(fitted.transactions@clv.data)){

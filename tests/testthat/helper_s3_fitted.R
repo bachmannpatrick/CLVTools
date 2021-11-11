@@ -6,7 +6,9 @@ fct.helper.has.pmf <- function(clv.fitted.transactions){
 
 
 fct.helper.has.DERT <- function(clv.fitted.transactions){
-  if(is(clv.fitted.transactions, "clv.pnbd")){
+  if(is(clv.fitted.transactions, "clv.pnbd") |
+     is(clv.fitted.transactions, "clv.pnbd.static.cov") |
+     is(clv.fitted.transactions, "clv.pnbd.dynamic.cov")){
     return(TRUE)
   }else{
     return(FALSE)
