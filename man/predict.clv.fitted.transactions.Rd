@@ -35,7 +35,8 @@
 
 \item{predict.spending}{Whether and how to predict spending and based on it also CLV, if possible. See details.}
 
-\item{continuous.discount.factor}{continuous discount factor to use to calculate \code{DERT/DECT}}
+\item{continuous.discount.factor}{The continuous discount factor used to calculate \code{DERT/DECT}, defaults
+to \code{0.1} (=10\%). See details for how to calculate it appropriately.}
 
 \item{verbose}{Show details about the running of the function.}
 
@@ -64,7 +65,8 @@ during the prediction period,
 \item "discounted expected residual transactions" (\code{DERT}) for every customer, which is the total number of
 transactions for the residual lifetime of a customer discounted to the end of the estimation period.
 In the case of time-varying covariates, instead of \code{DERT}, "discounted expected conditional transactions" (\code{DECT})
-is predicted. \code{DECT} does only cover a finite time horizon in contrast to \code{DERT}. For \code{continuous.discount.factor=0}, \code{DECT} corresponds to \code{CET}.
+is predicted. \code{DECT} does only cover a finite time horizon in contrast to \code{DERT}.
+For \code{continuous.discount.factor=0}, \code{DECT} corresponds to \code{CET}.
 }
 
 In order to derive a monetary value such as CLV, customer spending has to be considered.
@@ -108,9 +110,10 @@ the first prediction period therefore will end on, and include, Sunday 2019-01-0
 again start on Mondays and end on Sundays.
 If \code{prediction.end} indicates a timepoint on which to end, this timepoint is included in the prediction period.
 
-\code{continuous.discount.factor} allows to adjust the discount rate used to estimated the discounted expected
-transactions (\code{DERT/DECT}).
-The default value is \code{0.1} (=10\%). Note that a continuous rate needs to be provided.
+\code{continuous.discount.factor} is the continuous rate used to discount the expected residual
+transactions (\code{DERT/DECT}). An annual rate of (100 x d)\% equals a continuous rate delta = ln(1+d).
+To account for time units which are not annual, the continuous rate has to be further adjusted
+to delta=ln(1+d)/k, where k are the number of time units in a year.
 }
 \examples{
 
