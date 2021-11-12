@@ -6,9 +6,9 @@
 #' which the PMF should be calculated.
 #'
 #' @description
-#' Calculate P(X(t)=x), the probability to make exactly x repeat transactions in
-#' the interval (0, T] (the estimation period). Note that T is the observation period T.cal which
-#' differs by customer.
+#' Calculate P(X(t)=x), the probability to make exactly \code{x} repeat transactions in
+#' the interval (0, t]. This interval is in the estimation period and excludes values of \code{t=0}.
+#' Note that here \code{t} is defined as the observation period \code{T.cal} which differs by customer.
 #'
 #'
 #' @returns
