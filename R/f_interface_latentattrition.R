@@ -6,26 +6,58 @@ latentAttrition <- function(formula, data, optimx.args=list(), verbose=TRUE){
 
   cl  <- match.call(call = sys.call(), expand.dots = TRUE)
 
-  check_err_msg(.check_userinput_formula(formula))
 
-  F.formula <- as.Formula(formula)
-  model <- formula_read_model_name(F.formula)
-  l.model.args <- formula_parse_args_of_special(F.formula = F.formula, name.special = model, from.rhs = 1)
-
+  check_err_msg(check_userinput_formula(formula))
+  check_err_msg(check_userinput_formula_data(data))
+  check_err_msg(check_userinput_formula_vs_data(formula=formula, data=data))
   # make into clv.data if is not
   # if(!is(data, "clv.data")){
   #   data <- clvdata(data.transactions = data, date.format=, time.unit=,
   #                      estimation.split=, name.id=, name.date=, name.price=)
   # }
 
+  F.formula <- as.Formula(formula)
+
+  if(is(data, "clv.data.static.covariates")){
+    # Apply formula on cov data
+    mf.cov.life  <- cbind(model.frame(F.formula, data=data@data.cov.life,  lhs=0, rhs=2), data@data.cov.life[,  "Id"])
+    mf.cov.trans <- cbind(model.frame(F.formula, data=data@data.cov.trans, lhs=0, rhs=3), data@data.cov.trans[, "Id"])
+
+    # Create new cov data object
+    #   from given data, is copy-ed in SetStaticCov()
+    data <- SetStaticCovariates(clv.data = as(data, "clv.data"),
+                                data.cov.life = mf.cov.life, names.cov.life = setdiff(colnames(mf.cov.life), "Id"),
+                                data.cov.trans = mf.cov.trans, names.cov.trans = setdiff(colnames(mf.cov.trans), "Id"),
+                                name.id = "Id")
+  }
+
   # default args from explicitly passed args
   args <- list(clv.data = data, verbose=verbose, optimx.args=optimx.args)
 
-  # args passed to special functions
+  # add model call args
+  model <- formula_read_model_name(F.formula)
+  l.model.args <- formula_parse_args_of_special(F.formula = F.formula, name.special = model, from.rhs = 1)
   args <- modifyList(args, l.model.args, keep.null = TRUE)
 
+  # args passed to model special functions
+  #   if any given
+  if(is(data, "clv.data.static.covariates") & length(F.formula)[2] == 4){
+    l.args.reg <- formula_parse_args_of_special(F.formula = F.formula, name.special = "regularization", from.rhs = 4)
+    args <- modifyList(args, l.args.reg, keep.null = TRUE)
+
+    names.constr <- formula_readout_special_arguments(F.formula = F.formula, name.special = "constraint", from.rhs = 4,
+                                                       params.as.chars.only = TRUE)
+    if(length(names.constr)){
+      args <- modifyList(args, list(names.cov.constr=unname(names.constr)), keep.null = TRUE)
+    }
+  }
+
+  # Fit model
   obj <- do.call(what = model, args)
+
+  # Replace call with call to latentAttrition()
   obj@call <- cl
+
   return(obj)
 }
 
@@ -33,7 +65,7 @@ latentAttrition <- function(formula, data, optimx.args=list(), verbose=TRUE){
 #' @importFrom Formula as.Formula is.Formula
 #' @importFrom stats terms
 #' @importFrom methods is
-.check_userinput_formula <- function(formula){
+check_userinput_formula <- function(formula){
   name.specials.model <- c("pnbd", "bgnbd", "ggomnbd")
   err.msg <- c()
 
@@ -75,6 +107,54 @@ latentAttrition <- function(formula, data, optimx.args=list(), verbose=TRUE){
   return(err.msg)
 }
 
+check_userinput_formula_data <- function(data){
+  if(!is(data, "clv.data")){
+    return("Please provide an object of class clv.data for parameter data!")
+  }else{
+    return(c())
+  }
+}
+
+check_userinput_formula_vs_data <- function(formula, data){
+  err.msg <- c()
+
+  # formula is verified to be basic correct
+  F.formula <- as.Formula(formula)
+  terms.rhs <- terms(formula(F.formula, lhs=0, rhs=1))
+
+  # nocov data: only 1 RHS
+  #   excludes static and dyn cov
+  if(is(data, "clv.data") && !is(data, "clv.data.static.covariates")){
+    if(length(F.formula)[2] != 1){
+      err.msg <- c(err.msg, "The formula may only contain 1 RHS part for data without covariates!")
+    }
+  }
+
+  # cov data: requires at least 3 RHS (model, trans, life), max 4
+  #   includes static and dyn covs
+  if(is(data, "clv.data.static.covariates")){
+    if(length(F.formula)[2] < 3){
+      err.msg <- c(err.msg, "The formula needs to specify the model as well as the transaction and the lifetime covariates for data with covariates!")
+    }
+    if(length(F.formula)[2] > 4){
+      err.msg <- c(err.msg, "The formula may consist of a maximum of 4 parts!")
+    }
+
+    # verify the specified cov data is in clv.data
+    #   in the respective cov
+    # ** data in terms required to complete "." in formula??
+    vars.life  <- all.vars(terms(F.formula, lhs=0, rhs=2))
+    vars.trans <- all.vars(terms(F.formula, lhs=0, rhs=3))
+
+    if(!all(vars.life %in% data@names.cov.data.life)){
+      err.msg <- c(err.msg, "Not all lifetime covariates specified in the formula could be found in the data!")
+    }
+    if(!all(vars.trans %in% data@names.cov.data.trans)){
+      err.msg <- c(err.msg, "Not all transaction covariates specified in the formula could be found in the data!")
+    }
+  }
+  return(err.msg)
+}
 
 # only works if special exists once
 formula_parse_args_of_special <- function(F.formula, name.special, from.rhs){

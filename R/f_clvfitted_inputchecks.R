@@ -254,7 +254,7 @@ check_user_data_namesconstr <- function(clv.fitted, names.cov.constr){
     return(err.msg) #return("Covariate names may not be NULL")
 
   if(!is.character(names.cov.constr))
-    return("Covariate names for Constraint covariates must be an unnamed character vector!")
+    return("Covariate names for constraint covariates must be an unnamed character vector!")
 
   if(!is.null(names(names.cov.constr)))
     err.msg <- c(err.msg, "Covariate names for constraint covariates should be provided as unnamed vector!")
