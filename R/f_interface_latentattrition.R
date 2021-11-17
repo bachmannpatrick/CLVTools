@@ -43,13 +43,18 @@ latentAttrition <- function(formula, data, optimx.args=list(), verbose=TRUE){
   #   if any given
   if(is(data, "clv.data.static.covariates") & length(F.formula)[2] == 4){
     l.args.reg <- formula_parse_args_of_special(F.formula = F.formula, name.special = "regularization", from.rhs = 4)
-    args <- modifyList(args, l.args.reg, keep.null = TRUE)
+    if(length(l.args.reg)){
+      args <- modifyList(args, list(reg.lambdas = c(life=l.args.reg[["life"]], trans=l.args.reg[["trans"]])), keep.null = TRUE)
+    }
 
+    # read char vec of variables to constrain
+    #   do not need to concat multiple separate constraint() if params.as.chars.only=TRUE
     names.constr <- formula_readout_special_arguments(F.formula = F.formula, name.special = "constraint", from.rhs = 4,
                                                        params.as.chars.only = TRUE)
     if(length(names.constr)){
       args <- modifyList(args, list(names.cov.constr=unname(names.constr)), keep.null = TRUE)
     }
+
   }
 
   # Fit model
@@ -152,6 +157,47 @@ check_userinput_formula_vs_data <- function(formula, data){
     if(!all(vars.trans %in% data@names.cov.data.trans)){
       err.msg <- c(err.msg, "Not all transaction covariates specified in the formula could be found in the data!")
     }
+
+    # If has RHS4, may only be allowed ones
+    #   "regularization" or "constraint"
+    if(length(F.formula)[2] == 4){
+      # Check that has only allowed specials and nothing else allowed
+      F.terms.rhs4 <- terms(F.formula, lhs=0, rhs=4, specials=c("regularization", "constraint"))
+      num.rhs4.specials <- sum(sapply(attr(F.terms.rhs4, "specials"), length))
+
+      if(length(labels(F.terms.rhs4)) != num.rhs4.specials)
+        err.msg <- c(err.msg, "Please choose only from the following for the fourth RHS: regularization(), constraint().")
+
+      # if has regularization(), check that only allowed args and are parsable
+      if(!is.null(attr(F.terms.rhs4, "specials")[["regularization"]])){
+        l.reg.args <- formula_parse_args_of_special(F.formula=F.formula, name.special="regularization", from.rhs=4)
+        names.reg.args <- names(l.reg.args)
+
+        if(!setequal(names.reg.args, c("life", "trans"))){
+          err.msg <- c(err.msg, "Please give specify arguments life and trans in regularization()! (ie regularization(trans=5, life=7) )")
+        }
+        # and each only given once
+        if(length(names.reg.args) != length(unique(names.reg.args))){
+          err.msg <- c(err.msg, "Please specify every argument in regularization() exactly once!")
+        }
+        if(any(sapply(l.reg.args, is, "error")) | !all(sapply(l.reg.args, is.numeric))){
+          err.msg <- c(err.msg, "Please specify every argument in regularization() as number!")
+        }
+      }
+
+      # if has constraint(), check that only names (not named arguments) and parsable
+      if(!is.null(attr(F.terms.rhs4, "specials")[["constraint"]])){
+        l.constr.args <- formula_readout_special_arguments(F.formula = F.formula, name.special="constraint",
+                                                           from.rhs=4, params.as.chars.only=FALSE)
+        # concat args in multiple constraint() specials
+        l.constr.args <- do.call(c, l.constr.args)
+
+        if(any(names(l.constr.args) != "")){
+          err.msg <- c(err.msg, "Please provide only unnamed arguments to constraint()!")
+        }
+      }
+
+    }
   }
   return(err.msg)
 }
@@ -229,13 +275,13 @@ formula_readout_special_arguments <- function(F.formula, name.special, from.rhs,
     names.special <- lapply(names.special, as.list)
     # here: nested list of arg-lists
     names.special <- lapply(names.special, lapply, deparse) # make char representation
-    # replace the "", "NULL" as actuall NULLs
+    # replace the "", "NULL" as actual NULLs
     names.special <- lapply(names.special, lapply, function(char.arg){if(char.arg%in%c("NULL", "", "NA")) NULL else char.arg})
     # Name unnamed elements (=args) in sublists after the elements
-    names.special <- lapply(names.special, function(subl){
-      unnamed.ind <- which(names(subl)=="")
-      names(subl)[unnamed.ind] <- subl[unnamed.ind]
-      return(subl)})
+    # names.special <- lapply(names.special, function(subl){
+    #   unnamed.ind <- which(names(subl)=="")
+    #   names(subl)[unnamed.ind] <- subl[unnamed.ind]
+    #   return(subl)})
     # Does not need be unique per list, will not mixup entries if regressors are named same as g/iiv
     #   rather it is caught that they may not be twice
   }
