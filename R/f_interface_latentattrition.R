@@ -131,7 +131,7 @@ check_userinput_formula_vs_data <- function(formula, data){
   #   excludes static and dyn cov
   if(is(data, "clv.data") && !is(data, "clv.data.static.covariates")){
     if(length(F.formula)[2] != 1){
-      err.msg <- c(err.msg, "The formula may only contain 1 RHS part for data without covariates!")
+      err.msg <- c(err.msg, "The formula may only contain 1 part specifiying the model for data without covariates!")
     }
   }
 
@@ -168,8 +168,12 @@ check_userinput_formula_vs_data <- function(formula, data){
       if(length(labels(F.terms.rhs4)) != num.rhs4.specials)
         err.msg <- c(err.msg, "Please choose only from the following for the fourth RHS: regularization(), constraint().")
 
-      # if has regularization(), check that only allowed args and are parsable
+      # if has regularization(), check that only once, with allowed args and are parsable
       if(!is.null(attr(F.terms.rhs4, "specials")[["regularization"]])){
+
+        if(length(attr(F.terms.rhs4, "specials")[["regularization"]]) > 1)
+          err.msg <- c(err.msg, "Please specify regularization() only once!")
+
         l.reg.args <- formula_parse_args_of_special(F.formula=F.formula, name.special="regularization", from.rhs=4)
         names.reg.args <- names(l.reg.args)
 
