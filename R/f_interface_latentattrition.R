@@ -20,15 +20,27 @@ latentAttrition <- function(formula, data, optimx.args=list(), verbose=TRUE){
 
   if(is(data, "clv.data.static.covariates")){
     # Apply formula on cov data
-    mf.cov.life  <- cbind(model.frame(F.formula, data=data@data.cov.life,  lhs=0, rhs=2), data@data.cov.life[,  "Id"])
-    mf.cov.trans <- cbind(model.frame(F.formula, data=data@data.cov.trans, lhs=0, rhs=3), data@data.cov.trans[, "Id"])
+    mf.cov.life  <- model.frame(F.formula, data=data@data.cov.life,  lhs=0, rhs=2)
+    mf.cov.trans <- model.frame(F.formula, data=data@data.cov.trans, lhs=0, rhs=3)
 
     # Create new cov data object
-    #   from given data, is copy-ed in SetStaticCov()
-    data <- SetStaticCovariates(clv.data = as(data, "clv.data"),
-                                data.cov.life = mf.cov.life, names.cov.life = setdiff(colnames(mf.cov.life), "Id"),
-                                data.cov.trans = mf.cov.trans, names.cov.trans = setdiff(colnames(mf.cov.trans), "Id"),
-                                name.id = "Id")
+    #   from given data, is copy-ed in Set*Cov()
+    if(is(data, "clv.data.dynamic.covariates")){
+      cov.id.vars <- c("Id", "Cov.Date")
+      mf.cov.life  <- cbind(mf.cov.life,  data@data.cov.life[,  .SD, .SDcols=cov.id.vars])
+      mf.cov.trans <- cbind(mf.cov.trans, data@data.cov.trans[, .SD, .SDcols=cov.id.vars])
+      data <- SetDynamicCovariates(clv.data = as(data, "clv.data"),
+                                   data.cov.life = mf.cov.life, names.cov.life = setdiff(colnames(mf.cov.life), cov.id.vars),
+                                   data.cov.trans = mf.cov.trans, names.cov.trans = setdiff(colnames(mf.cov.trans), cov.id.vars),
+                                   name.id = "Id", name.date = "Cov.Date")
+    }else{
+      mf.cov.life  <- cbind(mf.cov.life,  data@data.cov.life[,  "Id"])
+      mf.cov.trans <- cbind(mf.cov.trans, data@data.cov.trans[, "Id"])
+      data <- SetStaticCovariates(clv.data = as(data, "clv.data"),
+                                  data.cov.life  = mf.cov.life,  names.cov.life = setdiff(colnames(mf.cov.life), "Id"),
+                                  data.cov.trans = mf.cov.trans, names.cov.trans = setdiff(colnames(mf.cov.trans), "Id"),
+                                  name.id = "Id")
+    }
   }
 
   # default args from explicitly passed args
