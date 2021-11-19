@@ -158,16 +158,19 @@ check_userinput_formula_vs_data <- function(formula, data){
     }
 
     # verify the specified cov data is in clv.data
-    #   in the respective cov
-    # ** data in terms required to complete "." in formula??
-    vars.life  <- all.vars(terms(F.formula, lhs=0, rhs=2))
-    vars.trans <- all.vars(terms(F.formula, lhs=0, rhs=3))
-
-    if(!all(vars.life %in% data@names.cov.data.life)){
-      err.msg <- c(err.msg, "Not all lifetime covariates specified in the formula could be found in the data!")
+    #   "." is by definition always in the data but remove from names
+    vars.life  <- setdiff(all.vars(formula(F.formula, lhs=0, rhs=2)), ".")
+    vars.trans <- setdiff(all.vars(formula(F.formula, lhs=0, rhs=3)), ".")
+    # may be character(0) if only "."
+    if(length(vars.life)){
+      if(!all(vars.life %in% data@names.cov.data.life)){
+        err.msg <- c(err.msg, "Not all lifetime covariates specified in the formula could be found in the data!")
+      }
     }
-    if(!all(vars.trans %in% data@names.cov.data.trans)){
-      err.msg <- c(err.msg, "Not all transaction covariates specified in the formula could be found in the data!")
+    if(length(vars.trans)){
+      if(!all(vars.trans %in% data@names.cov.data.trans)){
+        err.msg <- c(err.msg, "Not all transaction covariates specified in the formula could be found in the data!")
+      }
     }
 
     # If has RHS4, may only be allowed ones
