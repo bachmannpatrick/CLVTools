@@ -104,6 +104,9 @@ check_userinput_formula <- function(formula){
   if(length(err.msg)>0)
     return(err.msg)
 
+  if("." %in% all.vars(formula(F.formula, rhs=1)))
+    return("Please choose exactly one of the following models as the first RHS: pnbd(), bgnbd(), ggomnbd().")
+
   # Check that has exactly one model special and ..
   F.terms.rhs1 <- terms(F.formula, lhs=0, rhs=1, specials=name.specials.model)
   num.model.specials <- sum(sapply(attr(F.terms.rhs1, "specials"), length))
