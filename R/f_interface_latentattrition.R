@@ -128,8 +128,11 @@ check_userinput_formula <- function(formula){
 }
 
 check_userinput_formula_data <- function(data){
+  if(missing(data))
+    return("Please provide an object of class clv.data for parameter 'data'!")
+
   if(!is(data, "clv.data")){
-    return("Please provide an object of class clv.data for parameter data!")
+    return("Please provide an object of class clv.data for parameter 'data'!")
   }else{
     return(c())
   }
@@ -180,45 +183,49 @@ check_userinput_formula_vs_data <- function(formula, data){
     #   "regularization" or "constraint"
     if(length(F.formula)[2] == 4){
       # Check that has only allowed specials and nothing else allowed
-      F.terms.rhs4 <- terms(F.formula, lhs=0, rhs=4, specials=c("regularization", "constraint"))
-      num.rhs4.specials <- sum(sapply(attr(F.terms.rhs4, "specials"), length))
-
-      if(length(labels(F.terms.rhs4)) != num.rhs4.specials)
+      if("." %in% all.vars(formula(F.formula, lhs=0, rhs=4))){
+        # no suitable data argument to terms() as required to resolve "."
         err.msg <- c(err.msg, "Please choose only from the following for the fourth RHS: regularization(), constraint().")
+      }else{
+        F.terms.rhs4 <- terms(F.formula, lhs=0, rhs=4, specials=c("regularization", "constraint"))
+        num.rhs4.specials <- sum(sapply(attr(F.terms.rhs4, "specials"), length))
 
-      # if has regularization(), check that only once, with allowed args and are parsable
-      if(!is.null(attr(F.terms.rhs4, "specials")[["regularization"]])){
+        if(length(labels(F.terms.rhs4)) != num.rhs4.specials)
+          err.msg <- c(err.msg, "Please choose only from the following for the fourth RHS: regularization(), constraint().")
 
-        if(length(attr(F.terms.rhs4, "specials")[["regularization"]]) > 1)
-          err.msg <- c(err.msg, "Please specify regularization() only once!")
+        # if has regularization(), check that only once, with allowed args and are parsable
+        if(!is.null(attr(F.terms.rhs4, "specials")[["regularization"]])){
 
-        l.reg.args <- formula_parse_args_of_special(F.formula=F.formula, name.special="regularization", from.rhs=4)
-        names.reg.args <- names(l.reg.args)
+          if(length(attr(F.terms.rhs4, "specials")[["regularization"]]) > 1)
+            err.msg <- c(err.msg, "Please specify regularization() only once!")
 
-        if(!setequal(names.reg.args, c("life", "trans"))){
-          err.msg <- c(err.msg, "Please give specify arguments life and trans in regularization()! (ie regularization(trans=5, life=7) )")
+          l.reg.args <- formula_parse_args_of_special(F.formula=F.formula, name.special="regularization", from.rhs=4)
+          names.reg.args <- names(l.reg.args)
+
+          if(!setequal(names.reg.args, c("life", "trans"))){
+            err.msg <- c(err.msg, "Please give specify arguments life and trans in regularization()! (ie regularization(trans=5, life=7) )")
+          }
+          # and each only given once
+          if(length(names.reg.args) != length(unique(names.reg.args))){
+            err.msg <- c(err.msg, "Please specify every argument in regularization() exactly once!")
+          }
+          if(any(sapply(l.reg.args, is, "error")) | !all(sapply(l.reg.args, is.numeric))){
+            err.msg <- c(err.msg, "Please specify every argument in regularization() as number!")
+          }
         }
-        # and each only given once
-        if(length(names.reg.args) != length(unique(names.reg.args))){
-          err.msg <- c(err.msg, "Please specify every argument in regularization() exactly once!")
-        }
-        if(any(sapply(l.reg.args, is, "error")) | !all(sapply(l.reg.args, is.numeric))){
-          err.msg <- c(err.msg, "Please specify every argument in regularization() as number!")
+
+        # if has constraint(), check that only names (not named arguments) and parsable
+        if(!is.null(attr(F.terms.rhs4, "specials")[["constraint"]])){
+          l.constr.args <- formula_readout_special_arguments(F.formula = F.formula, name.special="constraint",
+                                                             from.rhs=4, params.as.chars.only=FALSE)
+          # concat args in multiple constraint() specials
+          l.constr.args <- do.call(c, l.constr.args)
+
+          if(any(names(l.constr.args) != "")){
+            err.msg <- c(err.msg, "Please provide only unnamed arguments to constraint()!")
+          }
         }
       }
-
-      # if has constraint(), check that only names (not named arguments) and parsable
-      if(!is.null(attr(F.terms.rhs4, "specials")[["constraint"]])){
-        l.constr.args <- formula_readout_special_arguments(F.formula = F.formula, name.special="constraint",
-                                                           from.rhs=4, params.as.chars.only=FALSE)
-        # concat args in multiple constraint() specials
-        l.constr.args <- do.call(c, l.constr.args)
-
-        if(any(names(l.constr.args) != "")){
-          err.msg <- c(err.msg, "Please provide only unnamed arguments to constraint()!")
-        }
-      }
-
     }
   }
   return(err.msg)

@@ -1,8 +1,17 @@
 skip_on_cran()
 data("cdnow")
+data("apparelTrans")
+data("apparelStaticCov")
 
 context("Inputchecks - latentAttrition - nocov")
 clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+
+test_that("Fails if data is not clv.data", {
+  expect_error(latentAttrition(~pnbd(), data=), "clv.data")
+  expect_error(latentAttrition(~pnbd(), data=NULL), "clv.data")
+  expect_error(latentAttrition(~pnbd(), data=123), "clv.data")
+  expect_error(latentAttrition(~pnbd(), data=cdnow), "clv.data")
+})
 
 test_that("Fails if no model in RHS1", {
   skip_on_cran()
@@ -63,4 +72,62 @@ test_that("Fails if non-parsable input to model", {
   expect_error(latentAttrition(~pnbd(start.params.model = abc), data = clv.cdnow), "parse")
 })
 
-# context("Inputchecks - latentAttrition - static cov")
+
+
+context("Inputchecks - latentAttrition - static cov")
+
+clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = apparelTrans, data.apparelStaticCov = apparelStaticCov,
+                                                               estimation.split = NULL)
+
+# . RHS4 -----------------------------------------------------------------------------------------------
+test_that("Fails if RHS 4 has wrong content", {
+  # expect_error(latentAttrition(~pnbd()|.|.|, clv.apparel.cov), "life and trans")
+  expect_error(latentAttrition(~pnbd()|.|.|., clv.apparel.cov), "from the following")
+  expect_error(latentAttrition(~pnbd()|.|.|reg(life=10, trans=10), clv.apparel.cov), "from the following")
+  expect_error(latentAttrition(~pnbd()|.|.|constr(abc), clv.apparel.cov), "from the following")
+})
+
+
+# . regularization() ------------------------------------------------------------------------------------
+test_that("Fails if reguarlization does not have args trans and life", {
+  expect_error(latentAttrition(~pnbd()|.|.|regularization(), clv.apparel.cov), "life and trans")
+  expect_error(latentAttrition(~pnbd()|.|.|regularization(life=10), clv.apparel.cov), "life and trans")
+  expect_error(latentAttrition(~pnbd()|.|.|regularization(trans=10), clv.apparel.cov), "life and trans")
+  expect_error(latentAttrition(~pnbd()|.|.|regularization(live=10, trans=10), clv.apparel.cov), "life and trans")
+  expect_error(latentAttrition(~pnbd()|.|.|regularization(life=10, trans=10, live=10), clv.apparel.cov), "life and trans")
+})
+
+test_that("Fails if reguarlization does not have numeric args", {
+  expect_error(latentAttrition(~pnbd()|.|.|regularization(life=, trans=10), clv.apparel.cov), "as number")
+  expect_error(latentAttrition(~pnbd()|.|.|regularization(life=10, trans=), clv.apparel.cov), "as number")
+  expect_error(latentAttrition(~pnbd()|.|.|regularization(life=10, trans=abc), clv.apparel.cov), "as number")
+  expect_error(latentAttrition(~pnbd()|.|.|regularization(life=abc, trans=10), clv.apparel.cov), "as number")
+  expect_error(latentAttrition(~pnbd()|.|.|regularization(life=abc, trans=abc), clv.apparel.cov), "as number")
+  expect_error(latentAttrition(~pnbd()|.|.|regularization(life=TRUE, trans=TRUE), clv.apparel.cov), "as number")
+  expect_error(latentAttrition(~pnbd()|.|.|regularization(life=NULL, trans=NULL), clv.apparel.cov), "as number")
+})
+
+test_that("Fails if multiple regularization", {
+  expect_error(latentAttrition(~pnbd()|.|.|regularization(life=10, trans=10)+regularization(trans=10), clv.apparel.cov), "only once")
+  expect_error(latentAttrition(~pnbd()|.|.|regularization(life=10, trans=10)+regularization(life=10), clv.apparel.cov), "only once")
+  expect_error(latentAttrition(~pnbd()|.|.|regularization(life=10, trans=10)+regularization(life=10, trans=8), clv.apparel.cov), "only once")
+})
+
+
+# . constraint() ------------------------------------------------------------------------------------
+test_that("Fails if constraint() does not have valid content", {
+  # **TODO: allow or not??
+  # expect_error(latentAttrition(~pnbd()|.|.|constraint(), clv.apparel.cov), "")
+  # expect_error(latentAttrition(~pnbd()|.|.|constraint(.), clv.apparel.cov), "")
+  expect_error(latentAttrition(~pnbd()|.|.|constraint(NULL), clv.apparel.cov), "could not be found")
+  expect_error(latentAttrition(~pnbd()|.|.|constraint(123), clv.apparel.cov), "could not be found")
+  expect_error(latentAttrition(~pnbd()|.|.|constraint(abc), clv.apparel.cov), "could not be found")
+  expect_error(latentAttrition(~pnbd()|.|.|constraint(Gender, abc), clv.apparel.cov), "could not be found")
+  expect_error(latentAttrition(~pnbd()|.|.|constraint(Gender)+constraint(abc), clv.apparel.cov), "could not be found")
+  expect_error(latentAttrition(~pnbd()|.|.|constraint(abc)+constraint(Gender), clv.apparel.cov), "could not be found")
+  expect_error(latentAttrition(~pnbd()|.|.|constraint(abc)+constraint(xzy), clv.apparel.cov), "could not be found")
+  expect_error(latentAttrition(~pnbd()|.|.|constraint(Gender)+constraint(xzy), clv.apparel.cov), "could not be found")
+})
+
+
+
