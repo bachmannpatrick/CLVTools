@@ -63,9 +63,10 @@ latentAttrition <- function(formula, data, optimx.args=list(), verbose=TRUE){
     #   do not need to concat multiple separate constraint() if params.as.chars.only=TRUE
     names.constr <- formula_readout_special_arguments(F.formula = F.formula, name.special = "constraint", from.rhs = 4,
                                                        params.as.chars.only = TRUE)
-    if(length(names.constr)){
-      args <- modifyList(args, list(names.cov.constr=unname(names.constr)), keep.null = TRUE)
-    }
+
+    # if(length(names.constr)){
+    args <- modifyList(args, list(names.cov.constr=unname(names.constr)), keep.null = TRUE)
+    # }
 
   }
 
@@ -80,7 +81,7 @@ latentAttrition <- function(formula, data, optimx.args=list(), verbose=TRUE){
 
 
 #' @importFrom Formula as.Formula is.Formula
-#' @importFrom stats terms
+#' @importFrom stats terms formula
 #' @importFrom methods is
 check_userinput_formula <- function(formula){
   name.specials.model <- c("pnbd", "bgnbd", "ggomnbd")
@@ -138,6 +139,8 @@ check_userinput_formula_data <- function(data){
   }
 }
 
+#' @importFrom Formula as.Formula
+#' @importFrom stats terms
 check_userinput_formula_vs_data <- function(formula, data){
   err.msg <- c()
 
@@ -158,6 +161,7 @@ check_userinput_formula_vs_data <- function(formula, data){
   if(is(data, "clv.data.static.covariates")){
     if(length(F.formula)[2] < 3){
       err.msg <- c(err.msg, "The formula needs to specify the model as well as the transaction and the lifetime covariates for data with covariates!")
+      return(err.msg)
     }
     if(length(F.formula)[2] > 4){
       err.msg <- c(err.msg, "The formula may consist of a maximum of 4 parts!")
@@ -252,7 +256,7 @@ formula_parse_args_of_special <- function(F.formula, name.special, from.rhs){
 
 #' @importFrom stats terms formula
 formula_read_model_name <- function(F.formula){
-  F.terms.rhs1 <- terms(formula(F.formula, lhs=0, rhs=1), specials=c("pnbd", "bgnbd", "ggomnbd"))
+  F.terms.rhs1 <- terms(formula(F.formula, lhs=0, rhs=1), specials=c("pnbd", "bgnbd", "ggomnbd", "gg"))
   return(names(unlist(attr(F.terms.rhs1, "specials"))))
 }
 
