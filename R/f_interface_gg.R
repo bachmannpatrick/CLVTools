@@ -48,7 +48,7 @@ NULL
 
 
 #' @exportMethod gg
-setGeneric("gg", def = function(clv.data, start.params.model=c(), optimx.args=list(), remove.first.transaction = TRUE, verbose=TRUE, ...)
+setGeneric("gg", def = function(clv.data, start.params.model=c(), remove.first.transaction = TRUE, optimx.args=list(), verbose=TRUE, ...)
   standardGeneric("gg"))
 
 
@@ -57,8 +57,8 @@ setGeneric("gg", def = function(clv.data, start.params.model=c(), optimx.args=li
 #' @rdname gg
 setMethod("gg", signature = signature(clv.data="clv.data"), definition = function(clv.data,
                                                                                   start.params.model=c(),
-                                                                                  optimx.args=list(),
                                                                                   remove.first.transaction = TRUE,
+                                                                                  optimx.args=list(),
                                                                                   verbose=TRUE,
                                                                                   ...){
 

@@ -122,6 +122,7 @@ Collate:
     'f_interface_predict_clvfittedtransactions.R'
     'f_interface_setdynamiccovariates.R'
     'f_interface_setstaticcovariates.R'
+    'f_interface_spending.R'
     'f_s3generics_clvdata.R'
     'f_s3generics_clvdata_dynamiccov.R'
     'f_s3generics_clvdata_plot.R'
