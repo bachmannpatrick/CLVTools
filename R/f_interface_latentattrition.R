@@ -6,8 +6,7 @@ latentAttrition <- function(formula, data, optimx.args=list(), verbose=TRUE){
 
   cl  <- match.call(call = sys.call(), expand.dots = TRUE)
 
-
-  check_err_msg(check_userinput_formula(formula))
+  check_err_msg(check_userinput_formula(formula, name.specials.model = c("pnbd", "bgnbd", "ggomnbd")))
   check_err_msg(check_userinput_formula_data(data))
   check_err_msg(check_userinput_formula_vs_data(formula=formula, data=data))
   # make into clv.data if is not
@@ -83,8 +82,7 @@ latentAttrition <- function(formula, data, optimx.args=list(), verbose=TRUE){
 #' @importFrom Formula as.Formula is.Formula
 #' @importFrom stats terms formula
 #' @importFrom methods is
-check_userinput_formula <- function(formula){
-  name.specials.model <- c("pnbd", "bgnbd", "ggomnbd")
+check_userinput_formula <- function(formula, name.specials.model){
   err.msg <- c()
 
   if(missing(formula))
@@ -97,7 +95,7 @@ check_userinput_formula <- function(formula){
 
   F.formula <- as.Formula(formula)
 
-  # Check that formula has 1 LHS
+  # Check that formula has 0 LHS
   if(length(F.formula)[1] != 0)
     err.msg <- c(err.msg, "Please specify no dependent variable.")
 
@@ -106,7 +104,8 @@ check_userinput_formula <- function(formula){
     return(err.msg)
 
   if("." %in% all.vars(formula(F.formula, rhs=1)))
-    return("Please choose exactly one of the following models as the first RHS: pnbd(), bgnbd(), ggomnbd().")
+    return(paste0("Please choose exactly one of the following models as the first RHS: ",
+                  paste0(paste0(name.specials.model, "()"), collapse = ", "),"."))
 
   # Check that has exactly one model special and ..
   F.terms.rhs1 <- terms(F.formula, lhs=0, rhs=1, specials=name.specials.model)
@@ -114,7 +113,8 @@ check_userinput_formula <- function(formula){
 
   # ... no other special function than model in RHS1
   if(num.model.specials !=1 || length(labels(F.terms.rhs1)) != 1)
-    err.msg <- c(err.msg, "Please choose exactly one of the following models as the first RHS: pnbd(), bgnbd(), ggomnbd().")
+    err.msg <- c(err.msg, paste0("Please choose exactly one of the following models as the first RHS: ",
+                                 paste0(paste0(name.specials.model, "()"), collapse = ", "),"."))
 
   if(length(err.msg)>0)
     return(err.msg)

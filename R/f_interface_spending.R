@@ -4,6 +4,11 @@
 spending <- function(formula, data, optimx.args=list(), verbose=TRUE){
   cl  <- match.call(call = sys.call(), expand.dots = TRUE)
 
+  check_err_msg(check_userinput_formula(formula, name.specials.model = c("gg")))
+  check_err_msg(check_userinput_formula_clvdata/data(data))
+
+  # check_err_msg(check_userinput_spending/latentattrition_formula_vs_data())
+
   F.formula <- as.Formula(formula)
 
   # default args from explicitly passed args
