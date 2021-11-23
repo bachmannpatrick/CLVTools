@@ -58,6 +58,9 @@ test_that("Correct transformations applied", {
   expect_true(all(colnames(p.cov@clv.data@data.cov.life) == c("Id", "I.Gender...1.")))
   expect_true(all(colnames(p.cov@clv.data@data.cov.trans) == c("Id", "log.Gender...2.")))
 
+  # does not return a dyncov object
+  expect_true(is(p.cov@clv.data, "clv.data.static.covariates") & !is(p.cov@clv.data, "clv.data.dynamic.covariates"))
+
   expect_true(all(p.cov@clv.data@data.cov.life[, "I.Gender...1."] == clv.apparel.cov@data.cov.life[, "Gender"]+1))
   expect_true(all(p.cov@clv.data@data.cov.trans[, "log.Gender...2."] == log(clv.apparel.cov@data.cov.trans[, "Gender"]+2)))
 })

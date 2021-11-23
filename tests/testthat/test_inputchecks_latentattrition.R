@@ -3,9 +3,11 @@ data("cdnow")
 data("apparelTrans")
 data("apparelStaticCov")
 
+# nocov -----------------------------------------------------------------------------------------------
 context("Inputchecks - latentAttrition - nocov")
 clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
 
+# .data -----------------------------------------------------------------------------------------------
 test_that("Fails if data is not clv.data", {
   expect_error(latentAttrition(~pnbd(), data=), "clv.data")
   expect_error(latentAttrition(~pnbd(), data=NULL), "clv.data")
@@ -13,6 +15,7 @@ test_that("Fails if data is not clv.data", {
   expect_error(latentAttrition(~pnbd(), data=cdnow), "clv.data")
 })
 
+# .RHS1 model -----------------------------------------------------------------------------------------------
 test_that("Fails if no model in RHS1", {
   skip_on_cran()
   expect_error(latentAttrition(~., data = clv.cdnow), "of the following models")
@@ -73,11 +76,16 @@ test_that("Fails if non-parsable input to model", {
 })
 
 
-
+# static cov -----------------------------------------------------------------------------------------------
 context("Inputchecks - latentAttrition - static cov")
 
 clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = apparelTrans, data.apparelStaticCov = apparelStaticCov,
                                                                estimation.split = NULL)
+
+# . RHS2/3 ---------------------------------------------------------------------------------------------
+test_that("Fails if no RHS2/3",{
+  expect_error()
+})
 
 # . RHS4 -----------------------------------------------------------------------------------------------
 test_that("Fails if RHS 4 has wrong content", {

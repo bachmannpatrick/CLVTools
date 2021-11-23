@@ -257,15 +257,18 @@ check_user_data_namesconstr <- function(clv.fitted, names.cov.constr){
     return("Covariate names for constraint covariates must be an unnamed character vector!")
 
   if(!is.null(names(names.cov.constr)))
-    err.msg <- c(err.msg, "Covariate names for constraint covariates should be provided as unnamed vector!")
+    err.msg <- c(err.msg, "Covariate names for constraint covariates have to be provided as unnamed vector!")
+
+  if(length(names.cov.constr) == 0)
+    err.msg <- c(err.msg, "The names for constraint covariates may not be empty!")
 
   if(anyNA(names.cov.constr))
-    err.msg <- c(err.msg, "There may be no NAs in the covariate names for Constraint covariates!")
+    err.msg <- c(err.msg, "There may be no NAs in the covariate names for constraint covariates!")
 
   # Check that every name is in both data
   for(n in names.cov.constr){
     if(!(n %in% colnames(clv.fitted@clv.data@data.cov.life)))
-      err.msg <- c(err.msg, paste0("The Constraint covariate named ", n, " could not be found in the Lifetime covariate data!"))
+      err.msg <- c(err.msg, paste0("The constraint covariate named ", n, " could not be found in the Lifetime covariate data!"))
 
     if(!(n %in% colnames(clv.fitted@clv.data@data.cov.trans)))
       err.msg <- c(err.msg, paste0("The Constraint covariate named ", n, " could not be found in the Transaction covariate data!"))

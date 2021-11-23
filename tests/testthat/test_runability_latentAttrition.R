@@ -1,5 +1,7 @@
 skip_on_cran()
 data("cdnow")
+data("apparelTrans")
+data("apparelStaticCov")
 
 context("Runability - latentAttrition - nocov")
 clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
@@ -32,5 +34,29 @@ test_that("Works with args to model", {
                  "Hessian")
   expect_silent(latentAttrition(~bgnbd(start.params.model = c(r=1, alpha=0.2, a=2.3, b=3.45)), data=clv.cdnow, verbose=FALSE))
 })
+
+
+
+context("Runability - latentAttrition - static cov")
+
+clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(apparelTrans, apparelStaticCov, estimation.split = NULL)
+# test_that("Works without RHS2/3", {
+#   expect_silent(latentAttrition(~pnbd(), clv.apparel.cov, verbose=FALSE))
+# })
+
+test_that("Every model works with regularization", {
+  skip_on_cran()
+  expect_silent(latentAttrition(~pnbd()|.|.|regularization(life=8, trans=10), clv.apparel.cov, verbose=FALSE))
+  expect_silent(latentAttrition(~bgnbd()|.|.|regularization(life=8, trans=10), clv.apparel.cov, verbose=FALSE))
+  expect_silent(latentAttrition(~ggomnbd()|.|.|regularization(life=8, trans=10), clv.apparel.cov, verbose=FALSE))
+})
+
+test_that("Every model works with constraint", {
+  skip_on_cran()
+  expect_silent(latentAttrition(~pnbd()|.|.|constraint(Gender), clv.apparel.cov, verbose=FALSE))
+  expect_silent(latentAttrition(~bgnbd()|.|.|constraint(Gender), clv.apparel.cov, verbose=FALSE))
+  expect_silent(latentAttrition(~ggomnbd()|.|.|constraint(Gender), clv.apparel.cov, verbose=FALSE))
+})
+
 
 
