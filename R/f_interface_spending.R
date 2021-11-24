@@ -1,13 +1,15 @@
+#' Formula Interface for Spending Models
+#'
 #' @importFrom Formula as.Formula
 #' @importFrom stats terms formula
 #' @export
 spending <- function(formula, data, optimx.args=list(), verbose=TRUE){
+
   cl  <- match.call(call = sys.call(), expand.dots = TRUE)
 
   check_err_msg(check_userinput_formula(formula, name.specials.model = c("gg")))
-  check_err_msg(check_userinput_formula_clvdata/data(data))
-
-  # check_err_msg(check_userinput_spending/latentattrition_formula_vs_data())
+  check_err_msg(check_userinput_formula_clvdata(data))
+  check_err_msg(check_userinput_spending_formulavsdata(formula=formula, data=data))
 
   F.formula <- as.Formula(formula)
 
@@ -27,3 +29,24 @@ spending <- function(formula, data, optimx.args=list(), verbose=TRUE){
 
   return(obj)
 }
+
+
+#' @importFrom Formula as.Formula
+check_userinput_spending_formulavsdata <- function(formula, data){
+  # only verify formula, not data
+
+  err.msg <- c()
+
+  # formula is verified to be basic correct
+  F.formula <- as.Formula(formula)
+
+  # always only 1 RHS
+  if(length(F.formula)[2] != 1){
+    err.msg <- c(err.msg, "The formula may only contain 1 RHS part specifiying the model!")
+  }
+
+  return(err.msg)
+}
+
+
+

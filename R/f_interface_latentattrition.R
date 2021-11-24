@@ -1,19 +1,15 @@
+#' Formula Interface for Transaction Models
+#'
 #' @importFrom Formula as.Formula
 #' @importFrom stats terms formula
 #' @export
 latentAttrition <- function(formula, data, optimx.args=list(), verbose=TRUE){
-# pnbd: use.cor, start.params.cor
 
   cl  <- match.call(call = sys.call(), expand.dots = TRUE)
 
   check_err_msg(check_userinput_formula(formula, name.specials.model = c("pnbd", "bgnbd", "ggomnbd")))
-  check_err_msg(check_userinput_formula_data(data))
-  check_err_msg(check_userinput_formula_vs_data(formula=formula, data=data))
-  # make into clv.data if is not
-  # if(!is(data, "clv.data")){
-  #   data <- clvdata(data.transactions = data, date.format=, time.unit=,
-  #                      estimation.split=, name.id=, name.date=, name.price=)
-  # }
+  check_err_msg(check_userinput_formula_clvdata(data))
+  check_err_msg(check_userinput_latentattrition_formulavsdata(formula=formula, data=data))
 
   F.formula <- as.Formula(formula)
 
@@ -119,16 +115,20 @@ check_userinput_formula <- function(formula, name.specials.model){
   if(length(err.msg)>0)
     return(err.msg)
 
-  # Verify that can parse all args in model special
+  # Verify that can parse all args in model special ...
   model <- formula_read_model_name(F.formula)
   l.model.args <- formula_parse_args_of_special(F.formula = F.formula, name.special=model, from.rhs=1)
   if(any(sapply(l.model.args, is, "error")))
     err.msg <- c(err.msg, paste0("Please provide only arguments to ",model,"() which can be parsed!"))
 
+  # ... and none of the explicit args
+  if(any(c("verbose","optimx.args") %in% names(l.model.args)))
+    err.msg <- c(err.msg, paste0("Please do not specify arguments 'verbose' and 'optimx.args' in ",model,"()!"))
+
   return(err.msg)
 }
 
-check_userinput_formula_data <- function(data){
+check_userinput_formula_clvdata <- function(data){
   if(missing(data))
     return("Please provide an object of class clv.data for parameter 'data'!")
 
@@ -141,12 +141,11 @@ check_userinput_formula_data <- function(data){
 
 #' @importFrom Formula as.Formula
 #' @importFrom stats terms
-check_userinput_formula_vs_data <- function(formula, data){
+check_userinput_latentattrition_formulavsdata <- function(formula, data){
   err.msg <- c()
 
   # formula is verified to be basic correct
   F.formula <- as.Formula(formula)
-  terms.rhs <- terms(formula(F.formula, lhs=0, rhs=1))
 
   # nocov data: only 1 RHS
   #   excludes static and dyn cov

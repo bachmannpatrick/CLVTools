@@ -58,6 +58,9 @@ test_that("Fails if unparsable given to model", {
   expect_error(latentAttrition(~pnbd(Id, Price)), "can be parsed")
   expect_error(latentAttrition(~pnbd(clv.cdnow)), "can be parsed")
   expect_error(latentAttrition(~pnbd(clv.cdnow), data = clv.cdnow), "can be parsed")
+  expect_error(latentAttrition(~pnbd(use.cor=True), data = clv.cdnow), "parse")
+  expect_error(latentAttrition(~pnbd(use.cor=abc), data = clv.cdnow), "parse")
+  expect_error(latentAttrition(~pnbd(start.params.model = abc), data = clv.cdnow), "parse")
 })
 
 test_that("Fails if RHS2/3/4 but no covariate data", {
@@ -68,11 +71,10 @@ test_that("Fails if RHS2/3/4 but no covariate data", {
 })
 
 
-test_that("Fails if non-parsable input to model", {
+test_that("Fails if explicit args verbose or optimx.args given to model", {
   skip_on_cran()
-  expect_error(latentAttrition(~pnbd(use.cor=True), data = clv.cdnow), "parse")
-  expect_error(latentAttrition(~pnbd(use.cor=abc), data = clv.cdnow), "parse")
-  expect_error(latentAttrition(~pnbd(start.params.model = abc), data = clv.cdnow), "parse")
+  expect_error(latentAttrition(~pnbd(verbose=TRUE), data = clv.cdnow), "verbose")
+  expect_error(latentAttrition(~pnbd(optimx.args=list(control=list(trace=6))), data = clv.cdnow), "optimx")
 })
 
 
@@ -83,13 +85,13 @@ clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans
                                                                estimation.split = NULL)
 
 # . RHS2/3 ---------------------------------------------------------------------------------------------
-test_that("Fails if no RHS2/3",{
-  expect_error()
+test_that("Fails if no RHS2/3 but cov data",{
+  expect_error(latentAttrition(~pnbd(), clv.apparel.cov), "transaction and the lifetime covariates")
+  expect_error(latentAttrition(~pnbd()|., clv.apparel.cov), "transaction and the lifetime covariates")
 })
 
 # . RHS4 -----------------------------------------------------------------------------------------------
 test_that("Fails if RHS 4 has wrong content", {
-  # expect_error(latentAttrition(~pnbd()|.|.|, clv.apparel.cov), "life and trans")
   expect_error(latentAttrition(~pnbd()|.|.|., clv.apparel.cov), "from the following")
   expect_error(latentAttrition(~pnbd()|.|.|reg(life=10, trans=10), clv.apparel.cov), "from the following")
   expect_error(latentAttrition(~pnbd()|.|.|constr(abc), clv.apparel.cov), "from the following")
