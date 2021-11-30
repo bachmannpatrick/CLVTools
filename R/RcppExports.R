@@ -554,3 +554,7 @@ F2_3_vecs_cpp <- function(n_walks_cbs, dT_cbs, Bjsum_cbs, x_cbs, t_x_cbs, n_walk
     .Call(`_CLVTools_F2_3_vecs_cpp`, n_walks_cbs, dT_cbs, Bjsum_cbs, x_cbs, t_x_cbs, n_walks_trans, walks_trans, d_trans, delta_trans, max_walks_trans, n_walks_life_real, d_life_real, max_walks_life_real, adj_walk1_life_real, walks_life_real, n_walks_life_aux, d_life_aux, max_walks_life_aux, walks_life_aux, r, alpha, s, beta)
 }
 
+pnbd_dyncov_LL_i <- function(r, alpha_0, s, beta_0, x, t_x, T_cal, num_walks, adj_transaction_cov_dyn, adj_lifetime_cov_dyn, dT, A1T_R, C1T_R, A1sum_R, Bjsum, Bksum, B1, BT, DT, D1, F2_3) {
+    .Call(`_CLVTools_pnbd_dyncov_LL_i`, r, alpha_0, s, beta_0, x, t_x, T_cal, num_walks, adj_transaction_cov_dyn, adj_lifetime_cov_dyn, dT, A1T_R, C1T_R, A1sum_R, Bjsum, Bksum, B1, BT, DT, D1, F2_3)
+}
+

@@ -206,23 +206,34 @@ double pnbd_dyncov_LL_i(const double r, const double alpha_0, const double s, co
                         const double t_x,
                         const double T_cal,
                         const int num_walks,
-                        // data.work.trans[AuxTrans==T, adj.transaction.cov.dyn]]
                         const double adj_transaction_cov_dyn,
-                        // cbs[, CkT:= data.work.life[AuxTrans==T, adj.lifetime.cov.dyn]]
                         const double adj_lifetime_cov_dyn,
-                        // cbs[, dT:= data.work.trans[AuxTrans==T, d]]
                         const double dT,
-                        const arma::vec& cov_aux,
-                        // to be done here later
+                        const double A1T_R,
+                        const double C1T_R,
                         const double A1sum_R,
                         const double Bjsum, const double Bksum, const double B1, const double BT,
                         const double DT, const double D1,
                         const double F2_3){
 
+
+  // // #data.work.trans[AuxTrans==T, adj.transaction.cov.dyn]]
+  // const double adj_transaction_cov_dyn,
+  // // #cbs[, CkT:= data.work.life[AuxTrans==T, adj.lifetime.cov.dyn]]
+  // const double adj_lifetime_cov_dyn,
+  // // #cbs[, dT:= data.work.trans[AuxTrans==T, d]]
+  // const double dT,
+  // // #cbs[, A1T:= data.work.trans[AuxTrans==T, adj.Walk1]]
+  // // #const arma::vec& cov_aux_trans,
+  // const double A1T_R,
+  // // #cbs[, C1T:= data.work.life[AuxTrans==T, adj.Walk1]]
+  // // #const arma::vec& cov_aux_life,
+  // const double C1T_R,
+
   // Transaction or Purchase Process ---------------------------------------------------
 
-  // cbs[, A1T:= data.work.trans[AuxTrans==T, adj.Walk1]]
-  const double A1T = cov_aux(0);
+
+  const double A1T = A1T_R; //cov_aux_trans(0);
   double A1sum;
   if(x == 0){
     A1sum = 0;
@@ -241,8 +252,7 @@ double pnbd_dyncov_LL_i(const double r, const double alpha_0, const double s, co
 
   // Lifetime Process ---------------------------------------------------
 
-  // cbs[, C1T:= data.work.life[AuxTrans==T, adj.Walk1]]
-  const double C1T = cov_aux(0);
+  const double C1T = C1T_R; //cov_aux_life(0);
   const double CkT = adj_lifetime_cov_dyn;
 
   // const double DT;
@@ -265,14 +275,14 @@ double pnbd_dyncov_LL_i(const double r, const double alpha_0, const double s, co
 
   // *** TODO: == 0?? 1e-16 xxx?
   double LL = 0;
-  if(F2 == 0){
-    LL = log_F0 + log_F3;
+  if(F2 < 0){
+    LL = log_F0 + log_F3 + std::log1p(std::exp(log_F1-log_F3) * F2);
   }else{
-    if(F2 < 0){
-      LL = log_F0 + log_F3 + std::log1p(std::exp(log_F1-log_F3) * F2);
-    }else{
+    if(F2>0){
       double max_AB = std::fmax(log_F1 + std::log(F2), log_F3);
       LL = log_F0 + max_AB  + std::log(std::exp(log_F1 + std::log(F2) - max_AB) + std::exp(log_F3 - max_AB));
+    }else{
+      LL = log_F0 + log_F3;
     }
   }
 
@@ -280,47 +290,46 @@ double pnbd_dyncov_LL_i(const double r, const double alpha_0, const double s, co
 }
 
 
-// [[Rcpp::export]]
-arma::vec pnbd_dyncov_LL_new_ind(
-    const double r,
-    const double alpha_0,
-    const double s,
-    const double beta_0,
-    const arma::vec& vX,
-    const arma::vec& vT_x,
-    const arma::vec& vT_cal,
-    const arma::vec& vNumWalks,
-    const arma::vec& vAdjTransactionCovDyn,
-    const arma::vec& vAdjLifetimeCovDyn,
-    const arma::vec& vdT,
-    const arma::vec& vA1sum_R,
-    const arma::vec& vBjsum,
-    const arma::vec& vBksum,
-    const arma::vec& vB1,
-    const arma::vec& vBT,
-    const arma::vec& vDT,
-    const arma::vec& vD1,
-    const arma::vec& vF2_3,
-    const arma::mat& mCov_aux
-    ){
-
-  arma::uword n = vX.n_elem;
-  arma::vec vRes = arma::zeros(n);
-  for(arma::uword i = 0; i < n; i++){
-    vRes(i) = pnbd_dyncov_LL_i( r,  alpha_0,  s,  beta_0,
-         vX(i), vT_x(i), vT_cal(i),
-         vNumWalks(i),
-         vAdjTransactionCovDyn(i),
-         vAdjLifetimeCovDyn(i),
-         vdT(i),
-         mCov_aux.col(i),
-         vA1sum_R(i),
-         vBjsum(i),  vBksum(i),  vB1(i),  vBT(i),
-         vDT(i),  vD1(i),
-         vF2_3(i));
-  }
-
-
-  return(vRes);
-}
+// arma::vec pnbd_dyncov_LL_new_ind(
+//     const double r,
+//     const double alpha_0,
+//     const double s,
+//     const double beta_0,
+//     const arma::vec& vX,
+//     const arma::vec& vT_x,
+//     const arma::vec& vT_cal,
+//     const arma::vec& vNumWalks,
+//     const arma::vec& vAdjTransactionCovDyn,
+//     const arma::vec& vAdjLifetimeCovDyn,
+//     const arma::vec& vdT,
+//     const arma::vec& vA1sum_R,
+//     const arma::vec& vBjsum,
+//     const arma::vec& vBksum,
+//     const arma::vec& vB1,
+//     const arma::vec& vBT,
+//     const arma::vec& vDT,
+//     const arma::vec& vD1,
+//     const arma::vec& vF2_3,
+//     const arma::mat& mCov_aux
+//     ){
+//
+//   arma::uword n = vX.n_elem;
+//   arma::vec vRes = arma::zeros(n);
+//   for(arma::uword i = 0; i < n; i++){
+//     vRes(i) = pnbd_dyncov_LL_i( r,  alpha_0,  s,  beta_0,
+//          vX(i), vT_x(i), vT_cal(i),
+//          vNumWalks(i),
+//          vAdjTransactionCovDyn(i),
+//          vAdjLifetimeCovDyn(i),
+//          vdT(i),
+//          mCov_aux.col(i),
+//          vA1sum_R(i),
+//          vBjsum(i),  vBksum(i),  vB1(i),  vBT(i),
+//          vDT(i),  vD1(i),
+//          vF2_3(i));
+//   }
+//
+//
+//   return(vRes);
+// }
 
