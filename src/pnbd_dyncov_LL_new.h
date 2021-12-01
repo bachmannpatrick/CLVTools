@@ -3,8 +3,28 @@
 
 #include <RcppArmadillo.h>
 #include <cmath>
+#include <list>
 
 #include "clv_vectorized.h"
+
+struct Walk {
+  // Abstract away the (memory) representation of a walk
+private:
+  const arma::subview_col<double> walk_data;
+public:
+  Walk(const arma::vec&, const arma::uword, const arma::uword,
+       const double, const double, const int);
+
+  const double tjk;
+  const double d;
+  const int delta;
+
+  double first() const;
+  double last() const;
+  arma::uword n_elem() const;
+  double sum_middle_elems() const; //sum all elements which are not first or last. Requires at least 3 elements
+};
+
 
 double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
                                           const int x,
