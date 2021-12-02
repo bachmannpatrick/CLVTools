@@ -1,3 +1,90 @@
+### *** NO: Walk tables with process+covname rbind(), then dcast() by=c("Id", "Date") .. no... then the covs are not all in one string!
+# closest: dcast( Id+Date+variable+AuxTrans~cov.name, data=rbind(dt.melted.marketing, dt.melted.gender), value.var = "value") + add error if fun.aggregate
+walk_to_long <- function(dt.walks, process, cov.name){
+  num.walks <- dt.walks[, max(Num.Walk)]
+  id.vars <- c("Id", "Date", "AuxTrans")
+  dt.melted <- melt(dt.walks,
+                    id.vars = id.vars,
+                    measure.vars = c(paste0("Walk", seq(1, num.walks)), "Max.Walk"))
+
+  # dt.melted[, walk_id := paste0(as.character(.GRP), "_", process, "_", cov.name), by=id.vars]
+  dt.melted[, walk_id := .GRP, by=id.vars]
+
+  dt.melted[dt.walks, tjk:=i.tjk, on=id.vars]
+  dt.melted[dt.walks, d:=i.d, on=id.vars]
+  dt.melted[dt.walks, delta:=i.delta, on=id.vars]
+
+  dt.melted[, process := process]
+  dt.melted[, cov.name := cov.name]
+
+  # as many groups as walks
+  stopifnot(dt.melted[, uniqueN(walk_id)] == dt.walks[, .N])
+  return(dt.melted[])
+}
+
+
+long_walks_split <- function(dt.long.cov.wide, names.cov){
+  l.split.covs <- split(dt.long.cov.wide[, .SD, .SDcols=c("Id", names.cov)], by="Id", sorted = TRUE, keep.by=FALSE)
+  l.split.walkinfo <- split(unique(dt.long.cov.wide[, c("Id", "from", "to", "tjk", "d", "delta", "AuxTrans")]), by="Id", sorted = TRUE, keep.by=FALSE)
+  stopifnot(all(names(l.split.walkinfo) == names(l.split.covs)))
+  names.id <- names(l.split.covs)
+
+  l.user.data <- lapply(names.id, function(n){
+    list(covs=l.split.covs[[n]],
+         info=l.split.walkinfo[[n]])
+  })
+  names(l.user.data) <- names.id
+  return(l.user.data)
+}
+
+long_walks_to_rcpp <- function(l.melted.process){
+  id.vars <- c("Id", "Date", "AuxTrans")
+
+  dt.melted <- rbindlist(l.melted.process)
+  # ensure d, tjk, delta are the same for all covs, per walk
+  #   so can also include in long table per walk
+  stopifnot(dt.melted[, uniqueN(d), by=id.vars][, all(V1==1)])
+  stopifnot(dt.melted[, uniqueN(tjk), by=id.vars][, all(V1==1)])
+  stopifnot(dt.melted[, uniqueN(delta), by=id.vars][, all(V1==1)])
+
+  dt.long.cov.wide <- tryCatch(dcast(Id+Date+AuxTrans+variable+tjk+d+delta~cov.name, data=dt.melted,
+                                     value.var = "value"),
+                               # stop if message about fun.aggregate is printed
+                               message = function(m)stop(m))
+
+  dt.long.cov.wide <- dt.long.cov.wide[complete.cases(dt.long.cov.wide)]
+  setkeyv(dt.long.cov.wide, id.vars)
+
+
+  # every combo still has Max.Walk and Walk1
+  stopifnot(dt.long.cov.wide[variable=="Walk1", .N] == uniqueN(dt.long.cov.wide[, .SD, .SDcols=id.vars]))
+  stopifnot(dt.long.cov.wide[variable=="Max.Walk", .N] == uniqueN(dt.long.cov.wide[, .SD, .SDcols=id.vars]))
+
+  # Per Id: Mark cutoffs
+  #   mark walks
+  #   by Id: mark position of walks relative to beginning
+  #   add from to by walks
+  dt.long.cov.wide[, walk_id := .GRP, by=id.vars]
+  dt.long.cov.wide[variable=="Max.Walk", variable:="WalkMax.Walk"]
+  dt.long.cov.wide[order(Id, Date, AuxTrans, variable), id_relative_pos := seq(from=1, to=.N), by="Id"]
+  dt.long.cov.wide[variable=="WalkMax.Walk", variable:="Max.Walk"]
+  # ensure order really correct: Max.Walk last
+  stopifnot(dt.long.cov.wide[, tail(variable,n=1) == "Max.Walk", by=id.vars][, all(V1)])
+  # by walk_id_ from: Walk1, to:Max.Walk
+  dt.long.cov.wide[, from := min(id_relative_pos), by="walk_id"]
+  dt.long.cov.wide[, to := max(id_relative_pos), by="walk_id"]
+
+  names.cov <- dt.melted[,  unique(cov.name)]
+
+  # Cannot keep AuxTrans in separate table because cutoffs will not match anymore
+  # l.walks.aux <- long_walks_split(dt.long.cov.wide[AuxTrans==TRUE], names.cov=names.cov)
+  # l.walks.real <- long_walks_split(dt.long.cov.wide[AuxTrans==FALSE], names.cov=names.cov)
+
+  # - separate for real and aux trans
+  # - verify correctness only for aux trans first (sum up some walks in Rcpp + manually)
+}
+
+
 pnbd_dyncov_LL_new <- function(params, clv.fitted, return.all.intermediate.results=FALSE){
   # cran silence
   Num.Walk <- AuxTrans <- Di.Max.Walk <- adj.Max.Walk <- Di.adj.Walk1 <- adj.Walk1 <- A1T <- x <- A1sum <- AuxTrans <- transaction.cov.dyn <- Id <- Bjsum <- Bksum <- AkT <- NULL
@@ -560,3 +647,5 @@ pnbd_dyncov_LL_new <- function(params, clv.fitted, return.all.intermediate.resul
 #     return(cbs)
 #   }
 # }
+
+
