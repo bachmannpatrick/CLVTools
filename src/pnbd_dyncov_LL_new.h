@@ -3,21 +3,33 @@
 
 #include <RcppArmadillo.h>
 #include <cmath>
-#include <list>
+#include <vector>
 
 #include "clv_vectorized.h"
 
 struct Walk {
   // Abstract away the (memory) representation of a walk
-private:
-  const arma::subview_col<double> walk_data;
-public:
-  Walk(const arma::vec&, const arma::uword, const arma::uword,
-       const double, const double, const int);
+// private:
+  // arma::subview_col<double> walk_data;
+  arma::vec walk_data;
 
-  const double tjk;
-  const double d;
-  const int delta;
+  Walk():tjk(0), d(0), delta(0){
+    this->walk_data = arma::zeros(0);
+  }
+
+ /*
+  * MUST PASS DATA VEC BY REF TO CONSTRUCTORS
+  *   because store a subview which would point to freed mem if passed by value
+  */
+  // Walk(const arma::vec& cov_data, const arma::uword, const arma::uword,
+  //      const double, const double, const double, const bool);
+
+  Walk(const arma::vec&, const arma::rowvec&);
+
+  double tjk;
+  double d;
+  double delta; //can only be 0, 1 but store as double to avoid frequent casting and accidentially forgetting it
+  bool is_aux_trans;
 
   double first() const;
   double last() const;

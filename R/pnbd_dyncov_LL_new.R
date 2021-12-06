@@ -1,5 +1,3 @@
-### *** NO: Walk tables with process+covname rbind(), then dcast() by=c("Id", "Date") .. no... then the covs are not all in one string!
-# closest: dcast( Id+Date+variable+AuxTrans~cov.name, data=rbind(dt.melted.marketing, dt.melted.gender), value.var = "value") + add error if fun.aggregate
 walk_to_long <- function(dt.walks, process, cov.name){
   num.walks <- dt.walks[, max(Num.Walk)]
   id.vars <- c("Id", "Date", "AuxTrans")
@@ -74,7 +72,9 @@ long_walks_to_rcpp <- function(l.melted.process){
   dt.long.cov.wide[, from := min(id_relative_pos), by="walk_id"]
   dt.long.cov.wide[, to := max(id_relative_pos), by="walk_id"]
 
-  names.cov <- dt.melted[,  unique(cov.name)]
+  return(dt.long.cov.wide)
+  # names.cov <- dt.melted[,  unique(cov.name)]
+
 
   # Cannot keep AuxTrans in separate table because cutoffs will not match anymore
   # l.walks.aux <- long_walks_split(dt.long.cov.wide[AuxTrans==TRUE], names.cov=names.cov)
