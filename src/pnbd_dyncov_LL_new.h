@@ -17,6 +17,16 @@ struct Walk {
     this->walk_data = arma::zeros(0);
   }
 
+  // copy constructor
+  Walk(const Walk& other){
+    this->tjk = other.tjk;
+    this->d = other.d;
+    this->delta = other.delta;
+    this->is_aux_trans = other.is_aux_trans;
+    // this->walk_data = arma::vec(other.walk_data);
+    this->walk_data = arma::vec(other.walk_data.memptr(), other.walk_data.n_elem);
+  }
+
  /*
   * MUST PASS DATA VEC BY REF TO CONSTRUCTORS
   *   because store a subview which would point to freed mem if passed by value
@@ -33,9 +43,10 @@ struct Walk {
 
   double first() const;
   double last() const;
-  double get_elem(arma::uword i) const;
+  double get_elem(const arma::uword i) const;
   arma::uword n_elem() const;
   double sum_middle_elems() const; //sum all elements which are not first or last. Requires at least 3 elements
+  double sum_from_to(const arma::uword from, const arma::uword to) const; //sum all elements which are not first or last. Requires at least 3 elements
 };
 
 
