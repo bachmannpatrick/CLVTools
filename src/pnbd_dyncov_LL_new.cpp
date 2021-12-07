@@ -182,6 +182,20 @@ double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
     return(hyp_z1 - hyp_z2);
 }
 
+double pnbd_dyncov_LL_i_A1sum(const unsigned int x, const std::vector<Walk>& real_walks_trans){
+  if(x == 0){
+    return(0.0);
+  }else{
+    double A1sum = 0.0;
+    // **TODO: What if no Walk? Is this x==0?
+    for(Walk w : real_walks_trans){
+      // log(adj.MaxWalk)
+      A1sum += std::log(w.last());
+    }
+    return(A1sum);
+  }
+}
+
 double pnbd_dyncov_LL_i_bksumbjsum_walk_i(const Walk& w){
   double n = static_cast<double>(w.n_elem());
   double last_mult = w.tjk - w.d - w.delta*(n - 2.0);
@@ -214,6 +228,8 @@ double pnbd_dyncov_LL_i_BjSum(const std::vector<Walk>& real_walks){
 double pnbd_dyncov_LL_i_BkSum(const std::vector<Walk>& real_walks, const Walk& aux_walk){
   return(pnbd_dyncov_LL_i_BjSum(real_walks) + pnbd_dyncov_LL_i_bksumbjsum_walk_i(aux_walk));
 }
+
+// double pnbd_dyncov_LL_i_Bi(const )
 
 
 double pnbd_dyncov_LL_i_F2_1(const double r, const double alpha_0, const double s, const double beta_0,
@@ -363,7 +379,6 @@ double pnbd_dyncov_LL_i_F2(const int num_walks,
 Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const double s, const double beta_0,
                            const Customer& c,
                            const int num_walks,
-                           const double A1sum_R,
                            const double B1, const double BT,
                            const double DT, const double D1,
                            const double F2_3,
@@ -386,15 +401,9 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
 
 
   const double A1T = c.aux_walk_trans.first();
-  // A1sum := real trans Max.Walk, w/o exp() OR real trans log(adj.MaxWalk)
-  double A1sum;
-  if(c.x == 0){
-    A1sum = 0;
-  }else{
-    A1sum = A1sum_R;
-  }
-
   const double AkT = c.adj_transaction_cov_dyn();
+  const double A1sum = pnbd_dyncov_LL_i_A1sum(static_cast<unsigned int>(c.x), c.real_walks_trans);
+
 
   // const double B1;
   // const double BT;
@@ -479,7 +488,6 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
 Rcpp::NumericVector LL_i_single_walk(const double r, const double alpha_0, const double s, const double beta_0,
                         const double x, const double t_x, const double T_cal,
                         const int num_walks,
-                        const double A1sum_R,
                         const double B1, const double BT,
                         const double DT, const double D1,
                         const double F2_3,
@@ -512,7 +520,6 @@ Rcpp::NumericVector LL_i_single_walk(const double r, const double alpha_0, const
   return pnbd_dyncov_LL_i(r, alpha_0, s, beta_0,
                           c,
                           num_walks,
-                          A1sum_R,
                           B1, BT,
                           DT, D1,
                           F2_3,

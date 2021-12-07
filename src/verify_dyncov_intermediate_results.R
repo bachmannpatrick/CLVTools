@@ -5,7 +5,6 @@ l.LL <- lapply(ids, function(id){
   res <- CLVTools:::LL_i_single_walk(r=p.dyncov.g0@prediction.params.model[["r"]], alpha_0=p.dyncov.g0@prediction.params.model[["alpha"]],
                                          s=p.dyncov.g0@prediction.params.model[["s"]], beta_0=p.dyncov.g0@prediction.params.model[["beta"]],
                                          x=dt.LL.original[Id==id]$x, t_x=dt.LL.original[Id==id]$t.x, T_cal = dt.LL.original[Id==id]$T.cal, num_walks=dt.LL.original[Id==id]$Num.Walk,
-                                         A1sum_R = dt.LL.original[Id==id]$A1sum,
                                          B1 = dt.LL.original[Id==id]$B1, BT=dt.LL.original[Id==id]$BT, DT=dt.LL.original[Id==id]$DT, D1 = dt.LL.original[Id==id]$D1, F2_3 = dt.LL.original[Id==id]$F2.3,
                                          params_life = c(0.1, 0.1, 0.1), params_trans = c(0.1, 0.1, 0.1),
                                          cov_data_trans = as.matrix(l.walks.trans[[id]]$covs), cov_data_life = as.matrix(l.walks.life[[id]]$covs),
