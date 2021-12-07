@@ -33,6 +33,7 @@ struct Walk {
 
   double first() const;
   double last() const;
+  double get_elem(arma::uword i) const;
   arma::uword n_elem() const;
   double sum_middle_elems() const; //sum all elements which are not first or last. Requires at least 3 elements
 };

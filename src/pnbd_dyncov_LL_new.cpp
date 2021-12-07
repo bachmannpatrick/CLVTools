@@ -98,6 +98,10 @@ double Walk::last() const{
   return(this->walk_data.back());
 }
 
+double Walk::get_elem(arma::uword i) const{
+  return(this->walk_data(i));
+}
+
 
 double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
                                           const int x,
@@ -229,7 +233,37 @@ double pnbd_dyncov_LL_i_BkSum(const std::vector<Walk>& real_walks, const Walk& a
   return(pnbd_dyncov_LL_i_BjSum(real_walks) + pnbd_dyncov_LL_i_bksumbjsum_walk_i(aux_walk));
 }
 
-// double pnbd_dyncov_LL_i_Bi(const )
+double pnbd_dyncov_LL_i_Bi(const arma::uword i, const double t_x, const Walk& aux_walk){
+  double Aji = 0.0;
+  if(i == 1 || i == 2){
+    // Aji only consists of Aj1
+    Aji = aux_walk.first()*aux_walk.d;
+  }else{
+    Aji = aux_walk.first()*aux_walk.d + aux_walk.sum_middle_elems();
+  }
+
+  double Aki = 0.0;
+  if(i == 1){
+    // omit delta part
+    // **TODO: Not also for i==2 ??
+    Aki = aux_walk.first()*(-t_x - aux_walk.d);
+  }else{
+    // include delta part
+
+    if(aux_walk.n_elem() <= i){
+      // want to sum higher than have elements in walk
+      double n = static_cast<double>(aux_walk.n_elem());
+      Aki = aux_walk.last()        * (-t_x - aux_walk.d - aux_walk.delta*(n - 2.0));
+
+    }else{
+
+      // Walk_i * (...). get(i-1) to adjust index
+      Aki = aux_walk.get_elem(i-1) * (-t_x - aux_walk.d - aux_walk.delta*(static_cast<double>(i) - 2.0));
+    }
+  }
+
+  return(Aji + Aki);
+}
 
 
 double pnbd_dyncov_LL_i_F2_1(const double r, const double alpha_0, const double s, const double beta_0,
@@ -379,7 +413,6 @@ double pnbd_dyncov_LL_i_F2(const int num_walks,
 Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const double s, const double beta_0,
                            const Customer& c,
                            const int num_walks,
-                           const double B1, const double BT,
                            const double DT, const double D1,
                            const double F2_3,
                            const bool return_intermediate_results){
@@ -405,8 +438,12 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
   const double A1sum = pnbd_dyncov_LL_i_A1sum(static_cast<unsigned int>(c.x), c.real_walks_trans);
 
 
-  // const double B1;
-  // const double BT;
+  const double B1 = pnbd_dyncov_LL_i_Bi(1, c.t_x, c.aux_walk_trans);
+  // **TODO: What is i here? Longest walk of all customers or only this customer?
+  //          And of all or only aux trans? Does it actually matter if higher than this customers because use MaxWalk anyways if i>n_elems?
+  //          Does this not just say: Sum this walk up fully?
+  //            How would BT be correctly be written in math (in _Bi)? For n={1,2,3,..50}
+  const double BT = pnbd_dyncov_LL_i_Bi(c.aux_walk_trans.n_elem(), c.t_x, c.aux_walk_trans);
 
   const double Bksum = pnbd_dyncov_LL_i_BkSum(c.real_walks_trans, c.aux_walk_trans);
 
@@ -488,7 +525,6 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
 Rcpp::NumericVector LL_i_single_walk(const double r, const double alpha_0, const double s, const double beta_0,
                         const double x, const double t_x, const double T_cal,
                         const int num_walks,
-                        const double B1, const double BT,
                         const double DT, const double D1,
                         const double F2_3,
 
@@ -520,7 +556,6 @@ Rcpp::NumericVector LL_i_single_walk(const double r, const double alpha_0, const
   return pnbd_dyncov_LL_i(r, alpha_0, s, beta_0,
                           c,
                           num_walks,
-                          B1, BT,
                           DT, D1,
                           F2_3,
                           return_intermediate_results);
