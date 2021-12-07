@@ -278,7 +278,9 @@ double pnbd_dyncov_LL_i_F2(const int num_walks,
                            const double BT, const double DT,
                            const double A1T, const double C1T,
                            const double AkT, const double CkT,
-                           const double F2_3){
+                           const double F2_3,
+                           const bool return_intermediate_results,
+                           arma::vec& intermediate_results){
 
 
   const double Bjsum = pnbd_dyncov_LL_i_BjSum(c.real_walks_trans);
@@ -310,6 +312,16 @@ double pnbd_dyncov_LL_i_F2(const int num_walks,
                       alpha_2, beta_2);
     }
 
+    if(return_intermediate_results){
+      intermediate_results(0) = Bjsum;
+      intermediate_results(1) = dT;
+      intermediate_results(2) = arma::datum::nan;
+      intermediate_results(3) = arma::datum::nan;
+      intermediate_results(4) = arma::datum::nan;
+      intermediate_results(5) = F2_1;
+      intermediate_results(6) = 0.0;
+      intermediate_results(7) = 0.0;
+    }
     return(F2_1);
 
   }else{
@@ -328,8 +340,19 @@ double pnbd_dyncov_LL_i_F2(const int num_walks,
                                               akt, bkT,
                                               aT, bT,
                                               AkT, CkT);
+
     // const double F2_3 = pnbd_dyncov_LL_i_F2_3();
 
+    if(return_intermediate_results){
+      intermediate_results(0) = Bjsum;
+      intermediate_results(1) = dT;
+      intermediate_results(2) = aT;
+      intermediate_results(3) = bT;
+      intermediate_results(4) = bkT;
+      intermediate_results(5) = F2_1;
+      intermediate_results(6) = F2_2;
+      intermediate_results(7) = F2_3;
+    }
     return(F2_1 + F2_2 + F2_3);
   }
 }
@@ -337,13 +360,14 @@ double pnbd_dyncov_LL_i_F2(const int num_walks,
 /* [[Rcpp::export]]
  *
  */
-double pnbd_dyncov_LL_i(const double r, const double alpha_0, const double s, const double beta_0,
-                        const Customer& c,
-                        const int num_walks,
-                        const double A1sum_R,
-                        const double B1, const double BT,
-                        const double DT, const double D1,
-                        const double F2_3){
+Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const double s, const double beta_0,
+                           const Customer& c,
+                           const int num_walks,
+                           const double A1sum_R,
+                           const double B1, const double BT,
+                           const double DT, const double D1,
+                           const double F2_3,
+                           const bool return_intermediate_results){
 
   // // #data.work.trans[AuxTrans==T, adj.transaction.cov.dyn]]
   // const double adj_transaction_cov_dyn,
@@ -361,7 +385,8 @@ double pnbd_dyncov_LL_i(const double r, const double alpha_0, const double s, co
   // Transaction Process ---------------------------------------------------------
 
 
-  const double A1T = c.aux_walk_trans.first(); //cov_aux_trans(0);
+  const double A1T = c.aux_walk_trans.first();
+  // A1sum := real trans Max.Walk, w/o exp() OR real trans log(adj.MaxWalk)
   double A1sum;
   if(c.x == 0){
     A1sum = 0;
@@ -390,13 +415,16 @@ double pnbd_dyncov_LL_i(const double r, const double alpha_0, const double s, co
   const double log_F0 = r*std::log(alpha_0) + s*std::log(beta_0) + lgamma(c.x+r) - lgamma(r) + A1sum;
   const double log_F1 = std::log(s) - std::log(r+s+c.x);
 
+  arma::vec F2_intermediate_results = arma::vec(8);
   const double F2 = pnbd_dyncov_LL_i_F2(num_walks,
                                         r, alpha_0,  s,  beta_0,
                                         c,
                                         B1,
                                         D1, BT,  DT,
                                         A1T,  C1T, AkT,  CkT,
-                                        F2_3);
+                                        F2_3,
+                                        return_intermediate_results,
+                                        F2_intermediate_results);
 
   const double log_F3 = -s * std::log(DkT + beta_0) - (c.x+r) * std::log(Bksum + alpha_0);
 
@@ -413,55 +441,42 @@ double pnbd_dyncov_LL_i(const double r, const double alpha_0, const double s, co
     }
   }
 
-  return(LL);
+  double Akprod = std::exp(A1sum);
+
+  if(!return_intermediate_results){
+    return(Rcpp::NumericVector::create(LL));
+  }else{
+    return(Rcpp::NumericVector::create(Rcpp::_["LL"]=LL,
+                                       Rcpp::_["Akprod"]=Akprod,
+                                       Rcpp::_["A1sum"]=A1sum,
+                                       Rcpp::_["Bksum"]=Bksum,
+                                       Rcpp::_["Bjsum"]= F2_intermediate_results(0),
+                                       Rcpp::_["B1"]=B1,
+                                       Rcpp::_["BT"]=BT,
+                                       Rcpp::_["D1"]=D1,
+                                       Rcpp::_["DT"]=DT,
+                                       // Rcpp::_["DkT"]=DkT,
+                                       Rcpp::_["log.F0"]=log_F0,
+                                       Rcpp::_["log.F1"]=log_F1,
+                                       Rcpp::_["log.F3"]=log_F3,
+                                       Rcpp::_["F2"]=F2,
+                                       Rcpp::_["dT"]=F2_intermediate_results(1),
+                                       Rcpp::_["aT"]=F2_intermediate_results(2),
+                                       Rcpp::_["bT"]=F2_intermediate_results(3),
+                                       Rcpp::_["bkT"]=F2_intermediate_results(4),
+                                       Rcpp::_["F2.1"]=F2_intermediate_results(5),
+                                       Rcpp::_["F2.2"]=F2_intermediate_results(6),
+                                       Rcpp::_["F2.3"]=F2_intermediate_results(7)));
+  }
+  // return(arma::vec = {LL, Akprod, F2});
+  // return(LL);
 }
 
 
-// arma::vec pnbd_dyncov_LL_new_ind(
-//     const double r,
-//     const double alpha_0,
-//     const double s,
-//     const double beta_0,
-//     const arma::vec& vX,
-//     const arma::vec& vT_x,
-//     const arma::vec& vT_cal,
-//     const arma::vec& vNumWalks,
-//     const arma::vec& vAdjTransactionCovDyn,
-//     const arma::vec& vAdjLifetimeCovDyn,
-//     const arma::vec& vdT,
-//     const arma::vec& vA1sum_R,
-//     const arma::vec& vBjsum,
-//     const arma::vec& vBksum,
-//     const arma::vec& vB1,
-//     const arma::vec& vBT,
-//     const arma::vec& vDT,
-//     const arma::vec& vD1,
-//     const arma::vec& vF2_3,
-//     const arma::mat& mCov_aux
-//     ){
-//
-//   arma::uword n = vX.n_elem;
-//   arma::vec vRes = arma::zeros(n);
-//   for(arma::uword i = 0; i < n; i++){
-//     vRes(i) = pnbd_dyncov_LL_i( r,  alpha_0,  s,  beta_0,
-//          vX(i), vT_x(i), vT_cal(i),
-//          vNumWalks(i),
-//          vAdjTransactionCovDyn(i),
-//          vAdjLifetimeCovDyn(i),
-//          vdT(i),
-//          mCov_aux.col(i),
-//          vA1sum_R(i),
-//          vBjsum(i),  vBksum(i),  vB1(i),  vBT(i),
-//          vDT(i),  vD1(i),
-//          vF2_3(i));
-//   }
-//
-//
-//   return(vRes);
-// }
+
 
 // [[Rcpp::export]]
-double LL_i_single_walk(const double r, const double alpha_0, const double s, const double beta_0,
+Rcpp::NumericVector LL_i_single_walk(const double r, const double alpha_0, const double s, const double beta_0,
                         const double x, const double t_x, const double T_cal,
                         const int num_walks,
                         const double A1sum_R,
@@ -474,7 +489,8 @@ double LL_i_single_walk(const double r, const double alpha_0, const double s, co
                         const arma::mat& cov_data_life,
                         const arma::mat& cov_data_trans,
                         const arma::mat& walk_info_life,
-                        const arma::mat& walk_info_trans){
+                        const arma::mat& walk_info_trans,
+                        const bool return_intermediate_results){
 
   arma::vec adj_cov_data_life = arma::exp(cov_data_life * params_life);
   arma::vec adj_cov_data_trans = arma::exp(cov_data_trans * params_trans);
@@ -491,13 +507,16 @@ double LL_i_single_walk(const double r, const double alpha_0, const double s, co
                         adj_cov_data_life, walk_info_life,
                         adj_cov_data_trans, walk_info_trans);
 
+  // Rcpp::NumericVector intermediate_results = Rcpp::NumericVector::create(5);
+
   return pnbd_dyncov_LL_i(r, alpha_0, s, beta_0,
                           c,
                           num_walks,
                           A1sum_R,
                           B1, BT,
                           DT, D1,
-                          F2_3);
+                          F2_3,
+                          return_intermediate_results);
 }
 
 // [[Rcpp::export]]
