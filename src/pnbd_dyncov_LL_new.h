@@ -18,14 +18,27 @@ struct Walk {
   }
 
   // copy constructor
-  Walk(const Walk& other){
-    this->tjk = other.tjk;
-    this->d = other.d;
-    this->delta = other.delta;
-    this->is_aux_trans = other.is_aux_trans;
+  Walk(const Walk& other) : tjk(other.tjk), d(other.d), delta(other.delta){
     // this->walk_data = arma::vec(other.walk_data);
+
     this->walk_data = arma::vec(other.walk_data.memptr(), other.walk_data.n_elem);
+    Rcpp::Rcout<<"Copy constructor called."<<std::endl;
   }
+
+  // // copy assignment operator
+  // Walk& operator=(const Walk& t)
+  // {
+  //   Rcpp::Rcout << "Assignment operator called " << std::endl;
+  //   return *this;
+  // }
+
+
+  // move constructor
+  //  removes copy assignment operator??
+  // Walk(Walk&& other) : tjk(other.tjk), d(other.d), delta(other.delta){
+  //   this->walk_data = arma::vec(other.walk_data.memptr(), other.walk_data.n_elem);
+  //   Rcpp::Rcout<<"Move constructor called."<<std::endl;
+  // }
 
  /*
   * MUST PASS DATA VEC BY REF TO CONSTRUCTORS
@@ -36,10 +49,12 @@ struct Walk {
 
   Walk(const arma::vec&, const arma::rowvec&);
 
+  static bool is_aux_trans(const arma::rowvec&);
+
   double tjk;
   double d;
-  double delta; //can only be 0, 1 but store as double to avoid frequent casting and accidentially forgetting it
-  bool is_aux_trans;
+  double delta; //can only be 0, 1 but store as double to avoid frequent casting and accidentally forgetting it
+  // bool is_aux_trans;
 
   double first() const;
   double last() const;
