@@ -10,20 +10,22 @@
 struct Walk {
   // Abstract away the (memory) representation of a walk
 // private:
-  // arma::subview_col<double> walk_data;
   arma::vec walk_data;
+  // arma::vec tmp_zeros = arma::zeros(5);
+  // arma::subview_col<double> walk_data;
 
-  Walk():tjk(0), d(0), delta(0){
-    this->walk_data = arma::zeros(0);
+  Walk():
+    tjk(0), d(0), delta(0){
+    this->walk_data = arma::vec(1).zeros();
   }
 
   // copy constructor
-  Walk(const Walk& other) : tjk(other.tjk), d(other.d), delta(other.delta){
-    // this->walk_data = arma::vec(other.walk_data);
-
-    this->walk_data = arma::vec(other.walk_data.memptr(), other.walk_data.n_elem);
-    Rcpp::Rcout<<"Copy constructor called."<<std::endl;
-  }
+  // Walk(const Walk& other) : tjk(other.tjk), d(other.d), delta(other.delta){
+  //   // this->walk_data = arma::vec(other.walk_data);
+  //
+  //   this->walk_data = arma::vec(other.walk_data.memptr(), other.walk_data.n_elem);
+  //   Rcpp::Rcout<<"Copy constructor called."<<std::endl;
+  // }
 
   // // copy assignment operator
   // Walk& operator=(const Walk& t)

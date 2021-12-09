@@ -1,5 +1,5 @@
 ids <- names(l.walks.life)
-# ids <- c("1", "10")
+ids <- c("1", "10")
 l.LL <- lapply(ids, function(id){
   stopifnot(id %in% names(l.walks.life) && id %in%  names(l.walks.trans))
   # print(id)

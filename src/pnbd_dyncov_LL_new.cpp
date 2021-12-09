@@ -12,12 +12,12 @@
 // };
 
 struct Customer {
+  const double x, t_x, T_cal;
+  // const double adj_transaction_cov_dyn, adj_lifetime_cov_dyn;
+
   Walk real_walk_life;
   std::vector<Walk> real_walks_trans;
   Walk aux_walk_life, aux_walk_trans;
-
-  const double x, t_x, T_cal;
-  // const double adj_transaction_cov_dyn, adj_lifetime_cov_dyn;
 
   Customer(const double x, const double t_x, const double T_cal,
            const arma::vec& adj_cov_data_life, const arma::mat& walks_info_life,
@@ -45,10 +45,11 @@ Customer::Customer(const double x, const double t_x, const double T_cal,
     if(Walk::is_aux_trans(walks_info_trans.row(i))){
       this->aux_walk_trans = Walk(adj_cov_data_trans, walks_info_trans.row(i));
     }else{
-      this->real_walks_trans.at(vec_counter) =  Walk(adj_cov_data_trans, walks_info_trans.row(i));
+      this->real_walks_trans.at(vec_counter) = Walk(adj_cov_data_trans, walks_info_trans.row(i));
       vec_counter++;
     }
   }
+
 
   // if(real_walks_trans.size()>0){
   //   Rcpp::Rcout<<"original covdata memptr"<<adj_cov_data_trans.memptr()<<std::endl;
@@ -75,12 +76,26 @@ bool Walk::is_aux_trans(const arma::rowvec& walk_info){
 }
 
 Walk::Walk(const arma::vec& cov_data, const arma::rowvec& walk_info)
-  : walk_data(cov_data.subvec(
+  :
+  walk_data(cov_data.subvec(
       static_cast<arma::uword>(walk_info(0))-1,
       static_cast<arma::uword>(walk_info(1))-1)),
-    tjk{walk_info(2)}, d{walk_info(3)}, delta{walk_info(4)}
+   tjk{walk_info(2)}, d{walk_info(3)}, delta{walk_info(4)}
 {
-  // May not store refs/pointers to walk_info as will only receive subviews (mat.row())
+  /*
+   * May not store refs/pointers to walk_info as will only receive subviews (mat.row())
+   */
+
+  // auto from = static_cast<arma::uword>(walk_info(0))-1;
+  // auto to = static_cast<arma::uword>(walk_info(1))-1;
+  // arma::uword n_elems = to-from+1;
+  // // // Rcpp::Rcout<<"n_elems"<<n_elems<<std::endl;
+  // double* ptr = const_cast<double*>(cov_data.memptr());
+  // this->walk_data = arma::vec(ptr+from, n_elems, false, true);
+  // this->walk_data = arma::vec(cov_data.memptr()+from, view.n_elem);
+
+  // const arma::subview_col<double> view = cov_data.subvec(from, to);
+  // this->walk_data = arma::vec(view.colptr(0), view.n_elem);
 }
 
 // Walk::Walk(const arma::vec& cov_data, const arma::uword from, const arma::uword to,
@@ -105,7 +120,7 @@ double Walk::get_elem(const arma::uword i) const{
 }
 
 double Walk::sum_middle_elems() const{
-  // Rcpp::Rcout<<"walk_data in sum_middle_elems"<<std::endl;
+  // Rcpp::Rcout<<"walk_data in sum_middle_elems, n_elem"<<std::endl;
   // Rcpp::Rcout<<this->walk_data<<std::endl;
   // Rcpp::Rcout<<this->walk_data.n_elem<<std::endl;
   // **TODO: Assert that only called if at least 3 elements
@@ -205,7 +220,7 @@ double pnbd_dyncov_LL_i_A1sum(const arma::uword x, const std::vector<Walk>& real
   }else{
     double A1sum = 0.0;
     // **TODO: What if no Walk? Is this x==0?
-    for(const Walk &w : real_walks_trans){
+    for(const Walk& w : real_walks_trans){
       // log(adj.MaxWalk)
       A1sum += std::log(w.last());
     }
@@ -235,7 +250,7 @@ double pnbd_dyncov_LL_i_BjSum(const std::vector<Walk>& real_walks){
     return 0.0;
   }else{
     double bjsum = 0.0;
-    for(const Walk &w : real_walks){
+    for(const Walk& w : real_walks){
       bjsum += pnbd_dyncov_LL_i_bksumbjsum_walk_i(w);
     }
     return(bjsum);
@@ -257,7 +272,7 @@ double pnbd_dyncov_LL_i_Bi(const arma::uword i, const double t_x, const Walk& au
     Aji = aux_walk.first()*aux_walk.d + aux_walk.sum_middle_elems();
   }
 
-  // **TODO: Does Aki not also depend on n_elems? say i=2=
+  // **TODO: Does Aki not also depend on n_elems? say n_elems=2?
   double Aki = 0.0;
   if(i == 1){
     // omit delta part
@@ -714,8 +729,8 @@ double convert_walk(const arma::vec& params_life,
                     const arma::mat& walk_info_life,
                     const arma::mat& walk_info_trans){
 
-  arma::vec adj_cov_data_life = arma::exp(cov_data_life * params_life);
-  arma::vec adj_cov_data_trans = arma::exp(cov_data_trans * params_trans);
+  const arma::vec adj_cov_data_life = arma::exp(cov_data_life * params_life);
+  const arma::vec adj_cov_data_trans = arma::exp(cov_data_trans * params_trans);
   // Rcpp::Rcout<<"adj_cov_data_life as in input"<<std::endl;
   // Rcpp::Rcout<<adj_cov_data_life<<std::endl;
 
