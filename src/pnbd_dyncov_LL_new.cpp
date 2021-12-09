@@ -247,7 +247,9 @@ double pnbd_dyncov_LL_i_BkSum(const std::vector<Walk>& real_walks, const Walk& a
 }
 
 double pnbd_dyncov_LL_i_Bi(const arma::uword i, const double t_x, const Walk& aux_walk){
+  // **TODO: Make tests with i={1,2,3,10} and n_elems={1,2,3,10} (and i>n_elems?)
   double Aji = 0.0;
+  // **TODO: Does Aji not also depend on n_elems?
   if(i == 1 || i == 2){
     // Aji only consists of Aj1
     Aji = aux_walk.first()*aux_walk.d;
@@ -255,6 +257,7 @@ double pnbd_dyncov_LL_i_Bi(const arma::uword i, const double t_x, const Walk& au
     Aji = aux_walk.first()*aux_walk.d + aux_walk.sum_middle_elems();
   }
 
+  // **TODO: Does Aki not also depend on n_elems? say i=2=
   double Aki = 0.0;
   if(i == 1){
     // omit delta part
@@ -264,6 +267,7 @@ double pnbd_dyncov_LL_i_Bi(const arma::uword i, const double t_x, const Walk& au
     // include delta part
 
     if(aux_walk.n_elem() <= i){
+      // **TODO:: When does this happen?
       // want to sum higher than have elements in walk
       double n = static_cast<double>(aux_walk.n_elem());
       Aki = aux_walk.last()        * (-t_x - aux_walk.d - aux_walk.delta*(n - 2.0));
