@@ -35,7 +35,23 @@ long_walks_split <- function(dt.long.cov.wide, names.cov){
   return(l.user.data)
 }
 
-long_walks_to_rcpp <- function(l.melted.process){
+long_to_walkinfo <- function(dt.long){
+  return(dt.long[, unique(.SD), .SDcols= c("Id", "walk_from", "walk_to", "tjk", "d", "delta", "AuxTrans"), by="walk_id"])
+}
+
+add_walkinfo_pos_to_customerinfo <- function(dt.cbs, dt.walk.info, process){
+  setorderv(dt.walk.info, "Id")
+  dt.walk.info[order(Id), abs_pos := seq(.N)]
+  dt.walk.info[, id_from := min(abs_pos), by="Id"]
+  dt.walk.info[, id_to := max(abs_pos), by="Id"]
+  colname_from <- paste0("walkinfo_", process, "_from")
+  colname_to <- paste0("walkinfo_", process, "_to")
+  dt.cbs[dt.walk.info, (colname_from) := i.id_from, on="Id"]
+  dt.cbs[dt.walk.info, (colname_to) := i.id_to, on="Id"]
+  return(dt.cbs[])
+}
+
+melted_to_singlelong <- function(l.melted.process){
   id.vars <- c("Id", "Date", "AuxTrans")
 
   dt.melted <- rbindlist(l.melted.process)
@@ -64,13 +80,17 @@ long_walks_to_rcpp <- function(l.melted.process){
   #   add from to by walks
   dt.long.cov.wide[, walk_id := .GRP, by=id.vars]
   dt.long.cov.wide[variable=="Max.Walk", variable:="WalkMax.Walk"]
-  dt.long.cov.wide[order(Id, Date, AuxTrans, variable), id_relative_pos := seq(from=1, to=.N), by="Id"]
+  # dt.long.cov.wide[order(Id, Date, AuxTrans, variable), id_relative_pos := seq(from=1, to=.N), by="Id"]
+  dt.long.cov.wide[order(Id, Date, AuxTrans, variable), abs_pos := seq(from=1, to=.N)]
   dt.long.cov.wide[variable=="WalkMax.Walk", variable:="Max.Walk"]
   # ensure order really correct: Max.Walk last
   stopifnot(dt.long.cov.wide[, tail(variable,n=1) == "Max.Walk", by=id.vars][, all(V1)])
   # by walk_id_ from: Walk1, to:Max.Walk
-  dt.long.cov.wide[, from := min(id_relative_pos), by="walk_id"]
-  dt.long.cov.wide[, to := max(id_relative_pos), by="walk_id"]
+  # dt.long.cov.wide[, from := min(id_relative_pos), by="walk_id"]
+  # dt.long.cov.wide[, to := max(id_relative_pos), by="walk_id"]
+  dt.long.cov.wide[, walk_from := min(abs_pos), by="walk_id"]
+  dt.long.cov.wide[, walk_to := max(abs_pos), by="walk_id"]
+
 
   return(dt.long.cov.wide)
   # names.cov <- dt.melted[,  unique(cov.name)]

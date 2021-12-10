@@ -1,16 +1,5 @@
 #include "pnbd_dyncov_LL_new.h"
 
-// arma::vec pnbd_dyncov_LL_i_cov_exp(arma::vec params, arma::vec cov){
-//   return();
-// }
-
-// struct CBS {
-//   CBS(const int x, const double t_x, const double T_cal):x(x), t_x(t_x), T_cal(T_cal){};
-//   const int x;
-//   const double t_x;
-//   const double T_cal;
-// };
-
 struct Customer {
   const double x, t_x, T_cal;
   // const double adj_transaction_cov_dyn, adj_lifetime_cov_dyn;
@@ -77,21 +66,21 @@ bool Walk::is_aux_trans(const arma::rowvec& walk_info){
 
 Walk::Walk(const arma::vec& cov_data, const arma::rowvec& walk_info)
   :
-  walk_data(cov_data.subvec(
-      static_cast<arma::uword>(walk_info(0))-1,
-      static_cast<arma::uword>(walk_info(1))-1)),
+  // walk_data(cov_data.subvec(
+  //     static_cast<arma::uword>(walk_info(0))-1,
+  //     static_cast<arma::uword>(walk_info(1))-1)),
    tjk{walk_info(2)}, d{walk_info(3)}, delta{walk_info(4)}
 {
   /*
    * May not store refs/pointers to walk_info as will only receive subviews (mat.row())
    */
 
-  // auto from = static_cast<arma::uword>(walk_info(0))-1;
-  // auto to = static_cast<arma::uword>(walk_info(1))-1;
-  // arma::uword n_elems = to-from+1;
+  auto from = static_cast<arma::uword>(walk_info(0))-1;
+  auto to = static_cast<arma::uword>(walk_info(1))-1;
+  arma::uword n_elems = to-from+1;
   // // // Rcpp::Rcout<<"n_elems"<<n_elems<<std::endl;
-  // double* ptr = const_cast<double*>(cov_data.memptr());
-  // this->walk_data = arma::vec(ptr+from, n_elems, false, true);
+  double* ptr = const_cast<double*>(cov_data.memptr());
+  this->walk_data = arma::vec(ptr+from, n_elems, false, true);
   // this->walk_data = arma::vec(cov_data.memptr()+from, view.n_elem);
 
   // const arma::subview_col<double> view = cov_data.subvec(from, to);
@@ -490,7 +479,7 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
                            const double BT, const double DT,
                            const double A1T, const double C1T,
                            const double AkT, const double CkT,
-                           const double F2_3,
+                           const double F2_3_R,
                            const bool return_intermediate_results,
                            arma::vec& intermediate_results){
 
@@ -556,9 +545,9 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
                                               aT, bT,
                                               AkT, CkT);
 
-    // const double F2_3 = pnbd_dyncov_LL_i_F2_3(r, alpha_0, s, beta_0,
-    //                                           c,
-    //                                           Bjsum, dT);
+    const double F2_3 = pnbd_dyncov_LL_i_F2_3(r, alpha_0, s, beta_0,
+                                              c,
+                                              Bjsum, dT);
 
     if(return_intermediate_results){
       intermediate_results(0) = Bjsum;
@@ -681,13 +670,59 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
   }
 }
 
+// [[Rcpp::export]]
+Rcpp::NumericMatrix LL_i(const double r, const double alpha_0, const double s, const double beta_0,
+                         const arma::vec& X, const arma::vec& t_x, const arma::vec& T_cal,
+                         const arma::vec& DT, const arma::vec& F2_3,
+                         const arma::vec& walkinfo_trans_from, const arma::vec& walkinfo_trans_to,
+                         const arma::vec& walkinfo_life_from, const arma::vec& walkinfo_life_to,
+                         const arma::mat& walk_info_life, const arma::mat& walk_info_trans,
+                         const arma::vec& params_life,
+                         const arma::vec& params_trans,
+                         const arma::mat& cov_data_life,
+                         const arma::mat& cov_data_trans,
+                         const bool return_intermediate_results){
 
+  // The only thing that changes between calls to the LL during optimization
+  arma::vec adj_cov_data_life = arma::exp(cov_data_life * params_life);
+  arma::vec adj_cov_data_trans = arma::exp(cov_data_trans * params_trans);
+
+  Rcpp::NumericMatrix res;
+  if(return_intermediate_results){
+    res = Rcpp::NumericMatrix(X.n_elem, 20);
+  }else{
+    res = Rcpp::NumericMatrix(X.n_elem, 1);
+  }
+
+  Rcpp::NumericVector res_i;
+  for(arma::uword i = 0; i < X.n_elem; i++){
+    arma::uword wi_life_from = static_cast<arma::uword>(walkinfo_life_from(i)) - 1;
+    arma::uword wi_life_to = static_cast<arma::uword>(walkinfo_life_to(i)) - 1;
+    arma::uword wi_trans_from = static_cast<arma::uword>(walkinfo_trans_from(i)) - 1;
+    arma::uword wi_trans_to = static_cast<arma::uword>(walkinfo_trans_to(i)) - 1;
+
+    Customer c(X(i), t_x(i), T_cal(i),
+               adj_cov_data_life, walk_info_life.rows(wi_life_from, wi_life_to),
+               adj_cov_data_trans, walk_info_trans.rows(wi_trans_from, wi_trans_to));
+
+    res_i = pnbd_dyncov_LL_i(r, alpha_0, s, beta_0,
+                             c,
+                             DT(i), F2_3(i), true);
+    res(i, Rcpp::_) = res_i;
+  }
+
+  Rcpp::CharacterVector c_names = {"LL"};
+  if(return_intermediate_results){
+    c_names = res_i.names();
+  }
+  Rcpp::colnames(res) = c_names;
+  return(res);
+}
 
 
 // [[Rcpp::export]]
 Rcpp::NumericVector LL_i_single_walk(const double r, const double alpha_0, const double s, const double beta_0,
                         const double x, const double t_x, const double T_cal,
-                        const int num_walks,
                         const double DT,
                         const double F2_3,
 

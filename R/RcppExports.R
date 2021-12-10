@@ -554,11 +554,23 @@ F2_3_vecs_cpp <- function(n_walks_cbs, dT_cbs, Bjsum_cbs, x_cbs, t_x_cbs, n_walk
     .Call(`_CLVTools_F2_3_vecs_cpp`, n_walks_cbs, dT_cbs, Bjsum_cbs, x_cbs, t_x_cbs, n_walks_trans, walks_trans, d_trans, delta_trans, max_walks_trans, n_walks_life_real, d_life_real, max_walks_life_real, adj_walk1_life_real, walks_life_real, n_walks_life_aux, d_life_aux, max_walks_life_aux, walks_life_aux, r, alpha, s, beta)
 }
 
-LL_i_single_walk <- function(r, alpha_0, s, beta_0, x, t_x, T_cal, num_walks, DT, F2_3, params_life, params_trans, cov_data_life, cov_data_trans, walk_info_life, walk_info_trans, return_intermediate_results) {
-    .Call(`_CLVTools_LL_i_single_walk`, r, alpha_0, s, beta_0, x, t_x, T_cal, num_walks, DT, F2_3, params_life, params_trans, cov_data_life, cov_data_trans, walk_info_life, walk_info_trans, return_intermediate_results)
+LL_i <- function(r, alpha_0, s, beta_0, X, t_x, T_cal, DT, F2_3, walkinfo_trans_from, walkinfo_trans_to, walkinfo_life_from, walkinfo_life_to, walk_info_life, walk_info_trans, params_life, params_trans, cov_data_life, cov_data_trans, return_intermediate_results) {
+    .Call(`_CLVTools_LL_i`, r, alpha_0, s, beta_0, X, t_x, T_cal, DT, F2_3, walkinfo_trans_from, walkinfo_trans_to, walkinfo_life_from, walkinfo_life_to, walk_info_life, walk_info_trans, params_life, params_trans, cov_data_life, cov_data_trans, return_intermediate_results)
+}
+
+LL_i_single_walk <- function(r, alpha_0, s, beta_0, x, t_x, T_cal, DT, F2_3, params_life, params_trans, cov_data_life, cov_data_trans, walk_info_life, walk_info_trans, return_intermediate_results) {
+    .Call(`_CLVTools_LL_i_single_walk`, r, alpha_0, s, beta_0, x, t_x, T_cal, DT, F2_3, params_life, params_trans, cov_data_life, cov_data_trans, walk_info_life, walk_info_trans, return_intermediate_results)
 }
 
 convert_walk <- function(params_life, params_trans, cov_data_life, cov_data_trans, walk_info_life, walk_info_trans) {
     .Call(`_CLVTools_convert_walk`, params_life, params_trans, cov_data_life, cov_data_trans, walk_info_life, walk_info_trans)
+}
+
+start_profiler <- function(str) {
+    .Call(`_CLVTools_start_profiler`, str)
+}
+
+stop_profiler <- function() {
+    .Call(`_CLVTools_stop_profiler`)
 }
 
