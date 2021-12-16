@@ -1,4 +1,5 @@
 pnbd_dyncov_getLLcallargs <-function(clv.fitted){
+  walkinfo_life_from <- walkinfo_life_to <- walkinfo_trans_from <- walkinfo_trans_to <- i.id_from <- i.id_to <- NULL
 
   dt.walkinfo.life  <- pnbd_dyncov_get_walkinfo(clv.fitted@data.walks.life)
   dt.walkinfo.trans <- pnbd_dyncov_get_walkinfo(clv.fitted@data.walks.trans)
@@ -39,6 +40,7 @@ pnbd_dyncov_getLLcallargs <-function(clv.fitted){
 }
 
 pnbd_dyncov_creatwalks_add_tjk <- function(dt.walk, clv.time){
+  tjk <- tp.previous.trans <- tp.this.trans <- NULL
   # time between Trans and the previous Trans / from date.lagged to date
   dt.walk[, tjk := clv.time.interval.in.number.tu(clv.time = clv.time,
                                                   interv = interval( start = tp.previous.trans,
@@ -47,6 +49,7 @@ pnbd_dyncov_creatwalks_add_tjk <- function(dt.walk, clv.time){
 }
 
 pnbd_dyncov_creatwalks_add_d <- function(dt.walk, clv.time){
+  d <- tp.previous.trans <- NULL
   # **TODO: +1 or not?
   # time between date.lagged and period end (ceiling(data.lagged+1))
   # d shall be 1 if it is exactly on the time.unit boundary!
@@ -57,36 +60,6 @@ pnbd_dyncov_creatwalks_add_d <- function(dt.walk, clv.time){
                                                                                                  timepoint=tp.previous.trans)))]
   return(dt.walk)
 }
-
-# pnbd_dyncov_creatwalks_add_delta <- function(dt.walk){
-#   dt.walk[, delta := NA_real_]
-#   # **TODO: implement, requires walk_id?
-#   return(dt.walk)
-# }
-
-# pnbd_dyncov_extractwalk <- function(dt.cov.id, tp.lower, tp.upper){
-#   # Extract covariates which were active for this transaction (tp.upper)
-#   # **TODO: What if tp.lower == tp.upper? Such as when last trans on estimation end (for aux walk)
-#
-#   dt.walk <- dt.cov.id[Cov.Date > tp.lower & Cov.Date <= tp.upper]
-#
-#   # ** TODO: Or only add to table at the very end when all walks are combined
-#   dt.walk <- pnbd_dyncov_extractwalk_add_d(dt.walk)
-#
-#   dt.walk <- pnbd_dyncov_extractwalk_add_tjk(dt.walk)
-#
-#   # ** TODO: What counts as Num.Walk? Actual content or 1 cov (walk1 + max.walk = 1 or 2)
-#   # delta: if Num.Walk > 1 -> 1, otherwise 0
-#   if(nrow(dt.walk) > 1){
-#     dt.walk[, delta := 1]
-#   }else{
-#     dt.walk[, delta := 0]
-#   }
-#
-#   dt.walk[, tp.transaction := tp.upper]
-#
-#   return(dt.walk)
-# }
 
 
 pnbd_dyncov_creatwalks_matchcovstocuts <- function(dt.cov, dt.cuts, names.cov){
@@ -102,14 +75,16 @@ pnbd_dyncov_creatwalks_matchcovstocuts <- function(dt.cov, dt.cuts, names.cov){
 
 pnbd_dyncov_createwalks_singletrans <- function(dt.cov, dt.tp.first.last,
                                                 name.lower, name.upper,
-                                                names.covs, clv.time){
+                                                names.cov, clv.time){
+  tp.cut.lower <- tp.cut.upper <- tp.this.trans <- tp.previous.trans <- NULL
+
   dt.cuts <- copy(dt.tp.first.last)
   dt.cuts[, tp.cut.lower := get(name.lower) + clv.time.epsilon(clv.time)]
   dt.cuts[, tp.cut.upper := get(name.upper)]
   dt.cuts[get(name.lower) == get(name.upper), tp.cut.lower := get(name.lower)]
 
   dt.walks <- pnbd_dyncov_creatwalks_matchcovstocuts(dt.cov = dt.cov, dt.cuts = dt.cuts,
-                                                     names.cov = names.covs)
+                                                     names.cov = names.cov)
 
   dt.walks[, tp.this.trans := get(name.upper)]
   dt.walks[, tp.previous.trans := get(name.lower)]
@@ -121,6 +96,8 @@ pnbd_dyncov_createwalks_singletrans <- function(dt.cov, dt.tp.first.last,
 }
 
 pnbd_dyncov_covariate_add_interval_bounds <- function(dt.cov, clv.time){
+  tp.cov.lower <- tp.cov.upper <- Cov.Date <- NULL
+
   # Covariate intervals are closed intervals + Cov.Date marks beginning (Covs are forward-looking)
   #   => [Cov.Date, Next Cov.Date - eps] <=> [Cov.Date, Cov.Date + 1 Period - eps]
 
@@ -138,73 +115,9 @@ pnbd_dyncov_covariate_add_interval_bounds <- function(dt.cov, clv.time){
   return(dt.cov)
 }
 
-pnbd_dyncov_createwalks_trans <- function(clv.data){
-
-  # For every customer, find tp of first and last transaction
-  dt.trans <- clv.data.get.transactions.in.estimation.period(clv.data)
-  dt.tp.first.last <- dt.trans[, list(tp.first.trans = min(Date),
-                                      tp.last.trans = max(Date),
-                                      num.trans = .N),
-                               by="Id"]
-
-  # clv.data.get.covariate.data.with.intervals.trans
-  dt.cov <- clv.data@data.cov.trans
-  names.covs <- clv.data.get.names.cov.trans(clv.data)
-
-
-
-  # Aux Walks ------------------------------------------------------------------------
-  dt.tp.first.last[, tp.estimation.end := clv.data@clv.time@timepoint.estimation.end]
-  dt.walks.aux <- pnbd_dyncov_createwalks_singletrans(dt.cov=dt.cov,
-                                                      name.lower="tp.last.trans",
-                                                      name.upper="tp.estimation.end",
-                                                      dt.tp.first.last=dt.tp.first.last,
-                                                      names.covs=names.covs,
-                                                      clv.time=clv.data@clv.time)
-  dt.walks.aux[, AuxTrans := TRUE]
-
-  cols.walks <- c("Id", "tp.this.trans", "AuxTrans", "tp.cov.lower", "Cov.Date", names.covs,
-                  "tjk", "d", "delta")
-  return(rbindlist(list(dt.walks.real[, .SD, .SDcols = cols.walks],
-                        dt.walks.aux[, .SD, .SDcols = cols.walks])))
-}
-
-pnbd_dyncov_createwalks_life <- function(clv.data){
-
-  # For every customer, find tp of first and last transaction
-  dt.trans <- clv.data.get.transactions.in.estimation.period(clv.data)
-  dt.tp <- dt.trans[, list(tp.first.trans = min(Date),
-                           tp.last.trans = max(Date)), by="Id"]
-
-  dt.cov <- clv.data@data.cov.life
-  names.covs <- clv.data.get.names.cov.life(clv.data)
-
-  # Real Walks -----------------------------------------------------------------------
-  # **TOOD: Keep Zero-repeaters? Because for transaction process, only repeat-transactions (zero repeaters may have no walks)
-  dt.walks.real <- pnbd_dyncov_createwalks_singletrans(dt.cov=dt.cov, dt.tp.first.last=dt.tp,
-                                                       name.lower="tp.first.trans",
-                                                       name.upper="tp.last.trans",
-                                                       names.covs=names.covs,
-                                                       clv.time=clv.data@clv.time)
-  dt.walks.real[, AuxTrans := FALSE]
-
-
-  # Aux Walks ------------------------------------------------------------------------
-  dt.tp[, tp.estimation.end := clv.data@clv.time@timepoint.estimation.end]
-  dt.walks.aux <- pnbd_dyncov_createwalks_singletrans(dt.cov=dt.cov, dt.tp.first.last=dt.tp,
-                                                      name.lower="tp.last.trans",
-                                                      name.upper="tp.estimation.end",
-                                                      names.covs=names.covs,
-                                                      clv.time=clv.data@clv.time)
-  dt.walks.aux[, AuxTrans := TRUE]
-
-  cols.walks <- c("Id", "tp.this.trans", "AuxTrans", "tp.cov.lower", "Cov.Date", names.covs,
-                  "tjk", "d", "delta")
-  return(rbindlist(list(dt.walks.real[, .SD, .SDcols = cols.walks],
-                        dt.walks.aux[, .SD, .SDcols = cols.walks])))
-}
 
 pnbd_dyncov_createwalks_real_trans <- function(clv.data, dt.trans, dt.tp.first.last){
+  num.trans <- tp.this.trans <- tp.previous.trans <- tp.cut.lower <- tp.cut.upper <- is.first <- AuxTrans <- Date <- NULL
   clv.time <- clv.data@clv.time
   dt.cov <- clv.data@data.cov.trans
 
@@ -251,23 +164,27 @@ pnbd_dyncov_createwalks_real_trans <- function(clv.data, dt.trans, dt.tp.first.l
 }
 
 pnbd_dyncov_createwalks_real_life <- function(clv.data, dt.tp.first.last){
+  AuxTrans <- NULL
+
   # **TOOD: Keep Zero-repeaters? Because for transaction process, only repeat-transactions (zero repeaters may have no walks)
   dt.walks.real <- pnbd_dyncov_createwalks_singletrans(dt.cov=clv.data@data.cov.life,
                                                        dt.tp.first.last=dt.tp.first.last,
                                                        name.lower="tp.first.trans",
                                                        name.upper="tp.last.trans",
-                                                       names.covs=clv.data.get.names.cov.life(clv.data),
+                                                       names.cov=clv.data.get.names.cov.life(clv.data),
                                                        clv.time=clv.data@clv.time)
   dt.walks.real[, AuxTrans := FALSE]
 }
 
 pnbd_dyncov_createwalks_auxwalk <- function(dt.cov, dt.tp.first.last, names.cov, clv.time){
+  tp.estimation.end <- AuxTrans <- NULL
+
   dt.tp.first.last[, tp.estimation.end := clv.time@timepoint.estimation.end]
   dt.walks.aux <- pnbd_dyncov_createwalks_singletrans(dt.cov=dt.cov,
                                                       dt.tp.first.last=dt.tp.first.last,
                                                       name.lower="tp.last.trans",
                                                       name.upper="tp.estimation.end",
-                                                      names.covs=names.covs,
+                                                      names.cov = names.cov,
                                                       clv.time=clv.time)
   dt.walks.aux[, tp.estimation.end := NULL]
   dt.walks.aux[, AuxTrans := TRUE]
@@ -275,15 +192,25 @@ pnbd_dyncov_createwalks_auxwalk <- function(dt.cov, dt.tp.first.last, names.cov,
 }
 
 pnbd_dyncov_createwalks_addwalkfromto <- function(dt.walks){
-
+  Id <- tp.this.trans <- AuxTrans <- tp.cov.lower <- abs_pos <- walk_from <- walk_to <- NULL
   dt.walks[order(Id, tp.this.trans, AuxTrans, tp.cov.lower), abs_pos := seq(from=1, to=.N)]
   dt.walks[, walk_from := min(abs_pos), by="walk_id"]
   dt.walks[, walk_to := max(abs_pos), by="walk_id"]
-  # dt.walks[, abs_pos := NULL]
   return(dt.walks)
 }
 
 pnbd_dyncov_makewalks <- function(clv.data){
+  walk_id <- walk_from <- walk_to <- .N <- abs_pos <- Date <- delta <- tp.cov.lower <- NULL
+  #   ** TODO: Is it correct, that life only ever uses d but not delta and tjk?
+  #   data.work.trans <- data.table(clv.fitted@data.walks.trans[[1]][, "Id"],
+  #                                 clv.fitted@data.walks.trans[[1]][, "d"],
+  #                                 clv.fitted@data.walks.trans[[1]][, "delta"],
+  #                                 clv.fitted@data.walks.trans[[1]][, "tjk"],
+  #
+  #   data.work.life <- data.table(clv.fitted@data.walks.life[[1]][, "Id"],
+  #                                clv.fitted@data.walks.life[[1]][, "d"],
+  #
+
 
   # Extract transactions and first/last for all walk types & processes because
   #   may be memory and computation intensive
@@ -361,6 +288,7 @@ pnbd_dyncov_makewalks <- function(clv.data){
 }
 
 pnbd_dyncov_get_walkinfo <- function(dt.walks){
+  abs_pos <- Id <- id_from <- id_to <- NULL
   # minimum info, per walk. Keep Id to create customerinfo (match with cbs)
 
   dt.walkinfo <- unique(dt.walks[, c("Id", "walk_from", "walk_to", "tjk", "d", "delta", "AuxTrans")])
@@ -383,134 +311,3 @@ pnbd_dyncov_get_customerinfo <-function(dt.walkinfo){
 }
 
 
-
-
-# Creates all walks for
-#' @importFrom lubridate force_tz
-#' @importFrom methods is
-# pnbd_dyncov_makewalks <- function(clv.data){
-#
-#   Id <- Date <- Cov.Date <- Price <- AuxTrans <- Mapping.Transaction.Id <- is.first.trans <- NULL
-#   data.dyn.cov.life  <- copy(clv.data@data.cov.life)
-#   data.dyn.cov.trans <- copy(clv.data@data.cov.trans)
-#
-#   names.cov.life  <- clv.data@names.cov.data.life
-#   names.cov.trans <- clv.data@names.cov.data.trans
-#
-#   #copy as will be manipulated by ref
-#   trans.dt  <- copy(clv.data@data.transactions[, c("Id", "Date")])
-#
-#   # NEW IN cleanup-dyncov --------------------------------------------
-#   # CONVERT DATES TO POSIXCT!
-#   #   Force the Dates at "facevalue" to posixct and cutoff any time
-#   if(is(clv.data@clv.time, "clv.time.date")){
-#     data.dyn.cov.life[,  Cov.Date := floor_date(force_tz(as.POSIXct.Date(Cov.Date), tzone = "UTC"), unit="day")]
-#     data.dyn.cov.trans[, Cov.Date := floor_date(force_tz(as.POSIXct.Date(Cov.Date), tzone = "UTC"), unit="day")]
-#     trans.dt[, Date := floor_date(force_tz(as.POSIXct.Date(Date), tzone = "UTC"), unit="day")]
-#   }
-#
-#   #
-#   #do not restrain covariates to estimation period here - needed longer for interval building
-#
-#
-#   # Include AuxTrans for all customers -------------------------------
-#   #   Add AuxTrans on Estimation end date, 1 for every customer
-#   #   Needs to be done before removing the first transactions
-#   # ** This may lead to 2 transaction on the same date when last trans is on estimation.end !!?? **
-#
-#   # Add column for all real transactions first
-#   trans.dt[, AuxTrans:=FALSE]
-#
-#   #Add artificial aux transactions ------------------------------------
-#   # NEW IN cleanup-dyncov
-#   # CONVERT DATES TO POSIXCT!
-#   if(is(clv.data@clv.time, "clv.time.date")){
-#     dt.aux.transactions <- data.table( Id   = trans.dt[,unique(Id)],
-#                                        Date = floor_date(force_tz(as.POSIXct(clv.data@clv.time@timepoint.estimation.end), tzone = "UTC"), unit="day"),
-#                                        AuxTrans=TRUE)
-#   }else{
-#     dt.aux.transactions <- data.table( Id   = trans.dt[,unique(Id)],
-#                                        Date = clv.data@clv.time@timepoint.estimation.end,
-#                                        AuxTrans=TRUE)
-#   }
-#
-#   #Append dt.aux.transactions to ordinary transactions
-#   trans.dt          <- rbindlist(list(trans.dt, dt.aux.transactions), use.names = TRUE)
-#
-#
-#   # Temporary unique transaction Id ----------------------------------------
-#   #   - Is needed to subset by
-#   #   - Will be written to every covariate
-#   #     between transactions to identicate
-#   #       which covs belongs to which trans!
-#
-#   #add unique transaction id
-#   trans.dt[, Mapping.Transaction.Id:=seq.int(from=1, to=nrow(trans.dt))]
-#
-#   # Inidicate first transaction here as this is needed in many cases
-#   #   AuxTrans needs to be FALSE, as sometimes AuxTrans falls together with first trans
-#   trans.dt[, is.first.trans := ifelse(Date == min(Date) & AuxTrans == FALSE, TRUE, FALSE), by=Id]
-#
-#
-#
-#
-#   # Create Walks for transaction covariate --------------------------------
-#   #   Only if there are trans covs
-#
-#   if(!is.null(names.cov.trans)){
-#     # create actual walks
-#     trans.walks <- pnbd_dyncov_createwalks(clv.time=clv.data@clv.time, data.transactions = trans.dt, data.dyn.cov = data.dyn.cov.trans, names.dyn.cov = names.cov.trans)
-#     #rename covariate on transaction date
-#     for(w.dt in trans.walks){setnames(w.dt, "Cov.on.trans.date","transaction.cov.dyn")}
-#   }else{
-#     trans.walks <- list()
-#   }
-#
-#
-#
-#   # Create Walks for lifetime covariate -----------------------------------
-#   #   Only if there are life covs
-#
-#   if(!is.null(names.cov.life)){
-#
-#     # Only 2 Transactions per customer are relevant -----------------------
-#     #
-#     #   But transaction table needs these trans:
-#     #     - (1) AuxTrans
-#     #     - (2) Last Trans before AuxTrans
-#     #     - (3) Very first trans
-#     #   (3) is needed to create cov interval from 0-x
-#     #       (same as in implementation before)
-#     #   (3) will be removed in CreateWalk - only 2 Trans left
-#     #   As (2) and (3) can be the same, but (2) may not be removed in
-#     #      CreateWalks, set its "is.first.trans" = FALSE (=will not remove)
-#
-#     # Date=max(Date) only correct if Date<=date.estimation.end (!)
-#     if(is(clv.data@clv.time, "clv.time.date")){
-#       before.aux <- trans.dt[AuxTrans == FALSE & Date <= floor_date(force_tz(as.POSIXct.Date(clv.data@clv.time@timepoint.estimation.end), tzone = "UTC"), unit="day"), .SD[Date == max(Date)], by=Id]
-#     }else{
-#       before.aux <- trans.dt[AuxTrans == FALSE & Date <= clv.data@clv.time@timepoint.estimation.end, .SD[Date == max(Date)], by=Id]
-#     }
-#
-#     # do not remove in CreateWalks, in case it is the same as the very first trans (1)
-#     before.aux[, is.first.trans := FALSE]
-#
-#     life.cov.trans <- rbindlist(list( trans.dt[is.first.trans == TRUE],  #(3)
-#                                       before.aux,                        #(2)
-#                                       trans.dt[AuxTrans == TRUE]),       #(1)
-#                                 use.names = TRUE, fill=FALSE)
-#
-#     # create actual walks
-#     life.walks <- pnbd_dyncov_createwalks(clv.time=clv.data@clv.time, data.transactions = life.cov.trans,
-#                                           data.dyn.cov = data.dyn.cov.life, names.dyn.cov = names.cov.life)
-#
-#     #rename covariate on transaction date
-#     for(w.dt in life.walks){setnames(w.dt, "Cov.on.trans.date","lifetime.cov.dyn")}
-#   }else{
-#     life.walks <- list()
-#   }
-#
-#
-#   return(list(data.walks.life  = life.walks,
-#               data.walks.trans = trans.walks))
-# }

@@ -120,6 +120,10 @@ double Walk::sum_from_to(const arma::uword from, const arma::uword to) const{
   return(arma::accu(this->walk_data.subvec(from, to)));
 }
 
+// FACTOR * (
+//     hyp2F1(r+s+x,s+1,r+s+x+1,(alpha_1-beta_1)/alpha_1) / (alpha_1^(r+s+x))
+//   - hyp2F1(r+s+x,s+1,r+s+x+1,(alpha_2-beta_2)/alpha_2) / (alpha_2^(r+s+x))
+// )
 double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
                                           const int x,
                                           const double alpha_1, const double beta_1,
@@ -162,6 +166,11 @@ double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
   return(hyp_z1 - hyp_z2);
 }
 
+
+// FACTOR * (
+//     hyp2F1(r+s+x,r+x,r+s+x+1,(beta_1-alpha_1)/beta_1) / (beta_1^(r+s+x))
+//   - hyp2F1(r+s+x,r+x,r+s+x+1,(beta_2-alpha_2)/beta_2) / (beta_2^(r+s+x))
+// )
 double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
                                          const int x,
                                          const double alpha_1, const double beta_1,
@@ -356,6 +365,7 @@ double pnbd_dyncov_LL_i_Di2(const arma::uword i, const arma::uword n_elem_real_w
   double Cki = 0.0;
   double delta = static_cast<double>(n_elem_real_walk + i - 1 > 1);
   if(aux_walk_life.n_elem() > i){
+    // **TODO: Do we really sum further than n_elem?
     // Walk_i -> get_elem(i-1)
     Cki = aux_walk_life.get_elem(i-1) *
       (-d_omega - delta*(static_cast<double>(n_elem_real_walk) + static_cast<double>(i) - 3.0));
@@ -368,6 +378,27 @@ double pnbd_dyncov_LL_i_Di2(const arma::uword i, const arma::uword n_elem_real_w
 }
 
 double pnbd_dyncov_LL_i_Di(const arma::uword i, const Walk& real_walk_life, const Walk& aux_walk_life){
+  // ########
+  // # #instead of changing Max.Walk in pnbd_LL_Di a new column Di.Max.Walk is introduced which contains these changes to Max.Walk
+  // # #this way a copy can be avoided in _Di
+  // # #any customers Num.Walk is 1 (independent of AuxTrans)? -> Make AuxTrans Di.max.walk=NA
+  // # #(this was Jeffs strange implementation in _Di before)
+  // # data.work.life [, Di.Max.Walk:=adj.Max.Walk]
+  //
+  // # #if you have any Num.Walk==1, set your RealTrans  Di.Max.Walk = NA
+  // # #get anybody with Num.Walk == 1 and for this IDs set Di.Max.Walk = NA where AuxTrans==F
+  // # any.num.walk.e.1 <- data.work.life[Num.Walk==1, Id,  by=Id]$Id
+  // # data.work.life[AuxTrans==F & Id %in% any.num.walk.e.1, Di.Max.Walk := as.double(NA)]
+  // #########
+  //
+  // #instead of changing Max.Walk in pnbd_LL_Di a new column Di.Max.Walk is introduced which contains these changes to Max.Walk
+  // #this way a copy can be avoided in _Di
+  // #Where Num.Walk == 1 set max.walk = NA
+  //   data.work.life[, Di.Max.Walk:=adj.Max.Walk]
+  //   data.work.life[, Di.adj.Walk1:=adj.Walk1]
+  //   data.work.life[Num.Walk==1 & AuxTrans==FALSE, Di.Max.Walk:=as.double(NA)]
+  //   data.work.life[Num.Walk==1 & AuxTrans==TRUE, Di.adj.Walk1:=as.double(NA)]
+
   // **TODO:
   // JEFF:
   // # Num.Walk == 1 & AuxTrans==T -> Max.Walk = NA
@@ -494,6 +525,16 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
 
   // **TODO: What is num_walks here? Length of 1 walk or max of all walks, incl aux or only real walks?**
   //          Current: Num.Walks from last trans to estimation end (aux.n_elem())
+
+  // #add num walk to cbs
+  // cbs[, Num.Walk := clv.fitted@data.walks.trans[[1]][AuxTrans==TRUE, Num.Walk]]
+  // # Lifetime Process ---------------------------------------------------
+  // #   Num.walk in cbs is kxT!
+  // # F2 -----------------------------------------------------------------
+  // #   For Num.Walk == 1: F2 = F2.1
+  // #   For Num.Walk >  1: F2 = F2.1, F2.2, F2.3
+  // # F2.3 (only for Num.Walk > 1) ---------------------------------------
+  //   max.walk <- data.work.life[,max(Num.Walk)]
 
   if(c.aux_walk_life.n_elem() == 1){
 
@@ -628,6 +669,89 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
 
   const double log_F3 = -s * std::log(DkT + beta_0) - (c.x+r) * std::log(Bksum + alpha_0);
 
+  // LL -----------------------------------------------------------------------------------------------------
+  //
+  //   LL = log(F0)+log((F1 * F2) + F3)
+  //
+  //   We rely on various tricks to improve numerical stability
+  //
+  //   1. Improvement
+  //   F0 quickly is too large to represent because of exp() and gamma(f(x))
+  //   Because it is only used as log(F0) it can be directly rewritten:
+  //
+  //   F0      = ((alpha_0)^(r)*(beta_0)^(s) * (gamma(x+r)))/gamma(r) * exp(A1sum)
+  //   log(F0) = r*log(alpha_0) + s*log(beta_0) + log(gamma(x+r)) - log(gamma(r)) + A1sum- (x+r)*log((Bksum + alpha_0))
+  //
+  //   and using the lgamma() function to calculate log(gamma())
+  //
+  //
+  //   2. Improvement
+  //   log((F1 * F2) + F3) can be to large to represent. It can be rewritten
+  //   using the log trick:
+  //   log(A + B) = log(max(A,B)) + log(1+(min(A,B)/max(A,B)))
+  //
+  //   where A = (F1*F2) and B = F3 in this case and using log1p(x) instead
+  //   of log(1+x) for better log approximation in case of small x:
+  //
+  //     LL = log.F0 + log(A+B)    # where A=F1*F2, B=F3
+  //     LL = log.F0 + log(max(A,                 B))  + log(1+(min(A,B)/max(A,B))) #as described on 290-292
+  //     LL = log.F0 + max(log(A),            log(B))  + log(1+(min(A,B)/max(A,B)))
+  //     LL = log.F0 + max(log(F1*F2),        log(B))  + log(1+(min(A,B)/max(A,B)))
+  //     LL = log.F0 + max(log(F1) + log(F2), log(B))  + log(1+(min(A,B)/max(A,B)))
+  //     Hence:
+  //     LL = log.F0 + max(log(F1) + log(F2), log(F3))  + log(1+(min(F1*F2,F3)/max(F1*F2,F3)))
+  //
+  //     log(F1) and log(F3) can be simplified to logged sums as they are products. log(F2) cannot.
+  //     F1 = s/(r+s+x)                                        =>   log.F1 = log(s) - log(r+s+x)
+  //     F3 = 1 /((DkT  + beta_0)^(s)*(BkSum+alpha_0)^(x+1r))  =>   log.F3 = -s*log(DkT + beta_0) - (x+r)*log(Bksum+alpha_0)
+  //
+  //
+  //     3. Improvement
+  //     The F2 can be negative/zero for some observations and log(F2) cannot be calculated. Therefore, case
+  //       differentiation is done for F2. In general, log((F1*F2) + F3) is because (F1*F2) + F3 > 0 as otherwise
+  //       the whole likelihood does not make sense. Also we have that always F1 > 0 and B=F3 > 0 so A=F1*F2 <= 0 is
+  //       possible but at the same time A+B > 0.
+  //
+  //       If F2 > 0: Same calculation as before.
+  //
+  //       If F2 < 0:  A=F1*F2 <= 0 and B=F3 > 0 but abs(F3) > abs(F1*F2)
+  //         log(max(A,B))  + log(1+(min(A,B)/max(A,B)))
+  //         log(B)         + log(1+A/B)                 with -1 < (A/B) < 0
+  //         log(F3)        + log(1+(F1*F2/F3))
+  //
+  //       If F2 = 0: Based on the original LL
+  //         LL = log.F0 + log((F1*F2) + F3)
+  //         LL = log.F0 + log(0 + F3)
+  //         LL = log.F0 + log.F3
+  //
+  //         4. Improvement
+  //         For the case F2 < 0, the product F1*F2 in log(1+min()/max()) can still be to large to represent.
+  //         They are elimenated by artificially exp() and then log components
+  //
+  //         log(F3)        + log(1 +         ( F1 * F2 / F3 ))
+  //         log(F3)        + log(1 + exp( log(F1))* F2 / exp( log(F3)))
+  //         log(F3)        + log(1 + exp( log.F1  - log.F3) * F2)
+  //
+  //
+  //         For the case F2 > 0, the product F1*F2 in log((F1 * F2) + F3) can still be to large
+  //         to represent. They are eliminated using the log-sum-of-exponents (LSE) trick.
+  //         log(A + B)
+  //         log(exp(log(A)) + exp(log(B)))
+  //         -> LSE
+  //         max(log(A),         log(B)) + log(exp(log(A          - max(log(A),         log(B)))) + exp(log(B- max(log(A),         log(B)))))
+  //         max(log(F1*F2),     log(B)) + log(exp(log(F1*F2      - max(log(F1*F2),     log(B)))) + exp(log(B- max(log(F1*F2),     log(B)))))
+  //         max(log.F1+log(F2), log.F3) + log(exp(log.F1+log(F2) - max(log.F1+log(F2), log.F3))) + exp(log(B- max(log.F1+log(F2), log.F3))))
+  //
+  //         Or alternative:
+  //         max(log(F1) + log(F2), log(B))  + log(1+       (min(A,B)                  / max(A,B)))
+  //         max(log(F1) + log(F2), log(B))  + log(1+exp(log(min(A,B)                  / max(A,B))))
+  //         max(log(F1) + log(F2), log(B))  + log(1+exp(log(min(A,B))                 - log(max(A,B))))
+  //         max(log(F1) + log(F2), log(B))  + log(1+exp(min(log(A),log(B))            - max(log(A),log(B))))
+  //         max(log(F1) + log(F2), log(B))  + log(1+exp(min(log(F1*F2),log(F3))       - max(log(F1*F2),log(F3))))
+  //         max(log(F1) + log(F2), log(B))  + log(1+exp(min(log.F1 + log(F2), log.F3) - max(log.F1 + log(F2),log.F3)))
+  //         cbs[F2 >  0,  LL.other :=log.F0 +  pmax(log.F1 + log(F2), log.F3)  + log1p(exp(pmin(log.F1 + log(F2), log.F3) - pmax(log.F1 + log(F2),log.F3)))]
+
+
   // *** TODO: == 0?? 1e-16 xxx? floating point comparison....
   double LL = 0;
   if(F2 < 0){
@@ -646,20 +770,20 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
   if(!return_intermediate_results){
     return(Rcpp::NumericVector::create(LL));
   }else{
+    // R: data.table(Id=cbs$Id,LL=cbs$LL, Akprod=exp(cbs$A1sum), Bksum=cbs$Bksum, DkT=cbs$DkT, Z=cbs$F2)
     return(Rcpp::NumericVector::create(Rcpp::_["LL"]=LL,
                                        Rcpp::_["Akprod"]=Akprod,
-                                       Rcpp::_["A1sum"]=A1sum,
                                        Rcpp::_["Bksum"]=Bksum,
                                        Rcpp::_["Bjsum"]= F2_intermediate_results(0),
                                        Rcpp::_["B1"]=B1,
                                        Rcpp::_["BT"]=BT,
                                        Rcpp::_["D1"]=D1,
                                        Rcpp::_["DT"]=DT,
-                                       // Rcpp::_["DkT"]=DkT,
+                                       Rcpp::_["DkT"]=DkT,
                                        Rcpp::_["log.F0"]=log_F0,
                                        Rcpp::_["log.F1"]=log_F1,
                                        Rcpp::_["log.F3"]=log_F3,
-                                       Rcpp::_["F2"]=F2,
+                                       Rcpp::_["Z"]=F2,
                                        Rcpp::_["dT"]=F2_intermediate_results(1),
                                        Rcpp::_["aT"]=F2_intermediate_results(2),
                                        Rcpp::_["bT"]=F2_intermediate_results(3),
@@ -758,6 +882,19 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
     res(i, Rcpp::_) = res_i;
   }
 
+  // # Try cheating for stabilty -----------------------------------------------------
+  // # Replace infinite LL values with the most extreme (finite) LL value
+  // # If we have less than 5 % infinite values impute them with the max value we have in the likelihood
+  //   most extreme value in the likelihood (without the infinity values)
+  //     most.extreme.LL <- cbs[is.finite(LL), max(abs(LL))]
+  //
+  // # If the value we have is -infinity set the value to the largest negative value...
+  //   cbs[is.infinite(LL) & sign(LL) == -1, LL := -abs(most.extreme.LL)]
+  // # ...if +infinity set it to largest positive value.
+  //   cbs[is.infinite(LL) & sign(LL) == 1,  LL :=  abs(most.extreme.LL)]
+  // # Else, if > 5%, let it propagate
+
+
   Rcpp::CharacterVector c_names = {"LL"};
   if(return_intermediate_results){
     c_names = res_i.names();
@@ -767,67 +904,3 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
 }
 
 
-// [[Rcpp::export]]
-Rcpp::NumericVector LL_i_single_walk(const double r, const double alpha_0, const double s, const double beta_0,
-                        const double x, const double t_x, const double T_cal,
-                        const double DT,
-                        const double F2_3,
-
-                        const arma::vec& params_life,
-                        const arma::vec& params_trans,
-                        const arma::mat& cov_data_life,
-                        const arma::mat& cov_data_trans,
-                        const arma::mat& walk_info_life,
-                        const arma::mat& walk_info_trans,
-                        const bool return_intermediate_results){
-
-  arma::vec adj_cov_data_life = arma::exp(cov_data_life * params_life);
-  arma::vec adj_cov_data_trans = arma::exp(cov_data_trans * params_trans);
-
-  // Rcpp::Rcout<<"adj_cov_data_life"<<std::endl;
-  // Rcpp::Rcout<<adj_cov_data_life<<std::endl;
-  // Rcpp::Rcout<<"n"<<std::endl;
-  // Rcpp::Rcout<<adj_cov_data_life.n_elem<<std::endl;
-
-  // Rcpp::Rcout<<"walk_info_life"<<std::endl;
-  // Rcpp::Rcout<<walk_info_life<<std::endl;
-
-  Customer c = Customer(x, t_x, T_cal,
-                        adj_cov_data_life, walk_info_life,
-                        adj_cov_data_trans, walk_info_trans);
-
-  return pnbd_dyncov_LL_i(r, alpha_0, s, beta_0,
-                          c,
-                          DT,
-                          F2_3,
-                          return_intermediate_results);
-}
-
-// [[Rcpp::export]]
-double convert_walk(const arma::vec& params_life,
-                    const arma::vec& params_trans,
-                    const arma::mat& cov_data_life,
-                    const arma::mat& cov_data_trans,
-                    const arma::mat& walk_info_life,
-                    const arma::mat& walk_info_trans){
-
-  const arma::vec adj_cov_data_life = arma::exp(cov_data_life * params_life);
-  const arma::vec adj_cov_data_trans = arma::exp(cov_data_trans * params_trans);
-  // Rcpp::Rcout<<"adj_cov_data_life as in input"<<std::endl;
-  // Rcpp::Rcout<<adj_cov_data_life<<std::endl;
-
-  // arma::uword from = (arma::uword)walk_info(0)-1;
-  // arma::uword to = (arma::uword)walk_info(1)-1;
-  // arma::vec tmp = cov_data.col(0); if pass matrix
-  // Walk w = Walk(tmp, from, to,
-  //               walk_info(2), walk_info(3), walk_info(4));
-  // Walk w = Walk(cov_data, walk_info.row(0));
-
-  Customer c = Customer(0, 0, 0,
-                        adj_cov_data_life, walk_info_life,
-                        adj_cov_data_trans, walk_info_trans);
-
-  double res = pnbd_dyncov_LL_i_BkSum(c.real_walks_trans, c.aux_walk_trans);
-
-  return(res);
-}

@@ -3,9 +3,7 @@
 
 #include <RcppArmadillo.h>
 #include <RcppGSL.h>
-#include <gsl/gsl_sf_hyperg.h>
-#include <gsl/gsl_errno.h>
-#include <gsl/gsl_sf_result.h>
+
 
 
 arma::vec pnbd_dyncov_LL_Bi_cpp(const int i,

@@ -1,10 +1,3 @@
-# Creates all walks for given transaction and one type of covariate data
-# transaction data:       Id, Date
-# Covariate.names: vector of names to select columns from data
-# data.transactions will not be used as the standard transaction data:
-#     for trans covs: will be reduced to repeat trans with the set flag is.first.trans
-#     for life covs - reduced to 2 (sometimes 3) transactions
-#' @importFrom methods is
 pnbd_dyncov_createwalks <- function(clv.time, data.transactions, data.dyn.cov, names.dyn.cov){
 
   Date <- Id <- Cov.Date <- Mapping.Transaction.Id <- is.first.trans <- NULL # from add dyn cov
