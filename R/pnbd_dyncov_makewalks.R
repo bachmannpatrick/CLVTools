@@ -1,3 +1,43 @@
+pnbd_dyncov_getLLcallargs <-function(clv.fitted){
+
+  dt.walkinfo.life  <- pnbd_dyncov_get_walkinfo(clv.fitted@data.walks.life)
+  dt.walkinfo.trans <- pnbd_dyncov_get_walkinfo(clv.fitted@data.walks.trans)
+
+  # Add where to find customer's walk info
+  dt.cbs <- copy(clv.fitted@cbs)
+  dt.customerinfo.life  <- pnbd_dyncov_get_customerinfo(dt.walkinfo.life)
+  dt.cbs[dt.customerinfo.life,  walkinfo_life_from  := i.id_from, on="Id"]
+  dt.cbs[dt.customerinfo.life,  walkinfo_life_to    := i.id_to,   on="Id"]
+
+  dt.customerinfo.trans <- pnbd_dyncov_get_customerinfo(dt.walkinfo.trans)
+  dt.cbs[dt.customerinfo.trans, walkinfo_trans_from := i.id_from, on="Id"]
+  dt.cbs[dt.customerinfo.trans, walkinfo_trans_to   := i.id_to,   on="Id"]
+
+  # IN SAME ORDER AS READ OUT IN Walk::Walk()
+  cols.walk.ordered <- c("walk_from", "walk_to", "tjk", "d", "delta", "AuxTrans")
+  m.walkinfo.life  <- data.matrix(dt.walkinfo.life[, .SD, .SDcols=cols.walk.ordered])
+  m.walkinfo.trans <- data.matrix(dt.walkinfo.trans[,.SD, .SDcols=cols.walk.ordered])
+
+  # **TODO: check col sorting (correct.col.names == )
+  m.cov.data.life  <- data.matrix(clv.fitted@data.walks.life[,  .SD, .SDcols=clv.fitted@clv.data@names.cov.data.life])
+  m.cov.data.trans <- data.matrix(clv.fitted@data.walks.trans[, .SD, .SDcols=clv.fitted@clv.data@names.cov.data.trans])
+
+  return(list(X = dt.cbs$x,
+              t_x = dt.cbs$t.x,
+              T_cal = dt.cbs$T.cal,
+
+              walkinfo_trans_from = dt.cbs$walkinfo_trans_from,
+              walkinfo_trans_to   = dt.cbs$walkinfo_trans_to,
+              walkinfo_life_from  = dt.cbs$walkinfo_life_from,
+              walkinfo_life_to    = dt.cbs$walkinfo_life_to,
+
+              walk_info_life  = m.walkinfo.life,
+              walk_info_trans = m.walkinfo.trans,
+
+              cov_data_life = m.cov.data.life,
+              cov_data_trans = m.cov.data.trans))
+}
+
 pnbd_dyncov_creatwalks_add_tjk <- function(dt.walk, clv.time){
   # time between Trans and the previous Trans / from date.lagged to date
   dt.walk[, tjk := clv.time.interval.in.number.tu(clv.time = clv.time,
