@@ -534,26 +534,6 @@ pnbd_staticcov_PMF <- function(r, s, x, vAlpha_i, vBeta_i, vT_i) {
     .Call(`_CLVTools_pnbd_staticcov_PMF`, r, s, x, vAlpha_i, vBeta_i, vT_i)
 }
 
-pnbd_dyncov_LL_Bi_cpp <- function(i, t_x, d, delta, n_walks, max_walks, walks) {
-    .Call(`_CLVTools_pnbd_dyncov_LL_Bi_cpp`, i, t_x, d, delta, n_walks, max_walks, walks)
-}
-
-pnbd_dyncov_LL_Di_cpp <- function(i, real_d, aux_d, real_n_walks, aux_n_walks, real_max_walks, aux_max_walks, real_adj_walk1, real_walks, aux_walks) {
-    .Call(`_CLVTools_pnbd_dyncov_LL_Di_cpp`, i, real_d, aux_d, real_n_walks, aux_n_walks, real_max_walks, aux_max_walks, real_adj_walk1, real_walks, aux_walks)
-}
-
-hyp_alpha_ge_beta_cpp <- function(alpha_1, beta_1, alpha_2, beta_2, x, r, s) {
-    .Call(`_CLVTools_hyp_alpha_ge_beta_cpp`, alpha_1, beta_1, alpha_2, beta_2, x, r, s)
-}
-
-hyp_beta_g_alpha_cpp <- function(alpha_1, beta_1, alpha_2, beta_2, x, r, s) {
-    .Call(`_CLVTools_hyp_beta_g_alpha_cpp`, alpha_1, beta_1, alpha_2, beta_2, x, r, s)
-}
-
-F2_3_vecs_cpp <- function(n_walks_cbs, dT_cbs, Bjsum_cbs, x_cbs, t_x_cbs, n_walks_trans, walks_trans, d_trans, delta_trans, max_walks_trans, n_walks_life_real, d_life_real, max_walks_life_real, adj_walk1_life_real, walks_life_real, n_walks_life_aux, d_life_aux, max_walks_life_aux, walks_life_aux, r, alpha, s, beta) {
-    .Call(`_CLVTools_F2_3_vecs_cpp`, n_walks_cbs, dT_cbs, Bjsum_cbs, x_cbs, t_x_cbs, n_walks_trans, walks_trans, d_trans, delta_trans, max_walks_trans, n_walks_life_real, d_life_real, max_walks_life_real, adj_walk1_life_real, walks_life_real, n_walks_life_aux, d_life_aux, max_walks_life_aux, walks_life_aux, r, alpha, s, beta)
-}
-
 pnbd_dyncov_LL_sum <- function(params, X, t_x, T_cal, walkinfo_trans_from, walkinfo_trans_to, walkinfo_life_from, walkinfo_life_to, walk_info_life, walk_info_trans, cov_data_life, cov_data_trans) {
     .Call(`_CLVTools_pnbd_dyncov_LL_sum`, params, X, t_x, T_cal, walkinfo_trans_from, walkinfo_trans_to, walkinfo_life_from, walkinfo_life_to, walk_info_life, walk_info_trans, cov_data_life, cov_data_trans)
 }

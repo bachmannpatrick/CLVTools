@@ -1,89 +1,170 @@
-#ifndef PNBD_DYNCOVLL_HPP
-#define PNBD_DYNCOVLL_HPP
+#ifndef PNBD_DYNCOV_NEW_HPP
+#define PNBD_DYNCOV_NEW_HPP
 
 #include <RcppArmadillo.h>
-#include <RcppGSL.h>
+#include <cmath>
+#include <vector>
+
+#include <gsl/gsl_sf_hyperg.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_sf_result.h>
+
+#include "clv_vectorized.h"
+
+struct Walk {
+  // Abstract away the (memory) representation of a walk
+// private:
+  arma::vec walk_data;
+  // arma::vec tmp_zeros = arma::zeros(5);
+  // arma::subview_col<double> walk_data;
+
+  Walk():
+    tjk(0), d(0), delta(0){
+    this->walk_data = arma::vec(1).zeros();
+  }
+
+  // copy constructor
+  // Walk(const Walk& other) : tjk(other.tjk), d(other.d), delta(other.delta){
+  //   // this->walk_data = arma::vec(other.walk_data);
+  //
+  //   this->walk_data = arma::vec(other.walk_data.memptr(), other.walk_data.n_elem);
+  //   Rcpp::Rcout<<"Copy constructor called."<<std::endl;
+  // }
+
+  // // copy assignment operator
+  // Walk& operator=(const Walk& t)
+  // {
+  //   Rcpp::Rcout << "Assignment operator called " << std::endl;
+  //   return *this;
+  // }
+
+
+  // move constructor
+  //  removes copy assignment operator??
+  // Walk(Walk&& other) : tjk(other.tjk), d(other.d), delta(other.delta){
+  //   this->walk_data = arma::vec(other.walk_data.memptr(), other.walk_data.n_elem);
+  //   Rcpp::Rcout<<"Move constructor called."<<std::endl;
+  // }
+
+ /*
+  * MUST PASS DATA VEC BY REF TO CONSTRUCTORS
+  *   because store a subview which would point to freed mem if passed by value
+  */
+  // Walk(const arma::vec& cov_data, const arma::uword, const arma::uword,
+  //      const double, const double, const double, const bool);
+
+  Walk(const arma::vec&, const arma::rowvec&);
+
+  static bool is_aux_trans(const arma::rowvec&);
+
+  double tjk;
+  double d;
+  double delta; //can only be 0, 1 but store as double to avoid frequent casting and accidentally forgetting it
+  // bool is_aux_trans;
+
+  double first() const;
+  double last() const;
+  double get_elem(const arma::uword i) const;
+  arma::uword n_elem() const;
+  double sum_middle_elems() const; //sum all elements which are not first or last. Requires at least 3 elements
+  double sum_from_to(const arma::uword from, const arma::uword to) const; //sum all elements which are not first or last. Requires at least 3 elements
+};
+
+
+struct Customer {
+  const double x, t_x, T_cal;
+  // const double adj_transaction_cov_dyn, adj_lifetime_cov_dyn;
+
+  Walk real_walk_life;
+  std::vector<Walk> real_walks_trans;
+  Walk aux_walk_life, aux_walk_trans;
+
+  Customer(const double x, const double t_x, const double T_cal,
+           const arma::vec& adj_cov_data_life, const arma::mat& walks_info_life,
+           const arma::vec& adj_cov_data_trans, const arma::mat& walks_info_trans);
+
+  double adj_transaction_cov_dyn() const{
+    return(this->aux_walk_trans.last());
+  }
+
+  double adj_lifetime_cov_dyn() const{
+    return(this->aux_walk_life.last());
+  }
+};
 
 
 
-arma::vec pnbd_dyncov_LL_Bi_cpp(const int i,
-                                const arma::vec& t_x,
-                                const arma::vec& d,
-                                const arma::vec& delta,
-                                const arma::ivec& n_walks,
-                                const arma::vec& max_walks,
-                                const arma::mat& walks);
+
+double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
+                                          const int x,
+                                          const double alpha_1, const double beta_1,
+                                          const double alpha_2, const double beta_2);
 
 
-arma::vec pnbd_dyncov_LL_Di1_cpp(const int i,
-                                 const arma::vec& d,
-                                 const arma::ivec& n_walks,
-                                 const arma::vec& max_walks,
-                                 const arma::vec& adj_walk1,
-                                 const arma::mat& walks,
-                                 const arma::ivec& kxT);
-
-arma::vec pnbd_dyncov_LL_Di2_cpp(const int i,
-                                   const arma::vec& d,
-                                   const arma::vec& d_omega,
-                                   const arma::ivec& n_walks,
-                                   const arma::vec& max_walks,
-                                   const arma::mat& walks,
-                                   const arma::ivec& k0x);
+double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
+                                         const int x,
+                                         const double alpha_1, const double beta_1,
+                                         const double alpha_2, const double beta_2);
 
 
-arma::vec pnbd_dyncov_LL_Di_cpp(const int i,
-                                const arma::vec& real_d,
-                                const arma::vec& aux_d,
-                                const arma::ivec& real_n_walks,
-                                const arma::ivec& aux_n_walks,
-                                const arma::vec& real_max_walks,
-                                const arma::vec& aux_max_walks,
-                                const arma::vec& real_adj_walk1,
-                                const arma::mat& real_walks,
-                                const arma::mat& aux_walks);
+
+double pnbd_dyncov_LL_i_F2_1(const double r, const double alpha_0, const double s, const double beta_0,
+                             const int x, const double dT,
+                             const double a1, const double b1,
+                             const double A1T, const double C1T);
 
 
-arma::vec hyp_beta_g_alpha_cpp(const arma::vec& alpha_1,
-                               const arma::vec& beta_1,
-                               const arma::vec& alpha_2,
-                               const arma::vec& beta_2,
-                               const arma::vec& x,
-                               const double r,
-                               const double s);
 
-arma::vec hyp_alpha_ge_beta_cpp(const arma::vec& alpha_1,
-                                const arma::vec& beta_1,
-                                const arma::vec& alpha_2,
-                                const arma::vec& beta_2,
-                                const arma::vec& x,
-                                const double r,
-                                const double s);
+double pnbd_dyncov_LL_i_F2_2(const double r, const double alpha_0, const double s, const double beta_0,
+                             const int x,
+                             const double akt, const double bkT,
+                             const double aT, const double bT,
+                             const double AkT, const double CkT);
 
 
-arma::vec F2_3_vecs_cpp(const arma::ivec& n_walks_cbs,
-                        const arma::vec& dT_cbs,
-                        const arma::vec& Bjsum_cbs,
-                        const arma::vec& x_cbs,
-                        const arma::vec& t_x_cbs,
-                        const arma::ivec& n_walks_trans,
-                        const arma::mat& walks_trans,
-                        const arma::vec& d_trans,
-                        const arma::vec& delta_trans,
-                        const arma::vec& max_walks_trans,
-                        const arma::ivec& n_walks_life_real,
-                        const arma::vec& d_life_real,
-                        const arma::vec& max_walks_life_real,
-                        const arma::vec& adj_walk_life_real,
-                        const arma::mat& walks_life_real,
-                        const arma::ivec& n_walks_life_aux,
-                        const arma::vec& d_life_aux,
-                        const arma::vec& max_walks_life_aux,
-                        const arma::mat& walks_life_aux,
-                        const double r,
-                        const double alpha,
-                        const double s,
-                        const double beta);
+double pnbd_dyncov_LL_i_F2(const int num_walks,
+                           const double r, const double alpha_0, const double s, const double beta_0,
+                           const int x, const double t_x, const double T_cal, const double dT,
+                           const double Bjsum, const double B1,
+                           const double D1,
+                           const double BT, const double DT,
+                           const double A1T, const double C1T,
+                           const double AkT, const double CkT,
+                           const double F2_3);
 
+Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const double s, const double beta_0,
+                                     const Customer& c,
+                                     const double DT,
+                                     const double F2_3,
+                                     const bool return_intermediate_results);
+
+
+double pnbd_dyncov_LL_sum(const arma::vec& params,
+                          const arma::vec& X,
+                          const arma::vec& t_x,
+                          const arma::vec& T_cal,
+                          const arma::vec& walkinfo_trans_from,
+                          const arma::vec& walkinfo_trans_to,
+                          const arma::vec& walkinfo_life_from,
+                          const arma::vec& walkinfo_life_to,
+                          const arma::mat& walk_info_life,
+                          const arma::mat& walk_info_trans,
+                          const arma::mat& cov_data_life,
+                          const arma::mat& cov_data_trans);
+
+Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
+                                       const arma::vec& X,
+                                       const arma::vec& t_x,
+                                       const arma::vec& T_cal,
+                                       const arma::vec& walkinfo_trans_from,
+                                       const arma::vec& walkinfo_trans_to,
+                                       const arma::vec& walkinfo_life_from,
+                                       const arma::vec& walkinfo_life_to,
+                                       const arma::mat& walk_info_life,
+                                       const arma::mat& walk_info_trans,
+                                       const arma::mat& cov_data_life,
+                                       const arma::mat& cov_data_trans,
+                                       const bool return_intermediate_results);
 
 #endif
+
