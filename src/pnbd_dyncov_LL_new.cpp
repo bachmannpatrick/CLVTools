@@ -567,10 +567,10 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
  *
  */
 Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const double s, const double beta_0,
-                           const Customer& c,
-                           const double DT,
-                           const double F2_3,
-                           const bool return_intermediate_results){
+                                     const Customer& c,
+                                     const double DT,
+                                     const double F2_3,
+                                     const bool return_intermediate_results){
 
   // // #data.work.trans[AuxTrans==T, adj.transaction.cov.dyn]]
   // const double adj_transaction_cov_dyn,
@@ -671,17 +671,64 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
 }
 
 // [[Rcpp::export]]
-Rcpp::NumericMatrix LL_i(const double r, const double alpha_0, const double s, const double beta_0,
-                         const arma::vec& X, const arma::vec& t_x, const arma::vec& T_cal,
-                         const arma::vec& DT, const arma::vec& F2_3,
-                         const arma::vec& walkinfo_trans_from, const arma::vec& walkinfo_trans_to,
-                         const arma::vec& walkinfo_life_from, const arma::vec& walkinfo_life_to,
-                         const arma::mat& walk_info_life, const arma::mat& walk_info_trans,
-                         const arma::vec& params_life,
-                         const arma::vec& params_trans,
-                         const arma::mat& cov_data_life,
-                         const arma::mat& cov_data_trans,
-                         const bool return_intermediate_results){
+double pnbd_dyncov_LL_sum(const arma::vec& params,
+                          const arma::vec& X,
+                          const arma::vec& t_x,
+                          const arma::vec& T_cal,
+                          const arma::vec& walkinfo_trans_from,
+                          const arma::vec& walkinfo_trans_to,
+                          const arma::vec& walkinfo_life_from,
+                          const arma::vec& walkinfo_life_to,
+                          const arma::mat& walk_info_life,
+                          const arma::mat& walk_info_trans,
+                          const arma::mat& cov_data_life,
+                          const arma::mat& cov_data_trans){
+
+  return(Rcpp::sum(pnbd_dyncov_LL_ind(params,
+                                      X,
+                                      t_x,
+                                      T_cal,
+                                      walkinfo_trans_from,
+                                      walkinfo_trans_to,
+                                      walkinfo_life_from,
+                                      walkinfo_life_to,
+                                      walk_info_life,
+                                      walk_info_trans,
+                                      cov_data_life,
+                                      cov_data_trans,
+                                      false)));
+}
+
+// [[Rcpp::export]]
+Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
+                                       const arma::vec& X,
+                                       const arma::vec& t_x,
+                                       const arma::vec& T_cal,
+                                       const arma::vec& walkinfo_trans_from,
+                                       const arma::vec& walkinfo_trans_to,
+                                       const arma::vec& walkinfo_life_from,
+                                       const arma::vec& walkinfo_life_to,
+                                       const arma::mat& walk_info_life,
+                                       const arma::mat& walk_info_trans,
+                                       const arma::mat& cov_data_life,
+                                       const arma::mat& cov_data_trans,
+                                       const bool return_intermediate_results=false){
+
+  const arma::uword num_cov_life  = cov_data_life.n_cols;
+  const arma::uword num_cov_trans = cov_data_trans.n_cols;
+
+  const arma::vec model_log_params = params.subvec(0, 3);
+  const arma::vec params_life      = params.subvec(4               , 4+num_cov_life                 - 1);
+  const arma::vec params_trans     = params.subvec(4 + num_cov_life, 4+num_cov_life + num_cov_trans - 1);
+
+  const double r        = std::exp(model_log_params(0));
+  const double alpha_0  = std::exp(model_log_params(1));
+  const double s        = std::exp(model_log_params(2));
+  const double beta_0   = std::exp(model_log_params(3));
+
+  const arma::vec DT(arma::size(X), arma::fill::zeros);
+  const arma::vec F2_3(arma::size(X), arma::fill::zeros);
+
 
   // The only thing that changes between calls to the LL during optimization
   arma::vec adj_cov_data_life = arma::exp(cov_data_life * params_life);

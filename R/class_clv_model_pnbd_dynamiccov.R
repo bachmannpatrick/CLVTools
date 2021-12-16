@@ -40,16 +40,53 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
             # Do not call the no.cov function because the LL is different
             x <- t.x <- T.cal <- NULL
 
+            dt.walkinfo.life     <- pnbd_dyncov_get_walkinfo(clv.fitted@data.walks.life)
+            dt.customerinfo.life <- pnbd_dyncov_get_customerinfo(dt.walkinfo.life)
+
+            dt.walkinfo.trans     <- pnbd_dyncov_get_walkinfo(clv.fitted@data.walks.trans)
+            dt.customerinfo.trans <- pnbd_dyncov_get_customerinfo(dt.walkinfo.trans)
+
+            dt.cbs <- copy(clv.fitted@cbs)
+            dt.cbs[dt.customerinfo.life,  walkinfo_life_from  := i.id_from, on="Id"]
+            dt.cbs[dt.customerinfo.life,  walkinfo_life_to    := i.id_to,   on="Id"]
+            dt.cbs[dt.customerinfo.trans, walkinfo_trans_from := i.id_from, on="Id"]
+            dt.cbs[dt.customerinfo.trans, walkinfo_trans_to   := i.id_to,   on="Id"]
+
+            print(dt.cbs)
+            cols.walk <- c("walk_from", "walk_to", "tjk", "d", "delta", "AuxTrans")
+            m.walkinfo.life  <- data.matrix(dt.walkinfo.life[, .SD, .SDcols=cols.walk])
+            m.walkinfo.trans <- data.matrix(dt.walkinfo.trans[,.SD, .SDcols=cols.walk])
+
+            # **TODO: check col sorting (correct.col.names == )
+            m.cov.data.life  <- data.matrix(clv.fitted@data.walks.life[,  .SD, .SDcols=clv.fitted@clv.data@names.cov.data.life])
+            m.cov.data.trans <- data.matrix(clv.fitted@data.walks.trans[, .SD, .SDcols=clv.fitted@clv.data@names.cov.data.trans])
+
+            str(m.cov.data.trans)
+
             # Everything to call the LL function
             optimx.args <- modifyList(prepared.optimx.args,
                                       list(
-                                        clv.fitted = clv.fitted,
                                         LL.function.sum = pnbd_dyncov_LL_sum,
                                         LL.function.ind = pnbd_dyncov_LL_ind, # if doing correlation
                                         # Ordering does not actually matter for dyncov_LL(params), just need all params
                                         LL.params.names.ordered = c(clv.model@names.prefixed.params.model,
                                                                     clv.fitted@names.prefixed.params.after.constr.life,
-                                                                    clv.fitted@names.prefixed.params.after.constr.trans)))
+                                                                    clv.fitted@names.prefixed.params.after.constr.trans),
+
+                                        X = dt.cbs$x,
+                                        t_x = dt.cbs$t.x,
+                                        T_cal = dt.cbs$T.cal,
+
+                                        walkinfo_trans_from = dt.cbs$walkinfo_trans_from,
+                                        walkinfo_trans_to   = dt.cbs$walkinfo_trans_to,
+                                        walkinfo_life_from  = dt.cbs$walkinfo_life_from,
+                                        walkinfo_life_to    = dt.cbs$walkinfo_life_to,
+
+                                        walk_info_life  = m.walkinfo.life,
+                                        walk_info_trans = m.walkinfo.trans,
+
+                                        cov_data_life = m.cov.data.life,
+                                        cov_data_trans = m.cov.data.trans))
             return(optimx.args)
           })
 
@@ -77,7 +114,7 @@ setMethod(f = "clv.model.process.post.estimation", signature = signature(clv.mod
                       setNames(clv.fitted@prediction.params.trans, clv.fitted@names.prefixed.params.after.constr.trans))
 
     # get LL with all values, not just ind LL or summed LL
-    clv.fitted@LL.data <- pnbd_dyncov_LL(params = final.params, clv.fitted=clv.fitted)
+    clv.fitted@LL.data <- pnbd_dyncov_LL_i(params = final.params, clv.fitted=clv.fitted)
     setkeyv(clv.fitted@LL.data, cols = "Id")
   }else{
     warning("Could not derive dyncov LL data with these final parameters - cannot predict and plot!", call. = FALSE)
