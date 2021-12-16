@@ -110,7 +110,7 @@ pnbd_dyncov_createwalks_singletrans <- function(dt.cov, dt.tp.first.last,
 pnbd_dyncov_covariate_add_interval_bounds <- function(dt.cov, clv.time){
   tp.cov.lower <- tp.cov.upper <- Cov.Date <- NULL
 
-  # Covariate intervals are closed intervals + Cov.Date marks beginning (Covs are forward-looking)
+  # Covariate intervals are closed intervals + Cov.Date marks beginning (Covs are "forward-looking")
   #   => [Cov.Date, Next Cov.Date - eps] <=> [Cov.Date, Cov.Date + 1 Period - eps]
 
   dt.cov[, tp.cov.lower := Cov.Date]
@@ -133,17 +133,20 @@ pnbd_dyncov_createwalks_real_trans <- function(clv.data, dt.trans, dt.tp.first.l
   clv.time <- clv.data@clv.time
   dt.cov <- clv.data@data.cov.trans
 
-  # Real Walks -----------------------------------------------------------------------
   # Covariates affecting repeat-transactions
   #   Zero-repeaters have 0 real walks (**TODO: what, really..??)
   #   No walk for the first tranaction (**TODO: what, really, also..??)
+  #   A transaction is influenced some time between the last and actual trans
+  #     -> Interval from (last Trans + 1sec) to (this Trans)
 
   # remove zero-repeaters
   dt.cuts.real <- dt.trans[dt.tp.first.last[num.trans > 1, "Id"], on="Id", nomatch=NULL]
   dt.tp.first.last[, num.trans := NULL]
 
-  # Cannot/Should have no 2 transactions on same tp because are aggregated,
-  #   min dist is 1 eps, can fall together again
+  # If 2 transactions are on the same date, shift+1 will lead to Date.Start > Date.End
+  #   Cannot/Should have no 2 transactions on same tp because are aggregated
+  #   No AuxTrans inserted, only real trans present
+  #     min dist is 1 eps, hence can fall together again
   setkeyv(dt.cuts.real, cols=c("Id", "Date"))
   dt.cuts.real[, tp.this.trans := Date]
   dt.cuts.real[, tp.previous.trans := shift(tp.this.trans, n=1), by="Id"]
@@ -151,7 +154,7 @@ pnbd_dyncov_createwalks_real_trans <- function(clv.data, dt.trans, dt.tp.first.l
   dt.cuts.real[, tp.cut.upper := tp.this.trans]
 
   # remove cut for first transaction
-  #   - which has NA in tp.previous.trans (cannot match to cov)
+  #   - which has NA in tp.previous.trans because of shift (and cannot match to cov)
   #   - for which no walk shall be created
   # dt.cuts.real <- dt.cuts.real[!is.na(tp.previous.trans)]
   dt.cuts.real[, is.first := Date == min(Date), by="Id"]
@@ -222,6 +225,10 @@ pnbd_dyncov_makewalks <- function(clv.data){
   #   data.work.life <- data.table(clv.fitted@data.walks.life[[1]][, "Id"],
   #                                clv.fitted@data.walks.life[[1]][, "d"],
   #
+  # **TOOD: Jeff:
+  # From createwalk():
+  # where there is only 1 walk, a value is needed in both, Walk1 and Max.Walk
+  #   copy covariate in Max.Walk back to Walk1
 
 
   # Extract transactions and first/last for all walk types & processes because

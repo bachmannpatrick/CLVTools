@@ -139,7 +139,6 @@ Collate:
     'pnbd_dyncov_BkSum.R'
     'pnbd_dyncov_CET.R'
     'pnbd_dyncov_DECT.R'
-    'pnbd_dyncov_createwalks.R'
     'pnbd_dyncov_expectation.R'
     'pnbd_dyncov_makewalks.R'
     'pnbd_dyncov_palive.R'
