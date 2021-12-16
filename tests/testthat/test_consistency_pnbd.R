@@ -33,7 +33,7 @@ fct.helper.dyncov.g0.with.predition.params.model <- function(p.dyncov, predictio
   expect_silent(log.params <- setNames(log(p.dyncov@prediction.params.model[c("r", "alpha", "s", "beta")]),
                                        c("log.r", "log.alpha", "log.s", "log.beta")))
   expect_silent(log.params[c("trans.Marketing", "trans.Gender", "trans.Channel", "life.Marketing", "life.Gender", "life.Channel")] <- 0)
-  expect_silent(p.dyncov@LL.data <- CLVTools:::pnbd_dyncov_LL(params=log.params, clv.fitted = p.dyncov))
+  expect_silent(p.dyncov@LL.data <- pnbd_dyncov_getLLdata(clv.fitted=p.dyncov, params=log.params))
   return(p.dyncov)
 }
 

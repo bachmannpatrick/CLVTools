@@ -81,13 +81,7 @@ setMethod(f = "clv.model.process.post.estimation", signature = signature(clv.mod
                       setNames(clv.fitted@prediction.params.trans, clv.fitted@names.prefixed.params.after.constr.trans))
 
     # get LL with all values, not just ind LL or summed LL
-    l.dyncov.args <- pnbd_dyncov_getLLcallargs(clv.fitted)
-    l.dyncov.args[["params"]] = final.params
-    l.dyncov.args[["return_intermediate_results"]] = TRUE
-
-    clv.fitted@LL.data <- data.table(Id = clv.fitted@cbs$Id,
-                                    do.call(what = pnbd_dyncov_LL_ind, args = l.dyncov.args),
-                                    key = "Id")
+    clv.fitted@LL.data <- pnbd_dyncov_getLLdata(clv.fitted=clv.fitted, params=final.params)
   }else{
     warning("Could not derive dyncov LL data with these final parameters - cannot predict and plot!", call. = FALSE)
   }
@@ -127,14 +121,7 @@ setMethod(f = "clv.model.process.newdata", signature = signature(clv.model = "cl
   clv.fitted@data.walks.life  = l.walks[["data.walks.life"]]
   clv.fitted@data.walks.trans = l.walks[["data.walks.trans"]]
 
-  # get LL with all values, not just ind LL or summed LL
-  l.dyncov.args <- pnbd_dyncov_getLLcallargs(clv.fitted)
-  l.dyncov.args[["params"]] = final.params
-  l.dyncov.args[["return_intermediate_results"]] = TRUE
-
-  clv.fitted@LL.data <- data.table(Id = clv.fitted@cbs$Id,
-                                   do.call(what = pnbd_dyncov_LL_ind, args = l.dyncov.args),
-                                   key = "Id")
+  clv.fitted@LL.data <- pnbd_dyncov_getLLdata(clv.fitted=clv.fitted, params=final.params)
   return(clv.fitted)
 })
 

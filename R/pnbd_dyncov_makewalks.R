@@ -39,6 +39,18 @@ pnbd_dyncov_getLLcallargs <-function(clv.fitted){
               cov_data_trans = m.cov.data.trans))
 }
 
+
+pnbd_dyncov_getLLdata <- function(clv.fitted, params){
+  # get LL with all values, not just ind LL or summed LL
+  l.LL.args <- pnbd_dyncov_getLLcallargs(clv.fitted)
+  l.LL.args[["params"]] = params
+  l.LL.args[["return_intermediate_results"]] = TRUE
+
+  return(data.table(Id = clv.fitted@cbs$Id,
+                    do.call(what = pnbd_dyncov_LL_ind, args = l.LL.args),
+                    key = "Id"))
+}
+
 pnbd_dyncov_creatwalks_add_tjk <- function(dt.walk, clv.time){
   tjk <- tp.previous.trans <- tp.this.trans <- NULL
   # time between Trans and the previous Trans / from date.lagged to date
