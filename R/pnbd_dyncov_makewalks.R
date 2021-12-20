@@ -46,9 +46,11 @@ pnbd_dyncov_getLLdata <- function(clv.fitted, params){
   l.LL.args[["params"]] = params
   l.LL.args[["return_intermediate_results"]] = TRUE
 
-  return(data.table(Id = clv.fitted@cbs$Id,
-                    do.call(what = pnbd_dyncov_LL_ind, args = l.LL.args),
-                    key = "Id"))
+  dt.LLdata <- data.table(Id = clv.fitted@cbs$Id,
+                          do.call(what = pnbd_dyncov_LL_ind, args = l.LL.args),
+                          key = "Id")
+  setnames(dt.LLdata, "F2", "Z")
+  return(dt.LLdata)
 }
 
 pnbd_dyncov_creatwalks_add_tjk <- function(dt.walk, clv.time){
@@ -134,10 +136,10 @@ pnbd_dyncov_createwalks_real_trans <- function(clv.data, dt.trans, dt.tp.first.l
   dt.cov <- clv.data@data.cov.trans
 
   # Covariates affecting repeat-transactions
-  #   Zero-repeaters have 0 real walks (**TODO: what, really..??)
-  #   No walk for the first tranaction (**TODO: what, really, also..??)
+  #   Zero-repeaters have 0 real walks
+  #   No walk for the first tranaction
   #   A transaction is influenced some time between the last and actual trans
-  #     -> Interval from (last Trans + 1sec) to (this Trans)
+  #     -> Interval [last trans + eps, this trans]
 
   # remove zero-repeaters
   dt.cuts.real <- dt.trans[dt.tp.first.last[num.trans > 1, "Id"], on="Id", nomatch=NULL]
@@ -180,8 +182,7 @@ pnbd_dyncov_createwalks_real_trans <- function(clv.data, dt.trans, dt.tp.first.l
 
 pnbd_dyncov_createwalks_real_life <- function(clv.data, dt.tp.first.last){
   AuxTrans <- NULL
-
-  # **TOOD: Keep Zero-repeaters? Because for transaction process, only repeat-transactions (zero repeaters may have no walks)
+  # **TODO: Update comment: Walks are covs that have an effect from coming alive until last transaction [0, T] (or (0. T))
   dt.walks.real <- pnbd_dyncov_createwalks_singletrans(dt.cov=clv.data@data.cov.life,
                                                        dt.tp.first.last=dt.tp.first.last,
                                                        name.lower="tp.first.trans",
@@ -216,7 +217,6 @@ pnbd_dyncov_createwalks_addwalkfromto <- function(dt.walks){
 
 pnbd_dyncov_makewalks <- function(clv.data){
   walk_id <- walk_from <- walk_to <- .N <- abs_pos <- Date <- delta <- tp.cov.lower <- NULL
-  #   ** TODO: Is it correct, that life only ever uses d but not delta and tjk?
   #   data.work.trans <- data.table(clv.fitted@data.walks.trans[[1]][, "Id"],
   #                                 clv.fitted@data.walks.trans[[1]][, "d"],
   #                                 clv.fitted@data.walks.trans[[1]][, "delta"],
@@ -225,11 +225,6 @@ pnbd_dyncov_makewalks <- function(clv.data){
   #   data.work.life <- data.table(clv.fitted@data.walks.life[[1]][, "Id"],
   #                                clv.fitted@data.walks.life[[1]][, "d"],
   #
-  # **TOOD: Jeff:
-  # From createwalk():
-  # where there is only 1 walk, a value is needed in both, Walk1 and Max.Walk
-  #   copy covariate in Max.Walk back to Walk1
-
 
   # Extract transactions and first/last for all walk types & processes because
   #   may be memory and computation intensive
@@ -286,7 +281,6 @@ pnbd_dyncov_makewalks <- function(clv.data){
 
   # Add delta
   #   delta: if Num.Walk > 1 -> 1, otherwise 0
-  # ** TODO: What counts as Num.Walk? Actual content or 1 cov (walk1 + max.walk = 1 or 2)
   dt.walks.life[,  delta := as.numeric(.N > 1), by="walk_id"]
   dt.walks.trans[, delta := as.numeric(.N > 1), by="walk_id"]
 

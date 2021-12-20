@@ -19,7 +19,7 @@ struct Walk {
   // arma::subview_col<double> walk_data;
 
   Walk():
-    tjk(0), d(0), delta(0){
+    tjk(0), d(0), delta(0), _sum_middle_elems(0){
     this->walk_data = arma::vec(1).zeros();
   }
 
@@ -68,6 +68,9 @@ struct Walk {
   arma::uword n_elem() const;
   double sum_middle_elems() const; //sum all elements which are not first or last. Requires at least 3 elements
   double sum_from_to(const arma::uword from, const arma::uword to) const; //sum all elements which are not first or last. Requires at least 3 elements
+
+private:
+  double _sum_middle_elems;
 };
 
 
