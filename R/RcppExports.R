@@ -534,12 +534,12 @@ pnbd_staticcov_PMF <- function(r, s, x, vAlpha_i, vBeta_i, vT_i) {
     .Call(`_CLVTools_pnbd_staticcov_PMF`, r, s, x, vAlpha_i, vBeta_i, vT_i)
 }
 
-pnbd_dyncov_LL_sum <- function(params, X, t_x, T_cal, walkinfo_trans_from, walkinfo_trans_to, walkinfo_life_from, walkinfo_life_to, walk_info_life, walk_info_trans, cov_data_life, cov_data_trans) {
-    .Call(`_CLVTools_pnbd_dyncov_LL_sum`, params, X, t_x, T_cal, walkinfo_trans_from, walkinfo_trans_to, walkinfo_life_from, walkinfo_life_to, walk_info_life, walk_info_trans, cov_data_life, cov_data_trans)
+pnbd_dyncov_LL_sum <- function(params, X, t_x, T_cal, walkinfo_aux_life, walkinfo_real_life, walkinfo_aux_trans, walkinfo_real_trans, walkinfo_trans_real_from, walkinfo_trans_real_to, covdata_aux_life, covdata_real_life, covdata_aux_trans, covdata_real_trans) {
+    .Call(`_CLVTools_pnbd_dyncov_LL_sum`, params, X, t_x, T_cal, walkinfo_aux_life, walkinfo_real_life, walkinfo_aux_trans, walkinfo_real_trans, walkinfo_trans_real_from, walkinfo_trans_real_to, covdata_aux_life, covdata_real_life, covdata_aux_trans, covdata_real_trans)
 }
 
-pnbd_dyncov_LL_ind <- function(params, X, t_x, T_cal, walkinfo_trans_from, walkinfo_trans_to, walkinfo_life_from, walkinfo_life_to, walk_info_life, walk_info_trans, cov_data_life, cov_data_trans, return_intermediate_results = FALSE) {
-    .Call(`_CLVTools_pnbd_dyncov_LL_ind`, params, X, t_x, T_cal, walkinfo_trans_from, walkinfo_trans_to, walkinfo_life_from, walkinfo_life_to, walk_info_life, walk_info_trans, cov_data_life, cov_data_trans, return_intermediate_results)
+pnbd_dyncov_LL_ind <- function(params, X, t_x, T_cal, walkinfo_aux_life, walkinfo_real_life, walkinfo_aux_trans, walkinfo_real_trans, walkinfo_trans_real_from, walkinfo_trans_real_to, covdata_aux_life, covdata_real_life, covdata_aux_trans, covdata_real_trans, return_intermediate_results = FALSE) {
+    .Call(`_CLVTools_pnbd_dyncov_LL_ind`, params, X, t_x, T_cal, walkinfo_aux_life, walkinfo_real_life, walkinfo_aux_trans, walkinfo_real_trans, walkinfo_trans_real_from, walkinfo_trans_real_to, covdata_aux_life, covdata_real_life, covdata_aux_trans, covdata_real_trans, return_intermediate_results)
 }
 
 start_profiler <- function(str) {

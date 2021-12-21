@@ -19,9 +19,13 @@ struct Walk {
   // arma::subview_col<double> walk_data;
 
   Walk():
-    tjk(0), d(0), delta(0), _sum_middle_elems(0){
+    tjk(0), d(0), delta(0), val_sum_middle_elems(0){
     this->walk_data = arma::vec(1).zeros();
   }
+
+
+  // Walk(const arma::vec& cov_data, const arma::uword from, const arma::uword to,
+  //      const double tjk, const double d, const double delta);
 
   // copy constructor
   // Walk(const Walk& other) : tjk(other.tjk), d(other.d), delta(other.delta){
@@ -55,8 +59,6 @@ struct Walk {
 
   Walk(const arma::vec&, const arma::rowvec&);
 
-  static bool is_aux_trans(const arma::rowvec&);
-
   double tjk;
   double d;
   double delta; //can only be 0, 1 but store as double to avoid frequent casting and accidentally forgetting it
@@ -70,7 +72,8 @@ struct Walk {
   double sum_from_to(const arma::uword from, const arma::uword to) const; //sum all elements which are not first or last. Requires at least 3 elements
 
 private:
-  double _sum_middle_elems;
+  double val_sum_middle_elems;
+  void set_walk_data(const arma::vec& cov_data, const arma::uword from, const arma::uword to);
 };
 
 
@@ -82,9 +85,23 @@ struct Customer {
   std::vector<Walk> real_walks_trans;
   Walk aux_walk_life, aux_walk_trans;
 
+
+  /*
+   * Constructor for customers without real trans walks (ie zero-repeaters)
+   */
   Customer(const double x, const double t_x, const double T_cal,
-           const arma::vec& adj_cov_data_life, const arma::mat& walks_info_life,
-           const arma::vec& adj_cov_data_trans, const arma::mat& walks_info_trans);
+           const arma::vec& adj_covdata_aux_life,   const arma::rowvec& walkinfo_aux_life,
+           const arma::vec& adj_covdata_real_life,  const arma::rowvec& walkinfo_real_life,
+           const arma::vec& adj_covdata_aux_trans,  const arma::rowvec& walkinfo_aux_trans,
+           const arma::vec& adj_covdata_real_trans, const arma::mat& walkinfo_real_trans);
+
+  /*
+   * Constructor for customers with real trans walks (ie not zero-repeaters)
+   */
+  Customer(const double x, const double t_x, const double T_cal,
+           const arma::vec& adj_covdata_aux_life,   const arma::rowvec& walkinfo_aux_life,
+           const arma::vec& adj_covdata_real_life,  const arma::rowvec& walkinfo_real_life,
+           const arma::vec& adj_covdata_aux_trans,  const arma::rowvec& walkinfo_aux_trans);
 
   double adj_transaction_cov_dyn() const{
     return(this->aux_walk_trans.last());
@@ -159,14 +176,20 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
                                        const arma::vec& X,
                                        const arma::vec& t_x,
                                        const arma::vec& T_cal,
-                                       const arma::vec& walkinfo_trans_from,
-                                       const arma::vec& walkinfo_trans_to,
-                                       const arma::vec& walkinfo_life_from,
-                                       const arma::vec& walkinfo_life_to,
-                                       const arma::mat& walk_info_life,
-                                       const arma::mat& walk_info_trans,
-                                       const arma::mat& cov_data_life,
-                                       const arma::mat& cov_data_trans,
+
+                                       const arma::mat& walkinfo_aux_life,
+                                       const arma::mat& walkinfo_real_life,
+                                       const arma::mat& walkinfo_aux_trans,
+                                       const arma::mat& walkinfo_real_trans,
+
+                                       const arma::vec& walkinfo_trans_real_from,
+                                       const arma::vec& walkinfo_trans_real_to,
+
+                                       const arma::mat& covdata_aux_life,
+                                       const arma::mat& covdata_real_life,
+                                       const arma::mat& covdata_aux_trans,
+                                       const arma::mat& covdata_real_trans,
+
                                        const bool return_intermediate_results);
 
 #endif

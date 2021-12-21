@@ -20,8 +20,10 @@ setClass(Class = "clv.pnbd.dynamic.cov", contains = "clv.fitted.transactions.dyn
          slots = c(
            cbs = "data.table",
 
-           data.walks.life  = "list",
-           data.walks.trans = "list",
+           data.walks.life.aux    = "data.table",
+           data.walks.life.real   = "data.table",
+           data.walks.trans.aux   = "data.table",
+           data.walks.trans.real  = "data.table",
 
            LL.data          = "data.table"),
 
@@ -29,8 +31,10 @@ setClass(Class = "clv.pnbd.dynamic.cov", contains = "clv.fitted.transactions.dyn
          prototype = list(
            cbs = data.table(),
 
-           data.walks.life  = list(),
-           data.walks.trans = list(),
+           data.walks.life.aux   = data.table(),
+           data.walks.life.real  = data.table(),
+           data.walks.trans.aux  = data.table(),
+           data.walks.trans.real = data.table(),
 
            LL.data          = data.table()))
 

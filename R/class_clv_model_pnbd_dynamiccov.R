@@ -118,8 +118,10 @@ setMethod(f = "clv.model.process.newdata", signature = signature(clv.model = "cl
 
   # also need to re-do the walks if there is new data
   l.walks <- pnbd_dyncov_makewalks(clv.data = clv.fitted@clv.data)
-  clv.fitted@data.walks.life  = l.walks[["data.walks.life"]]
-  clv.fitted@data.walks.trans = l.walks[["data.walks.trans"]]
+  clv.fitted@data.walks.life.aux    <- l.walks[["data.walks.life.aux"]]
+  clv.fitted@data.walks.life.real   <- l.walks[["data.walks.life.real"]]
+  clv.fitted@data.walks.trans.aux   <- l.walks[["data.walks.trans.aux"]]
+  clv.fitted@data.walks.trans.real  <- l.walks[["data.walks.trans.real"]]
 
   clv.fitted@LL.data <- pnbd_dyncov_getLLdata(clv.fitted=clv.fitted, params=final.params)
   return(clv.fitted)

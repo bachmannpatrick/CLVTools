@@ -1,42 +1,62 @@
 pnbd_dyncov_getLLcallargs <-function(clv.fitted){
-  walkinfo_life_from <- walkinfo_life_to <- walkinfo_trans_from <- walkinfo_trans_to <- i.id_from <- i.id_to <- NULL
+  i.walk_from <- i.walk_to <- i.d <- i.delta <- i.tjk <- NULL
+  walkinfo_trans_real_from <- walkinfo_trans_real_to <- i.id_from <- i.id_to <- NULL
 
-  dt.walkinfo.life  <- pnbd_dyncov_get_walkinfo(clv.fitted@data.walks.life)
-  dt.walkinfo.trans <- pnbd_dyncov_get_walkinfo(clv.fitted@data.walks.trans)
+  pnbd_dyncov_addwalkinfo_single <- function(dt.cbs, dt.walk, name){
+    dt.walkinfo <- pnbd_dyncov_get_walkinfo(dt.walk)
 
-  # Add where to find customer's walk info
+    dt.cbs[dt.walkinfo, paste0("walk_",name,"_from")  := i.walk_from, on="Id"]
+    dt.cbs[dt.walkinfo, paste0("walk_",name,"_to")    := i.walk_to,   on="Id"]
+    dt.cbs[dt.walkinfo, paste0("walk_",name,"_d")     := i.d,     on="Id"]
+    dt.cbs[dt.walkinfo, paste0("walk_",name,"_delta") := i.delta, on="Id"]
+    dt.cbs[dt.walkinfo, paste0("walk_",name,"_tjk")   := i.tjk,   on="Id"]
+    return(dt.cbs)
+  }
+
+    # Add where to find customer's walk info
+    # dt.customerinfo <- pnbd_dyncov_get_customerinfo(dt.walkinfo)
   dt.cbs <- copy(clv.fitted@cbs)
-  dt.customerinfo.life  <- pnbd_dyncov_get_customerinfo(dt.walkinfo.life)
-  dt.cbs[dt.customerinfo.life,  walkinfo_life_from  := i.id_from, on="Id"]
-  dt.cbs[dt.customerinfo.life,  walkinfo_life_to    := i.id_to,   on="Id"]
+  dt.cbs <- pnbd_dyncov_addwalkinfo_single(dt.cbs, dt.walk=clv.fitted@data.walks.life.aux,  name="aux_life")
+  dt.cbs <- pnbd_dyncov_addwalkinfo_single(dt.cbs, dt.walk=clv.fitted@data.walks.life.real, name="real_life")
+  dt.cbs <- pnbd_dyncov_addwalkinfo_single(dt.cbs, dt.walk=clv.fitted@data.walks.trans.aux, name="aux_trans")
 
-  dt.customerinfo.trans <- pnbd_dyncov_get_customerinfo(dt.walkinfo.trans)
-  dt.cbs[dt.customerinfo.trans, walkinfo_trans_from := i.id_from, on="Id"]
-  dt.cbs[dt.customerinfo.trans, walkinfo_trans_to   := i.id_to,   on="Id"]
+  # Add to cbs
+  #   although zero-repeaters have no real trans walks and will have NA in walkinfo_trans_real_from/to
+  #   which are skipped in the cpp implementation
+  dt.walkinfo.real.trans <- pnbd_dyncov_get_walkinfo(clv.fitted@data.walks.trans.real)
+  dt.customerinfo.real.trans <- pnbd_dyncov_get_customerinfo(dt.walkinfo.real.trans)
+  dt.cbs[dt.customerinfo.real.trans, walkinfo_trans_real_from := i.id_from, on="Id"]
+  dt.cbs[dt.customerinfo.real.trans, walkinfo_trans_real_to   := i.id_to,   on="Id"]
 
   # IN SAME ORDER AS READ OUT IN Walk::Walk()
-  cols.walk.ordered <- c("walk_from", "walk_to", "tjk", "d", "delta", "AuxTrans")
-  m.walkinfo.life  <- data.matrix(dt.walkinfo.life[, .SD, .SDcols=cols.walk.ordered])
-  m.walkinfo.trans <- data.matrix(dt.walkinfo.trans[,.SD, .SDcols=cols.walk.ordered])
+  cols.walk.ordered <- c("from", "to", "tjk", "d", "delta")
+  m.walkinfo.aux.life   <- data.matrix(dt.cbs[, .SD, .SDcols=paste0("walk_aux_life_",  cols.walk.ordered, sep="")])
+  m.walkinfo.real.life  <- data.matrix(dt.cbs[, .SD, .SDcols=paste0("walk_real_life_", cols.walk.ordered, sep="")])
+  m.walkinfo.aux.trans  <- data.matrix(dt.cbs[, .SD, .SDcols=paste0("walk_aux_trans_", cols.walk.ordered, sep="")])
+  m.walkinfo.real.trans <- data.matrix(dt.walkinfo.real.trans[, c("walk_from", "walk_to", "tjk", "d", "delta")])
 
-  # **TODO: check col sorting (correct.col.names == )
-  m.cov.data.life  <- data.matrix(clv.fitted@data.walks.life[,  .SD, .SDcols=clv.fitted@clv.data@names.cov.data.life])
-  m.cov.data.trans <- data.matrix(clv.fitted@data.walks.trans[, .SD, .SDcols=clv.fitted@clv.data@names.cov.data.trans])
+  # **TODO: check col sorting is same as parameters! (correct.col.names == )
+  m.cov.data.aux.life    <- data.matrix(clv.fitted@data.walks.life.aux[,   .SD, .SDcols=clv.fitted@clv.data@names.cov.data.life])
+  m.cov.data.real.life   <- data.matrix(clv.fitted@data.walks.life.real[,  .SD, .SDcols=clv.fitted@clv.data@names.cov.data.life])
+  m.cov.data.aux.trans   <- data.matrix(clv.fitted@data.walks.trans.aux[,  .SD, .SDcols=clv.fitted@clv.data@names.cov.data.trans])
+  m.cov.data.real.trans  <- data.matrix(clv.fitted@data.walks.trans.real[, .SD, .SDcols=clv.fitted@clv.data@names.cov.data.trans])
 
   return(list(X = dt.cbs$x,
               t_x = dt.cbs$t.x,
               T_cal = dt.cbs$T.cal,
 
-              walkinfo_trans_from = dt.cbs$walkinfo_trans_from,
-              walkinfo_trans_to   = dt.cbs$walkinfo_trans_to,
-              walkinfo_life_from  = dt.cbs$walkinfo_life_from,
-              walkinfo_life_to    = dt.cbs$walkinfo_life_to,
+              walkinfo_aux_life = m.walkinfo.aux.life,
+              walkinfo_real_life = m.walkinfo.real.life,
+              walkinfo_aux_trans = m.walkinfo.aux.trans,
 
-              walk_info_life  = m.walkinfo.life,
-              walk_info_trans = m.walkinfo.trans,
+              walkinfo_trans_real_from = dt.cbs$walkinfo_trans_real_from,
+              walkinfo_trans_real_to = dt.cbs$walkinfo_trans_real_to,
+              walkinfo_real_trans = m.walkinfo.real.trans,
 
-              cov_data_life = m.cov.data.life,
-              cov_data_trans = m.cov.data.trans))
+              covdata_aux_life = m.cov.data.aux.life,
+              covdata_real_life = m.cov.data.real.life,
+              covdata_aux_trans = m.cov.data.aux.trans,
+              covdata_real_trans = m.cov.data.real.trans))
 }
 
 
@@ -131,7 +151,7 @@ pnbd_dyncov_covariate_add_interval_bounds <- function(dt.cov, clv.time){
 
 
 pnbd_dyncov_createwalks_real_trans <- function(clv.data, dt.trans, dt.tp.first.last){
-  num.trans <- tp.this.trans <- tp.previous.trans <- tp.cut.lower <- tp.cut.upper <- is.first <- AuxTrans <- Date <- NULL
+  num.trans <- tp.this.trans <- tp.previous.trans <- tp.cut.lower <- tp.cut.upper <- is.first <- Date <- NULL
   clv.time <- clv.data@clv.time
   dt.cov <- clv.data@data.cov.trans
 
@@ -147,7 +167,7 @@ pnbd_dyncov_createwalks_real_trans <- function(clv.data, dt.trans, dt.tp.first.l
 
   # If 2 transactions are on the same date, shift+1 will lead to Date.Start > Date.End
   #   Cannot/Should have no 2 transactions on same tp because are aggregated
-  #   No AuxTrans inserted, only real trans present
+  #   No aux trans, only real trans present
   #     min dist is 1 eps, hence can fall together again
   setkeyv(dt.cuts.real, cols=c("Id", "Date"))
   dt.cuts.real[, tp.this.trans := Date]
@@ -175,13 +195,11 @@ pnbd_dyncov_createwalks_real_trans <- function(clv.data, dt.trans, dt.tp.first.l
 
   dt.walks.real <- pnbd_dyncov_creatwalks_add_tjk(dt.walks.real, clv.time)
   dt.walks.real <- pnbd_dyncov_creatwalks_add_d(dt.walks.real, clv.time)
-  dt.walks.real[, AuxTrans := FALSE]
 
   return(dt.walks.real)
 }
 
 pnbd_dyncov_createwalks_real_life <- function(clv.data, dt.tp.first.last){
-  AuxTrans <- NULL
   # **TODO: Update comment: Walks are covs that have an effect from coming alive until last transaction [0, T] (or (0. T))
   dt.walks.real <- pnbd_dyncov_createwalks_singletrans(dt.cov=clv.data@data.cov.life,
                                                        dt.tp.first.last=dt.tp.first.last,
@@ -189,11 +207,10 @@ pnbd_dyncov_createwalks_real_life <- function(clv.data, dt.tp.first.last){
                                                        name.upper="tp.last.trans",
                                                        names.cov=clv.data.get.names.cov.life(clv.data),
                                                        clv.time=clv.data@clv.time)
-  dt.walks.real[, AuxTrans := FALSE]
 }
 
 pnbd_dyncov_createwalks_auxwalk <- function(dt.cov, dt.tp.first.last, names.cov, clv.time){
-  tp.estimation.end <- AuxTrans <- NULL
+  tp.estimation.end <- NULL
 
   dt.tp.first.last[, tp.estimation.end := clv.time@timepoint.estimation.end]
   dt.walks.aux <- pnbd_dyncov_createwalks_singletrans(dt.cov=dt.cov,
@@ -203,13 +220,12 @@ pnbd_dyncov_createwalks_auxwalk <- function(dt.cov, dt.tp.first.last, names.cov,
                                                       names.cov = names.cov,
                                                       clv.time=clv.time)
   dt.walks.aux[, tp.estimation.end := NULL]
-  dt.walks.aux[, AuxTrans := TRUE]
   return(dt.walks.aux)
 }
 
 pnbd_dyncov_createwalks_addwalkfromto <- function(dt.walks){
-  Id <- tp.this.trans <- AuxTrans <- tp.cov.lower <- abs_pos <- walk_from <- walk_to <- NULL
-  dt.walks[order(Id, tp.this.trans, AuxTrans, tp.cov.lower), abs_pos := seq(from=1, to=.N)]
+  Id <- tp.this.trans <- tp.cov.lower <- abs_pos <- walk_from <- walk_to <- NULL
+  dt.walks[order(Id, tp.this.trans, tp.cov.lower), abs_pos := seq(from=1, to=.N)]
   dt.walks[, walk_from := min(abs_pos), by="walk_id"]
   dt.walks[, walk_to := max(abs_pos), by="walk_id"]
   return(dt.walks)
@@ -256,55 +272,45 @@ pnbd_dyncov_makewalks <- function(clv.data){
 
 
   # Create actual walk tables ------------------------------------------------------------
-  cols.walk.def <- c("Id", "tp.this.trans", "AuxTrans") # what defines data that belongs to a walk
+
+  cols.walk.def <- c("Id", "tp.this.trans") # what defines data that belongs to a walk
   cols.keys <- c("walk_id", cols.walk.def, "tp.cov.lower")
   cols.life <- c(cols.walk.def, "tp.cov.lower", names.cov.life, "tjk", "d")
   cols.trans <- c(cols.walk.def, "tp.cov.lower", names.cov.trans, "tjk", "d")
 
-  dt.walks.life <- rbindlist(list(dt.walks.real.life[, .SD, .SDcols = cols.life],
-                                  dt.walks.aux.life[, .SD, .SDcols = cols.life]),
-                             use.names = TRUE, fill=FALSE)
-  dt.walks.trans <- rbindlist(list(dt.walks.real.trans[, .SD, .SDcols = cols.trans],
-                                   dt.walks.aux.trans[, .SD, .SDcols = cols.trans]),
-                              use.names = TRUE, fill=FALSE)
+  pnbd_dyncov_finishwalks <- function(dt.walk){
+    # Add walk_id
+    #   per what defines a walk
+    setkeyv(dt.walk, cols.walk.def)
+    dt.walk[,  walk_id := .GRP, by=cols.walk.def]
+    setkeyv(dt.walk, cols.keys)
 
+    # Add delta
+    #   delta: if Num.Walk > 1 -> 1, otherwise 0
+    dt.walk[, delta := as.numeric(.N > 1), by="walk_id"]
 
-  # Add walk_id
-  #   per what defines a walk (incl AuxTrans because AuxTrans can be on same as last real trans)
-  setkeyv(dt.walks.life, cols.walk.def)
-  setkeyv(dt.walks.trans, cols.walk.def)
-  dt.walks.life[,  walk_id := .GRP, by=cols.walk.def]
-  dt.walks.trans[, walk_id := .GRP, by=cols.walk.def]
+    # Add absolute position in data
+    #   sort each walk together and then also by cov date
+    dt.walk[order(walk_id, tp.cov.lower), abs_pos := seq(.N)]
 
-  setkeyv(dt.walks.life, cols.keys)
-  setkeyv(dt.walks.trans, cols.keys)
+    # Add from to of walk
+    dt.walk[, walk_from := min(abs_pos), by="walk_id"]
+    dt.walk[, walk_to   := max(abs_pos), by="walk_id"]
 
-  # Add delta
-  #   delta: if Num.Walk > 1 -> 1, otherwise 0
-  dt.walks.life[,  delta := as.numeric(.N > 1), by="walk_id"]
-  dt.walks.trans[, delta := as.numeric(.N > 1), by="walk_id"]
+    return(dt.walk)
+  }
 
-  # Add absolute position in data
-  #   sort each walk together and then by cov date
-  dt.walks.life[ order(walk_id, tp.cov.lower), abs_pos := seq(.N)]
-  dt.walks.trans[order(walk_id, tp.cov.lower), abs_pos := seq(.N)]
-
-  # Add from to of walk
-  dt.walks.life[,  walk_from := min(abs_pos), by="walk_id"]
-  dt.walks.life[,  walk_to   := max(abs_pos), by="walk_id"]
-
-  dt.walks.trans[, walk_from := min(abs_pos), by="walk_id"]
-  dt.walks.trans[, walk_to   := max(abs_pos), by="walk_id"]
-
-  return(list("data.walks.life" = dt.walks.life,
-              "data.walks.trans" = dt.walks.trans))
+  return(list("data.walks.life.aux"   = pnbd_dyncov_finishwalks(dt.walks.aux.life),
+              "data.walks.life.real"  = pnbd_dyncov_finishwalks(dt.walks.real.life),
+              "data.walks.trans.aux"  = pnbd_dyncov_finishwalks(dt.walks.aux.trans),
+              "data.walks.trans.real" = pnbd_dyncov_finishwalks(dt.walks.real.trans)))
 }
 
 pnbd_dyncov_get_walkinfo <- function(dt.walks){
   abs_pos <- Id <- id_from <- id_to <- NULL
   # minimum info, per walk. Keep Id to create customerinfo (match with cbs)
 
-  dt.walkinfo <- unique(dt.walks[, c("Id", "walk_from", "walk_to", "tjk", "d", "delta", "AuxTrans")])
+  dt.walkinfo <- unique(dt.walks[, c("Id", "walk_from", "walk_to", "tjk", "d", "delta")])
   setkeyv(dt.walkinfo, "Id")
 
   # Add abs_pos + id from and to here to ensure correct
