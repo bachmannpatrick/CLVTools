@@ -20,7 +20,7 @@ struct Walk {
 
   Walk():
     tjk(0), d(0), delta(0), val_sum_middle_elems(0){
-    this->walk_data = arma::vec(1).zeros();
+    this->walk_data = arma::vec(1, arma::fill::zeros);
   }
 
 

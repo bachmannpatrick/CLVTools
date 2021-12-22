@@ -10,11 +10,11 @@ pnbd_dyncov_getLLcallargs <-function(clv.fitted){
     dt.cbs[dt.walkinfo, paste0("walk_",name,"_d")     := i.d,     on="Id"]
     dt.cbs[dt.walkinfo, paste0("walk_",name,"_delta") := i.delta, on="Id"]
     dt.cbs[dt.walkinfo, paste0("walk_",name,"_tjk")   := i.tjk,   on="Id"]
+
     return(dt.cbs)
   }
 
-    # Add where to find customer's walk info
-    # dt.customerinfo <- pnbd_dyncov_get_customerinfo(dt.walkinfo)
+  # Add where to find customer's walk info
   dt.cbs <- copy(clv.fitted@cbs)
   dt.cbs <- pnbd_dyncov_addwalkinfo_single(dt.cbs, dt.walk=clv.fitted@data.walks.life.aux,  name="aux_life")
   dt.cbs <- pnbd_dyncov_addwalkinfo_single(dt.cbs, dt.walk=clv.fitted@data.walks.life.real, name="real_life")

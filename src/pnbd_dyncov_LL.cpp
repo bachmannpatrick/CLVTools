@@ -36,9 +36,8 @@ Customer::Customer(const double x, const double t_x, const double T_cal,
 }
 
 void Walk::set_walk_data(const arma::vec& cov_data, const arma::uword from, const arma::uword to){
-  const arma::uword n_elems = to-from+1;
-  // // // Rcpp::Rcout<<"n_elems"<<n_elems<<std::endl;
 
+  const arma::uword n_elems = to-from+1;
   double* ptr = const_cast<double*>(cov_data.memptr());
   this->walk_data = arma::vec(ptr+from, n_elems, false, true);
 
@@ -49,7 +48,7 @@ void Walk::set_walk_data(const arma::vec& cov_data, const arma::uword from, cons
   if(this->walk_data.n_elem >= 3){
     this->val_sum_middle_elems = arma::accu(this->walk_data.subvec(1, this->walk_data.n_elem-2));
   }else{
-    // To propagate to optimizer
+    // To propagate to optimizer if sum_middle_elems() called erroneously
     // **TODO: Or throw?
     this->val_sum_middle_elems = arma::datum::nan;
   }
@@ -97,8 +96,6 @@ double Walk::get_elem(const arma::uword i) const{
 double Walk::sum_middle_elems() const{
   return(this->val_sum_middle_elems);
   // **TODO: Assert that only called if at least 3 elements
-  // **TOOD: Pre-calc and return. Cannot pre-calculate outside and pass in because changes with params
-  // return(arma::accu(this->walk_data.subvec(1, this->walk_data.n_elem-2)));
 }
 
 double Walk::sum_from_to(const arma::uword from, const arma::uword to) const{
@@ -198,9 +195,16 @@ double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
     return(hyp_z1 - hyp_z2);
 }
 
+/*
+ * A1sum: Sum up covariates which were active during transaction
+ *        **TODO: Verify last vs first are the relevant ones during transaction
+ *        Name is choosen randomly
+ */
 double pnbd_dyncov_LL_i_A1sum(const arma::uword x, const std::vector<Walk>& real_walks_trans){
+  // If x and t are in same interval (ie first and last transaction in 1 interval)
+
   if(real_walks_trans.size() == 0){
-    return(0.0);
+    return(0.0); // log(1)
   }else{
     double A1sum = 0.0;
     for(const Walk& w : real_walks_trans){
@@ -211,16 +215,20 @@ double pnbd_dyncov_LL_i_A1sum(const arma::uword x, const std::vector<Walk>& real
 }
 
 double pnbd_dyncov_LL_i_bksumbjsum_walk_i(const Walk& w){
-  double n = static_cast<double>(w.n_elem());
-  double last_mult = w.tjk - w.d - w.delta*(n - 2.0);
 
   if(w.n_elem() == 1){
-    return(w.first()*w.d + w.last()*last_mult);
+    // Transactions were in same cov period, delta = 0
+    return(w.first() * (w.tjk));
+    // return(w.first()*w.d + w.last()*last_mult);
   }else{
     if(w.n_elem() == 2){
-      return(w.first()*w.d + w.last()*last_mult);
+      // because k-2 = 0
+      return(w.first()*w.d + w.last()*(w.tjk - w.d));
+      // return(w.first()*w.d + w.last()*last_mult);
     }else{
-      // > {1,2}
+      // >= 3
+      double n = static_cast<double>(w.n_elem());
+      double last_mult = w.tjk - w.d - w.delta*(n - 2.0);
       return(w.first()*w.d + w.sum_middle_elems() + w.last()*last_mult);
     }
   }
@@ -238,41 +246,27 @@ double pnbd_dyncov_LL_i_BjSum(const std::vector<Walk>& real_walks){
   }
 }
 
-double pnbd_dyncov_LL_i_BkSum(const std::vector<Walk>& real_walks, const Walk& aux_walk){
-  // **TODO: Maybe pass BjSum if already calculated before. We could sum up again, but more efficient to use already calcualted results
-  return(pnbd_dyncov_LL_i_BjSum(real_walks) + pnbd_dyncov_LL_i_bksumbjsum_walk_i(aux_walk));
+double pnbd_dyncov_LL_i_BkSum(const double Bjsum, const Walk& aux_walk){
+  return(Bjsum + pnbd_dyncov_LL_i_bksumbjsum_walk_i(aux_walk));
 }
 
+/*
+ * Sum aux walk up to (and incl) Walk_i
+ */
 double pnbd_dyncov_LL_i_Bi(const arma::uword i, const double t_x, const Walk& aux_walk){
   // **TODO: Make tests with i={1,2,3,10} and n_elems={1,2,3,10} (and i>n_elems?)
-  double Aji = 0.0;
-  if(i == 1 || i == 2){
-    // Aji only consists of Aj1
-    Aji = aux_walk.first()*aux_walk.d;
-  }else{
-    Aji = aux_walk.first()*aux_walk.d + aux_walk.sum_middle_elems();
-  }
 
-  double Aki = 0.0;
   if(i == 1){
-    // omit delta part
-    Aki = aux_walk.first()*(-t_x - aux_walk.d);
-  }else{
-    // include delta part
-
-    if(aux_walk.n_elem() <= i){
-      // want to sum higher than have elements in walk
-      double n = static_cast<double>(aux_walk.n_elem());
-      Aki = aux_walk.last()        * (-t_x - aux_walk.d - aux_walk.delta*(n - 2.0));
-
-    }else{
-
-      // Walk_i * (...). get(i-1) to adjust index
-      Aki = aux_walk.get_elem(i-1) * (-t_x - aux_walk.d - aux_walk.delta*(static_cast<double>(i) - 2.0));
-    }
+    return(aux_walk.first() * (-t_x));
   }
 
-  return(Aji + Aki);
+  if(i == 2){
+    return(aux_walk.first()*aux_walk.d + aux_walk.last() * (-t_x - aux_walk.d));
+  }
+
+  // Sum elements up to Walk_i
+  return(aux_walk.first()*aux_walk.d + aux_walk.sum_from_to(1, i-2) +
+         aux_walk.get_elem(i-1) * (-t_x - aux_walk.d - aux_walk.delta*(static_cast<double>(i) - 2.0)));
 }
 
 
@@ -357,7 +351,59 @@ double pnbd_dyncov_LL_i_Di2(const arma::uword i, const arma::uword n_elem_real_w
   return(Cji + Cki);
 }
 
+/*
+ * Sum up covs from
+ * Do not sum up overlapping covs at end of real_walk and beginning of aux_walk (ie avoid real_walk.last() + aux_walk.first())
+ * **Same as Bi(), if had one, continuous walk**
+ *    Do NOT count covariate period of transaction x double if they overlap
+ */
 double pnbd_dyncov_LL_i_Di(const arma::uword i, const Walk& real_walk_life, const Walk& aux_walk_life){
+
+  // Real and Aux walk are guaranteed to not overlap
+  //  Cov where last transaction is, belongs only to aux walk
+
+  // Cannot simply sum up real_walk_life and add
+  //  for the case real_walk_life.n_elem() == 0, d has to be multiplied
+
+  if(real_walk_life.n_elem() == 0){
+    // Can directly sum up the aux walk
+
+    if(i == 1){
+      return();
+    }
+    if(i == 2){
+      return();
+    }
+    if(i == 3){
+      return();
+    }
+    return();
+
+  }else{
+
+    // There are elements in the real walk that all need to be summed (independent of i)
+
+    // Sum up everything in real walk
+    double sum_real_walk = 0.0;
+    if(real_walk_life.n_elem() == 1){
+      sum_real_walk = real_walk_life.first()*real_walk_life.d;
+    }
+    if(real_walk_life.n_elem() == 2){
+      sum_real_walk = real_walk_life.first()*real_walk_life.d + real_walk_life.last();
+    }
+
+    if(real_walk_life.n_elem() >= 3){
+      sum_real_walk = real_walk_life.first()*real_walk_life.d + real_walk_life.sum_middle_elems() + real_walk_life.last();
+    }
+
+    // Sum up aux walk until i
+    if(i == 1){
+      s
+    }
+
+
+  }
+
   // ########
   // # #instead of changing Max.Walk in pnbd_LL_Di a new column Di.Max.Walk is introduced which contains these changes to Max.Walk
   // # #this way a copy can be avoided in _Di
@@ -396,10 +442,10 @@ double pnbd_dyncov_LL_i_F2_1(const double r, const double alpha_0, const double 
                              const double a1, const double b1,
                              const double A1T, const double C1T){
 
-  const double alpha_1 = a1 + (1-dT)*A1T + alpha_0;
-  const double beta_1 = (b1 + (1-dT)*C1T + beta_0) * A1T/C1T;
+  const double alpha_1 = a1 + (1.0 - dT)*A1T + alpha_0;
+  const double beta_1 = (b1 + (1.0 - dT)*C1T + beta_0) * A1T/C1T;
 
-  const double alpha_2 = a1 + A1T + alpha_0;
+  const double alpha_2 =  a1 + A1T + alpha_0;
   const double beta_2  = (b1 + C1T + beta_0)*A1T/C1T;
 
   double F2_1 = 0;
@@ -428,7 +474,7 @@ double pnbd_dyncov_LL_i_F2_2(const double r, const double alpha_0, const double 
   const double alpha_2 = (aT + alpha_0);
   const double beta_2 =  (bT + beta_0)*AkT/CkT;
 
-  double F2_2 = 0;
+  double F2_2 = 0.0;
   if(alpha_1 >= beta_1){
     F2_2 = std::pow(AkT/CkT, s) * pnbd_dyncov_LL_i_hyp_alpha_ge_beta(r, s, x,
                     alpha_1, beta_1,
@@ -445,9 +491,15 @@ double pnbd_dyncov_LL_i_F2_3(const double r, const double alpha_0, const double 
                              const Customer& c,
                              const double Bjsum, const double dT){
 
+  // No middle sum if only 2 elems in walk (only F2_1 and F2_2)
+  if(c.aux_walk_trans.n_elem() <= 2){
+    return(0.0);
+  }
+
+  // Loop counts Walks, not element access indices. ie Walk_2, Walk_3, ...
+  //    Loop until and including Walk(n-1)
   double F2_3 = 0.0;
-  const arma::uword i_end = c.aux_walk_life.n_elem() - 1;
-  // Loop counts in Walks, not element access indices. ie Walk_2, Walk_3, ...
+  const arma::uword i_end = c.aux_walk_trans.n_elem() - 1;
   for(arma::uword i = 2; i <= i_end; i++){
 
     // Transaction Process ------------------------------------------
@@ -457,13 +509,12 @@ double pnbd_dyncov_LL_i_F2_3(const double r, const double alpha_0, const double 
 
     // Lifetime Process ---------------------------------------------
     double Ci = c.aux_walk_life.get_elem(i-1); // Walk_i
-    // R: "-> get all data (not only Num.Walk > i) for the IDs in work.life.i"
     double Di = pnbd_dyncov_LL_i_Di(i, c.real_walk_life, c.aux_walk_life);
     double bi = Di + Ci * (c.t_x + dT + (static_cast<double>(i) - 2.0));
 
     // Alpha & Beta ------------------------------------------------
     double alpha_1 = ai + alpha_0;
-    double beta_1 = (bi + beta_0)*Ai/Ci;
+    double beta_1 = (bi + beta_0) * Ai/Ci;
     double alpha_2 = ai + Ai + alpha_0;
     double beta_2 = (bi + Ci + beta_0)*Ai/Ci;
 
@@ -487,12 +538,11 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
                            const double BT, const double DT,
                            const double A1T, const double C1T,
                            const double AkT, const double CkT,
+                           const double Bjsum,
                            const double F2_3_R,
                            const bool return_intermediate_results,
                            arma::vec& intermediate_results){
 
-
-  const double Bjsum = pnbd_dyncov_LL_i_BjSum(c.real_walks_trans);
   const double dT = c.aux_walk_trans.d;
 
   const double a1T = Bjsum + B1 + c.T_cal * A1T;
@@ -500,34 +550,25 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
   const double a1 = Bjsum + B1 + A1T * (c.t_x + dT - 1.0);
   const double b1  = D1 + C1T * (c.t_x + dT - 1.0);
 
-  // #add num walk to cbs
-  // cbs[, Num.Walk := clv.fitted@data.walks.trans[[1]][AuxTrans==TRUE, Num.Walk]]
-  // # Lifetime Process ---------------------------------------------------
-  // #   Num.walk in cbs is kxT!
-  // # F2 -----------------------------------------------------------------
-  // #   For Num.Walk == 1: F2 = F2.1
-  // #   For Num.Walk >  1: F2 = F2.1, F2.2, F2.3
-  // # F2.3 (only for Num.Walk > 1) ---------------------------------------
-  //   max.walk <- data.work.life[,max(Num.Walk)]
-
   if(c.aux_walk_life.n_elem() == 1){
 
-    const double alpha_1 = a1 + (1.0-dT)*A1T + alpha_0;
+    // Not exactly the same as F2_1
+
+    const double alpha_1 =  a1 + (1.0-dT)*A1T + alpha_0;
     const double beta_1  = (b1 + (1.0-dT)*C1T + beta_0) * A1T/C1T;
 
     const double alpha_2 = a1T + alpha_0;
     const double beta_2  = (b1T  + beta_0)*A1T/C1T;
 
-    // has no F2.2 and F2.3
-    double F2_1;
+    double F2 = 0.0;
     if(alpha_1 >= beta_1){
-      F2_1 = std::pow(A1T/C1T, s) * pnbd_dyncov_LL_i_hyp_alpha_ge_beta(r, s, c.x,
-                      alpha_1, beta_1,
-                      alpha_2, beta_2);
+      F2 = std::pow(A1T/C1T, s) * pnbd_dyncov_LL_i_hyp_alpha_ge_beta(r, s, c.x,
+                    alpha_1, beta_1,
+                    alpha_2, beta_2);
     }else{
-      F2_1 = std::pow(A1T/C1T, s) * pnbd_dyncov_LL_i_hyp_beta_g_alpha(r, s, c.x,
-                      alpha_1, beta_1,
-                      alpha_2, beta_2);
+      F2 = std::pow(A1T/C1T, s) * pnbd_dyncov_LL_i_hyp_beta_g_alpha(r, s, c.x,
+                    alpha_1, beta_1,
+                    alpha_2, beta_2);
     }
 
     if(return_intermediate_results){
@@ -536,11 +577,11 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
       intermediate_results(2) = arma::datum::nan;
       intermediate_results(3) = arma::datum::nan;
       intermediate_results(4) = arma::datum::nan;
-      intermediate_results(5) = F2_1;
-      intermediate_results(6) = 0.0;
-      intermediate_results(7) = 0.0;
+      intermediate_results(5) = arma::datum::nan;
+      intermediate_results(6) = arma::datum::nan;
+      intermediate_results(7) = arma::datum::nan;
     }
-    return(F2_1);
+    return(F2);
 
   }else{
 
@@ -598,22 +639,22 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
   // // #const arma::vec& cov_aux_life,
   // const double C1T_R,
 
-  // Transaction Process ---------------------------------------------------------
+  // Transaction Process ------------------------------------------------
   const double A1T = c.aux_walk_trans.first();
   const double AkT = c.adj_transaction_cov_dyn();
   const double A1sum = pnbd_dyncov_LL_i_A1sum(static_cast<arma::uword>(c.x), c.real_walks_trans);
   const double B1 = pnbd_dyncov_LL_i_Bi(1, c.t_x, c.aux_walk_trans);
 
   const double BT = pnbd_dyncov_LL_i_Bi(c.aux_walk_trans.n_elem(), c.t_x, c.aux_walk_trans);
-  const double Bksum = pnbd_dyncov_LL_i_BkSum(c.real_walks_trans, c.aux_walk_trans);
+  const double Bjsum = pnbd_dyncov_LL_i_BjSum(c.real_walks_trans);
+  const double Bksum = pnbd_dyncov_LL_i_BkSum(Bjsum, c.aux_walk_trans);
 
 
   // Lifetime Process ---------------------------------------------------
   const double C1T = c.aux_walk_life.first();
   const double CkT = c.adj_lifetime_cov_dyn();
   const double D1 = pnbd_dyncov_LL_i_Di(1, c.real_walk_life, c.aux_walk_life);
-  // const double DT = pnbd_dyncov_LL_i_Di(c.aux_walk_life.n_elem(), //std::fmax(c.real_walk_life.n_elem(), c.aux_walk_life.n_elem()),
-  //                                       c.real_walk_life, c.aux_walk_life);
+  // const double DT = pnbd_dyncov_LL_i_Di(c.aux_walk_life.n_elem(), c.real_walk_life, c.aux_walk_life);
 
   const double DkT = CkT * c.T_cal + DT;
 
@@ -704,29 +745,52 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
   const double log_F1 = std::log(s) - std::log(r+s+c.x);
 
   arma::vec F2_intermediate_results = arma::vec(8);
-  const double F2 = pnbd_dyncov_LL_i_F2(r, alpha_0,  s,  beta_0,
-                                        c,
-                                        B1, D1,
-                                        BT,  DT,
-                                        A1T,  C1T, AkT,  CkT,
-                                        F2_3,
-                                        return_intermediate_results,
-                                        F2_intermediate_results);
+  double F2 = pnbd_dyncov_LL_i_F2(r, alpha_0,  s,  beta_0,
+                                  c,
+                                  B1, D1,
+                                  BT,  DT,
+                                  A1T,  C1T, AkT,  CkT,
+                                  Bjsum,
+                                  F2_3,
+                                  return_intermediate_results,
+                                  F2_intermediate_results);
 
   const double log_F3 = -s * std::log(DkT + beta_0) - (c.x+r) * std::log(Bksum + alpha_0);
 
-  // *** TODO: == 0?? 1e-16 xxx? floating point comparison....
+  // Branch by F2:
+  //
+  //  F2 may be non-finite (especially NaN):
+  //    Propagate to LL
+  //    Avoid that it falls into the default branch where it is omitted (LL = log_F0 + log_F3).
+  //
+  //  Floating point comparison, around 0:
+  //    Like in R: Treat as equal if close enough, ie abs(diff) < sqrt(MachineEps)
+  //    Set F2 to 0 if it is close enough to 0: abs(F2) < sqrt(MachineEps)
   double LL = 0;
-  if(F2 < 0){
-    LL = log_F0 + log_F3 + std::log1p(std::exp(log_F1-log_F3) * F2);
+  if(!arma::is_finite(F2)){
+    LL = F2;
   }else{
-    if(F2>0){
-      double max_AB = std::fmax(log_F1 + std::log(F2), log_F3);
-      LL = log_F0 + max_AB  + std::log(std::exp(log_F1 + std::log(F2) - max_AB) + std::exp(log_F3 - max_AB));
+    // Set F2 to exact 0 if it is reasonably small
+    if(std::fabs(F2 - 0.0) < std::sqrt(arma::datum::eps)){
+      F2 = 0.0;
+    }
+
+    if(F2 < 0.0){
+      LL = log_F0 + log_F3 + std::log1p(std::exp(log_F1-log_F3) * F2);
     }else{
-      LL = log_F0 + log_F3;
+
+      if(F2 > 0.0){
+        double max_AB = std::fmax(log_F1 + std::log(F2), log_F3);
+        LL = log_F0 + max_AB  + std::log(std::exp(log_F1 + std::log(F2) - max_AB) + std::exp(log_F3 - max_AB));
+
+      }else{
+        // F2 == 0
+        LL = log_F0 + log_F3;
+      }
     }
   }
+
+
 
   double Akprod = std::exp(A1sum);
 
