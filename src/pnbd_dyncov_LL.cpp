@@ -1,39 +1,67 @@
 #include "pnbd_dyncov_LL.h"
 
+// void Customer::set_walks_life(const arma::vec& adj_covdata_full_life, const arma::rowvec& walkinfo_aux_life,
+//                               const arma::uword customer_covdata_life_from){
+//   // Create aux walk
+//   this->aux_walk_life = LifetimeWalk(adj_covdata_full_life, walkinfo_aux_life);
+//
+//   // Create real walk from what is left in this customer's covdata before aux walk starts
+//   const arma::uword aux_from = Walk::read_from(walkinfo_aux_life);
+//   if(aux_from == customer_covdata_life_from){
+//     // aux starts from first covariate of customer = no space for real walk
+//     this->real_walk_life = EmptyWalk();
+//   }else{
+//     const arma::uword to = aux_from - 1
+//     const arma::uword from = customer_covdata_life_from;
+//     this->real_walk_life = RealWalkLife();
+//   }
+//
+// }
 
-Customer::Customer(const double x, const double t_x, const double T_cal,
-                   const arma::vec& adj_covdata_aux_life,   const arma::rowvec& walkinfo_aux_life,
-                   const arma::vec& adj_covdata_real_life,  const arma::rowvec& walkinfo_real_life,
-                   const arma::vec& adj_covdata_aux_trans,  const arma::rowvec& walkinfo_aux_trans)
-  : x(x), t_x(t_x), T_cal(T_cal), real_walks_trans(std::vector<Walk>(0)){
-
-  this->aux_walk_life = Walk(adj_covdata_aux_life, walkinfo_aux_life);
-  this->real_walk_life = Walk(adj_covdata_real_life, walkinfo_real_life);
-  this->aux_walk_trans = Walk(adj_covdata_aux_trans, walkinfo_aux_trans);
+void Customer::set_real_walk_life(const arma::vec& adj_covdata_real_life, const arma::rowvec& walkinfo_real_life){
+  if(arma::is_finite(walkinfo_real_life(0)) && arma::is_finite(walkinfo_real_life(1))){
+    this->real_walk_life = LifetimeWalk(adj_covdata_real_life, walkinfo_real_life);
+  }else{
+    this->real_walk_life = EmptyLifetimeWalk();
+    Rcpp::Rcout<<"Creating empty walk"<<std::endl;
+  }
 }
 
-
-
-Customer::Customer(const double x, const double t_x, const double T_cal,
+// With real life walk
+Customer::Customer(const double x, const double t_x, const double T_cal, const double d_omega,
                    const arma::vec& adj_covdata_aux_life,   const arma::rowvec& walkinfo_aux_life,
                    const arma::vec& adj_covdata_real_life,  const arma::rowvec& walkinfo_real_life,
                    const arma::vec& adj_covdata_aux_trans,  const arma::rowvec& walkinfo_aux_trans,
                    const arma::vec& adj_covdata_real_trans, const arma::mat& walkinfo_real_trans)
-  : x(x), t_x(t_x), T_cal(T_cal),
-    // init vec with total capacity
-    real_walks_trans(std::vector<Walk>(walkinfo_real_trans.n_rows)){
+  :x(x), t_x(t_x), T_cal(T_cal), d_omega(d_omega),
+   real_walks_trans(std::vector<TransactionWalk>(walkinfo_real_trans.n_rows)), // init vec with total capacity
+   aux_walk_life(LifetimeWalk(adj_covdata_aux_life, walkinfo_aux_life)),
+   aux_walk_trans(TransactionWalk(adj_covdata_aux_trans, walkinfo_aux_trans)){
 
-  this->aux_walk_life = Walk(adj_covdata_aux_life, walkinfo_aux_life);
-  this->real_walk_life = Walk(adj_covdata_real_life, walkinfo_real_life);
-  this->aux_walk_trans = Walk(adj_covdata_aux_trans, walkinfo_aux_trans);
+  this->set_real_walk_life(adj_covdata_real_life, walkinfo_real_life);
 
   for(arma::uword i = 0; i < walkinfo_real_trans.n_rows; i++){
-    this->real_walks_trans.at(i) = Walk(adj_covdata_real_trans, walkinfo_real_trans.row(i));
+    this->real_walks_trans.at(i) = TransactionWalk(adj_covdata_real_trans, walkinfo_real_trans.row(i));
   }
-
   // **TODO: Throw error if aux walks are not the same length (n_elems())
   // assert(this->aux_walk_life.n_elems() == this->aux_walk_trans.n_elems())
 }
+
+// Without real trans walks (ie not zero-repeaters)
+Customer::Customer(const double x, const double t_x, const double T_cal, const double d_omega,
+                   const arma::vec& adj_covdata_aux_life,   const arma::rowvec& walkinfo_aux_life,
+                   const arma::vec& adj_covdata_real_life,  const arma::rowvec& walkinfo_real_life,
+                   const arma::vec& adj_covdata_aux_trans,  const arma::rowvec& walkinfo_aux_trans)
+  : x(x), t_x(t_x), T_cal(T_cal), d_omega(d_omega),
+    real_walks_trans(std::vector<TransactionWalk>(0)),
+    aux_walk_life(LifetimeWalk(adj_covdata_aux_life, walkinfo_aux_life)),
+    aux_walk_trans(TransactionWalk(adj_covdata_aux_trans, walkinfo_aux_trans)){
+
+  this->set_real_walk_life(adj_covdata_real_life, walkinfo_real_life);
+}
+
+
+
 
 void Walk::set_walk_data(const arma::vec& cov_data, const arma::uword from, const arma::uword to){
 
@@ -56,11 +84,10 @@ void Walk::set_walk_data(const arma::vec& cov_data, const arma::uword from, cons
 }
 
 Walk::Walk(const arma::vec& cov_data, const arma::rowvec& walk_info)
-  :
+  : delta{walk_info(2)}
   // walk_data(cov_data.subvec(
   //     static_cast<arma::uword>(walk_info(0))-1,
   //     static_cast<arma::uword>(walk_info(1))-1)),
-   tjk{walk_info(2)}, d{walk_info(3)}, delta{walk_info(4)}
 {
   /*
    * May not store refs/pointers to walk_info as will only receive subviews (mat.row())
@@ -76,6 +103,33 @@ Walk::Walk(const arma::vec& cov_data, const arma::rowvec& walk_info)
 //   :  tjk(tjk), d(d), delta(delta){
 //   this->set_walk_data(cov_data, from, to);
 // }
+
+TransactionWalk::TransactionWalk()
+  :Walk(), d1{arma::datum::nan}, tjk{arma::datum::nan} {
+}
+
+TransactionWalk::TransactionWalk(const arma::vec& cov_data, const arma::rowvec& walk_info)
+  : Walk(cov_data, walk_info), d1{walk_info(3)}, tjk{walk_info(4)}{
+}
+
+EmptyLifetimeWalk::EmptyLifetimeWalk()
+  :LifetimeWalk(){
+  this->walk_data.reset(); // no elements in walk_data vec
+}
+
+arma::uword EmptyLifetimeWalk::n_elem() const{
+  return(0);
+}
+
+
+LifetimeWalk::LifetimeWalk()
+  :Walk(){
+}
+
+LifetimeWalk::LifetimeWalk(const arma::vec& cov_data, const arma::rowvec& walk_info)
+  : Walk(cov_data, walk_info){
+}
+
 
 arma::uword Walk::n_elem() const{
   return(this->walk_data.n_elem);
@@ -103,12 +157,36 @@ double Walk::sum_from_to(const arma::uword from, const arma::uword to) const{
 }
 
 
+// RealWalkLife::RealWalkLife(const arma::vec& adj_covdata_full_life, const arma::rowvec& walkinfo_aux_life,
+//                            const arma::uword customer_from){
+//
+//   const arma::uword aux_from = static_cast<arma::uword>(walkinfo_aux_life(0))-1;
+//   const arma::uword customer_from_index = customer_from - 1; // adapt to vector position, like aux_from
+//
+//   // **TODO: Throw, may not happen!
+//   // if(customer_from_index > aux_from)
+//   //   throw
+//
+//   // Whether there is residual covdata to create a walk from
+//   if(customer_from_index == aux_from){
+//     // No space
+//     this->walk_data.reset(); // Set size to zero
+//     this->d = arma::datum::nan;
+//     this->tjk = arma::datum::nan;
+//     this->delta = arma::datum::nan;
+//     this->val_sum_middle_elems = arma::datum::nan;
+//   }else{
+//     const arma::uword real_to = aux_from - 1;
+//     this->set_walk_data(adj_covdata_full_life, customer_from_index, real_to);
+//   }
+// }
+
 // FACTOR * (
 //     hyp2F1(r+s+x,s+1,r+s+x+1,(alpha_1-beta_1)/alpha_1) / (alpha_1^(r+s+x))
 //   - hyp2F1(r+s+x,s+1,r+s+x+1,(alpha_2-beta_2)/alpha_2) / (alpha_2^(r+s+x))
 // )
 double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
-                                          const int x,
+                                          const double x,
                                           const double alpha_1, const double beta_1,
                                           const double alpha_2, const double beta_2){
   const double z1 = 1 - (beta_1/alpha_1);
@@ -155,7 +233,7 @@ double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
 //   - hyp2F1(r+s+x,r+x,r+s+x+1,(beta_2-alpha_2)/beta_2) / (beta_2^(r+s+x))
 // )
 double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
-                                         const int x,
+                                         const double x,
                                          const double alpha_1, const double beta_1,
                                          const double alpha_2, const double beta_2){
 
@@ -200,7 +278,7 @@ double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
  *        **TODO: Verify last vs first are the relevant ones during transaction
  *        Name is choosen randomly
  */
-double pnbd_dyncov_LL_i_A1sum(const arma::uword x, const std::vector<Walk>& real_walks_trans){
+double pnbd_dyncov_LL_i_A1sum(const arma::uword x, const std::vector<TransactionWalk>& real_walks_trans){
   // If x and t are in same interval (ie first and last transaction in 1 interval)
 
   if(real_walks_trans.size() == 0){
@@ -214,7 +292,7 @@ double pnbd_dyncov_LL_i_A1sum(const arma::uword x, const std::vector<Walk>& real
   }
 }
 
-double pnbd_dyncov_LL_i_bksumbjsum_walk_i(const Walk& w){
+double pnbd_dyncov_LL_i_bksumbjsum_walk_i(const TransactionWalk& w){
 
   if(w.n_elem() == 1){
     // Transactions were in same cov period, delta = 0
@@ -223,37 +301,37 @@ double pnbd_dyncov_LL_i_bksumbjsum_walk_i(const Walk& w){
   }else{
     if(w.n_elem() == 2){
       // because k-2 = 0
-      return(w.first()*w.d + w.last()*(w.tjk - w.d));
+      return(w.first()*w.d1 + w.last()*(w.tjk - w.d1));
       // return(w.first()*w.d + w.last()*last_mult);
     }else{
       // >= 3
       double n = static_cast<double>(w.n_elem());
-      double last_mult = w.tjk - w.d - w.delta*(n - 2.0);
-      return(w.first()*w.d + w.sum_middle_elems() + w.last()*last_mult);
+      double last_mult = w.tjk - w.d1 - w.delta*(n - 2.0);
+      return(w.first()*w.d1 + w.sum_middle_elems() + w.last()*last_mult);
     }
   }
 }
 
-double pnbd_dyncov_LL_i_BjSum(const std::vector<Walk>& real_walks){
+double pnbd_dyncov_LL_i_BjSum(const std::vector<TransactionWalk>& real_walks){
   if(real_walks.size() == 0){
     return 0.0;
   }else{
     double bjsum = 0.0;
-    for(const Walk& w : real_walks){
+    for(const TransactionWalk& w : real_walks){
       bjsum += pnbd_dyncov_LL_i_bksumbjsum_walk_i(w);
     }
     return(bjsum);
   }
 }
 
-double pnbd_dyncov_LL_i_BkSum(const double Bjsum, const Walk& aux_walk){
+double pnbd_dyncov_LL_i_BkSum(const double Bjsum, const TransactionWalk& aux_walk){
   return(Bjsum + pnbd_dyncov_LL_i_bksumbjsum_walk_i(aux_walk));
 }
 
 /*
- * Sum aux walk up to (and incl) Walk_i
+ * Sum transaction aux walk up to (and incl) Walk_i
  */
-double pnbd_dyncov_LL_i_Bi(const arma::uword i, const double t_x, const Walk& aux_walk){
+double pnbd_dyncov_LL_i_Bi(const arma::uword i, const double t_x, const TransactionWalk& aux_walk){
   // **TODO: Make tests with i={1,2,3,10} and n_elems={1,2,3,10} (and i>n_elems?)
 
   if(i == 1){
@@ -261,95 +339,95 @@ double pnbd_dyncov_LL_i_Bi(const arma::uword i, const double t_x, const Walk& au
   }
 
   if(i == 2){
-    return(aux_walk.first()*aux_walk.d + aux_walk.last() * (-t_x - aux_walk.d));
+    return(aux_walk.first()*aux_walk.d1 + aux_walk.last() * (-t_x - aux_walk.d1));
   }
 
   // Sum elements up to Walk_i
-  return(aux_walk.first()*aux_walk.d + aux_walk.sum_from_to(1, i-2) +
-         aux_walk.get_elem(i-1) * (-t_x - aux_walk.d - aux_walk.delta*(static_cast<double>(i) - 2.0)));
+  return(aux_walk.first()*aux_walk.d1 + aux_walk.sum_from_to(1, i-2) +
+         aux_walk.get_elem(i-1) * (-t_x - aux_walk.d1 - aux_walk.delta*(static_cast<double>(i) - 2.0)));
 }
 
 
-double pnbd_dyncov_LL_i_Di1(const arma::uword i, const arma::uword n_elem_aux_walk, const Walk& real_walk_life){
-  // D1
-  // max.walk=1 & max.walk=2:
-  //              i=1: Dk1, Dkn=0 -> Dk1
-  //              i>1: Dk1, Dkn
-  // max.walk>2:
-  //              i=1: Dk1, Dk2, ... Dk(max.walk-1), Dkn=0
-  //              i>1: Dk1, Dk2, ... Dk(max.walk-1), Dkn
-
-  // Additionally:
-  // data.work.life[Num.Walk==1 & AuxTrans==FALSE, Di.Max.Walk:=as.double(NA)]
-  // data.work.life[Num.Walk==1 & AuxTrans==TRUE, Di.adj.Walk1:=as.double(NA)]
-  // -> real_walk n_elem == 1: exclude last()
-  // -> aux_walk  n_elem == 1: exclude first() - is this n_elem_aux_walk? but now exclude last()..?
-
-  double Di1 = 0.0;
-
-  if(i == 1){
-    // do not include Dkn
-    if(real_walk_life.n_elem() == 1 | real_walk_life.n_elem() == 2){
-      // -> only Dk1
-      Di1 = real_walk_life.first()*real_walk_life.d;
-
-    }else{
-      // **These sum_middle are all independent from i? Why even have i..?
-      Di1 = real_walk_life.first()*real_walk_life.d + real_walk_life.sum_middle_elems();
-    }
-
-  }else{
-
-    if(real_walk_life.n_elem() == 1 | real_walk_life.n_elem() == 2){
-      Di1 = real_walk_life.first()*real_walk_life.d + real_walk_life.last();
-    }else{
-
-      // We must also ignore Dkn, in the case kxT == 1
-      if(n_elem_aux_walk == 1){
-        Di1 = real_walk_life.first()*real_walk_life.d + real_walk_life.sum_middle_elems();
-      }else{
-        Di1 = real_walk_life.first()*real_walk_life.d + real_walk_life.sum_middle_elems() + real_walk_life.last();
-      }
-    }
-  }
-  return(Di1);
-}
-
-
-double pnbd_dyncov_LL_i_Di2(const arma::uword i, const arma::uword n_elem_real_walk,
-                            const double d_omega, const Walk& aux_walk_life){
-
-  // i=1: 0, Cki
-  // i=2: 0, 0, Cki
-  // i>2: 0, Cj2, Cj3, .. Cj(i-1), Cki
-  // ** TODO: Is this simply sum(Walk_2...Walk_(i-1), Walk_i*(xxx))
-  // **TODO: Should throw if i>n_elems?
-
-  double Cji = 0.0;
-  if( i == 1 || i == 2){
-    // Di2 = sum(Cj1=0,Cj2=0, Cki), hence D2 = Cki
-    Cji = 0.0;
-  }else{
-    // **TODO: Does this not depend on Num.Walk/w.n_elems()??? What if i>=n_elems??
-    //          Does this always have to exclude MaxWalk/last()?
-    // Di2 = Cij  + Cki = sum(0,Cj2, Cj3, .., Cj(i-1)) + Cki -> Cji = sum(0,Cj2, Cj3, .., Cj(i-1))
-    // sum Cj2, .. Cj(i-1)
-    Cji = aux_walk_life.sum_from_to(1, i-2);
-  }
-
-  double Cki = 0.0;
-  double delta = static_cast<double>(n_elem_real_walk + i - 1 > 1);
-  if(aux_walk_life.n_elem() > i){
-    // **TODO: Do we really ever sum further than n_elem?
-    Cki = aux_walk_life.get_elem(i-1) * // Walk_i
-      (-d_omega - delta*(static_cast<double>(n_elem_real_walk) + static_cast<double>(i) - 3.0));
-  }else{
-    // **TODO: Does not matter if i==1 or i==2?
-    Cki = aux_walk_life.last() *
-      (-d_omega - delta*(static_cast<double>(n_elem_real_walk) + static_cast<double>(aux_walk_life.n_elem()) - 3.0));
-  }
-  return(Cji + Cki);
-}
+// double pnbd_dyncov_LL_i_Di1(const arma::uword i, const arma::uword n_elem_aux_walk, const Walk& real_walk_life){
+//   // D1
+//   // max.walk=1 & max.walk=2:
+//   //              i=1: Dk1, Dkn=0 -> Dk1
+//   //              i>1: Dk1, Dkn
+//   // max.walk>2:
+//   //              i=1: Dk1, Dk2, ... Dk(max.walk-1), Dkn=0
+//   //              i>1: Dk1, Dk2, ... Dk(max.walk-1), Dkn
+//
+//   // Additionally:
+//   // data.work.life[Num.Walk==1 & AuxTrans==FALSE, Di.Max.Walk:=as.double(NA)]
+//   // data.work.life[Num.Walk==1 & AuxTrans==TRUE, Di.adj.Walk1:=as.double(NA)]
+//   // -> real_walk n_elem == 1: exclude last()
+//   // -> aux_walk  n_elem == 1: exclude first() - is this n_elem_aux_walk? but now exclude last()..?
+//
+//   double Di1 = 0.0;
+//
+//   if(i == 1){
+//     // do not include Dkn
+//     if(real_walk_life.n_elem() == 1 | real_walk_life.n_elem() == 2){
+//       // -> only Dk1
+//       Di1 = real_walk_life.first()*real_walk_life.d;
+//
+//     }else{
+//       // **These sum_middle are all independent from i? Why even have i..?
+//       Di1 = real_walk_life.first()*real_walk_life.d + real_walk_life.sum_middle_elems();
+//     }
+//
+//   }else{
+//
+//     if(real_walk_life.n_elem() == 1 | real_walk_life.n_elem() == 2){
+//       Di1 = real_walk_life.first()*real_walk_life.d + real_walk_life.last();
+//     }else{
+//
+//       // We must also ignore Dkn, in the case kxT == 1
+//       if(n_elem_aux_walk == 1){
+//         Di1 = real_walk_life.first()*real_walk_life.d + real_walk_life.sum_middle_elems();
+//       }else{
+//         Di1 = real_walk_life.first()*real_walk_life.d + real_walk_life.sum_middle_elems() + real_walk_life.last();
+//       }
+//     }
+//   }
+//   return(Di1);
+// }
+//
+//
+// double pnbd_dyncov_LL_i_Di2(const arma::uword i, const arma::uword n_elem_real_walk,
+//                             const double d_omega, const Walk& aux_walk_life){
+//
+//   // i=1: 0, Cki
+//   // i=2: 0, 0, Cki
+//   // i>2: 0, Cj2, Cj3, .. Cj(i-1), Cki
+//   // ** TODO: Is this simply sum(Walk_2...Walk_(i-1), Walk_i*(xxx))
+//   // **TODO: Should throw if i>n_elems?
+//
+//   double Cji = 0.0;
+//   if( i == 1 || i == 2){
+//     // Di2 = sum(Cj1=0,Cj2=0, Cki), hence D2 = Cki
+//     Cji = 0.0;
+//   }else{
+//     // **TODO: Does this not depend on Num.Walk/w.n_elems()??? What if i>=n_elems??
+//     //          Does this always have to exclude MaxWalk/last()?
+//     // Di2 = Cij  + Cki = sum(0,Cj2, Cj3, .., Cj(i-1)) + Cki -> Cji = sum(0,Cj2, Cj3, .., Cj(i-1))
+//     // sum Cj2, .. Cj(i-1)
+//     Cji = aux_walk_life.sum_from_to(1, i-2);
+//   }
+//
+//   double Cki = 0.0;
+//   double delta = static_cast<double>(n_elem_real_walk + i - 1 > 1);
+//   if(aux_walk_life.n_elem() > i){
+//     // **TODO: Do we really ever sum further than n_elem?
+//     Cki = aux_walk_life.get_elem(i-1) * // Walk_i
+//       (-d_omega - delta*(static_cast<double>(n_elem_real_walk) + static_cast<double>(i) - 3.0));
+//   }else{
+//     // **TODO: Does not matter if i==1 or i==2?
+//     Cki = aux_walk_life.last() *
+//       (-d_omega - delta*(static_cast<double>(n_elem_real_walk) + static_cast<double>(aux_walk_life.n_elem()) - 3.0));
+//   }
+//   return(Cji + Cki);
+// }
 
 /*
  * Sum up covs from
@@ -357,83 +435,59 @@ double pnbd_dyncov_LL_i_Di2(const arma::uword i, const arma::uword n_elem_real_w
  * **Same as Bi(), if had one, continuous walk**
  *    Do NOT count covariate period of transaction x double if they overlap
  */
-double pnbd_dyncov_LL_i_Di(const arma::uword i, const Walk& real_walk_life, const Walk& aux_walk_life){
+double pnbd_dyncov_LL_i_Di(const arma::uword i, const LifetimeWalk& real_walk_life,
+                           const LifetimeWalk& aux_walk_life, const double d_omega){
 
   // Real and Aux walk are guaranteed to not overlap
   //  Cov where last transaction is, belongs only to aux walk
 
-  // Cannot simply sum up real_walk_life and add
-  //  for the case real_walk_life.n_elem() == 0, d has to be multiplied
+  // Cannot sum up real_walk_life first and then add aux_walk sum because
+  //  for the case real_walk_life.n_elem() == 0, d_omega has to be multiplied with aux_walk.first() not to real_walk_life.first()
 
   if(real_walk_life.n_elem() == 0){
-    // Can directly sum up the aux walk
-
+    // Directly sum up the aux walk until Walk_i, including first()*d
     if(i == 1){
-      return();
+      return(aux_walk_life.first()*d_omega);
+    }else{
+      double last_mult = (-d_omega - aux_walk_life.delta*(static_cast<double>(i) - 3.0));
+      if(i == 2){
+        return(aux_walk_life.first()*d_omega + aux_walk_life.last()*last_mult);
+      }else{
+        // i >= 3: Walk_1 + sum(Walk_2, Walk_i-1) + Walk_i
+        return(aux_walk_life.first()*d_omega + aux_walk_life.sum_from_to(1, i-2) + aux_walk_life.get_elem(i-1)*last_mult);
+      }
     }
-    if(i == 2){
-      return();
-    }
-    if(i == 3){
-      return();
-    }
-    return();
-
   }else{
 
     // There are elements in the real walk that all need to be summed (independent of i)
 
-    // Sum up everything in real walk
     double sum_real_walk = 0.0;
     if(real_walk_life.n_elem() == 1){
-      sum_real_walk = real_walk_life.first()*real_walk_life.d;
-    }
-    if(real_walk_life.n_elem() == 2){
-      sum_real_walk = real_walk_life.first()*real_walk_life.d + real_walk_life.last();
-    }
-
-    if(real_walk_life.n_elem() >= 3){
-      sum_real_walk = real_walk_life.first()*real_walk_life.d + real_walk_life.sum_middle_elems() + real_walk_life.last();
+      sum_real_walk = real_walk_life.first()*d_omega;
+    }else{
+      if(real_walk_life.n_elem() == 2){
+        sum_real_walk = real_walk_life.first()*d_omega + real_walk_life.last();
+      }else{
+        // >= 3: everything in real walk
+        sum_real_walk = real_walk_life.first()*d_omega + real_walk_life.sum_middle_elems() + real_walk_life.last();
+      }
     }
 
     // Sum up aux walk until i
+    double sum_aux_walk = 0.0;
+    double last_mult = (-d_omega - aux_walk_life.delta*(static_cast<double>(i) - 3.0));
     if(i == 1){
-      s
+      sum_aux_walk = aux_walk_life.first()*last_mult;
+    }else{
+      if(i == 2){
+        sum_aux_walk = aux_walk_life.first() + aux_walk_life.get_elem(1)*last_mult;
+      }else{
+        // i >= 3
+        sum_aux_walk = aux_walk_life.first() + aux_walk_life.sum_from_to(1,i-2) + aux_walk_life.get_elem(i-1)*last_mult;
+      }
     }
-
-
+    return(sum_real_walk + sum_aux_walk);
   }
-
-  // ########
-  // # #instead of changing Max.Walk in pnbd_LL_Di a new column Di.Max.Walk is introduced which contains these changes to Max.Walk
-  // # #this way a copy can be avoided in _Di
-  // # #any customers Num.Walk is 1 (independent of AuxTrans)? -> Make AuxTrans Di.max.walk=NA
-  // # #(this was Jeffs strange implementation in _Di before)
-  // # data.work.life [, Di.Max.Walk:=adj.Max.Walk]
-  //
-  // # #if you have any Num.Walk==1, set your RealTrans  Di.Max.Walk = NA
-  // # #get anybody with Num.Walk == 1 and for this IDs set Di.Max.Walk = NA where AuxTrans==F
-  // # any.num.walk.e.1 <- data.work.life[Num.Walk==1, Id,  by=Id]$Id
-  // # data.work.life[AuxTrans==F & Id %in% any.num.walk.e.1, Di.Max.Walk := as.double(NA)]
-  // #########
-  //
-  // #instead of changing Max.Walk in pnbd_LL_Di a new column Di.Max.Walk is introduced which contains these changes to Max.Walk
-  // #this way a copy can be avoided in _Di
-  // #Where Num.Walk == 1 set max.walk = NA
-  //   data.work.life[, Di.Max.Walk:=adj.Max.Walk]
-  //   data.work.life[, Di.adj.Walk1:=adj.Walk1]
-  //   data.work.life[Num.Walk==1 & AuxTrans==FALSE, Di.Max.Walk:=as.double(NA)]
-  //   data.work.life[Num.Walk==1 & AuxTrans==TRUE, Di.adj.Walk1:=as.double(NA)]
-
-  // **TODO:
-  // JEFF:
-  // # Num.Walk == 1 & AuxTrans==T -> Max.Walk = NA
-  // # Note: Not very elegant, but I am adding the Num.Walk for Auxtrans=True (kxT) as well. We need to know in this function
-  // # whether this is 1 or not. -> Actually I just found out that this does not make a difference at all. If we don't do this
-  // # then DT for Num.Walk=kxT=1 would be wrong, but in this case we only use D1 anyway which is correct...
-  // ** TODO: Clarify how summing in Di1 and Di2 depends on i, aux.n_elem, and real.n_elem
-  return(pnbd_dyncov_LL_i_Di1(i, aux_walk_life.n_elem(), real_walk_life) +
-         pnbd_dyncov_LL_i_Di2(i, real_walk_life.n_elem(), real_walk_life.d, aux_walk_life));
 }
 
 
@@ -509,7 +563,7 @@ double pnbd_dyncov_LL_i_F2_3(const double r, const double alpha_0, const double 
 
     // Lifetime Process ---------------------------------------------
     double Ci = c.aux_walk_life.get_elem(i-1); // Walk_i
-    double Di = pnbd_dyncov_LL_i_Di(i, c.real_walk_life, c.aux_walk_life);
+    double Di = pnbd_dyncov_LL_i_Di(i, c.real_walk_life, c.aux_walk_life, c.d_omega);
     double bi = Di + Ci * (c.t_x + dT + (static_cast<double>(i) - 2.0));
 
     // Alpha & Beta ------------------------------------------------
@@ -543,7 +597,9 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
                            const bool return_intermediate_results,
                            arma::vec& intermediate_results){
 
-  const double dT = c.aux_walk_trans.d;
+  // **TODO: Verify if this is calculated correctly
+  //  (d1 of aux trans = time between T and interval(T) or tx and interval(tx) or what?)
+  const double dT = c.aux_walk_trans.d1;
 
   const double a1T = Bjsum + B1 + c.T_cal * A1T;
   const double b1T = D1 + c.T_cal * C1T;
@@ -557,8 +613,14 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
     const double alpha_1 =  a1 + (1.0-dT)*A1T + alpha_0;
     const double beta_1  = (b1 + (1.0-dT)*C1T + beta_0) * A1T/C1T;
 
-    const double alpha_2 = a1T + alpha_0;
+    const double alpha_2 =  a1T + alpha_0;
     const double beta_2  = (b1T  + beta_0)*A1T/C1T;
+    Rcpp::Rcout<<"r: "<<r<<"   s:"<<s<<"   c.x:"<< c.x << std::endl;
+    Rcpp::Rcout<<"alpha_1: "<<alpha_1<< "  " <<"beta_1: "<<beta_1<<"  "<<"alpha_2: "<<alpha_2<<"  "<<"beta_2: "<<beta_2<<std::endl;
+    pnbd_dyncov_LL_i_hyp_alpha_ge_beta(r, s, c.x,
+                                       alpha_1, beta_1,
+                                       alpha_2, beta_2);
+    return 1.234;
 
     double F2 = 0.0;
     if(alpha_1 >= beta_1){
@@ -590,20 +652,23 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
     const double bkT = DT + CkT * (c.t_x + dT + n_walks - 2.0);
     const double aT = Bjsum + BT + (c.T_cal * AkT);
     const double bT  = DT + c.T_cal * CkT;
+    return 1.234;
+    // const double F2_1 = pnbd_dyncov_LL_i_F2_1(r, alpha_0, s, beta_0,
+    //                                           c.x, dT,
+    //                                           a1, b1,
+    //                                           A1T, C1T);
+    // const double F2_2 = pnbd_dyncov_LL_i_F2_2(r, alpha_0, s, beta_0,
+    //                                           c.x,
+    //                                           akt, bkT,
+    //                                           aT, bT,
+    //                                           AkT, CkT);
 
-    const double F2_1 = pnbd_dyncov_LL_i_F2_1(r, alpha_0, s, beta_0,
-                                              c.x, dT,
-                                              a1, b1,
-                                              A1T, C1T);
-    const double F2_2 = pnbd_dyncov_LL_i_F2_2(r, alpha_0, s, beta_0,
-                                              c.x,
-                                              akt, bkT,
-                                              aT, bT,
-                                              AkT, CkT);
-
-    const double F2_3 = pnbd_dyncov_LL_i_F2_3(r, alpha_0, s, beta_0,
-                                              c,
-                                              Bjsum, dT);
+    // const double F2_3 = pnbd_dyncov_LL_i_F2_3(r, alpha_0, s, beta_0,
+    //                                           c,
+    //                                           Bjsum, dT);
+    const double F2_1 = 0;
+    const double F2_2 = 0;
+    const double F2_3 = 0;
 
     if(return_intermediate_results){
       intermediate_results(0) = Bjsum;
@@ -653,12 +718,13 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
   // Lifetime Process ---------------------------------------------------
   const double C1T = c.aux_walk_life.first();
   const double CkT = c.adj_lifetime_cov_dyn();
-  const double D1 = pnbd_dyncov_LL_i_Di(1, c.real_walk_life, c.aux_walk_life);
-  // const double DT = pnbd_dyncov_LL_i_Di(c.aux_walk_life.n_elem(), c.real_walk_life, c.aux_walk_life);
+  // const double D1 = 1.23;
+  const double D1 = pnbd_dyncov_LL_i_Di(1, c.real_walk_life, c.aux_walk_life, c.d_omega);
+  // const double DT = pnbd_dyncov_LL_i_Di(c.aux_walk_life.n_elem(), c.real_walk_life, c.aux_walk_life, c.d_omega);
 
   const double DkT = CkT * c.T_cal + DT;
 
-  // LL -----------------------------------------------------------------------------------------------------
+  // LL ---------------------------------------------------------------------------
   //
   //   LL = log(F0)+log((F1 * F2) + F3)
   //
@@ -741,7 +807,7 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
   //         cbs[F2 >  0,  LL.other :=log.F0 +  pmax(log.F1 + log(F2), log.F3)  + log1p(exp(pmin(log.F1 + log(F2), log.F3) - pmax(log.F1 + log(F2),log.F3)))]
 
 
-  const double log_F0 = r*std::log(alpha_0) + s*std::log(beta_0) + lgamma(c.x+r) - lgamma(r) + A1sum;
+  const double log_F0 = r*std::log(alpha_0) + s*std::log(beta_0) + std::lgamma(c.x+r) - std::lgamma(r) + A1sum;
   const double log_F1 = std::log(s) - std::log(r+s+c.x);
 
   arma::vec F2_intermediate_results = arma::vec(8);
@@ -754,6 +820,7 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
                                   F2_3,
                                   return_intermediate_results,
                                   F2_intermediate_results);
+  // double F2 = 0.0;
 
   const double log_F3 = -s * std::log(DkT + beta_0) - (c.x+r) * std::log(Bksum + alpha_0);
 
@@ -827,6 +894,7 @@ double pnbd_dyncov_LL_sum(const arma::vec& params,
                           const arma::vec& X,
                           const arma::vec& t_x,
                           const arma::vec& T_cal,
+                          const arma::vec& d_omega,
 
                           const arma::mat& walkinfo_aux_life,
                           const arma::mat& walkinfo_real_life,
@@ -845,6 +913,7 @@ double pnbd_dyncov_LL_sum(const arma::vec& params,
                                       X,
                                       t_x,
                                       T_cal,
+                                      d_omega,
 
                                       walkinfo_aux_life,
                                       walkinfo_real_life,
@@ -867,6 +936,7 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
                                        const arma::vec& X,
                                        const arma::vec& t_x,
                                        const arma::vec& T_cal,
+                                       const arma::vec& d_omega,
 
                                        const arma::mat& walkinfo_aux_life,
                                        const arma::mat& walkinfo_real_life,
@@ -905,6 +975,7 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
   const arma::vec adj_covdata_aux_trans  = arma::exp(covdata_aux_trans  * params_trans);
   const arma::vec adj_covdata_real_trans = arma::exp(covdata_real_trans * params_trans);
 
+  Rcpp::Rcout<<"multiplied cov data" <<std::endl;
 
   Rcpp::NumericMatrix res;
   if(return_intermediate_results){
@@ -916,29 +987,51 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
   Rcpp::NumericVector res_i;
   for(arma::uword i = 0; i < X.n_elem; i++){
 
-    // Could also check x, but saver to look at actual content
+    Rcpp::Rcout<<"i: "<< i <<std::endl;
+
+    // Check whether customer has real trans walks
+    //   Could also check x==0, but saver to look at actual content
     if(arma::is_finite(walkinfo_trans_real_from(i))){
+
       // Repeat customer (with real trans walks)
       arma::uword wi_real_trans_from = static_cast<arma::uword>(walkinfo_trans_real_from(i)) - 1;
       arma::uword wi_real_trans_to = static_cast<arma::uword>(walkinfo_trans_real_to(i)) - 1;
 
+      // Rcpp::Rcout<<LifetimeWalk(adj_covdata_aux_life, walkinfo_aux_life.row(i)).n_elem()<<std::endl;
+      // Rcpp::Rcout<<TransactionWalk(adj_covdata_aux_trans, walkinfo_aux_trans.row(i)).n_elem()<<std::endl;
+      // std::vector<TransactionWalk>(walkinfo_real_trans.rows(wi_real_trans_from, wi_real_trans_to).n_rows);
+
+      Customer c = Customer(X(i), t_x(i), T_cal(i), d_omega(i),
+                            adj_covdata_aux_life, walkinfo_aux_life.row(i),
+                            adj_covdata_real_life, walkinfo_real_life.row(i),
+                            adj_covdata_aux_trans, walkinfo_aux_trans.row(i),
+                            adj_covdata_real_trans, walkinfo_real_trans.rows(wi_real_trans_from, wi_real_trans_to));
+
+      // Rcpp::Rcout<<c.aux_walk_life.n_elem()<<std::endl;
+      // Rcpp::Rcout<<c.aux_walk_trans.n_elem()<<std::endl;
+      // Rcpp::Rcout<<c.real_walk_life.n_elem()<<std::endl;
+      // Rcpp::Rcout<<c.real_walks_trans.size()<<std::endl;
       res_i = pnbd_dyncov_LL_i(r, alpha_0, s, beta_0,
-                               Customer(X(i), t_x(i), T_cal(i),
+                               Customer(X(i), t_x(i), T_cal(i), d_omega(i),
                                         adj_covdata_aux_life, walkinfo_aux_life.row(i),
                                         adj_covdata_real_life, walkinfo_real_life.row(i),
                                         adj_covdata_aux_trans, walkinfo_aux_trans.row(i),
                                         adj_covdata_real_trans, walkinfo_real_trans.rows(wi_real_trans_from, wi_real_trans_to)),
-                               DT(i), F2_3(i),
+                                        DT(i), F2_3(i),
                                return_intermediate_results);
     }else{
-      // Zero-repeater (no real trans walks)
-      res_i = pnbd_dyncov_LL_i(r, alpha_0, s, beta_0,
-                               Customer(X(i), t_x(i), T_cal(i),
-                                        adj_covdata_aux_life, walkinfo_aux_life.row(i),
-                                        adj_covdata_real_life, walkinfo_real_life.row(i),
-                                        adj_covdata_aux_trans, walkinfo_aux_trans.row(i)),
-                               DT(i), F2_3(i),
-                               return_intermediate_results);
+      Rcpp::Rcout<<"Before creating customer"<<std::endl;
+
+      // // Zero-repeater (no real trans walks)
+      // Customer c = Customer(X(i), t_x(i), T_cal(i), d_omega(i),
+      //                       adj_covdata_aux_life, walkinfo_aux_life.row(i),
+      //                       adj_covdata_real_life, walkinfo_real_life.row(i),
+      //                       adj_covdata_aux_trans, walkinfo_aux_trans.row(i));
+      // Rcpp::Rcout<<"zero-repeater customer created"<<std::endl;
+      // res_i = pnbd_dyncov_LL_i(r, alpha_0, s, beta_0,
+      //                          c,
+      //                          DT(i), F2_3(i),
+      //                          return_intermediate_results);
     }
 
     res(i, Rcpp::_) = res_i;

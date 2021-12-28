@@ -13,14 +13,17 @@
 
 struct Walk {
   // Abstract away the (memory) representation of a walk
-// private:
+
   arma::vec walk_data;
-  // arma::vec tmp_zeros = arma::zeros(5);
   // arma::subview_col<double> walk_data;
 
+  double delta; // can only be {0, 1} but store as double to avoid frequent casting and forgetting it accidentally
+
   Walk():
-    tjk(0), d(0), delta(0), val_sum_middle_elems(0){
-    this->walk_data = arma::vec(1, arma::fill::zeros);
+    delta(arma::datum::nan), val_sum_middle_elems(arma::datum::nan){
+    // **TODO: Move to source file + can set size 0 from start?
+    this->walk_data = arma::vec(1);
+    this->walk_data.reset();
   }
 
 
@@ -59,46 +62,75 @@ struct Walk {
 
   Walk(const arma::vec&, const arma::rowvec&);
 
-  double tjk;
-  double d;
-  double delta; //can only be 0, 1 but store as double to avoid frequent casting and accidentally forgetting it
-  // bool is_aux_trans;
-
+  arma::uword n_elem() const;
   double first() const;
   double last() const;
   double get_elem(const arma::uword i) const;
-  arma::uword n_elem() const;
   double sum_middle_elems() const; //sum all elements which are not first or last. Requires at least 3 elements
   double sum_from_to(const arma::uword from, const arma::uword to) const; //sum all elements which are not first or last. Requires at least 3 elements
 
-private:
+protected:
   double val_sum_middle_elems;
   void set_walk_data(const arma::vec& cov_data, const arma::uword from, const arma::uword to);
 };
 
+// **TODO: Rename Walk() to LifetimeWalk, ie replace Walk w/ LifetimeWalk
+struct LifetimeWalk : Walk{
+  LifetimeWalk(); // to have EmptyLifetimeWalk() constructor
+  LifetimeWalk(const arma::vec&, const arma::rowvec&);
+};
+
+struct EmptyLifetimeWalk : LifetimeWalk{
+  EmptyLifetimeWalk();
+  arma::uword n_elem() const;
+};
+
+struct TransactionWalk : Walk{
+  double d1;
+  double tjk;
+  TransactionWalk(); // used in vector<>
+  TransactionWalk(const arma::vec&, const arma::rowvec&);
+};
+
+
+// /*
+//  * RealWalkLife
+//  *  Contains all of a customer's cov data which does not belong to the aux walk.
+//  *  Contrary to all other walks, it can also have no elements.
+//  *  It is constructed as the residual of the customer's covdata and the aux walk.
+//  *
+//  *  Only ever used in pnbd_dyncov_Di()
+//  */
+// struct RealWalkLife : Walk{
+//   // customer_from: Position of first data point of this customer in adj_covdata_full_life
+//   RealWalkLife(const arma::vec& adj_covdata_full_life, const arma::rowvec& walkinfo_aux_life, const arma::uword customer_from);
+// };
+
 
 struct Customer {
   const double x, t_x, T_cal;
+  const double d_omega;
   // const double adj_transaction_cov_dyn, adj_lifetime_cov_dyn;
 
-  Walk real_walk_life;
-  std::vector<Walk> real_walks_trans;
-  Walk aux_walk_life, aux_walk_trans;
+  std::vector<TransactionWalk> real_walks_trans;
+  LifetimeWalk real_walk_life, aux_walk_life;
+  TransactionWalk aux_walk_trans;
 
 
   /*
-   * Constructor for customers without real trans walks (ie zero-repeaters)
+   * Constructors for customers with real trans walks (ie zero-repeaters) and without
+   *  Define two separate constructors because required matrix walkinfo_real_trans
+   *  cannot be created by subsetting full matrix with .rows(i,j) as (i,j) is NA / dont exists
    */
-  Customer(const double x, const double t_x, const double T_cal,
+  // With real walks
+  Customer(const double x, const double t_x, const double T_cal, const double d_omega,
            const arma::vec& adj_covdata_aux_life,   const arma::rowvec& walkinfo_aux_life,
            const arma::vec& adj_covdata_real_life,  const arma::rowvec& walkinfo_real_life,
            const arma::vec& adj_covdata_aux_trans,  const arma::rowvec& walkinfo_aux_trans,
            const arma::vec& adj_covdata_real_trans, const arma::mat& walkinfo_real_trans);
 
-  /*
-   * Constructor for customers with real trans walks (ie not zero-repeaters)
-   */
-  Customer(const double x, const double t_x, const double T_cal,
+   // without real trans walks (ie not zero-repeaters)
+  Customer(const double x, const double t_x, const double T_cal, const double d_omega,
            const arma::vec& adj_covdata_aux_life,   const arma::rowvec& walkinfo_aux_life,
            const arma::vec& adj_covdata_real_life,  const arma::rowvec& walkinfo_real_life,
            const arma::vec& adj_covdata_aux_trans,  const arma::rowvec& walkinfo_aux_trans);
@@ -110,19 +142,22 @@ struct Customer {
   double adj_lifetime_cov_dyn() const{
     return(this->aux_walk_life.last());
   }
+
+private:
+  void set_real_walk_life(const arma::vec&, const arma::rowvec&);
 };
 
 
 
 
 double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
-                                          const int x,
+                                          const double x,
                                           const double alpha_1, const double beta_1,
                                           const double alpha_2, const double beta_2);
 
 
 double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
-                                         const int x,
+                                         const double x,
                                          const double alpha_1, const double beta_1,
                                          const double alpha_2, const double beta_2);
 
@@ -163,6 +198,7 @@ double pnbd_dyncov_LL_sum(const arma::vec& params,
                           const arma::vec& X,
                           const arma::vec& t_x,
                           const arma::vec& T_cal,
+                          const arma::vec& d_omega,
                           const arma::vec& walkinfo_trans_from,
                           const arma::vec& walkinfo_trans_to,
                           const arma::vec& walkinfo_life_from,
@@ -176,6 +212,7 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
                                        const arma::vec& X,
                                        const arma::vec& t_x,
                                        const arma::vec& T_cal,
+                                       const arma::vec& d_omega,
 
                                        const arma::mat& walkinfo_aux_life,
                                        const arma::mat& walkinfo_real_life,
