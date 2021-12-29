@@ -35,7 +35,7 @@ fct.helper.dyncov.fit.LL.once <- function(clv.data, params){
 
   obj <- clv.pnbd.dynamic.cov(cl = str2lang("fakecall"), clv.data=clv.data)
 
-  l.walks <- pnbd_dyncov_makewalks(clv.data = clv.data)
+  l.walks <- pnbd_dyncov_createwalks(clv.data = clv.data)
   obj@data.walks.life  <- l.walks[["data.walks.life"]]
   obj@data.walks.trans <- l.walks[["data.walks.trans"]]
 
@@ -181,7 +181,7 @@ fct.testthat.correctness.dyncov.LL <- function(data.apparelTrans, data.apparelDy
     clv.data.dyn <- copy(clv.dyncov@clv.data)
     clv.data.dyn@data.cov.life  <- copy(apparelDynCov.static)
     clv.data.dyn@data.cov.trans <- copy(apparelDynCov.static)
-    l.walks <- pnbd_dyncov_makewalks(clv.data = clv.data.dyn)
+    l.walks <- pnbd_dyncov_createwalks(clv.data = clv.data.dyn)
     clv.dyncov@data.walks.life  <- copy(l.walks$data.walks.life)
     clv.dyncov@data.walks.trans <- copy(l.walks$data.walks.trans)
 

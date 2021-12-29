@@ -87,7 +87,7 @@ pnbd_dyncov_creatwalks_add_tjk <- function(dt.walk, clv.time){
 }
 
 pnbd_dyncov_creatwalks_add_d1 <- function(dt.walk, clv.time){
-  d <- tp.previous.trans <- NULL
+  d1 <- tp.previous.trans <- NULL
   # **TODO: +1 or not?
   # time between date.lagged and period end (ceiling(data.lagged+1))
   # d shall be 1 if it is exactly on the time.unit boundary!
@@ -213,6 +213,7 @@ pnbd_dyncov_createwalks_real_life <- function(clv.data, dt.tp.first.last, dt.wal
   # Create as residuals given the aux walks
   #   Since coming alive (ie no covs before first transaction)
 
+  tp.first.trans <- i.tp.first.trans <- tp.cov.upper <- tp.this.trans <- i.tp.last.trans <- NULL
 
   # All dates per customer, except the ones already in the aux walks
   #   **TODO: Requires minimum data.table version XXX (bug before that in data.table)
@@ -249,7 +250,7 @@ pnbd_dyncov_createwalks_real_life <- function(clv.data, dt.tp.first.last, dt.wal
 }
 
 pnbd_dyncov_createwalks_auxwalk <- function(dt.cov, dt.tp.first.last, names.cov, clv.time){
-  tp.estimation.end <- NULL
+  tp.estimation.end <- tp.cut.lower <- tp.last.trans <- tp.cut.upper <- tp.this.trans <- tp.previous.trans <- NULL
 
   dt.tp.first.last[, tp.estimation.end := clv.time@timepoint.estimation.end]
 
@@ -276,7 +277,7 @@ pnbd_dyncov_createwalks_addwalkfromto <- function(dt.walks){
   return(dt.walks)
 }
 
-pnbd_dyncov_makewalks <- function(clv.data){
+pnbd_dyncov_createwalks <- function(clv.data){
   walk_id <- walk_from <- walk_to <- .N <- abs_pos <- Date <- delta <- tp.cov.lower <- NULL
 
   # Walk info, per walk
