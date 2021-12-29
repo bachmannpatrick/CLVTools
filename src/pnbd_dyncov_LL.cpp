@@ -23,7 +23,6 @@ void Customer::set_real_walk_life(const arma::vec& adj_covdata_real_life, const 
     this->real_walk_life = LifetimeWalk(adj_covdata_real_life, walkinfo_real_life);
   }else{
     this->real_walk_life = EmptyLifetimeWalk();
-    Rcpp::Rcout<<"Creating empty walk"<<std::endl;
   }
 }
 
@@ -63,7 +62,7 @@ Customer::Customer(const double x, const double t_x, const double T_cal, const d
 
 
 
-void Walk::set_walk_data(const arma::vec& cov_data, const arma::uword from, const arma::uword to){
+void LifetimeWalk::set_walk_data(const arma::vec& cov_data, const arma::uword from, const arma::uword to){
 
   const arma::uword n_elems = to-from+1;
   double* ptr = const_cast<double*>(cov_data.memptr());
@@ -83,11 +82,8 @@ void Walk::set_walk_data(const arma::vec& cov_data, const arma::uword from, cons
 
 }
 
-Walk::Walk(const arma::vec& cov_data, const arma::rowvec& walk_info)
+LifetimeWalk::LifetimeWalk(const arma::vec& cov_data, const arma::rowvec& walk_info)
   : delta{walk_info(2)}
-  // walk_data(cov_data.subvec(
-  //     static_cast<arma::uword>(walk_info(0))-1,
-  //     static_cast<arma::uword>(walk_info(1))-1)),
 {
   /*
    * May not store refs/pointers to walk_info as will only receive subviews (mat.row())
@@ -98,18 +94,13 @@ Walk::Walk(const arma::vec& cov_data, const arma::rowvec& walk_info)
   this->set_walk_data(cov_data, from, to);
 }
 
-// Walk::Walk(const arma::vec& cov_data, const arma::uword from, const arma::uword to,
-//            const double tjk, const double d, const double delta)
-//   :  tjk(tjk), d(d), delta(delta){
-//   this->set_walk_data(cov_data, from, to);
-// }
 
 TransactionWalk::TransactionWalk()
-  :Walk(), d1{arma::datum::nan}, tjk{arma::datum::nan} {
+  :LifetimeWalk(), d1{arma::datum::nan}, tjk{arma::datum::nan} {
 }
 
 TransactionWalk::TransactionWalk(const arma::vec& cov_data, const arma::rowvec& walk_info)
-  : Walk(cov_data, walk_info), d1{walk_info(3)}, tjk{walk_info(4)}{
+  : LifetimeWalk(cov_data, walk_info), d1{walk_info(3)}, tjk{walk_info(4)}{
 }
 
 EmptyLifetimeWalk::EmptyLifetimeWalk()
@@ -122,37 +113,36 @@ arma::uword EmptyLifetimeWalk::n_elem() const{
 }
 
 
-LifetimeWalk::LifetimeWalk()
-  :Walk(){
+LifetimeWalk::LifetimeWalk():
+  delta(arma::datum::nan), val_sum_middle_elems(arma::datum::nan){
+  // Default ctor without walk data and walk info leaves Walk in uninitialized state
+  //  (set all NaN to propagate)
+  this->walk_data = arma::vec(1).fill(arma::datum::nan);
 }
 
-LifetimeWalk::LifetimeWalk(const arma::vec& cov_data, const arma::rowvec& walk_info)
-  : Walk(cov_data, walk_info){
-}
 
-
-arma::uword Walk::n_elem() const{
+arma::uword LifetimeWalk::n_elem() const{
   return(this->walk_data.n_elem);
 }
 
-double Walk::first() const{
+double LifetimeWalk::first() const{
   return(this->walk_data.front());
 }
 
-double Walk::last() const{
+double LifetimeWalk::last() const{
   return(this->walk_data.back());
 }
 
-double Walk::get_elem(const arma::uword i) const{
+double LifetimeWalk::get_elem(const arma::uword i) const{
   return(this->walk_data(i));
 }
 
-double Walk::sum_middle_elems() const{
+double LifetimeWalk::sum_middle_elems() const{
   return(this->val_sum_middle_elems);
   // **TODO: Assert that only called if at least 3 elements
 }
 
-double Walk::sum_from_to(const arma::uword from, const arma::uword to) const{
+double LifetimeWalk::sum_from_to(const arma::uword from, const arma::uword to) const{
   return(arma::accu(this->walk_data.subvec(from, to)));
 }
 
@@ -189,6 +179,7 @@ double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
                                           const double x,
                                           const double alpha_1, const double beta_1,
                                           const double alpha_2, const double beta_2){
+
   const double z1 = 1 - (beta_1/alpha_1);
   const double z2 = 1 - (beta_2/alpha_2);
   const double log_C = std::lgamma(r + s + x + 1) +
@@ -285,7 +276,7 @@ double pnbd_dyncov_LL_i_A1sum(const arma::uword x, const std::vector<Transaction
     return(0.0); // log(1)
   }else{
     double A1sum = 0.0;
-    for(const Walk& w : real_walks_trans){
+    for(const TransactionWalk& w : real_walks_trans){
       A1sum += std::log(w.last());
     }
     return(A1sum);
@@ -547,7 +538,7 @@ double pnbd_dyncov_LL_i_F2_3(const double r, const double alpha_0, const double 
 
   // No middle sum if only 2 elems in walk (only F2_1 and F2_2)
   if(c.aux_walk_trans.n_elem() <= 2){
-    return(0.0);
+    return(0.0); // Term does not exist for n_elem <= 2
   }
 
   // Loop counts Walks, not element access indices. ie Walk_2, Walk_3, ...
@@ -580,6 +571,13 @@ double pnbd_dyncov_LL_i_F2_3(const double r, const double alpha_0, const double 
       F2_3 += std::pow(Ai/Ci, s) * pnbd_dyncov_LL_i_hyp_beta_g_alpha(r, s, c.x,
                        alpha_1, beta_1,
                        alpha_2, beta_2);
+    }
+    // abort immediately, do not waste more loops
+    if(!arma::is_finite(F2_3)){
+      // Rcpp::Rcout<<"alpha_1: "<<alpha_1<<"  alpha_2:"<<alpha_2<<"  beta_1:"<<beta_1<<"  beta_2:"<<beta_2<<std::endl;
+      // Rcpp::Rcout<<"Ai: "<<Ai<<"  Ci: "<<Ci<<"  c.x: "<<c.x<<std::endl;
+      // Rcpp::Rcout<<"ended in drama in i="<<i<<std::endl;
+      return(F2_3);
     }
   }
 
@@ -615,12 +613,6 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
 
     const double alpha_2 =  a1T + alpha_0;
     const double beta_2  = (b1T  + beta_0)*A1T/C1T;
-    Rcpp::Rcout<<"r: "<<r<<"   s:"<<s<<"   c.x:"<< c.x << std::endl;
-    Rcpp::Rcout<<"alpha_1: "<<alpha_1<< "  " <<"beta_1: "<<beta_1<<"  "<<"alpha_2: "<<alpha_2<<"  "<<"beta_2: "<<beta_2<<std::endl;
-    pnbd_dyncov_LL_i_hyp_alpha_ge_beta(r, s, c.x,
-                                       alpha_1, beta_1,
-                                       alpha_2, beta_2);
-    return 1.234;
 
     double F2 = 0.0;
     if(alpha_1 >= beta_1){
@@ -652,23 +644,20 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
     const double bkT = DT + CkT * (c.t_x + dT + n_walks - 2.0);
     const double aT = Bjsum + BT + (c.T_cal * AkT);
     const double bT  = DT + c.T_cal * CkT;
-    return 1.234;
-    // const double F2_1 = pnbd_dyncov_LL_i_F2_1(r, alpha_0, s, beta_0,
-    //                                           c.x, dT,
-    //                                           a1, b1,
-    //                                           A1T, C1T);
-    // const double F2_2 = pnbd_dyncov_LL_i_F2_2(r, alpha_0, s, beta_0,
-    //                                           c.x,
-    //                                           akt, bkT,
-    //                                           aT, bT,
-    //                                           AkT, CkT);
 
-    // const double F2_3 = pnbd_dyncov_LL_i_F2_3(r, alpha_0, s, beta_0,
-    //                                           c,
-    //                                           Bjsum, dT);
-    const double F2_1 = 0;
-    const double F2_2 = 0;
-    const double F2_3 = 0;
+    const double F2_1 = pnbd_dyncov_LL_i_F2_1(r, alpha_0, s, beta_0,
+                                              c.x, dT,
+                                              a1, b1,
+                                              A1T, C1T);
+    const double F2_2 = pnbd_dyncov_LL_i_F2_2(r, alpha_0, s, beta_0,
+                                              c.x,
+                                              akt, bkT,
+                                              aT, bT,
+                                              AkT, CkT);
+
+    const double F2_3 = pnbd_dyncov_LL_i_F2_3(r, alpha_0, s, beta_0,
+                                              c,
+                                              Bjsum, dT);
 
     if(return_intermediate_results){
       intermediate_results(0) = Bjsum;
@@ -687,7 +676,7 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
 
 Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const double s, const double beta_0,
                                      const Customer& c,
-                                     const double DT,
+                                     const double DT_R,
                                      const double F2_3,
                                      const bool return_intermediate_results){
 
@@ -718,9 +707,8 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
   // Lifetime Process ---------------------------------------------------
   const double C1T = c.aux_walk_life.first();
   const double CkT = c.adj_lifetime_cov_dyn();
-  // const double D1 = 1.23;
   const double D1 = pnbd_dyncov_LL_i_Di(1, c.real_walk_life, c.aux_walk_life, c.d_omega);
-  // const double DT = pnbd_dyncov_LL_i_Di(c.aux_walk_life.n_elem(), c.real_walk_life, c.aux_walk_life, c.d_omega);
+  const double DT = pnbd_dyncov_LL_i_Di(c.aux_walk_life.n_elem(), c.real_walk_life, c.aux_walk_life, c.d_omega);
 
   const double DkT = CkT * c.T_cal + DT;
 
@@ -820,7 +808,6 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
                                   F2_3,
                                   return_intermediate_results,
                                   F2_intermediate_results);
-  // double F2 = 0.0;
 
   const double log_F3 = -s * std::log(DkT + beta_0) - (c.x+r) * std::log(Bksum + alpha_0);
 
@@ -952,6 +939,8 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
                                        const arma::mat& covdata_real_trans,
 
                                        const bool return_intermediate_results=false){
+  // Do not abort in case of error
+  gsl_set_error_handler_off();
 
   const arma::uword num_cov_life  = covdata_aux_life.n_cols;
   const arma::uword num_cov_trans = covdata_aux_trans.n_cols;
@@ -975,8 +964,6 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
   const arma::vec adj_covdata_aux_trans  = arma::exp(covdata_aux_trans  * params_trans);
   const arma::vec adj_covdata_real_trans = arma::exp(covdata_real_trans * params_trans);
 
-  Rcpp::Rcout<<"multiplied cov data" <<std::endl;
-
   Rcpp::NumericMatrix res;
   if(return_intermediate_results){
     res = Rcpp::NumericMatrix(X.n_elem, 20);
@@ -987,8 +974,6 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
   Rcpp::NumericVector res_i;
   for(arma::uword i = 0; i < X.n_elem; i++){
 
-    Rcpp::Rcout<<"i: "<< i <<std::endl;
-
     // Check whether customer has real trans walks
     //   Could also check x==0, but saver to look at actual content
     if(arma::is_finite(walkinfo_trans_real_from(i))){
@@ -997,20 +982,6 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
       arma::uword wi_real_trans_from = static_cast<arma::uword>(walkinfo_trans_real_from(i)) - 1;
       arma::uword wi_real_trans_to = static_cast<arma::uword>(walkinfo_trans_real_to(i)) - 1;
 
-      // Rcpp::Rcout<<LifetimeWalk(adj_covdata_aux_life, walkinfo_aux_life.row(i)).n_elem()<<std::endl;
-      // Rcpp::Rcout<<TransactionWalk(adj_covdata_aux_trans, walkinfo_aux_trans.row(i)).n_elem()<<std::endl;
-      // std::vector<TransactionWalk>(walkinfo_real_trans.rows(wi_real_trans_from, wi_real_trans_to).n_rows);
-
-      Customer c = Customer(X(i), t_x(i), T_cal(i), d_omega(i),
-                            adj_covdata_aux_life, walkinfo_aux_life.row(i),
-                            adj_covdata_real_life, walkinfo_real_life.row(i),
-                            adj_covdata_aux_trans, walkinfo_aux_trans.row(i),
-                            adj_covdata_real_trans, walkinfo_real_trans.rows(wi_real_trans_from, wi_real_trans_to));
-
-      // Rcpp::Rcout<<c.aux_walk_life.n_elem()<<std::endl;
-      // Rcpp::Rcout<<c.aux_walk_trans.n_elem()<<std::endl;
-      // Rcpp::Rcout<<c.real_walk_life.n_elem()<<std::endl;
-      // Rcpp::Rcout<<c.real_walks_trans.size()<<std::endl;
       res_i = pnbd_dyncov_LL_i(r, alpha_0, s, beta_0,
                                Customer(X(i), t_x(i), T_cal(i), d_omega(i),
                                         adj_covdata_aux_life, walkinfo_aux_life.row(i),
@@ -1020,18 +991,14 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
                                         DT(i), F2_3(i),
                                return_intermediate_results);
     }else{
-      Rcpp::Rcout<<"Before creating customer"<<std::endl;
-
       // // Zero-repeater (no real trans walks)
-      // Customer c = Customer(X(i), t_x(i), T_cal(i), d_omega(i),
-      //                       adj_covdata_aux_life, walkinfo_aux_life.row(i),
-      //                       adj_covdata_real_life, walkinfo_real_life.row(i),
-      //                       adj_covdata_aux_trans, walkinfo_aux_trans.row(i));
-      // Rcpp::Rcout<<"zero-repeater customer created"<<std::endl;
-      // res_i = pnbd_dyncov_LL_i(r, alpha_0, s, beta_0,
-      //                          c,
-      //                          DT(i), F2_3(i),
-      //                          return_intermediate_results);
+      res_i = pnbd_dyncov_LL_i(r, alpha_0, s, beta_0,
+                               Customer(X(i), t_x(i), T_cal(i), d_omega(i),
+                                        adj_covdata_aux_life, walkinfo_aux_life.row(i),
+                                        adj_covdata_real_life, walkinfo_real_life.row(i),
+                                        adj_covdata_aux_trans, walkinfo_aux_trans.row(i)),
+                               DT(i), F2_3(i),
+                               return_intermediate_results);
     }
 
     res(i, Rcpp::_) = res_i;

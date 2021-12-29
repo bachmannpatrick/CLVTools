@@ -11,56 +11,22 @@
 
 #include "clv_vectorized.h"
 
-struct Walk {
-  // Abstract away the (memory) representation of a walk
+/*
+ *  Abstract away the (memory) representation of a walk
+ */
+struct LifetimeWalk {
 
   arma::vec walk_data;
   // arma::subview_col<double> walk_data;
 
   double delta; // can only be {0, 1} but store as double to avoid frequent casting and forgetting it accidentally
 
-  Walk():
-    delta(arma::datum::nan), val_sum_middle_elems(arma::datum::nan){
-    // **TODO: Move to source file + can set size 0 from start?
-    this->walk_data = arma::vec(1);
-    this->walk_data.reset();
-  }
-
-
-  // Walk(const arma::vec& cov_data, const arma::uword from, const arma::uword to,
-  //      const double tjk, const double d, const double delta);
-
-  // copy constructor
-  // Walk(const Walk& other) : tjk(other.tjk), d(other.d), delta(other.delta){
-  //   // this->walk_data = arma::vec(other.walk_data);
-  //
-  //   this->walk_data = arma::vec(other.walk_data.memptr(), other.walk_data.n_elem);
-  //   Rcpp::Rcout<<"Copy constructor called."<<std::endl;
-  // }
-
-  // // copy assignment operator
-  // Walk& operator=(const Walk& t)
-  // {
-  //   Rcpp::Rcout << "Assignment operator called " << std::endl;
-  //   return *this;
-  // }
-
-
-  // move constructor
-  //  removes copy assignment operator??
-  // Walk(Walk&& other) : tjk(other.tjk), d(other.d), delta(other.delta){
-  //   this->walk_data = arma::vec(other.walk_data.memptr(), other.walk_data.n_elem);
-  //   Rcpp::Rcout<<"Move constructor called."<<std::endl;
-  // }
-
+  LifetimeWalk(); // lDefault: eave in uninitialized state (all NaN)
  /*
   * MUST PASS DATA VEC BY REF TO CONSTRUCTORS
   *   because store a subview which would point to freed mem if passed by value
   */
-  // Walk(const arma::vec& cov_data, const arma::uword, const arma::uword,
-  //      const double, const double, const double, const bool);
-
-  Walk(const arma::vec&, const arma::rowvec&);
+  LifetimeWalk(const arma::vec&, const arma::rowvec&);
 
   arma::uword n_elem() const;
   double first() const;
@@ -74,18 +40,13 @@ protected:
   void set_walk_data(const arma::vec& cov_data, const arma::uword from, const arma::uword to);
 };
 
-// **TODO: Rename Walk() to LifetimeWalk, ie replace Walk w/ LifetimeWalk
-struct LifetimeWalk : Walk{
-  LifetimeWalk(); // to have EmptyLifetimeWalk() constructor
-  LifetimeWalk(const arma::vec&, const arma::rowvec&);
-};
 
 struct EmptyLifetimeWalk : LifetimeWalk{
   EmptyLifetimeWalk();
   arma::uword n_elem() const;
 };
 
-struct TransactionWalk : Walk{
+struct TransactionWalk : LifetimeWalk{
   double d1;
   double tjk;
   TransactionWalk(); // used in vector<>
@@ -93,24 +54,36 @@ struct TransactionWalk : Walk{
 };
 
 
-// /*
-//  * RealWalkLife
-//  *  Contains all of a customer's cov data which does not belong to the aux walk.
-//  *  Contrary to all other walks, it can also have no elements.
-//  *  It is constructed as the residual of the customer's covdata and the aux walk.
-//  *
-//  *  Only ever used in pnbd_dyncov_Di()
-//  */
-// struct RealWalkLife : Walk{
-//   // customer_from: Position of first data point of this customer in adj_covdata_full_life
-//   RealWalkLife(const arma::vec& adj_covdata_full_life, const arma::rowvec& walkinfo_aux_life, const arma::uword customer_from);
-// };
+// Walk(const arma::vec& cov_data, const arma::uword from, const arma::uword to,
+//      const double tjk, const double d, const double delta);
+
+// copy constructor
+// Walk(const Walk& other) : tjk(other.tjk), d(other.d), delta(other.delta){
+//   // this->walk_data = arma::vec(other.walk_data);
+//
+//   this->walk_data = arma::vec(other.walk_data.memptr(), other.walk_data.n_elem);
+//   Rcpp::Rcout<<"Copy constructor called."<<std::endl;
+// }
+
+// // copy assignment operator
+// Walk& operator=(const Walk& t)
+// {
+//   Rcpp::Rcout << "Assignment operator called " << std::endl;
+//   return *this;
+// }
+
+
+// move constructor
+//  removes copy assignment operator??
+// Walk(Walk&& other) : tjk(other.tjk), d(other.d), delta(other.delta){
+//   this->walk_data = arma::vec(other.walk_data.memptr(), other.walk_data.n_elem);
+//   Rcpp::Rcout<<"Move constructor called."<<std::endl;
+// }
 
 
 struct Customer {
   const double x, t_x, T_cal;
   const double d_omega;
-  // const double adj_transaction_cov_dyn, adj_lifetime_cov_dyn;
 
   std::vector<TransactionWalk> real_walks_trans;
   LifetimeWalk real_walk_life, aux_walk_life;

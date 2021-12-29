@@ -30,7 +30,7 @@ pnbd_dyncov_getLLcallargs <-function(clv.fitted){
   dt.cbs[dt.customerinfo.real.trans, walkinfo_trans_real_from := i.id_from, on="Id"]
   dt.cbs[dt.customerinfo.real.trans, walkinfo_trans_real_to   := i.id_to,   on="Id"]
 
-  # IN SAME ORDER AS READ OUT IN WALK ctor
+  # IN SAME ORDER AS READ OUT IN WALK constructor
   cols.walk.ordered.life  <- c("from", "to", "delta")
   cols.walk.ordered.trans <- c(cols.walk.ordered.life, "d1", "tjk")
   m.walkinfo.aux.life   <- data.matrix(dt.cbs[, .SD, .SDcols=paste0("walk_aux_life_",  cols.walk.ordered.life, sep="")])
@@ -202,6 +202,8 @@ pnbd_dyncov_createwalks_real_trans <- function(clv.data, dt.trans, dt.tp.first.l
 }
 
 pnbd_dyncov_createwalks_real_life <- function(clv.data, dt.tp.first.last, dt.walks.aux.life){
+  tp.first.aux.cov.lower <- i.tp.first.aux.cov.lower <- tp.cov.lower <- NULL
+
   # Real walks for the lifetime process are all covs before the one covariate where the last transaction happens in
   #   Given the aux walk, they are the residual covs since coming alive
   #   May have no overlap with the aux walk
@@ -210,25 +212,41 @@ pnbd_dyncov_createwalks_real_life <- function(clv.data, dt.tp.first.last, dt.wal
   #   Still, every customer may have 1 real walk at maximum
   # **TODO: Test real + aux gives original data (until estimation end)
 
-  # Create as residuals given the aux walks
-  #   Since coming alive (ie no covs before first transaction)
+  # Create from residuals given the aux walks
+  #   Eligible covs:
+  #     Per customer: Only transactions before the ones in aux walks (strict <)
+  dt.tp.first.aux <- dt.walks.aux.life[, list(tp.first.aux.cov.lower = min(tp.cov.lower)), keyby="Id"]
+  dt.cov <- clv.data@data.cov.life[dt.tp.first.aux, nomatch=NULL,
+                                   on=c("Id==Id", "tp.cov.lower < tp.first.aux.cov.lower")]
+  # Subset with join adds/sets tp.cov.lower=tp.first.aux.cov.lower: Overwrite with correct Cov.Date
+  dt.cov[, tp.cov.lower := Cov.Date]
 
-  tp.first.trans <- i.tp.first.trans <- tp.cov.upper <- tp.this.trans <- i.tp.last.trans <- NULL
+  # Alternative:
+  # dt.cov <- copy(clv.data@data.cov.life)
+  # dt.cov[dt.tp.first.aux, tp.first.aux.cov.lower := i.tp.first.aux.cov.lower, on="Id"]
+  # dt.cov[, is.before.first.aux := tp.cov.lower < tp.first.aux.cov.lower]
+  # dt.cov <- dt.cov[is.before.first.aux == TRUE]
+  # dt.cov[, is.before.first.aux := NULL]
+  # dt.cov[, tp.first.aux.cov.lower := NULL]
 
-  # All dates per customer, except the ones already in the aux walks
-  #   **TODO: Requires minimum data.table version XXX (bug before that in data.table)
-  dt.dates.residual <- fsetdiff(x = clv.data@data.cov.life[, c("Id", "tp.cov.lower", "tp.cov.upper")],
-                                y = dt.walks.aux.life[, c("Id", "tp.cov.lower", "tp.cov.upper")])
+  # Create walk table only with eligible covariates
+  dt.walks.real <- pnbd_dyncov_createwalks_singletrans(dt.cov=dt.cov,
+                                                       dt.tp.first.last=dt.tp.first.last,
+                                                       name.lower="tp.first.trans",
+                                                       name.upper="tp.last.trans",
+                                                       names.cov=clv.data.get.names.cov.life(clv.data),
+                                                       clv.time=clv.data@clv.time)
+
 
   # Cannot use non-equi join with ("Cov.Date >= tp.first.trans") because Cov.Date marks beginning of cov interval
   #   need to use interval join (foverlaps)
 
-  dt.dates.residual[dt.tp.first.last, tp.first.trans := i.tp.first.trans, on="Id"]
-  dt.dates.residual <- dt.dates.residual[tp.first.trans <= tp.cov.upper]
+  # dt.dates.residual[dt.tp.first.last, tp.first.trans := i.tp.first.trans, on="Id"]
+  # dt.dates.residual <- dt.dates.residual[tp.first.trans <= tp.cov.upper]
 
-  # Create walks from Id/Cov.Date combos that are left
-  dt.cov <- clv.data@data.cov.life[dt.dates.residual[, c("Id", "tp.cov.lower")],
-                                   on = c("Id", "tp.cov.lower"), nomatch=NULL]
+  # # Create walks from Id/Cov.Date combos that are left
+  # dt.cov <- clv.data@data.cov.life[dt.dates.residual[, c("Id", "tp.cov.lower")],
+  #                                  on = c("Id", "tp.cov.lower"), nomatch=NULL]
 
 
   # Only such that are at least since first transaction
@@ -244,9 +262,9 @@ pnbd_dyncov_createwalks_real_life <- function(clv.data, dt.tp.first.last, dt.wal
   #                                        nomatch = NULL]
 
 
-  dt.cov[dt.tp.first.last, tp.this.trans := i.tp.last.trans,  on="Id"]
+  # dt.cov[dt.tp.first.last, tp.this.trans := i.tp.last.trans,  on="Id"]
 
-  return(dt.cov)
+  return(dt.walks.real)
 }
 
 pnbd_dyncov_createwalks_auxwalk <- function(dt.cov, dt.tp.first.last, names.cov, clv.time){
@@ -254,28 +272,17 @@ pnbd_dyncov_createwalks_auxwalk <- function(dt.cov, dt.tp.first.last, names.cov,
 
   dt.tp.first.last[, tp.estimation.end := clv.time@timepoint.estimation.end]
 
-  dt.cuts <- copy(dt.tp.first.last)
-  dt.cuts[, tp.cut.lower := tp.last.trans + clv.time.epsilon(clv.time)]
-  dt.cuts[, tp.cut.upper := tp.estimation.end]
-  dt.cuts[tp.last.trans == tp.estimation.end, tp.cut.lower := tp.last.trans]
-
-  dt.walks.aux <- pnbd_dyncov_creatwalks_matchcovstocuts(dt.cov = dt.cov, dt.cuts = dt.cuts,
-                                                         names.cov = names.cov)
-
-  dt.walks.aux[, tp.this.trans := tp.estimation.end]
-  dt.walks.aux[, tp.previous.trans := tp.last.trans]
+  dt.walks.aux <- pnbd_dyncov_createwalks_singletrans(dt.cov=dt.cov,
+                                                      dt.tp.first.last=dt.tp.first.last,
+                                                      name.lower="tp.last.trans",
+                                                      name.upper="tp.estimation.end",
+                                                      names.cov = names.cov,
+                                                      clv.time=clv.time)
 
   dt.walks.aux[, tp.estimation.end := NULL]
   return(dt.walks.aux)
 }
 
-pnbd_dyncov_createwalks_addwalkfromto <- function(dt.walks){
-  Id <- tp.this.trans <- tp.cov.lower <- abs_pos <- walk_from <- walk_to <- NULL
-  dt.walks[order(Id, tp.this.trans, tp.cov.lower), abs_pos := seq(from=1, to=.N)]
-  dt.walks[, walk_from := min(abs_pos), by="walk_id"]
-  dt.walks[, walk_to := max(abs_pos), by="walk_id"]
-  return(dt.walks)
-}
 
 pnbd_dyncov_createwalks <- function(clv.data){
   walk_id <- walk_from <- walk_to <- .N <- abs_pos <- Date <- delta <- tp.cov.lower <- NULL
@@ -326,8 +333,8 @@ pnbd_dyncov_createwalks <- function(clv.data){
 
   cols.walk.def <- c("Id", "tp.this.trans") # what defines data that belongs to a walk (tp.this.trans required because of multiple real trans walk)
   cols.keys <- c("walk_id", cols.walk.def, "tp.cov.lower")
-  cols.life <- c(cols.walk.def, "tp.cov.lower", "tp.cov.upper", "walk_from", "walk_to", "abs_pos", names.cov.life, "delta")
-  cols.trans <- c(cols.walk.def, "tp.cov.lower", "tp.cov.upper", "walk_from", "walk_to", "abs_pos", names.cov.trans, "delta", "tjk", "d1")
+  cols.life <- c(cols.walk.def, "tp.cov.lower", "tp.cov.upper", "walk_id", "walk_from", "walk_to", "abs_pos", names.cov.life, "delta")
+  cols.trans <- c(cols.walk.def, "tp.cov.lower", "tp.cov.upper", "walk_id", "walk_from", "walk_to", "abs_pos", names.cov.trans, "delta", "tjk", "d1")
 
   pnbd_dyncov_finishwalks <- function(dt.walk){
     # Add walk_id
