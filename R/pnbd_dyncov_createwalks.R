@@ -88,10 +88,19 @@ pnbd_dyncov_creatwalks_add_tjk <- function(dt.walk, clv.time){
 
 pnbd_dyncov_creatwalks_add_d1 <- function(dt.walk, clv.time){
   d1 <- tp.previous.trans <- NULL
-  # **TODO: +1 or not?
+
+  # **TODO: test: this is correct on/before boundary
+
+  # d1
+  #   "For any two successive transactions (j − 1), j, this is the time of the
+  #    transaction (j-1) to the end of the first interval"
+  #
+  #   Number of periods between last transaction to cov interval it is in
+
   # time between date.lagged and period end (ceiling(data.lagged+1))
   # d shall be 1 if it is exactly on the time.unit boundary!
   # Plus.Eps is already "+ 1"
+  # **TODO: clv.time.ceiling.date does not change on boundary (ie d1=0 if on boundary)
   dt.walk[, d1 := clv.time.interval.in.number.tu(clv.time = clv.time,
                                                  interv = interval( start = tp.previous.trans,
                                                                     end   = clv.time.ceiling.date(clv.time=clv.time,

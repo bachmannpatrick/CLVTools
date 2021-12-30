@@ -83,7 +83,7 @@ void LifetimeWalk::set_walk_data(const arma::vec& cov_data, const arma::uword fr
 }
 
 LifetimeWalk::LifetimeWalk(const arma::vec& cov_data, const arma::rowvec& walk_info)
-  : delta{walk_info(2)}
+  : delta(walk_info(2))
 {
   /*
    * May not store refs/pointers to walk_info as will only receive subviews (mat.row())
@@ -265,12 +265,12 @@ double pnbd_dyncov_LL_i_bksumbjsum_walk_i(const TransactionWalk& w){
   if(w.n_elem() == 1){
     // Transactions were in same cov period, delta = 0
     return(w.first() * (w.tjk));
-    // return(w.first()*w.d + w.last()*last_mult);
+    // return(w.first()*w.d1 + w.last()*last_mult);
   }else{
     if(w.n_elem() == 2){
       // because k-2 = 0
       return(w.first()*w.d1 + w.last()*(w.tjk - w.d1));
-      // return(w.first()*w.d + w.last()*last_mult);
+      // return(w.first()*w.d1 + w.last()*last_mult);
     }else{
       // >= 3
       double n = static_cast<double>(w.n_elem());
@@ -318,19 +318,19 @@ double pnbd_dyncov_LL_i_Bi(const arma::uword i, const double t_x, const Transact
 
 /*
  * Sum up all covs from coming alive until i periods after last transaction (Walk_i in aux walk)
- *
- * May not sum up overlapping covs at end of real_walk and beginning of aux_walk (ie avoid real_walk.last() + aux_walk.first())
- * **Same as Bi(), if had one, continuous walk**
- *    Do NOT count covariate period of transaction x double if they overlap
+ *  Same as Bi(), if had one, continuous walk (**TODO: even with regard to delta?)
+ *  Real and aux walk may therefore not overlap
+ *  **TODO: delta: as if walk was one continuous walk until i **
  */
 double pnbd_dyncov_LL_i_Di(const arma::uword i, const LifetimeWalk& real_walk_life,
                            const LifetimeWalk& aux_walk_life, const double d_omega){
 
   // Real and Aux walk are guaranteed to not overlap
-  //  Cov where last transaction is belongs only to aux walk
+  //  Cov where last transaction is in belongs only to aux walk
 
-  // Cannot sum up real_walk_life first and then add aux_walk sum because
+  // Cannot always sum up real_walk_life first and then add aux_walk sum because
   //  for the case real_walk_life.n_elem() == 0, d_omega has to be multiplied with aux_walk.first() not to real_walk_life.first()
+  //  Therefore do real_walk_life.n_elem() == 0 separately
 
   if(real_walk_life.n_elem() == 0){
     // Directly sum up the aux walk until Walk_i, including first()*d
@@ -349,21 +349,35 @@ double pnbd_dyncov_LL_i_Di(const arma::uword i, const LifetimeWalk& real_walk_li
 
     // There are elements in the real walk that all need to be summed (independent of i)
 
+    // **TODO: Jeff: Wieso bei i=1, das letzte element des real walks nicht addiert wird. Also der real walk nur real.first()*d_omega"real.sum_middle_elems(), aber explizit ausschliesst dass
+    // D1 hat einen expliziten kommentar: # do not include Dkn
     double sum_real_walk = 0.0;
+    // branch because of summing middle elements
     if(real_walk_life.n_elem() == 1){
       sum_real_walk = real_walk_life.first()*d_omega;
     }else{
       if(real_walk_life.n_elem() == 2){
         sum_real_walk = real_walk_life.first()*d_omega + real_walk_life.last();
+        if(i==1)
+          sum_real_walk -= real_walk_life.last();
       }else{
         // >= 3: everything in real walk
         sum_real_walk = real_walk_life.first()*d_omega + real_walk_life.sum_middle_elems() + real_walk_life.last();
+        if(i==1)
+          sum_real_walk -= real_walk_life.last();
       }
     }
 
     // Sum up aux walk until i
+    //  Not required to first()*d_omega because done with real_walk
+    // **TODO JEFF: Does delta refer to aux walk or real walk? or both together (as should be same as Bi if one long walk)? Or is delta if walk was until i? Also: k0x+i >=2. Should delta not also be calcualted dynamically in Bi(), as function of i?
+    // **TODO: Is aux_walk.n_elem == 2 a special case for DT==D1?
     double sum_aux_walk = 0.0;
-    double last_mult = (-d_omega - aux_walk_life.delta*(static_cast<double>(i) - 3.0));
+    // double delta = aux_walk_life.delta;
+    // double delta = static_cast<double>((real_walk_life.n_elem() + aux_walk_life.n_elem()) >= 2);
+    double delta = static_cast<double>(real_walk_life.n_elem() + i - 1 > 1);
+    double k0x = static_cast<double>(real_walk_life.n_elem());
+    double last_mult = -d_omega - delta*(k0x + static_cast<double>(i) - 3.0);
     if(i == 1){
       sum_aux_walk = aux_walk_life.first()*last_mult;
     }else{
@@ -374,6 +388,12 @@ double pnbd_dyncov_LL_i_Di(const arma::uword i, const LifetimeWalk& real_walk_li
         sum_aux_walk = aux_walk_life.first() + aux_walk_life.sum_from_to(1,i-2) + aux_walk_life.get_elem(i-1)*last_mult;
       }
     }
+    // Rcpp::Rcout<<"i: "<<i<<std::endl;
+    // Rcpp::Rcout<<"k0x: "<<k0x<<std::endl;
+    // Rcpp::Rcout<<"delta: "<<delta<<std::endl;
+    // Rcpp::Rcout<<"last_mult: "<<last_mult<<std::endl;
+    // Rcpp::Rcout<<"sum_real_walk: "<<sum_real_walk<<std::endl;
+    // Rcpp::Rcout<<"sum_aux_walk: "<<sum_aux_walk<<std::endl;
     return(sum_real_walk + sum_aux_walk);
   }
 }
@@ -484,6 +504,7 @@ double pnbd_dyncov_LL_i_F2_3(const double r, const double alpha_0, const double 
 
 /*
  * Z = Y_1 + Y_kT + sum_2^kT-1{Y_i}
+ *  Special case for k_T=1 (aux walk only has 1 element)
  */
 double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s, const double beta_0,
                            const Customer& c,
@@ -750,12 +771,12 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
 
 
 
-  double Akprod = std::exp(A1sum);
 
   if(!return_intermediate_results){
     return(Rcpp::NumericVector::create(LL));
   }else{
     // R: data.table(Id=cbs$Id,LL=cbs$LL, Akprod=exp(cbs$A1sum), Bksum=cbs$Bksum, DkT=cbs$DkT, Z=cbs$F2)
+    double Akprod = std::exp(A1sum);
     return(Rcpp::NumericVector::create(Rcpp::_["LL"]=LL,
                                        Rcpp::_["Akprod"]=Akprod,
                                        Rcpp::_["Bksum"]=Bksum,
@@ -925,3 +946,49 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
 }
 
 
+
+
+// [[Rcpp::export]]
+Rcpp::NumericVector LL_i_single_walk(const double r, const double alpha_0, const double s, const double beta_0,
+                                     const double x, const double t_x, const double T_cal, const double d_omega,
+                                     const int num_walks,
+                                     const double B1, const double BT,
+                                     const double DT, const double D1,
+                                     const double F2_3,
+
+                                     const arma::vec& params_life,
+                                     const arma::vec& params_trans,
+
+                                     const arma::mat& cov_data_life,
+                                     const arma::mat& cov_data_trans,
+
+                                     const arma::mat& walkinfo_aux_life,
+                                     const arma::mat& walkinfo_real_life,
+                                     const arma::mat& walkinfo_aux_trans,
+                                     const arma::mat& walkinfo_real_trans){
+  // Do not abort in case of error
+  gsl_set_error_handler_off();
+
+  arma::vec adj_cov_data_life = arma::exp(cov_data_life * params_life);
+  arma::vec adj_cov_data_trans = arma::exp(cov_data_trans * params_trans);
+  if(walkinfo_real_trans.is_finite()){
+    // Rcpp::Rcout<<"Creating a customer with real trans walks."<<std::endl;
+    // Customer w/o real life walks
+    return pnbd_dyncov_LL_i(r, alpha_0, s, beta_0,
+                            Customer(x, t_x, T_cal, d_omega,
+                                     adj_cov_data_life, walkinfo_aux_life.row(0),
+                                     adj_cov_data_life, walkinfo_real_life.row(0),
+                                     adj_cov_data_trans, walkinfo_aux_trans.row(0),
+                                     adj_cov_data_trans, walkinfo_real_trans),
+                                     true);
+  }else{
+    // Rcpp::Rcout<<"Creating a customer w/o real trans walks."<<std::endl;
+    // Customer w/o real life walks
+    return pnbd_dyncov_LL_i(r, alpha_0, s, beta_0,
+                            Customer(x, t_x, T_cal, d_omega,
+                                     adj_cov_data_life, walkinfo_aux_life.row(0),
+                                     adj_cov_data_life, walkinfo_real_life.row(0),
+                                     adj_cov_data_trans, walkinfo_aux_trans.row(0)),
+                            true);
+  }
+}
