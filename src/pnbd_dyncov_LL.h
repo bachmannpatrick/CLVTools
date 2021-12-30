@@ -16,22 +16,22 @@
  */
 struct LifetimeWalk {
 
-  arma::vec walk_data;
+  arma::vec walk_data; // exp(gamma*X) of this walk
   // arma::subview_col<double> walk_data;
 
   double delta; // can only be {0, 1} but store as double to avoid frequent casting and forgetting it accidentally
 
-  LifetimeWalk(); // lDefault: eave in uninitialized state (all NaN)
  /*
   * MUST PASS DATA VEC BY REF TO CONSTRUCTORS
   *   because store a subview which would point to freed mem if passed by value
   */
+  LifetimeWalk(); // Default: leave in uninitialized state (all data is NaN)
   LifetimeWalk(const arma::vec&, const arma::rowvec&);
 
-  arma::uword n_elem() const;
-  double first() const;
-  double last() const;
-  double get_elem(const arma::uword i) const;
+  arma::uword n_elem() const; // total number of elements in walk
+  double first() const; // get first element in walk
+  double last() const; //get last element in walk
+  double get_elem(const arma::uword i) const; // get element at position i in data vector (Walk_(i+1))
   double sum_middle_elems() const; //sum all elements which are not first or last. Requires at least 3 elements
   double sum_from_to(const arma::uword from, const arma::uword to) const; //sum all elements which are not first or last. Requires at least 3 elements
 
@@ -150,15 +150,15 @@ double pnbd_dyncov_LL_i_F2_2(const double r, const double alpha_0, const double 
                              const double AkT, const double CkT);
 
 
-double pnbd_dyncov_LL_i_F2(const int num_walks,
-                           const double r, const double alpha_0, const double s, const double beta_0,
-                           const int x, const double t_x, const double T_cal, const double dT,
-                           const double Bjsum, const double B1,
-                           const double D1,
+double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s, const double beta_0,
+                           const Customer& c,
+                           const double B1, const double D1,
                            const double BT, const double DT,
                            const double A1T, const double C1T,
                            const double AkT, const double CkT,
-                           const double F2_3);
+                           const double Bjsum,
+                           const bool return_intermediate_results,
+                           arma::vec& intermediate_results);
 
 Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const double s, const double beta_0,
                                      const Customer& c,

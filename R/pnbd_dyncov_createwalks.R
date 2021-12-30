@@ -215,6 +215,7 @@ pnbd_dyncov_createwalks_real_life <- function(clv.data, dt.tp.first.last, dt.wal
   # Create from residuals given the aux walks
   #   Eligible covs:
   #     Per customer: Only transactions before the ones in aux walks (strict <)
+  #   using non-equi join requires minimum data.table version 1.9.8!
   dt.tp.first.aux <- dt.walks.aux.life[, list(tp.first.aux.cov.lower = min(tp.cov.lower)), keyby="Id"]
   dt.cov <- clv.data@data.cov.life[dt.tp.first.aux, nomatch=NULL,
                                    on=c("Id==Id", "tp.cov.lower < tp.first.aux.cov.lower")]
@@ -238,31 +239,7 @@ pnbd_dyncov_createwalks_real_life <- function(clv.data, dt.tp.first.last, dt.wal
                                                        clv.time=clv.data@clv.time)
 
 
-  # Cannot use non-equi join with ("Cov.Date >= tp.first.trans") because Cov.Date marks beginning of cov interval
-  #   need to use interval join (foverlaps)
-
-  # dt.dates.residual[dt.tp.first.last, tp.first.trans := i.tp.first.trans, on="Id"]
-  # dt.dates.residual <- dt.dates.residual[tp.first.trans <= tp.cov.upper]
-
-  # # Create walks from Id/Cov.Date combos that are left
-  # dt.cov <- clv.data@data.cov.life[dt.dates.residual[, c("Id", "tp.cov.lower")],
-  #                                  on = c("Id", "tp.cov.lower"), nomatch=NULL]
-
-
-  # Only such that are at least since first transaction
-  #   using non-equi join
-  #   requires minimum data.table version 1.9.8!
-  # **TODO: Verify that >= and not > (ie same as cov start/end intervals for foverlaps())
   # **TODO: Add test: same first cov date as real walks for transaction process + has no gaps in Cov.Dates
-
-
-  # Result where tp.first.trans in col Cov.Date
-  # dt.dates.residual <- dt.dates.residual[dt.tp.first.last[, c("Id", "tp.first.trans")],
-  #                                        on = c("Id == Id", "Cov.Date >= tp.first.trans"),
-  #                                        nomatch = NULL]
-
-
-  # dt.cov[dt.tp.first.last, tp.this.trans := i.tp.last.trans,  on="Id"]
 
   return(dt.walks.real)
 }
