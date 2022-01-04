@@ -66,13 +66,12 @@ following columns:
 
 For the Tracking plot:
 \item{period.until}{The timepoint that marks the end (up until and including) of the period to which the data in this row refers.}
-\item{Number of Repeat Transactions}{The number of actual repeat transactions in
-the period that ends at \code{period.until}. Only if \code{transactions} is \code{TRUE}.}
+\item{Actual}{The actual number of repeat transactions in the period that ends at \code{period.until}. Only if \code{transactions=TRUE}.}
 \item{"Name of Model" or "label"}{The value of the unconditional expectation for the period that ends on \code{period.until}.}
 
 For the PMF plot:
 \item{num.transactions}{The number of observed repeat transactions in the estimation period (as ordered factor).}
-\item{actual.num.customers}{The actual number of customers which have the respective number of repeat transactions.}
+\item{actual.num.customers}{The actual number of customers which have the respective number of repeat transactions. Only if \code{transactions=TRUE}.}
 \item{expected.customers}{The number of customers which are expected to have the respective number of repeat transactions, as by the fitted model.}
 }
 \description{
