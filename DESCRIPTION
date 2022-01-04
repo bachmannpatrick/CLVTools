@@ -3,7 +3,7 @@ Title: Tools for Customer Lifetime Value Estimation
 Version: 0.8.2
 Date: 2021-10-13
 Authors@R: c(
-    person(given="Patrick", family="Bachmann",    email = "patrick.bachmann@business.uzh.ch", role = c("cre","aut")),
+    person(given="Patrick", family="Bachmann",    email = "pbachma@ethz.ch", role = c("cre","aut")),
     person(given="Niels",   family="Kuebler",     email = "niels.kuebler@uzh.ch", role = "aut"),
     person(given="Markus",  family="Meierer",     email = "markus.meierer@business.uzh.ch", role = "aut"),
     person(given="Jeffrey", family="Naef",        email = "naef@stat.math.ethz.ch",role = "aut"),
