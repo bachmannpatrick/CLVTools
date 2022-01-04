@@ -54,6 +54,25 @@ and further contains the elements:
 Summary method for objects of class \code{clv.data} that provides information about the estimation and
 possible holdout sample, and descriptive statistics of the transaction data.
 }
+\details{
+If applicable the summary statistics are provided spararately for the estimation and holdout period as
+for the overall time period (estimation + holdout). By using the \code{Id} agrument, the summary statitics can be limited to
+a subset of customers.\cr\cr
+\code{Number of customers}: Count of individual customers.\cr
+\code{First Transaction in period}: Date (ymd) of the first transaction occuring in the indicated period.\cr
+\code{Last Transaction in period}: Date (ymd) of the last transaction occuring in the indicated period.\cr
+\code{Total # Transactions}: Count of transaction occuring in the indicated period.\cr
+\code{Mean # Transactions per cust}: Average transactions per customer in the indicated period
+inlcuding the standard deviation (SD).\cr
+\code{Mean Spending per Transaction}: Average spending per customer in the indicated period inlcuding
+the standard deviation (SD). Spending statistics are only provided if 
+\code{Price} was probided in \code{clvdata()}.\cr
+\code{Total Spending}: Sum of customer spending during the indicated period.\cr
+\code{Total # zero repeaters}: Number of customer who pruchase only once during the estimation period.\cr
+\code{Percentage # zero repeaters}: Percentage of customers who pruchase only once during the estimation period.\cr
+\code{Mean Interpurchase time}: Average time passed between two transactions for individual customers
+inlcuding the standard deviation (SD).\cr
+}
 \examples{
 
 \donttest{
