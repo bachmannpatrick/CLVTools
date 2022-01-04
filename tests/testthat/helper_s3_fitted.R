@@ -1,3 +1,9 @@
+fct.helper.has.pmf <- function(clv.fitted.transactions){
+  return(is(clv.fitted.transactions, "clv.fitted.transactions") &
+           !is(clv.fitted.transactions, "clv.ggomnbd") & !is(clv.fitted.transactions, "clv.ggomnbd.static.cov") &
+           !is(clv.fitted.transactions, "clv.pnbd.dynamic.cov"))
+}
+
 .fct.helper.s3.fitted.coef <- function(clv.fitted, full.names){
 
   expect_silent(res.coef <- coef(clv.fitted))
@@ -140,22 +146,22 @@
   expect_silent(res.sum <- summary(clv.fitted))
 
   test_that("Basic summary structure", {
-    expect_is(res.sum, "summary.clv.fitted")
+    expect_s3_class(res.sum, class = "summary.clv.fitted")
     expect_true(is.list(res.sum))
     expect_true(all(c("call", "name.model", "tp.estimation.start","tp.estimation.end",
                       "time.unit", "coefficients", "AIC", "BIC","kkt1", "kkt2","additional.options") %in%
                       names(res.sum)))
-    expect_is(res.sum$call, "call")
-    expect_is(res.sum$name.model, "character")
+    expect_true(is.call(res.sum$call))
+    expect_true(is.character(res.sum$name.model))
     expect_true(lubridate::is.Date(res.sum$tp.estimation.start) | lubridate::is.POSIXct(res.sum$tp.estimation.start))
     expect_true(lubridate::is.Date(res.sum$tp.estimation.end) | lubridate::is.POSIXct(res.sum$tp.estimation.end))
-    expect_is(res.sum$time.unit, "character")
-    expect_is(res.sum$coefficients, "matrix")
-    expect_is(res.sum$AIC, "numeric")
-    expect_is(res.sum$BIC, "numeric")
-    expect_is(res.sum$kkt1, "logical")
-    expect_is(res.sum$kkt2, "logical")
-    expect_is(res.sum$additional.options, "list")
+    expect_true(is.character(res.sum$time.unit))
+    expect_true(is.matrix(res.sum$coefficients))
+    expect_true(is.numeric(res.sum$AIC))
+    expect_true(is.numeric(res.sum$BIC))
+    expect_true(is.logical(res.sum$kkt1))
+    expect_true(is.logical(res.sum$kkt2))
+    expect_true(is.list(res.sum$additional.options))
   })
 
   test_that("Correct coef structure", {
@@ -195,7 +201,7 @@
 .fct.helper.s3.fitted.nobs <- function(clv.fitted){
   test_that("has correct format",{
     expect_silent(res.nobs <- nobs(clv.fitted))
-    expect_is(res.nobs, "integer")
+    expect_true(is.integer(res.nobs))
     expect_equal(res.nobs, nrow(clv.fitted@cbs))
   })
 }
@@ -243,6 +249,9 @@ fct.helper.clvfittedtransactions.all.s3 <- function(clv.fitted, full.names,
   fct.testthat.runability.clvfittedtransactions.predict(fitted.transactions = clv.fitted, clv.newdata.nohold=clv.newdata.nohold,
                                                         clv.newdata.withhold=clv.newdata.withhold, DERT.not.implemented=DERT.not.implemented)
 
+  if(fct.helper.has.pmf(clv.fitted)){
+    fct.testthat.runability.clvfittedtransactions.pmf(fitted.transactions=clv.fitted)
+  }
 }
 
 

@@ -3,8 +3,7 @@
 
 #include <RcppArmadillo.h>
 #include <cmath>
-
-arma::vec lbeta(const arma::vec& a, const double b);
+#include "clv_vectorized.h"
 
 double gg_LL(const arma::vec& vLogparams,
              const arma::vec& vX,

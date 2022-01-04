@@ -55,11 +55,8 @@ arma::vec ggomnbd_CET(const double r,
   const arma::vec vAlphaStar = vAlpha_i + vX;
   const arma::vec vBetaStar  = vBeta_i + arma::exp(b * vT_cal) - 1.0;
 
-  arma::vec vPeriods(vX.n_elem);
-  vPeriods.fill(dPeriods);
-
+  const arma::vec vPeriods = clv::vec_fill(dPeriods, vX.n_elem);
   const arma::vec vExpectation = ggomnbd_expectation(b, s, vRStar, vAlphaStar, vBetaStar, vPeriods);
-
 
   return(vPAlive % vExpectation);
 }
@@ -77,15 +74,8 @@ arma::vec ggomnbd_nocov_CET(const double r,
                             const arma::vec& vT_x,
                             const arma::vec& vT_cal){
 
-
-  // Build alpha and beta --------------------------------------------------------
-  //    No covariates: Same alphas, betas for every customer
-  const double n = vX.n_elem;
-  arma::vec vAlpha_i(n), vBeta_i(n);
-
-  vAlpha_i = ggomnbd_nocov_alpha_i(alpha_0, n);
-
-  vBeta_i = ggomnbd_nocov_beta_i(beta_0, n);
+  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vX.n_elem);
+  const arma::vec vBeta_i = clv::vec_fill(beta_0, vX.n_elem);
 
   return(ggomnbd_CET(r,b,s,dPeriods,vX,vT_x,vT_cal,vAlpha_i, vBeta_i));
 }
@@ -107,14 +97,7 @@ arma::vec ggomnbd_staticcov_CET(const double r,
                                 const arma::mat& mCov_life,
                                 const arma::mat& mCov_trans){
 
-  // Build alpha and beta -------------------------------------------
-  //    With static covariates: alpha and beta different per customer
-  //
-  //    alpha_i: alpha0 * exp(-cov.trans * cov.params.trans)
-  //    beta_i:  beta0  * exp(-cov.life  * cov.parama.life)
-
   const arma::vec vAlpha_i = ggomnbd_staticcov_alpha_i(alpha_0, vCovParams_trans, mCov_trans);
-
   const arma::vec vBeta_i  = ggomnbd_staticcov_beta_i(beta_0, vCovParams_life, mCov_life);
 
   return(ggomnbd_CET(r,b,s,dPeriods,vX,vT_x,vT_cal,vAlpha_i, vBeta_i));
@@ -183,12 +166,9 @@ arma::vec ggomnbd_nocov_expectation(const double r,
                                     const double beta_0,
                                     const arma::vec& vT_i){
 
-  // Build alpha and beta --------------------------------------------------------
-  const double n = vT_i.n_elem;
-
-  const arma::vec vAlpha_i = ggomnbd_nocov_alpha_i(alpha_0, n);
-  const arma::vec vBeta_i = ggomnbd_nocov_beta_i(beta_0, n);
-  const arma::vec vR = ggomnbd_nocov_r(r, n);
+  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vT_i.n_elem);
+  const arma::vec vBeta_i = clv::vec_fill(beta_0, vT_i.n_elem);
+  const arma::vec vR = clv::vec_fill(r, vT_i.n_elem);
 
   return(ggomnbd_expectation(b,
                              s,
@@ -206,9 +186,7 @@ arma::vec ggomnbd_staticcov_expectation(const double r,
                                         const arma::vec& vAlpha_i,
                                         const arma::vec& vBeta_i,
                                         const arma::vec& vT_i){
-
-  const double n = vT_i.n_elem;
-  const arma::vec vR = ggomnbd_staticcov_r(r, n);
+  const arma::vec vR = clv::vec_fill(r, vT_i.n_elem);
 
   return(ggomnbd_expectation(b,
                              s,
@@ -345,13 +323,8 @@ arma::vec ggomnbd_nocov_LL_ind(const arma::vec& vLogparams,
   const double s       = std::exp(vLogparams(3));
   const double beta_0  = std::exp(vLogparams(4));
 
-  // n = number of elements / customers
-  const double n = vX.n_elem;
-
-  // Build alpha and beta --------------------------------------------
-  //    No covariates: Same alphas, betas for every customer
-  const arma::vec vAlpha_i = ggomnbd_nocov_alpha_i(alpha_0, n);
-  const arma::vec vBeta_i = ggomnbd_nocov_beta_i(beta_0, n);
+  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vX.n_elem);
+  const arma::vec vBeta_i = clv::vec_fill(beta_0, vX.n_elem);
 
   return(ggomnbd_LL_ind(r, b, s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal));
 }
@@ -365,10 +338,10 @@ double ggomnbd_nocov_LL_sum(const arma::vec& vLogparams,
                             const arma::vec& vT_cal){
 
 
-  arma::vec vLL = ggomnbd_nocov_LL_ind(vLogparams,
-                                       vX,
-                                       vT_x,
-                                       vT_cal);
+  const arma::vec vLL = ggomnbd_nocov_LL_ind(vLogparams,
+                                             vX,
+                                             vT_x,
+                                             vT_cal);
 
   // accu sums all elements
   return(-arma::sum(vLL));
@@ -400,23 +373,14 @@ arma::vec ggomnbd_staticcov_LL_ind(const arma::vec& vParams,
   const double beta_0  = std::exp(vParams(4));
 
   const int num_model_params = 5;
-  const double num_cov_life  = mCov_life.n_cols;
-  const double num_cov_trans = mCov_trans.n_cols;
+  const arma::uword num_cov_life  = mCov_life.n_cols;
+  const arma::uword num_cov_trans = mCov_trans.n_cols;
 
   const arma::vec vLife_params      = vParams.subvec(num_model_params              ,  num_model_params+num_cov_life                 - 1);
   const arma::vec vTrans_params     = vParams.subvec(num_model_params + num_cov_life, num_model_params+num_cov_life + num_cov_trans - 1);
 
-
-
-  // Build alpha and beta -------------------------------------------
-  //    With static covariates: alpha and beta different per customer
-  //
-  //    alpha_i: alpha0 * exp(-cov.trans * cov.params.trans)
-  //    beta_i:  beta0  * exp(-cov.life  * cov.parama.life)
-
   const arma::vec vAlpha_i = ggomnbd_staticcov_alpha_i(alpha_0, vTrans_params, mCov_trans);
   const arma::vec vBeta_i  = ggomnbd_staticcov_beta_i(beta_0, vLife_params, mCov_life);
-
 
   return(ggomnbd_LL_ind(r,b,s,vAlpha_i,vBeta_i,vX,vT_x,vT_cal));
 }
@@ -439,22 +403,13 @@ double ggomnbd_staticcov_LL_sum(const arma::vec& vParams,
   return(-arma::sum(vLL));
 }
 
-arma::vec ggomnbd_nocov_alpha_i(const double alpha_0, const double n){
-  return clv::vec_fill(alpha_0, n);
-}
-
-arma::vec ggomnbd_nocov_beta_i(const double beta_0, const double n){
-  return clv::vec_fill(beta_0, n);
-}
-
-arma::vec ggomnbd_nocov_r(const double r, const double n){
-  return clv::vec_fill(r, n);
-}
 
 // [[Rcpp::export]]
 arma::vec ggomnbd_staticcov_alpha_i(const double alpha_0,
                                     const arma::vec& vCovParams_trans,
                                     const arma::mat& mCov_trans){
+
+  //    alpha_i: alpha0 * exp(-cov.trans * cov.params.trans)
   return alpha_0 * arma::exp(((mCov_trans * (-1)) * vCovParams_trans));
 }
 
@@ -462,14 +417,9 @@ arma::vec ggomnbd_staticcov_alpha_i(const double alpha_0,
 arma::vec ggomnbd_staticcov_beta_i(const double beta_0,
                                    const arma::vec& vCovParams_life,
                                    const arma::mat& mCov_life){
-
+  //    beta_i:  beta0  * exp(-cov.life  * cov.parama.life)
   return beta_0 * arma::exp(((mCov_life  * (-1)) * vCovParams_life));
 }
-
-arma::vec ggomnbd_staticcov_r(const double r, const double n){
-  return ggomnbd_nocov_r(r, n);
-}
-
 
 
 
@@ -499,11 +449,9 @@ arma::vec ggomnbd_PAlive(const double r,
                          const arma::vec& vAlpha_i,
                          const arma::vec& vBeta_i){
 
-  arma::vec vLL = ggomnbd_LL_ind(r, b ,s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal);
-
   const arma::vec vP1 = arma::lgamma(r + vX) - std::lgamma(r);
   const arma::vec vP2 = r * arma::log(vAlpha_i/(vAlpha_i + vT_cal)) + vX % arma::log(1/(vAlpha_i + vT_cal)) + s * arma::log(vBeta_i/(vBeta_i - 1 + arma::exp(b * vT_cal)));
-  const arma::vec vP3 = vLL;
+  const arma::vec vP3 = ggomnbd_LL_ind(r, b ,s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal);
 
   return arma::exp(vP1 + vP2 - vP3);
 
@@ -525,16 +473,9 @@ arma::vec ggomnbd_staticcov_PAlive(const double r,
                                    const arma::mat& mCov_life,
                                    const arma::mat& mCov_trans){
 
-  // Build alpha and beta -------------------------------------------
-  //    With static covariates: alpha and beta different per customer
-  //
-  //    alpha_i: alpha0 * exp(-cov.trans * cov.params.trans)
-  //    beta_i:  beta0  * exp(-cov.life  * cov.parama.life)
-
   const arma::vec vAlpha_i = ggomnbd_staticcov_alpha_i(alpha_0, vCovParams_trans, mCov_trans);
   const arma::vec vBeta_i  = ggomnbd_staticcov_beta_i(beta_0, vCovParams_life, mCov_life);
 
-  // Calculate PAlive ------------------------------------------------
   return ggomnbd_PAlive(r,b,s,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
 }
 
@@ -550,17 +491,8 @@ arma::vec ggomnbd_nocov_PAlive(const double r,
                                const arma::vec& vT_x,
                                const arma::vec& vT_cal){
 
+  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vX.n_elem);
+  const arma::vec vBeta_i = clv::vec_fill(beta_0, vX.n_elem);
 
-  // Build alpha and beta --------------------------------------------------------
-  //    No covariates: Same alphas, betas for every customer
-  const double n = vX.n_elem;
-
-  arma::vec vAlpha_i(n), vBeta_i(n);
-
-  vAlpha_i = ggomnbd_nocov_alpha_i(alpha_0, n);
-  vBeta_i = ggomnbd_nocov_beta_i(beta_0, n);
-
-
-  // Calculate PAlive -------------------------------------------------------------
   return ggomnbd_PAlive(r,b,s,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
 }

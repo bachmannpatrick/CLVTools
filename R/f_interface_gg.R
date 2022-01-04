@@ -33,7 +33,7 @@
 #' @template template_clvfitted_returnvalue
 #'
 #' @seealso \code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object.
-#'
+#' @seealso \code{\link[CLVTools:plot.clv.data]{plot}} to plot diagnostics of the transaction data, incl. of spending.
 #' @seealso \code{\link[CLVTools:predict.clv.fitted.spending]{predict}} to predict expected mean spending for every customer.
 #' @seealso \code{\link[CLVTools:plot.clv.fitted.spending]{plot}} to plot the density of customer's mean transaction value compared to the model's prediction.
 #'

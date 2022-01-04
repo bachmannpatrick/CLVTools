@@ -50,12 +50,8 @@ arma::vec pnbd_nocov_CET(const double r,
 
   // Build alpha and beta --------------------------------------------------------
   //    No covariates: Same alphas, betas for every customer
-  const double n = vX.n_elem;
-
-  arma::vec vAlpha_i(n), vBeta_i(n);
-
-  vAlpha_i = pnbd_nocov_alpha_i(alpha_0, n);
-  vBeta_i = pnbd_nocov_beta_i(beta_0, n);
+  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vX.n_elem);
+  const arma::vec vBeta_i = clv::vec_fill(beta_0, vX.n_elem);
 
 
   // Calculate PAlive -------------------------------------------------------------
@@ -94,13 +90,8 @@ arma::vec pnbd_staticcov_CET(const double r,
 
   // Build alpha and beta --------------------------------------------
   //  Static covariates: Different alpha/beta for every customer
-
-  const double n = vX.n_elem;
-
-  arma::vec vAlpha_i(n), vBeta_i(n);
-
-  vAlpha_i = pnbd_staticcov_alpha_i(alpha_0, vCovParams_trans, mCov_trans);
-  vBeta_i  = pnbd_staticcov_beta_i(beta_0, vCovParams_life, mCov_life);
+  const arma::vec vAlpha_i = pnbd_staticcov_alpha_i(alpha_0, vCovParams_trans, mCov_trans);
+  const arma::vec vBeta_i  = pnbd_staticcov_beta_i(beta_0, vCovParams_life, mCov_life);
 
 
   // Calculate PAlive -------------------------------------------------------------
@@ -161,16 +152,12 @@ arma::vec pnbd_DERT_ind(const double r,
 
   // Calculate LL ----------------------------------------------------
   //  Calculate value for every customer
-  arma::vec vLL = pnbd_LL_ind(r, s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal);
+  const arma::vec vLL = pnbd_LL_ind(r, s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal);
 
-  arma::vec vZ = continuous_discount_factor * (vBeta_i + vT_cal);
+  const arma::vec vZ = continuous_discount_factor * (vBeta_i + vT_cal);
+  const arma::vec vTerm = clv::vec_x_kummerU(s, s, vZ);
 
-  arma::vec vPart1 = (arma::pow(vZ, 1-s) / (s-1))  % clv::vec_x_hyp1F1(1, 2-s, vZ);
-  arma::vec vPart2 = std::tgamma(1-s) * clv::vec_x_hyp1F1(s, s, vZ);
-  //
-  arma::vec vTerm = vPart1 + vPart2;
-
-  arma::vec vDERT = arma::exp(
+  const arma::vec vDERT = arma::exp(
     r * arma::log(vAlpha_i)
     + s * arma::log(vBeta_i)
     + (s-1) * std::log(continuous_discount_factor)
@@ -196,15 +183,10 @@ arma::vec pnbd_nocov_DERT(const double r,
                           const arma::vec& vT_x,
                           const arma::vec& vT_cal){
 
-  const double n = vX.n_elem;
-
-
   // Build alpha and beta -------------------------------------------
   //    No covariates: Same alphas, betas for every customer
-  arma::vec vAlpha_i(n), vBeta_i(n);
-
-  vAlpha_i = pnbd_nocov_alpha_i(alpha_0, n);
-  vBeta_i = pnbd_nocov_beta_i(beta_0, n);
+  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vX.n_elem);
+  const arma::vec vBeta_i = clv::vec_fill(beta_0, vX.n_elem);
 
   // Calculate DERT -------------------------------------------------
   return pnbd_DERT_ind(r, s,
@@ -233,8 +215,8 @@ arma::vec pnbd_staticcov_DERT(const double r,
   // Build alpha and beta --------------------------------------------
   //    No covariates: Same alphas, betas for every customer
 
-  arma::vec vAlpha_i = pnbd_staticcov_alpha_i(alpha_0, vCovParams_trans, mCov_trans);
-  arma::vec vBeta_i  = pnbd_staticcov_beta_i(beta_0, vCovParams_life, mCov_life);
+  const arma::vec vAlpha_i = pnbd_staticcov_alpha_i(alpha_0, vCovParams_trans, mCov_trans);
+  const arma::vec vBeta_i  = pnbd_staticcov_beta_i(beta_0, vCovParams_life, mCov_life);
 
 
   // Calculate DERT --------------------------------------------------
@@ -279,10 +261,8 @@ arma::vec pnbd_nocov_expectation(const double r,
                                  const arma::vec& vT_i){
 
   // Build alpha and beta --------------------------------------------------------
-  const double n = vT_i.n_elem;
-
-  const arma::vec vAlpha_i = pnbd_nocov_alpha_i(alpha_0, n);
-  const arma::vec vBeta_i = pnbd_nocov_beta_i(beta_0, n);
+  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vT_i.n_elem);
+  const arma::vec vBeta_i = clv::vec_fill(beta_0, vT_i.n_elem);
 
   return(pnbd_expectation(r,
                           s,
@@ -365,7 +345,7 @@ arma::vec pnbd_LL_ind(const double r,
   //
   // There still can be problems for large x in lgamma(x)
 
-  const unsigned int n = vX.n_elem;
+  const arma::uword n = vX.n_elem;
 
   // Log(A0) -------------------------------------------------------------------------------
   // log(A0) = log(a1) + log(Atilde)
@@ -381,8 +361,7 @@ arma::vec pnbd_LL_ind(const double r,
   //    2F1 4th param z: Use larger, subtract smaller
   //      use Max(alpha, beta) and abs(alpha-beta)
 
-  arma::vec vHyp2f1ParamB(n);
-  vHyp2f1ParamB.fill(s + 1.0);
+  arma::vec vHyp2f1ParamB = clv::vec_fill(s + 1.0, n);
   arma::uvec uvAlphaSmallerBeta = find(vAlpha_i < vBeta_i);
   vHyp2f1ParamB(uvAlphaSmallerBeta) = (r + vX(uvAlphaSmallerBeta));
 
@@ -460,14 +439,10 @@ arma::vec pnbd_nocov_LL_ind(const arma::vec& vLogparams,
   const double s       = std::exp(vLogparams(2));
   const double beta_0  = std::exp(vLogparams(3));
 
-  const double n = vX.n_elem;
-
-
-
   // Build alpha and beta --------------------------------------------
   //    No covariates: Same alphas, betas for every customer
-  const arma::vec vAlpha_i = pnbd_nocov_alpha_i(alpha_0, n);
-  const arma::vec vBeta_i = pnbd_nocov_beta_i(beta_0, n);
+  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vX.n_elem);
+  const arma::vec vBeta_i = clv::vec_fill(beta_0, vX.n_elem);
 
   arma::vec vLL = pnbd_LL_ind(r, s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal);
   return(vLL);
@@ -481,10 +456,10 @@ double pnbd_nocov_LL_sum(const arma::vec& vLogparams,
                          const arma::vec& vT_x,
                          const arma::vec& vT_cal){
 
-  arma::vec vLL = pnbd_nocov_LL_ind(vLogparams,
-                                    vX,
-                                    vT_x,
-                                    vT_cal);
+  const arma::vec vLL = pnbd_nocov_LL_ind(vLogparams,
+                                          vX,
+                                          vT_x,
+                                          vT_cal);
   return(-arma::sum(vLL));
 }
 
@@ -498,8 +473,8 @@ arma::vec pnbd_staticcov_LL_ind(const arma::vec& vParams,
                                 const arma::mat& mCov_life,
                                 const arma::mat& mCov_trans){
 
-  const double no_cov_life  = mCov_life.n_cols;
-  const double no_cov_trans = mCov_trans.n_cols;
+  const arma::uword no_cov_life  = mCov_life.n_cols;
+  const arma::uword no_cov_trans = mCov_trans.n_cols;
 
   const arma::vec vModel_log_params = vParams.subvec(0,3);  // elements 0,1,2,3 = 4 params
   const arma::vec vLife_params      = vParams.subvec(4              , 4+no_cov_life                - 1);
@@ -515,7 +490,7 @@ arma::vec pnbd_staticcov_LL_ind(const arma::vec& vParams,
   const arma::vec vAlpha_i = pnbd_staticcov_alpha_i(alpha_0, vTrans_params, mCov_trans);
   const arma::vec vBeta_i  = pnbd_staticcov_beta_i(beta_0, vLife_params, mCov_life);
 
-  arma::vec vLL = pnbd_LL_ind(r, s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal);
+  const arma::vec vLL = pnbd_LL_ind(r, s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal);
 
   return(vLL);
 }
@@ -533,22 +508,14 @@ double pnbd_staticcov_LL_sum(const arma::vec& vParams,
 
 
   // Call and return summed values ----------------------------
-  arma::vec vLL = pnbd_staticcov_LL_ind(vParams,
-                                        vX,
-                                        vT_x,
-                                        vT_cal,
-                                        mCov_life,
-                                        mCov_trans);
+  const arma::vec vLL = pnbd_staticcov_LL_ind(vParams,
+                                              vX,
+                                              vT_x,
+                                              vT_cal,
+                                              mCov_life,
+                                              mCov_trans);
 
   return(-arma::sum(vLL));
-}
-
-arma::vec pnbd_nocov_alpha_i(const double alpha_0, const double n){
-  return clv::vec_fill(alpha_0, n);
-}
-
-arma::vec pnbd_nocov_beta_i(const double beta_0, const double n){
-  return clv::vec_fill(beta_0, n);
 }
 
 // [[Rcpp::export]]
@@ -623,12 +590,8 @@ arma::vec pnbd_nocov_PAlive(const double r,
 
   // Build alpha and beta --------------------------------------------------------
   //    No covariates: Same alphas, betas for every customer
-  const double n = vX.n_elem;
-
-  arma::vec vAlpha_i(n), vBeta_i(n);
-
-  vAlpha_i = pnbd_nocov_alpha_i(alpha_0, n);
-  vBeta_i = pnbd_nocov_beta_i(beta_0, n);
+  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vX.n_elem);
+  const arma::vec vBeta_i = clv::vec_fill(beta_0, vX.n_elem);
 
 
   // Calculate PAlive -------------------------------------------------------------
@@ -674,3 +637,84 @@ arma::vec pnbd_staticcov_PAlive(const double r,
                      vBeta_i);
 }
 
+
+
+//' @name pnbd_pmf
+//' @templateVar name_model_full Pareto/NBD
+//' @template template_pmf_titledescreturnpmfparams
+//' @template template_params_pnbd
+//' @param vAlpha_i Vector of individual parameters alpha.
+//' @param vBeta_i Vector of individual parameters beta.
+//' @template template_references_pnbd
+//'
+arma::vec pnbd_PMF(const double r,
+                   const double s,
+                   const unsigned int x,
+                   const arma::vec& vT_i,
+                   const arma::vec& vAlpha_i,
+                   const arma::vec& vBeta_i){
+
+  // replace log(factorial(n)) with lgamma(n+1)
+  const double vlogPart1_1 = std::lgamma(r + x) - std::lgamma(r) - std::lgamma(x+1);
+  const arma::vec vLogPart1_2 = r * (arma::log(vAlpha_i) - arma::log(vAlpha_i + vT_i));
+  const arma::vec vLogPart1_3 = x * (arma::log(vT_i) - arma::log(vAlpha_i + vT_i));
+  const arma::vec vLogPart1_4 = s * (arma::log(vBeta_i) - arma::log(vBeta_i + vT_i));
+  const arma::vec vPart1 = arma::exp(vlogPart1_1 + vLogPart1_2 + vLogPart1_3 + vLogPart1_4);
+
+  const arma::vec vPart2 = arma::exp(r * arma::log(vAlpha_i) + s*arma::log(vBeta_i) + clv::lbeta(r+x, s+1) - clv::lbeta(r,s));
+
+
+  const arma::vec vAbsAB = arma::abs(vAlpha_i - vBeta_i);
+  const arma::vec vMaxAB = arma::max(vAlpha_i, vBeta_i);
+  const arma::vec vRS = clv::vec_fill(r+s, vAlpha_i.n_elem);
+  const arma::vec vRSX1 = vRS + x + 1.0;
+
+  arma::vec vHypArgB = clv::vec_fill(r + x, vAlpha_i.n_elem);
+  vHypArgB(find(vAlpha_i >= vBeta_i)).fill(s + 1);
+
+  const arma::vec vB1 = clv::vec_hyp2F1(vRS, vHypArgB, vRSX1, vAbsAB/vMaxAB) / arma::pow(vMaxAB, r+s);
+
+
+  arma::vec vB2total(arma::size(vAlpha_i), arma::fill::zeros);
+  arma::vec vRSI(arma::size(vAlpha_i), arma::fill::zeros);
+  arma::vec B2part;
+
+  for(unsigned int i=0; i<=x; i++){
+    // replace log(factorial(n)) with lgamma(n+1)
+    //  (gamma(r+s+i)*t^i)/(gamma(r+s) * factorial(i)) * B2(i=i)
+    B2part = arma::exp(std::lgamma(r+s+i) + i*arma::log(vT_i) - std::lgamma(r+s) - std::lgamma(i+1));
+    vRSI.fill(r+s+i);
+    vB2total += B2part % (clv::vec_hyp2F1(vRSI, vHypArgB, vRSX1, vAbsAB/(vMaxAB+vT_i)) / arma::pow(vMaxAB+vT_i, r+s+i));
+  }
+
+  return(vPart1 + vPart2 % (vB1 - vB2total));
+}
+
+
+//' @rdname pnbd_pmf
+// [[Rcpp::export]]
+arma::vec pnbd_nocov_PMF(const double r,
+                         const double alpha_0,
+                         const double s,
+                         const double beta_0,
+                         const unsigned int x,
+                         const arma::vec& vT_i){
+
+    const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vT_i.n_elem);
+    const arma::vec vBeta_i = clv::vec_fill(beta_0, vT_i.n_elem);
+
+    return(pnbd_PMF(r, s, x, vT_i, vAlpha_i, vBeta_i));
+}
+
+
+//' @rdname pnbd_pmf
+// [[Rcpp::export]]
+arma::vec pnbd_staticcov_PMF(const double r,
+                             const double s,
+                             const unsigned int x,
+                             const arma::vec& vAlpha_i,
+                             const arma::vec& vBeta_i,
+                             const arma::vec& vT_i){
+
+  return(pnbd_PMF(r, s, x, vT_i, vAlpha_i, vBeta_i));
+}

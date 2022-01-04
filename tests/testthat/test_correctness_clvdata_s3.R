@@ -245,3 +245,116 @@ test_that("Always returns a copy of the data", {
 
 
 
+
+# plot ---------------------------------------------------------------------
+context("Correctness - clvdata - plot")
+
+# . frequency ---------------------------------------------------------------
+test_that("frequency plot - actual trans has no 0", {
+  skip_on_cran()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+
+  expect_silent(dt.plot <- plot(clv.cdnow, which="frequency",
+                                count.repeat.trans=FALSE, trans.bins=c(1,2,3),
+                                plot=FALSE, verbose=FALSE))
+  expect_false(any(levels(dt.plot$num.transactions) == "0"))
+
+  # but does with repeat trans
+  expect_silent(dt.plot <- plot(clv.cdnow, which="frequency", count.repeat.trans=TRUE,
+                                plot=FALSE, verbose=FALSE))
+  expect_true(any(levels(dt.plot$num.transactions) == "0"))
+})
+
+test_that("frequency plot - remaining label is the highest level and disappears it not needed", {
+  skip_on_cran()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+
+  expect_silent(dt.plot <- plot(clv.cdnow, which="frequency",
+                                trans.bins=0:10, label.remaining="AbC123",
+                                count.remaining=TRUE,
+                                plot=FALSE, verbose=FALSE))
+  expect_true(max(levels(dt.plot$num.transactions)) == "AbC123")
+
+  # but disappears if not needed
+  expect_silent(dt.plot <- plot(clv.cdnow, which="frequency",
+                                trans.bins=0:10, label.remaining="AbC123",
+                                count.remaining=FALSE,
+                                plot=FALSE, verbose=FALSE))
+  expect_true(max(as.numeric(levels(dt.plot$num.transactions))) == 10)
+})
+
+
+
+# . spending ---------------------------------------------------------------
+test_that("Spending plot - different data for different sample", {
+  skip_on_cran()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+
+  expect_silent(dt.none       <- plot(clv.cdnow, which="spending", plot=FALSE, verbose=FALSE))
+  expect_silent(dt.estimation <- plot(clv.cdnow, which="spending", sample="estimation", plot=FALSE, verbose=FALSE))
+  expect_silent(dt.full       <- plot(clv.cdnow, which="spending", sample="full", plot=FALSE, verbose=FALSE))
+  expect_silent(dt.holdout    <- plot(clv.cdnow, which="spending", sample="holdout", plot=FALSE, verbose=FALSE))
+
+  # estimation is default
+  expect_true(isTRUE(all.equal(dt.none, dt.estimation)))
+  # all differs to all others
+  expect_false(isTRUE(all.equal(dt.estimation, dt.full)))
+  expect_false(isTRUE(all.equal(dt.estimation, dt.holdout)))
+  expect_false(isTRUE(all.equal(dt.full, dt.holdout)))
+})
+
+
+test_that("Spending plot - ggplot styling works correctly", {
+  skip_on_cran()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+
+  # defaults to line
+  expect_silent(gg.default <- plot(clv.cdnow, which="spending", verbose=FALSE))
+  expect_silent(gg.dots    <- plot(clv.cdnow, which="spending", verbose=FALSE, size=0.1))
+  expect_silent(gg.geom    <- plot(clv.cdnow, which="spending", verbose=FALSE, geom="point"))
+  # args passed in ...
+  expect_silent(gg.color   <- plot(clv.cdnow, which="spending", verbose=FALSE, color="green"))
+
+  expect_s3_class(gg.default$layers[[1]]$geom, "GeomLine")
+  expect_s3_class(gg.geom$layers[[1]]$geom, "GeomPoint")
+  expect_true(gg.dots$layers[[1]]$aes_params[["size"]] == 0.1)
+  expect_true(gg.color$layers[[1]]$aes_params[["colour"]] == "green")
+})
+
+test_that("Spending plot - correct num plotted", {
+  skip_on_cran()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+
+  # mean.spending = TRUE
+  expect_silent(dt.plot <- plot(clv.cdnow,mean.spending=TRUE, sample="full", which="spending", plot=FALSE, verbose=FALSE))
+  expect_setequal(colnames(dt.plot), c("Id", "Spending"))
+  expect_true(nrow(dt.plot) == clv.cdnow@data.transactions[, uniqueN(Id)])
+  expect_setequal(dt.plot$Id, clv.cdnow@data.transactions[, unique(Id)])
+
+  # mean.spending = FALSE
+  #   num trans: Every transaction after aggregating same id/date
+  expect_silent(dt.plot <- plot(clv.cdnow, mean.spending=FALSE, sample="full", plot=FALSE, verbose=FALSE, which="spending"))
+  expect_setequal(colnames(dt.plot), c("Id", "Spending"))
+  expect_true(nrow(dt.plot) == nrow(clv.data.aggregate.transactions(cdnow, has.spending = TRUE)))
+  expect_setequal(dt.plot$Id, clv.cdnow@data.transactions[, unique(Id)])
+})
+
+
+# . interpurchasetime -----------------------------------------------------------
+
+test_that("Interpurchasetime plot - zero-repeaters removed", {
+  skip_on_cran()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+
+  expect_silent(dt.plot <- plot(clv.cdnow, which="interpurchasetime", sample="estimation", plot=FALSE, verbose=FALSE))
+  expect_s3_class(dt.plot, "data.table")
+  expect_setequal(colnames(dt.plot), c("Id", "mean.interpurchase.time"))
+  expect_false(anyNA(dt.plot))
+  expect_true(dt.plot[mean.interpurchase.time>0,  .N] >  0)
+  expect_true(dt.plot[mean.interpurchase.time<=0, .N] == 0)
+  # Ids are unique
+  expect_true(dt.plot[, uniqueN(Id)] == nrow(dt.plot))
+  expect_true(nrow(dt.plot) == nobs(clv.cdnow) - 1432) # 1432: num zero-repeaters from summary() for split=37, 1411 for split=39
+})
+
+

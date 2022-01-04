@@ -247,17 +247,25 @@ Fader PS, Hardie BGS (2005). \dQuote{A Note on Deriving the Pareto/NBD Model and
 Related Expressions.}
 URL \url{http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf}.
 
-Fader PS, Hardie BG (2007). \dQuote{Incorporating time-invariant covariates into the
+Fader PS, Hardie BGS (2007). \dQuote{Incorporating time-invariant covariates into the
 Pareto/NBD and BG/NBD models.}
 URL \url{http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf}.
+
+Fader PS, Hardie BGS (2020). \dQuote{Deriving an Expression for P(X(t)=x) Under
+the Pareto/NBD Model.}
+URL \url{https://www.brucehardie.com/notes/012/pareto_NBD_pmf_derivation_rev.pdf}
 }
 \seealso{
 \code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object, \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}}
 to add static covariates to an existing clv data object.
 
+\link[CLVTools:gg]{gg} to fit customer's average spending per transaction with the \code{Gamma-Gamma} model
+
 \code{\link[CLVTools:predict.clv.fitted.transactions]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
 
 \code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} to plot the unconditional expectation as predicted by the fitted model
+
+\code{\link[CLVTools:pmf]{pmf}} for the probability to make exactly x transactions in the estimation period, given by the probability mass function (PMF).
 
 The generic functions \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:summary.clv.fitted]{summary}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
 

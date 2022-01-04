@@ -170,7 +170,7 @@ bgnbd(clv.data.static.cov, names.cov.life = c("Channel"))
 }
 }
 \references{
-Fader PS, Hardie BGS, Lee, KL (2005). \dQuote{\dQuote{Counting Your Customers} the Easy Way:
+Fader PS, Hardie BGS, Lee KL (2005). \dQuote{\dQuote{Counting Your Customers} the Easy Way:
 An Alternative to the Pareto/NBD Model} Marketing Science, 24(2), 275–284.
 
 Fader PS, Hardie BGS (2013). \dQuote{Overcoming the BG/NBD Model’s #NUM! Error Problem}
@@ -179,14 +179,21 @@ URL \url{http://brucehardie.com/notes/027/bgnbd_num_error.pdf}.
 Fader PS, Hardie BGS (2007). \dQuote{Incorporating time-invariant covariates into the
 Pareto/NBD and BG/NBD models.}
 URL \url{http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf}.
+
+Fader PS, Hardie BGS, Lee KL (2007). \dQuote{Creating a Fit Histogram for the BG/NBD Model}
+URL \url{https://www.brucehardie.com/notes/014/bgnbd_fit_histogram.pdf}
 }
 \seealso{
 \code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object, \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}}
 to add static covariates to an existing clv data object.
 
+\link[CLVTools:gg]{gg} to fit customer's average spending per transaction with the \code{Gamma-Gamma} model
+
 \code{\link[CLVTools:predict.clv.fitted.transactions]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
 
 \code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} to plot the unconditional expectation as predicted by the fitted model
+
+\code{\link[CLVTools:pmf]{pmf}} for the probability to make exactly x transactions in the estimation period, given by the probability mass function (PMF).
 
 The generic functions \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:summary.clv.fitted]{summary}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
 }
