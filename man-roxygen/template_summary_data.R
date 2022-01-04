@@ -11,33 +11,32 @@
 #'
 #'
 #' @details
-#' If applicable the summary statistics are provided spararately for the estimation and holdout period as
-#' for the overall time period (estimation + holdout). By using the \code{Id} agrument, the summary statitics can be limited to
-#' a subset of customers.\cr\cr
+#' If applicable, the summary statistics are provided separately for the estimation and holdout period as well as
+#' for the overall time period (estimation + holdout). By using the \code{Id} argument, the summary statistics can
+#' be limited to a subset of customers.\cr\cr
 #' \code{Number of customers}: Count of individual customers.\cr
-#' \code{First Transaction in period}: Date (ymd) of the first transaction occuring in the indicated period.\cr
-#' \code{Last Transaction in period}: Date (ymd) of the last transaction occuring in the indicated period.\cr
-#' \code{Total # Transactions}: Count of transaction occuring in the indicated period.\cr
-#' \code{Mean # Transactions per cust}: Average transactions per customer in the indicated period
-#' inlcuding the standard deviation (SD).\cr
-#' \code{Mean Spending per Transaction}: Average spending per customer in the indicated period inlcuding
-#' the standard deviation (SD). Spending statistics are only provided if 
-#' \code{Price} was probided in \code{clvdata()}.\cr
+#' \code{First Transaction in period}: Time point of the first transaction occurring in the indicated period.\cr
+#' \code{Last Transaction in period}: Time point of the last transaction occurring in the indicated period.\cr
+#' \code{Total # Transactions}: Count of transactions occurring in the indicated period.\cr
+#' \code{Mean # Transactions per cust}: Average transactions per customer in the indicated period,
+#' including standard deviation (SD).\cr
+#' \code{Mean Spending per Transaction}: Average spending per customer in the indicated period, including
+#' standard deviation (SD). Spending statistics are only available if spending data was provided when creating the object.\cr
 #' \code{Total Spending}: Sum of customer spending during the indicated period.\cr
-#' \code{Total # zero repeaters}: Number of customer who pruchase only once during the estimation period.\cr
-#' \code{Percentage # zero repeaters}: Percentage of customers who pruchase only once during the estimation period.\cr
-#' \code{Mean Interpurchase time}: Average time passed between two transactions for individual customers
-#' inlcuding the standard deviation (SD).\cr
+#' \code{Total # zero repeaters}: Number of customers who purchased only once during the estimation period.\cr
+#' \code{Percentage # zero repeaters}: Percentage of customers who purchased only once during the estimation period.\cr
+#' \code{Mean Interpurchase time}: Average time (in number of periods) between two transactions of the same customer,
+#' including standard deviation (SD).\cr
 #'
 #'
 #' @return This function computes and returns summary statistics of the
 #' transactional and covariates data given in \code{object}. This is a list of
 #' class \code{summary.clv.data} and contains the elements:
 #' \item{name}{Human readable description of the type of data.}
-#' \item{summary.clv.tim}{Summary information about the stored \code{clv.time} object.}
+#' \item{summary.clv.time}{Summary information about the stored \code{clv.time} object.}
 #' \item{descriptives.transactions}{A \code{data.table} with summary statistics of
 #' the transactions overall and in the estimation and holdout sample.}
-#' \item{selected.ids}{Ids for which the transaction data was summarized. \code{NULL} if for all.}
+#' \item{selected.ids}{Ids for which the transaction data was summarized. \code{NULL} if all Ids were used.}
 #'
 #' For static covariates data, the list additionally is of class \code{summary.clv.data.static.covariates}
 #' and further contains the elements:
