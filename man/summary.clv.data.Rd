@@ -57,20 +57,22 @@ possible holdout sample, and descriptive statistics of the transaction data.
 \details{
 If applicable, the summary statistics are provided separately for the estimation and holdout period as well as
 for the overall time period (estimation + holdout). By using the \code{Id} argument, the summary statistics can
-be limited to a subset of customers.\cr\cr
-\code{Number of customers}: Count of individual customers.\cr
-\code{First Transaction in period}: Time point of the first transaction occurring in the indicated period.\cr
-\code{Last Transaction in period}: Time point of the last transaction occurring in the indicated period.\cr
-\code{Total # Transactions}: Count of transactions occurring in the indicated period.\cr
-\code{Mean # Transactions per cust}: Average transactions per customer in the indicated period,
-including standard deviation (SD).\cr
-\code{Mean Spending per Transaction}: Average spending per customer in the indicated period, including
-standard deviation (SD). Spending statistics are only available if spending data was provided when creating the object.\cr
-\code{Total Spending}: Sum of customer spending during the indicated period.\cr
-\code{Total # zero repeaters}: Number of customers who purchased only once during the estimation period.\cr
-\code{Percentage # zero repeaters}: Percentage of customers who purchased only once during the estimation period.\cr
-\code{Mean Interpurchase time}: Average time (in number of periods) between two transactions of the same customer,
-including standard deviation (SD).\cr
+be limited to a subset of customers.
+\describe{
+\item{\code{Number of customers}}{Count of individual customers.}
+\item{\code{First Transaction in period}}{Time point of the first transaction occurring in the indicated period.}
+\item{\code{Last Transaction in period}}{Time point of the last transaction occurring in the indicated period.}
+\item{\code{Total # Transactions}}{Count of transactions occurring in the indicated period.}
+\item{\code{Mean # Transactions per cust}}{Average transactions per customer in the indicated period,
+including standard deviation (SD).}
+\item{\code{Mean Spending per Transaction}}{Average spending per customer in the indicated period, including
+standard deviation (SD). Spending statistics are only available if spending data was provided when creating the object.}
+\item{\code{Total Spending}}{Sum of customer spending during the indicated period.}
+\item{\code{Total # zero repeaters}}{Number of customers who purchased only once during the estimation period.}
+\item{\code{Percentage # zero repeaters}}{Percentage of customers who purchased only once during the estimation period.}
+\item{\code{Mean Interpurchase time}}{Average time (in number of periods) between two transactions of the same customer,
+including standard deviation (SD).}
+}
 }
 \examples{
 
