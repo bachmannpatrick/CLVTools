@@ -287,7 +287,9 @@ clv.data.plot.tracking <- function(x, prediction.end, cumulative, plot, verbose,
 
   # Plot table with formatting, label etc
   line.colors <- setNames(object = "black", nm = label.transactions)
-  return(clv.controlflow.plot.make.plot(dt.data = dt.plot, clv.data = x, line.colors = line.colors))
+  p <- clv.controlflow.plot.make.plot(dt.data = dt.plot, clv.data = x, line.colors = line.colors)
+  p <- p + theme(legend.position = "none")
+  return(p)
 }
 
 clv.data.make.density.plot <- function(dt.data, mapping, labs_x, title, geom, ...){
