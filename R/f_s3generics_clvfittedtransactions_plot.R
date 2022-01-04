@@ -176,7 +176,7 @@ plot.clv.fitted.transactions <- function (x, which=c("tracking", "pmf"),
 
 
 
-  return(switch(match.arg(arg = which, choices = c("tracking","pmf")),
+  return(switch(match.arg(arg = tolower(which), choices = c("tracking","pmf")),
     "tracking" = clv.fitted.transactions.plot.tracking(x=x, newdata=newdata, prediction.end=prediction.end,
                                                        cumulative=cumulative, transactions=transactions,
                                                        label=label, plot=plot, verbose=verbose),

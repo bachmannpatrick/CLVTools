@@ -164,7 +164,7 @@ plot.clv.data <- function(x, which=c("tracking", "frequency", "spending", "inter
   check_err_msg(err.msg)
 
   return(
-    switch(EXPR = match.arg(arg=which, choices = c("tracking", "frequency", "spending", "interpurchasetime"),
+    switch(EXPR = match.arg(arg=tolower(which), choices = c("tracking", "frequency", "spending", "interpurchasetime"),
                             several.ok = FALSE),
            "tracking" =
              clv.data.plot.tracking(x=x, prediction.end = prediction.end, cumulative = cumulative,
