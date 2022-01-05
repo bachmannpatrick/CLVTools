@@ -234,28 +234,6 @@ clv.controlflow.plot.make.plot <- function(dt.data, clv.data, line.colors){
   return(clv.data.plot.add.default.theme(p))
 }
 
-# clv.controlflow.plot.get.data ---------------------------------------------------------------
-setMethod(f="clv.controlflow.plot.get.data", signature = signature(obj="clv.fitted.transactions"), definition = function(obj, dt.expectation.seq, cumulative, verbose){
-
-  expectation <- i.expectation <- NULL
-
-  #   Pass copy of expectation table file because will be modified and contain column named expecation
-  dt.model.expectation <- clv.model.expectation(clv.model=obj@clv.model, clv.fitted=obj, dt.expectation.seq=copy(dt.expectation.seq),
-                                                verbose = verbose)
-
-  # Only the expectation data
-  dt.model.expectation <- dt.model.expectation[, c("period.until", "expectation")]
-
-  if(cumulative)
-    dt.model.expectation[, expectation := cumsum(expectation)]
-
-  # add expectation to plot data
-  #   name columns by model
-  dt.expectation.seq[dt.model.expectation, expectation := i.expectation, on = "period.until"]
-  return(dt.expectation.seq)
-})
-
-
 # Tracking plot --------------------------------------------------------------------------------------------
 clv.fitted.transactions.plot.tracking <- function(x, newdata, prediction.end, cumulative, transactions,
                                                   label, plot, verbose, ...){
@@ -300,8 +278,8 @@ clv.fitted.transactions.plot.tracking <- function(x, newdata, prediction.end, cu
 
 
   # Get expectation values -----------------------------------------------------------------------------------------
-  dt.expectation <- clv.controlflow.plot.get.data(obj=x, dt.expectation.seq=dt.dates.expectation,
-                                                  cumulative=cumulative, verbose=verbose)
+  dt.expectation <- clv.fitted.transactions.add.expectation.data(clv.fitted.transactions=x, dt.expectation.seq=dt.dates.expectation,
+                                                                 cumulative=cumulative, verbose=verbose)
   if(length(label)==0)
     label.model.expectation <- x@clv.model@name.model
   else
@@ -312,8 +290,8 @@ clv.fitted.transactions.plot.tracking <- function(x, newdata, prediction.end, cu
   # Get repeat transactions ----------------------------------------------------------------------------------------
   if(transactions){
     label.transactions <- "Actual"
-    dt.repeat.trans <- clv.controlflow.plot.get.data(obj=x@clv.data, dt.expectation.seq=dt.dates.expectation,
-                                                     cumulative=cumulative, verbose=verbose)
+    dt.repeat.trans <- clv.data.add.repeat.transactions.to.periods(clv.data=x@clv.data, dt.date.seq=dt.dates.expectation,
+                                                                   cumulative=cumulative)
     setnames(dt.repeat.trans, old = "num.repeat.trans", new = label.transactions)
   }
 

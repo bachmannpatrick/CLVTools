@@ -262,8 +262,8 @@ clv.data.plot.tracking <- function(x, prediction.end, cumulative, plot, verbose,
 
   # Get repeat transactions ----------------------------------------------------------------------------------------
   label.transactions <- "Number of Repeat Transactions"
-  dt.repeat.trans <- clv.controlflow.plot.get.data(obj=x, dt.expectation.seq=dt.dates.expectation,
-                                                   cumulative=cumulative, verbose=verbose)
+  dt.repeat.trans <- clv.data.add.repeat.transactions.to.periods(clv.data=x, dt.date.seq=dt.dates.expectation,
+                                                                 cumulative=cumulative)
   setnames(dt.repeat.trans, old = "num.repeat.trans", new = label.transactions)
 
 

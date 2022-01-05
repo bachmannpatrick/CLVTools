@@ -257,3 +257,40 @@ clv.data.select.sample.data <- function(clv.data, sample, choices){
                 "estimation" = clv.data.get.transactions.in.estimation.period(clv.data),
                 "holdout" = clv.data.get.transactions.in.holdout.period(clv.data)))
 }
+
+
+# Add the number of repeat transactions to the given dt.date.seq
+clv.data.add.repeat.transactions.to.periods <- function(clv.data, dt.date.seq, cumulative){
+
+  num.repeat.trans <- i.num.repeat.trans <- Date <- period.until <- NULL
+
+  # Add period at every repeat transaction (and therefore copy)
+  dt.repeat.trans  <- copy(clv.data@data.repeat.trans)
+
+  # join (roll: -Inf=NOCF) period number onto all repeat transaction by dates
+  #   ie assign each repeat transaction the next period number to which it belongs
+  dt.repeat.trans <- dt.date.seq[dt.repeat.trans, on = c("period.until"="Date"), roll=-Inf, rollends=c(FALSE, FALSE)]
+  # !period.until now is missleading, as it stands for the repeat transaction date!
+
+  # Count num rep trans in every time unit
+  dt.repeat.trans <- dt.repeat.trans[, list(num.repeat.trans = .N), by="period.num"]
+  setorderv(dt.repeat.trans, order = 1L, cols = "period.num") # sort in ascending order
+
+  # make double to avoid coercion warning in melt
+  dt.date.seq[dt.repeat.trans, num.repeat.trans := as.numeric(i.num.repeat.trans), on = "period.num"]
+
+  # set 0 where there are no transactions
+  #   for when there are transactions again later on
+  dt.date.seq[is.na(num.repeat.trans), num.repeat.trans := 0]
+
+  # After last transaction, there are no more transactions.
+  #   dt.expectation can however be longer. Set these intentionally to NA so that
+  #   nothing is plotted (setting 0 plots a line at the bottom)
+  date.last.repeat.transaction <- clv.data@data.repeat.trans[, max(Date)]
+  dt.date.seq[period.until > date.last.repeat.transaction, num.repeat.trans := NA_real_]
+
+  if(cumulative)
+    dt.date.seq[, num.repeat.trans := cumsum(num.repeat.trans)]
+
+  return(dt.date.seq)
+}
