@@ -11,7 +11,9 @@
   which = c("tracking", "pmf"),
   prediction.end = NULL,
   cumulative = FALSE,
-  trans.bins = 0:10,
+  trans.bins = 0:9,
+  calculate.remaining = TRUE,
+  label.remaining = "10+",
   newdata = NULL,
   transactions = TRUE,
   label = NULL,
@@ -25,7 +27,9 @@
   which = c("tracking", "pmf"),
   prediction.end = NULL,
   cumulative = FALSE,
-  trans.bins = 0:10,
+  trans.bins = 0:9,
+  calculate.remaining = TRUE,
+  label.remaining = "10+",
   newdata = NULL,
   transactions = TRUE,
   label = NULL,
@@ -44,6 +48,10 @@
 \item{cumulative}{"tracking": Whether the cumulative expected (and actual) transactions should be plotted.}
 
 \item{trans.bins}{"pmf": Vector of positive integer numbers (>=0) indicating the number of repeat transactions (x axis) to plot.}
+
+\item{calculate.remaining}{"pmf": Whether the probability for the remaining number of transactions not in \code{trans.bins} should be calculated.}
+
+\item{label.remaining}{"pmf": Label for the last bar, if \code{calculate.remaining=TRUE}.}
 
 \item{newdata}{An object of class clv.data for which the plotting should be made with the fitted model.
 If none or NULL is given, the plot is made for the data on which the model was fit.}
@@ -92,6 +100,7 @@ Plot the actual and expected number of customers which made a given number of re
 transaction in the estimation period. The expected number is based on the PMF of the fitted model,
 the probability to make exactly a given number of repeat transactions in the estimation period.
 For each bin, the expected number is the sum of all customers' individual PMF value.
+Note that if \code{trans.bins} is changed, \code{label.remaining} needs to be adapted as well.
 
 }
 }
@@ -167,11 +176,18 @@ library("ggplot2")
 gg.pnbd.cdnow <- plot(pnbd.cdnow)
 gg.pnbd.cdnow + ggtitle("PNBD on CDnow")
 
+
 ## PMF PLOT
 plot(pnbd.cdnow, which="pmf")
 
-# for 5 to 15 bins
-plot(pnbd.cdnow, which="pmf", trans.bins=5:15)
+# For transactions 0 to 15, also have
+#  to change label for remaining
+plot(pnbd.cdnow, which="pmf", trans.bins=0:15,
+     label.remaining="16+")
+
+# For transactions 0 to 15 bins, no remaining
+plot(pnbd.cdnow, which="pmf", trans.bins=0:15,
+     calculate.remaining=FALSE)
 
 }
 

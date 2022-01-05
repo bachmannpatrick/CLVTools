@@ -9,6 +9,8 @@
 #' @template template_param_predictionend
 #'
 #' @param trans.bins "pmf": Vector of positive integer numbers (>=0) indicating the number of repeat transactions (x axis) to plot.
+#' @param calculate.remaining "pmf": Whether the probability for the remaining number of transactions not in \code{trans.bins} should be calculated.
+#' @param label.remaining "pmf": Label for the last bar, if \code{calculate.remaining=TRUE}.
 #'
 #' @param newdata An object of class clv.data for which the plotting should be made with the fitted model.
 #' If none or NULL is given, the plot is made for the data on which the model was fit.
@@ -39,6 +41,7 @@
 #' transaction in the estimation period. The expected number is based on the PMF of the fitted model,
 #' the probability to make exactly a given number of repeat transactions in the estimation period.
 #' For each bin, the expected number is the sum of all customers' individual PMF value.
+#' Note that if \code{trans.bins} is changed, \code{label.remaining} needs to be adapted as well.
 #'
 #' }
 #'
@@ -113,11 +116,18 @@
 #' gg.pnbd.cdnow <- plot(pnbd.cdnow)
 #' gg.pnbd.cdnow + ggtitle("PNBD on CDnow")
 #'
+#'
 #' ## PMF PLOT
 #' plot(pnbd.cdnow, which="pmf")
 #'
-#' # for 5 to 15 bins
-#' plot(pnbd.cdnow, which="pmf", trans.bins=5:15)
+#' # For transactions 0 to 15, also have
+#' #  to change label for remaining
+#' plot(pnbd.cdnow, which="pmf", trans.bins=0:15,
+#'      label.remaining="16+")
+#'
+#' # For transactions 0 to 15 bins, no remaining
+#' plot(pnbd.cdnow, which="pmf", trans.bins=0:15,
+#'      calculate.remaining=FALSE)
 #'
 #' }
 #'
@@ -139,7 +149,9 @@ plot.clv.fitted.transactions <- function (x, which=c("tracking", "pmf"),
                                           # tracking
                                           prediction.end=NULL, cumulative=FALSE,
                                           # pmf
-                                          trans.bins = 0:10,
+                                          trans.bins = 0:9,
+                                          calculate.remaining = TRUE,
+                                          label.remaining="10+",
                                           # general
                                           newdata=NULL, transactions=TRUE, label=NULL, plot=TRUE, verbose=TRUE,...) {
 
@@ -181,6 +193,7 @@ plot.clv.fitted.transactions <- function (x, which=c("tracking", "pmf"),
                                                        cumulative=cumulative, transactions=transactions,
                                                        label=label, plot=plot, verbose=verbose),
     "pmf" = clv.fitted.transactions.plot.barplot.pmf(x=x, trans.bins=trans.bins, transactions=transactions,
+                                                     calculate.remaining=calculate.remaining, label.remaining=label.remaining,
                                                      label=label, plot=plot, verbose=verbose)))
 }
 
@@ -342,11 +355,14 @@ clv.fitted.transactions.plot.tracking <- function(x, newdata, prediction.end, cu
 
 # PMF plot -----------------------------------------------------------------------------------------------
 #' @importFrom ggplot2 ggplot geom_col aes_string position_dodge2 guide_legend scale_x_discrete
-clv.fitted.transactions.plot.barplot.pmf <- function(x, trans.bins, transactions, label, plot, verbose){
+clv.fitted.transactions.plot.barplot.pmf <- function(x, trans.bins, transactions, label,
+                                                     calculate.remaining, label.remaining, plot, verbose){
   pmf.x <- pmf.value  <- actual.num.customers <- expected.customers <- i.expected.customers <- NULL
   num.customers <- num.transactions <- char.num.transactions <- variable <- NULL
 
   check_err_msg(check_user_data_integer_vector_greater0(vec=trans.bins, var.name="trans.bins"))
+  check_err_msg(.check_userinput_single_character(char=label.remaining, var.name="label.remaining"))
+  check_err_msg(.check_user_data_single_boolean(b=calculate.remaining, var.name="calculate.remaining"))
 
   # also done in plot.clv.data and pmf() but do explicitly
   trans.bins <- sort(unique(trans.bins))
@@ -354,12 +370,20 @@ clv.fitted.transactions.plot.barplot.pmf <- function(x, trans.bins, transactions
   # Always work with the actuals from plot() as basis to have ordered factors
   #   Collect actual transactions
   dt.actuals <- plot(x@clv.data, which="frequency", plot=FALSE, verbose=FALSE,
+                     sample="estimation",
                      trans.bins=trans.bins, count.repeat.trans=TRUE,
-                     count.remaining=FALSE) #, label.remaining = "remaining")
+                     count.remaining=calculate.remaining, label.remaining = label.remaining)
 
   # Collect pmf values
   #   are per customer, aggregate per x
   dt.pmf <- pmf(x, x=trans.bins)
+
+  # Calculate pmf of remaining (not explicitly calculated x)
+  # P(remaining) is leftover probability (1-all others)
+  if(calculate.remaining){
+    dt.pmf[, (label.remaining) := 1 - rowSums(.SD), .SDcols = !"Id"]
+  }
+
   dt.pmf <- melt(dt.pmf, id.vars = "Id", variable.factor = FALSE,
                  variable.name="pmf.x", value.name="pmf.value")
   dt.pmf <- dt.pmf[, list(expected.customers = sum(pmf.value)), by="pmf.x"]
