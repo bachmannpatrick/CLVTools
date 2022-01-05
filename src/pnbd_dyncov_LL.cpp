@@ -82,9 +82,7 @@ void LifetimeWalk::set_walk_data(const arma::vec& cov_data, const arma::uword fr
 
 }
 
-LifetimeWalk::LifetimeWalk(const arma::vec& cov_data, const arma::rowvec& walk_info)
-  : delta(walk_info(2))
-{
+LifetimeWalk::LifetimeWalk(const arma::vec& cov_data, const arma::rowvec& walk_info){
   /*
    * May not store refs/pointers to walk_info as will only receive subviews (mat.row())
    */
@@ -96,11 +94,11 @@ LifetimeWalk::LifetimeWalk(const arma::vec& cov_data, const arma::rowvec& walk_i
 
 
 TransactionWalk::TransactionWalk()
-  :LifetimeWalk(), d1{arma::datum::nan}, tjk{arma::datum::nan} {
+  :LifetimeWalk(), delta(arma::datum::nan), d1{arma::datum::nan}, tjk{arma::datum::nan} {
 }
 
 TransactionWalk::TransactionWalk(const arma::vec& cov_data, const arma::rowvec& walk_info)
-  : LifetimeWalk(cov_data, walk_info), d1{walk_info(3)}, tjk{walk_info(4)}{
+  : LifetimeWalk(cov_data, walk_info), delta(walk_info(2)), d1{walk_info(3)}, tjk{walk_info(4)}{
 }
 
 EmptyLifetimeWalk::EmptyLifetimeWalk()
@@ -113,8 +111,8 @@ arma::uword EmptyLifetimeWalk::n_elem() const{
 }
 
 
-LifetimeWalk::LifetimeWalk():
-  delta(arma::datum::nan), val_sum_middle_elems(arma::datum::nan){
+LifetimeWalk::LifetimeWalk()
+  : val_sum_middle_elems(arma::datum::nan){
   // Default ctor without walk data and walk info leaves Walk in uninitialized state
   //  (set all NaN to propagate)
   this->walk_data = arma::vec(1).fill(arma::datum::nan);
@@ -246,9 +244,9 @@ double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
  *        Name is choosen randomly
  */
 double pnbd_dyncov_LL_i_A1sum(const std::vector<TransactionWalk>& real_walks_trans){
-  // If x and t are in same interval (ie first and last transaction in 1 interval)
 
-  // Zero-repeater do not ahve real trans walks (Could also check x==0)
+  // Zero-repeater do not have real trans walks
+  //  Could also check x==0 but better look at actual content of vector
   if(real_walks_trans.size() == 0){
     return(0.0); // log(1)
   }else{
@@ -301,6 +299,7 @@ double pnbd_dyncov_LL_i_BkSum(const double Bjsum, const TransactionWalk& aux_wal
  */
 double pnbd_dyncov_LL_i_Bi(const arma::uword i, const double t_x, const TransactionWalk& aux_walk){
   // **TODO: Make tests with i={1,2,3,10} and n_elems={1,2,3,10} (and i>n_elems?)
+  // **TODO: Why does last mult fall out for i={1,2}? its not n_elem!
 
   if(i == 1){
     return(aux_walk.first() * (-t_x));
@@ -317,10 +316,13 @@ double pnbd_dyncov_LL_i_Bi(const arma::uword i, const double t_x, const Transact
 
 
 /*
+ * Di()
  * Sum up all covs from coming alive until i periods after last transaction (Walk_i in aux walk)
- *  Same as Bi(), if had one, continuous walk (**TODO: even with regard to delta?)
- *  Real and aux walk may therefore not overlap
- *  **TODO: delta: as if walk was one continuous walk until i **
+ *  Treat as if real and aux walk were one continuous walk
+ *    Real and aux walk may therefore not overlap
+ *    Summing same as in _Bi()
+ *  *** TODO: delta: depends on how long walk from alive until i is (length of continuous walk until i) ***
+ *  First element is *d_omega. First element is either from real walk or from aux walk (if no real walk)
  */
 double pnbd_dyncov_LL_i_Di(const arma::uword i, const LifetimeWalk& real_walk_life,
                            const LifetimeWalk& aux_walk_life, const double d_omega){
@@ -332,12 +334,20 @@ double pnbd_dyncov_LL_i_Di(const arma::uword i, const LifetimeWalk& real_walk_li
   //  for the case real_walk_life.n_elem() == 0, d_omega has to be multiplied with aux_walk.first() not to real_walk_life.first()
   //  Therefore do real_walk_life.n_elem() == 0 separately
 
+
+  // **TODO: Calculate delta here because need for both cases!
+  //   **TODO: Always have to sum last part as well??
+
   if(real_walk_life.n_elem() == 0){
     // Directly sum up the aux walk until Walk_i, including first()*d
     if(i == 1){
-      return(aux_walk_life.first()*d_omega);
+      // Cancels out because besides first() also last() (which is the same) is included for i=1!
+      return(0.0);
+      // return(aux_walk_life.first()*d_omega);
     }else{
-      double last_mult = (-d_omega - aux_walk_life.delta*(static_cast<double>(i) - 3.0));
+      // double delta = static_cast<double>(i > 1);
+      double delta = static_cast<double>(i - 1 > 1);
+      double last_mult = (-d_omega - delta*(static_cast<double>(i) - 3.0));
       if(i == 2){
         return(aux_walk_life.first()*d_omega + aux_walk_life.last()*last_mult);
       }else{
@@ -349,8 +359,6 @@ double pnbd_dyncov_LL_i_Di(const arma::uword i, const LifetimeWalk& real_walk_li
 
     // There are elements in the real walk that all need to be summed (independent of i)
 
-    // **TODO: Jeff: Wieso bei i=1, das letzte element des real walks nicht addiert wird. Also der real walk nur real.first()*d_omega"real.sum_middle_elems(), aber explizit ausschliesst dass
-    // D1 hat einen expliziten kommentar: # do not include Dkn
     double sum_real_walk = 0.0;
     // branch because of summing middle elements
     if(real_walk_life.n_elem() == 1){
@@ -358,18 +366,14 @@ double pnbd_dyncov_LL_i_Di(const arma::uword i, const LifetimeWalk& real_walk_li
     }else{
       if(real_walk_life.n_elem() == 2){
         sum_real_walk = real_walk_life.first()*d_omega + real_walk_life.last();
-        if(i==1)
-          sum_real_walk -= real_walk_life.last();
       }else{
         // >= 3: everything in real walk
         sum_real_walk = real_walk_life.first()*d_omega + real_walk_life.sum_middle_elems() + real_walk_life.last();
-        if(i==1)
-          sum_real_walk -= real_walk_life.last();
       }
     }
 
     // Sum up aux walk until i
-    //  Not required to first()*d_omega because done with real_walk
+    //  Not required to first()*d_omega because done with real_walk.first()
     // **TODO JEFF: Does delta refer to aux walk or real walk? or both together (as should be same as Bi if one long walk)? Or is delta if walk was until i? Also: k0x+i >=2. Should delta not also be calcualted dynamically in Bi(), as function of i?
     // **TODO: Is aux_walk.n_elem == 2 a special case for DT==D1?
     double sum_aux_walk = 0.0;
@@ -460,7 +464,7 @@ double pnbd_dyncov_LL_i_F2_3(const double r, const double alpha_0, const double 
   }
 
   // Loop counts Walks, not element access indices. ie Walk_2, Walk_3, ...
-  //    Loop until and including Walk(n-1)
+  //    Loop until and including Walk_(n-1)
   double F2_3 = 0.0;
   const arma::uword i_end = c.aux_walk_trans.n_elem() - 1;
   for(arma::uword i = 2; i <= i_end; i++){
@@ -503,7 +507,7 @@ double pnbd_dyncov_LL_i_F2_3(const double r, const double alpha_0, const double 
 }
 
 /*
- * Z = Y_1 + Y_kT + sum_2^kT-1{Y_i}
+ * Z = Y_1 + Y_kT + sum_{2}^{kT-1}{Y_i}
  *  Special case for k_T=1 (aux walk only has 1 element)
  */
 double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s, const double beta_0,
@@ -749,10 +753,11 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
   if(!arma::is_finite(F2)){
     LL = F2;
   }else{
+    // **TODO: Cannot because small F2 really are relevant for results!
     // Set F2 to exact 0 if it is reasonably small
-    if(std::fabs(F2 - 0.0) < std::sqrt(arma::datum::eps)){
-      F2 = 0.0;
-    }
+    // if(std::fabs(F2 - 0.0) < std::sqrt(arma::datum::eps)){
+    //   F2 = 0.0;
+    // }
 
     if(F2 < 0.0){
       LL = log_F0 + log_F3 + std::log1p(std::exp(log_F1-log_F3) * F2);

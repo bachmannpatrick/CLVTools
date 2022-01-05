@@ -19,8 +19,6 @@ struct LifetimeWalk {
   arma::vec walk_data; // exp(gamma*X) of this walk
   // arma::subview_col<double> walk_data;
 
-  double delta; // can only be {0, 1} but store as double to avoid frequent casting and forgetting it accidentally
-
  /*
   * MUST PASS DATA VEC BY REF TO CONSTRUCTORS
   *   because store a subview which would point to freed mem if passed by value
@@ -47,6 +45,7 @@ struct EmptyLifetimeWalk : LifetimeWalk{
 };
 
 struct TransactionWalk : LifetimeWalk{
+  double delta; // can only be {0, 1} but store as double to avoid frequent casting and forgetting it accidentally
   double d1;
   double tjk;
   TransactionWalk(); // used in vector<>
