@@ -94,7 +94,7 @@ fct.testthat.runability.clvfittedtransactions.plot.tracking <- function(clv.fitt
     expect_s3_class(dt.plot, "data.table")
 
     # expect_true(all(c("period.until", "variable", "value") %in% colnames(dt.plot)))
-    expect_true(all(c("period.until", "Actual Number of Repeat Transactions", clv.fitted@clv.model@name.model)
+    expect_true(all(c("period.until", "Actual", clv.fitted@clv.model@name.model)
                     %in% colnames(dt.plot)))
     # Num repeat trans may have some NA if prediction.end beyond holdout.end
     expect_false(anyNA(dt.plot[, c("period.until", clv.fitted@clv.model@name.model)]))
@@ -154,12 +154,13 @@ fct.testthat.runability.clvfittedtransactions.plot.pmf <- function(clv.fitted, c
   })
 
   test_that("Different trans.bins give different results", {
-    expect_false(isTRUE(all.equal(plot(clv.fitted, which="pmf", trans.bins=0:5, plot=FALSE, verbose=FALSE),
-                                  plot(clv.fitted, which="pmf", trans.bins=11:15, plot=FALSE, verbose=FALSE))))
+    expect_false(isTRUE(all.equal(plot(clv.fitted, which="pmf", trans.bins=0:5, calculate.remaining=FALSE, plot=FALSE, verbose=FALSE),
+                                  plot(clv.fitted, which="pmf", trans.bins=11:15, calculate.remaining=FALSE, plot=FALSE, verbose=FALSE))))
   })
 
   test_that("Correct trans bins returned", {
-    expect_silent(dt.plot <- plot(clv.fitted, which="pmf", trans.bins=0:5, plot=FALSE, verbose=FALSE))
+    expect_silent(dt.plot <- plot(clv.fitted, which="pmf", trans.bins=0:5,
+                                  calculate.remaining=FALSE, plot=FALSE, verbose=FALSE))
     expect_true(is.factor(dt.plot$num.transactions))
     expect_true(is.ordered(dt.plot$num.transactions))
     expect_setequal(levels(dt.plot$num.transactions), as.character(0:5))
