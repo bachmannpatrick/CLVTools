@@ -52,6 +52,13 @@ fct.testthat.inputchecks.clvfittedtransactions.plot.pmf <- function(data.cdnow, 
 
   context("Inputchecks - clv.fitted.transactions plot pmf - trans.bins")
   fct.testthat.inputchecks.clvfittedtransactions.plot.pmf.trans.bins(clv.fitted = fitted.cdnow.nohold)
+
+  context("Inputchecks - clv.fitted.transactions plot pmf - calculate.remaining")
+  .fct.helper.inputchecks.single.logical(fct = plot, l.std.args = l.std.args, name.param = "calculate.remaining")
+
+  context("Inputchecks - clv.fitted.transactions plot pmf - label.remaining")
+  fct.helper.inputcheck.single.character(fct = plot, l.std.args = l.std.args, name.param = "label.remaining", null.allowed = FALSE)
+
 }
 
 fct.testthat.inputchecks.clvfittedtransactions.plot.tracking <- function(data.cdnow, data.apparelTrans, data.apparelStaticCov){

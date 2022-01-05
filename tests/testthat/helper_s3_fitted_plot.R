@@ -166,6 +166,19 @@ fct.testthat.runability.clvfittedtransactions.plot.pmf <- function(clv.fitted, c
     expect_setequal(levels(dt.plot$num.transactions), as.character(0:5))
   })
 
+  test_that("Not calculating remaining works", {
+    expect_silent(dt.plot <- plot(clv.fitted, which="pmf", calculate.remaining=FALSE, label.remaining="Others",
+                                  plot=FALSE, verbose=FALSE))
+    expect_false("Others" %in% levels(dt.plot$num.transactions))
+  })
+
+  test_that("Different label.remaining works", {
+    expect_silent(dt.plot <- plot(clv.fitted, which="pmf", trans.bins=0:5,
+                                  label.remaining = "Others", plot=FALSE, verbose=FALSE))
+    expect_setequal(c(as.character(0:5), "Others"), levels(dt.plot$num.transactions))
+
+  })
+
   test_that("Newdata leads to different results", {
     expect_silent(dt.plot <- plot(clv.fitted, which="pmf", plot=FALSE, verbose=FALSE))
     expect_false(isTRUE(all.equal(dt.plot,
@@ -173,6 +186,7 @@ fct.testthat.runability.clvfittedtransactions.plot.pmf <- function(clv.fitted, c
     expect_false(isTRUE(all.equal(dt.plot,
                                   plot(clv.fitted, which="pmf", newdata=clv.newdata.withhold, plot=FALSE, verbose=FALSE))))
   })
+
 }
 
 fct.testthat.runability.clvfittedtransactions.plot <- function(clv.fitted, clv.newdata.nohold, clv.newdata.withhold){
