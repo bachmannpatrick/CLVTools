@@ -158,6 +158,8 @@ clv.data.make.descriptives <- function(clv.data, Ids){
   Ids <- unique(Ids)
 
   # Make descriptives ------------------------------------------------------------------------------
+  #   Do not simply overwrite all NA/NaN with "-", only where these are expected (num obs = 1).
+  #     Let propagate otherwise to help find errors
   fct.make.descriptives <- function(dt.data, sample.name){
 
     # Subset transaction data to relevant Ids
@@ -179,24 +181,27 @@ clv.data.make.descriptives <- function(clv.data, Ids){
       "Last Transaction in period"    = clv.time.format.timepoint(clv.time=clv.time, timepoint=dt.data[, max(Date)]),
       "Total # Transactions"          = nrow(dt.data),
       "Mean # Transactions per cust"  = dt.num.trans.by.cust[, mean(N)],
-      "(SD)"                          = dt.num.trans.by.cust[, sd(N)])
+      "(SD)"                          = if(nrow(dt.num.trans.by.cust) > 1){dt.num.trans.by.cust[, sd(N)]}else{"-"})
 
     if(clv.data.has.spending(clv.data)){
       l.desc <- c(l.desc, list(
         "Mean Spending per Transaction"  = dt.data[, mean(Price)],
-        "(SD) "                          = dt.data[, sd(Price)],
+        # SD is calculated not across customers but across transactions
+        "(SD) "                          = if(dt.data[, .N] > 1){dt.data[, sd(Price)]}else{"-"},
         "Total Spending"                 = dt.data[, sum(Price)]))
     }
 
+    num.interp.obs <- dt.interp[!is.na(interp.time), .N]
     l.desc <- c(l.desc, list(
       # Zero-repeaters can only be in Estimation ()
-      "Total # zero repeaters"        = if(sample.name == "Estimation"){dt.num.trans.by.cust[N == 1, uniqueN(Id)]}else{"-"},
+      "Total # zero repeaters"        = if(sample.name == "Estimation"){dt.num.trans.by.cust[, sum(N==1)]}else{"-"},
       "Percentage # zero repeaters"   = if(sample.name == "Estimation"){dt.num.trans.by.cust[, mean(N==1)*100]}else{"-"},
 
       # Inter-purchase time
       #   Remove NAs resulting from zero-repeaters
-      "Mean Interpurchase time"       = dt.interp[, mean(interp.time, na.rm=TRUE)],
-      "(SD)   "                       = dt.interp[, sd(interp.time, na.rm=TRUE)]))
+      "Mean Interpurchase time"       = if(num.interp.obs > 0){dt.interp[, mean(interp.time, na.rm=TRUE)]}else{"-"},
+      # Need 2 obs to calculate SD
+      "(SD)   "                       = if(num.interp.obs > 1){dt.interp[, sd(interp.time, na.rm=TRUE)]}else{"-"}))
 
     # Format numbers
     l.desc <- format(l.desc, digits=3, nsmall=3)

@@ -32,6 +32,33 @@ test_that("Zero repeaters are counted correctly", {
   fct.verify.zero.repeaters(date.estimation.split = lubridate::ymd("1997-09-17"))
 })
 
+test_that("Summary has no NA", {
+  clv.cdnow.holdout <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split = 37)
+  clv.cdnow.no.holdout <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split = NULL)
+
+  fct.summary.has.no.na <- function(clv.data, Id){
+    expect_silent(res.sum <- summary(clv.data, Id=Id))
+    # Returns characters and cannot convert to numeric because would
+    #   surely introduce NAs (converting dates and "-")
+    expect_false(any(res.sum$descriptives.transactions == "NA"))
+    expect_false(any(res.sum$descriptives.transactions == "NaN"))
+  }
+
+  # All
+  fct.summary.has.no.na(clv.cdnow.holdout, Id=NULL)
+  fct.summary.has.no.na(clv.cdnow.no.holdout, Id=NULL)
+  # Zero-repeater
+  fct.summary.has.no.na(clv.cdnow.holdout, Id="3")
+  fct.summary.has.no.na(clv.cdnow.no.holdout, Id="3")
+  # Not zero-repeater
+  fct.summary.has.no.na(clv.cdnow.holdout, Id="1")
+  fct.summary.has.no.na(clv.cdnow.no.holdout, Id="1")
+  # Mix
+  fct.summary.has.no.na(clv.cdnow.holdout, Id=c("1", "3"))
+  fct.summary.has.no.na(clv.cdnow.no.holdout, Id=c("1", "3"))
+
+})
+
 test_that("Same transaction summary if all ids or NULL are given", {
   skip_on_cran()
   clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
