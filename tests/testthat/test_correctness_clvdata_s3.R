@@ -25,7 +25,7 @@ test_that("Zero repeaters are counted correctly", {
     }
     perc.zero.rep <- round(100 * num.zero.rep / num.ids, 3)
     expect_true(num.zero.rep == res.sum$descriptives.transactions[Name == "Total # zero repeaters", as.numeric(Estimation)])
-    expect_true(perc.zero.rep == round(res.sum$descriptives.transactions[Name == "Percentage # zero repeaters", as.numeric(Estimation)], 3))
+    expect_true(perc.zero.rep == round(res.sum$descriptives.transactions[Name == "Percentage of zero repeaters", as.numeric(Estimation)], 3))
   }
 
   fct.verify.zero.repeaters(date.estimation.split = NULL)

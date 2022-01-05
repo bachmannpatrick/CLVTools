@@ -69,7 +69,7 @@ including standard deviation (SD).}
 standard deviation (SD). Spending statistics are only available if spending data was provided when creating the object.}
 \item{\code{Total Spending}}{Sum of customer spending during the indicated period.}
 \item{\code{Total # zero repeaters}}{Number of customers who purchased only once during the estimation period.}
-\item{\code{Percentage # zero repeaters}}{Percentage of customers who purchased only once during the estimation period.}
+\item{\code{Percentage of zero repeaters}}{Percentage of customers who purchased only once during the estimation period.}
 \item{\code{Mean Interpurchase time}}{Average time (in number of periods) between two transactions of the same customer,
 including standard deviation (SD).}
 }
