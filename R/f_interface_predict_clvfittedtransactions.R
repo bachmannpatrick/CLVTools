@@ -6,6 +6,8 @@
 #' @param newdata A clv data object for which predictions should be made with the fitted model. If none or NULL is given, predictions are made for the data on which the model was fit.
 #' @param predict.spending Whether and how to predict spending and based on it also CLV, if possible. See details.
 #' @param continuous.discount.factor continuous discount factor to use to calculate \code{DERT/DECT}
+#' @templateVar prefix {}
+#' @templateVar plot_or_predict predict
 #' @template template_param_predictionend
 #' @template template_param_verbose
 #' @template template_param_dots

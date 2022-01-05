@@ -118,9 +118,16 @@ fct.testthat.consistency.cov.params.0.plot.same <- function(fitted.nocov, fitted
 }
 
 fct.testthat.consistency.cov.params.0.pmf.same <- function(fitted.nocov, fitted.cov.g0){
-  test_that("pmfsame results for all models with gamma=0", {
+  test_that("pmf same results for all models with gamma=0", {
     expect_true(isTRUE(all.equal(pmf(fitted.nocov, x=0:10),
                                  pmf(fitted.cov.g0, x=0:10))))
+  })
+}
+
+fct.testthat.consistency.cov.params.0.pmf.plot.same <- function(fitted.nocov, fitted.cov.g0){
+  test_that("pmf plot same results for all models with gamma=0", {
+    expect_true(isTRUE(all.equal(plot(fitted.nocov,  which="pmf", verbose=FALSE, plot=FALSE),
+                                 plot(fitted.cov.g0, which="pmf", verbose=FALSE, plot=FALSE))))
   })
 }
 
@@ -181,6 +188,7 @@ fct.testthat.consistency <- function(name.model, method, has.dyncov, data.appare
 
   if(fct.helper.has.pmf(fitted.nocov)){
     fct.testthat.consistency.cov.params.0.pmf.same(fitted.nocov=fitted.nocov, fitted.cov.g0=fitted.static.g0)
+    fct.testthat.consistency.cov.params.0.pmf.plot.same(fitted.nocov=fitted.nocov, fitted.cov.g0=fitted.static.g0)
   }
 }
 

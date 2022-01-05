@@ -1,4 +1,23 @@
-fct.testthat.runability.clvfittedtransactions.plot <- function(clv.fitted, clv.newdata.nohold, clv.newdata.withhold){
+fct.testthat.runability.clvfittedtransactions.plot.common <- function(clv.fitted, clv.newdata.nohold, clv.newdata.withhold,
+                                                                      which){
+  test_that("Works with/without transactions=TRUE/FALSE",{
+    skip_on_cran()
+    expect_silent(plot(clv.fitted, which=which, transactions=TRUE, verbose=FALSE))
+    expect_silent(plot(clv.fitted, which=which, transactions=FALSE, verbose=FALSE))
+  })
+
+  test_that("Works for label set to text",{
+    skip_on_cran()
+    expect_silent(plot(clv.fitted, which=which, label="ABC", verbose=FALSE))
+  })
+
+}
+
+fct.testthat.runability.clvfittedtransactions.plot.tracking <- function(clv.fitted, clv.newdata.nohold, clv.newdata.withhold){
+  test_that("Works for verbose=TRUE",{
+    skip_on_cran()
+    expect_message(plot(clv.fitted, verbose=TRUE))
+  })
 
   if(clv.data.has.holdout(clv.fitted@clv.data)){
     test_that("Works without prediction end, out-of-the-box", {
@@ -6,21 +25,10 @@ fct.testthat.runability.clvfittedtransactions.plot <- function(clv.fitted, clv.n
     })
   }
 
-  test_that("Works with/without transactions=TRUE/FALSE",{
-    skip_on_cran()
-    expect_silent(plot(clv.fitted, transactions=TRUE, verbose=FALSE))
-    expect_silent(plot(clv.fitted, transactions=FALSE, verbose=FALSE))
-  })
-
   test_that("Works for cumulative=TRUE/FALSE",{
     skip_on_cran()
     expect_silent(plot(clv.fitted, cumulative=TRUE, verbose=FALSE))
     expect_silent(plot(clv.fitted, cumulative=FALSE, verbose=FALSE))
-  })
-
-  test_that("Works for verbose=TRUE",{
-    skip_on_cran()
-    expect_message(plot(clv.fitted, verbose=TRUE), "until")
   })
 
   test_that("Works for plot=FALSE and always has 0 repeat trans and expectation on first",{
@@ -30,9 +38,16 @@ fct.testthat.runability.clvfittedtransactions.plot <- function(clv.fitted, clv.n
                                   c(0,0), check.attributes = FALSE)))
   })
 
-  test_that("Works for label set to text",{
+  test_that("Works with newdata", {
     skip_on_cran()
-    expect_silent(plot(clv.fitted, label="ABC", verbose=FALSE))
+    expect_silent(dt.plot <- plot(clv.fitted, newdata = clv.newdata.nohold, plot=FALSE, verbose=FALSE))
+    # expect_false(anyNA(dt.plot))
+
+    expect_silent(dt.plot <- plot(clv.fitted, newdata = clv.newdata.withhold, plot=FALSE, verbose=FALSE))
+    # expect_false(anyNA(dt.plot))
+
+    # **TODO: Add test to predict that predictions for all Ids in newdata
+    # expect_true(dt.plot[])
   })
 
   test_that("Works for prediction.end in different formats, after holdout", {
@@ -43,7 +58,6 @@ fct.testthat.runability.clvfittedtransactions.plot <- function(clv.fitted, clv.n
     expect_silent(plot(clv.fitted, prediction.end = clv.fitted@clv.data@clv.time@timepoint.holdout.end+lubridate::weeks(26), verbose=FALSE))
     expect_silent(plot(clv.fitted, prediction.end = as.integer(clv.fitted@clv.data@clv.time@holdout.period.in.tu)+26, verbose=FALSE))
   })
-
 
   if(clv.data.has.holdout(clv.fitted@clv.data)){
     test_that("Warns if ends in holdout", {
@@ -71,7 +85,6 @@ fct.testthat.runability.clvfittedtransactions.plot <- function(clv.fitted, clv.n
     }
   })
 
-
   test_that("Correct return structure", {
     skip_on_cran()
     expect_silent(gg.plot <- plot(clv.fitted, plot=TRUE, verbose=FALSE))
@@ -81,7 +94,7 @@ fct.testthat.runability.clvfittedtransactions.plot <- function(clv.fitted, clv.n
     expect_s3_class(dt.plot, "data.table")
 
     # expect_true(all(c("period.until", "variable", "value") %in% colnames(dt.plot)))
-    expect_true(all(c("period.until", "Actual Number of Repeat Transactions", clv.fitted@clv.model@name.model)
+    expect_true(all(c("period.until", "Actual", clv.fitted@clv.model@name.model)
                     %in% colnames(dt.plot)))
     # Num repeat trans may have some NA if prediction.end beyond holdout.end
     expect_false(anyNA(dt.plot[, c("period.until", clv.fitted@clv.model@name.model)]))
@@ -108,17 +121,6 @@ fct.testthat.runability.clvfittedtransactions.plot <- function(clv.fitted, clv.n
 
   })
 
-  test_that("Works with newdata", {
-    skip_on_cran()
-    expect_silent(dt.plot <- plot(clv.fitted, newdata = clv.newdata.nohold, plot=FALSE, verbose=FALSE))
-    # expect_false(anyNA(dt.plot))
-
-    expect_silent(dt.plot <- plot(clv.fitted, newdata = clv.newdata.withhold, plot=FALSE, verbose=FALSE))
-    # expect_false(anyNA(dt.plot))
-
-    # **TODO: Add test to predict that predictions for all Ids in newdata
-    # expect_true(dt.plot[])
-  })
 
   # **   test_that("Correctness: Correct date range in plot data",{})
   # **TODO: TEST THIS DATE TIME BS !! - also, additionally FOR DIFFERENT time.units!
@@ -138,7 +140,66 @@ fct.testthat.runability.clvfittedtransactions.plot <- function(clv.fitted, clv.n
   #   expect_true(res.char[, .(N=data.table::uniqueN(period.until)), by="variable"][, diff(N) == 4])
   #   expect_true(res.char[, .(N=data.table::uniqueN(period.until)), by="variable"][, diff(N) == 4])
   # })
+}
 
+fct.testthat.runability.clvfittedtransactions.plot.pmf <- function(clv.fitted, clv.newdata.nohold, clv.newdata.withhold){
+  test_that("Works for verbose=TRUE",{
+    skip_on_cran()
+    expect_silent(plot(clv.fitted, which="pmf", verbose=TRUE))
+  })
+
+  test_that("Actual ploting works for different trans.bins", {
+    expect_silent(plot(clv.fitted, which="pmf", trans.bins=0:5, verbose=FALSE))
+    expect_silent(plot(clv.fitted, which="pmf", trans.bins=11:15, verbose=FALSE))
+  })
+
+  test_that("Different trans.bins give different results", {
+    expect_false(isTRUE(all.equal(plot(clv.fitted, which="pmf", trans.bins=0:5, calculate.remaining=FALSE, plot=FALSE, verbose=FALSE),
+                                  plot(clv.fitted, which="pmf", trans.bins=11:15, calculate.remaining=FALSE, plot=FALSE, verbose=FALSE))))
+  })
+
+  test_that("Correct trans bins returned", {
+    expect_silent(dt.plot <- plot(clv.fitted, which="pmf", trans.bins=0:5,
+                                  calculate.remaining=FALSE, plot=FALSE, verbose=FALSE))
+    expect_true(is.factor(dt.plot$num.transactions))
+    expect_true(is.ordered(dt.plot$num.transactions))
+    expect_setequal(levels(dt.plot$num.transactions), as.character(0:5))
+  })
+
+  test_that("Not calculating remaining works", {
+    expect_silent(dt.plot <- plot(clv.fitted, which="pmf", calculate.remaining=FALSE, label.remaining="Others",
+                                  plot=FALSE, verbose=FALSE))
+    expect_false("Others" %in% levels(dt.plot$num.transactions))
+  })
+
+  test_that("Different label.remaining works", {
+    expect_silent(dt.plot <- plot(clv.fitted, which="pmf", trans.bins=0:5,
+                                  label.remaining = "Others", plot=FALSE, verbose=FALSE))
+    expect_setequal(c(as.character(0:5), "Others"), levels(dt.plot$num.transactions))
+
+  })
+
+  test_that("Newdata leads to different results", {
+    expect_silent(dt.plot <- plot(clv.fitted, which="pmf", plot=FALSE, verbose=FALSE))
+    expect_false(isTRUE(all.equal(dt.plot,
+                                  plot(clv.fitted, which="pmf", newdata=clv.newdata.nohold, plot=FALSE, verbose=FALSE))))
+    expect_false(isTRUE(all.equal(dt.plot,
+                                  plot(clv.fitted, which="pmf", newdata=clv.newdata.withhold, plot=FALSE, verbose=FALSE))))
+  })
+
+}
+
+fct.testthat.runability.clvfittedtransactions.plot <- function(clv.fitted, clv.newdata.nohold, clv.newdata.withhold){
+
+  fct.testthat.runability.clvfittedtransactions.plot.common(clv.fitted=clv.fitted, clv.newdata.nohold=clv.newdata.nohold, clv.newdata.withhold=clv.newdata.withhold,
+                                                            which="tracking")
+  fct.testthat.runability.clvfittedtransactions.plot.tracking(clv.fitted=clv.fitted, clv.newdata.nohold=clv.newdata.nohold, clv.newdata.withhold=clv.newdata.withhold)
+
+  if(fct.helper.has.pmf(clv.fitted)){
+    fct.testthat.runability.clvfittedtransactions.plot.common(clv.fitted=clv.fitted, clv.newdata.nohold=clv.newdata.nohold, clv.newdata.withhold=clv.newdata.withhold,
+                                                              which="pmf")
+    fct.testthat.runability.clvfittedtransactions.plot.pmf(clv.fitted=clv.fitted, clv.newdata.nohold=clv.newdata.nohold, clv.newdata.withhold=clv.newdata.withhold)
+  }
 }
 
 

@@ -2,13 +2,13 @@
 #'
 #' @title Probability Mass Function
 #' @param object The fitted transaction model.
-#' @param x Vector of positive integer numbers (>=1) indicating the number of transactions x for
+#' @param x Vector of positive integer numbers (>=0) indicating the number of repeat transactions x for
 #' which the PMF should be calculated.
 #'
 #' @description
-#' Calculate P(X(t)=x), the probability to make exactly x repeat transactions in
-#' the interval (0, T] (the estimation period). Note that T is the observation period T.cal which
-#' differs by customer.
+#' Calculate P(X(t)=x), the probability to make exactly \code{x} repeat transactions in
+#' the interval (0, t]. This interval is in the estimation period and excludes values of \code{t=0}.
+#' Note that here \code{t} is defined as the observation period \code{T.cal} which differs by customer.
 #'
 #'
 #' @returns
@@ -19,6 +19,8 @@
 #'
 #' @seealso The model fitting functions \code{\link[CLVTools:pnbd]{pnbd},
 #' \link[CLVTools:bgnbd]{bgnbd}, \link[CLVTools:ggomnbd]{ggomnbd}}.
+#' @seealso \code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} to visually compare
+#' the PMF values against actuals.
 #'
 #' @examples
 #' \donttest{
@@ -59,7 +61,6 @@ setGeneric(name = "pmf", def = function(object, x=0:5)
 #' @include class_clv_fitted_transactions.R
 #' @rdname pmf
 setMethod(f = "pmf", signature = signature(object="clv.fitted.transactions"), definition = function(object, x=0:5){
-  check_err_msg(check_user_data_pmfx(x=x))
-  x <- sort(unique(x))
-  return(clv.template.controlflow.pmf(clv.fitted=object, x=x, plot=plot))
+  check_err_msg(check_user_data_integer_vector_greater0(vec=x, var.name="x"))
+  return(clv.template.controlflow.pmf(clv.fitted=object, x=x))
 })
