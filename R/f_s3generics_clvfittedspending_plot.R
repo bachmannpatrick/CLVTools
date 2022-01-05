@@ -60,7 +60,7 @@ plot.clv.fitted.spending <- function (x, n = 256, verbose=TRUE, ...) {
    # Plot customer's mean spending as density -------------------------------------------------------------------------
    dt.customer.mean.spending <- clv.fitted@cbs[x>0, "Spending"]
    p <- clv.data.make.density.plot(dt.data = dt.customer.mean.spending,
-                                   mapping = aes(x = Spending, colour = "Actual Mean Value per Transaction"),
+                                   mapping = aes(x = Spending, colour = "Actual"),
                                    labs_x = "Average Value per Transaction",
                                    title = "Density of Average Transaction Value",
                                    color="black", geom = "line",
@@ -75,7 +75,7 @@ plot.clv.fitted.spending <- function (x, n = 256, verbose=TRUE, ...) {
                       na.rm = FALSE)
 
    # Add legend
-   columns <- setNames(c("black", "red"), c("Actual Mean Value per Transaction", clv.fitted@clv.model@name.model))
+   columns <- setNames(c("black", "red"), c("Actual", clv.fitted@clv.model@name.model))
    p <- p + scale_colour_manual(name = "Legend", values = columns)
 
    return(p)

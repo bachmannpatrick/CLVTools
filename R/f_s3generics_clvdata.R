@@ -133,15 +133,18 @@ print.clv.data.dynamic.covariates <- function(x, digits = max(3L, getOption("dig
 
 
 #' @template template_summary_data
+#' @template template_param_dots
 #' @export
-summary.clv.data <- function(object, ...){
+summary.clv.data <- function(object, Id=NULL, ...){
   res <- structure(list(), class="summary.clv.data")
 
-  res$name <- object@name
-  res$clv.time         <- object@clv.time # needed for formating when printing
+  res$name             <- object@name
+  res$clv.time         <- object@clv.time # needed for formatting when printing
   res$summary.clv.time <- summary(object@clv.time)
 
-  res$descriptives.transactions <- clv.data.make.descriptives(clv.data=object)
+  res$descriptives.transactions <- clv.data.make.descriptives(clv.data=object, Ids = Id)
+  res$selected.ids <- unique(Id)
+
   return(res)
 }
 
@@ -154,10 +157,13 @@ summary.clv.data <- function(object, ...){
 print.summary.clv.data <- function(x, digits=max(3L, getOption("digits")-3L), ...){
   nsmall <- 4
 
-  cat(x$name, "\n")
 
-  print(x$summary.clv.time, digits=digits, ...)
-
+  # Dont print title and clv.time summary if interested in summary of specific customers
+  if(is.null(x$selected.ids)){
+    cat(x$name, "\n")
+    print(x$summary.clv.time, digits=digits, ...)
+    cat("\n")
+  }
 
   # Print transactions descriptives for each period -------------------------------------------
 
@@ -170,9 +176,12 @@ print.summary.clv.data <- function(x, digits=max(3L, getOption("digits")-3L), ..
   rownames(disp) <- x$descriptives.transactions$Name
   colnames(disp) <- c("Estimation", "Holdout", "Total")
 
-  cat("\n")
-  cat("Transaction Data Summary \n")
-  print(disp,quote = FALSE, na.print = "", print.gap = 6)
+  if(is.null(x$selected.ids)){
+    cat("Transaction Data Summary \n")
+  }else{
+    cat("Transaction Data Summary for Given Customers (n=",length(x$selected.ids),")\n", sep = "")
+  }
+  print(disp, quote = FALSE, na.print = "", print.gap = 6)
 
   cat("\n")
   invisible(x)

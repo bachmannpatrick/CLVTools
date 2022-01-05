@@ -661,7 +661,7 @@ arma::vec pnbd_PMF(const double r,
   const arma::vec vLogPart1_4 = s * (arma::log(vBeta_i) - arma::log(vBeta_i + vT_i));
   const arma::vec vPart1 = arma::exp(vlogPart1_1 + vLogPart1_2 + vLogPart1_3 + vLogPart1_4);
 
-  const arma::vec vPart2 = arma::exp(r * arma::log(vAlpha_i) + s*arma::log(vBeta_i) + clv::lbeta(r+x, s+1) - clv::lbeta(r,s));
+  const arma::vec vLogPart2 = r*arma::log(vAlpha_i) + s*arma::log(vBeta_i) + clv::lbeta(r+x, s+1.0) - clv::lbeta(r,s);
 
 
   const arma::vec vAbsAB = arma::abs(vAlpha_i - vBeta_i);
@@ -674,20 +674,19 @@ arma::vec pnbd_PMF(const double r,
 
   const arma::vec vB1 = clv::vec_hyp2F1(vRS, vHypArgB, vRSX1, vAbsAB/vMaxAB) / arma::pow(vMaxAB, r+s);
 
-
   arma::vec vB2total(arma::size(vAlpha_i), arma::fill::zeros);
   arma::vec vRSI(arma::size(vAlpha_i), arma::fill::zeros);
-  arma::vec B2part;
+  arma::vec vLogB2part;
 
   for(unsigned int i=0; i<=x; i++){
-    // replace log(factorial(n)) with lgamma(n+1)
-    //  (gamma(r+s+i)*t^i)/(gamma(r+s) * factorial(i)) * B2(i=i)
-    B2part = arma::exp(std::lgamma(r+s+i) + i*arma::log(vT_i) - std::lgamma(r+s) - std::lgamma(i+1));
+    // It is important to do B2 at log-scale because B2part gets very larger and B2i very small
+    //  replace log(factorial(n)) with lgamma(n+1)
+    vLogB2part = std::lgamma(r+s+i) + i*arma::log(vT_i) - std::lgamma(r+s) - std::lgamma(i+1);
     vRSI.fill(r+s+i);
-    vB2total += B2part % (clv::vec_hyp2F1(vRSI, vHypArgB, vRSX1, vAbsAB/(vMaxAB+vT_i)) / arma::pow(vMaxAB+vT_i, r+s+i));
+    vB2total += arma::exp(vLogB2part + arma::log(clv::vec_hyp2F1(vRSI, vHypArgB, vRSX1, vAbsAB/(vMaxAB+vT_i))) - (r+s+i)*arma::log(vMaxAB+vT_i));
   }
 
-  return(vPart1 + vPart2 % (vB1 - vB2total));
+  return(vPart1 + arma::exp(vLogPart2 + arma::log(vB1 - vB2total)));
 }
 
 
