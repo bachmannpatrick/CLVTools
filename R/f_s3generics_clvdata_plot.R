@@ -31,7 +31,9 @@
 #'
 #'
 #' @description
-#' Depending on the value of parameter \code{which}, one of the following plots will be produced:
+#' Depending on the value of parameter \code{which}, one of the following plots will be produced.
+#' Note that the \code{sample} parameter determines the period for which the
+#' selected plot is made (either estimation, holdout, or full).
 #'
 #' \subsection{Tracking Plot}{
 #' Plot the aggregated repeat transactions per period over the given time-horizon (\code{prediction.end}).
