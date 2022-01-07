@@ -38,16 +38,16 @@ Returns the respective Log-Likelihood value(s) for the BG/NBD model
 \description{
 Calculates the Log-Likelihood values for the BG/NBD model with and without covariates.
 
-The function \code{bgnbd_nocov_LL_ind} calculates the individual LogLikelihood
+The function \code{bgnbd_nocov_LL_ind} calculates the individual log-likelihood
 values for each customer for the given parameters.
 
-The function \code{bgnbd_nocov_LL_sum} calculates the LogLikelihood value summed
+The function \code{bgnbd_nocov_LL_sum} calculates the log-likelihood value summed
 across customers for the given parameters.
 
-The function \code{bgnbd_staticcov_LL_ind} calculates the individual LogLikelihood
+The function \code{bgnbd_staticcov_LL_ind} calculates the individual log-likelihood
 values for each customer for the given parameters and covariates.
 
-The function \code{bgnbd_staticcov_LL_sum} calculates the individual LogLikelihood values summed
+The function \code{bgnbd_staticcov_LL_sum} calculates the individual log-likelihood values summed
 across customers.
 }
 \details{

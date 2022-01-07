@@ -158,7 +158,7 @@ bgnbd_staticcov_b_i <- function(b_0, vCovParams_life, mCov_life) {
     .Call(`_CLVTools_bgnbd_staticcov_b_i`, b_0, vCovParams_life, mCov_life)
 }
 
-#' @title GSL Hypergeom 2f0 for equal length vectors
+#' @title GSL Hypergeometric 2F0 for equal length vectors
 #'
 #' @param vA Vector of values for parameter a
 #' @param vB Vector of values for parameter b
@@ -171,7 +171,7 @@ vec_gsl_hyp2f0_e <- function(vA, vB, vZ) {
     .Call(`_CLVTools_vec_gsl_hyp2f0_e`, vA, vB, vZ)
 }
 
-#' @title GSL Hypergeom 2f1 for equal length vectors
+#' @title GSL Hypergeometric 2F1 for equal length vectors
 #'
 #' @param vA Vector of values for parameter a
 #' @param vB Vector of values for parameter b
