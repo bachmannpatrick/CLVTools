@@ -56,7 +56,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
       </span>
     </div>
 
@@ -76,7 +76,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/internal_docu/internal_docu.html">UNKNOWN TITLE</a>
+      <a href="articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
     </li>
   </ul>
 </li>
@@ -115,7 +115,7 @@
 <ol style="list-style-type: decimal">
 <li><p>Standard Pareto/NBD model (Schmittlein, Morrison &amp; Colombo 1987)</p></li>
 <li><p>Pareto/NBD model with <strong>time-invariant</strong> contextual factors (Fader &amp; Hardie 2007)</p></li>
-<li><p>Pareto/NBD model with <strong>time-varying</strong> contextual factors (Bachmann, Meierer &amp; Näf 2020)</p></li>
+<li><p>Pareto/NBD model with <strong>time-varying</strong> contextual factors (Bachmann, Meierer &amp; Näf 2021)</p></li>
 <li><p>Standard BG/NBD model (Fader, Hardie, &amp; Lee 2005)</p></li>
 <li><p>BG/NBD model with <strong>time-invariant</strong> contextual factors (Fader &amp; Hardie 2007)</p></li>
 <li><p>Standard Gamma/Gompertz/NBD (Bemmaor &amp; Glady 2012)</p></li>
@@ -145,41 +145,44 @@
 <li><p>Update to the latest version of R.</p></li>
 <li><p>Install the external dependency (<code>GSL</code>):</p></li>
 </ol>
-<!-- end list --><ul>
-<li>
 <p><em>For Linux:</em></p>
+<!-- -->
 <div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>apt<span class="op">-</span>get update</span>
 <span id="cb3-2"><a href="#cb3-2"></a>apt<span class="op">-</span>get install libgsl0<span class="op">-</span>dev</span></code></pre></div>
 <p>If you are using an R Docker container with Linux (e.g. rocker/tidyverse), you can build up on these Docker images as follows</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>FROM rocker<span class="op">/</span>tidyverse</span>
 <span id="cb4-2"><a href="#cb4-2"></a>RUN apt<span class="op">-</span>get update <span class="op">-</span>qq <span class="op">&amp;&amp;</span><span class="st"> </span>apt<span class="op">-</span>get <span class="op">-</span>y install \</span>
-<span id="cb4-3"><a href="#cb4-3"></a>libgsl0<span class="op">-</span>dev</span></code></pre></div>
+<span id="cb4-3"><a href="#cb4-3"></a>    libgsl0<span class="op">-</span>dev</span></code></pre></div>
 <p>Alternatively, follow the instruction in the section “Installing Dependencies external to the R system” at <a href="https://ropenscilabs.github.io/r-docker-tutorial/03-install-packages.html" class="external-link uri">https://ropenscilabs.github.io/r-docker-tutorial/03-install-packages.html</a> to install <code>GSL</code> in a running Docker container with Linux.</p>
-</li>
-<li>
-<p><em>For Mac:</em></p>
+<p><em>For Mac with Intel chip:</em> :</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>brew install gsl</span></code></pre></div>
-</li>
-<li>
+<p><em>For Mac with Apple Silicon:</em></p>
+<ol style="list-style-type: decimal">
+<li><p>Download gsl-latest.tar.gz from <a href="https://ftp.gnu.org/gnu/gsl/" class="external-link uri">https://ftp.gnu.org/gnu/gsl/</a> and unzip it.</p></li>
+<li><p>Navigate to the unziped folder, e.g. <code>cd ~/Downloads/gsl-2.7.1</code></p></li>
+<li><p>run the following commands line by line:</p></li>
+</ol>
+<!-- --><div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>sudo make clean</span>
+<span id="cb6-2"><a href="#cb6-2"></a>sudo chown <span class="op">-</span>R <span class="op">$</span>USER .</span>
+<span id="cb6-3"><a href="#cb6-3"></a>.<span class="op">/</span>configure <span class="op">&amp;&amp;</span><span class="st"> </span>make</span>
+<span id="cb6-4"><a href="#cb6-4"></a>make install</span></code></pre></div>
 <p><em>For Windows:</em><br>
 First, install <code>RTools</code> through <a href="https://cran.r-project.org/bin/windows/Rtools/" class="external-link uri">https://cran.r-project.org/bin/windows/Rtools/</a> (&gt; v4.0). Next, use the new <code>RTools</code> package manager to install the <code>GSL</code> library (see <a href="https://github.com/r-windows/docs/blob/master/rtools40.md#readme" class="external-link uri">https://github.com/r-windows/docs/blob/master/rtools40.md#readme</a>) by using <code>pacman</code> through the <code>RTools Bash</code>:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>pacman <span class="op">-</span>S mingw<span class="op">-</span>w64<span class="op">-</span>{i686,x86_<span class="dv">64</span>}<span class="op">-</span>gsl</span></code></pre></div>
-</li>
-</ul>
-<!-- end list --><ol start="3" style="list-style-type: decimal">
+<div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>pacman <span class="op">-</span>S mingw<span class="op">-</span>w64<span class="op">-</span>{i686,x86_<span class="dv">64</span>}<span class="op">-</span>gsl</span></code></pre></div>
+<ol start="3" style="list-style-type: decimal">
 <li>Install the development version from source:</li>
 </ol>
-<!-- end list --><div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"bachmannpatrick/CLVTools"</span>, <span class="dt">ref =</span> <span class="st">"development"</span>)</span></code></pre></div>
+<!-- --><div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"bachmannpatrick/CLVTools"</span>, <span class="dt">ref =</span> <span class="st">"development"</span>)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="a-minimal-example">A Minimal Example<a class="anchor" aria-label="anchor" href="#a-minimal-example"></a>
 </h2>
 <p>For detailed instructions and all available options and model variations see the detailed <a href="https://www.clvtools.com/articles/CLVTools.html">walkthrough</a> and the <a href="https://www.clvtools.com/reference/index.html">manual</a>.</p>
 <p>Start by loading the package:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/bachmannpatrick/CLVTools" class="external-link">"CLVTools"</a></span><span class="op">)</span></code></pre></div>
 <p>As Input data <code>CLVTools</code> requires customers’ transaction history. Every transaction record consists of a purchase date and customer ID.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelTrans"</span><span class="op">)</span>
 <span class="va">apparelTrans</span>
 <span class="co">#&gt;         Id       Date  Price</span>
@@ -195,7 +198,7 @@ First, install <code>RTools</code> through <a href="https://cran.r-project.org/b
 <span class="co">#&gt; 2352: 1222 2005-01-03  44.77</span>
 <span class="co">#&gt; 2353: 1222 2005-03-03  99.21</span></code></pre></div>
 <p>Before we estimate a model, we are required to initialize a data object using the <code><a href="reference/clvdata.html">clvdata()</a></code> command. The data object contains the prepared transactional data and is later used as input for model fitting. Additionally we specify options for the date and time units, estimation duration and variable names (see <a href="https://www.clvtools.com/articles/CLVTools.html">Walkthrough</a> for details). Make sure to store the generated object in a variable, e.g. in our example <code>clv.apparel</code>.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">clv.apparel</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/clvdata.html">clvdata</a></span><span class="op">(</span><span class="va">apparelTrans</span>,  
                        date.format<span class="op">=</span><span class="st">"ymd"</span>, 
                        time.unit <span class="op">=</span> <span class="st">"week"</span>,
@@ -205,7 +208,7 @@ First, install <code>RTools</code> through <a href="https://cran.r-project.org/b
                        name.price <span class="op">=</span> <span class="st">"Price"</span><span class="op">)</span></code></pre></div>
 <p>Be aware that probabilistic models such as the ones implemented in CLVTools are usually applied to specific customer cohorts. That means, you analyze customer that have joined your company at the same time (usually same day, week, month, or quarter). For more information on cohort analysis, see also <a href="https://en.wikipedia.org/wiki/Cohort_analysis" class="external-link">here</a>. Consequently, the data apparelTrans in this example is not the full transaction records of a fashion retailer, but rather only the customer cohort of 250 customers purchasing for the first time at this business on the day of 2005-01-03.</p>
 <p>As a first probabilistic latent attrition model we estimate the standard Pareto/NBD model and therefore, use the command <code><a href="reference/pnbd.html">pnbd()</a></code> to fit the model and estimate model parameters. Other models such as the BG/NBD model (<code><a href="reference/bgnbd.html">bgnbd()</a></code>) and the GGomp/NBD (<code><a href="reference/ggomnbd.html">ggomnbd()</a></code>) are also available.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">est.pnbd</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pnbd.html">pnbd</a></span><span class="op">(</span>clv.data <span class="op">=</span> <span class="va">clv.apparel</span><span class="op">)</span>
 <span class="co">#&gt; Starting estimation...</span>
 <span class="co">#&gt; Estimation finished!</span>
@@ -224,7 +227,7 @@ First, install <code>RTools</code> through <a href="https://cran.r-project.org/b
 <span class="co">#&gt; Used Options:</span>
 <span class="co">#&gt; Correlation:     FALSE</span></code></pre></div>
 <p>You can always use <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> to get details on CLVTools object (also before they are estimated):</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#Full detailed summary of the parameter estimates</span>
 <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est.pnbd</span><span class="op">)</span>
 <span class="co">#&gt; Pareto NBD Standard  Model </span>
@@ -264,7 +267,7 @@ First, install <code>RTools</code> through <a href="https://cran.r-project.org/b
 <li>“discounted expected residual transactions” (DERT) for every customer, which is the total number of transactions for the residual lifetime of a customer discounted to the end of the estimation period.</li>
 </ul>
 <p>If spending information was provided when initializing the clvdata-object, also “customer lifetime value” (CLV) is predicted.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/predict.clv.fitted.transactions.html">predict</a></span><span class="op">(</span><span class="va">est.pnbd</span><span class="op">)</span>
 <span class="co">#&gt; Predicting from 2005-10-11 until (incl.) 2006-07-16 (39.86 Weeks).</span>
 <span class="co">#&gt; Estimating gg model to predict spending...</span>
@@ -296,7 +299,7 @@ First, install <code>RTools</code> through <a href="https://cran.r-project.org/b
 <span class="co">#&gt; 249: 0.9434302  4.2991096 1.13648922                34.28958     38.969738</span>
 <span class="co">#&gt; 250: 0.4136156  0.5819279 0.15383529                47.35500      7.284870</span></code></pre></div>
 <p><code>clvdata</code> objects may be plotted using the <code><a href="reference/plot.clv.fitted.transactions.html">plot()</a></code> command. Similar to <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>, the output of <code><a href="reference/plot.clv.fitted.transactions.html">plot()</a></code> adapts to the current modeling step.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">est.pnbd</span><span class="op">)</span>
 <span class="co">#&gt; Plotting from 2005-01-03 until 2006-07-16.</span></code></pre></div>
 <p><img src="reference/figures/README-plot-model-1.png" width="100%"></p>
@@ -313,12 +316,9 @@ First, install <code>RTools</code> through <a href="https://cran.r-project.org/b
     <div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=CLVTools" class="external-link">https://​cloud.r-project.org/​package=CLVTools</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/bachmannpatrick/CLVTools/" class="external-link">https://​github.com/​bachmannpatrick/​CLVTools/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/bachmannpatrick/CLVTools/issues" class="external-link">https://​github.com/​bachmannpatrick/​CLVTools/​issues</a>
-</li>
+<li><a href="https://cloud.r-project.org/package=CLVTools" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/bachmannpatrick/CLVTools/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/bachmannpatrick/CLVTools/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
@@ -329,6 +329,13 @@ First, install <code>RTools</code> through <a href="https://cran.r-project.org/b
 </ul>
 </div>
 
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing CLVTools</a></li>
+</ul>
+</div>
 
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
@@ -364,7 +371,7 @@ First, install <code>RTools</code> through <a href="https://cran.r-project.org/b
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer>

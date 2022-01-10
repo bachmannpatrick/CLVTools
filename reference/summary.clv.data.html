@@ -24,7 +24,7 @@ possible holdout sample, and descriptive statistics of the transaction data."><!
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
       </span>
     </div>
 
@@ -42,7 +42,7 @@ possible holdout sample, and descriptive statistics of the transaction data."><!
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/internal_docu/internal_docu.html">UNKNOWN TITLE</a>
+      <a href="../articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
     </li>
   </ul></li>
 <li>
@@ -64,7 +64,7 @@ possible holdout sample, and descriptive statistics of the transaction data."><!
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Summarizing a CLV data object</h1>
-    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/R/f_s3generics_clvdata.R" class="external-link"><code>R/f_s3generics_clvdata.R</code></a>, <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/R/f_s3generics_clvdata_dynamiccov.R" class="external-link"><code>R/f_s3generics_clvdata_dynamiccov.R</code></a>, <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/R/f_s3generics_clvdata_staticcov.R" class="external-link"><code>R/f_s3generics_clvdata_staticcov.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/R/f_s3generics_clvdata.R" class="external-link"><code>R/f_s3generics_clvdata.R</code></a>, <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/R/f_s3generics_clvdata_dynamiccov.R" class="external-link"><code>R/f_s3generics_clvdata_dynamiccov.R</code></a>, <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/R/f_s3generics_clvdata_staticcov.R" class="external-link"><code>R/f_s3generics_clvdata_staticcov.R</code></a></small>
     <div class="hidden name"><code>summary.clv.data.Rd</code></div>
     </div>
 
@@ -73,8 +73,9 @@ possible holdout sample, and descriptive statistics of the transaction data."><!
 possible holdout sample, and descriptive statistics of the transaction data.</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for clv.data</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span>
+    <div id="ref-usage">
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for clv.data</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">object</span>, Id <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S3 method for summary.clv.data</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">3L</span>, <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"digits"</span><span class="op">)</span> <span class="op">-</span> <span class="fl">3L</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span>
@@ -90,30 +91,80 @@ possible holdout sample, and descriptive statistics of the transaction data.</p>
 
 <span class="co"># S3 method for summary.clv.data.static.covariates</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">3L</span>, <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"digits"</span><span class="op">)</span> <span class="op">-</span> <span class="fl">3L</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    </div>
 
-    <div id="ref-sections">
     <div id="arguments">
     <h2>Arguments</h2>
-    
-
-<dl><dt>object</dt><dd><p>A CLV data object containing transactional data and potentially also contextual factors.</p></dd>
-</dl><dl><dt>...</dt><dd><p>Ignored.</p></dd>
-</dl><dl><dt>x</dt><dd><p>An object of class <code>"summary.clv.data"</code>, usually, a result of a call to <code>summary.clv.data</code>.</p></dd>
-</dl><dl><dt>digits</dt><dd><p>The number of significant digits to use when printing.</p></dd>
+    <dl><dt>object</dt>
+<dd><p>A CLV data object containing transactional data and potentially also contextual factors.</p></dd>
+<dt>Id</dt>
+<dd><p>A character vector of customer ids for which the transaction data is summarized. Defaults to
+<code>NULL</code> for all customers.</p></dd>
+<dt>...</dt>
+<dd><p>Ignored</p></dd>
+<dt>x</dt>
+<dd><p>An object of class <code>"summary.clv.data"</code>, usually, a result of a call to <code>summary.clv.data</code>.</p></dd>
+<dt>digits</dt>
+<dd><p>The number of significant digits to use when printing.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     <p>This function computes and returns summary statistics of the
 transactional and covariates data given in <code>object</code>. This is a list of
 class <code>summary.clv.data</code> and contains the elements:</p>
-<dl><dt>name</dt><dd><p>Human readable description of the type of data.</p></dd>
-</dl><dl><dt>summary.clv.tim</dt><dd><p>Summary information about the stored <code>clv.time</code> object.</p></dd>
-</dl><dl><dt>descriptives.transactions</dt><dd><p>A <code>data.table</code> with summary statistics of
+<dl><dt>name</dt>
+<dd><p>Human readable description of the type of data.</p></dd>
+<dt>summary.clv.time</dt>
+<dd><p>Summary information about the stored <code>clv.time</code> object.</p></dd>
+<dt>descriptives.transactions</dt>
+<dd><p>A <code>data.table</code> with summary statistics of
 the transactions overall and in the estimation and holdout sample.</p></dd>
-</dl><p>For static covariates data, the list additionally is of class <code>summary.clv.data.static.covariates</code>
-and further contains the elements:</p>
-<dl><dt>names.cov.data.trans</dt><dd><p>Names of the covariates for the Transaction process.</p></dd>
-</dl><dl><dt>names.cov.data.life</dt><dd><p>Names of the covariates for the Lifetime process.</p></dd>
+<dt>selected.ids</dt>
+<dd><p>Ids for which the transaction data was summarized. <code>NULL</code> if all Ids were used.</p></dd>
+</dl><p>For static covariates data, the list additionally is of class <code>summary.clv.data.static.covariates</code>and further contains the elements:</p>
+<dl><dt>names.cov.data.trans</dt>
+<dd><p>Names of the covariates for the Transaction process.</p></dd>
+<dt>names.cov.data.life</dt>
+<dd><p>Names of the covariates for the Lifetime process.</p></dd>
+</dl></div>
+    <div id="details">
+    <h2>Details</h2>
+    <p>If applicable, the summary statistics are provided separately for the estimation and holdout period as well as
+for the overall time period (estimation + holdout). By using the <code>Id</code> argument, the summary statistics can
+be limited to a subset of customers.</p><dl><dt><code>Number of customers</code></dt>
+<dd><p>Count of individual customers.</p></dd>
+
+<dt><code>First Transaction in period</code></dt>
+<dd><p>Time point of the first transaction occurring in the indicated period.</p></dd>
+
+<dt><code>Last Transaction in period</code></dt>
+<dd><p>Time point of the last transaction occurring in the indicated period.</p></dd>
+
+<dt><code>Total # Transactions</code></dt>
+<dd><p>Count of transactions occurring in the indicated period.</p></dd>
+
+<dt><code>Mean # Transactions per cust</code></dt>
+<dd><p>Average transactions per customer in the indicated period,
+including standard deviation (SD).</p></dd>
+
+<dt><code>Mean Spending per Transaction</code></dt>
+<dd><p>Average spending per customer in the indicated period, including
+standard deviation (SD). Spending statistics are only available if spending data was provided when creating the object.</p></dd>
+
+<dt><code>Total Spending</code></dt>
+<dd><p>Sum of customer spending during the indicated period.</p></dd>
+
+<dt><code>Total # zero repeaters</code></dt>
+<dd><p>Number of customers who purchased only once during the estimation period.</p></dd>
+
+<dt><code>Percentage of zero repeaters</code></dt>
+<dd><p>Percentage of customers who purchased only once during the estimation period.</p></dd>
+
+<dt><code>Mean Interpurchase time</code></dt>
+<dd><p>Average time (in number of periods) between two transactions of the same customer,
+including standard deviation (SD).</p></dd>
+
+
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>
@@ -122,11 +173,10 @@ and further contains the elements:</p>
 <p><code><a href="SetStaticCovariates.html">SetStaticCovariates</a></code> for how to add static covariates</p>
 <p><code><a href="SetDynamicCovariates.html">SetDynamicCovariates</a></code> for how to add dynamic covariates</p></div>
     </div>
-    </div>
 
-    <div id="examples">
+    <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
 <span class="r-in"><span class="co"># \donttest{</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelTrans"</span><span class="op">)</span></span>
@@ -153,10 +203,48 @@ and further contains the elements:</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mean Spending per Transaction      39.436          38.519          39.051    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               42.649          59.723          50.503    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Total Spending                     51700.490       36438.640       88139.130 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Total # zero repeaters             77              135             65        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Percentage # zero repeaters        0.308           0.540           0.260     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total # zero repeaters             77              -               -         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Percentage of zero repeaters       30.800          -               -         </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mean Interpurchase time            7.361           5.756           9.462     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               6.791           6.394           12.266    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># transaction summary of customer "1219"</span></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">clv.data.apparel</span>, Id<span class="op">=</span><span class="st">"1219"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Transaction Data Summary for Given Customers (n=1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                    Estimation      Holdout         Total     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of customers                -               -               1         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> First Transaction in period        2005-01-03      2005-10-29      2005-01-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Last Transaction in period         2005-09-08      2006-05-07      2006-05-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total # Transactions               5               14              19        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mean # Transactions per cust       5.000           14.000          19.000    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               -               -               -         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mean Spending per Transaction      20.544          29.554          27.183    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               9.793           13.722          13.188    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total Spending                     102.720         413.760         516.480   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total # zero repeaters             0               -               -         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Percentage of zero repeaters       0.000           -               -         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mean Interpurchase time            8.857           2.088           3.881     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               -               -               -         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># transaction summary of customers "1", "10", "100", and "1000"</span></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">clv.data.apparel</span>, Id<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1"</span>, <span class="st">"10"</span>, <span class="st">"100"</span>, <span class="st">"1000"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Transaction Data Summary for Given Customers (n=4)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                    Estimation      Holdout         Total     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of customers                -               -               4         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> First Transaction in period        2005-01-03      2005-10-16      2005-01-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Last Transaction in period         2005-10-07      2006-07-15      2006-07-15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total # Transactions               40              46              86        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mean # Transactions per cust       10.000          23.000          21.500    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               9.309           0.000           22.546    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mean Spending per Transaction      51.193          39.292          44.827    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               52.527          34.108          43.789    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total Spending                     2047.700        1807.440        3855.140  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total # zero repeaters             1               -               -         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Percentage of zero repeaters       25.000          -               -         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mean Interpurchase time            3.676           1.727           3.515     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               2.519           0.0551          2.647     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># add contextual factors</span></span>
@@ -187,8 +275,8 @@ and further contains the elements:</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mean Spending per Transaction      39.436          38.519          39.051    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               42.649          59.723          50.503    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Total Spending                     51700.490       36438.640       88139.130 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Total # zero repeaters             77              135             65        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Percentage # zero repeaters        0.308           0.540           0.260     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total # zero repeaters             77              -               -         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Percentage of zero repeaters       30.800          -               -         </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mean Interpurchase time            7.361           5.756           9.462     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               6.791           6.394           12.266    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -214,7 +302,7 @@ and further contains the elements:</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

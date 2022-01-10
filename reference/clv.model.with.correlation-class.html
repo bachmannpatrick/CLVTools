@@ -24,7 +24,7 @@ to fit a model with correlation between the lifetime and transaction process."><
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
       </span>
     </div>
 
@@ -42,7 +42,7 @@ to fit a model with correlation between the lifetime and transaction process."><
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/internal_docu/internal_docu.html">UNKNOWN TITLE</a>
+      <a href="../articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
     </li>
   </ul></li>
 <li>
@@ -64,7 +64,7 @@ to fit a model with correlation between the lifetime and transaction process."><
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>CLV Model providing life-trans correlation related functionalities</h1>
-    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/R/class_clv_model_withcorrelation.R" class="external-link"><code>R/class_clv_model_withcorrelation.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/R/class_clv_model_withcorrelation.R" class="external-link"><code>R/class_clv_model_withcorrelation.R</code></a></small>
     <div class="hidden name"><code>clv.model.with.correlation-class.Rd</code></div>
     </div>
 
@@ -74,23 +74,27 @@ to fit a model with correlation between the lifetime and transaction process.</p
     </div>
 
 
-    <div id="ref-sections">
     <div id="slots">
     <h2>Slots</h2>
     
 
-<dl><dt><code>estimation.used.correlation</code></dt><dd><p>Single boolean whether the correlation was estimated.</p></dd>
+<dl><dt><code>estimation.used.correlation</code></dt>
+<dd><p>Single boolean whether the correlation was estimated.</p></dd>
 
-<dt><code>name.prefixed.cor.param.m</code></dt><dd><p>Single character vector of the internal name used for the correlation parameter during optimization.</p></dd>
 
-<dt><code>name.correlation.cor</code></dt><dd><p>Single character vector of the external name used for the correlation parameter.</p></dd>
+<dt><code>name.prefixed.cor.param.m</code></dt>
+<dd><p>Single character vector of the internal name used for the correlation parameter during optimization.</p></dd>
+
+
+<dt><code>name.correlation.cor</code></dt>
+<dd><p>Single character vector of the external name used for the correlation parameter.</p></dd>
+
 
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p>Parent class <a href="clv.model-class.html">clv.model</a></p>
 <p>CLV model subclasses  <a href="clv.model.pnbd.no.cov-class.html">clv.model.pnbd.no.cov</a>, <a href="clv.model.pnbd.static.cov-class.html">clv.model.pnbd.static.cov</a>, <a href="clv.model.pnbd.dynamic.cov-class.html">clv.model.pnbd.dynamic.cov</a></p></div>
-    </div>
     </div>
 
   </div>
@@ -105,7 +109,7 @@ to fit a model with correlation between the lifetime and transaction process.</p
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

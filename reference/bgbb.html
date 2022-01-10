@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
       </span>
     </div>
 
@@ -41,7 +41,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/internal_docu/internal_docu.html">UNKNOWN TITLE</a>
+      <a href="../articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
     </li>
   </ul></li>
 <li>
@@ -63,7 +63,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>BG/BB models - Work In Progress</h1>
-    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/R/f_interface_bgbb.R" class="external-link"><code>R/f_interface_bgbb.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/R/f_interface_bgbb.R" class="external-link"><code>R/f_interface_bgbb.R</code></a></small>
     <div class="hidden name"><code>bgbb.Rd</code></div>
     </div>
 
@@ -71,7 +71,8 @@
     <p>Fits BG/BB models on transactional data with static and without covariates. Not yet implemented.</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for clv.data</span>
+    <div id="ref-usage">
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for clv.data</span>
 <span class="fu">bgbb</span><span class="op">(</span>
   <span class="va">clv.data</span>,
   start.params.model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,
@@ -111,30 +112,39 @@
   reg.lambdas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,
   <span class="va">...</span>
 <span class="op">)</span></code></pre></div>
+    </div>
 
-    <div id="ref-sections">
     <div id="arguments">
     <h2>Arguments</h2>
-    
-
-<dl><dt>clv.data</dt><dd><p>The data object on which the model is fitted.</p></dd>
-</dl><dl><dt>start.params.model</dt><dd><p>Named start parameters containing the optimization start parameters for the model without covariates.</p></dd>
-</dl><dl><dt>optimx.args</dt><dd><p>Additional arguments to control the optimization which are forwarded to <code><a href="https://rdrr.io/pkg/optimx/man/optimx.html" class="external-link">optimx::optimx</a></code>.
+    <dl><dt>clv.data</dt>
+<dd><p>The data object on which the model is fitted.</p></dd>
+<dt>start.params.model</dt>
+<dd><p>Named start parameters containing the optimization start parameters for the model without covariates.</p></dd>
+<dt>optimx.args</dt>
+<dd><p>Additional arguments to control the optimization which are forwarded to <code><a href="https://rdrr.io/pkg/optimx/man/optimx.html" class="external-link">optimx::optimx</a></code>.
 If multiple optimization methods are specified, only the result of the last method is further processed.</p></dd>
-</dl><dl><dt>verbose</dt><dd><p>Show details about the running of the function.</p></dd>
-</dl><dl><dt>...</dt><dd><p>Ignored</p></dd>
-</dl><dl><dt>names.cov.life</dt><dd><p>Which of the set Lifetime covariates should be used. Missing parameter indicates all covariates shall be used.</p></dd>
-</dl><dl><dt>names.cov.trans</dt><dd><p>Which of the set Transaction covariates should be used. Missing parameter indicates all covariates shall be used.</p></dd>
-</dl><dl><dt>start.params.life</dt><dd><p>Named start parameters containing the optimization start parameters for all lifetime covariates.</p></dd>
-</dl><dl><dt>start.params.trans</dt><dd><p>Named start parameters containing the optimization start parameters for all transaction covariates.</p></dd>
-</dl><dl><dt>names.cov.constr</dt><dd><p>Which covariates should be forced to use the same parameters for the lifetime and transaction process. The covariates need to be present as both, lifetime and transaction covariates.</p></dd>
-</dl><dl><dt>start.params.constr</dt><dd><p>Named start parameters containing the optimization start parameters for the constraint covariates.</p></dd>
-</dl><dl><dt>reg.lambdas</dt><dd><p>Named lambda parameters used for the L2 regularization of the lifetime and the transaction covariate parameters. Lambdas have to be &gt;= 0.</p></dd>
+<dt>verbose</dt>
+<dd><p>Show details about the running of the function.</p></dd>
+<dt>...</dt>
+<dd><p>Ignored</p></dd>
+<dt>names.cov.life</dt>
+<dd><p>Which of the set Lifetime covariates should be used. Missing parameter indicates all covariates shall be used.</p></dd>
+<dt>names.cov.trans</dt>
+<dd><p>Which of the set Transaction covariates should be used. Missing parameter indicates all covariates shall be used.</p></dd>
+<dt>start.params.life</dt>
+<dd><p>Named start parameters containing the optimization start parameters for all lifetime covariates.</p></dd>
+<dt>start.params.trans</dt>
+<dd><p>Named start parameters containing the optimization start parameters for all transaction covariates.</p></dd>
+<dt>names.cov.constr</dt>
+<dd><p>Which covariates should be forced to use the same parameters for the lifetime and transaction process. The covariates need to be present as both, lifetime and transaction covariates.</p></dd>
+<dt>start.params.constr</dt>
+<dd><p>Named start parameters containing the optimization start parameters for the constraint covariates.</p></dd>
+<dt>reg.lambdas</dt>
+<dd><p>Named lambda parameters used for the L2 regularization of the lifetime and the transaction covariate parameters. Lambdas have to be &gt;= 0.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     <p>No value is returned.</p>
-    </div>
     </div>
 
   </div>
@@ -149,7 +159,7 @@ If multiple optimization methods are specified, only the result of the last meth
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

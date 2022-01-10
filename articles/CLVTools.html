@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
       </span>
     </div>
 
@@ -59,7 +59,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/internal_docu/internal_docu.html">UNKNOWN TITLE</a>
+      <a href="../articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
     </li>
   </ul>
 </li>
@@ -90,7 +90,7 @@
       <h1 data-toc-skip>Walkthrough for the CLVTools Package</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/vignettes/CLVTools.Rmd" class="external-link"><code>vignettes/CLVTools.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/vignettes/CLVTools.Rmd" class="external-link"><code>vignettes/CLVTools.Rmd</code></a></small>
       <div class="hidden name"><code>CLVTools.Rmd</code></div>
 
     </div>
@@ -207,8 +207,8 @@
 <span class="co">#&gt; Mean Spending per Transaction      39.436          38.519          39.051    </span>
 <span class="co">#&gt; (SD)                               42.649          59.723          50.503    </span>
 <span class="co">#&gt; Total Spending                     51700.490       36438.640       88139.130 </span>
-<span class="co">#&gt; Total # zero repeaters             77              135             65        </span>
-<span class="co">#&gt; Percentage # zero repeaters        0.308           0.540           0.260     </span>
+<span class="co">#&gt; Total # zero repeaters             77              -               -         </span>
+<span class="co">#&gt; Percentage of zero repeaters       30.800          -               -         </span>
 <span class="co">#&gt; Mean Interpurchase time            7.361           5.756           9.462     </span>
 <span class="co">#&gt; (SD)                               6.791           6.394           12.266</span></code></pre></div>
 </div>
@@ -411,25 +411,48 @@
 <code class="sourceCode R"><span class="fu"><a href="../reference/predict.clv.fitted.transactions.html">predict</a></span><span class="op">(</span><span class="va">est.pnbd</span>, prediction.end <span class="op">=</span> <span class="st">"2006-05-08"</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="plot-transactions">Plot Transactions<a class="anchor" aria-label="anchor" href="#plot-transactions"></a>
+<h2 id="plotting">Plotting<a class="anchor" aria-label="anchor" href="#plotting"></a>
 </h2>
-<p><code>clvdata</code> objects may be plotted using the <code><a href="../reference/plot.clv.fitted.transactions.html">plot()</a></code> command. Similar to <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>, the output of <code><a href="../reference/plot.clv.fitted.transactions.html">plot()</a></code> adapts to the current modeling step. It provides a descriptive plot of the actual transactional data if the model has not yet been fitted. Once the model has been estimated, <code><a href="../reference/plot.clv.fitted.transactions.html">plot()</a></code> provides an aggregated incremental tracking plot of the actual data and the model based on the estimated parameters. The time-span for the plot may be altered using the <code>prediction.end</code> argument by providing either a duration or an end date. By default the plot is generated for the entire time-span of the provided dataset specified in the <code><a href="../reference/clvdata.html">clvdata()</a></code> command. The dashed line indicates the end of the estimation period. Alternatively cumulative actual and expected transactions can be plotted by setting <code>cumulative</code> to <code>TRUE</code>. The argument <code>transactions</code> disable for plotting actual transactions (<code>transactions=FALSE</code>). For further plotting options see the documentation.</p>
+<p><code>CLVTools</code>, offers a variety of different plots. All <code>clvdata</code> objects may be plotted using the <code><a href="../reference/plot.clv.fitted.transactions.html">plot()</a></code> command. Similar to <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>, the output of <code><a href="../reference/plot.clv.fitted.transactions.html">plot()</a></code> and the corresponding options are dependent on the current modeling step. When applied to a data object created the <code><a href="../reference/clvdata.html">clvdata()</a></code> command, the following plots can be selected using the <code>which</code> option of plotting:</p>
+<ul>
+<li>Tracking plot (<code>which="tracking"</code>): plots the the aggregated repeat transactions per period over a given time period. The period can be specified using the <code>prediction.end</code> option. It is also possible to generate cumulative tracking plots (<code>cumulative = FALSE</code>). The tracking plot is the default option.</li>
+<li>Frequency plot (<code>which="frequency"</code>): plots the distribution of transactions or repeat transactions per customer, after aggregating transactions of the same customer on a single time point. The bins may be adjusted using the option <code>trans.bins</code>. (Note that if <code>trans.bins</code> is changed, the option for labeling (<code>label.remaining</code>) usually needs to be adapted as well.)</li>
+<li>Spending plot (<code>which="spending"</code>): plots the empirical density of either customer’s average spending per transaction. Note that this includes all transactions and not only repeat-transactions. You can switch to plotting the value of every transaction for a customer (instead of the a customers mean spending) using <code>mean.spending=FALSE</code>.</li>
+<li>Interpurchase time plot (<code>which="interpurchasetime"</code>): plots the empirical density of customer’s mean time (in number of periods) between transactions, after aggregating transactions of the same customer on a single time point. Note that customers without repeat-transactions are note part of this plot.</li>
+</ul>
+<p>In the following, we have a basic tracking-plot for the aggregated repeat transactions</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">clv.apparel</span><span class="op">)</span>
+<span class="co">#&gt; Plotting from 2005-01-03 until 2006-07-16.</span></code></pre></div>
+<p><img src="CLVTools_files/figure-html/plot-actual-1.png" width="100%"> To plot customers mean interpurchase time, we use:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">clv.apparel</span>, which<span class="op">=</span><span class="st">"interpurchasetime"</span><span class="op">)</span></code></pre></div>
+<p><img src="CLVTools_files/figure-html/plot-interpurchase-1.png" width="100%"> When the <code><a href="../reference/plot.clv.fitted.transactions.html">plot()</a></code> command is applied to an object with the an estimated model (i.e. <code>est.pnbd</code>), the following plots can be selected using the <code>which</code> option of:</p>
+<ul>
+<li>Tracking plot (<code>which="tracking"</code>): plots the actual repeat transactions and overlays it with the repeat transaction as predicted by the fitted model. Currently, following previous literature, the in-sample unconditional expectation is plotted in the holdout period. The period can be specified using the <code>prediction.end</code> option. It is also possible to generate cumulative tracking plots (<code>cumulative = FALSE</code>). The tracking plot is th the default option. The argument <code>transactions</code> disable for plotting actual transactions (<code>transactions=FALSE</code>). For further plotting options see the documentation. Note that only whole periods can be plotted and that the prediction end might not exactly match prediction.end. See the <code><a href="../reference/plot.clv.data.html">?plot.clv.data</a></code> for more details.</li>
+<li>Probability mass function (pmf) plot (<code>which="pmf"</code>): plots the actual and expected number of customers which made a given number of repeat transaction in the estimation period. The expected number is based on the PMF of the fitted model, the probability to make exactly a given number of repeat transactions in the estimation period. For each bin, the expected number is the sum of all customers’ individual PMF value. The bins for the transactions can be adjusted using the option <code>trans.bins</code>. (Note that if <code>trans.bins</code> is changed, <code>label.remaining</code> usually needs to be adapted as well.</li>
+</ul>
+<p>For a standard tracking plot including the model, we use:</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">est.pnbd</span><span class="op">)</span>
 <span class="co">#&gt; Plotting from 2005-01-03 until 2006-07-16.</span></code></pre></div>
-<p><img src="CLVTools_files/figure-html/plot-model-1.png" width="100%"> s To plot the <em>cumulative</em> expected transactions 30 time units (30 weeks in this example) ahead of the end of the estimation plot, we use:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<p><img src="CLVTools_files/figure-html/plot-model-1.png" width="100%"></p>
+<p>To plot the <em>cumulative</em> expected transactions 30 time units (30 weeks in this example) ahead of the end of the estimation plot, we use:</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">est.pnbd</span>, prediction.end <span class="op">=</span> <span class="fl">30</span>, cumulative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>Alternatively, it is possible to specify a date for the <code>prediction.end</code>argument. Note that dates are rounded to the next full time unit (i.e. week):</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">est.pnbd</span>, prediction.end <span class="op">=</span> <span class="st">"2006-05-08"</span>, cumulative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<p>For a plot of the probability mass function (pmf), with 7 bins, we use:</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">est.pnbd</span>, which<span class="op">=</span><span class="st">"pmf"</span>, trans.bins<span class="op">=</span><span class="fl">0</span><span class="op">:</span><span class="fl">5</span>, label.remaining<span class="op">=</span><span class="st">"6+"</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="covariates">Covariates<a class="anchor" aria-label="anchor" href="#covariates"></a>
 </h2>
 <p><code>CLVTools</code> provides the option to include covariates into probabilistic customer attrition models. Covariates may affect the purchase or the attrition process, or both. It is also possible to include different covariates for the two processes. However, support for covariates is dependent on the model. Not all implemented models provide the option for covariates. In general, <code>CLVTools</code> distinguishes between two types of covariates: time-invariant and time-varying. The former include factors that do not change over time such as customer demographics or customer acquisition information. The latter may change over time and include marketing activities or seasonal patterns.</p>
 <p>Data for time-invariant covariates must contain a unique customer ID and a single value for each covariate. It should be supplied as a <code>data.frame</code> or <code>data.table</code>. In the example of the apparel retailer we use demographic information “gender” as time-invariant and information on the acquisition channel as covariate for both, the purchase and the attrition process. Use the <code>data("apparelStaticCov")</code> command to load the time-invariant covariates. In this example gender is coded as a dummy variable with <code>male=0</code> and <code>female=1</code> and channel with <code>online=0</code> and <code>offline=1</code>.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelStaticCov"</span><span class="op">)</span>
 <span class="va">apparelStaticCov</span>
 <span class="co">#&gt;        Id Gender Channel</span>
@@ -445,7 +468,7 @@
 <span class="co">#&gt; 249: 1221      1       1</span>
 <span class="co">#&gt; 250: 1222      1       0</span></code></pre></div>
 <p>Data for time-varying covariates requires a time-series of covariate values for every customer. I.e. if the time-varying covariates are allowed to change every week, a value for every customer for every week is required. Note that all contextual factors are required to use the same time intervals for the time-series. In the example of the apparel retailer we use information on direct marketing (<code>Marekting</code>) as time-varying covariate. Additionally, we add gender as time-invariant contextual factors. Note that the data structure of invariant covariates needs to be aligned with the structure of time-varying covariate. Use <code>data("apparelDynCov")</code> command to load</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelDynCov"</span><span class="op">)</span>
 <span class="va">apparelDynCov</span>
 <span class="co">#&gt;          Id   Cov.Date Marketing Gender Channel</span>
@@ -461,7 +484,7 @@
 <span class="co">#&gt; 20499: 1222 2006-07-09         0      1       0</span>
 <span class="co">#&gt; 20500: 1222 2006-07-16         0      1       0</span></code></pre></div>
 <p>To add the covariates to an initialized <code>clvdata</code> object the commands <code><a href="../reference/SetStaticCovariates.html">SetStaticCovariates()</a></code> and <code><a href="../reference/SetDynamicCovariates.html">SetDynamicCovariates()</a></code> are available. The two commands are mutually exclusive. The argument <code>clv.data</code> specifies the initialized object and the argument <code>data.cov.life</code> respectively <code>data.cov.trans</code> specifies the data source for the covariates for the attrition and the purchase process. Covariates are added separately for the purchase and the attrition process. Therefore if a covariate should affect both processes it has to be added in both arguments: <code>data.cov.life</code> <em>and</em> <code>data.cov.trans</code>. The arguments <code>names.cov.life</code> and <code>names.cov.trans</code> specify the column names of the covariates for the two processes. In our example, we use the same covariates for both processes. Accordingly, we specify the time-invariant covariates “Gender” and “Channel” as follows:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">clv.static</span><span class="op">&lt;-</span> <span class="fu"><a href="../reference/SetStaticCovariates.html">SetStaticCovariates</a></span><span class="op">(</span>clv.data <span class="op">=</span> <span class="va">clv.apparel</span>, 
                                       data.cov.life <span class="op">=</span> <span class="va">apparelStaticCov</span>, 
                                       data.cov.trans <span class="op">=</span> <span class="va">apparelStaticCov</span>,
@@ -469,7 +492,7 @@
                                       names.cov.trans <span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Gender"</span>, <span class="st">"Channel"</span><span class="op">)</span>, 
                                       name.id <span class="op">=</span> <span class="st">"Id"</span><span class="op">)</span></code></pre></div>
 <p>To specify the time-varying contextual factors for seasonal patterns and direct marketing, we use the following:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">clv.dyn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SetDynamicCovariates.html">SetDynamicCovariates</a></span><span class="op">(</span>clv.data <span class="op">=</span> <span class="va">clv.apparel</span>, 
                                      data.cov.life <span class="op">=</span> <span class="va">apparelDynCov</span>,
                                      data.cov.trans <span class="op">=</span> <span class="va">apparelDynCov</span>, 
@@ -479,7 +502,7 @@
                                      name.date <span class="op">=</span> <span class="st">"Cov.Date"</span><span class="op">)</span></code></pre></div>
 <p>In order to include time-invariant covariates in a time-varying model, they may be recoded as a time-varying covariate with a constant value in every time period.</p>
 <p>Once the covariates are added to the model the estimation process is almost identical to the standard model without covariates. The only difference is that the provided object now data for contains either time-invariant or time-varying covariates and the option to define start parameters for the covariates of both processes using the arguments <code>start.params.life</code> and <code>start.params.trans</code>. If not set, the staring values are set to 1. To define starting parameters for the covariates, the name of the corresponding factor has to be used. For example in the case of time-invariant covariates:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">est.pnbd.static</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pnbd.html">pnbd</a></span><span class="op">(</span><span class="va">clv.static</span>, 
                          start.params.model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>r<span class="op">=</span><span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">2</span>, s <span class="op">=</span> <span class="fl">1</span>, beta <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,
                          start.params.life <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>Gender<span class="op">=</span><span class="fl">0.6</span>, Channel<span class="op">=</span><span class="fl">0.4</span><span class="op">)</span>,
@@ -487,13 +510,13 @@
 <span class="co">#&gt; Starting estimation...</span>
 <span class="co">#&gt; Estimation finished!</span></code></pre></div>
 <p>Analogously, we can estimate the model containing time-varying covariates.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">est.pnbd.dyn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pnbd.html">pnbd</a></span><span class="op">(</span><span class="va">clv.dyn</span>, 
                      start.params.model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>r<span class="op">=</span><span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">2</span>, s <span class="op">=</span> <span class="fl">1</span>, beta <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,
                      start.params.life <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>Marketing<span class="op">=</span><span class="fl">0.5</span>, Gender<span class="op">=</span><span class="fl">0.6</span>, Channel<span class="op">=</span><span class="fl">0.4</span><span class="op">)</span>,
                      start.params.trans <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>Marketing<span class="op">=</span><span class="fl">0.5</span>, Gender<span class="op">=</span><span class="fl">0.6</span>, Channel<span class="op">=</span><span class="fl">0.4</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>To inspect the estimated model we use <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>, however all other commands such as <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>, <code><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef()</a></code>, <code>loglike()</code>, <code><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint()</a></code> and <code><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov()</a></code> are also available. Now, output contains also parameters for the covariates for both processes. Since covariates are added separately for the purchase and the attrition process, there are also separate model parameters for the two processes. These parameters are directly interpretable as rate elasticity of the corresponding factors: A 1% change in a contextual factor <span class="math inline">\(\bf{X}^{P}\)</span> or <span class="math inline">\(\bf{X}^{L}\)</span> changes the purchase or the attrition rate by <span class="math inline">\(\gamma_{purch}\bf{X}^{P}\)</span> or <span class="math inline">\(\gamma_{life}\bf{X}^{L}\)</span> percent, respectively <span class="citation">(Gupta 1991)</span>. In the example of the apparel retailer, we observe that female customer purchase significantly more (<code>trans.Gender=1.42576</code>). Note, that female customers are coded as 1, male customers as 0. Also customers acquired offline (coded as Channel=1), purchase more (<code>trans.Channel=0.40304</code>) and stay longer (<code>life.Channel=0.9343</code>). Make sure to check the Karush-Kuhn-Tucker optimality conditions of the first and second order <span class="citation">(Kuhn and Tucker 1951)</span> (KKT1 and KKT1) before interpreting the parameters. If those criteria are not met, the optimizer has probably not arrived at an optimal solution. If this is the case it is usually a good idea to rerun the estimation using alternative starting values.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est.pnbd.static</span><span class="op">)</span>
 <span class="co">#&gt; Pareto NBD with Static Covariates  Model </span>
 <span class="co">#&gt; </span>
@@ -539,7 +562,7 @@
 <h2 id="add-correlation-to-the-model">Add Correlation to the model<a class="anchor" aria-label="anchor" href="#add-correlation-to-the-model"></a>
 </h2>
 <p>To relax the assumption of independence between the purchase and the attrition process, <code>CLVTools</code> provides the option to specify the argument <code>use.cor</code> in the command t fit the model (i.e. <code>pnbd</code>). In case of <code>use.cor=TRUE</code>, a Sarmanov approach is used to correlate the two processes. <code>start.param.cor</code> allows to optionally specify a starting value for the correlation parameter.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">est.pnbd.cor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pnbd.html">pnbd</a></span><span class="op">(</span><span class="va">clv.apparel</span>, 
                      use.cor<span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est.pnbd.cor</span><span class="op">)</span></code></pre></div>
@@ -554,7 +577,7 @@
 <li>The argument <code>names.cov.constr</code> implements equality constraints for contextual factors with regards to the two processes. For example the variable “gender” is forced to have the same effect on the purchase as well as on the attrition process. To do so, the option <code>names.cov.constr</code> is available (i.e. <code>names.cov.constr=c("Gender")</code>). To provide starting parameters for the constrained variable use <code>start.params.constr</code>.</li>
 </ul>
 <p>To enable regularization for the covariates, we use the following command:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">est.pnbd.reg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pnbd.html">pnbd</a></span><span class="op">(</span><span class="va">clv.static</span>, 
                          start.params.model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>r<span class="op">=</span><span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">2</span>, s <span class="op">=</span> <span class="fl">1</span>, beta <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,
                          reg.lambdas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>trans<span class="op">=</span><span class="fl">100</span>, life<span class="op">=</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span>
@@ -599,7 +622,7 @@
 <span class="co">#&gt;    lambda.trans 100.0000</span>
 <span class="co">#&gt; Constraint covs FALSE</span></code></pre></div>
 <p>To constrain “Gender” to have the same effect on both processes we use the following command. Note, that the output now only contains one parameter for “Gender” as it is constrained to be the same for both processes.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">est.pnbd.constr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pnbd.html">pnbd</a></span><span class="op">(</span><span class="va">clv.static</span>, 
                          start.params.model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>r<span class="op">=</span><span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">2</span>, s <span class="op">=</span> <span class="fl">1</span>, beta <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,
                          start.params.constr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>Gender<span class="op">=</span><span class="fl">0.6</span><span class="op">)</span>,
@@ -657,7 +680,7 @@
 </h2>
 <p>For estimating customer spending <code>CLVTools</code> requires customers’ transaction history including price. Every transaction record consists of a purchase date,customer ID and the price of the transaction. Data may be provided as <code>data.frame</code> or <code>data.table</code> <span class="citation">(Dowle and Srinivasan 2019)</span>. Currently, the Gamma/Gamma model does not allow for covariates.</p>
 <p>We use again simulated data comparable to data from a retailer in the apparel industry. The apparel dataset is available in the <code>CLVTools</code> package. We use the <code>data(apparelTrans)</code> to load it and initialize a data object using the <code><a href="../reference/clvdata.html">clvdata()</a></code> command. For details see section <a href="#clvdata">Initialize the CLV-Object</a>.</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelTrans"</span><span class="op">)</span>
 <span class="va">apparelTrans</span>
 <span class="co">#&gt;         Id       Date  Price</span>
@@ -685,7 +708,7 @@
 <h2 id="estimate-model-parameters">Estimate Model Parameters<a class="anchor" aria-label="anchor" href="#estimate-model-parameters"></a>
 </h2>
 <p>To estimate the Gamma/Gamma spending model, we use the command <code><a href="../reference/gg.html">gg()</a></code> on the initialized <code>clvdata</code> object. <code>clv.data</code> specifies the initialized object prepared in the last step. Optionally, starting values for the model parameters and control settings for the optimization algorithm may be provided: The argument <code>start.params.model</code> allows to assign a vector of starting values for the optimization (i.e <code>c(p=1, q=2, gamma=1)</code> for the the Gamma/Gamma model). This is useful if prior knowledge on the parameters of the distributions are available. By default starting values are set to 1 for all parameters. The argument <code>optimx.args</code> provides an option to control settings for the optimization routine (see section <a href="#estimate">Estimate Model Parameters</a>).</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">est.gg</span><span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg.html">gg</a></span><span class="op">(</span>clv.data <span class="op">=</span> <span class="va">clv.apparel</span><span class="op">)</span>
 <span class="co">#&gt; Starting estimation...</span>
 <span class="co">#&gt; Estimation finished!</span>
@@ -701,7 +724,7 @@
 <span class="co">#&gt; KKT1: TRUE </span>
 <span class="co">#&gt; KKT2: TRUE</span></code></pre></div>
 <p>In line with literature, <code>CLVTools</code> does not use by default the monetary value of the first transaction to fit the model since it might be atypical of future purchases. If the first transaction should be considered the argument <code>remove.first.transaction</code> can be set to <code>FALSE</code>.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">est.gg</span><span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg.html">gg</a></span><span class="op">(</span>clv.data <span class="op">=</span> <span class="va">clv.apparel</span>, remove.first.transaction<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 <span class="co">#&gt; Starting estimation...</span>
 <span class="co">#&gt; Estimation finished!</span>
@@ -727,7 +750,7 @@
 </ul>
 <p>If a holdout period is available additionally the true mean spending (“actual.mean.spending”) during the holdout period is reported.</p>
 <p>To use the parameter estimates on new data (e.g., an other customer cohort), the argument <code>newdata</code> optionally allows to provide a new <code>clvdata</code> object.</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">results.spending</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict.clv.fitted.transactions.html">predict</a></span><span class="op">(</span><span class="va">est.gg</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">results.spending</span><span class="op">)</span>
 <span class="co">#&gt;        Id actual.mean.spending predicted.mean.spending</span>
@@ -747,7 +770,7 @@
 <h2 id="plot-spendings">Plot Spendings<a class="anchor" aria-label="anchor" href="#plot-spendings"></a>
 </h2>
 <p>an estimated spending model object (i.e. <code>est.gg</code>) may be plotted using the <code><a href="../reference/plot.clv.fitted.transactions.html">plot()</a></code> command. The plot provides a comparison of the estimated and actual density of customer spending. The argument <code>plot.interpolation.points</code> allows to adjust the number of interpolation points in density graph.</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">est.gg</span><span class="op">)</span></code></pre></div>
 <p><img src="CLVTools_files/figure-html/spending-plot-model4-1.png" width="100%"></p>
 <div class="section level3 unnumbered">
@@ -819,7 +842,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer>

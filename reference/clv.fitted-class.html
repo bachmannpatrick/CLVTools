@@ -27,7 +27,7 @@ Created with an existing clv.data and clv.model object (or subclasses thereof)."
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
       </span>
     </div>
 
@@ -45,7 +45,7 @@ Created with an existing clv.data and clv.model object (or subclasses thereof)."
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/internal_docu/internal_docu.html">UNKNOWN TITLE</a>
+      <a href="../articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
     </li>
   </ul></li>
 <li>
@@ -67,7 +67,7 @@ Created with an existing clv.data and clv.model object (or subclasses thereof)."
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Fitted model without covariates</h1>
-    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/R/class_clv_fitted.R" class="external-link"><code>R/class_clv_fitted.R</code></a>, <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/R/f_s3generics_clvfitted.R" class="external-link"><code>R/f_s3generics_clvfitted.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/R/class_clv_fitted.R" class="external-link"><code>R/class_clv_fitted.R</code></a>, <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/R/f_s3generics_clvfitted.R" class="external-link"><code>R/f_s3generics_clvfitted.R</code></a></small>
     <div class="hidden name"><code>clv.fitted-class.Rd</code></div>
     </div>
 
@@ -79,31 +79,43 @@ Serves as parent classes to fitted transaction and spending models.</p>
 <p>Created with an existing clv.data and clv.model object (or subclasses thereof).</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for clv.fitted</span>
+    <div id="ref-usage">
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for clv.fitted</span>
 <span class="fu"><a href="https://rdrr.io/r/methods/show.html" class="external-link">show</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span></code></pre></div>
+    </div>
 
-    <div id="ref-sections">
     <div id="slots">
     <h2>Slots</h2>
     
 
-<dl><dt><code>call</code></dt><dd><p>Single language of the call used to create the object</p></dd>
+<dl><dt><code>call</code></dt>
+<dd><p>Single language of the call used to create the object</p></dd>
 
-<dt><code>clv.model</code></dt><dd><p>Single object of (sub-) class <code>clv.model</code> that determines model-specific behavior.</p></dd>
 
-<dt><code>clv.data</code></dt><dd><p>Single object of (sub-) class <code>clv.data</code> that contains the data and temporal information to fit the model to.</p></dd>
+<dt><code>clv.model</code></dt>
+<dd><p>Single object of (sub-) class <code>clv.model</code> that determines model-specific behavior.</p></dd>
 
-<dt><code>prediction.params.model</code></dt><dd><p>Numeric vector of the model parameters, set and used solely when predicting. Named after model parameters in original scale and derived from <code><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef()</a></code>.</p></dd>
 
-<dt><code>optimx.estimation.output</code></dt><dd><p>A single object of class <code>optimx</code> as returned from method <code><a href="https://rdrr.io/pkg/optimx/man/optimx.html" class="external-link">optimx::optimx</a></code> after optimizing the log-likelihood fitting the model.</p></dd>
+<dt><code>clv.data</code></dt>
+<dd><p>Single object of (sub-) class <code>clv.data</code> that contains the data and temporal information to fit the model to.</p></dd>
 
-<dt><code>optimx.hessian</code></dt><dd><p>Single matrix that is the hessian extracted from the last row of the optimization output stored in the slot <code>optimx.estimation.output</code>.</p></dd>
+
+<dt><code>prediction.params.model</code></dt>
+<dd><p>Numeric vector of the model parameters, set and used solely when predicting. Named after model parameters in original scale and derived from <code><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef()</a></code>.</p></dd>
+
+
+<dt><code>optimx.estimation.output</code></dt>
+<dd><p>A single object of class <code>optimx</code> as returned from method <code><a href="https://rdrr.io/pkg/optimx/man/optimx.html" class="external-link">optimx::optimx</a></code> after optimizing the log-likelihood fitting the model.</p></dd>
+
+
+<dt><code>optimx.hessian</code></dt>
+<dd><p>Single matrix that is the hessian extracted from the last row of the optimization output stored in the slot <code>optimx.estimation.output</code>.</p></dd>
+
 
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><a href="clv.fitted.spending-class.html">clv.fitted.spending</a>, <a href="clv.fitted.transactions-class.html">clv.fitted.transactions</a>, <a href="clv.fitted.transactions.static.cov-class.html">clv.fitted.transactions.static.cov</a>, <a href="clv.fitted.transactions.dynamic.cov-class.html">clv.fitted.transactions.dynamic.cov</a></p></div>
-    </div>
     </div>
 
   </div>
@@ -118,7 +130,7 @@ Serves as parent classes to fitted transaction and spending models.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

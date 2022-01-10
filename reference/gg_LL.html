@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
       </span>
     </div>
 
@@ -41,7 +41,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/internal_docu/internal_docu.html">UNKNOWN TITLE</a>
+      <a href="../articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
     </li>
   </ul></li>
 <li>
@@ -63,7 +63,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Gamma-Gamma: Log-Likelihood Function</h1>
-    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/R/RcppExports.R" class="external-link"><code>R/RcppExports.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/R/RcppExports.R" class="external-link"><code>R/RcppExports.R</code></a></small>
     <div class="hidden name"><code>gg_LL.Rd</code></div>
     </div>
 
@@ -71,16 +71,18 @@
     <p>Calculates the Log-Likelihood value for the Gamma-Gamma model.</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class="sourceCode r"><code><span class="fu">gg_LL</span><span class="op">(</span><span class="va">vLogparams</span>, <span class="va">vX</span>, <span class="va">vM_x</span><span class="op">)</span></code></pre></div>
+    <div id="ref-usage">
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">gg_LL</span><span class="op">(</span><span class="va">vLogparams</span>, <span class="va">vX</span>, <span class="va">vM_x</span><span class="op">)</span></code></pre></div>
+    </div>
 
-    <div id="ref-sections">
     <div id="arguments">
     <h2>Arguments</h2>
-    
-
-<dl><dt>vLogparams</dt><dd><p>a vector containing the log of the parameters p, q, gamma</p></dd>
-</dl><dl><dt>vX</dt><dd><p>frequency vector of length n counting the numbers of purchases</p></dd>
-</dl><dl><dt>vM_x</dt><dd><p>the observed average spending for every customer during the calibration time.</p></dd>
+    <dl><dt>vLogparams</dt>
+<dd><p>a vector containing the log of the parameters p, q, gamma</p></dd>
+<dt>vX</dt>
+<dd><p>frequency vector of length n counting the numbers of purchases</p></dd>
+<dt>vM_x</dt>
+<dd><p>the observed average spending for every customer during the calibration time.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -96,12 +98,11 @@ parameters q (shape) and gamma (scale).</p>
     <div id="references">
     <h2>References</h2>
     <p>Colombo R, Jiang W (1999). “A stochastic RFM model.”
-Journal of Interactive Marketing, 13(3), 2–12.</p>
+Journal of Interactive Marketing, 13(3), 2-12.</p>
 <p>Fader PS, Hardie BG, Lee K (2005). “RFM and CLV: Using Iso-Value Curves for
-Customer Base Analysis.” Journal of Marketing Research, 42(4), 415–430.</p>
+Customer Base Analysis.” Journal of Marketing Research, 42(4), 415-430.</p>
 <p>Fader PS, Hardie BG (2013). “The Gamma-Gamma Model of Monetary Value.”
 URL <a href="http://www.brucehardie.com/notes/025/gamma_gamma.pdf" class="external-link">http://www.brucehardie.com/notes/025/gamma_gamma.pdf</a>.</p>
-    </div>
     </div>
 
   </div>
@@ -116,7 +117,7 @@ URL <a href="http://www.brucehardie.com/notes/025/gamma_gamma.pdf" class="extern
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

@@ -29,7 +29,7 @@ pnbd_staticcov_PAlive P(alive) for the Pareto/NBD model with static covariates
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
       </span>
     </div>
 
@@ -47,7 +47,7 @@ pnbd_staticcov_PAlive P(alive) for the Pareto/NBD model with static covariates
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/internal_docu/internal_docu.html">UNKNOWN TITLE</a>
+      <a href="../articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
     </li>
   </ul></li>
 <li>
@@ -69,7 +69,7 @@ pnbd_staticcov_PAlive P(alive) for the Pareto/NBD model with static covariates
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Pareto/NBD: Probability of Being Alive</h1>
-    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/R/RcppExports.R" class="external-link"><code>R/RcppExports.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/R/RcppExports.R" class="external-link"><code>R/RcppExports.R</code></a></small>
     <div class="hidden name"><code>pnbd_PAlive.Rd</code></div>
     </div>
 
@@ -80,7 +80,8 @@ based on a customer's past transaction behavior and the Pareto/NBD model paramet
 <li><p><code>pnbd_staticcov_PAlive</code> P(alive) for the Pareto/NBD model with static covariates</p></li>
 </ul></div>
 
-    <div class="ref-usage sourceCode"><pre class="sourceCode r"><code><span class="fu">pnbd_nocov_PAlive</span><span class="op">(</span><span class="va">r</span>, <span class="va">alpha_0</span>, <span class="va">s</span>, <span class="va">beta_0</span>, <span class="va">vX</span>, <span class="va">vT_x</span>, <span class="va">vT_cal</span><span class="op">)</span>
+    <div id="ref-usage">
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">pnbd_nocov_PAlive</span><span class="op">(</span><span class="va">r</span>, <span class="va">alpha_0</span>, <span class="va">s</span>, <span class="va">beta_0</span>, <span class="va">vX</span>, <span class="va">vT_x</span>, <span class="va">vT_cal</span><span class="op">)</span>
 
 <span class="fu">pnbd_staticcov_PAlive</span><span class="op">(</span>
   <span class="va">r</span>,
@@ -95,23 +96,32 @@ based on a customer's past transaction behavior and the Pareto/NBD model paramet
   <span class="va">mCov_trans</span>,
   <span class="va">mCov_life</span>
 <span class="op">)</span></code></pre></div>
+    </div>
 
-    <div id="ref-sections">
     <div id="arguments">
     <h2>Arguments</h2>
-    
-
-<dl><dt>r</dt><dd><p>shape parameter of the Gamma distribution of the purchase process. The smaller r, the stronger the heterogeneity of the purchase process</p></dd>
-</dl><dl><dt>alpha_0</dt><dd><p>rate parameter of the Gamma distribution of the purchase process</p></dd>
-</dl><dl><dt>s</dt><dd><p>shape parameter of the Gamma distribution for the lifetime process. The smaller s, the stronger the heterogeneity of customer lifetimes</p></dd>
-</dl><dl><dt>beta_0</dt><dd><p>rate parameter for the Gamma distribution for the lifetime process.</p></dd>
-</dl><dl><dt>vX</dt><dd><p>Frequency vector of length n counting the numbers of purchases.</p></dd>
-</dl><dl><dt>vT_x</dt><dd><p>Recency vector of length n.</p></dd>
-</dl><dl><dt>vT_cal</dt><dd><p>Vector of length n indicating the total number of periods of observation.</p></dd>
-</dl><dl><dt>vCovParams_trans</dt><dd><p>Vector of estimated parameters for the transaction covariates.</p></dd>
-</dl><dl><dt>vCovParams_life</dt><dd><p>Vector of estimated parameters for the lifetime covariates.</p></dd>
-</dl><dl><dt>mCov_trans</dt><dd><p>Matrix containing the covariates data affecting the transaction process. One column for each covariate.</p></dd>
-</dl><dl><dt>mCov_life</dt><dd><p>Matrix containing the covariates data affecting the lifetime process. One column for each covariate.</p></dd>
+    <dl><dt>r</dt>
+<dd><p>shape parameter of the Gamma distribution of the purchase process. The smaller r, the stronger the heterogeneity of the purchase process</p></dd>
+<dt>alpha_0</dt>
+<dd><p>rate parameter of the Gamma distribution of the purchase process</p></dd>
+<dt>s</dt>
+<dd><p>shape parameter of the Gamma distribution for the lifetime process. The smaller s, the stronger the heterogeneity of customer lifetimes</p></dd>
+<dt>beta_0</dt>
+<dd><p>rate parameter for the Gamma distribution for the lifetime process.</p></dd>
+<dt>vX</dt>
+<dd><p>Frequency vector of length n counting the numbers of purchases.</p></dd>
+<dt>vT_x</dt>
+<dd><p>Recency vector of length n.</p></dd>
+<dt>vT_cal</dt>
+<dd><p>Vector of length n indicating the total number of periods of observation.</p></dd>
+<dt>vCovParams_trans</dt>
+<dd><p>Vector of estimated parameters for the transaction covariates.</p></dd>
+<dt>vCovParams_life</dt>
+<dd><p>Vector of estimated parameters for the lifetime covariates.</p></dd>
+<dt>mCov_trans</dt>
+<dd><p>Matrix containing the covariates data affecting the transaction process. One column for each covariate.</p></dd>
+<dt>mCov_life</dt>
+<dd><p>Matrix containing the covariates data affecting the lifetime process. One column for each covariate.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -131,14 +141,18 @@ needs to added to <code>vCovParams_life</code> at the respective position.</p>
     <div id="references">
     <h2>References</h2>
     <p>Schmittlein DC, Morrison DG, Colombo R (1987). “Counting Your Customers:
-Who-Are They and What Will They Do Next?” Management Science, 33(1), 1–24.</p>
+Who-Are They and What Will They Do Next?” Management Science, 33(1), 1-24.</p>
+<p>Bachmann P, Meierer M, Naef, J (2021). “The Role of Time-Varying Contextual Factors
+in Latent Attrition Models for Customer Base Analysis” Marketing Science 40(4). 783-809.</p>
 <p>Fader PS, Hardie BGS (2005). “A Note on Deriving the Pareto/NBD Model and
 Related Expressions.”
 URL <a href="http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf" class="external-link">http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf</a>.</p>
-<p>Fader PS, Hardie BG (2007). “Incorporating time-invariant covariates into the
+<p>Fader PS, Hardie BGS (2007). “Incorporating time-invariant covariates into the
 Pareto/NBD and BG/NBD models.”
 URL <a href="http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf" class="external-link">http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf</a>.</p>
-    </div>
+<p>Fader PS, Hardie BGS (2020). “Deriving an Expression for P(X(t)=x) Under
+the Pareto/NBD Model.”
+URL <a href="https://www.brucehardie.com/notes/012/pareto_NBD_pmf_derivation_rev.pdf" class="external-link">https://www.brucehardie.com/notes/012/pareto_NBD_pmf_derivation_rev.pdf</a></p>
     </div>
 
   </div>
@@ -153,7 +167,7 @@ URL <a href="http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

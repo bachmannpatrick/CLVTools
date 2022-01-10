@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
       </span>
     </div>
 
@@ -41,7 +41,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/internal_docu/internal_docu.html">UNKNOWN TITLE</a>
+      <a href="../articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
     </li>
   </ul></li>
 <li>
@@ -63,9 +63,22 @@
   <div class="col-md-9 contents">
     <div class="page-header">
       <h1 data-toc-skip>Changelog <small></small></h1>
-      <small>Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.9.0" id="clvtools-090">CLVTools 0.9.0<small>2022-01-09</small><a class="anchor" aria-label="anchor" href="#clvtools-090"></a></h2>
+<div class="section level4">
+<h4 id="new-features-0-9-0">NEW FEATURES<a class="anchor" aria-label="anchor" href="#new-features-0-9-0"></a></h4>
+<ul><li>Three new diagnostic plots for transaction data to analyse frequency, spending and interpurchase time</li>
+<li>New diagnostic plot for fitted transaction models (PMF plot)</li>
+<li>New function to calculate the probability mass function of selected models</li>
+<li>Calculate summary statistics only for the transaction data of selected customers</li>
+<li>Canonical transformation from data.frame/data.table to transaction data object and vice-versa</li>
+<li>Canonical subset for the data stored in the transaction data object</li>
+<li>Pareto/NBD DERT: Improved numerical stability</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.8.1" id="clvtools-081">CLVTools 0.8.1<small>2021-10-18</small><a class="anchor" aria-label="anchor" href="#clvtools-081"></a></h2>
 <div class="section level4">
@@ -96,7 +109,7 @@
 </ul></div>
 <div class="section level4">
 <h4 id="bug-fixes-0-7-0">BUG FIXES<a class="anchor" aria-label="anchor" href="#bug-fixes-0-7-0"></a></h4>
-<ul><li>Pareto/NBD LogLikelihood: For the case Tcal = t.x and for the case alpha == beta</li>
+<ul><li>Pareto/NBD log-likelihood: For the case Tcal = t.x and for the case alpha == beta</li>
 <li>Static or dynamic covariates with syntactically invalid names (spaces, start with numbers, etc) could not be fit</li>
 </ul></div>
 </div>
@@ -117,7 +130,7 @@
 <ul><li>Pareto/NBD model to predict repeat transactions without and with static or dynamic covariates</li>
 <li>Gamma-Gamma model to predict average spending</li>
 <li>Predicting CLV and future transactions per customer</li>
-<li>Data class to pre-process transaction data and to provide summary statistics</li>
+<li>Data class to preprocess transaction data and to provide summary statistics</li>
 <li>Plot of expected repeat transactions as by the fitted model compared against actuals</li>
 </ul></div>
 </div>
@@ -135,7 +148,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

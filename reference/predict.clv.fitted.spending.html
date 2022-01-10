@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
       </span>
     </div>
 
@@ -41,7 +41,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/internal_docu/internal_docu.html">UNKNOWN TITLE</a>
+      <a href="../articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
     </li>
   </ul></li>
 <li>
@@ -63,7 +63,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Predict customers' future spending</h1>
-    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/R/f_interface_predict_clvfittedspending.R" class="external-link"><code>R/f_interface_predict_clvfittedspending.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/R/f_interface_predict_clvfittedspending.R" class="external-link"><code>R/f_interface_predict_clvfittedspending.R</code></a></small>
     <div class="hidden name"><code>predict.clv.fitted.spending.Rd</code></div>
     </div>
 
@@ -71,28 +71,34 @@
     <p>Predict customer's future mean spending per transaction and compare it to the actual mean spending in the holdout period.</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for clv.fitted.spending</span>
+    <div id="ref-usage">
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for clv.fitted.spending</span>
 <span class="fu"><a href="predict.clv.fitted.transactions.html">predict</a></span><span class="op">(</span><span class="va">object</span>, newdata <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for clv.fitted.spending</span>
 <span class="fu"><a href="predict.clv.fitted.transactions.html">predict</a></span><span class="op">(</span><span class="va">object</span>, newdata <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    </div>
 
-    <div id="ref-sections">
     <div id="arguments">
     <h2>Arguments</h2>
-    
-
-<dl><dt>object</dt><dd><p>A fitted spending model for which prediction is desired.</p></dd>
-</dl><dl><dt>newdata</dt><dd><p>A clv data object for which predictions should be made with the fitted model. If none or NULL is given, predictions are made for the data on which the model was fit.</p></dd>
-</dl><dl><dt>verbose</dt><dd><p>Show details about the running of the function.</p></dd>
-</dl><dl><dt>...</dt><dd><p>Ignored</p></dd>
+    <dl><dt>object</dt>
+<dd><p>A fitted spending model for which prediction is desired.</p></dd>
+<dt>newdata</dt>
+<dd><p>A clv data object for which predictions should be made with the fitted model. If none or NULL is given, predictions are made for the data on which the model was fit.</p></dd>
+<dt>verbose</dt>
+<dd><p>Show details about the running of the function.</p></dd>
+<dt>...</dt>
+<dd><p>Ignored</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     <p>An object of class <code>data.table</code> with columns:</p>
-<dl><dt>Id</dt><dd><p>The respective customer identifier</p></dd>
-</dl><dl><dt>actual.mean.spending</dt><dd><p>Actual mean spending per transaction in the holdout period. Only if there is a holdout period otherwise it is not reported.</p></dd>
-</dl><dl><dt>predicted.mean.spending</dt><dd><p>The mean spending per transaction as predicted by the fitted spending model.</p></dd>
+<dl><dt>Id</dt>
+<dd><p>The respective customer identifier</p></dd>
+<dt>actual.mean.spending</dt>
+<dd><p>Actual mean spending per transaction in the holdout period. Only if there is a holdout period otherwise it is not reported.</p></dd>
+<dt>predicted.mean.spending</dt>
+<dd><p>The mean spending per transaction as predicted by the fitted spending model.</p></dd>
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -106,11 +112,10 @@ this will be applied to <code>newdata</code> as well.</p>
 <p>models to predict transactions: <a href="pnbd.html">pnbd</a>, <a href="bgnbd.html">bgnbd</a>, <a href="ggomnbd.html">ggomnbd</a>.</p>
 <p><code><a href="predict.clv.fitted.transactions.html">predict</a></code> for transaction models</p></div>
     </div>
-    </div>
 
-    <div id="examples">
+    <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelTrans"</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Fit gg model on data</span></span>
@@ -151,7 +156,7 @@ this will be applied to <code>newdata</code> as well.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

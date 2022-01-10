@@ -40,7 +40,7 @@ In this case, the prediction additionally contains the following two columns:
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
       </span>
     </div>
 
@@ -58,7 +58,7 @@ In this case, the prediction additionally contains the following two columns:
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/internal_docu/internal_docu.html">UNKNOWN TITLE</a>
+      <a href="../articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
     </li>
   </ul></li>
 <li>
@@ -80,7 +80,7 @@ In this case, the prediction additionally contains the following two columns:
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Predict CLV from a fitted transaction model</h1>
-    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/R/f_interface_predict_clvfittedtransactions.R" class="external-link"><code>R/f_interface_predict_clvfittedtransactions.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/R/f_interface_predict_clvfittedtransactions.R" class="external-link"><code>R/f_interface_predict_clvfittedtransactions.R</code></a></small>
     <div class="hidden name"><code>predict.clv.fitted.transactions.Rd</code></div>
     </div>
 
@@ -99,7 +99,8 @@ In this case, the prediction additionally contains the following two columns:</p
 <li><p>"CLV", the customer lifetime value. CLV is the product of DERT/DECT and predicted spending.</p></li>
 </ul></div>
 
-    <div class="ref-usage sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for clv.fitted.transactions</span>
+    <div id="ref-usage">
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for clv.fitted.transactions</span>
 <span class="fu">predict</span><span class="op">(</span>
   <span class="va">object</span>,
   newdata <span class="op">=</span> <span class="cn">NULL</span>,
@@ -120,34 +121,50 @@ In this case, the prediction additionally contains the following two columns:</p
   verbose <span class="op">=</span> <span class="cn">TRUE</span>,
   <span class="va">...</span>
 <span class="op">)</span></code></pre></div>
+    </div>
 
-    <div id="ref-sections">
     <div id="arguments">
     <h2>Arguments</h2>
-    
-
-<dl><dt>object</dt><dd><p>A fitted clv transaction model for which prediction is desired.</p></dd>
-</dl><dl><dt>newdata</dt><dd><p>A clv data object for which predictions should be made with the fitted model. If none or NULL is given, predictions are made for the data on which the model was fit.</p></dd>
-</dl><dl><dt>prediction.end</dt><dd><p>Until what point in time to predict. This can be the number of periods (numeric) or a form of date/time object. See details.</p></dd>
-</dl><dl><dt>predict.spending</dt><dd><p>Whether and how to predict spending and based on it also CLV, if possible. See details.</p></dd>
-</dl><dl><dt>continuous.discount.factor</dt><dd><p>continuous discount factor to use to calculate <code>DERT/DECT</code></p></dd>
-</dl><dl><dt>verbose</dt><dd><p>Show details about the running of the function.</p></dd>
-</dl><dl><dt>...</dt><dd><p>Ignored</p></dd>
+    <dl><dt>object</dt>
+<dd><p>A fitted clv transaction model for which prediction is desired.</p></dd>
+<dt>newdata</dt>
+<dd><p>A clv data object for which predictions should be made with the fitted model. If none or NULL is given, predictions are made for the data on which the model was fit.</p></dd>
+<dt>prediction.end</dt>
+<dd><p>Until what point in time to predict. This can be the number of periods (numeric) or a form of date/time object. See details.</p></dd>
+<dt>predict.spending</dt>
+<dd><p>Whether and how to predict spending and based on it also CLV, if possible. See details.</p></dd>
+<dt>continuous.discount.factor</dt>
+<dd><p>continuous discount factor to use to calculate <code>DERT/DECT</code></p></dd>
+<dt>verbose</dt>
+<dd><p>Show details about the running of the function.</p></dd>
+<dt>...</dt>
+<dd><p>Ignored</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     <p>An object of class <code>data.table</code> with columns:</p>
-<dl><dt>Id</dt><dd><p>The respective customer identifier</p></dd>
-</dl><dl><dt>period.first</dt><dd><p>First timepoint of prediction period</p></dd>
-</dl><dl><dt>period.last</dt><dd><p>Last timepoint of prediction period</p></dd>
-</dl><dl><dt>period.length</dt><dd><p>Number of time units covered by the period indicated by <code>period.first</code> and <code>period.last</code> (including both ends).</p></dd>
-</dl><dl><dt>PAlive</dt><dd><p>Probability to be alive at the end of the estimation period</p></dd>
-</dl><dl><dt>CET</dt><dd><p>The Conditional Expected Transactions</p></dd>
-</dl><dl><dt>DERT or DECT</dt><dd><p>Discounted Expected Residual Transactions or Discounted Expected Conditional Transactions for dynamic covariates models</p></dd>
-</dl><dl><dt>actual.x</dt><dd><p>Actual number of transactions until prediction.end. Only if there is a holdout period and the prediction ends in it, otherwise it is not reported.</p></dd>
-</dl><dl><dt>actual.total.spending</dt><dd><p>Actual total spending until prediction.end. Only if there is a holdout period and the prediction ends in it, otherwise it is not reported.</p></dd>
-</dl><dl><dt>predicted.mean.spending</dt><dd><p>The mean spending per transactions as predicted by the spending model.</p></dd>
-</dl><dl><dt>predicted.CLV</dt><dd><p>Customer Lifetime Value based on <code>DERT/DECT</code> and <code>predicted.mean.spending</code>.</p></dd>
+<dl><dt>Id</dt>
+<dd><p>The respective customer identifier</p></dd>
+<dt>period.first</dt>
+<dd><p>First timepoint of prediction period</p></dd>
+<dt>period.last</dt>
+<dd><p>Last timepoint of prediction period</p></dd>
+<dt>period.length</dt>
+<dd><p>Number of time units covered by the period indicated by <code>period.first</code> and <code>period.last</code> (including both ends).</p></dd>
+<dt>PAlive</dt>
+<dd><p>Probability to be alive at the end of the estimation period</p></dd>
+<dt>CET</dt>
+<dd><p>The Conditional Expected Transactions</p></dd>
+<dt>DERT or DECT</dt>
+<dd><p>Discounted Expected Residual Transactions or Discounted Expected Conditional Transactions for dynamic covariates models</p></dd>
+<dt>actual.x</dt>
+<dd><p>Actual number of transactions until prediction.end. Only if there is a holdout period and the prediction ends in it, otherwise it is not reported.</p></dd>
+<dt>actual.total.spending</dt>
+<dd><p>Actual total spending until prediction.end. Only if there is a holdout period and the prediction ends in it, otherwise it is not reported.</p></dd>
+<dt>predicted.mean.spending</dt>
+<dd><p>The mean spending per transactions as predicted by the spending model.</p></dd>
+<dt>predicted.CLV</dt>
+<dd><p>Customer Lifetime Value based on <code>DERT/DECT</code> and <code>predicted.mean.spending</code>.</p></dd>
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -187,11 +204,10 @@ The default value is <code>0.1</code> (=10%). Note that a continuous rate needs 
 <p>models to predict spending: <a href="gg.html">gg</a>.</p>
 <p><code><a href="predict.clv.fitted.spending.html">predict</a></code> for spending models</p></div>
     </div>
-    </div>
 
-    <div id="examples">
+    <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
 <span class="r-in"><span class="co"># \donttest{</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelTrans"</span><span class="op">)</span></span>
@@ -475,7 +491,7 @@ The default value is <code>0.1</code> (=10%). Note that a continuous rate needs 
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

@@ -29,7 +29,7 @@ bgnbd_staticcov_CET Conditional Expected Transactions with static covariates
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
       </span>
     </div>
 
@@ -47,7 +47,7 @@ bgnbd_staticcov_CET Conditional Expected Transactions with static covariates
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/internal_docu/internal_docu.html">UNKNOWN TITLE</a>
+      <a href="../articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
     </li>
   </ul></li>
 <li>
@@ -69,7 +69,7 @@ bgnbd_staticcov_CET Conditional Expected Transactions with static covariates
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>BG/NBD: Conditional Expected Transactions</h1>
-    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/R/RcppExports.R" class="external-link"><code>R/RcppExports.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/R/RcppExports.R" class="external-link"><code>R/RcppExports.R</code></a></small>
     <div class="hidden name"><code>bgnbd_CET.Rd</code></div>
     </div>
 
@@ -80,7 +80,8 @@ on a customer's past transaction behavior and the BG/NBD model parameters.</p>
 <li><p><code>bgnbd_staticcov_CET</code> Conditional Expected Transactions with static covariates</p></li>
 </ul></div>
 
-    <div class="ref-usage sourceCode"><pre class="sourceCode r"><code><span class="fu">bgnbd_nocov_CET</span><span class="op">(</span><span class="va">r</span>, <span class="va">alpha</span>, <span class="va">a</span>, <span class="va">b</span>, <span class="va">dPeriods</span>, <span class="va">vX</span>, <span class="va">vT_x</span>, <span class="va">vT_cal</span><span class="op">)</span>
+    <div id="ref-usage">
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">bgnbd_nocov_CET</span><span class="op">(</span><span class="va">r</span>, <span class="va">alpha</span>, <span class="va">a</span>, <span class="va">b</span>, <span class="va">dPeriods</span>, <span class="va">vX</span>, <span class="va">vT_x</span>, <span class="va">vT_cal</span><span class="op">)</span>
 
 <span class="fu">bgnbd_staticcov_CET</span><span class="op">(</span>
   <span class="va">r</span>,
@@ -96,24 +97,34 @@ on a customer's past transaction behavior and the BG/NBD model parameters.</p>
   <span class="va">mCov_trans</span>,
   <span class="va">mCov_life</span>
 <span class="op">)</span></code></pre></div>
+    </div>
 
-    <div id="ref-sections">
     <div id="arguments">
     <h2>Arguments</h2>
-    
-
-<dl><dt>r</dt><dd><p>shape parameter of the Gamma distribution of the purchase process</p></dd>
-</dl><dl><dt>alpha</dt><dd><p>scale parameter of the Gamma distribution of the purchase process</p></dd>
-</dl><dl><dt>a</dt><dd><p>shape parameter of the Beta distribution of the lifetime process</p></dd>
-</dl><dl><dt>b</dt><dd><p>shape parameter of the Beta distribution of the lifetime process</p></dd>
-</dl><dl><dt>dPeriods</dt><dd><p>number of periods to predict</p></dd>
-</dl><dl><dt>vX</dt><dd><p>Frequency vector of length n counting the numbers of purchases.</p></dd>
-</dl><dl><dt>vT_x</dt><dd><p>Recency vector of length n.</p></dd>
-</dl><dl><dt>vT_cal</dt><dd><p>Vector of length n indicating the total number of periods of observation.</p></dd>
-</dl><dl><dt>vCovParams_trans</dt><dd><p>Vector of estimated parameters for the transaction covariates.</p></dd>
-</dl><dl><dt>vCovParams_life</dt><dd><p>Vector of estimated parameters for the lifetime covariates.</p></dd>
-</dl><dl><dt>mCov_trans</dt><dd><p>Matrix containing the covariates data affecting the transaction process. One column for each covariate.</p></dd>
-</dl><dl><dt>mCov_life</dt><dd><p>Matrix containing the covariates data affecting the lifetime process. One column for each covariate.</p></dd>
+    <dl><dt>r</dt>
+<dd><p>shape parameter of the Gamma distribution of the purchase process</p></dd>
+<dt>alpha</dt>
+<dd><p>scale parameter of the Gamma distribution of the purchase process</p></dd>
+<dt>a</dt>
+<dd><p>shape parameter of the Beta distribution of the lifetime process</p></dd>
+<dt>b</dt>
+<dd><p>shape parameter of the Beta distribution of the lifetime process</p></dd>
+<dt>dPeriods</dt>
+<dd><p>number of periods to predict</p></dd>
+<dt>vX</dt>
+<dd><p>Frequency vector of length n counting the numbers of purchases.</p></dd>
+<dt>vT_x</dt>
+<dd><p>Recency vector of length n.</p></dd>
+<dt>vT_cal</dt>
+<dd><p>Vector of length n indicating the total number of periods of observation.</p></dd>
+<dt>vCovParams_trans</dt>
+<dd><p>Vector of estimated parameters for the transaction covariates.</p></dd>
+<dt>vCovParams_life</dt>
+<dd><p>Vector of estimated parameters for the lifetime covariates.</p></dd>
+<dt>mCov_trans</dt>
+<dd><p>Matrix containing the covariates data affecting the transaction process. One column for each covariate.</p></dd>
+<dt>mCov_life</dt>
+<dd><p>Matrix containing the covariates data affecting the lifetime process. One column for each covariate.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -133,14 +144,15 @@ needs to added to <code>vCovParams_life</code> at the respective position.</p>
     </div>
     <div id="references">
     <h2>References</h2>
-    <p>Fader PS, Hardie BGS, Lee, KL (2005). ““Counting Your Customers” the Easy Way:
-An Alternative to the Pareto/NBD Model” Marketing Science, 24(2), 275–284.</p>
-<p>Fader PS, Hardie BGS (2013). “Overcoming the BG/NBD Model’s #NUM! Error Problem”
+    <p>Fader PS, Hardie BGS, Lee KL (2005). ““Counting Your Customers” the Easy Way:
+An Alternative to the Pareto/NBD Model” Marketing Science, 24(2), 275-284.</p>
+<p>Fader PS, Hardie BGS (2013). “Overcoming the BG/NBD Model's #NUM! Error Problem”
 URL <a href="http://brucehardie.com/notes/027/bgnbd_num_error.pdf" class="external-link">http://brucehardie.com/notes/027/bgnbd_num_error.pdf</a>.</p>
 <p>Fader PS, Hardie BGS (2007). “Incorporating time-invariant covariates into the
 Pareto/NBD and BG/NBD models.”
 URL <a href="http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf" class="external-link">http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf</a>.</p>
-    </div>
+<p>Fader PS, Hardie BGS, Lee KL (2007). “Creating a Fit Histogram for the BG/NBD Model”
+URL <a href="https://www.brucehardie.com/notes/014/bgnbd_fit_histogram.pdf" class="external-link">https://www.brucehardie.com/notes/014/bgnbd_fit_histogram.pdf</a></p>
     </div>
 
   </div>
@@ -155,7 +167,7 @@ URL <a href="http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf"
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

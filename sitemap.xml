@@ -67,6 +67,9 @@
     <loc>https://www.clvtools.com/reference/bgnbd_expectation.html</loc>
   </url>
   <url>
+    <loc>https://www.clvtools.com/reference/bgnbd_pmf.html</loc>
+  </url>
+  <url>
     <loc>https://www.clvtools.com/reference/cdnow.html</loc>
   </url>
   <url>
@@ -217,6 +220,9 @@
     <loc>https://www.clvtools.com/reference/plot.clv.fitted.transactions.html</loc>
   </url>
   <url>
+    <loc>https://www.clvtools.com/reference/pmf.html</loc>
+  </url>
+  <url>
     <loc>https://www.clvtools.com/reference/pnbd.html</loc>
   </url>
   <url>
@@ -233,6 +239,9 @@
   </url>
   <url>
     <loc>https://www.clvtools.com/reference/pnbd_expectation.html</loc>
+  </url>
+  <url>
+    <loc>https://www.clvtools.com/reference/pnbd_pmf.html</loc>
   </url>
   <url>
     <loc>https://www.clvtools.com/reference/predict.clv.fitted.spending.html</loc>

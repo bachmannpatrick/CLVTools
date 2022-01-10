@@ -26,7 +26,7 @@ At least 1 covariate is needed for both processes and no categorical covariate m
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
       </span>
     </div>
 
@@ -44,7 +44,7 @@ At least 1 covariate is needed for both processes and no categorical covariate m
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/internal_docu/internal_docu.html">UNKNOWN TITLE</a>
+      <a href="../articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
     </li>
   </ul></li>
 <li>
@@ -66,7 +66,7 @@ At least 1 covariate is needed for both processes and no categorical covariate m
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Add Dynamic Covariates to a CLV data object</h1>
-    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/R/f_interface_setdynamiccovariates.R" class="external-link"><code>R/f_interface_setdynamiccovariates.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/R/f_interface_setdynamiccovariates.R" class="external-link"><code>R/f_interface_setdynamiccovariates.R</code></a></small>
     <div class="hidden name"><code>SetDynamicCovariates.Rd</code></div>
     </div>
 
@@ -77,7 +77,8 @@ The returned object can be used to fit models with dynamic covariates.</p>
 <p>At least 1 covariate is needed for both processes and no categorical covariate may be of only a single category.</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class="sourceCode r"><code><span class="fu">SetDynamicCovariates</span><span class="op">(</span>
+    <div id="ref-usage">
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">SetDynamicCovariates</span><span class="op">(</span>
   <span class="va">clv.data</span>,
   <span class="va">data.cov.life</span>,
   <span class="va">data.cov.trans</span>,
@@ -86,25 +87,29 @@ The returned object can be used to fit models with dynamic covariates.</p>
   name.id <span class="op">=</span> <span class="st">"Id"</span>,
   name.date <span class="op">=</span> <span class="st">"Date"</span>
 <span class="op">)</span></code></pre></div>
+    </div>
 
-    <div id="ref-sections">
     <div id="arguments">
     <h2>Arguments</h2>
-    
-
-<dl><dt>clv.data</dt><dd><p>CLV data object to add the covariates data to.</p></dd>
-</dl><dl><dt>data.cov.life</dt><dd><p>Dynamic covariate data as <code>data.frame</code> or <code>data.table</code> for the lifetime process.</p></dd>
-</dl><dl><dt>data.cov.trans</dt><dd><p>Dynamic covariate data as <code>data.frame</code> or <code>data.table</code> for the transaction process.</p></dd>
-</dl><dl><dt>names.cov.life</dt><dd><p>Vector with names of the columns in <code>data.cov.life</code> that contain the covariates.</p></dd>
-</dl><dl><dt>names.cov.trans</dt><dd><p>Vector with names of the columns in <code>data.cov.trans</code> that contain the covariates.</p></dd>
-</dl><dl><dt>name.id</dt><dd><p>Name of the column to find the Id data for both, <code>data.cov.life</code> and <code>data.cov.trans</code>.</p></dd>
-</dl><dl><dt>name.date</dt><dd><p>Name of the column to find the Date data for both, <code>data.cov.life</code> and <code>data.cov.trans</code>.</p></dd>
+    <dl><dt>clv.data</dt>
+<dd><p>CLV data object to add the covariates data to.</p></dd>
+<dt>data.cov.life</dt>
+<dd><p>Dynamic covariate data as <code>data.frame</code> or <code>data.table</code> for the lifetime process.</p></dd>
+<dt>data.cov.trans</dt>
+<dd><p>Dynamic covariate data as <code>data.frame</code> or <code>data.table</code> for the transaction process.</p></dd>
+<dt>names.cov.life</dt>
+<dd><p>Vector with names of the columns in <code>data.cov.life</code> that contain the covariates.</p></dd>
+<dt>names.cov.trans</dt>
+<dd><p>Vector with names of the columns in <code>data.cov.trans</code> that contain the covariates.</p></dd>
+<dt>name.id</dt>
+<dd><p>Name of the column to find the Id data for both, <code>data.cov.life</code> and <code>data.cov.trans</code>.</p></dd>
+<dt>name.date</dt>
+<dd><p>Name of the column to find the Date data for both, <code>data.cov.life</code> and <code>data.cov.trans</code>.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     <p>An object of class <code>clv.data.dynamic.covariates</code>.
-See the class definition <a href="clv.data.dynamic.covariates-class.html">clv.data.dynamic.covariates</a>
-for more details about the returned object.</p>
+See the class definition <a href="clv.data.dynamic.covariates-class.html">clv.data.dynamic.covariates</a>for more details about the returned object.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -120,11 +125,10 @@ Covariates of class <code>character</code> or <code>factor</code> are converted 
 If the Date column in the covariate data is of type <code>character</code>, the <code>date.format</code> given when
 creating the the <code>clv.data</code> object is used for parsing.</p>
     </div>
-    </div>
 
-    <div id="examples">
+    <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelTrans"</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelDynCov"</span><span class="op">)</span></span>
 <span class="r-in"></span>
@@ -163,7 +167,7 @@ creating the the <code>clv.data</code> object is used for parsing.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

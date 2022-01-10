@@ -27,7 +27,7 @@ to obtain a functional clv.fitted object."><!-- mathjax --><script src="https://
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
       </span>
     </div>
 
@@ -45,7 +45,7 @@ to obtain a functional clv.fitted object."><!-- mathjax --><script src="https://
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/internal_docu/internal_docu.html">UNKNOWN TITLE</a>
+      <a href="../articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
     </li>
   </ul></li>
 <li>
@@ -67,7 +67,7 @@ to obtain a functional clv.fitted object."><!-- mathjax --><script src="https://
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>CLV Model providing model related functionalities</h1>
-    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/R/class_clv_model.R" class="external-link"><code>R/class_clv_model.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/R/class_clv_model.R" class="external-link"><code>R/class_clv_model.R</code></a></small>
     <div class="hidden name"><code>clv.model-class.Rd</code></div>
     </div>
 
@@ -80,27 +80,35 @@ to obtain a functional <code>clv.fitted</code> object.</p>
     </div>
 
 
-    <div id="ref-sections">
     <div id="slots">
     <h2>Slots</h2>
     
 
-<dl><dt><code>name.model</code></dt><dd><p>Name of the model as it should be displayed</p></dd>
+<dl><dt><code>name.model</code></dt>
+<dd><p>Name of the model as it should be displayed</p></dd>
 
-<dt><code>names.original.params.model</code></dt><dd><p>character vector that defines the names of the model parameters as they should be reported</p></dd>
 
-<dt><code>names.prefixed.params.model</code></dt><dd><p>character vector that defines the names of the model parameters as they are named during LL optimization</p></dd>
+<dt><code>names.original.params.model</code></dt>
+<dd><p>character vector that defines the names of the model parameters as they should be reported</p></dd>
 
-<dt><code>start.params.model</code></dt><dd><p>numeric vector of default values at original scale that should be used for the LL optimization if the user does not provide start parameters. Named with <code>names.original.params.model</code>.</p></dd>
 
-<dt><code>optimx.defaults</code></dt><dd><p>list of default arguments for calling <code><a href="https://rdrr.io/pkg/optimx/man/optimx.html" class="external-link">optimx</a></code> with <code>do.call</code>. Named after the respective arguments in optimx.</p></dd>
+<dt><code>names.prefixed.params.model</code></dt>
+<dd><p>character vector that defines the names of the model parameters as they are named during LL optimization</p></dd>
+
+
+<dt><code>start.params.model</code></dt>
+<dd><p>numeric vector of default values at original scale that should be used for the LL optimization if the user does not provide start parameters. Named with <code>names.original.params.model</code>.</p></dd>
+
+
+<dt><code>optimx.defaults</code></dt>
+<dd><p>list of default arguments for calling <code><a href="https://rdrr.io/pkg/optimx/man/optimx.html" class="external-link">optimx</a></code> with <code>do.call</code>. Named after the respective arguments in optimx.</p></dd>
+
 
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p>CLV model subclasses with and without support for fitting with correlation <a href="clv.model.with.correlation-class.html">clv.model.with.correlation</a>, <a href="clv.model.no.correlation-class.html">clv.model.no.correlation</a></p>
 <p>Class using its instances: <a href="clv.fitted-class.html">clv.fitted</a></p></div>
-    </div>
     </div>
 
   </div>
@@ -115,7 +123,7 @@ to obtain a functional <code>clv.fitted</code> object.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

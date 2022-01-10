@@ -26,7 +26,7 @@ and to do 'time-unit math'."><!-- mathjax --><script src="https://cdnjs.cloudfla
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
       </span>
     </div>
 
@@ -44,7 +44,7 @@ and to do 'time-unit math'."><!-- mathjax --><script src="https://cdnjs.cloudfla
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/internal_docu/internal_docu.html">UNKNOWN TITLE</a>
+      <a href="../articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
     </li>
   </ul></li>
 <li>
@@ -66,7 +66,7 @@ and to do 'time-unit math'."><!-- mathjax --><script src="https://cdnjs.cloudfla
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Time Unit defining conceptual periods</h1>
-    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/R/class_clv_time.R" class="external-link"><code>R/class_clv_time.R</code></a>, <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/R/f_s3generics_clvtime.R" class="external-link"><code>R/f_s3generics_clvtime.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/R/class_clv_time.R" class="external-link"><code>R/class_clv_time.R</code></a>, <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/R/f_s3generics_clvtime.R" class="external-link"><code>R/f_s3generics_clvtime.R</code></a></small>
     <div class="hidden name"><code>clv.time-class.Rd</code></div>
     </div>
 
@@ -77,10 +77,11 @@ estimation and holdout sample periods and offers methods to parse user input
 and to do 'time-unit math'.</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for clv.time</span>
+    <div id="ref-usage">
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for clv.time</span>
 <span class="fu"><a href="https://rdrr.io/r/methods/show.html" class="external-link">show</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span></code></pre></div>
+    </div>
 
-    <div id="ref-sections">
     <div id="details">
     <h2>Details</h2>
     <p>This encapsulation of all time unit functionality in one class allows for custom type of
@@ -95,21 +96,37 @@ time units smaller than a single day.</p>
     <h2>Slots</h2>
     
 
-<dl><dt><code>timepoint.estimation.start</code></dt><dd><p>Single <code>Date</code> or <code>POSIXct</code> that stores the start of the estimation period.</p></dd>
+<dl><dt><code>timepoint.estimation.start</code></dt>
+<dd><p>Single <code>Date</code> or <code>POSIXct</code> that stores the start of the estimation period.</p></dd>
 
-<dt><code>timepoint.estimation.end</code></dt><dd><p>Single <code>Date</code> or <code>POSIXct</code> that stores the end of the estimation period.</p></dd>
 
-<dt><code>timepoint.holdout.start</code></dt><dd><p>Single <code>Date</code> or <code>POSIXct</code> that stores the start of the holdout period.</p></dd>
+<dt><code>timepoint.estimation.end</code></dt>
+<dd><p>Single <code>Date</code> or <code>POSIXct</code> that stores the end of the estimation period.</p></dd>
 
-<dt><code>timepoint.holdout.end</code></dt><dd><p>Single <code>Date</code> or <code>POSIXct</code> that stores the end of the holdout period.</p></dd>
 
-<dt><code>time.format</code></dt><dd><p>Single character vector with the format that is used to parse dates and times given as characters.</p></dd>
+<dt><code>timepoint.holdout.start</code></dt>
+<dd><p>Single <code>Date</code> or <code>POSIXct</code> that stores the start of the holdout period.</p></dd>
 
-<dt><code>estimation.period.in.tu</code></dt><dd><p>Single numeric indicating the length of the estimation period in number of time units.</p></dd>
 
-<dt><code>holdout.period.in.tu</code></dt><dd><p>Single numeric indicating the length of the holdout period in number of time units.</p></dd>
+<dt><code>timepoint.holdout.end</code></dt>
+<dd><p>Single <code>Date</code> or <code>POSIXct</code> that stores the end of the holdout period.</p></dd>
 
-<dt><code>name.time.unit</code></dt><dd><p>Single character vector storing the human-readable name of the time unit for output.</p></dd>
+
+<dt><code>time.format</code></dt>
+<dd><p>Single character vector with the format that is used to parse dates and times given as characters.</p></dd>
+
+
+<dt><code>estimation.period.in.tu</code></dt>
+<dd><p>Single numeric indicating the length of the estimation period in number of time units.</p></dd>
+
+
+<dt><code>holdout.period.in.tu</code></dt>
+<dd><p>Single numeric indicating the length of the holdout period in number of time units.</p></dd>
+
+
+<dt><code>name.time.unit</code></dt>
+<dd><p>Single character vector storing the human-readable name of the time unit for output.</p></dd>
+
 
 </dl></div>
     <div id="see-also">
@@ -118,7 +135,6 @@ time units smaller than a single day.</p>
 <p><a href="clv.time.days-class.html">clv.time.days</a> for an implementation of time unit 'Days'</p>
 <p><a href="clv.time.weeks-class.html">clv.time.weeks</a> for an implementation of time unit 'Weeks'</p>
 <p><a href="clv.time.years-class.html">clv.time.years</a> for an implementation of time unit 'Years'</p></div>
-    </div>
     </div>
 
   </div>
@@ -133,7 +149,7 @@ time units smaller than a single day.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

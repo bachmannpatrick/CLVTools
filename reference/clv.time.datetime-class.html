@@ -25,7 +25,7 @@ stores all timepoints using data type POSIXct."><!-- mathjax --><script src="htt
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
       </span>
     </div>
 
@@ -43,7 +43,7 @@ stores all timepoints using data type POSIXct."><!-- mathjax --><script src="htt
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/internal_docu/internal_docu.html">UNKNOWN TITLE</a>
+      <a href="../articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
     </li>
   </ul></li>
 <li>
@@ -65,7 +65,7 @@ stores all timepoints using data type POSIXct."><!-- mathjax --><script src="htt
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>POSIXct based time-units</h1>
-    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/R/class_clv_time_datetime.R" class="external-link"><code>R/class_clv_time_datetime.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/R/class_clv_time_datetime.R" class="external-link"><code>R/class_clv_time_datetime.R</code></a></small>
     <div class="hidden name"><code>clv.time.datetime-class.Rd</code></div>
     </div>
 
@@ -76,27 +76,35 @@ stores all timepoints using data type <code>POSIXct</code>.</p>
     </div>
 
 
-    <div id="ref-sections">
     <div id="slots">
     <h2>Slots</h2>
     
 
-<dl><dt><code>timepoint.estimation.start</code></dt><dd><p>Single <code>POSIXct</code> that stores the start of the estimation period.</p></dd>
+<dl><dt><code>timepoint.estimation.start</code></dt>
+<dd><p>Single <code>POSIXct</code> that stores the start of the estimation period.</p></dd>
 
-<dt><code>timepoint.estimation.end</code></dt><dd><p>Single <code>POSIXct</code> that stores the end of the estimation period.</p></dd>
 
-<dt><code>timepoint.holdout.start</code></dt><dd><p>Single <code>POSIXct</code> that stores the start of the holdout period.</p></dd>
+<dt><code>timepoint.estimation.end</code></dt>
+<dd><p>Single <code>POSIXct</code> that stores the end of the estimation period.</p></dd>
 
-<dt><code>timepoint.holdout.end</code></dt><dd><p>Single <code>POSIXct</code> that stores the end of the holdout period.</p></dd>
 
-<dt><code>timezone</code></dt><dd><p>Single character vector indicating the enforced timezone when parsing inputs to timepoints.
+<dt><code>timepoint.holdout.start</code></dt>
+<dd><p>Single <code>POSIXct</code> that stores the start of the holdout period.</p></dd>
+
+
+<dt><code>timepoint.holdout.end</code></dt>
+<dd><p>Single <code>POSIXct</code> that stores the end of the holdout period.</p></dd>
+
+
+<dt><code>timezone</code></dt>
+<dd><p>Single character vector indicating the enforced timezone when parsing inputs to timepoints.
 Defaults to UTC, but may be overwritten by a subclass to enforce a different timezone than UTC.</p></dd>
+
 
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p>For time unit implementations based on this class: <a href="clv.time.hours-class.html">clv.time.hours</a></p></div>
-    </div>
     </div>
 
   </div>
@@ -111,7 +119,7 @@ Defaults to UTC, but may be overwritten by a subclass to enforce a different tim
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

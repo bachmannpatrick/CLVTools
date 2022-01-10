@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
       </span>
     </div>
 
@@ -41,7 +41,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/internal_docu/internal_docu.html">UNKNOWN TITLE</a>
+      <a href="../articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
     </li>
   </ul></li>
 <li>
@@ -63,7 +63,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Coerce to clv.data object</h1>
-    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/R/all_generics.R" class="external-link"><code>R/all_generics.R</code></a>, <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/R/f_s3generics_clvdata.R" class="external-link"><code>R/f_s3generics_clvdata.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/R/all_generics.R" class="external-link"><code>R/all_generics.R</code></a>, <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/R/f_s3generics_clvdata.R" class="external-link"><code>R/f_s3generics_clvdata.R</code></a></small>
     <div class="hidden name"><code>as.clv.data.Rd</code></div>
     </div>
 
@@ -71,7 +71,8 @@
     <p>Functions to coerce transaction data to a <code>clv.data</code> object.</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class="sourceCode r"><code><span class="fu">as.clv.data</span><span class="op">(</span>
+    <div id="ref-usage">
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">as.clv.data</span><span class="op">(</span>
   <span class="va">x</span>,
   date.format <span class="op">=</span> <span class="st">"ymd"</span>,
   time.unit <span class="op">=</span> <span class="st">"weeks"</span>,
@@ -105,30 +106,35 @@
   name.price <span class="op">=</span> <span class="st">"Price"</span>,
   <span class="va">...</span>
 <span class="op">)</span></code></pre></div>
+    </div>
 
-    <div id="ref-sections">
     <div id="arguments">
     <h2>Arguments</h2>
-    
-
-<dl><dt>x</dt><dd><p>Transaction data.</p></dd>
-</dl><dl><dt>date.format</dt><dd><p>Character string that indicates the format of the date variable in the data used. See details.</p></dd>
-</dl><dl><dt>time.unit</dt><dd><p>What time unit defines a period. May be abbreviated, capitalization is ignored. See details.</p></dd>
-</dl><dl><dt>estimation.split</dt><dd><p>Indicates the length of the estimation period. See details.</p></dd>
-</dl><dl><dt>name.id</dt><dd><p>Column name of the customer id in <code>x</code>.</p></dd>
-</dl><dl><dt>name.date</dt><dd><p>Column name of the transaction date in <code>x</code>.</p></dd>
-</dl><dl><dt>name.price</dt><dd><p>Column name of price in <code>x</code>. NULL if no spending data is present.</p></dd>
-</dl><dl><dt>...</dt><dd><p>Ignored</p></dd>
+    <dl><dt>x</dt>
+<dd><p>Transaction data.</p></dd>
+<dt>date.format</dt>
+<dd><p>Character string that indicates the format of the date variable in the data used. See details.</p></dd>
+<dt>time.unit</dt>
+<dd><p>What time unit defines a period. May be abbreviated, capitalization is ignored. See details.</p></dd>
+<dt>estimation.split</dt>
+<dd><p>Indicates the length of the estimation period. See details.</p></dd>
+<dt>name.id</dt>
+<dd><p>Column name of the customer id in <code>x</code>.</p></dd>
+<dt>name.date</dt>
+<dd><p>Column name of the transaction date in <code>x</code>.</p></dd>
+<dt>name.price</dt>
+<dd><p>Column name of price in <code>x</code>. NULL if no spending data is present.</p></dd>
+<dt>...</dt>
+<dd><p>Ignored</p></dd>
 </dl></div>
     <div id="details">
     <h2>Details</h2>
     <p>See section "Details" of <a href="clvdata.html">clvdata</a> for more details on parameters and usage.</p>
     </div>
-    </div>
 
-    <div id="examples">
+    <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">cdnow</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">cdnow</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Turn data.table of transaction data into a clv.data object,</span></span>
 <span class="r-in"><span class="co">#  using default date format and column names but no holdout period</span></span>
@@ -148,7 +154,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

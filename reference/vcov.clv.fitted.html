@@ -32,7 +32,7 @@ If multiple estimation methods were used, the Hessian of the last method is used
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
       </span>
     </div>
 
@@ -50,7 +50,7 @@ If multiple estimation methods were used, the Hessian of the last method is used
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/internal_docu/internal_docu.html">UNKNOWN TITLE</a>
+      <a href="../articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
     </li>
   </ul></li>
 <li>
@@ -72,7 +72,7 @@ If multiple estimation methods were used, the Hessian of the last method is used
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Calculate Variance-Covariance Matrix for CLV Models fitted with Maximum Likelihood Estimation</h1>
-    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/R/f_s3generics_clvfitted.R" class="external-link"><code>R/f_s3generics_clvfitted.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/R/f_s3generics_clvfitted.R" class="external-link"><code>R/f_s3generics_clvfitted.R</code></a></small>
     <div class="hidden name"><code>vcov.clv.fitted.Rd</code></div>
     </div>
 
@@ -89,16 +89,17 @@ with standard settings to find the nearest positive definite matrix.</p>
 <p>If multiple estimation methods were used, the Hessian of the last method is used.</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for clv.fitted</span>
+    <div id="ref-usage">
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for clv.fitted</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    </div>
 
-    <div id="ref-sections">
     <div id="arguments">
     <h2>Arguments</h2>
-    
-
-<dl><dt>object</dt><dd><p>a fitted clv model object</p></dd>
-</dl><dl><dt>...</dt><dd><p>Ignored</p></dd>
+    <dl><dt>object</dt>
+<dd><p>a fitted clv model object</p></dd>
+<dt>...</dt>
+<dd><p>Ignored</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -108,7 +109,6 @@ The row and column names correspond to the parameter names given by the <code>co
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><a href="https://rdrr.io/pkg/MASS/man/ginv.html" class="external-link">MASS::ginv</a>, <a href="https://rdrr.io/pkg/Matrix/man/nearPD.html" class="external-link">Matrix::nearPD</a></p></div>
-    </div>
     </div>
 
   </div>
@@ -123,7 +123,7 @@ The row and column names correspond to the parameter names given by the <code>co
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>

@@ -32,7 +32,7 @@ businesses (i.e. customers' purchase history)."><!-- mathjax --><script src="htt
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
       </span>
     </div>
 
@@ -50,7 +50,7 @@ businesses (i.e. customers' purchase history)."><!-- mathjax --><script src="htt
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/internal_docu/internal_docu.html">UNKNOWN TITLE</a>
+      <a href="../articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
     </li>
   </ul></li>
 <li>
@@ -72,7 +72,7 @@ businesses (i.e. customers' purchase history)."><!-- mathjax --><script src="htt
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Customer Lifetime Value Tools</h1>
-    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/R/CLVTools.R" class="external-link"><code>R/CLVTools.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/R/CLVTools.R" class="external-link"><code>R/CLVTools.R</code></a></small>
     <div class="hidden name"><code>CLVTools-package.Rd</code></div>
     </div>
 
@@ -90,7 +90,6 @@ businesses (i.e. customers' purchase history).</p>
     </div>
 
 
-    <div id="ref-sections">
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p>Development for CLVTools can be followed via the GitHub repository
@@ -98,18 +97,17 @@ at <a href="https://github.com/bachmannpatrick/CLVTools" class="external-link">h
     </div>
     <div id="author">
     <h2>Author</h2>
-    <p><strong>Maintainer</strong>: Patrick Bachmann <a href="mailto:patrick.bachmann@business.uzh.ch">patrick.bachmann@business.uzh.ch</a></p>
+    <p><strong>Maintainer</strong>: Patrick Bachmann <a href="mailto:pbachma@ethz.ch">pbachma@ethz.ch</a></p>
 <p>Authors:</p><ul><li><p>Niels Kuebler <a href="mailto:niels.kuebler@uzh.ch">niels.kuebler@uzh.ch</a></p></li>
 <li><p>Markus Meierer <a href="mailto:markus.meierer@business.uzh.ch">markus.meierer@business.uzh.ch</a></p></li>
 <li><p>Jeffrey Naef <a href="mailto:naef@stat.math.ethz.ch">naef@stat.math.ethz.ch</a></p></li>
 <li><p>Elliot Oblander <a href="mailto:eoblander23@gsb.columbia.edu">eoblander23@gsb.columbia.edu</a></p></li>
 <li><p>Patrik Schilter <a href="mailto:patrik.schilter@gmail.com">patrik.schilter@gmail.com</a></p></li>
 </ul></div>
-    </div>
 
-    <div id="examples">
+    <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
 <span class="r-in"><span class="co"># \donttest{</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"cdnow"</span><span class="op">)</span></span>
@@ -137,8 +135,8 @@ at <a href="https://github.com/bachmannpatrick/CLVTools" class="external-link">h
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mean Spending per Transaction      35.962          37.715          36.453    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               43.538          33.725          41.030    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Total Spending                     173300.400      70791.540       244091.940</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Total # zero repeaters             1411            1675            1218      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Percentage # zero repeaters        0.599           0.711           0.517     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total # zero repeaters             1411            -               -         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Percentage of zero repeaters       59.864          -               -         </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mean Interpurchase time            9.282           8.227           16.017    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               7.772           6.256           14.533    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -193,7 +191,7 @@ at <a href="https://github.com/bachmannpatrick/CLVTools" class="external-link">h
 <span class="r-in"><span class="co"># Plot the fitted model to the actual repeat transactions</span></span>
 <span class="r-in"><span class="fu"><a href="plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">pnbd.cdnow</span><span class="op">)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Plotting from 1997-01-01 until 1998-07-05.</span>
-<span class="r-plt"><img src="CLVTools-package-1.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="CLVTools-package-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># }</span></span>
 <span class="r-in"></span>
@@ -211,7 +209,7 @@ at <a href="https://github.com/bachmannpatrick/CLVTools" class="external-link">h
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>
