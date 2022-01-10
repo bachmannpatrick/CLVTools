@@ -38,16 +38,16 @@ Returns the respective Log-Likelihood value(s) for the Pareto/NBD model
 \description{
 Calculates the Log-Likelihood values for the Pareto/NBD model with and without covariates.
 
-The function \code{pnbd_nocov_LL_ind} calculates the individual LogLikelihood
+The function \code{pnbd_nocov_LL_ind} calculates the individual log-likelihood
 values for each customer for the given parameters.
 
-The function \code{pnbd_nocov_LL_sum} calculates the LogLikelihood value summed
+The function \code{pnbd_nocov_LL_sum} calculates the log-likelihood value summed
 across customers for the given parameters.
 
-The function \code{pnbd_staticcov_LL_ind} calculates the individual LogLikelihood
+The function \code{pnbd_staticcov_LL_ind} calculates the individual log-likelihood
 values for each customer for the given parameters and covariates.
 
-The function \code{pnbd_staticcov_LL_sum} calculates the individual LogLikelihood values summed
+The function \code{pnbd_staticcov_LL_sum} calculates the individual log-likelihood values summed
 across customers.
 }
 \details{
@@ -69,13 +69,20 @@ needs to added to \code{vParams} at the respective position.
 }
 \references{
 Schmittlein DC, Morrison DG, Colombo R (1987). \dQuote{Counting Your Customers:
-Who-Are They and What Will They Do Next?} Management Science, 33(1), 1–24.
+Who-Are They and What Will They Do Next?} Management Science, 33(1), 1-24.
+
+Bachmann P, Meierer M, Naef, J (2021). \dQuote{The Role of Time-Varying Contextual Factors
+in Latent Attrition Models for Customer Base Analysis} Marketing Science 40(4). 783-809.
 
 Fader PS, Hardie BGS (2005). \dQuote{A Note on Deriving the Pareto/NBD Model and
 Related Expressions.}
 URL \url{http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf}.
 
-Fader PS, Hardie BG (2007). \dQuote{Incorporating time-invariant covariates into the
+Fader PS, Hardie BGS (2007). \dQuote{Incorporating time-invariant covariates into the
 Pareto/NBD and BG/NBD models.}
 URL \url{http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf}.
+
+Fader PS, Hardie BGS (2020). \dQuote{Deriving an Expression for P(X(t)=x) Under
+the Pareto/NBD Model.}
+URL \url{https://www.brucehardie.com/notes/012/pareto_NBD_pmf_derivation_rev.pdf}
 }

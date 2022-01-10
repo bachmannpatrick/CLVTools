@@ -1,36 +1,37 @@
-fct.testthat.inputchecks.clvfitted.newdata.not.clvdata <- function(clv.fitted, data.cdnow){
+fct.testthat.inputchecks.clvfitted.newdata.not.clvdata <- function(s3method, l.std.args, data.cdnow){
   test_that("Fails if newdata not a clv.data object", {
     skip_on_cran()
-    expect_error(predict(clv.fitted, newdata = NA_character_), regexp = "needs to be a clv data object")
-    expect_error(predict(clv.fitted, newdata = character()), regexp = "needs to be a clv data object")
-    expect_error(predict(clv.fitted, newdata = "abc"), regexp = "needs to be a clv data object")
-    expect_error(predict(clv.fitted, newdata = 123), regexp = "needs to be a clv data object")
-    expect_error(predict(clv.fitted, newdata = data.cdnow), regexp = "needs to be a clv data object")
-    expect_error(predict(clv.fitted, newdata = unlist(data.cdnow)), regexp = "needs to be a clv data object")
+    expect_error(do.call(s3method, c(l.std.args, list(newdata = NA_character_))), regexp = "needs to be a clv data object")
+    expect_error(do.call(s3method, c(l.std.args, list(newdata = character()))), regexp = "needs to be a clv data object")
+    expect_error(do.call(s3method, c(l.std.args, list(newdata = "abc"))), regexp = "needs to be a clv data object")
+    expect_error(do.call(s3method, c(l.std.args, list(newdata = 123))), regexp = "needs to be a clv data object")
+    expect_error(do.call(s3method, c(l.std.args, list(newdata = data.cdnow))), regexp = "needs to be a clv data object")
+    expect_error(do.call(s3method, c(l.std.args, list(newdata = unlist(data.cdnow)))), regexp = "needs to be a clv data object")
   })
 }
 
 
-fct.testthat.inputchecks.clvfitted.na.in.prediction.params.model <- function(s3method, clv.fitted){
+fct.testthat.inputchecks.clvfitted.na.in.prediction.params.model <- function(s3method, clv.fitted, l.s3method.args){
   test_that("Fails if prediction.params.model are NA", {
     skip_on_cran()
 
     clv.fitted@prediction.params.model[2] <- NA_real_
-    if(is(clv.fitted, "clv.fitted.transactions")){
-      expect_error(do.call(what = s3method, args = list(clv.fitted, prediction.end = 6)), regexp = "NAs in the estimated model")
-    }else{
-      # Spending model
-      expect_error(do.call(what = s3method, args = list(clv.fitted)), regexp = "NAs in the estimated model")
-    }
+
+    # remove clv.fitted from std args
+    l.s3method.args <- l.s3method.args[!sapply(l.s3method.args, is, "clv.fitted")]
+    expect_error(do.call(what = s3method, args = c(list(clv.fitted), l.s3method.args)), regexp = "NAs in the estimated model")
   })
 }
 
 
 fct.testthat.inputchecks.clvfittedtransactions.newdata.has.different.covs <- function(s3method,
+                                                                                      l.s3method.args,
                                                                                       clv.fitted.apparel.cov,
                                                                                       data.apparelStaticCov){
   test_that("Fails if newdata has different covariates (names)", {
     skip_on_cran()
+
+    l.s3method.args <- l.s3method.args[!sapply(l.s3method.args, is, "clv.fitted")]
 
     # newdata should be exactly same except for the cov names
     clv.apparel.nocov <- as(clv.fitted.apparel.cov@clv.data, "clv.data")
@@ -44,7 +45,7 @@ fct.testthat.inputchecks.clvfittedtransactions.newdata.has.different.covs <- fun
                                                                   data.cov.trans = data.apparelStaticCov.additional,
                                                                   names.cov.life = "Haircolor",
                                                                   names.cov.trans = "Haircolor"))
-    expect_error(do.call(s3method, list(clv.fitted.apparel.cov, newdata = clv.apparel.static.other)),
+    expect_error(do.call(s3method, c(list(clv.fitted.apparel.cov, newdata = clv.apparel.static.other), l.s3method.args)),
                  regexp = "used for fitting are present in the")
 
 
@@ -55,36 +56,39 @@ fct.testthat.inputchecks.clvfittedtransactions.newdata.has.different.covs <- fun
                                                                  names.cov.life = c("Gender","Channel", "Haircolor"),
                                                                  names.cov.trans = c("Gender", "Channel","Haircolor")))
 
-    expect_error(do.call(s3method, list(clv.fitted.apparel.cov, newdata = clv.apparel.static.more)),
+    expect_error(do.call(s3method, c(list(clv.fitted.apparel.cov, newdata = clv.apparel.static.more), l.s3method.args)),
                  regexp = "used for fitting are present in the")
   })
 }
 
 fct.testthat.inputchecks.clvfittedtransactions.newdata.is.different.class <- function(s3method,
+                                                                                      l.s3method.args,
                                                                                       clv.fitted.transactions.nocov,
                                                                                       clv.fitted.transactions.staticcov,
                                                                                       clv.data.no.cov,
                                                                                       clv.data.static.cov){
+  l.s3method.args <- l.s3method.args[!sapply(l.s3method.args, is, "clv.fitted")]
   test_that("Fails if newdata is of wrong clv.data", {
     skip_on_cran()
     # predicting nocov model with staticcov data
-    expect_error(do.call(s3method, list(clv.fitted.transactions.nocov, newdata = clv.data.static.cov)), regexp = "of class clv.data")
+    expect_error(do.call(s3method, c(list(clv.fitted.transactions.nocov, newdata=clv.data.static.cov), l.s3method.args)), regexp = "of class clv.data")
 
     # predicting staticcov model with nocov data
-    expect_error(do.call(s3method, list(clv.fitted.transactions.staticcov, newdata=clv.data.no.cov)), regexp ="of class clv.data.static.covariates")
+    expect_error(do.call(s3method, c(list(clv.fitted.transactions.staticcov, newdata=clv.data.no.cov), l.s3method.args)), regexp ="of class clv.data.static.covariates")
   })
 }
 
 
-fct.testthat.inputchecks.clvfittedtransactions.cov.na.in.prediction.params.cov <- function(s3method, clv.fitted.cov){
+fct.testthat.inputchecks.clvfittedtransactions.cov.na.in.prediction.params.cov <- function(s3method, clv.fitted.cov, l.s3method.args){
   test_that("Fails if prediction.params.life/trans are NA", {
     skip_on_cran()
+    l.s3method.args <- l.s3method.args[!sapply(l.s3method.args, is, "clv.fitted")]
     clv.fitted.cov@prediction.params.life[1] <- NA_real_
-    expect_error(do.call(s3method, list(clv.fitted.cov, prediction.end = 6)), regexp = "NAs in the estimated covariate")
+    expect_error(do.call(s3method, c(list(clv.fitted.cov), l.s3method.args)), regexp = "NAs in the estimated covariate")
     clv.fitted.cov@prediction.params.life[1] <- 1 # remove NA
 
     clv.fitted.cov@prediction.params.trans[1] <- NA_real_
-    expect_error(do.call(s3method, list(clv.fitted.cov, prediction.end = 6)), regexp = "NAs in the estimated covariate")
+    expect_error(do.call(s3method, c(list(clv.fitted.cov), l.s3method.args)), regexp = "NAs in the estimated covariate")
     clv.fitted.cov@prediction.params.trans[1] <- 1 # remove NA
   })
 }

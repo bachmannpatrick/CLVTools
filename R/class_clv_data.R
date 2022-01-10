@@ -148,134 +148,149 @@ clv.data.mean.interpurchase.times <- function(clv.data, dt.transactions){
 
 #' @importFrom stats sd
 #' @importFrom lubridate time_length
-clv.data.make.descriptives <- function(clv.data){
+clv.data.make.descriptives <- function(clv.data, Ids){
 
-  Id <- Date <- .N <- N <- Price <- interp.time<- NULL
+  Id <- Date <- .N <- N <- Price <- interp.time<- Name <- Holdout <- NULL
 
   # readability
   clv.time <- clv.data@clv.time
 
-
-  # Data preparation ---------------------------------------------------------------------------------
-  # If there is no holdout period, give the estimation period data as input to be able to calculate values.
-  #   Then replace them with "-" in the end before returning
-
-  data.transactions.total      <- clv.data@data.transactions
-
-  data.transactions.estimation <- clv.data.get.transactions.in.estimation.period(clv.data = clv.data)
-
-  if(clv.data.has.holdout(clv.data=clv.data)){
-    data.transactions.holdout  <- clv.data.get.transactions.in.holdout.period(clv.data = clv.data)
-  }else{
-    data.transactions.holdout  <- data.transactions.estimation
-  }
-
-  no.trans.by.cust.total       <- data.transactions.total[,      .N, by="Id"]
-  no.trans.by.cust.estimation  <- data.transactions.estimation[, .N, by="Id"]
-  no.trans.by.cust.holdout     <- data.transactions.holdout[,    .N, by="Id"]
-
-
-  interp.est   <- clv.data.mean.interpurchase.times(clv.data=clv.data, dt.transactions = data.transactions.estimation)
-  interp.hold  <- clv.data.mean.interpurchase.times(clv.data=clv.data, dt.transactions = data.transactions.holdout)
-  interp.total <- clv.data.mean.interpurchase.times(clv.data=clv.data, dt.transactions = data.transactions.total)
-
+  Ids <- unique(Ids)
 
   # Make descriptives ------------------------------------------------------------------------------
+  #   Do not simply overwrite all NA/NaN with "-", only where these are expected (num obs = 1).
+  #     Let propagate otherwise to help find errors
+  fct.make.descriptives <- function(dt.data, sample.name){
 
-  list.of.list <- list(
-    "Number of customers"  =
-      list(Estimation = "-",
-           Holdout    = "-",
-           Total      = nrow(no.trans.by.cust.total)),
-    "First Transaction in period"   =
-      list(Estimation = clv.time.format.timepoint(clv.time=clv.time, timepoint=data.transactions.estimation[, min(Date)]),
-           Holdout    = clv.time.format.timepoint(clv.time=clv.time, timepoint=data.transactions.holdout[,   min(Date)]),
-           Total      = clv.time.format.timepoint(clv.time=clv.time, timepoint=data.transactions.total[,     min(Date)])),
+    # Subset transaction data to relevant Ids
+    if(!is.null(Ids)){
+      dt.data <- dt.data[Id %in% Ids]
 
-    "Last Transaction in period"    =
-      list(Estimation = clv.time.format.timepoint(clv.time=clv.time, timepoint=data.transactions.estimation[, max(Date)]),
-           Holdout    = clv.time.format.timepoint(clv.time=clv.time, timepoint=data.transactions.holdout[,    max(Date)]),
-           Total      = clv.time.format.timepoint(clv.time=clv.time, timepoint=data.transactions.total[,      max(Date)])),
-    "Total # Transactions"          =
-      list(Estimation = nrow(data.transactions.estimation),
-           Holdout    = nrow(data.transactions.holdout),
-           Total      = nrow(data.transactions.total)),
-    "Mean # Transactions per cust"  =
-      list(Estimation = no.trans.by.cust.estimation[, mean(N)],
-           Holdout    = no.trans.by.cust.holdout[,    mean(N)],
-           Total      = no.trans.by.cust.total[,      mean(N)]),
-    "(SD)" =
-      list(Estimation = no.trans.by.cust.estimation[, sd(N)],
-           Holdout    = no.trans.by.cust.holdout[,    sd(N)],
-           Total      = no.trans.by.cust.total[,      sd(N)]))
+      # print warning only once
+      if(sample.name == "Total" & dt.data[, uniqueN(Id)] != length(unique(Ids))){
+        warning("Not all given Ids were found in the transaction data.", call. = FALSE)
+      }
 
-  if(clv.data.has.spending(clv.data)){
-    list.of.list <- c(list.of.list, list(
-      "Mean Spending per Transaction"    =
-        list(Estimation = data.transactions.estimation[, mean(Price)],
-             Holdout    = data.transactions.holdout[,    mean(Price)],
-             Total      = data.transactions.total[,      mean(Price)]),
-      "(SD) " =
-        list(Estimation  = data.transactions.estimation[, sd(Price)],
-             Holdout    = data.transactions.holdout[,     sd(Price)],
-             Total      = data.transactions.total[,       sd(Price)]),
-      "Total Spending" =
-        list(Estimation  = data.transactions.estimation[, sum(Price)],
-             Holdout    = data.transactions.holdout[,     sum(Price)],
-             Total      = data.transactions.total[,       sum(Price)])))
+    }
+    dt.interp <- clv.data.mean.interpurchase.times(clv.data=clv.data, dt.transactions = dt.data)
+    dt.num.trans.by.cust <- dt.data[, .N, by="Id"]
+
+    l.desc <- list(
+      "Number of customers"           = if(sample.name=="Total"){nrow(dt.num.trans.by.cust)}else{"-"},
+      "First Transaction in period"   = clv.time.format.timepoint(clv.time=clv.time, timepoint=dt.data[, min(Date)]),
+      "Last Transaction in period"    = clv.time.format.timepoint(clv.time=clv.time, timepoint=dt.data[, max(Date)]),
+      "Total # Transactions"          = nrow(dt.data),
+      "Mean # Transactions per cust"  = dt.num.trans.by.cust[, mean(N)],
+      "(SD)"                          = if(nrow(dt.num.trans.by.cust) > 1){dt.num.trans.by.cust[, sd(N)]}else{"-"})
+
+    if(clv.data.has.spending(clv.data)){
+      l.desc <- c(l.desc, list(
+        "Mean Spending per Transaction"  = dt.data[, mean(Price)],
+        # SD is calculated not across customers but across transactions
+        "(SD) "                          = if(dt.data[, .N] > 1){dt.data[, sd(Price)]}else{"-"},
+        "Total Spending"                 = dt.data[, sum(Price)]))
+    }
+
+    num.interp.obs <- dt.interp[!is.na(interp.time), .N]
+    l.desc <- c(l.desc, list(
+      # Zero-repeaters can only be in Estimation ()
+      "Total # zero repeaters"        = if(sample.name == "Estimation"){dt.num.trans.by.cust[, sum(N==1)]}else{"-"},
+      "Percentage of zero repeaters"   = if(sample.name == "Estimation"){dt.num.trans.by.cust[, mean(N==1)*100]}else{"-"},
+
+      # Inter-purchase time
+      #   Remove NAs resulting from zero-repeaters
+      "Mean Interpurchase time"       = if(num.interp.obs > 0){dt.interp[, mean(interp.time, na.rm=TRUE)]}else{"-"},
+      # Need 2 obs to calculate SD
+      "(SD)   "                       = if(num.interp.obs > 1){dt.interp[, sd(interp.time, na.rm=TRUE)]}else{"-"}))
+
+    # Format numbers
+    l.desc <- format(l.desc, digits=3, nsmall=3)
+
+    return(l.desc)
   }
 
-  #   Total:      buy exactly once, ever
-  #   Estimation: buy exactly once, in estimation period
-  #   Holdout:    the ones who dont buy in holdout, ie only in estimation
-  list.of.list <- c(list.of.list, list(
-    "Total # zero repeaters"        =
-      list(  Estimation = nrow(no.trans.by.cust.estimation[N == 1]),
-             Holdout    = nrow(fsetdiff(no.trans.by.cust.total[, "Id"], no.trans.by.cust.holdout[, "Id"])),
-             Total      = nrow(no.trans.by.cust.total[     N == 1])),
-    "Percentage # zero repeaters"        =
-      list( Estimation = nrow(no.trans.by.cust.estimation[N == 1])                                        / nrow(no.trans.by.cust.total),
-            Holdout    = nrow(fsetdiff(no.trans.by.cust.total[, "Id"], no.trans.by.cust.holdout[, "Id"])) / nrow(no.trans.by.cust.total),
-            Total      = nrow(no.trans.by.cust.total[     N == 1])                                        / nrow(no.trans.by.cust.total)),
-    # Interpurchase time
-    # Remove NAs indicating zero-repeaters!
-    "Mean Interpurchase time"       =
-      list( Estimation = interp.est[,   mean(interp.time, na.rm=TRUE)],
-            Holdout    = interp.hold[,  mean(interp.time, na.rm=TRUE)],
-            Total      = interp.total[, mean(interp.time, na.rm=TRUE)]),
+  l.desc.estimation <- fct.make.descriptives(dt.data = clv.data.get.transactions.in.estimation.period(clv.data),
+                                             sample.name="Estimation")
+  l.desc.total      <- fct.make.descriptives(dt.data = clv.data@data.transactions,
+                                             sample.name="Total")
 
-    "(SD)   "       =
-      list( Estimation = interp.est[,   sd(interp.time, na.rm=TRUE)],
-            Holdout    = interp.hold[,  sd(interp.time, na.rm=TRUE)],
-            Total      = interp.total[, sd(interp.time, na.rm=TRUE)])))
+  dt.summary <- cbind(
+    data.table(Estimation=l.desc.estimation),
+    data.table(Total=l.desc.total))
 
+  # Add holdout descriptives, if
+  #   - has holdout sample period
+  #   - has transactions in holdout sample (might not have if make descriptives for single customer)
+  dt.summary[, Holdout := "-"]
+  if(clv.data.has.holdout(clv.data)){
+    dt.trans.holdout <- clv.data.get.transactions.in.holdout.period(clv.data = clv.data)
+    # Need to subset to Ids here already to check if there actually are transactions in holdout period
+    if(!is.null(Ids)){
+      dt.trans.holdout <- dt.trans.holdout[Id %in% Ids]
+    }
+    if(nrow(dt.trans.holdout) > 0){
+      dt.summary[, Holdout := fct.make.descriptives(dt.data = dt.trans.holdout, sample.name="Holdout")]
+    }
+  }
 
-
-
-  # Format output ----------------------------------------------------------------------------------
-
-  # Make cut digits
-  list.of.list <-   lapply(list.of.list, function(x)format(x, digits=3, nsmall=3))
-
-  # Make data.table
-  dt.summary <- as.data.table(list.of.list)
-  dt.summary <- transpose(dt.summary)
-
-  colnames(dt.summary) <- c("Estimation", "Holdout", "Total")
-  # Rownames are discouraged in data.table
-  #   instead insert a column
-  dt.summary[, "Name" := names(list.of.list)]
-
+  dt.summary[, Name := names(l.desc.estimation)]
   setcolorder(dt.summary, c("Name", "Estimation", "Holdout", "Total"))
-
-
-  # No Holdout ------------------------------------------------------------------------------------
-  #   Remove values in holdout if there is no holdout
-  #   In this case, the estimation data was used
-  if(!clv.data.has.holdout(clv.data)){
-    dt.summary[, "Holdout" := "-"]
-  }
 
   return(dt.summary)
 
+}
+
+
+
+# default.choices might differ in order
+clv.data.select.sample.data <- function(clv.data, sample, choices){
+  # check if sample is valid
+  check_err_msg(.check_userinput_matcharg(char=sample, choices=choices, var.name="sample"))
+
+  sample <- match.arg(arg = tolower(sample), choices = choices)
+  if(sample == "holdout" & !clv.data.has.holdout(clv.data)){
+    check_err_msg("The given clv.data object has no holdout data!")
+  }
+
+  return(switch(sample,
+                "full" = copy(clv.data@data.transactions),
+                "estimation" = clv.data.get.transactions.in.estimation.period(clv.data),
+                "holdout" = clv.data.get.transactions.in.holdout.period(clv.data)))
+}
+
+
+# Add the number of repeat transactions to the given dt.date.seq
+clv.data.add.repeat.transactions.to.periods <- function(clv.data, dt.date.seq, cumulative){
+
+  num.repeat.trans <- i.num.repeat.trans <- Date <- period.until <- NULL
+
+  # Add period at every repeat transaction (and therefore copy)
+  dt.repeat.trans  <- copy(clv.data@data.repeat.trans)
+
+  # join (roll: -Inf=NOCF) period number onto all repeat transaction by dates
+  #   ie assign each repeat transaction the next period number to which it belongs
+  dt.repeat.trans <- dt.date.seq[dt.repeat.trans, on = c("period.until"="Date"), roll=-Inf, rollends=c(FALSE, FALSE)]
+  # !period.until now is missleading, as it stands for the repeat transaction date!
+
+  # Count num rep trans in every time unit
+  dt.repeat.trans <- dt.repeat.trans[, list(num.repeat.trans = .N), by="period.num"]
+  setorderv(dt.repeat.trans, order = 1L, cols = "period.num") # sort in ascending order
+
+  # make double to avoid coercion warning in melt
+  dt.date.seq[dt.repeat.trans, num.repeat.trans := as.numeric(i.num.repeat.trans), on = "period.num"]
+
+  # set 0 where there are no transactions
+  #   for when there are transactions again later on
+  dt.date.seq[is.na(num.repeat.trans), num.repeat.trans := 0]
+
+  # After last transaction, there are no more transactions.
+  #   dt.expectation can however be longer. Set these intentionally to NA so that
+  #   nothing is plotted (setting 0 plots a line at the bottom)
+  date.last.repeat.transaction <- clv.data@data.repeat.trans[, max(Date)]
+  dt.date.seq[period.until > date.last.repeat.transaction, num.repeat.trans := NA_real_]
+
+  if(cumulative)
+    dt.date.seq[, num.repeat.trans := cumsum(num.repeat.trans)]
+
+  return(dt.date.seq)
 }

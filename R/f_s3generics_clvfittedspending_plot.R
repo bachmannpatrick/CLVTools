@@ -4,12 +4,13 @@
 #' @template template_param_verbose
 #' @template template_param_dots
 #'
-#'
 #' @description
 #' Compares the density of the observed average spending per transaction (empirical distribution) to the
 #' model's distribution of mean transaction spending (weighted by the actual number of transactions).
+#' See \code{\link[CLVTools:plot.clv.data]{plot.clv.data}} to plot more nuanced diagnostics for the transaction data only.
 #'
 #' @seealso \code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} for transaction models
+#' @seealso \code{\link[CLVTools:plot.clv.data]{plot}} for transaction diagnostics of \code{clv.data} objects
 #'
 #' @return
 #' An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
@@ -47,17 +48,23 @@ plot.clv.fitted.spending <- function (x, n = 256, verbose=TRUE, ...) {
 
    # Check inputs -----------------------------------------------------------------------------------------------------
    err.msg <- c()
-   err.msg <- c(err.msg, check_user_data_emptyellipsis(...))
    err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
    err.msg <- c(err.msg, .check_user_data_single_numeric(n=n, var.name="n"))
+   err.msg <- c(err.msg, check_user_data_emptyellipsis(...))
    check_err_msg(err.msg = err.msg)
 
+   # readability
    clv.fitted <- x
 
 
    # Plot customer's mean spending as density -------------------------------------------------------------------------
    dt.customer.mean.spending <- clv.fitted@cbs[x>0, "Spending"]
-   p <- ggplot(data = dt.customer.mean.spending) + stat_density(mapping = aes(x = Spending, colour = "Actual Mean Value per Transaction"), n = n, geom = "line")
+   p <- clv.data.make.density.plot(dt.data = dt.customer.mean.spending,
+                                   mapping = aes(x = Spending, colour = "Actual"),
+                                   labs_x = "Average Value per Transaction",
+                                   title = "Density of Average Transaction Value",
+                                   color="black", geom = "line",
+                                   n = n)
 
    # Overlay with model density ---------------------------------------------------------------------------------------
    p <- p + geom_line(stat = "function",
@@ -68,32 +75,8 @@ plot.clv.fitted.spending <- function (x, n = 256, verbose=TRUE, ...) {
                       na.rm = FALSE)
 
    # Add legend
-   columns <- setNames(c("black", "red"), c("Actual Mean Value per Transaction", clv.fitted@clv.model@name.model))
+   columns <- setNames(c("black", "red"), c("Actual", clv.fitted@clv.model@name.model))
    p <- p + scale_colour_manual(name = "Legend", values = columns)
-
-   # Axis and title
-   p <- p + labs(x = "Average Value per Transaction", y= "Density", title= "Density of Average Transaction Value")
-
-   p <- p + theme(
-      plot.title = element_text(face = "bold", size = rel(1.5)),
-      text = element_text(),
-      panel.background = element_blank(),
-      panel.border = element_blank(),
-      plot.background  = element_rect(colour = NA),
-      axis.title   = element_text(face = "bold",size = rel(1)),
-      axis.title.y = element_text(angle=90,vjust =2),
-      axis.title.x = element_text(vjust = -0.2),
-      axis.text = element_text(),
-      axis.line = element_line(colour="black"),
-      axis.ticks = element_line(),
-      panel.grid.major = element_line(colour="#d2d2d2"),
-      panel.grid.minor = element_blank(),
-      legend.key = element_blank(),
-      legend.position = "bottom",
-      legend.direction = "horizontal",
-      legend.title = element_text(face="italic"),
-      strip.background=element_rect(colour="#d2d2d2",fill="#d2d2d2"),
-      strip.text = element_text(face="bold", size = rel(0.8)))
 
    return(p)
 }

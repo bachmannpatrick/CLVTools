@@ -68,7 +68,7 @@ The generic accessor functions \code{coefficients}, \code{\link[CLVTools:vcov.cl
 Fits Gamma-Gompertz/NBD models on transactional data with static and without covariates.
 }
 \details{
-Model parameters for the GGompertz /NBD model are \code{r, alpha, beta, b and s}. \cr
+Model parameters for the GGompertz/NBD model are \code{r, alpha, beta, b and s}. \cr
 \code{r}: shape parameter of the Gamma distribution of the purchase process.
 The smaller \code{r}, the stronger the heterogeneity of the purchase process.\cr
 \code{alpha}: scale parameter of the Gamma distribution of the purchase process.\cr
@@ -85,11 +85,11 @@ Note that the DERT expression has not been derived (yet) and it consequently is 
 values for DERT and CLV.
 
 \subsection{The Gamma-Gompertz/NBD model}{
-There are two key differences of the gamma/Gompertz/NBD (GGom/NBD) model compared to the relative to the well-known Pareto/NBD
+There are two key differences of the gamma/Gompertz/NBD (GGompertz/NBD) model compared to the relative to the well-known Pareto/NBD
 model: (i) its probability density function can exhibit a mode at zero or an interior mode, and (ii) it can be skewed
-to the right or to the left. Therefore, the GGom/NBD model is more flexible than the Pareto/NBD model.
+to the right or to the left. Therefore, the GGompertz/NBD model is more flexible than the Pareto/NBD model.
 According to Bemmaor and Glady (2012) can indicate substantial differences in expected residual lifetimes compared to the Pareto/NBD.
-The GGom/NBD tends to be appropriate when firms are reputed and their offerings are differentiated.
+The GGompertz/NBD tends to be appropriate when firms are reputed and their offerings are differentiated.
 }
 }
 \examples{
@@ -163,9 +163,13 @@ Lifetime Model} Management Science, 58(5), 1012-1021.
 \code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object, \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}}
 to add static covariates to an existing clv data object.
 
+\link[CLVTools:gg]{gg} to fit customer's average spending per transaction with the \code{Gamma-Gamma} model
+
 \code{\link[CLVTools:predict.clv.fitted.transactions]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
 
 \code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} to plot the unconditional expectation as predicted by the fitted model
+
+\code{\link[CLVTools:pmf]{pmf}} for the probability to make exactly x transactions in the estimation period, given by the probability mass function (PMF).
 
 The generic functions \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:summary.clv.fitted]{summary}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
 }

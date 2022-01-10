@@ -52,7 +52,7 @@ Development for CLVTools can be followed via the GitHub repository
 at \url{https://github.com/bachmannpatrick/CLVTools}.
 }
 \author{
-\strong{Maintainer}: Patrick Bachmann \email{patrick.bachmann@business.uzh.ch}
+\strong{Maintainer}: Patrick Bachmann \email{pbachma@ethz.ch}
 
 Authors:
 \itemize{

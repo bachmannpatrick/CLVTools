@@ -24,6 +24,7 @@ An object of class \code{ggplot} from package \code{ggplot2} is returned by defa
 \description{
 Compares the density of the observed average spending per transaction (empirical distribution) to the
 model's distribution of mean transaction spending (weighted by the actual number of transactions).
+See \code{\link[CLVTools:plot.clv.data]{plot.clv.data}} to plot more nuanced diagnostics for the transaction data only.
 }
 \examples{
 \donttest{
@@ -50,14 +51,16 @@ gg.cdnow + ggtitle("CDnow Spending Distribution")
 }
 \references{
 Colombo R, Jiang W (1999). \dQuote{A stochastic RFM model.}
-Journal of Interactive Marketing, 13(3), 2–12.
+Journal of Interactive Marketing, 13(3), 2-12.
 
 Fader PS, Hardie BG, Lee K (2005). \dQuote{RFM and CLV: Using Iso-Value Curves for
-Customer Base Analysis.} Journal of Marketing Research, 42(4), 415–430.
+Customer Base Analysis.} Journal of Marketing Research, 42(4), 415-430.
 
 Fader PS, Hardie BG (2013). \dQuote{The Gamma-Gamma Model of Monetary Value.}
 URL \url{http://www.brucehardie.com/notes/025/gamma_gamma.pdf}.
 }
 \seealso{
 \code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} for transaction models
+
+\code{\link[CLVTools:plot.clv.data]{plot}} for transaction diagnostics of \code{clv.data} objects
 }

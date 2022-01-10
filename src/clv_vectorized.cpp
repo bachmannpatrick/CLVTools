@@ -1,7 +1,7 @@
 #include "clv_vectorized.h"
 
 
-//' @title GSL Hypergeom 2f0 for equal length vectors
+//' @title GSL Hypergeometric 2F0 for equal length vectors
 //'
 //' @param vA Vector of values for parameter a
 //' @param vB Vector of values for parameter b
@@ -35,7 +35,7 @@ Rcpp::List vec_gsl_hyp2f0_e(const RcppGSL::Vector& vA, const RcppGSL::Vector& vB
                             Rcpp::Named("status") = Rcpp::wrap(vStatus));
 }
 
-//' @title GSL Hypergeom 2f1 for equal length vectors
+//' @title GSL Hypergeometric 2F1 for equal length vectors
 //'
 //' @param vA Vector of values for parameter a
 //' @param vB Vector of values for parameter b
@@ -90,13 +90,8 @@ arma::vec vec_hyp2F1(const arma::vec& vA, const arma::vec& vB, const arma::vec& 
 }
 
 
-
-// vec_x_hyp1F1 ----------------------------------------------------
-//    a, b:     scalars
-//    X:        vector
-//
-//    hypergeom1F1(double a, double b, double x);
-arma::vec vec_x_hyp1F1(const double a, const double b, const arma::vec& vX){
+// vec_kummerU ----------------------------------------------------
+arma::vec vec_x_kummerU(const double a, const double b, const arma::vec& vX){
 
   // Do not abort in case of error
   gsl_set_error_handler_off();
@@ -105,7 +100,7 @@ arma::vec vec_x_hyp1F1(const double a, const double b, const arma::vec& vX){
 
   arma::uword n = vX.n_elem;
   for(arma::uword i = 0; i<n; i++)
-    vRes(i) = gsl_sf_hyperg_1F1(a, b, vX(i));
+    vRes(i) = gsl_sf_hyperg_U(a, b, vX(i));
 
   return(vRes);
 }
@@ -128,12 +123,20 @@ arma::vec vec_pow(const arma::vec& vA, const arma::vec& vP){
   return(vRes);
 }
 
-arma::vec vec_fill(const double number, const double repetitions){
-  arma::vec vResult(repetitions);
-
-  vResult.fill(number);
-
+arma::vec vec_fill(const double d, const arma::uword n){
+  arma::vec vResult(n);
+  vResult.fill(d);
   return vResult;
+}
+
+
+// lbeta := lgamma(a) + lgamma(b) - lgamma(a+b)
+arma::vec vec_lbeta(const arma::vec& a, const double b){
+  return (arma::lgamma(a) + std::lgamma(b) - arma::lgamma(a+b));
+}
+
+double lbeta(const double a, const double b){
+  return (std::lgamma(a) + std::lgamma(b) - std::lgamma(a+b));
 }
 
 }

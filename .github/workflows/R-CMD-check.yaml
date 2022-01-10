@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - '*'
-      - '!master' # run on every branch except master
+      - '!master' # run on every branch except master (fails because same as on cran)
 
 # CMD checks on win, mac, ubuntu
 jobs:
@@ -16,71 +16,60 @@ jobs:
       matrix:
         config:
           - {os: macOS-latest,   r: 'devel'}
-          - {os: windows-latest, r: 'devel'}
           - {os: macOS-latest,   r: 'release'}
+          - {os: windows-latest, r: 'devel'}
           - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-16.04,   r: 'release', rspm: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"}
+          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-latest,   r: 'release'}
+          - {os: ubuntu-latest,   r: 'oldrel-1'}
     env:
-        R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-        RSPM: ${{ matrix.config.rspm }}
+        GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+        R_KEEP_PKG_SOURCE: yes
 
     steps:
         - uses: actions/checkout@v2
-        - uses: r-lib/actions/setup-r@master
+
+        - uses: r-lib/actions/setup-pandoc@v1
+
+        - uses: r-lib/actions/setup-r@v1
           with:
             r-version: ${{ matrix.config.r }}
-        - name: Query dependencies
-          run: |
-            install.packages('remotes')
-            saveRDS(remotes::dev_package_deps(dependencies = TRUE), "depends.Rds", version = 2)
-          shell: Rscript {0}
+            http-user-agent: ${{ matrix.config.http-user-agent }}
+            use-public-rspm: true
 
-        - name: Cache R packages
-          if: runner.os != 'Windows'
-          uses: actions/cache@v1
-          with:
-            path: ${{ env.R_LIBS_USER }}
-            key: ${{ runner.os }}-r-${{ matrix.config.r }}-${{ hashFiles('depends.Rds') }}
-            restore-keys: ${{ runner.os }}-r-${{ matrix.config.r }}-
-
-        - name: Install system dependencies
+        - name: Install linux system dependencies
           if: runner.os == 'Linux'
           env:
             RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
           run: |
-            Rscript -e "remotes::install_github('r-hub/sysreqs')"
-            sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
-            sudo -s eval "$sysreqs"
-            sudo apt-get install -y qpdf # qpdf needed on ubuntu
-            sudo apt-get install texlive-xetex # for tinytex
+            sudo apt-get update
+            sudo apt-get install -y qpdf texlive-xetex ghostscript
 
-        - name: Install tinytex for linux (to build vignettes)
-          if: runner.os == 'Linux'
-          run: |
-            install.packages('tinytex')
-            tinytex::install_tinytex()
-          shell: Rscript {0}
-
-        - name: Install gsl for mac
+        - name: Install mac system dependencies
           if: runner.os == 'macOS'
           run: |
-            brew install gsl
+            brew install gsl openssl ghostscript
 
-        - name: Install package dependencies
-          run: |
-            remotes::install_deps(dependencies = TRUE)
-            # remotes::install_cran(c("RcppGSL", "stringi"), repos = "https://cran.rstudio.com")
-            remotes::install_cran("rcmdcheck", repos = "https://cran.rstudio.com")
-            # remove because leads to NOTE. Does not exist on windows
-            if(file.exists('depends.Rds')) {file.remove('depends.Rds')}
-          shell: Rscript {0}
-
-        - name: Check on Mac / ubuntu
-          if: runner.os != 'Windows'
-          run: rcmdcheck::rcmdcheck(args = c("--no-tests", "--as-cran", "--no-manual"), error_on = "warning", check_dir = "check")
-          shell: Rscript {0}
-
-        - name: Check on Windows, without install and vignette
+        - name: Install Windows system dependencies
           if: runner.os == 'Windows'
-          run: rcmdcheck::rcmdcheck(args = c("--no-install", "--no-build-vignettes","--no-vignettes","--ignore-vignettes","--no-tests", "--as-cran", "--no-manual"), build_args = c("--no-build-vignettes"), error_on = "warning", check_dir = "check")
-          shell: Rscript {0}
+          run: |
+            pacman -Sy # Update repo index
+            pacman -S --noconfirm mingw-w64-x86_64-gsl mingw-w64-i686-gsl mingw-w64-ucrt-x86_64-gsl
+            # pacman -S --noconfirm mingw-w64-{i686,x86_64}-gsl
+
+        - uses: r-lib/actions/setup-r-dependencies@v1
+          with:
+            extra-packages: rcmdcheck
+
+        - uses: r-lib/actions/setup-tinytex@v1
+
+        - uses: r-lib/actions/check-r-package@v1
+          with:
+            args: '"--no-manual", "--as-cran", "--no-tests"'
+
+        - name: Upload check results
+          if: failure()
+          uses: actions/upload-artifact@main
+          with:
+            name: ${{ runner.os }}-r${{ matrix.config.r }}-results
+            path: check

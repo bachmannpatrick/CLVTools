@@ -23,11 +23,11 @@ clvdata(
 
 \item{estimation.split}{Indicates the length of the estimation period. See details.}
 
-\item{name.id}{Column name of the customer id in \code{data.transaction}.}
+\item{name.id}{Column name of the customer id in \code{data.transactions}.}
 
-\item{name.date}{Column name of the transaction date in \code{data.transaction}.}
+\item{name.date}{Column name of the transaction date in \code{data.transactions}.}
 
-\item{name.price}{Column name of price in \code{data.transaction}. NULL if no spending data is present.}
+\item{name.price}{Column name of price in \code{data.transactions}. NULL if no spending data is present.}
 }
 \value{
 An object of class \code{clv.data}.
@@ -104,7 +104,7 @@ clv.data.cdnow <- clvdata(data.transactions = cdnow,
 # summary of the transaction data
 summary(clv.data.cdnow)
 
-# plot the transaction data
+# plot the total number of transactions per period
 plot(clv.data.cdnow)
 
 # create data with the weekly periods defined to

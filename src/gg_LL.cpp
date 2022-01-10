@@ -1,9 +1,5 @@
 #include "gg_LL.h"
 
-// lbeta := lgamma(a) + lgamma(b) - lgamma(a+b)
-arma::vec lbeta(const arma::vec& a, const double b){
-  return (arma::lgamma(a) + std::lgamma(b) - arma::lgamma(a+b));
-}
 
 //' @title Gamma-Gamma: Log-Likelihood Function
 //'
@@ -44,7 +40,7 @@ double gg_LL(const arma::vec& vLogparams,
     + ((p * vX(vNonZero) - 1) % arma::log(vM_x(vNonZero)))
     + ((p * vX(vNonZero)) % arma::log(vX(vNonZero)))
     - (p * vX(vNonZero) + q) % arma::log(gamma + vM_x(vNonZero) % vX(vNonZero))
-    - lbeta(p * vX(vNonZero), q);
+    - clv::vec_lbeta(p * vX(vNonZero), q);
 
   return -1 * arma::sum(vLL);
 }

@@ -241,23 +241,34 @@ pnbd(clv.data.dyn.cov, reg.lambdas = c(trans=10, life=2))
 }
 \references{
 Schmittlein DC, Morrison DG, Colombo R (1987). \dQuote{Counting Your Customers:
-Who-Are They and What Will They Do Next?} Management Science, 33(1), 1–24.
+Who-Are They and What Will They Do Next?} Management Science, 33(1), 1-24.
+
+Bachmann P, Meierer M, Naef, J (2021). \dQuote{The Role of Time-Varying Contextual Factors
+in Latent Attrition Models for Customer Base Analysis} Marketing Science 40(4). 783-809.
 
 Fader PS, Hardie BGS (2005). \dQuote{A Note on Deriving the Pareto/NBD Model and
 Related Expressions.}
 URL \url{http://www.brucehardie.com/notes/009/pareto_nbd_derivations_2005-11-05.pdf}.
 
-Fader PS, Hardie BG (2007). \dQuote{Incorporating time-invariant covariates into the
+Fader PS, Hardie BGS (2007). \dQuote{Incorporating time-invariant covariates into the
 Pareto/NBD and BG/NBD models.}
 URL \url{http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf}.
+
+Fader PS, Hardie BGS (2020). \dQuote{Deriving an Expression for P(X(t)=x) Under
+the Pareto/NBD Model.}
+URL \url{https://www.brucehardie.com/notes/012/pareto_NBD_pmf_derivation_rev.pdf}
 }
 \seealso{
 \code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object, \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}}
 to add static covariates to an existing clv data object.
 
+\link[CLVTools:gg]{gg} to fit customer's average spending per transaction with the \code{Gamma-Gamma} model
+
 \code{\link[CLVTools:predict.clv.fitted.transactions]{predict}} to predict expected transactions, probability of being alive, and customer lifetime value for every customer
 
 \code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} to plot the unconditional expectation as predicted by the fitted model
+
+\code{\link[CLVTools:pmf]{pmf}} for the probability to make exactly x transactions in the estimation period, given by the probability mass function (PMF).
 
 The generic functions \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:summary.clv.fitted]{summary}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
 

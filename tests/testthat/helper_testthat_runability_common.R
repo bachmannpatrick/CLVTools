@@ -1,5 +1,5 @@
 fct.testthat.runability.common.works.with.cor <- function(method, clv.data.holdout, clv.newdata.nohold, clv.newdata.withhold,
-                                                          names.params.model, DERT.not.implemented){
+                                                          names.params.model){
   test_that("Works with use.cor=T", {
     skip_on_cran()
     skip_on_ci()
@@ -12,13 +12,13 @@ fct.testthat.runability.common.works.with.cor <- function(method, clv.data.holdo
     if(is(clv.data.holdout, "clv.data.static.covariates"))
       full.names <- c(full.names, m.cor@names.prefixed.params.free.life, m.cor@names.prefixed.params.free.trans)
 
-    fct.helper.clvfittedtransactions.all.s3(m.cor, full.names = full.names, DERT.not.implemented = DERT.not.implemented,
+    fct.helper.clvfittedtransactions.all.s3(m.cor, full.names = full.names,
                                             clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
   })
 }
 
 fct.testthat.runability.common.works.with.cor.start.params <- function(method, clv.data.holdout, clv.newdata.nohold, clv.newdata.withhold,
-                                                                       names.params.model, DERT.not.implemented = DERT.not.implemented){
+                                                                       names.params.model){
   test_that("Works with use.cor=T and start.params", {
     skip_on_cran()
     skip_on_ci()
@@ -31,7 +31,7 @@ fct.testthat.runability.common.works.with.cor.start.params <- function(method, c
     if(is(clv.data.holdout, "clv.data.static.covariates"))
       full.names <- c(full.names, m.cor@names.prefixed.params.free.life, m.cor@names.prefixed.params.free.trans)
 
-    fct.helper.clvfittedtransactions.all.s3(m.cor, full.names = full.names, DERT.not.implemented = DERT.not.implemented,
+    fct.helper.clvfittedtransactions.all.s3(m.cor, full.names = full.names,
                                             clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
   })
 }

@@ -9,32 +9,24 @@ on:
     branches:
       - 'release**'
       - 'development'
+
 jobs:
-  tests-ubuntu-16-04-R-release:
-    runs-on: ubuntu-16.04
+  tests-ubuntu-latest:
+    runs-on: ubuntu-latest
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      # to install binaries on ubuntu
-      RSPM: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
       - uses: actions/checkout@v2
-      - uses: r-lib/actions/setup-r@master
+
+      - uses: r-lib/actions/setup-r@v1
         with:
-          r-version: 'release'
-      - name: Install system dependencies
-        env:
-          RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
-        run: |
-          Rscript -e "install.packages(c('remotes', 'rcmdcheck'))"
-          Rscript -e "remotes::install_github('r-hub/sysreqs')"
-          sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
-          sudo -s eval "$sysreqs"
-      - name: Install package dependencies
-        run: |
-          remotes::install_deps(dependencies = TRUE) # installs binaries
-          # Install testing stuff (testthat and covr are part of package's Suggests and installed as package dependency)
-          remotes::install_cran("devtools")
-        shell: Rscript {0}
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v1
+        with:
+          extra-packages: devtools
 
       - name: Run tests
         run: |

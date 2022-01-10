@@ -25,10 +25,10 @@ fct.testthat.inputchecks.clvfittedspending.predict <- function(data.cdnow, data.
   expect_silent(fitted.spending <- gg(clv.data.apparel.static.cov, verbose = FALSE))
 
   # General
-  fct.testthat.inputchecks.clvfitted.na.in.prediction.params.model(s3method = predict, clv.fitted = fitted.spending)
+  fct.testthat.inputchecks.clvfitted.na.in.prediction.params.model(s3method = predict, clv.fitted = fitted.spending, l.s3method.args=list())
 
   # Newdata
-  fct.testthat.inputchecks.clvfitted.newdata.not.clvdata(clv.fitted = fitted.spending, data.cdnow = data.cdnow)
+  fct.testthat.inputchecks.clvfitted.newdata.not.clvdata(s3method=predict, l.std.args=list(fitted.spending), data.cdnow = data.cdnow)
   fct.testthat.inputchecks.clvfittedspending.predict.newdata.has.no.spending(fitted.spending = fitted.spending, data.cdnow = data.cdnow)
 
 

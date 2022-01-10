@@ -68,9 +68,6 @@ setGeneric("clv.controlflow.check.prediction.params", def = function(clv.fitted)
 setGeneric("clv.controlflow.plot.check.inputs", def = function(obj, prediction.end, cumulative, plot, label.line, verbose)
   standardGeneric("clv.controlflow.plot.check.inputs"))
 
-setGeneric("clv.controlflow.plot.get.data", def = function(obj, dt.expectation.seq, cumulative, label.line, verbose)
-  standardGeneric("clv.controlflow.plot.get.data"))
-
 
 
 
@@ -149,6 +146,8 @@ setGeneric(name="clv.model.vcov.jacobi.diag", def=function(clv.model, clv.fitted
 setGeneric(name="clv.model.process.newdata", def=function(clv.model, clv.fitted, user.newdata, verbose)
   standardGeneric("clv.model.process.newdata"))
 
+setGeneric(name="clv.model.pmf", def=function(clv.model, clv.fitted, x)
+  standardGeneric("clv.model.pmf"))
 
 
 # . For covariate models -----------------------------------------------------------------------------------------------------------
@@ -190,4 +189,35 @@ setGeneric("clv.time.ceiling.date", function(clv.time, timepoint)
 
 setGeneric("clv.time.format.timepoint", function(clv.time, timepoint)
   standardGeneric("clv.time.format.timepoint"))
+
+
+
+# S3 Generics ---------------------------------------------------------------
+#' Coerce to clv.data object
+#'
+#' Functions to coerce transaction data to a \code{clv.data} object.
+#'
+#' @param x Transaction data.
+#' @templateVar name_param_trans x
+#' @template template_params_clvdata
+#' @template template_param_dots
+#'
+#' @details
+#' See section "Details" of \link{clvdata} for more details on parameters and usage.
+#'
+#' @examples
+#' data(cdnow)
+#'
+#' # Turn data.table of transaction data into a clv.data object,
+#' #  using default date format and column names but no holdout period
+#' clv.cdnow <- as.clv.data(cdnow)
+#'
+#' @export
+as.clv.data <- function(x,
+                        date.format="ymd", time.unit="weeks",
+                        estimation.split = NULL,
+                        name.id="Id", name.date="Date", name.price="Price",
+                        ...){
+  UseMethod("as.clv.data", x)
+}
 

@@ -9,6 +9,16 @@
   return(err.msg)
 }
 
+check_user_data_integer_vector_greater0 <- function(vec, var.name){
+  err.msg <- .check_userinput_integer_vector(vec.int=vec, var.name=var.name)
+  if(length(err.msg))
+    return(err.msg)
+
+  if(any(vec < 0)){
+    return(paste0(var.name, " has to be a vector of all positive integer numbers (>=0)!"))
+  }
+  return(c())
+}
 
 # Can be
 #     - NULL (= all in holdout)

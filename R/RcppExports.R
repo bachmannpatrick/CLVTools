@@ -75,6 +75,17 @@ NULL
 #'
 NULL
 
+#' @name bgnbd_pmf
+#' @templateVar name_model_full BG/NBD
+#' @template template_pmf_titledescreturnpmfparams
+#' @template template_params_bgnbd
+#' @param vAlpha_i Vector of individual parameters alpha
+#' @param vA_i Vector of individual parameters a
+#' @param vB_i Vector of individual parameters b
+#' @template template_references_bgnbd
+#'
+NULL
+
 #' @rdname bgnbd_CET
 bgnbd_nocov_CET <- function(r, alpha, a, b, dPeriods, vX, vT_x, vT_cal) {
     .Call(`_CLVTools_bgnbd_nocov_CET`, r, alpha, a, b, dPeriods, vX, vT_x, vT_cal)
@@ -125,6 +136,16 @@ bgnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_tr
     .Call(`_CLVTools_bgnbd_staticcov_LL_sum`, vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 }
 
+#' @rdname bgnbd_pmf
+bgnbd_nocov_PMF <- function(r, alpha, a, b, x, vT_i) {
+    .Call(`_CLVTools_bgnbd_nocov_PMF`, r, alpha, a, b, x, vT_i)
+}
+
+#' @rdname bgnbd_pmf
+bgnbd_staticcov_PMF <- function(r, x, vAlpha_i, vA_i, vB_i, vT_i) {
+    .Call(`_CLVTools_bgnbd_staticcov_PMF`, r, x, vAlpha_i, vA_i, vB_i, vT_i)
+}
+
 bgnbd_staticcov_alpha_i <- function(alpha_0, vCovParams_trans, mCov_trans) {
     .Call(`_CLVTools_bgnbd_staticcov_alpha_i`, alpha_0, vCovParams_trans, mCov_trans)
 }
@@ -137,7 +158,7 @@ bgnbd_staticcov_b_i <- function(b_0, vCovParams_life, mCov_life) {
     .Call(`_CLVTools_bgnbd_staticcov_b_i`, b_0, vCovParams_life, mCov_life)
 }
 
-#' @title GSL Hypergeom 2f0 for equal length vectors
+#' @title GSL Hypergeometric 2F0 for equal length vectors
 #'
 #' @param vA Vector of values for parameter a
 #' @param vB Vector of values for parameter b
@@ -150,7 +171,7 @@ vec_gsl_hyp2f0_e <- function(vA, vB, vZ) {
     .Call(`_CLVTools_vec_gsl_hyp2f0_e`, vA, vB, vZ)
 }
 
-#' @title GSL Hypergeom 2f1 for equal length vectors
+#' @title GSL Hypergeometric 2F1 for equal length vectors
 #'
 #' @param vA Vector of values for parameter a
 #' @param vB Vector of values for parameter b
@@ -425,6 +446,16 @@ NULL
 #'
 NULL
 
+#' @name pnbd_pmf
+#' @templateVar name_model_full Pareto/NBD
+#' @template template_pmf_titledescreturnpmfparams
+#' @template template_params_pnbd
+#' @param vAlpha_i Vector of individual parameters alpha.
+#' @param vBeta_i Vector of individual parameters beta.
+#' @template template_references_pnbd
+#'
+NULL
+
 #' @rdname pnbd_CET
 pnbd_nocov_CET <- function(r, alpha_0, s, beta_0, dPeriods, vX, vT_x, vT_cal) {
     .Call(`_CLVTools_pnbd_nocov_CET`, r, alpha_0, s, beta_0, dPeriods, vX, vT_x, vT_cal)
@@ -491,6 +522,16 @@ pnbd_nocov_PAlive <- function(r, alpha_0, s, beta_0, vX, vT_x, vT_cal) {
 #' @rdname pnbd_PAlive
 pnbd_staticcov_PAlive <- function(r, alpha_0, s, beta_0, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life) {
     .Call(`_CLVTools_pnbd_staticcov_PAlive`, r, alpha_0, s, beta_0, vX, vT_x, vT_cal, vCovParams_trans, vCovParams_life, mCov_trans, mCov_life)
+}
+
+#' @rdname pnbd_pmf
+pnbd_nocov_PMF <- function(r, alpha_0, s, beta_0, x, vT_i) {
+    .Call(`_CLVTools_pnbd_nocov_PMF`, r, alpha_0, s, beta_0, x, vT_i)
+}
+
+#' @rdname pnbd_pmf
+pnbd_staticcov_PMF <- function(r, s, x, vAlpha_i, vBeta_i, vT_i) {
+    .Call(`_CLVTools_pnbd_staticcov_PMF`, r, s, x, vAlpha_i, vBeta_i, vT_i)
 }
 
 pnbd_dyncov_LL_Bi_cpp <- function(i, t_x, d, delta, n_walks, max_walks, walks) {

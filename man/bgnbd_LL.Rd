@@ -38,16 +38,16 @@ Returns the respective Log-Likelihood value(s) for the BG/NBD model
 \description{
 Calculates the Log-Likelihood values for the BG/NBD model with and without covariates.
 
-The function \code{bgnbd_nocov_LL_ind} calculates the individual LogLikelihood
+The function \code{bgnbd_nocov_LL_ind} calculates the individual log-likelihood
 values for each customer for the given parameters.
 
-The function \code{bgnbd_nocov_LL_sum} calculates the LogLikelihood value summed
+The function \code{bgnbd_nocov_LL_sum} calculates the log-likelihood value summed
 across customers for the given parameters.
 
-The function \code{bgnbd_staticcov_LL_ind} calculates the individual LogLikelihood
+The function \code{bgnbd_staticcov_LL_ind} calculates the individual log-likelihood
 values for each customer for the given parameters and covariates.
 
-The function \code{bgnbd_staticcov_LL_sum} calculates the individual LogLikelihood values summed
+The function \code{bgnbd_staticcov_LL_sum} calculates the individual log-likelihood values summed
 across customers.
 }
 \details{
@@ -68,13 +68,16 @@ Each column represents a different covariate. For every column a gamma parameter
 needs to added to \code{vLogparams} at the respective position.
 }
 \references{
-Fader PS, Hardie BGS, Lee, KL (2005). \dQuote{\dQuote{Counting Your Customers} the Easy Way:
-An Alternative to the Pareto/NBD Model} Marketing Science, 24(2), 275–284.
+Fader PS, Hardie BGS, Lee KL (2005). \dQuote{\dQuote{Counting Your Customers} the Easy Way:
+An Alternative to the Pareto/NBD Model} Marketing Science, 24(2), 275-284.
 
-Fader PS, Hardie BGS (2013). \dQuote{Overcoming the BG/NBD Model’s #NUM! Error Problem}
+Fader PS, Hardie BGS (2013). \dQuote{Overcoming the BG/NBD Model's #NUM! Error Problem}
 URL \url{http://brucehardie.com/notes/027/bgnbd_num_error.pdf}.
 
 Fader PS, Hardie BGS (2007). \dQuote{Incorporating time-invariant covariates into the
 Pareto/NBD and BG/NBD models.}
 URL \url{http://www.brucehardie.com/notes/019/time_invariant_covariates.pdf}.
+
+Fader PS, Hardie BGS, Lee KL (2007). \dQuote{Creating a Fit Histogram for the BG/NBD Model}
+URL \url{https://www.brucehardie.com/notes/014/bgnbd_fit_histogram.pdf}
 }

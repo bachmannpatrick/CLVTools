@@ -36,6 +36,65 @@ check_err_msg <- function(err.msg){
   return(as.character(id.data))
 }
 
+.check_userinput_matcharg <- function(char, choices, var.name){
+  if(is.null(char))
+    return(paste0("Parameter ",var.name, " cannot be NULL!"))
+  if(!is.character(char))
+    return(paste0(var.name, " needs to be of type character (text)!"))
+
+  err.msg <- c()
+  if(anyNA(char))
+    err.msg <- c(err.msg, paste0(var.name, " may not contain any NA!"))
+
+  # use pmatch to match the input against the possible choices
+  #   match.arg would throw undescriptive error if not found
+  #   this also accounts for empty texts
+
+  if(length(err.msg) == 0) # may fail ungracefully if inproper input
+    if(!all(pmatch(x=tolower(char), table=tolower(choices), nomatch = FALSE)))
+      err.msg <- c(err.msg, paste0("Please choose one of the following values for ",var.name,": ",
+                                   paste(choices, collapse = ", "), "!"))
+
+  return(err.msg)
+}
+
+.check_userinput_integer_vector <- function(vec.int, var.name){
+  if(is.null(vec.int))
+    return(paste0(var.name, " cannot be NULL!"))
+
+  if(anyNA(vec.int))
+    return(paste0(var.name, " cannot contain any NA values!"))
+
+  if(length(vec.int) == 0)
+    return(paste0(var.name, " has to contain values!"))
+
+  if(!is.numeric(vec.int))
+    return(paste0(var.name, " has to be a vector of integer numbers!"))
+
+  # all integers
+  if(!all(vec.int == as.integer(vec.int))){
+    return(paste0(var.name, " must be all integer numbers!"))
+  }
+  return(c())
+}
+
+check_userinput_datanocov_transbins <- function(trans.bins, count.repeat.trans){
+
+  err.msg <- .check_userinput_integer_vector(vec.int=trans.bins, var.name="trans.bins")
+  if(length(err.msg))
+    return(err.msg)
+
+  if(count.repeat.trans){
+    if(any(trans.bins < 0))
+      return("trans.bins has to be a vector of positive integers (>=0)!")
+  }else{
+    if(any(trans.bins < 1))
+      return("trans.bins has to be a vector of strictly positive integers (>=1)!")
+  }
+
+  return(c())
+}
+
 check_userinput_datanocov_columnname <- function(name.col, data){
 
   if(is.null(name.col))
