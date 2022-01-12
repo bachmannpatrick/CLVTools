@@ -862,6 +862,8 @@ BEGIN_RCPP
 END_RCPP
 }
 
+RcppExport SEXP run_testthat_tests(SEXP);
+
 static const R_CallMethodDef CallEntries[] = {
     {"_CLVTools_bgnbd_nocov_CET", (DL_FUNC) &_CLVTools_bgnbd_nocov_CET, 8},
     {"_CLVTools_bgnbd_staticcov_CET", (DL_FUNC) &_CLVTools_bgnbd_staticcov_CET, 12},
@@ -914,6 +916,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CLVTools_LL_i_single_walk", (DL_FUNC) &_CLVTools_LL_i_single_walk, 22},
     {"_CLVTools_start_profiler", (DL_FUNC) &_CLVTools_start_profiler, 1},
     {"_CLVTools_stop_profiler", (DL_FUNC) &_CLVTools_stop_profiler, 0},
+    {"run_testthat_tests", (DL_FUNC) &run_testthat_tests, 1},
     {NULL, NULL, 0}
 };
 

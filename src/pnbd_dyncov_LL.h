@@ -133,6 +133,16 @@ double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
                                          const double alpha_1, const double beta_1,
                                          const double alpha_2, const double beta_2);
 
+double pnbd_dyncov_LL_i_A1sum(const std::vector<TransactionWalk>& real_walks_trans);
+
+double pnbd_dyncov_LL_i_BjSum(const std::vector<TransactionWalk>& real_walks);
+
+double pnbd_dyncov_LL_i_BkSum(const double Bjsum, const TransactionWalk& aux_walk);
+
+double pnbd_dyncov_LL_i_Bi(const arma::uword i, const double t_x, const TransactionWalk& aux_walk);
+
+double pnbd_dyncov_LL_i_Di(const arma::uword i, const LifetimeWalk& real_walk_life,
+                           const LifetimeWalk& aux_walk_life, const double d_omega);
 
 
 double pnbd_dyncov_LL_i_F2_1(const double r, const double alpha_0, const double s, const double beta_0,
