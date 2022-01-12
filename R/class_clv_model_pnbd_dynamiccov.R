@@ -15,7 +15,7 @@ clv.model.pnbd.dynamic.cov <- function(){
   return(new("clv.model.pnbd.dynamic.cov",
              clv.model.pnbd.static.cov(),
 
-             name.model       = "Pareto NBD with Dynamic Covariates",
+             name.model       = "Pareto/NBD with Dynamic Covariates",
              # Overwrite optimx default args
              optimx.defaults  = list(method = "Nelder-Mead",
                                      itnmax = 3000,
