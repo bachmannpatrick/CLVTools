@@ -98,7 +98,7 @@ TransactionWalk::TransactionWalk()
 }
 
 TransactionWalk::TransactionWalk(const arma::vec& cov_data, const arma::rowvec& walk_info)
-  : LifetimeWalk(cov_data, walk_info), delta(walk_info(2)), d1{walk_info(3)}, tjk{walk_info(4)}{
+  : LifetimeWalk(cov_data, walk_info), delta{walk_info(2)}, d1{walk_info(3)}, tjk{walk_info(4)}{
 }
 
 EmptyLifetimeWalk::EmptyLifetimeWalk()
@@ -296,6 +296,7 @@ double pnbd_dyncov_LL_i_BkSum(const double Bjsum, const TransactionWalk& aux_wal
 
 /*
  * Sum transaction aux walk up to (and incl) Walk_i
+ *  Sum cov of period where until i periods after (**?? )
  */
 double pnbd_dyncov_LL_i_Bi(const arma::uword i, const double t_x, const TransactionWalk& aux_walk){
   // **TODO: Make tests with i={1,2,3,10} and n_elems={1,2,3,10} (and i>n_elems?)
@@ -333,25 +334,23 @@ double pnbd_dyncov_LL_i_Di(const arma::uword i, const LifetimeWalk& real_walk_li
   // Cannot always sum up real_walk_life first and then add aux_walk sum because
   //  for the case real_walk_life.n_elem() == 0, d_omega has to be multiplied with aux_walk.first() not to real_walk_life.first()
   //  Therefore do real_walk_life.n_elem() == 0 separately
-
-
-  // **TODO: Calculate delta here because need for both cases!
-  //   **TODO: Always have to sum last part as well??
-
   if(real_walk_life.n_elem() == 0){
+    // Delta = 1 for all other than i==1
+
     // Directly sum up the aux walk until Walk_i, including first()*d
     if(i == 1){
       // Cancels out because besides first() also last() (which is the same) is included for i=1!
       return(0.0);
       // return(aux_walk_life.first()*d_omega);
     }else{
-      // double delta = static_cast<double>(i > 1);
-      double delta = static_cast<double>(i - 1 > 1);
-      double last_mult = (-d_omega - delta*(static_cast<double>(i) - 3.0));
       if(i == 2){
-        return(aux_walk_life.first()*d_omega + aux_walk_life.last()*last_mult);
+        // k0x+i-3 = 1+2-3 = 0. Last multpart * delta disappears
+        return(aux_walk_life.first()*d_omega + aux_walk_life.get_elem(1)*(-d_omega));
       }else{
-        // i >= 3: Walk_1 + sum(Walk_2, Walk_i-1) + Walk_i
+        // i >= 3: Walk_1*domega + sum(Walk_2, Walk_i-1) + Walk_i*lastmult
+        // lastmult=(-d_omega - delta*(k0x + static_cast<double>(i) - 3.0))
+        //    where k0x=1, delta=1
+        double last_mult = (-d_omega - (1.0 + static_cast<double>(i) - 3.0));
         return(aux_walk_life.first()*d_omega + aux_walk_life.sum_from_to(1, i-2) + aux_walk_life.get_elem(i-1)*last_mult);
       }
     }
@@ -373,15 +372,12 @@ double pnbd_dyncov_LL_i_Di(const arma::uword i, const LifetimeWalk& real_walk_li
     }
 
     // Sum up aux walk until i
-    //  Not required to first()*d_omega because done with real_walk.first()
-    // **TODO JEFF: Does delta refer to aux walk or real walk? or both together (as should be same as Bi if one long walk)? Or is delta if walk was until i? Also: k0x+i >=2. Should delta not also be calcualted dynamically in Bi(), as function of i?
-    // **TODO: Is aux_walk.n_elem == 2 a special case for DT==D1?
+    //   aux_walk.first()*d_omega is not required because done with real_walk.first()
+    //   delta is always 1 here, because start period is in real walk and end period in auxwalk
+    double k0x = static_cast<double>(real_walk_life.n_elem()) + 1.0; // +1 to also count period of x (first in aux walk)
+    double last_mult = -d_omega - (k0x + static_cast<double>(i) - 3.0);
+
     double sum_aux_walk = 0.0;
-    // double delta = aux_walk_life.delta;
-    // double delta = static_cast<double>((real_walk_life.n_elem() + aux_walk_life.n_elem()) >= 2);
-    double delta = static_cast<double>(real_walk_life.n_elem() + i - 1 > 1);
-    double k0x = static_cast<double>(real_walk_life.n_elem());
-    double last_mult = -d_omega - delta*(k0x + static_cast<double>(i) - 3.0);
     if(i == 1){
       sum_aux_walk = aux_walk_life.first()*last_mult;
     }else{
@@ -392,12 +388,7 @@ double pnbd_dyncov_LL_i_Di(const arma::uword i, const LifetimeWalk& real_walk_li
         sum_aux_walk = aux_walk_life.first() + aux_walk_life.sum_from_to(1,i-2) + aux_walk_life.get_elem(i-1)*last_mult;
       }
     }
-    // Rcpp::Rcout<<"i: "<<i<<std::endl;
-    // Rcpp::Rcout<<"k0x: "<<k0x<<std::endl;
-    // Rcpp::Rcout<<"delta: "<<delta<<std::endl;
-    // Rcpp::Rcout<<"last_mult: "<<last_mult<<std::endl;
-    // Rcpp::Rcout<<"sum_real_walk: "<<sum_real_walk<<std::endl;
-    // Rcpp::Rcout<<"sum_aux_walk: "<<sum_aux_walk<<std::endl;
+
     return(sum_real_walk + sum_aux_walk);
   }
 }
@@ -521,7 +512,7 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
                            arma::vec& intermediate_results){
 
   // **TODO: Verify if this is calculated correctly in walk creation
-  //  (d1 of aux trans = time between T and interval(T) or tx and interval(tx) or what?)
+  // dT is d1 in the formula. It is d1 around T, ie d1 of aux walk
   const double dT = c.aux_walk_trans.d1;
 
   const double a1T = Bjsum + B1 + c.T_cal * A1T;
@@ -917,7 +908,7 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
                                         adj_covdata_real_trans, walkinfo_real_trans.rows(wi_real_trans_from, wi_real_trans_to)),
                                return_intermediate_results);
     }else{
-      // // Zero-repeater (no real trans walks)
+      // Zero-repeater (no real trans walks)
       res_i = pnbd_dyncov_LL_i(r, alpha_0, s, beta_0,
                                Customer(X(i), t_x(i), T_cal(i), d_omega(i),
                                         adj_covdata_aux_life, walkinfo_aux_life.row(i),
