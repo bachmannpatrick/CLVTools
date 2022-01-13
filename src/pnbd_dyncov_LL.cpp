@@ -263,12 +263,10 @@ double pnbd_dyncov_LL_i_bksumbjsum_walk_i(const TransactionWalk& w){
   if(w.n_elem() == 1){
     // Transactions were in same cov period, delta = 0
     return(w.first() * (w.tjk));
-    // return(w.first()*w.d1 + w.last()*last_mult);
   }else{
     if(w.n_elem() == 2){
       // because k-2 = 0
       return(w.first()*w.d1 + w.last()*(w.tjk - w.d1));
-      // return(w.first()*w.d1 + w.last()*last_mult);
     }else{
       // >= 3
       double n = static_cast<double>(w.n_elem());
@@ -296,21 +294,24 @@ double pnbd_dyncov_LL_i_BkSum(const double Bjsum, const TransactionWalk& aux_wal
 
 /*
  * Sum transaction aux walk up to (and incl) Walk_i
- *  Sum cov of period where until i periods after (**?? )
+ *  delta: depends on i, 0 if start and end in same period
+ *
  */
 double pnbd_dyncov_LL_i_Bi(const arma::uword i, const double t_x, const TransactionWalk& aux_walk){
-  // **TODO: Make tests with i={1,2,3,10} and n_elems={1,2,3,10} (and i>n_elems?)
-  // **TODO: Why does last mult fall out for i={1,2}? its not n_elem!
 
   if(i == 1){
+    // delta=0,
+    // first is multiplied with and last term
     return(aux_walk.first() * (-t_x));
   }
 
   if(i == 2){
+    // term delta*(i-2) disappears because (i-2)=0
     return(aux_walk.first()*aux_walk.d1 + aux_walk.get_elem(i-1) * (-t_x - aux_walk.d1));
   }
 
   // Sum elements up to Walk_i
+  // **TODO: Hardcode: for i>=3, delta=1
   return(aux_walk.first()*aux_walk.d1 + aux_walk.sum_from_to(1, i-2) +
          aux_walk.get_elem(i-1) * (-t_x - aux_walk.d1 - aux_walk.delta*(static_cast<double>(i) - 2.0)));
 }
@@ -322,7 +323,9 @@ double pnbd_dyncov_LL_i_Bi(const arma::uword i, const double t_x, const Transact
  *  Treat as if real and aux walk were one continuous walk
  *    Real and aux walk may therefore not overlap
  *    Summing same as in _Bi()
- *  *** TODO: delta: depends on how long walk from alive until i is (length of continuous walk until i) ***
+ *  k0x: the number of covariate periods (active covs) from 0 to x (all real walk elems + first aux elem)
+ *  delta: whether the start (coming alive, 0) and the end of the sum (given by i) are in same covariate period.
+ *         It depends on how long the walk from alive until i is (length of continuous walk until i)
  *  First element is *d_omega. First element is either from real walk or from aux walk (if no real walk)
  */
 double pnbd_dyncov_LL_i_Di(const arma::uword i, const LifetimeWalk& real_walk_life,
@@ -341,7 +344,6 @@ double pnbd_dyncov_LL_i_Di(const arma::uword i, const LifetimeWalk& real_walk_li
     if(i == 1){
       // Cancels out because besides first() also last() (which is the same) is included for i=1!
       return(0.0);
-      // return(aux_walk_life.first()*d_omega);
     }else{
       if(i == 2){
         // k0x+i-3 = 1+2-3 = 0. Last multpart * delta disappears
