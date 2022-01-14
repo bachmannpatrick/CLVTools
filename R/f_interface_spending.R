@@ -8,7 +8,7 @@ spending <- function(formula, data, optimx.args=list(), verbose=TRUE){
   cl  <- match.call(call = sys.call(), expand.dots = TRUE)
 
   check_err_msg(check_userinput_formula(formula, name.specials.model = c("gg")))
-  check_err_msg(check_userinput_formula_clvdata(data))
+  check_err_msg(check_userinput_formula_data(data))
   check_err_msg(check_userinput_spending_formulavsdata(formula=formula, data=data))
 
   F.formula <- as.Formula(formula)
@@ -18,7 +18,7 @@ spending <- function(formula, data, optimx.args=list(), verbose=TRUE){
 
   # add model call args
   model <- formula_read_model_name(F.formula)
-  l.model.args <- formula_parse_args_of_special(F.formula = F.formula, name.special = model, from.rhs = 1)
+  l.model.args <- formula_parse_args_of_special(F.formula = F.formula, name.special = model, from.lhs=0, from.rhs = 1)
   args <- modifyList(args, l.model.args, keep.null = TRUE)
 
   # Fit model
