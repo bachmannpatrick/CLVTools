@@ -10,7 +10,7 @@
 #include <testthat.h>
 
 bool equal(double x, double y){
-  // Use fixed precision because results are from excel (and therefore independent from machine eps)
+  // Use fixed precision because results are from Excel (and therefore independent from machine eps)
   // return(std::fabs(x - y) < std::sqrt(arma::datum::eps));
   return(std::fabs(x - y) < 0.00001);
 }
@@ -22,6 +22,7 @@ double d_omega = 0.854;
 double tjk = 23.87;
 double x = 4;
 
+// Bi() vs excel ------------------------------------------------------------------------------
 
 context("Bi() vs excel") {
   // from and to are R indices (from 1 to n)
@@ -79,6 +80,8 @@ context("Bi() vs excel") {
     expect_true(equal(pnbd_dyncov_LL_i_Bi(1, t_x, walk), -4.31853));
   }
 }
+
+// Di() vs excel ------------------------------------------------------------------------------
 
 LifetimeWalk get_aux_lifetimewalk(arma::uword from){
   const arma::vec aux_walkdata = {0.123, 0.234, 0.345, 0.456};
@@ -192,7 +195,7 @@ context("Di() vs excel") {
 
     expect_true(equal(pnbd_dyncov_LL_i_Di(1, real_walk, aux_walk, d_omega), 3.344856));
     expect_true(equal(pnbd_dyncov_LL_i_Di(2, real_walk, aux_walk, d_omega), 3.028062));
-    expect_true(equal(pnbd_dyncov_LL_i_Di(3, real_walk, aux_walk, d_omega), 2.794062));
+    expect_true(equal(pnbd_dyncov_LL_i_Di(3, real_walk, aux_walk, d_omega), 2.600268));
   }
 
 
@@ -202,10 +205,9 @@ context("Di() vs excel") {
 
     expect_true(equal(pnbd_dyncov_LL_i_Di(1, real_walk, aux_walk, d_omega), 3.344856));
     expect_true(equal(pnbd_dyncov_LL_i_Di(2, real_walk, aux_walk, d_omega), 3.028062));
-    expect_true(equal(pnbd_dyncov_LL_i_Di(3, real_walk, aux_walk, d_omega), 2.794062));
-    expect_true(equal(pnbd_dyncov_LL_i_Di(4, real_walk, aux_walk, d_omega), 2.255268));
+    expect_true(equal(pnbd_dyncov_LL_i_Di(3, real_walk, aux_walk, d_omega), 2.600268));
+    expect_true(equal(pnbd_dyncov_LL_i_Di(4, real_walk, aux_walk, d_omega), 2.061474));
   }
-
 
 }
 
