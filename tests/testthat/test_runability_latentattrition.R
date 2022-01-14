@@ -60,3 +60,31 @@ test_that("Every model works with constraint", {
 
 
 
+context("Runability - latentAttrition - data.frame")
+
+test_that("Works out-of-the-box", {
+  skip_on_cran()
+  expect_silent(latentAttrition(data() ~ pnbd(), cdnow, verbose=FALSE))
+})
+
+test_that("Works with explicit parameters", {
+  skip_on_cran()
+  expect_silent(latentAttrition(data(unit=w) ~ pnbd(), data=cdnow, verbose=FALSE))
+  expect_silent(latentAttrition(data(unit=w, split=NULL, format=ymd) ~ pnbd(), data=cdnow, verbose=FALSE))
+  expect_silent(latentAttrition(data(unit=w, split=37, format=ymd) ~ pnbd(), data=cdnow, verbose=FALSE))
+  expect_silent(latentAttrition(data(unit=w, split=, format=ymd) ~ pnbd(), data=cdnow, verbose=FALSE))
+})
+
+test_that("Works with static covariates", {
+  skip_on_cran()
+  # outofthebox
+  expect_silent(latentAttrition(data() ~ pnbd()|Gender|Gender+Channel, data=apparelTrans, cov = apparelStaticCov, verbose=FALSE))
+  expect_silent(latentAttrition(data() ~ pnbd()|.|., data=apparelTrans, cov=apparelStaticCov, verbose=FALSE))
+  # explicit parameters
+  expect_silent(latentAttrition(data(unit=w, split=37, format=ymd) ~ pnbd()|.|., data=apparelTrans, cov = apparelStaticCov, verbose=FALSE))
+  expect_silent(latentAttrition(data(unit=w, split=37, format=ymd) ~ pnbd()|Gender|Gender+Channel, data=apparelTrans, cov = apparelStaticCov, verbose=FALSE))
+})
+
+
+
+

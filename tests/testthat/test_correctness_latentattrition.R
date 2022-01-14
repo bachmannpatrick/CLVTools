@@ -3,11 +3,34 @@ data("cdnow")
 data("apparelTrans")
 data("apparelStaticCov")
 
-# context("Correctness - latentAttrition - nocov")
-# clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+context("Correctness - latentAttrition - nocov")
+clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+
+test_that("Same as std interface", {
+  skip_on_cran()
+
+  expect_silent(p.std <- pnbd(clv.cdnow, verbose = FALSE))
+  expect_silent(p.lA <- latentAttrition(~pnbd(), data=clv.cdnow, verbose=FALSE))
+  # all equal but call and runtime
+  p.std@call <- p.lA@call
+  p.std@optimx.estimation.output[1, "xtime"] <- p.lA@optimx.estimation.output[1, "xtime"]
+  expect_true(isTRUE(all.equal(p.std, p.lA)))
+})
 
 context("Correctness - latentAttrition - static cov")
 clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(apparelTrans, apparelStaticCov, estimation.split = NULL)
+
+test_that("Same as std interface", {
+  skip_on_cran()
+
+  expect_silent(p.std <- pnbd(clv.apparel.cov, verbose = FALSE))
+  expect_silent(p.lA <- latentAttrition(~pnbd()|.|., data=clv.apparel.cov, verbose=FALSE))
+  # all equal but call and runtime
+  p.std@call <- p.lA@call
+  p.std@optimx.estimation.output[1, "xtime"] <- p.lA@optimx.estimation.output[1, "xtime"]
+  expect_true(isTRUE(all.equal(p.std, p.lA)))
+})
+
 
 test_that("Transformations leads to copied data", {
   skip_on_cran()

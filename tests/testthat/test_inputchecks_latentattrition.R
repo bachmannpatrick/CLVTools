@@ -3,16 +3,18 @@ data("cdnow")
 data("apparelTrans")
 data("apparelStaticCov")
 
-# nocov -----------------------------------------------------------------------------------------------
-context("Inputchecks - latentAttrition - nocov")
+# **IMPORTANT TODO: FAIL IF COV GIVEN BUT data=CLV.DATA
+
+# nocov, clv.data -----------------------------------------------------------------------------------------------
+context("Inputchecks - latentAttrition - nocov, clv.data")
 clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
 
 # .data -----------------------------------------------------------------------------------------------
-test_that("Fails if data is not clv.data", {
+test_that("Fails if data is not clv.data (and no LHS1)", {
   expect_error(latentAttrition(~pnbd(), data=), "clv.data")
   expect_error(latentAttrition(~pnbd(), data=NULL), "clv.data")
   expect_error(latentAttrition(~pnbd(), data=123), "clv.data")
-  expect_error(latentAttrition(~pnbd(), data=cdnow), "clv.data")
+  expect_error(latentAttrition(~pnbd(), data=cdnow), "specify a LHS ")
 })
 
 # .RHS1 model -----------------------------------------------------------------------------------------------
@@ -30,7 +32,7 @@ test_that("Fails if wrong model in RHS1", {
   expect_error(latentAttrition(~bgnbd, data = clv.cdnow), "of the following models")
   expect_error(latentAttrition(~ggomnbd, data = clv.cdnow), "of the following models")
 
-  # inexistent function
+  # nonexistent function
   expect_error(latentAttrition(~gg(), data = clv.cdnow), "of the following models")
   expect_error(latentAttrition(~pndb(), data = clv.cdnow), "of the following models")
   expect_error(latentAttrition(~bnbd(), data = clv.cdnow), "of the following models")
@@ -47,6 +49,7 @@ test_that("Fails if anything else but model in RHS1", {
 
 test_that("Fails if multiple models in RHS1", {
   skip_on_cran()
+  expect_error(latentAttrition(~pnbd()+gg(), data = clv.cdnow), "of the following models")
   expect_error(latentAttrition(~pnbd()+bgnbd(), data = clv.cdnow), "of the following models")
   expect_error(latentAttrition(~ggomnbd()+bgnbd(), data = clv.cdnow), "of the following models")
 })
@@ -63,7 +66,7 @@ test_that("Fails if unparsable given to model", {
   expect_error(latentAttrition(~pnbd(start.params.model = abc), data = clv.cdnow), "parse")
 })
 
-test_that("Fails if RHS2/3/4 but no covariate data", {
+test_that("Fails if RHS2/3/4 but no covariates in given clv.data", {
   skip_on_cran()
   expect_error(latentAttrition(~pnbd()|.|., data = clv.cdnow), "only contain 1 part")
   expect_error(latentAttrition(~pnbd()|Id|Price, data = clv.cdnow), "only contain 1 part")
@@ -78,14 +81,14 @@ test_that("Fails if explicit args verbose or optimx.args given to model", {
 })
 
 
-# static cov -----------------------------------------------------------------------------------------------
-context("Inputchecks - latentAttrition - static cov")
+# static cov, clv.data -----------------------------------------------------------------------------------------------
+context("Inputchecks - latentAttrition - static cov, clv.data")
 
 clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = apparelTrans, data.apparelStaticCov = apparelStaticCov,
                                                                estimation.split = NULL)
 
 # . RHS2/3 ---------------------------------------------------------------------------------------------
-test_that("Fails if no RHS2/3 but cov data",{
+test_that("Fails if no RHS2/3 but cov clv.data",{
   expect_error(latentAttrition(~pnbd(), clv.apparel.cov), "transaction and the lifetime covariates")
   expect_error(latentAttrition(~pnbd()|., clv.apparel.cov), "transaction and the lifetime covariates")
 })
@@ -137,6 +140,98 @@ test_that("Fails if constraint() does not have valid content", {
   expect_error(latentAttrition(~pnbd()|.|.|constraint(abc)+constraint(Gender), clv.apparel.cov), "could not be found")
   expect_error(latentAttrition(~pnbd()|.|.|constraint(abc)+constraint(xzy), clv.apparel.cov), "could not be found")
   expect_error(latentAttrition(~pnbd()|.|.|constraint(Gender)+constraint(xzy), clv.apparel.cov), "could not be found")
+})
+
+
+
+# nocov, data.frame -----------------------------------------------------------------------------------------------
+context("Inputchecks - latentAttrition - no cov, data.frame")
+
+test_that("Fails if no LHS1",{
+  skip_on_cran()
+  expect_error(latentAttrition(~pnbd(), cdnow), "specify a LHS with data()")
+  expect_error(latentAttrition(~bgnbd(), cdnow), "specify a LHS with data()")
+})
+
+test_that("Fails if no data in LHS1",{
+  skip_on_cran()
+  expect_error(latentAttrition(clvdata()~pnbd(), cdnow), "specify exactly data")
+  expect_error(latentAttrition(data~pnbd(), cdnow), "specify exactly data")
+  expect_error(latentAttrition(abc()~pnbd(), cdnow), "specify exactly data")
+  expect_error(latentAttrition(Id+Date+Price~pnbd(), cdnow), "specify exactly data")
+})
+
+test_that("Fails if something else than data in LHS1",{
+  skip_on_cran()
+  expect_error(latentAttrition(data()+1~pnbd(), cdnow), "specify exactly data")
+  expect_error(latentAttrition(data()+Id~pnbd(), cdnow), "specify exactly data")
+  expect_error(latentAttrition(data()+Id+Price~pnbd(), cdnow), "specify exactly data")
+  expect_error(latentAttrition(data()+abc~pnbd(), cdnow), "specify exactly data")
+  expect_error(latentAttrition(data()+pnbd()~pnbd(), cdnow), "specify exactly data")
+  expect_error(latentAttrition(data()+pnbd()~gg(), cdnow), "specify exactly data")
+})
+
+test_that("Fails if unallowed param in data()",{
+  skip_on_cran()
+  # single params
+  expect_error(latentAttrition(data(abc=37)~pnbd(), cdnow), "is not valid input to data()")
+  expect_error(latentAttrition(data(estimation.split=37)~pnbd(), cdnow), "is not valid input to data()")
+  expect_error(latentAttrition(data(time.unit=w)~pnbd(), cdnow), "is not valid input to data()")
+  expect_error(latentAttrition(data(id=Id)~pnbd(), cdnow), "is not valid input to data()")
+  expect_error(latentAttrition(data(price=Spending)~pnbd(), cdnow), "is not valid input to data()")
+  # with allowed
+  expect_error(latentAttrition(data(unit=w, id=Id)~pnbd(), cdnow), "is not valid input to data()")
+  expect_error(latentAttrition(data(id=Id, unit=w)~pnbd(), cdnow), "is not valid input to data()")
+  expect_error(latentAttrition(data(unit=w, estimation.split=39)~pnbd(), cdnow), "is not valid input to data()")
+})
+
+
+test_that("Fails if not parsable content in data()",{
+  skip_on_cran()
+  expect_error(latentAttrition(data(split=w)~pnbd(), cdnow), "parsed")
+  expect_error(latentAttrition(data(split=NUL)~pnbd(), cdnow), "parsed")
+  # All other params are read as chars and passed on (produce errors in clvdata())
+})
+
+
+# static cov, data.frame -----------------------------------------------------------------------------------------------
+context("Inputchecks - latentAttrition - static cov, data.frame")
+
+test_that("Fails if cov is not data.frame/table", {
+  skip_on_cran()
+  # other input
+  expect_error(latentAttrition(data()~pnbd()|.|., data=apparelTrans, cov=NULL), "data.frame or data.table")
+  expect_error(latentAttrition(data()~pnbd()|.|., data=apparelTrans, cov=124), "data.frame or data.table")
+  expect_error(latentAttrition(data()~pnbd()|.|., data=apparelTrans, cov=list(a=1, b=2)), "data.frame or data.table")
+})
+
+# test_that("Fails if cov does not have Id", {
+#   skip_on_cran()
+#   expect_error(latentAttrition(data()~pnbd()|.|., data=apparelTrans, cov=apparelStaticCov[, !"Id"]), "Id")
+# })
+
+
+test_that("Fails if cov data but missing RHS2/3",{
+  skip_on_cran()
+  expect_error(latentAttrition(data()~pnbd(), data=apparelTrans, cov=apparelStaticCov), "transaction and the lifetime covariates")
+  expect_error(latentAttrition(data()~pnbd()|., data=apparelTrans, cov=apparelStaticCov), "transaction and the lifetime covariates")
+  expect_error(latentAttrition(data()~pnbd()|Gender, data=apparelTrans, cov=apparelStaticCov), "transaction and the lifetime covariates")
+  expect_error(latentAttrition(data()~pnbd()|Gender|regularization(trans=10, life=2), data=apparelTrans, cov=apparelStaticCov), "transaction and the lifetime covariates")
+})
+
+test_that("Fails if RHS2&3 but missing cov data", {
+  skip_on_cran()
+  expect_error(latentAttrition(data()~pnbd()|.|., data=apparelTrans), "covariate data")
+  expect_error(latentAttrition(data()~pnbd()|Gender|Gender, data=apparelTrans), "covariate data")
+  expect_error(latentAttrition(data()~pnbd()|Gender|., data=apparelTrans), "covariate data")
+})
+
+test_that("Fails if RHS2/3 not in cov data",{
+  skip_on_cran()
+  expect_error(latentAttrition(data()~pnbd()|gender|., data=apparelTrans, cov=apparelStaticCov), "could be found in the data")
+  expect_error(latentAttrition(data()~pnbd()|gender|gender, data=apparelTrans, cov=apparelStaticCov), "could be found in the data")
+  expect_error(latentAttrition(data()~pnbd()|.|gender, data=apparelTrans, cov=apparelStaticCov), "could be found in the data")
+  expect_error(latentAttrition(data()~pnbd()|high.season|., data=apparelTrans, cov=apparelStaticCov), "could be found in the data")
 })
 
 
