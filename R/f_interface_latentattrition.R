@@ -366,6 +366,9 @@ check_userinput_latentattrition_formulavsdata <- function(formula, data, cov){
       return(err.msg)
     }
   }else{
+    if(!missing(cov)){
+      return("Please do not give covariate data if an object of clv.data is given for parameter data!")
+    }
     if(length(F.formula)[1] != 0){
       err.msg <- c(err.msg, "Please do not specify any LHS if a clv.data object is given for parameter data!")
     }

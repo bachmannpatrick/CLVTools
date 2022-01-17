@@ -205,10 +205,10 @@ test_that("Fails if cov is not data.frame/table", {
   expect_error(latentAttrition(data()~pnbd()|.|., data=apparelTrans, cov=list(a=1, b=2)), "data.frame or data.table")
 })
 
-# test_that("Fails if cov does not have Id", {
-#   skip_on_cran()
-#   expect_error(latentAttrition(data()~pnbd()|.|., data=apparelTrans, cov=apparelStaticCov[, !"Id"]), "Id")
-# })
+test_that("Fails if cov does not have Id", {
+  skip_on_cran()
+  expect_error(latentAttrition(data()~pnbd()|.|., data=apparelTrans, cov=apparelStaticCov[, !"Id"]), "Id")
+})
 
 
 test_that("Fails if cov data but missing RHS2/3",{
@@ -233,6 +233,38 @@ test_that("Fails if RHS2/3 not in cov data",{
   expect_error(latentAttrition(data()~pnbd()|.|gender, data=apparelTrans, cov=apparelStaticCov), "could be found in the data")
   expect_error(latentAttrition(data()~pnbd()|high.season|., data=apparelTrans, cov=apparelStaticCov), "could be found in the data")
 })
+
+test_that("Fails if mixing clv.data and data.frame static cov data",{
+  skip_on_cran()
+  expect_error(latentAttrition(data()~pnbd()|gender|., data=clv.cdnow, cov=apparelStaticCov), "do not give covariate data")
+})
+
+
+# dyncov cov, data.frame -----------------------------------------------------------------------------------------------
+context("Inputchecks - latentAttrition - dyn cov, data.frame")
+
+
+test_that("Fails if dyn cov data but missing RHS2/3",{
+  skip_on_cran()
+  expect_error(latentAttrition(data()~pnbd(), data=apparelTrans, cov=apparelDynCov), "transaction and the lifetime covariates")
+  expect_error(latentAttrition(data()~pnbd()|., data=apparelTrans, cov=apparelDynCov), "transaction and the lifetime covariates")
+  expect_error(latentAttrition(data()~pnbd()|Gender, data=apparelTrans, cov=apparelDynCov), "transaction and the lifetime covariates")
+})
+
+test_that("Fails if RHS2/3 not in dyn cov data",{
+  skip_on_cran()
+  expect_error(latentAttrition(data()~pnbd()|gender|., data=apparelTrans, cov=apparelDynCov), "could be found in the data")
+  expect_error(latentAttrition(data()~pnbd()|gender|gender, data=apparelTrans, cov=apparelDynCov), "could be found in the data")
+  expect_error(latentAttrition(data()~pnbd()|.|gender, data=apparelTrans, cov=apparelDynCov), "could be found in the data")
+  expect_error(latentAttrition(data()~pnbd()|high.season|., data=apparelTrans, cov=apparelDynCov), "could be found in the data")
+})
+
+test_that("Fails if mixing clv.data and data.frame dyn cov data",{
+  skip_on_cran()
+  expect_error(latentAttrition(data()~pnbd()|gender|., data=clv.cdnow, cov=apparelDynCov), "do not give covariate data")
+})
+
+
 
 
 

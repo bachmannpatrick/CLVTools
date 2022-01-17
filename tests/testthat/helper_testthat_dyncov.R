@@ -1,3 +1,11 @@
+fct.helper.dyncov.get.optimxargs.quickfit <- function(){
+  return(list(method="Nelder-Mead", # NelderMead verifies nothing = faster
+              itnmax = 2,
+              hessian=FALSE, # no hessian
+              control=list(kkt = FALSE, # kkt takes forever
+                           reltol = 1000))) # anything counts as converged
+}
+
 fct.helper.dyncov.quickfit <- function(data.apparelTrans, data.apparelDynCov){
   # Create dyncov model, quickly
   expect_silent(clv.apparel <- clvdata(data.transactions = data.apparelTrans, date.format = "ymd",
@@ -8,18 +16,15 @@ fct.helper.dyncov.quickfit <- function(data.apparelTrans, data.apparelDynCov){
                  regexp = "cut off")
 
   expect_warning(p.dyncov <- pnbd(clv.apparel.dyn, start.params.model = c(r=1, alpha=3, s=1, beta=3),
-                                  optimx.args = list(method="Nelder-Mead", # NelderMead verifies nothing = faster
-                                                     hessian=FALSE, # no hessian
-                                                     control=list(kkt=FALSE, # kkt takes forever
-                                                                  reltol = 1000)),
+                                  optimx.args = fct.helper.dyncov.get.optimxargs.quickfit(),
                                   verbose = FALSE),
                  regexp = "Hessian")
   return(p.dyncov)
 }
 
 
-fct.helper.create.clvdata.apparel.dyncov <- function(data.apparelTrans,  data.apparelDynCov, estimation.end){
-  expect_silent(clv.dyn <- clvdata(data.apparelTrans, date.format = "ymd", time.unit = "w", estimation.split = estimation.end))
+fct.helper.create.clvdata.apparel.dyncov <- function(data.apparelTrans,  data.apparelDynCov, estimation.split){
+  expect_silent(clv.dyn <- clvdata(data.apparelTrans, date.format = "ymd", time.unit = "w", estimation.split = estimation.split))
   expect_message(clv.dyn <- SetDynamicCovariates(clv.dyn, data.cov.life = data.apparelDynCov, data.cov.trans = data.apparelDynCov,
                                                  names.cov.life = c("Marketing", "Gender", "Channel"), names.cov.trans = c("Marketing", "Gender", "Channel"),
                                                  name.date = "Cov.Date"), regexp = "cut")
@@ -212,16 +217,16 @@ fct.testthat.correctness.dyncov.LL <- function(data.apparelTrans, data.apparelDy
     # data until 2005-12-31
     clv.short <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans = data.apparelTrans[Date <= "2005-12-31"],
                                                           data.apparelDynCov = data.apparelDynCov[Cov.Date <= "2005-12-31"],
-                                                          estimation.end = NULL)
+                                                          estimation.split = NULL)
 
     # Short transaction data but full dyncov covariate data
     clv.full.cov <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans = data.apparelTrans[Date <= "2005-12-31"],
                                                              data.apparelDynCov = data.apparelDynCov,
-                                                             estimation.end = NULL)
+                                                             estimation.split = NULL)
     # Full data but estimation period only same as short
     clv.holdout <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans = data.apparelTrans,
                                                             data.apparelDynCov = data.apparelDynCov,
-                                                            estimation.end = "2005-12-31")
+                                                            estimation.split = "2005-12-31")
 
     params.dyncov <- c(log.r=1, log.alpha=0, log.s=1.23, log.beta = 2.344,
                        life.Channel  = 0.123, life.Gender  = 0.234, life.Marketing  = 0.345,
