@@ -60,3 +60,34 @@ test_that("Every model works with constraint", {
 
 
 
+context("Runability - latentAttrition - data.frame")
+
+test_that("Works out-of-the-box, nocov", {
+  skip_on_cran()
+  expect_silent(latentAttrition(data() ~ pnbd(), cdnow, verbose=FALSE))
+})
+
+test_that("Works with explicit parameters, nocov", {
+  skip_on_cran()
+  expect_silent(latentAttrition(data(unit=w) ~ pnbd(), data=cdnow, verbose=FALSE))
+  expect_silent(latentAttrition(data(unit=w, split=NULL, format=ymd) ~ pnbd(), data=cdnow, verbose=FALSE))
+  expect_silent(latentAttrition(data(unit=w, split=37, format=ymd) ~ pnbd(), data=cdnow, verbose=FALSE))
+  expect_silent(latentAttrition(data(unit=w, split=, format=ymd) ~ pnbd(), data=cdnow, verbose=FALSE))
+})
+
+test_that("Works out-of-the-box, static covariates", {
+  skip_on_cran()
+  # outofthebox
+  expect_silent(latentAttrition(data() ~ pnbd()|Gender|Gender+Channel, data=apparelTrans, cov = apparelStaticCov, verbose=FALSE))
+  expect_silent(latentAttrition(data() ~ pnbd()|.|., data=apparelTrans, cov=apparelStaticCov, verbose=FALSE))
+})
+
+
+test_that("Works out-of-the-box, dynamic covariates", {
+  skip_on_cran()
+  expect_silent(latentAttrition(data() ~ pnbd()|Marketing+Gender|Gender+Channel, data=apparelTrans, cov = apparelDynCov,
+                                verbose=FALSE, optimx.args = fct.helper.dyncov.get.optimxargs.quickfit()))
+  expect_silent(latentAttrition(data() ~ pnbd()|.|., data=apparelTrans, cov = apparelDynCov, verbose=FALSE,
+                                optimx.args = fct.helper.dyncov.get.optimxargs.quickfit()))
+})
+
