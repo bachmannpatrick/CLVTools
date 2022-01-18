@@ -3,6 +3,7 @@ data("cdnow")
 data("apparelTrans")
 data("apparelStaticCov")
 
+# nocov ---------------------------------------------------------------------------------
 context("Runability - latentAttrition - nocov")
 clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
 
@@ -37,8 +38,9 @@ test_that("Works with args to model", {
 
 
 
-context("Runability - latentAttrition - static cov")
 
+# static cov ------------------------------------------------------------------------------------
+context("Runability - latentAttrition - static cov")
 clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(apparelTrans, apparelStaticCov, estimation.split = NULL)
 # test_that("Works without RHS2/3", {
 #   expect_silent(latentAttrition(~pnbd(), clv.apparel.cov, verbose=FALSE))
@@ -85,9 +87,9 @@ test_that("Works out-of-the-box, static covariates", {
 
 test_that("Works out-of-the-box, dynamic covariates", {
   skip_on_cran()
-  expect_silent(latentAttrition(data() ~ pnbd()|Marketing+Gender|Gender+Channel, data=apparelTrans, cov = apparelDynCov,
-                                verbose=FALSE, optimx.args = fct.helper.dyncov.get.optimxargs.quickfit()))
-  expect_silent(latentAttrition(data() ~ pnbd()|.|., data=apparelTrans, cov = apparelDynCov, verbose=FALSE,
-                                optimx.args = fct.helper.dyncov.get.optimxargs.quickfit()))
+  expect_warning(latentAttrition(data() ~ pnbd()|Marketing+Gender|Gender+Channel, data=apparelTrans, cov = apparelDynCov,
+                                verbose=FALSE, optimx.args = fct.helper.dyncov.get.optimxargs.quickfit()), "Hessian")
+  expect_warning(latentAttrition(data() ~ pnbd()|.|., data=apparelTrans, cov = apparelDynCov, verbose=FALSE,
+                                optimx.args = fct.helper.dyncov.get.optimxargs.quickfit()), "Hessian")
 })
 

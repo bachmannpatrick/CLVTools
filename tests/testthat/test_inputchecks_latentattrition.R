@@ -163,7 +163,6 @@ test_that("Fails if no data in LHS1",{
 
 test_that("Fails if something else than data in LHS1",{
   skip_on_cran()
-  expect_error(latentAttrition(data()+1~pnbd(), cdnow), "specify exactly data")
   expect_error(latentAttrition(data()+Id~pnbd(), cdnow), "specify exactly data")
   expect_error(latentAttrition(data()+Id+Price~pnbd(), cdnow), "specify exactly data")
   expect_error(latentAttrition(data()+abc~pnbd(), cdnow), "specify exactly data")
@@ -216,7 +215,6 @@ test_that("Fails if cov data but missing RHS2/3",{
   expect_error(latentAttrition(data()~pnbd(), data=apparelTrans, cov=apparelStaticCov), "transaction and the lifetime covariates")
   expect_error(latentAttrition(data()~pnbd()|., data=apparelTrans, cov=apparelStaticCov), "transaction and the lifetime covariates")
   expect_error(latentAttrition(data()~pnbd()|Gender, data=apparelTrans, cov=apparelStaticCov), "transaction and the lifetime covariates")
-  expect_error(latentAttrition(data()~pnbd()|Gender|regularization(trans=10, life=2), data=apparelTrans, cov=apparelStaticCov), "transaction and the lifetime covariates")
 })
 
 test_that("Fails if RHS2&3 but missing cov data", {

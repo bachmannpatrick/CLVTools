@@ -17,21 +17,7 @@ latentAttrition <- function(formula, data, cov, optimx.args=list(), verbose=TRUE
   # Turn data.frame/table into data if needed
   if(is.data.frame(data) || is.data.table(data)){
     # Verified to be data.frame/table
-
-    # std args to create data object with
-    l.data.args <- list(data.transactions = data, date.format="ymd", time.unit="w",
-                        name.id ="Id", name.date="Date", name.price="Price")
-
-    # Overwrite with what is given in data() special
-    l.data.special.args <- formula_parse_args_of_data(F.formula)
-    # rename names in formula specials to data parameters
-    names(l.data.special.args) <- sapply(names(l.data.special.args), function(x){
-      switch(EXPR = x, "unit"="time.unit", "split"="estimation.split", "format"="date.format")})
-
-    l.data.args <- modifyList(l.data.args, l.data.special.args, keep.null = TRUE)
-
-    data <- do.call(what = clvdata, args = l.data.args)
-    data@call <- cl
+    data <- formulainterface_dataframe_toclvdata(F.formula = F.formula, data=data, cl=cl)
 
     # Add covariate data if needed
     #   if indicated in formula RHS2&3 or cov data given
@@ -40,9 +26,7 @@ latentAttrition <- function(formula, data, cov, optimx.args=list(), verbose=TRUE
                                                 create.dyncov = ("Cov.Date" %in% colnames(cov)),
                                                 dt.cov.life = cov, dt.cov.trans = cov)
     }
-
   }else{
-
     # data is clv.data object
     # if it has covariates, they need to be transformed
     if(is(data, "clv.data.static.covariates")){
@@ -51,7 +35,6 @@ latentAttrition <- function(formula, data, cov, optimx.args=list(), verbose=TRUE
                                                  dt.cov.life = data@data.cov.life, dt.cov.trans = data@data.cov.trans)
     }
   }
-
 
 
 
@@ -92,6 +75,29 @@ latentAttrition <- function(formula, data, cov, optimx.args=list(), verbose=TRUE
   return(obj)
 }
 
+
+# Create clv.data object if needed
+# Apply needed transformations to given data
+formulainterface_dataframe_toclvdata <- function(F.formula, data, cl){
+  # Verified to be data.frame/table
+
+  # std args to create data object with
+  l.data.args <- list(data.transactions = data, date.format="ymd", time.unit="w",
+                      name.id ="Id", name.date="Date", name.price="Price")
+
+  # Overwrite with what is given in data() special
+  l.data.special.args <- formula_parse_args_of_data(F.formula)
+  # rename names in formula specials to data parameters
+  names(l.data.special.args) <- sapply(names(l.data.special.args), function(x){
+    switch(EXPR = x, "unit"="time.unit", "split"="estimation.split", "format"="date.format")})
+
+  l.data.args <- modifyList(l.data.args, l.data.special.args, keep.null = TRUE)
+
+  data <- do.call(what = clvdata, args = l.data.args)
+  data@call <- cl
+
+  return(data)
+}
 
 formulainterface_create_clvdataobj <- function(F.formula, create.dyncov, clv.data.nocov, dt.cov.life, dt.cov.trans){
   # Apply formula on cov data
