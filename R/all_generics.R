@@ -68,9 +68,6 @@ setGeneric("clv.controlflow.check.prediction.params", def = function(clv.fitted)
 setGeneric("clv.controlflow.plot.check.inputs", def = function(obj, prediction.end, cumulative, plot, label.line, verbose)
   standardGeneric("clv.controlflow.plot.check.inputs"))
 
-setGeneric("clv.controlflow.plot.get.data", def = function(obj, dt.expectation.seq, cumulative, label.line, verbose)
-  standardGeneric("clv.controlflow.plot.get.data"))
-
 
 
 

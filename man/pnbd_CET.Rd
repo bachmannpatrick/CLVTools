@@ -74,7 +74,10 @@ needs to added to \code{vCovParams_life} at the respective position.
 }
 \references{
 Schmittlein DC, Morrison DG, Colombo R (1987). \dQuote{Counting Your Customers:
-Who-Are They and What Will They Do Next?} Management Science, 33(1), 1–24.
+Who-Are They and What Will They Do Next?} Management Science, 33(1), 1-24.
+
+Bachmann P, Meierer M, Naef, J (2021). \dQuote{The Role of Time-Varying Contextual Factors
+in Latent Attrition Models for Customer Base Analysis} Marketing Science 40(4). 783-809.
 
 Fader PS, Hardie BGS (2005). \dQuote{A Note on Deriving the Pareto/NBD Model and
 Related Expressions.}

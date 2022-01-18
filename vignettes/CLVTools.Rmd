@@ -212,16 +212,36 @@ predict(est.pnbd, prediction.end = "2006-05-08")
 ```
 
 
-## Plot Transactions
-`clvdata` objects may be plotted using the `plot()` command. Similar to `summary()`, the output of `plot()` adapts to the current modeling step. It provides a descriptive plot of the actual transactional data if the model has not yet been fitted. Once the model has been estimated, `plot()` provides an aggregated incremental tracking plot of the actual data and the model based on the estimated parameters. The time-span for the plot may be altered using the `prediction.end` argument by providing either a duration or an end date. By default the plot is generated for the entire time-span of the provided dataset specified in the `clvdata()` command. The dashed line indicates the end of the estimation period. Alternatively cumulative actual and expected transactions can be plotted by setting `cumulative` to `TRUE`. The argument `transactions` disable for plotting actual transactions (`transactions=FALSE`). For further plotting options see the documentation.
+## Plotting
+`CLVTools`, offers a variety of different plots. All `clvdata` objects may be plotted using the `plot()` command. Similar to `summary()`, the output of `plot()` and the corresponding options are dependent on the current modeling step. When applied to a data object created the `clvdata()` command, the following plots can be selected using the `which` option of plotting:
 
+* Tracking plot (`which="tracking"`): plots the the aggregated repeat transactions per period over a given time period. The period can be specified using the `prediction.end` option. It is also possible to generate cumulative tracking plots (`cumulative = FALSE`). The tracking plot is the default option.
+* Frequency plot (`which="frequency"`): plots the distribution of transactions or repeat transactions per customer, after aggregating transactions of the same customer on a single time point. The bins may be adjusted using the option `trans.bins`. (Note that if `trans.bins` is changed, the option for labeling (`label.remaining`) usually needs to be adapted as well.)
+* Spending plot (`which="spending"`): plots the empirical density of either customer's average spending per transaction. Note that this includes all transactions and not only repeat-transactions. You can switch to plotting the value of every transaction for a customer (instead of the a customers mean spending) using `mean.spending=FALSE`.
+* Interpurchase time plot (`which="interpurchasetime"`): plots the empirical density of customer's mean time (in number of periods) between transactions, after aggregating transactions of the same customer on a single time point. Note that customers without repeat-transactions are note part of this plot.
+
+In the following, we have a basic tracking-plot for the aggregated repeat transactions
+```{r plot-actual, fig.height=4.40, fig.width=9}
+plot(clv.apparel)
+
+```
+To plot customers mean interpurchase time, we use:
+```{r plot-interpurchase, fig.height=4.40, fig.width=9}
+plot(clv.apparel, which="interpurchasetime")
+
+```
+When the `plot()` command is applied to an object with the an estimated model (i.e. `est.pnbd`), the following plots can be selected using the `which` option of:
+
+* Tracking plot (`which="tracking"`): plots the actual repeat transactions and overlays it with the repeat transaction as predicted by the fitted model. Currently, following previous literature, the in-sample unconditional expectation is plotted in the holdout period. The period can be specified using the `prediction.end` option. It is also possible to generate cumulative tracking plots (`cumulative = FALSE`). The tracking plot is th the default option. The argument `transactions` disable for plotting actual transactions (`transactions=FALSE`). For further plotting options see the documentation. Note that only whole periods can be plotted and that the prediction end might not exactly match prediction.end. See the `?plot.clv.data` for more details.
+* Probability mass function (pmf) plot (`which="pmf"`): plots the actual and expected number of customers which made a given number of repeat transaction in the estimation period. The expected number is based on the PMF of the fitted model, the probability to make exactly a given number of repeat transactions in the estimation period. For each bin, the expected number is the sum of all customers' individual PMF value. The bins for the transactions can be adjusted using the option `trans.bins`. (Note that if `trans.bins` is changed, `label.remaining` usually needs to be adapted as well.
+
+For a standard tracking plot including the model, we use:
 ```{r plot-model, fig.height=4.40, fig.width=9}
 plot(est.pnbd)
 
 ```
-s
-To plot the *cumulative* expected transactions 30 time units (30 weeks in this example) ahead of the end of the estimation plot, we use:
 
+To plot the *cumulative* expected transactions 30 time units (30 weeks in this example) ahead of the end of the estimation plot, we use:
 ```{r plot-model2, eval = FALSE}
 plot(est.pnbd, prediction.end = 30, cumulative = TRUE)
 ```
@@ -232,6 +252,10 @@ Alternatively, it is possible to specify a date for the `prediction.end`argument
 plot(est.pnbd, prediction.end = "2006-05-08", cumulative = TRUE)
 ```
 
+For a plot of the probability mass function (pmf), with 7 bins, we use:
+```{r predict-model4, eval = FALSE}
+plot(est.pnbd, which="pmf", trans.bins=0:5, label.remaining="6+")
+```
 
 ## Covariates
 `CLVTools` provides the option to include covariates into probabilistic customer attrition models. Covariates may affect the purchase or the attrition process, or both. It is also possible to include different covariates for the two processes. However, support for covariates is dependent on the model. Not all implemented models provide the option for covariates. In general, `CLVTools` distinguishes between two types of covariates: time-invariant and time-varying. The former include factors that do not change over time such as customer demographics or customer acquisition information. The latter may change over time and include marketing activities or seasonal patterns.

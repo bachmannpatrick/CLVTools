@@ -9,13 +9,13 @@
   return(err.msg)
 }
 
-check_user_data_pmfx <- function(x){
-  err.msg <- .check_userinput_integer_vector(vec.int=x, var.name="x")
+check_user_data_integer_vector_greater0 <- function(vec, var.name){
+  err.msg <- .check_userinput_integer_vector(vec.int=vec, var.name=var.name)
   if(length(err.msg))
     return(err.msg)
 
-  if(any(x < 0)){
-    return("x has to be a vector of all positive integer numbers (>=0)!")
+  if(any(vec < 0)){
+    return(paste0(var.name, " has to be a vector of all positive integer numbers (>=0)!"))
   }
   return(c())
 }

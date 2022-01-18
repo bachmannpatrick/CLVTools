@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{vec_gsl_hyp2f1_e}
 \alias{vec_gsl_hyp2f1_e}
-\title{GSL Hypergeom 2f1 for equal length vectors}
+\title{GSL Hypergeometric 2F1 for equal length vectors}
 \usage{
 vec_gsl_hyp2f1_e(vA, vB, vC, vZ)
 }

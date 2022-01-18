@@ -36,7 +36,7 @@ fct.testthat.runability.staticcov.reduce.relevant.covariates.estimation <- funct
 
 
 fct.testthat.runability.staticcov.works.with.2.constraints <- function(method, clv.data.holdout, clv.data.no.holdout, clv.newdata.nohold, clv.newdata.withhold,
-                                                                       param.names.model, DERT.not.implemented){
+                                                                       param.names.model){
   test_that("Works with 2 constraints", {
     skip_on_cran()
     skip_on_ci()
@@ -49,15 +49,15 @@ fct.testthat.runability.staticcov.works.with.2.constraints <- function(method, c
     expect_silent(p.hold <- do.call(what = method, args = l.args.no.holdout))
 
     fct.helper.clvfittedtransactions.all.s3(p.hold,    full.names = c(param.names.model, "constr.Gender", "constr.Channel"),
-                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = DERT.not.implemented)
+                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
     fct.helper.clvfittedtransactions.all.s3(p.hold,    full.names = c(param.names.model, "constr.Gender", "constr.Channel"),
-                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = DERT.not.implemented)
+                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
   })
 }
 
 
 fct.testthat.runability.staticcov.works.with.1.constraint.1.free <- function(method, clv.data.holdout, clv.data.no.holdout, clv.newdata.nohold, clv.newdata.withhold,
-                                                                             param.names.model, DERT.not.implemented){
+                                                                             param.names.model){
   test_that("Works with 1 constraint, 1 free", {
     skip_on_cran()
     l.args.holdout.1 <- list(clv.data = clv.data.holdout, names.cov.constr = "Gender",verbose=FALSE)
@@ -67,9 +67,9 @@ fct.testthat.runability.staticcov.works.with.1.constraint.1.free <- function(met
     expect_silent(p.hold    <- do.call(what = method, args = l.args.holdout.1))
     expect_silent(p.no.hold <- do.call(what = method, args = l.args.no.holdout.1))
     fct.helper.clvfittedtransactions.all.s3(p.hold,    full.names = c(param.names.model, "life.Channel", "trans.Channel", "constr.Gender"),
-                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = DERT.not.implemented)
+                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
     fct.helper.clvfittedtransactions.all.s3(p.no.hold, full.names = c(param.names.model, "life.Channel", "trans.Channel", "constr.Gender"),
-                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = DERT.not.implemented)
+                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
 
     l.args.holdout.2 <- list(clv.data = clv.data.holdout,    names.cov.constr = "Gender", start.params.constr = c(Gender=1),verbose=FALSE)
     l.args.no.holdout.2 <- list(clv.data = clv.data.no.holdout, names.cov.constr = "Gender", start.params.constr = c(Gender=1),verbose=FALSE)
@@ -80,7 +80,7 @@ fct.testthat.runability.staticcov.works.with.1.constraint.1.free <- function(met
 }
 
 fct.testthat.runability.staticcov.works.with.regularization <- function(method, clv.data.holdout, clv.data.no.holdout, clv.newdata.nohold, clv.newdata.withhold,
-                                                                        param.names.model, DERT.not.implemented){
+                                                                        param.names.model){
   test_that("Works with regularization", {
     skip_on_cran()
     l.args.holdout <- list(clv.data = clv.data.holdout, reg.lambdas = c(trans=10, life=10),verbose=FALSE)
@@ -90,14 +90,14 @@ fct.testthat.runability.staticcov.works.with.regularization <- function(method, 
     expect_silent(p.no.hold <- do.call(what = method, args = l.args.no.holdout))
 
     fct.helper.clvfittedtransactions.all.s3(p.hold,    full.names = c(param.names.model, p.hold@names.prefixed.params.free.life, p.hold@names.prefixed.params.free.trans),
-                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = DERT.not.implemented)
+                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
     fct.helper.clvfittedtransactions.all.s3(p.no.hold, full.names = c(param.names.model, p.no.hold@names.prefixed.params.free.life, p.no.hold@names.prefixed.params.free.trans),
-                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = DERT.not.implemented)
+                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
   })
 }
 
 fct.testthat.runability.staticcov.works.with.0.lambdas <- function(method, clv.data.holdout, clv.data.no.holdout, clv.newdata.nohold, clv.newdata.withhold,
-                                                                   param.names.model, DERT.not.implemented){
+                                                                   param.names.model){
   test_that("Works with 0 regularization lambdas", {
     skip_on_cran()
     skip_on_ci()
@@ -109,14 +109,14 @@ fct.testthat.runability.staticcov.works.with.0.lambdas <- function(method, clv.d
     expect_silent(p.hold    <- do.call(what = method, args = l.args.holdout))
     expect_silent(p.no.hold <- do.call(what = method, args = l.args.no.holdout))
     fct.helper.clvfittedtransactions.all.s3(p.hold,    full.names = c(param.names.model, p.hold@names.prefixed.params.free.life, p.hold@names.prefixed.params.free.trans),
-                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = DERT.not.implemented)
+                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
     fct.helper.clvfittedtransactions.all.s3(p.no.hold, full.names = c(param.names.model, p.no.hold@names.prefixed.params.free.life, p.no.hold@names.prefixed.params.free.trans),
-                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = DERT.not.implemented)
+                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
   })
 }
 
 fct.testthat.runability.staticcov.works.with.combined.interlayers.without.cor <- function(method, clv.data.holdout, clv.data.no.holdout, clv.newdata.nohold, clv.newdata.withhold,
-                                                                                          model.param.names, DERT.not.implemented){
+                                                                                          model.param.names){
   test_that("Works with combined interlayers (without correlation)", {
     # Try all combinations of interlayers
     skip_on_cran()
@@ -131,16 +131,14 @@ fct.testthat.runability.staticcov.works.with.combined.interlayers.without.cor <-
     expect_silent(p.no.hold <- do.call(what = method, args = l.args.no.holdout))
 
     fct.helper.clvfittedtransactions.all.s3(p.hold,    full.names = c(model.param.names, p.hold@names.prefixed.params.constr),
-                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold,
-                                            DERT.not.implemented = DERT.not.implemented)
+                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
     fct.helper.clvfittedtransactions.all.s3(p.no.hold, full.names = c(model.param.names, p.no.hold@names.prefixed.params.constr),
-                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold,
-                                            DERT.not.implemented = DERT.not.implemented)
+                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
   })
 }
 
 fct.testthat.runability.staticcov.works.with.combined.interlayers.with.cor <- function(method, clv.data.holdout, clv.data.no.holdout, clv.newdata.nohold, clv.newdata.withhold,
-                                                                                       DERT.not.implemented, model.param.names){
+                                                                                       model.param.names){
   test_that("Works with combined interlayers (with correlation)", {
     # Try all combinations of interlayers
     skip_on_cran()
@@ -155,11 +153,9 @@ fct.testthat.runability.staticcov.works.with.combined.interlayers.with.cor <- fu
     expect_silent(p.no.hold <- do.call(what = method, args = l.args.no.holdout.1))
 
     fct.helper.clvfittedtransactions.all.s3(p.hold,    full.names = c(model.param.names,  p.hold@clv.model@name.correlation.cor, p.hold@names.prefixed.params.constr),
-                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold,
-                                            DERT.not.implemented = DERT.not.implemented)
+                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
     fct.helper.clvfittedtransactions.all.s3(p.no.hold, full.names = c(model.param.names, p.no.hold@clv.model@name.correlation.cor, p.no.hold@names.prefixed.params.constr),
-                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold,
-                                            DERT.not.implemented = DERT.not.implemented)
+                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
 
     l.args.holdout.2 <- list(clv.data = clv.data.holdout, use.cor = TRUE, reg.lambdas = c(trans=10, life=10),verbose=FALSE)
     l.args.no.holdout.2 <- list(clv.data = clv.data.no.holdout, use.cor = TRUE, reg.lambdas = c(trans=10, life=10),verbose=FALSE)
@@ -169,9 +165,9 @@ fct.testthat.runability.staticcov.works.with.combined.interlayers.with.cor <- fu
     expect_silent(p.no.hold <- do.call(what = method, args = l.args.no.holdout.2))
 
     fct.helper.clvfittedtransactions.all.s3(p.hold,    full.names = c(model.param.names,  p.hold@clv.model@name.correlation.cor, p.hold@names.prefixed.params.free.life, p.hold@names.prefixed.params.free.trans),
-                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = DERT.not.implemented)
+                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
     fct.helper.clvfittedtransactions.all.s3(p.no.hold, full.names = c(model.param.names, p.no.hold@clv.model@name.correlation.cor, p.no.hold@names.prefixed.params.free.life, p.no.hold@names.prefixed.params.free.trans),
-                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = DERT.not.implemented)
+                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
 
     l.args.holdout.3 <- list(clv.data = clv.data.holdout, use.cor = TRUE, names.cov.constr = c("Gender", "Channel"),reg.lambdas = c(trans=10, life=10),verbose=FALSE)
     l.args.no.holdout.3 <- list(clv.data = clv.data.no.holdout, use.cor = TRUE, names.cov.constr = c("Gender", "Channel"),reg.lambdas = c(trans=10, life=10),verbose=FALSE)
@@ -181,18 +177,16 @@ fct.testthat.runability.staticcov.works.with.combined.interlayers.with.cor <- fu
     expect_silent(p.no.hold <- do.call(what = method, args = l.args.no.holdout.3))
 
     fct.helper.clvfittedtransactions.all.s3(p.hold,    full.names = c(model.param.names, p.hold@clv.model@name.correlation.cor, p.hold@names.prefixed.params.constr),
-                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold,
-                                            DERT.not.implemented = DERT.not.implemented)
+                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
     fct.helper.clvfittedtransactions.all.s3(p.no.hold, full.names = c(model.param.names, p.no.hold@clv.model@name.correlation.cor, p.no.hold@names.prefixed.params.constr),
-                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold,
-                                            DERT.not.implemented = DERT.not.implemented)
+                                            clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
   })
 }
 
 
 fct.testthat.runability.staticcov.works.with.illegal.cov.names <- function(method, data.apparelTrans, data.apparelStaticCov,
                                                                            clv.data.holdout, clv.data.no.holdout,
-                                                                           DERT.not.implemented, names.params.model){
+                                                                           names.params.model){
 
   test_that("Works with static covs that have syntactically illegal names", {
     skip_on_cran()
@@ -215,8 +209,7 @@ fct.testthat.runability.staticcov.works.with.illegal.cov.names <- function(metho
       fct.helper.clvfittedtransactions.all.s3(clv.fitted = fitted,  full.names = c(names.params.model,
                                                                                    paste0("life.",make.names(new.names)),
                                                                                    paste0("trans.",make.names(new.names))),
-                                              clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold,
-                                              DERT.not.implemented = DERT.not.implemented)
+                                              clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
     }
 
     # Numbers
@@ -265,7 +258,7 @@ fct.helper.create.clvdata.apparel.staticcov <- function(data.apparelTrans, data.
 
 
 
-fct.testthat.runability.staticcov <- function(name.model, method, start.params.model, has.DERT, has.cor,
+fct.testthat.runability.staticcov <- function(name.model, method, start.params.model, has.cor,
                                               data.apparelTrans, data.apparelStaticCov,
                                               failed.optimization.methods.expected.message){
   context(paste0("Runability - ",name.model," staticcov - Basic runability"))
@@ -283,7 +276,7 @@ fct.testthat.runability.staticcov <- function(name.model, method, start.params.m
 
   names.params.all.free <- c(names(start.params.model), "life.Gender", "life.Channel", "trans.Gender", "trans.Channel")
   l.args.test.all.s3 <- list(full.names = names.params.all.free, clv.newdata.nohold = clv.newdata.nohold,
-                             clv.newdata.withhold = clv.newdata.withhold, DERT.not.implemented = !has.DERT)
+                             clv.newdata.withhold = clv.newdata.withhold)
 
   # Common tests ------------------------------------------------------------------------------------------------------------
   fct.testthat.runability.clvfitted.out.of.the.box.no.hold(method = method, clv.data.noholdout = clv.data.cov.no.holdout,
@@ -311,7 +304,6 @@ fct.testthat.runability.staticcov <- function(name.model, method, start.params.m
   fct.testthat.runability.staticcov.reduce.relevant.covariates.estimation(method = method, clv.data.holdout = clv.data.cov.holdout)
 
   fct.testthat.runability.staticcov.works.with.illegal.cov.names(method = method, data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
-                                                                 DERT.not.implemented = !has.DERT,
                                                                  clv.data.holdout = clv.data.cov.holdout,
                                                                  names.params.model = names(start.params.model))
 
@@ -320,14 +312,12 @@ fct.testthat.runability.staticcov <- function(name.model, method, start.params.m
     context(paste0("Runability - ",name.model," static cov - w/ Correlation"))
 
     fct.testthat.runability.common.works.with.cor(method = method,
-                                                  DERT.not.implemented = !has.DERT,
                                                   clv.data.holdout = clv.data.cov.holdout,
                                                   clv.newdata.nohold = clv.newdata.nohold,
                                                   clv.newdata.withhold = clv.newdata.withhold,
                                                   names.params.model = names(start.params.model))
 
     fct.testthat.runability.common.works.with.cor.start.params(method = method,
-                                                               DERT.not.implemented = !has.DERT,
                                                                clv.data.holdout = clv.data.cov.holdout,
                                                                clv.newdata.nohold = clv.newdata.nohold,
                                                                clv.newdata.withhold = clv.newdata.withhold,
@@ -337,26 +327,22 @@ fct.testthat.runability.staticcov <- function(name.model, method, start.params.m
   context(paste0("Runability - ",name.model," static cov - w/ Constraint"))
   fct.testthat.runability.staticcov.works.with.2.constraints(method = method,
                                                              param.names.model = names(start.params.model),
-                                                             DERT.not.implemented = !has.DERT,
                                                              clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold,
                                                              clv.data.holdout = clv.data.cov.holdout, clv.data.no.holdout = clv.data.cov.no.holdout)
 
   fct.testthat.runability.staticcov.works.with.1.constraint.1.free(method = method,
                                                                    param.names.model = names(start.params.model),
-                                                                   DERT.not.implemented = !has.DERT,
                                                                    clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold,
                                                                    clv.data.holdout = clv.data.cov.holdout, clv.data.no.holdout = clv.data.cov.no.holdout)
 
   context(paste0("Runability - ",name.model," static cov - w/ Regularization"))
   fct.testthat.runability.staticcov.works.with.regularization(method = method,
                                                               param.names.model = names(start.params.model),
-                                                              DERT.not.implemented = !has.DERT,
                                                               clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold,
                                                               clv.data.holdout = clv.data.cov.holdout, clv.data.no.holdout = clv.data.cov.no.holdout)
 
   fct.testthat.runability.staticcov.works.with.0.lambdas(method = method,
                                                          param.names.model = names(start.params.model),
-                                                         DERT.not.implemented = !has.DERT,
                                                          clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold,
                                                          clv.data.holdout = clv.data.cov.holdout, clv.data.no.holdout = clv.data.cov.no.holdout)
 
@@ -364,13 +350,11 @@ fct.testthat.runability.staticcov <- function(name.model, method, start.params.m
   if(has.cor){
     fct.testthat.runability.staticcov.works.with.combined.interlayers.with.cor(method = method,
                                                                                model.param.names = names(start.params.model),
-                                                                               DERT.not.implemented = !has.DERT,
                                                                                clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold,
                                                                                clv.data.holdout = clv.data.cov.holdout, clv.data.no.holdout = clv.data.cov.no.holdout)
   }else{
     fct.testthat.runability.staticcov.works.with.combined.interlayers.without.cor(method = method,
                                                                                   model.param.names = names(start.params.model),
-                                                                                  DERT.not.implemented = !has.DERT,
                                                                                   clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold,
                                                                                   clv.data.holdout = clv.data.cov.holdout, clv.data.no.holdout = clv.data.cov.no.holdout)
   }

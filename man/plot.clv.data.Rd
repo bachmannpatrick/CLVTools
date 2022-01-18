@@ -28,8 +28,7 @@
 \item{which}{Which plot to produce, either "tracking", "frequency", "spending" or "interpurchasetime".
 May be abbreviated but only one may be selected. Defaults to "tracking".}
 
-\item{prediction.end}{"tracking": Until what point in time to plot. This can be the number of periods (numeric) or
-a form of date/time object. See details.}
+\item{prediction.end}{"tracking": Until what point in time to plot. This can be the number of periods (numeric) or a form of date/time object. See details.}
 
 \item{cumulative}{"tracking": Whether the cumulative actual repeat transactions should be plotted.}
 
@@ -74,7 +73,9 @@ excluding customers with no repeat-transactions.}
 \item{num.customers}{The number of customers.}
 }
 \description{
-Depending on the value of parameter \code{which}, one of the following plots will be produced:
+Depending on the value of parameter \code{which}, one of the following plots will be produced.
+Note that the \code{sample} parameter determines the period for which the
+selected plot is made (either estimation, holdout, or full).
 
 \subsection{Tracking Plot}{
 Plot the aggregated repeat transactions per period over the given time-horizon (\code{prediction.end}).
