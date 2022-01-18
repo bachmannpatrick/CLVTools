@@ -1,7 +1,22 @@
 #' Formula Interface for Latent Attrition Models
 #'
+#' @template template_param_formulainterface_data
+#' @template template_param_formulainterface_formula
+#' @template template_param_optimxargs
+#' @template template_param_verbose
+#' @param cov Optional data.frame or data.table of covariate data.
+#'
 #' @description
-#' Fit latent attrition models for tranasction with a formual interface
+#' Fit latent attrition models for transaction with a formula interface xxxxxxxx
+#'
+#' @details
+#' The formula argument follows a multipart notation:
+#' A formula describing how to prepare and the model.
+#' If data is provided as data.frame, the formula is required to have a LHS xxxxxxxx
+#'
+#'
+#' See the example section for illustrations on how to specify the formula parameter.
+#'
 #'
 #' @seealso Models for inputs to: \link{pnbd}, \link{ggomnbd}, \link{bgnbd}.
 #' @seealso \link{spending} to fit spending models with a formula interface
@@ -42,18 +57,18 @@
 #' latentAttrition(~pnbd()|Gender|Channel+Gender, clv.staticcov)
 #'
 #' # Fit pnbd with transformed covariate data
-#' latentAttrition(~pnbd()|Gender|I(log(Channel+7)), clv.staticcov)
+#' latentAttrition(~pnbd()|Gender|I(log(Channel+2)), clv.staticcov)
 #'
 #' # Fit pnbd with all covs and regularization
 #' latentAttrition(~pnbd()|.|.|regularization(life=3, trans=8), clv.staticcov)
 #'
 #' # Fit pnbd on given data.frame, no split
-#' latentAttrition(data()~pnbd(), data=cdnow)
+#' latentAttrition(data()~pnbd(), data=apparelTrans)
 #'
 #' # Fit pnbd, split data after 39 periods
-#' latentAttrition(data(split=39)~pnbd(), data=cdnow)
+#' latentAttrition(data(split=39)~pnbd(), data=apparelTrans)
 #' # Same but also give date format and period definition
-#' latentAttrition(data(split=39, format=ymd, unit=w)~pnbd(), data=cdnow)
+#' latentAttrition(data(split=39, format=ymd, unit=w)~pnbd(), data=apparelTrans)
 #'
 #' # Fit pnbd on given data.frame w/ all covariates
 #' latentAttrition(data()~pnbd()|.|., data=apparelTrans, cov=apparelStaticCov)
@@ -74,7 +89,7 @@ latentAttrition <- function(formula, data, cov, optimx.args=list(), verbose=TRUE
 
   check_err_msg(check_userinput_formula(formula, name.specials.model = c("pnbd", "bgnbd", "ggomnbd")))
   check_err_msg(check_userinput_formula_data(data))
-  check_err_msg(check_userinput_formula_cov(cov))
+  check_err_msg(check_userinput_formula_cov(cov=cov))
   check_err_msg(check_userinput_latentattrition_formulavsdata(formula=formula, data=data, cov=cov))
 
   F.formula <- as.Formula(formula)
@@ -302,9 +317,11 @@ check_userinput_formula_data <- function(data){
 }
 
 check_userinput_formula_cov <- function(cov){
-  if(missing(cov))
+  if(missing(cov)){
     return(c())
-  if(!is.data.frame(data) && !is.data.table(cov)){
+  }
+
+  if(!is.data.frame(cov) && !is.data.table(cov)){
     return("Please provide an object of class data.frame or data.table for parameter 'cov'!")
   }
 

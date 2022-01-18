@@ -11,6 +11,7 @@ setGeneric("ggomnbd", def = function(clv.data, start.params.model=c(), optimx.ar
 #' @description Fits Gamma-Gompertz/NBD models on transactional data with static and without covariates.
 #' @template template_params_estimate
 #' @template template_params_estimate_cov
+#' @template template_param_optimxargs
 #' @template template_param_verbose
 #' @template template_param_dots
 #'

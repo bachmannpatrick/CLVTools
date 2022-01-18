@@ -1,8 +1,17 @@
 #' Formula Interface for Spending Models
 #'
+#' @description
+#' xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+#'
+#' @template template_param_formulainterface_formula
+#' @template template_param_formulainterface_data
+#' @template template_param_optimxargs
+#' @template template_param_verbose
 #'
 #' @seealso Spending models for inputs: \link{gg}.
 #' @seealso \link{latentAttrition} to fit transactions models with a formula interface
+#'
+#' @return Returns an object of the respective model which was fit.
 #'
 #' @examples
 #' \donttest{

@@ -6,6 +6,17 @@
 \usage{
 spending(formula, data, optimx.args = list(), verbose = TRUE)
 }
+\arguments{
+\item{formula}{Formula specifying the model to be fit. See Details.}
+
+\item{data}{Either a \code{clv.data} object or a \code{data.frame} containing transaction
+data on which the model specified in \code{formula} will be fit.}
+
+\item{optimx.args}{Additional arguments to control the optimization which are forwarded to \code{\link[optimx:optimx]{optimx::optimx}}.
+If multiple optimization methods are specified, only the result of the last method is further processed.}
+
+\item{verbose}{Show details about the running of the function.}
+}
 \description{
 Formula Interface for Spending Models
 }

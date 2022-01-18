@@ -3,6 +3,7 @@
 #' @title Gamma/Gamma Spending model
 #'
 #' @template template_params_estimate
+#' @template template_param_optimxargs
 #' @template template_param_verbose
 #' @template template_param_dots
 #' @param remove.first.transaction Whether customer's first transaction are removed. If \code{TRUE} all zero-repeaters are excluded from model fitting.

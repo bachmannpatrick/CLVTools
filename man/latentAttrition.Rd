@@ -6,8 +6,29 @@
 \usage{
 latentAttrition(formula, data, cov, optimx.args = list(), verbose = TRUE)
 }
+\arguments{
+\item{formula}{Formula specifying the model to be fit. See Details.}
+
+\item{data}{Either a \code{clv.data} object or a \code{data.frame} containing transaction
+data on which the model specified in \code{formula} will be fit.}
+
+\item{cov}{Optional data.frame or data.table of covariate data.}
+
+\item{optimx.args}{Additional arguments to control the optimization which are forwarded to \code{\link[optimx:optimx]{optimx::optimx}}.
+If multiple optimization methods are specified, only the result of the last method is further processed.}
+
+\item{verbose}{Show details about the running of the function.}
+}
 \description{
-Fit latent attrition models for tranasction with a formual interface
+Fit latent attrition models for transaction with a formula interface
+}
+\details{
+The formula argument follows a multipart notation:
+A formula describing how to prepare and the model.
+If data is provided as data.frame, the formula is required to have a LHS
+
+
+See the example section for illustrations on how to specify the formula parameter.
 }
 \examples{
 \donttest{
@@ -45,18 +66,18 @@ latentAttrition(~pnbd()|.|., clv.staticcov)
 latentAttrition(~pnbd()|Gender|Channel+Gender, clv.staticcov)
 
 # Fit pnbd with transformed covariate data
-latentAttrition(~pnbd()|Gender|I(log(Channel+7)), clv.staticcov)
+latentAttrition(~pnbd()|Gender|I(log(Channel+2)), clv.staticcov)
 
 # Fit pnbd with all covs and regularization
 latentAttrition(~pnbd()|.|.|regularization(life=3, trans=8), clv.staticcov)
 
 # Fit pnbd on given data.frame, no split
-latentAttrition(data()~pnbd(), data=cdnow)
+latentAttrition(data()~pnbd(), data=apparelTrans)
 
 # Fit pnbd, split data after 39 periods
-latentAttrition(data(split=39)~pnbd(), data=cdnow)
+latentAttrition(data(split=39)~pnbd(), data=apparelTrans)
 # Same but also give date format and period definition
-latentAttrition(data(split=39, format=ymd, unit=w)~pnbd(), data=cdnow)
+latentAttrition(data(split=39, format=ymd, unit=w)~pnbd(), data=apparelTrans)
 
 # Fit pnbd on given data.frame w/ all covariates
 latentAttrition(data()~pnbd()|.|., data=apparelTrans, cov=apparelStaticCov)
