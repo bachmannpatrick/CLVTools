@@ -203,7 +203,7 @@ pnbd_dyncov_createwalks_real_trans <- function(clv.data, dt.trans, dt.tp.first.l
 
   # Covariates affecting repeat-transactions
   #   Zero-repeaters have 0 real walks
-  #   No walk for the first tranaction
+  #   No walk for the first transaction
   #   A transaction is influenced some time between the last and actual trans
   #     -> Interval [last trans + eps, this trans]
 
@@ -222,10 +222,10 @@ pnbd_dyncov_createwalks_real_trans <- function(clv.data, dt.trans, dt.tp.first.l
   dt.cuts.real[, tp.cut.upper := tp.this.trans]
 
   # remove cut for first transaction
-  #   - which has NA in tp.previous.trans because of shift (and cannot match to cov)
+  #   - which has NA in tp.previous.trans because of shift()ing (and cannot match to cov)
   #   - for which no walk shall be created
   # dt.cuts.real <- dt.cuts.real[!is.na(tp.previous.trans)]
-  dt.cuts.real[, is.first := Date == min(Date), by="Id"]
+  dt.cuts.real[, is.first := tp.this.trans == min(tp.this.trans), by="Id"]
   dt.cuts.real <- dt.cuts.real[is.first == FALSE]
   dt.cuts.real[, is.first := NULL]
 

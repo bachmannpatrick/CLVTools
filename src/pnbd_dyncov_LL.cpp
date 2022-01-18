@@ -32,7 +32,10 @@ Customer::Customer(const double x, const double t_x, const double T_cal, const d
                    const arma::vec& adj_covdata_real_life,  const arma::rowvec& walkinfo_real_life,
                    const arma::vec& adj_covdata_aux_trans,  const arma::rowvec& walkinfo_aux_trans,
                    const arma::vec& adj_covdata_real_trans, const arma::mat& walkinfo_real_trans)
-  :x(x), t_x(t_x), T_cal(T_cal), d_omega(d_omega),
+  :x(x),
+   t_x(t_x),
+   T_cal(T_cal),
+   d_omega(d_omega),
    real_walks_trans(std::vector<TransactionWalk>(walkinfo_real_trans.n_rows)), // init vec with total capacity
    aux_walk_life(LifetimeWalk(adj_covdata_aux_life, walkinfo_aux_life)),
    aux_walk_trans(TransactionWalk(adj_covdata_aux_trans, walkinfo_aux_trans)){
@@ -46,12 +49,15 @@ Customer::Customer(const double x, const double t_x, const double T_cal, const d
   // assert(this->aux_walk_life.n_elems() == this->aux_walk_trans.n_elems())
 }
 
-// Without real trans walks (ie not zero-repeaters)
+// Without real trans walks (ie zero-repeater)
 Customer::Customer(const double x, const double t_x, const double T_cal, const double d_omega,
                    const arma::vec& adj_covdata_aux_life,   const arma::rowvec& walkinfo_aux_life,
                    const arma::vec& adj_covdata_real_life,  const arma::rowvec& walkinfo_real_life,
                    const arma::vec& adj_covdata_aux_trans,  const arma::rowvec& walkinfo_aux_trans)
-  : x(x), t_x(t_x), T_cal(T_cal), d_omega(d_omega),
+  : x(x),
+    t_x(t_x),
+    T_cal(T_cal),
+    d_omega(d_omega),
     real_walks_trans(std::vector<TransactionWalk>(0)),
     aux_walk_life(LifetimeWalk(adj_covdata_aux_life, walkinfo_aux_life)),
     aux_walk_trans(TransactionWalk(adj_covdata_aux_trans, walkinfo_aux_trans)){

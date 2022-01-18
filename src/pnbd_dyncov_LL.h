@@ -89,18 +89,18 @@ struct Customer {
 
 
   /*
-   * Constructors for customers with real trans walks (ie zero-repeaters) and without
+   * Constructors for customers with real trans walks and without (ie zero-repeaters)
    *  Define two separate constructors because required matrix walkinfo_real_trans
    *  cannot be created by subsetting full matrix with .rows(i,j) as (i,j) is NA / dont exists
    */
-  // With real walks
+  // With real walks (ie not zero-repeaters)
   Customer(const double x, const double t_x, const double T_cal, const double d_omega,
            const arma::vec& adj_covdata_aux_life,   const arma::rowvec& walkinfo_aux_life,
            const arma::vec& adj_covdata_real_life,  const arma::rowvec& walkinfo_real_life,
            const arma::vec& adj_covdata_aux_trans,  const arma::rowvec& walkinfo_aux_trans,
            const arma::vec& adj_covdata_real_trans, const arma::mat& walkinfo_real_trans);
 
-   // without real trans walks (ie not zero-repeaters)
+   // without real trans walks (ie zero-repeaters)
   Customer(const double x, const double t_x, const double T_cal, const double d_omega,
            const arma::vec& adj_covdata_aux_life,   const arma::rowvec& walkinfo_aux_life,
            const arma::vec& adj_covdata_real_life,  const arma::rowvec& walkinfo_real_life,
