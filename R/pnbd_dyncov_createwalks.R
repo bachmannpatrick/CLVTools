@@ -1,5 +1,5 @@
 pnbd_dyncov_getLLcallargs <-function(clv.fitted){
-  i.walk_from <- i.walk_to <- i.d <- i.delta <- i.tjk <- NULL
+  i.walk_from <- i.walk_to <- i.d <- i.tjk <- NULL
   walkinfo_trans_real_from <- walkinfo_trans_real_to <- i.id_from <- i.id_to <- NULL
 
   pnbd_dyncov_addwalkinfo_single <- function(dt.cbs, dt.walk, name, cols.walkinfo){
@@ -15,7 +15,7 @@ pnbd_dyncov_getLLcallargs <-function(clv.fitted){
 
   # Add where to find customer's walk info
   cols.wi.life <- c("Id", "walk_from", "walk_to")
-  cols.wi.trans <- c(cols.wi.life, "delta", "tjk", "d1")
+  cols.wi.trans <- c(cols.wi.life, "tjk", "d1")
   dt.cbs <- copy(clv.fitted@cbs)
   dt.cbs <- pnbd_dyncov_addwalkinfo_single(dt.cbs, dt.walk=clv.fitted@data.walks.life.aux,  name="aux_life", cols.walkinfo = cols.wi.life)
   dt.cbs <- pnbd_dyncov_addwalkinfo_single(dt.cbs, dt.walk=clv.fitted@data.walks.life.real, name="real_life", cols.walkinfo = cols.wi.life)
@@ -32,11 +32,11 @@ pnbd_dyncov_getLLcallargs <-function(clv.fitted){
 
   # IN SAME ORDER AS READ OUT IN WALK constructor
   cols.walk.ordered.life  <- c("from", "to")
-  cols.walk.ordered.trans <- c(cols.walk.ordered.life, "delta", "d1", "tjk")
+  cols.walk.ordered.trans <- c(cols.walk.ordered.life, "d1", "tjk")
   m.walkinfo.aux.life   <- data.matrix(dt.cbs[, .SD, .SDcols=paste0("walk_aux_life_",  cols.walk.ordered.life, sep="")])
   m.walkinfo.real.life  <- data.matrix(dt.cbs[, .SD, .SDcols=paste0("walk_real_life_", cols.walk.ordered.life, sep="")])
   m.walkinfo.aux.trans  <- data.matrix(dt.cbs[, .SD, .SDcols=paste0("walk_aux_trans_", cols.walk.ordered.trans, sep="")])
-  m.walkinfo.real.trans <- data.matrix(dt.walkinfo.real.trans[, c("walk_from", "walk_to", "delta", "d1", "tjk")])
+  m.walkinfo.real.trans <- data.matrix(dt.walkinfo.real.trans[, c("walk_from", "walk_to", "d1", "tjk")])
 
   # **TODO: check col sorting is same as parameters! (correct.col.names == )
   m.cov.data.aux.life    <- data.matrix(clv.fitted@data.walks.life.aux[,   .SD, .SDcols=clv.fitted@clv.data@names.cov.data.life])
@@ -100,12 +100,6 @@ pnbd_dyncov_createwalks_add_walkid <- function(dt.walks){
   return(dt.walks)
 }
 
-pnbd_dyncov_createwalks_add_delta <- function(dt.walks){
-  # Add delta
-  #   delta: if Num.Walk > 1 -> 1, otherwise 0
-  dt.walks[, delta := as.numeric(.N > 1), by="walk_id"]
-  return(dt.walks)
-}
 
 pnbd_dyncov_createwalks_add_fromto <- function(dt.walks){
   # Add absolute position in data
@@ -249,7 +243,6 @@ pnbd_dyncov_createwalks_real_trans <- function(clv.data, dt.trans, dt.tp.first.l
   dt.walks.real <- pnbd_dyncov_createwalks_add_fromto(dt.walks.real)
   dt.walks.real <- pnbd_dyncov_creatwalks_add_tjk(dt.walks.real, clv.time)
   dt.walks.real <- pnbd_dyncov_creatwalks_add_d1(dt.walks.real, clv.time)
-  dt.walks.real <- pnbd_dyncov_createwalks_add_delta(dt.walks.real)
 
   return(dt.walks.real)
 }
@@ -315,14 +308,13 @@ pnbd_dyncov_createwalks_auxwalk <- function(dt.cov, dt.tp.first.last, names.cov,
 
 
 pnbd_dyncov_createwalks <- function(clv.data){
-  walk_id <- walk_from <- walk_to <- .N <- abs_pos <- Date <- delta <- tp.cov.lower <- NULL
+  walk_id <- walk_from <- walk_to <- .N <- abs_pos <- Date <- tp.cov.lower <- NULL
 
   # Walk info, per walk
   #   - from, to: where to find walk data
   #   Transaction:
   #     - tjk
   #     - d1
-  #     - delta
   # d_omega is per customer
 
 
@@ -355,14 +347,13 @@ pnbd_dyncov_createwalks <- function(clv.data){
                                                         dt.tp.first.last=dt.tp.first.last,
                                                         names.cov=names.cov.trans,
                                                         clv.time=clv.data@clv.time)
-  dt.walks.aux.trans <- pnbd_dyncov_createwalks_add_delta(dt.walks.aux.trans)
   dt.walks.aux.trans <- pnbd_dyncov_creatwalks_add_tjk(dt.walks.aux.trans, clv.time = clv.data@clv.time)
   dt.walks.aux.trans <- pnbd_dyncov_creatwalks_add_d1(dt.walks.aux.trans, clv.time = clv.data@clv.time)
 
   # Create actual walk tables ------------------------------------------------------------
   cols.common <-  c("Id", "tp.this.trans", "walk_id", "tp.cov.lower", "tp.cov.upper", "abs_pos", "walk_from", "walk_to")
   cols.life  <- c(cols.common, names.cov.life)
-  cols.trans <- c(cols.common, names.cov.trans, "delta", "tjk", "d1")
+  cols.trans <- c(cols.common, names.cov.trans, "tjk", "d1")
 
   return(list("data.walks.life.aux"   = dt.walks.aux.life[,   .SD, .SDcols=cols.life],
               "data.walks.life.real"  = dt.walks.real.life[,  .SD, .SDcols=cols.life],
@@ -376,7 +367,7 @@ pnbd_dyncov_getrealtranswalks_walkinfo <- function(dt.walk){
   abs_pos <- Id <- id_from <- id_to <- NULL
   # minimum info, per walk. Keep Id to create customerinfo (match with cbs)
 
-  dt.walkinfo <- unique(dt.walk[, c("Id", "walk_from", "walk_to", "delta", "tjk", "d1")])
+  dt.walkinfo <- unique(dt.walk[, c("Id", "walk_from", "walk_to", "tjk", "d1")])
   setkeyv(dt.walkinfo, "Id")
 
   # Add abs_pos + id from and to here to ensure correct

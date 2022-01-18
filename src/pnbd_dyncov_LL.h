@@ -45,7 +45,6 @@ struct EmptyLifetimeWalk : LifetimeWalk{
 };
 
 struct TransactionWalk : LifetimeWalk{
-  double delta; // can only be {0, 1} but store as double to avoid frequent casting and forgetting it accidentally
   double d1;
   double tjk;
   TransactionWalk(); // used in vector<>
@@ -54,10 +53,10 @@ struct TransactionWalk : LifetimeWalk{
 
 
 // Walk(const arma::vec& cov_data, const arma::uword from, const arma::uword to,
-//      const double tjk, const double d, const double delta);
+//      const double tjk, const double d);
 
 // copy constructor
-// Walk(const Walk& other) : tjk(other.tjk), d(other.d), delta(other.delta){
+// Walk(const Walk& other) : tjk(other.tjk), d(other.d){
 //   // this->walk_data = arma::vec(other.walk_data);
 //
 //   this->walk_data = arma::vec(other.walk_data.memptr(), other.walk_data.n_elem);
@@ -74,7 +73,7 @@ struct TransactionWalk : LifetimeWalk{
 
 // move constructor
 //  removes copy assignment operator??
-// Walk(Walk&& other) : tjk(other.tjk), d(other.d), delta(other.delta){
+// Walk(Walk&& other) : tjk(other.tjk), d(other.d){
 //   this->walk_data = arma::vec(other.walk_data.memptr(), other.walk_data.n_elem);
 //   Rcpp::Rcout<<"Move constructor called."<<std::endl;
 // }

@@ -94,11 +94,11 @@ LifetimeWalk::LifetimeWalk(const arma::vec& cov_data, const arma::rowvec& walk_i
 
 
 TransactionWalk::TransactionWalk()
-  :LifetimeWalk(), delta(arma::datum::nan), d1{arma::datum::nan}, tjk{arma::datum::nan} {
+  :LifetimeWalk(), d1{arma::datum::nan}, tjk{arma::datum::nan} {
 }
 
 TransactionWalk::TransactionWalk(const arma::vec& cov_data, const arma::rowvec& walk_info)
-  : LifetimeWalk(cov_data, walk_info), delta{walk_info(2)}, d1{walk_info(3)}, tjk{walk_info(4)}{
+  : LifetimeWalk(cov_data, walk_info), d1{walk_info(2)}, tjk{walk_info(3)}{
 }
 
 EmptyLifetimeWalk::EmptyLifetimeWalk()
@@ -269,8 +269,9 @@ double pnbd_dyncov_LL_i_bksumbjsum_walk_i(const TransactionWalk& w){
       return(w.first()*w.d1 + w.last()*(w.tjk - w.d1));
     }else{
       // >= 3
+      //  delta = 1
       double n = static_cast<double>(w.n_elem());
-      double last_mult = w.tjk - w.d1 - w.delta*(n - 2.0);
+      double last_mult = w.tjk - w.d1 - (n - 2.0);
       return(w.first()*w.d1 + w.sum_middle_elems() + w.last()*last_mult);
     }
   }
@@ -311,9 +312,8 @@ double pnbd_dyncov_LL_i_Bi(const arma::uword i, const double t_x, const Transact
   }
 
   // Sum elements up to Walk_i
-  // **TODO: Hardcode: for i>=3, delta=1
   return(aux_walk.first()*aux_walk.d1 + aux_walk.sum_from_to(1, i-2) +
-         aux_walk.get_elem(i-1) * (-t_x - aux_walk.d1 - aux_walk.delta*(static_cast<double>(i) - 2.0)));
+         aux_walk.get_elem(i-1) * (-t_x - aux_walk.d1 - (static_cast<double>(i) - 2.0)));
 }
 
 

@@ -4,12 +4,12 @@ ids <- names(l.walks.life)
 l.LL <- lapply(ids, function(id){
   stopifnot(id %in% names(l.walks.life) && id %in%  names(l.walks.trans))
   # print(id)
-  m.walkinfo_real_life <- as.matrix(l.walks.life[[id]]$info[AuxTrans==F, c("from", "to", "delta")])
-  m.walkinfo_aux_life  <- as.matrix(l.walks.life[[id]]$info[AuxTrans==T, c("from", "to", "delta")])
+  m.walkinfo_real_life <- as.matrix(l.walks.life[[id]]$info[AuxTrans==F, c("from", "to")])
+  m.walkinfo_aux_life  <- as.matrix(l.walks.life[[id]]$info[AuxTrans==T, c("from", "to")])
 
-  m.walkinfo_aux_trans <- as.matrix(l.walks.trans[[id]]$info[AuxTrans==T, c("from", "to", "delta", "d", "tjk")])
+  m.walkinfo_aux_trans <- as.matrix(l.walks.trans[[id]]$info[AuxTrans==T, c("from", "to", "d", "tjk")])
   if(l.walks.trans[[id]]$info[AuxTrans==F, .N] > 0){
-    m.walkinfo_real_trans <- as.matrix(l.walks.trans[[id]]$info[AuxTrans==F, c("from", "to", "delta", "d", "tjk")])
+    m.walkinfo_real_trans <- as.matrix(l.walks.trans[[id]]$info[AuxTrans==F, c("from", "to", "d", "tjk")])
   }else{
     m.walkinfo_real_trans <- as.matrix(NA_real_)
   }

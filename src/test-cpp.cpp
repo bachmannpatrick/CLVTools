@@ -16,7 +16,6 @@ bool equal(double x, double y){
 }
 double t_x = 35.11;
 double T = 57.28;
-double delta = 1.0;
 double d1 = 0.854;
 double d_omega = 0.854;
 double tjk = 23.87;
@@ -27,7 +26,7 @@ double x = 4;
 context("Bi() vs excel") {
   // from and to are R indices (from 1 to n)
   const arma::vec walkdata = {0.123, 0.234, 0.345, 0.456, 0.567, 0.678};
-  arma::rowvec walkinfo = {1, 6, delta, d1, tjk}; //from, to, delta, d1, tjk
+  arma::rowvec walkinfo = {1, 6, d1, tjk}; //from, to, d1, tjk
 
   test_that("Bi() vs excel, walk length 6"){
     walkinfo(1) = 6;
