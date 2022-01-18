@@ -1,5 +1,42 @@
 #' Formula Interface for Spending Models
 #'
+#'
+#' @seealso Spending models for inputs: \link{gg}.
+#' @seealso \link{latentAttrition} to fit transactions models with a formula interface
+#'
+#' @examples
+#' \donttest{
+#'
+#' data("cdnow")
+#' clv.cdnow <- clvdata(data.transactions = cdnow, date.format="ymd",
+#'                      time.unit = "weeks")
+#'
+#' # Fit gg
+#' spending(~gg(), data=clv.cdnow)
+#'
+#' # Fit gg with start params
+#' spending(~gg(start.params.model=c(p=0.5, q=15, gamma=2)),
+#'          data=clv.cdnow)
+#'
+#' # Fit gg, do not remove first transaction
+#' spending(~gg(remove.first.transaction=FALSE), data=clv.cdnow)
+#' # same, abreviate parameters
+#' spending(~gg(remo=F), data=clv.cdnow)
+#'
+#' # Fit gg on given data.frame transaction data, no split
+#' spending(data()~gg(), data=cdnow)
+#'
+#' # Fit gg on given data.frame, split after 39 periods
+#' spending(data(split=39)~gg(), data=cdnow)
+#' # same but also give date format and period definition
+#' spending(data(split=39, format=ymd, unit=w)~gg(), data=cdnow)
+#'
+#' ## No covariate may be selected or covariate data.frame may be
+#' ## given because currently no spending model uses covariates
+#'
+#' }
+#'
+#'
 #' @importFrom Formula as.Formula
 #' @importFrom stats terms formula
 #' @export

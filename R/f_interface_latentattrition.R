@@ -1,4 +1,69 @@
-#' Formula Interface for Transaction Models
+#' Formula Interface for Latent Attrition Models
+#'
+#' @description
+#' Fit latent attrition models for tranasction with a formual interface
+#'
+#' @seealso Models for inputs to: \link{pnbd}, \link{ggomnbd}, \link{bgnbd}.
+#' @seealso \link{spending} to fit spending models with a formula interface
+#'
+#' @examples
+#' \donttest{
+#'
+#' data("apparelTrans")
+#' data("apparelStaticCov")
+#'
+#' clv.nocov <-
+#'     clvdata(apparelTrans, time.unit="w", date.format="ymd")
+#'
+#' # Create static covariate data with 2 covariates
+#' clv.staticcov  <-
+#'   SetStaticCovariates(clv.nocov,
+#'                       data.cov.life  = apparelStaticCov,
+#'                       names.cov.life = c("Gender", "Channel"),
+#'                       data.cov.trans = apparelStaticCov,
+#'                       names.cov.trans = c("Gender", "Channel"))
+#'
+#' # Fit pnbd without covariates
+#' latentAttrition(~pnbd(), data=clv.nocov)
+#' # Fit bgnbd without covariates
+#' latentAttrition(~bgnbd(), data=clv.nocov)
+#' # Fit ggomnbd without covariates
+#' latentAttrition(~ggomnbd(), data=clv.nocov)
+#'
+#' # Fit pnbd with start.parameters and correlation
+#' latentAttrition(~pnbd(start.params.model=c(r=1, alpha=10, s=2, beta=8),
+#'                       use.cor=TRUE),
+#'                 data=clv.nocov)
+#'
+#' # Fit pnbd with all present covariates
+#' latentAttrition(~pnbd()|.|., clv.staticcov)
+#'
+#' # Fit pnbd with selected covariates
+#' latentAttrition(~pnbd()|Gender|Channel+Gender, clv.staticcov)
+#'
+#' # Fit pnbd with transformed covariate data
+#' latentAttrition(~pnbd()|Gender|I(log(Channel+7)), clv.staticcov)
+#'
+#' # Fit pnbd with all covs and regularization
+#' latentAttrition(~pnbd()|.|.|regularization(life=3, trans=8), clv.staticcov)
+#'
+#' # Fit pnbd on given data.frame, no split
+#' latentAttrition(data()~pnbd(), data=cdnow)
+#'
+#' # Fit pnbd, split data after 39 periods
+#' latentAttrition(data(split=39)~pnbd(), data=cdnow)
+#' # Same but also give date format and period definition
+#' latentAttrition(data(split=39, format=ymd, unit=w)~pnbd(), data=cdnow)
+#'
+#' # Fit pnbd on given data.frame w/ all covariates
+#' latentAttrition(data()~pnbd()|.|., data=apparelTrans, cov=apparelStaticCov)
+#'
+#' # Fit pnbd on given data.frame w/ selected covariates
+#' latentAttrition(data()~pnbd()|Channel+Gender|Gender,
+#'                 data=apparelTrans, cov=apparelStaticCov)
+#'
+#' }
+#'
 #'
 #' @importFrom Formula as.Formula
 #' @importFrom stats terms formula
@@ -302,7 +367,6 @@ check_userinput_latentattrition_formulavsdata_RHS23 <- function(F.formula, names
   return(err.msg)
 }
 
-#' @importFrom Formula terms
 check_userinput_latentattrition_formulavsdata_RHS4 <- function(F.formula){
   err.msg <- c()
 

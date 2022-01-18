@@ -4,7 +4,7 @@ data("cdnow")
 context("Inputchecks - spending() - data=clv.data")
 clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
 
-# .data -----------------------------------------------------------------------------------------------
+# data -----------------------------------------------------------------------------------------------
 test_that("Fails if data is not clv.data", {
   skip_on_cran()
   expect_error(spending(~gg(), data=), "object of class clv.data, data.frame, or data.table")
@@ -20,8 +20,8 @@ test_that("Fails if data() but given clv.data", {
 
 
 
+# model -----------------------------------------------------------------------------------------------
 context("Inputchecks - spending() - model")
-# .RHS1 model -----------------------------------------------------------------------------------------------
 test_that("Fails if no model in RHS1", {
   skip_on_cran()
   expect_error(spending(~., data = clv.cdnow), "of the following models")
