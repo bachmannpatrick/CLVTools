@@ -142,5 +142,6 @@ Collate:
     'pnbd_dyncov_expectation.R'
     'pnbd_dyncov_makewalks.R'
     'pnbd_dyncov_palive.R'
+    'pnbd_dyncov_pmf.R'
 RoxygenNote: 7.1.2
 VignetteBuilder: knitr
