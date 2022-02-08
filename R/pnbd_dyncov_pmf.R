@@ -117,14 +117,6 @@ pnbd_dyncov_pmf_S1_per_customer <- function(dt.data.period.customer,
                                      dt.data.since.alive.customer=dt.data.since.alive.customer)
   D_kutu <- C_kutu*(t+ui)+Dbar_utu
 
-  stopifnot(is.finite(A_kutu))
-  stopifnot(is.finite(C_kutu))
-  stopifnot(is.finite(Bbar_kutu))
-  stopifnot(is.finite(B_kutu))
-  stopifnot(is.finite(Dbar_utu))
-  stopifnot(is.finite(D_kutu))
-
-
   # Cannot calculate: (D_kutu+b)^s
 
   S1 <- (B_kutu^x / factorial(x)) * (gamma(x+r) / gamma(r)) * ((a^r* b^s) / ((B_kutu+a)^(x+r)*(D_kutu+b)^s))
@@ -149,12 +141,6 @@ pnbd_dyncov_pmf_S2_1j_per_customer <- function(dt.data.period.customer, j,
   ui <- dt.data.period.customer[1, ui]
   d1 <- dt.data.period.customer[1, d1]
   bu2 <- pnbd_dyncov_pmf_bu_i(ui = ui, i = 2, d1 = d1)
-
-  stopifnot(is.finite(A1))
-  stopifnot(is.finite(C1))
-  stopifnot(is.finite(Bbar_1))
-  stopifnot(is.finite(Dbar_1))
-  stopifnot(is.finite(Bbar_1))
 
   # I{Bbar1+alpha > (Dbar1+beta)*A1/C1}
   if((Bbar_1+a) > (Dbar_1+b)*A1/C1){
@@ -210,17 +196,6 @@ pnbd_dyncov_pmf_S2_ij_per_customer <- function(dt.data.period.customer, i,j,
   d1 <- dt.data.period.customer[1, d1]
   bu_i <- pnbd_dyncov_pmf_bu_i(ui = ui, d1 = d1, i = i)
 
-  stopifnot(is.finite(Ai))
-  stopifnot(is.finite(Ci))
-  stopifnot(is.finite(Bbar_i))
-  stopifnot(is.finite(Dbar_i))
-  stopifnot(is.finite(bu_i))
-
-
-  stopifnot(length(Ai) == 1)
-  stopifnot(length(Ci) == 1)
-  stopifnot(length(Bbar_i) == 1)
-  stopifnot(length(Dbar_i) == 1)
 
   if(Bbar_i+a > (Dbar_i+b)*Ai/Ci){
     fct.greater <- function(u_part, n){
@@ -274,13 +249,6 @@ pnbd_dyncov_pmf_S2_kutuj_per_customer <- function(dt.data.period.customer, j,
   d1 <- dt.data.period.customer[1, d1]
   bu_kutu <- pnbd_dyncov_pmf_bu_i(ui = ui, d1 = d1, i = i.kutu)
 
-  stopifnot(is.finite(A_kutu))
-  stopifnot(is.finite(C_kutu))
-  stopifnot(is.finite(Bbar_kutu))
-  stopifnot(is.finite(Dbar_kutu))
-  stopifnot(is.finite(bu_kutu))
-
-
   if((Bbar_kutu+a) > ((Dbar_kutu+b)*A_kutu/C_kutu) ){
 
     fct.greater <- function(u_part, n){
@@ -322,13 +290,11 @@ pnbd_dyncov_pmf_per_customer <- function(dt.data.period.customer,
 
   S1 <- pnbd_dyncov_pmf_S1_per_customer(dt.data.period.customer = dt.data.period.customer, x=x, a=a, b=b,r=r, s=s, t=t,
                                         dt.data.since.alive.customer = dt.data.since.alive.customer)
-  stopifnot(is.finite(S1))
 
   fct.sum.s2.ij <- function(i, j){
     S2_ij <- pnbd_dyncov_pmf_S2_ij_per_customer(i=i,j=j,dt.data.period.customer = dt.data.period.customer,
                                                 dt.data.since.alive.customer = dt.data.since.alive.customer,
                                                 x = x, a = a, b = b, r = r, s = s)
-    stopifnot(is.finite(S2_ij))
     return(S2_ij)
   }
 
@@ -344,9 +310,6 @@ pnbd_dyncov_pmf_per_customer <- function(dt.data.period.customer,
                                                        x = x, r=r, a = a, s = s, b = b, t = t)
     S2_ij_sum <- sum(sapply(seq.int(from=2, to=i.kutu-1), fct.sum.s2.ij, j=j))
 
-    stopifnot(is.finite(S2_1j))
-    stopifnot(is.finite(S2_ij_sum))
-    stopifnot(is.finite(S2_kutu_j))
     return(S2_1j + S2_kutu_j + S2_ij_sum)
   }
 

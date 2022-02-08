@@ -9,7 +9,7 @@
 #' Calculate P(X(t)=x), the probability to make exactly \code{x} repeat transactions in
 #' the interval (0, t]. This interval is in the estimation period and excludes values of \code{t=0}.
 #' Here, \code{t} is defined as the observation period \code{T.cal} which differs by customer.
-#' Note that the PMF for the Pareto/NBD with dynamic covariates is still experimental and very slow.
+#' Note that the PMF for the Pareto/NBD with dynamic covariates is still experimental, numerically unstable, and very slow.
 #'
 #'
 #' @returns
