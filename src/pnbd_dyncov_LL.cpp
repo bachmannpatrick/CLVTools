@@ -558,6 +558,10 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
       intermediate_results(5) = arma::datum::nan;
       intermediate_results(6) = arma::datum::nan;
       intermediate_results(7) = arma::datum::nan;
+      intermediate_results(8) = arma::datum::nan;
+      intermediate_results(9) = arma::datum::nan;
+      intermediate_results(10) = arma::datum::nan;
+      intermediate_results(11) = arma::datum::nan;
     }
     return(F2);
 
@@ -590,15 +594,23 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
                                               c,
                                               Bjsum, dT);
 
+
     if(return_intermediate_results){
-      intermediate_results(0) = Bjsum;
-      intermediate_results(1) = dT;
-      intermediate_results(2) = aT;
-      intermediate_results(3) = bT;
-      intermediate_results(4) = bkT;
-      intermediate_results(5) = F2_1;
-      intermediate_results(6) = F2_2;
-      intermediate_results(7) = F2_3;
+      intermediate_results(0) = dT;
+      intermediate_results(1) = a1T;
+      intermediate_results(2) = b1T;
+      intermediate_results(3) = a1;
+      intermediate_results(4) = b1;
+
+      intermediate_results(5) = akt;
+      intermediate_results(6) = bkT;
+      intermediate_results(7) = aT;
+      intermediate_results(8) = bT;
+
+      intermediate_results(9) = F2_1;
+      intermediate_results(10) = F2_2;
+      intermediate_results(11) = F2_3;
+
     }
     return(F2_1 + F2_2 + F2_3);
   }
@@ -727,7 +739,7 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
   const double log_F0 = r*std::log(alpha_0) + s*std::log(beta_0) + std::lgamma(c.x+r) - std::lgamma(r) + A1sum;
   const double log_F1 = std::log(s) - std::log(r+s+c.x);
 
-  arma::vec F2_intermediate_results = arma::vec(8);
+  arma::vec F2_intermediate_results = arma::vec(12);
   double F2 = pnbd_dyncov_LL_i_F2(r, alpha_0,  s,  beta_0,
                                   c,
                                   B1, D1,
@@ -781,26 +793,78 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
   }else{
     // R: data.table(Id=cbs$Id,LL=cbs$LL, Akprod=exp(cbs$A1sum), Bksum=cbs$Bksum, DkT=cbs$DkT, Z=cbs$F2)
     double Akprod = std::exp(A1sum);
-    return(Rcpp::NumericVector::create(Rcpp::_["LL"]=LL,
-                                       Rcpp::_["Akprod"]=Akprod,
-                                       Rcpp::_["Bksum"]=Bksum,
-                                       Rcpp::_["Bjsum"]= F2_intermediate_results(0),
-                                       Rcpp::_["B1"]=B1,
-                                       Rcpp::_["BT"]=BT,
-                                       Rcpp::_["D1"]=D1,
-                                       Rcpp::_["DT"]=DT,
-                                       Rcpp::_["DkT"]=DkT,
-                                       Rcpp::_["log.F0"]=log_F0,
-                                       Rcpp::_["log.F1"]=log_F1,
-                                       Rcpp::_["log.F3"]=log_F3,
-                                       Rcpp::_["F2"]=F2,
-                                       Rcpp::_["dT"]=F2_intermediate_results(1),
-                                       Rcpp::_["aT"]=F2_intermediate_results(2),
-                                       Rcpp::_["bT"]=F2_intermediate_results(3),
-                                       Rcpp::_["bkT"]=F2_intermediate_results(4),
-                                       Rcpp::_["F2.1"]=F2_intermediate_results(5),
-                                       Rcpp::_["F2.2"]=F2_intermediate_results(6),
-                                       Rcpp::_["F2.3"]=F2_intermediate_results(7)));
+    Rcpp::NumericVector res (30);
+
+    Rcpp::CharacterVector res_names = {"LL",
+                                       "A1T", "AkT", "A1sum", "B1", "BT", "Bjsum", "Bksum",
+                                       "C1T", "CkT", "D1", "DT", "DkT",
+                                       "log_F0", "log_F1", "F2", "log_F3",
+                                       "Akprod",
+                                       "dT", "a1T", "b1T", "a1", "b1",
+                                       "akt", "bkT", "aT", "bT",
+                                       "F2.1", "F2.2", "F2.3"};
+
+    res[0]=LL;
+
+    res[1]=A1T;
+    res[2]=AkT;
+    res[3]=A1sum;
+    res[4]=B1;
+    res[5]=BT;
+    res[6]=Bjsum;
+    res[7]=Bksum;
+
+    res[8]=C1T;
+    res[9]=CkT;
+    res[10]=D1;
+    res[11]=DT;
+    res[12]=DkT;
+
+    res[13]=log_F0;
+    res[14]=log_F1;
+    res[15]=F2;
+    res[16]=log_F3;
+
+    res[17]=Akprod;
+
+    res[18]=F2_intermediate_results(0);
+    res[19]=F2_intermediate_results(1);
+    res[20]=F2_intermediate_results(2);
+    res[21]=F2_intermediate_results(3);
+    res[22]=F2_intermediate_results(4);
+    res[23]=F2_intermediate_results(5);
+    res[24]=F2_intermediate_results(6);
+    res[25]=F2_intermediate_results(7);
+    res[26]=F2_intermediate_results(8);
+    res[27]=F2_intermediate_results(9);
+    res[28]=F2_intermediate_results(10);
+    res[29]=F2_intermediate_results(11);
+
+    res.names() = res_names;
+    return(res);
+
+    // return(Rcpp::NumericVector::create(Rcpp::_["LL"]=LL,
+    //                                    Rcpp::_["Akprod"]=Akprod,
+    //                                    Rcpp::_["Bksum"]=Bksum,
+    //                                    // Rcpp::_["Bjsum"]= F2_intermediate_results(0),
+    //                                    Rcpp::_["B1"]=B1,
+    //                                    Rcpp::_["BT"]=BT,
+    //                                    Rcpp::_["D1"]=D1,
+    //                                    Rcpp::_["DT"]=DT,
+    //                                    Rcpp::_["DkT"]=DkT,
+    //                                    Rcpp::_["log.F0"]=log_F0,
+    //                                    Rcpp::_["log.F1"]=log_F1,
+    //                                    Rcpp::_["log.F3"]=log_F3,
+    //                                    Rcpp::_["F2"]=F2,
+    //                                    Rcpp::_["dT"]=F2_intermediate_results(0),
+    //                                    Rcpp::_["a1T"]=F2_intermediate_results(1),
+    //                                    Rcpp::_["b1T"]=F2_intermediate_results(2),
+    //                                    Rcpp::_["a1"]=F2_intermediate_results(3),
+    //                                    Rcpp::_["b1"]=F2_intermediate_results(4),
+    //                                    Rcpp::_["akt"]=F2_intermediate_results(5),
+    //                                    Rcpp::_["bkT"]=F2_intermediate_results(6),
+    //                                    Rcpp::_["aT"]=F2_intermediate_results(7),
+    //                                    Rcpp::_["bT"]=F2_intermediate_results(8)));
   }
 }
 
@@ -890,9 +954,13 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
   const arma::vec adj_covdata_aux_trans  = arma::exp(covdata_aux_trans  * params_trans);
   const arma::vec adj_covdata_real_trans = arma::exp(covdata_real_trans * params_trans);
 
+
+  // Rcpp::Rcout<<"13311-1: "<<adj_covdata_aux_life(13311-1)<<"  13312-1: "<<adj_covdata_aux_life(13312-1)<<"  13313-1: "<<adj_covdata_aux_life(13313-1)<<"  13314-1: "<<adj_covdata_aux_life(13314-1)<<std::endl;
+  // Rcpp::Rcout<<"13311-1: "<<adj_covdata_aux_trans(13311-1)<<"  13312-1: "<<adj_covdata_aux_trans(13312-1)<<"  13313-1: "<<adj_covdata_aux_trans(13313-1)<<"  13314-1: "<<adj_covdata_aux_trans(13314-1)<<std::endl;
+
   Rcpp::NumericMatrix res;
   if(return_intermediate_results){
-    res = Rcpp::NumericMatrix(X.n_elem, 20);
+    res = Rcpp::NumericMatrix(X.n_elem, 30);
   }else{
     res = Rcpp::NumericMatrix(X.n_elem, 1);
   }
@@ -924,6 +992,15 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
                                         adj_covdata_aux_trans, walkinfo_aux_trans.row(i)),
                                return_intermediate_results);
     }
+    // if( i == 141-1){
+    //   Customer c(X(i), t_x(i), T_cal(i), d_omega(i),
+    //            adj_covdata_aux_life, walkinfo_aux_life.row(i),
+    //            adj_covdata_real_life, walkinfo_real_life.row(i),
+    //            adj_covdata_aux_trans, walkinfo_aux_trans.row(i));
+    //   Rcpp::Rcout<<"i=141-1"<<std::endl;
+    //   Rcpp::Rcout<<"c.aux_walk_life.first()"<<c.aux_walk_life.first()<<std::endl;
+    //   Rcpp::Rcout<<"walkinfo_aux_life.row(i)"<<walkinfo_aux_life.row(i)<<std::endl;
+    // }
 
     res(i, Rcpp::_) = res_i;
   }
@@ -939,7 +1016,6 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
   // # ...if +infinity set it to largest positive value.
   //   cbs[is.infinite(LL) & sign(LL) == 1,  LL :=  abs(most.extreme.LL)]
   // # Else, if > 5%, let it propagate
-
 
   Rcpp::CharacterVector c_names = {"LL"};
   if(return_intermediate_results){
