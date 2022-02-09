@@ -112,25 +112,27 @@ pnbd_dyncov_createwalks_add_fromto <- function(dt.walks){
   return(dt.walks)
 }
 
+pnbd_dyncov_walk_d <- function(clv.time, tp.trans){
+  # d shall be 1 if it is exactly on the time.unit boundary! **TODO: Correct statement?
+  # **TODO: clv.time.ceiling.date does not change on boundary (ie d1=0 if on boundary)
+
+  return(clv.time.interval.in.number.tu(clv.time=clv.time,
+                                        interv = interval(start = tp.trans,
+                                                          end = clv.time.ceiling.date(clv.time=clv.time,
+                                                                                      timepoint=tp.trans))))
+}
+
 pnbd_dyncov_creatwalks_add_d1 <- function(dt.walk, clv.time){
   d1 <- tp.previous.trans <- NULL
-
-  # **TODO: test: this is correct on/before boundary
 
   # d1
   #   "For any two successive transactions (j − 1), j, this is the time of the
   #    transaction (j-1) to the end of the first interval"
   #
-  #   Number of periods between last transaction to cov interval it is in
+  #    Number of periods between walk's last transaction to cov interval it is in
 
-  # time between date.lagged and period end (ceiling(data.lagged+1))
-  # d shall be 1 if it is exactly on the time.unit boundary!
-  # Plus.Eps is already "+ 1"
-  # **TODO: clv.time.ceiling.date does not change on boundary (ie d1=0 if on boundary)
-  dt.walk[, d1 := clv.time.interval.in.number.tu(clv.time = clv.time,
-                                                 interv = interval( start = tp.previous.trans,
-                                                                    end   = clv.time.ceiling.date(clv.time=clv.time,
-                                                                                                  timepoint=tp.previous.trans)))]
+  dt.walk[, d1 := pnbd_dyncov_walk_d(clv.time=clv.time, tp.trans=tp.previous.trans)]
+
   return(dt.walk)
 }
 
@@ -336,7 +338,7 @@ pnbd_dyncov_createwalks <- function(clv.data){
 
   dt.walks.real.life <- pnbd_dyncov_createwalks_real_life(clv.data=clv.data,
                                                           dt.tp.first.last=dt.tp.first.last,
-                                                          dt.walks.aux.life = dt.walks.aux.life)
+                                                          dt.walks.aux.life=dt.walks.aux.life)
 
 
   dt.walks.real.trans <- pnbd_dyncov_createwalks_real_trans(clv.data,
