@@ -757,9 +757,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// pnbd_dyncov_LL_sum
-double pnbd_dyncov_LL_sum(const arma::vec& params, const arma::vec& X, const arma::vec& t_x, const arma::vec& T_cal, const arma::vec& d_omega, const arma::mat& walkinfo_aux_life, const arma::mat& walkinfo_real_life, const arma::mat& walkinfo_aux_trans, const arma::mat& walkinfo_real_trans, const arma::vec& walkinfo_trans_real_from, const arma::vec& walkinfo_trans_real_to, const arma::mat& covdata_aux_life, const arma::mat& covdata_real_life, const arma::mat& covdata_aux_trans, const arma::mat& covdata_real_trans);
-RcppExport SEXP _CLVTools_pnbd_dyncov_LL_sum(SEXP paramsSEXP, SEXP XSEXP, SEXP t_xSEXP, SEXP T_calSEXP, SEXP d_omegaSEXP, SEXP walkinfo_aux_lifeSEXP, SEXP walkinfo_real_lifeSEXP, SEXP walkinfo_aux_transSEXP, SEXP walkinfo_real_transSEXP, SEXP walkinfo_trans_real_fromSEXP, SEXP walkinfo_trans_real_toSEXP, SEXP covdata_aux_lifeSEXP, SEXP covdata_real_lifeSEXP, SEXP covdata_aux_transSEXP, SEXP covdata_real_transSEXP) {
+// pnbd_dyncov_LL_negsum
+double pnbd_dyncov_LL_negsum(const arma::vec& params, const arma::vec& X, const arma::vec& t_x, const arma::vec& T_cal, const arma::vec& d_omega, const arma::mat& walkinfo_aux_life, const arma::mat& walkinfo_real_life, const arma::mat& walkinfo_aux_trans, const arma::mat& walkinfo_real_trans, const arma::vec& walkinfo_trans_real_from, const arma::vec& walkinfo_trans_real_to, const arma::mat& covdata_aux_life, const arma::mat& covdata_real_life, const arma::mat& covdata_aux_trans, const arma::mat& covdata_real_trans);
+RcppExport SEXP _CLVTools_pnbd_dyncov_LL_negsum(SEXP paramsSEXP, SEXP XSEXP, SEXP t_xSEXP, SEXP T_calSEXP, SEXP d_omegaSEXP, SEXP walkinfo_aux_lifeSEXP, SEXP walkinfo_real_lifeSEXP, SEXP walkinfo_aux_transSEXP, SEXP walkinfo_real_transSEXP, SEXP walkinfo_trans_real_fromSEXP, SEXP walkinfo_trans_real_toSEXP, SEXP covdata_aux_lifeSEXP, SEXP covdata_real_lifeSEXP, SEXP covdata_aux_transSEXP, SEXP covdata_real_transSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -778,7 +778,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::mat& >::type covdata_real_life(covdata_real_lifeSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type covdata_aux_trans(covdata_aux_transSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type covdata_real_trans(covdata_real_transSEXP);
-    rcpp_result_gen = Rcpp::wrap(pnbd_dyncov_LL_sum(params, X, t_x, T_cal, d_omega, walkinfo_aux_life, walkinfo_real_life, walkinfo_aux_trans, walkinfo_real_trans, walkinfo_trans_real_from, walkinfo_trans_real_to, covdata_aux_life, covdata_real_life, covdata_aux_trans, covdata_real_trans));
+    rcpp_result_gen = Rcpp::wrap(pnbd_dyncov_LL_negsum(params, X, t_x, T_cal, d_omega, walkinfo_aux_life, walkinfo_real_life, walkinfo_aux_trans, walkinfo_real_trans, walkinfo_trans_real_from, walkinfo_trans_real_to, covdata_aux_life, covdata_real_life, covdata_aux_trans, covdata_real_trans));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -911,7 +911,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CLVTools_pnbd_staticcov_PAlive", (DL_FUNC) &_CLVTools_pnbd_staticcov_PAlive, 11},
     {"_CLVTools_pnbd_nocov_PMF", (DL_FUNC) &_CLVTools_pnbd_nocov_PMF, 6},
     {"_CLVTools_pnbd_staticcov_PMF", (DL_FUNC) &_CLVTools_pnbd_staticcov_PMF, 6},
-    {"_CLVTools_pnbd_dyncov_LL_sum", (DL_FUNC) &_CLVTools_pnbd_dyncov_LL_sum, 15},
+    {"_CLVTools_pnbd_dyncov_LL_negsum", (DL_FUNC) &_CLVTools_pnbd_dyncov_LL_negsum, 15},
     {"_CLVTools_pnbd_dyncov_LL_ind", (DL_FUNC) &_CLVTools_pnbd_dyncov_LL_ind, 16},
     {"_CLVTools_LL_i_single_walk", (DL_FUNC) &_CLVTools_LL_i_single_walk, 22},
     {"_CLVTools_start_profiler", (DL_FUNC) &_CLVTools_start_profiler, 1},

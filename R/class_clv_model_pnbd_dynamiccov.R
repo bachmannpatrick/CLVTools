@@ -43,9 +43,8 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
             # Everything to call the LL function
             optimx.args <- modifyList(prepared.optimx.args,
                                       list(
-                                        LL.function.sum = pnbd_dyncov_LL_sum,
+                                        LL.function.sum = pnbd_dyncov_LL_negsum,
                                         LL.function.ind = pnbd_dyncov_LL_ind, # if doing correlation
-                                        # Ordering does not actually matter for dyncov_LL(params), just need all params
                                         LL.params.names.ordered = c(clv.model@names.prefixed.params.model,
                                                                     clv.fitted@names.prefixed.params.after.constr.life,
                                                                     clv.fitted@names.prefixed.params.after.constr.trans)))

@@ -61,7 +61,7 @@ pnbd_dyncov_cbs <- function(clv.data){
   # The CBS for pnbd dyncov additinoally contains d_omega for every customer
   # d_omega: "= Time difference between the very first purchase (start of the observation period)
   #   and the end of the interval the first purchase is contained in."
-  dt.cbs[, d_omega := pnbd_dyncov_walk_d(clv.time=clv.data@clv.time, tp.trans = date.first.actual.trans)]
+  dt.cbs[, d_omega := pnbd_dyncov_walk_d(clv.time=clv.data@clv.time, tp.relevant.transaction = date.first.actual.trans)]
 
   return(dt.cbs)
 }

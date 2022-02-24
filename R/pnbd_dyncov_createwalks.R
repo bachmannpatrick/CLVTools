@@ -69,6 +69,12 @@ pnbd_dyncov_getLLdata <- function(clv.fitted, params){
   l.LL.args <- pnbd_dyncov_getLLcallargs(clv.fitted)
   l.LL.args[["params"]] = params
   l.LL.args[["return_intermediate_results"]] = TRUE
+  stopifnot(all(names(params) ==
+                  c(clv.fitted@clv.model@names.prefixed.params.model,
+                    clv.fitted@names.prefixed.params.after.constr.life,
+                    clv.fitted@names.prefixed.params.after.constr.trans)))
+
+  # DATA HAS TO BE SAME ORDER AS PARAMS (params and data have to be in same order)
 
   dt.LLdata <- data.table(Id = clv.fitted@cbs$Id,
                           do.call(what = pnbd_dyncov_LL_ind, args = l.LL.args),
@@ -112,14 +118,34 @@ pnbd_dyncov_createwalks_add_fromto <- function(dt.walks){
   return(dt.walks)
 }
 
-pnbd_dyncov_walk_d <- function(clv.time, tp.trans){
+pnbd_dyncov_walk_d <- function(clv.time, tp.relevant.transaction){
   # d shall be 1 if it is exactly on the time.unit boundary! **TODO: Correct statement?
   # **TODO: clv.time.ceiling.date does not change on boundary (ie d1=0 if on boundary)
 
+  # # . d ---------------------------------------------------------------------
+  # # time between date.lagged and period end (ceiling(data.lagged+1))
+  # # d shall be 1 if it is exactly on the time.unit boundary!
+  # # Plus.Eps is already "+ 1"
+  # data.transactions[, d := clv.time.interval.in.number.tu(clv.time = clv.time,
+  #                                                         interv = interval( start = Prev.Trans.Date.Plus.Eps - 1L,
+  #                                                                            end   = clv.time.ceiling.date(clv.time=clv.time,
+  #                                                                                                          timepoint=Prev.Trans.Date.Plus.Eps)))]
+  #
+
+
+  # return(clv.time.interval.in.number.tu(clv.time=clv.time,
+  #                                       interv = interval(start = tp.relevant.transaction,
+  #                                                         end = clv.time.ceiling.date(clv.time=tp.relevant.transaction,
+  #                                                                                     timepoint=tp.trans))))
+
+
+  # Lubridate::ceiling_date() has the argument change_on_boundary since Version 1.5.6 (2016-04-06)
+  #   this should make +1 obsolete
+
   return(clv.time.interval.in.number.tu(clv.time=clv.time,
-                                        interv = interval(start = tp.trans,
+                                        interv = interval(start = tp.relevant.transaction,
                                                           end = clv.time.ceiling.date(clv.time=clv.time,
-                                                                                      timepoint=tp.trans))))
+                                                                                      timepoint=tp.relevant.transaction + clv.time.epsilon(clv.time) ))))
 }
 
 pnbd_dyncov_creatwalks_add_d1 <- function(dt.walk, clv.time){
@@ -131,7 +157,7 @@ pnbd_dyncov_creatwalks_add_d1 <- function(dt.walk, clv.time){
   #
   #    Number of periods between walk's last transaction to cov interval it is in
 
-  dt.walk[, d1 := pnbd_dyncov_walk_d(clv.time=clv.time, tp.trans=tp.previous.trans)]
+  dt.walk[, d1 := pnbd_dyncov_walk_d(clv.time=clv.time, tp.relevant.transaction=tp.previous.trans)]
 
   return(dt.walk)
 }
@@ -155,7 +181,8 @@ pnbd_dyncov_createwalks_singletrans <- function(dt.cov, dt.tp.first.last,
   tp.cut.lower <- tp.cut.upper <- tp.this.trans <- tp.previous.trans <- NULL
 
   dt.cuts <- copy(dt.tp.first.last)
-  dt.cuts[, tp.cut.lower := get(name.lower) + clv.time.epsilon(clv.time)]
+  dt.cuts[, tp.cut.lower := get(name.lower)]
+  # dt.cuts[, tp.cut.lower := get(name.lower) + clv.time.epsilon(clv.time)]
   dt.cuts[, tp.cut.upper := get(name.upper)]
   dt.cuts[get(name.lower) == get(name.upper), tp.cut.lower := get(name.lower)]
 
@@ -220,7 +247,8 @@ pnbd_dyncov_createwalks_real_trans <- function(clv.data, dt.trans, dt.tp.first.l
   setkeyv(dt.cuts.real, cols=c("Id", "Date"))
   dt.cuts.real[, tp.this.trans := Date]
   dt.cuts.real[, tp.previous.trans := shift(tp.this.trans, n=1), by="Id"]
-  dt.cuts.real[, tp.cut.lower := tp.previous.trans + clv.time.epsilon(clv.time)]
+  # dt.cuts.real[, tp.cut.lower := tp.previous.trans + clv.time.epsilon(clv.time)]
+  dt.cuts.real[, tp.cut.lower := tp.previous.trans]
   dt.cuts.real[, tp.cut.upper := tp.this.trans]
 
   # remove cut for first transaction
@@ -293,7 +321,7 @@ pnbd_dyncov_createwalks_real_life <- function(clv.data, dt.tp.first.last, dt.wal
 }
 
 pnbd_dyncov_createwalks_auxwalk <- function(dt.cov, dt.tp.first.last, names.cov, clv.time){
-  tp.estimation.end <- tp.cut.lower <- tp.last.trans <- tp.cut.upper <- tp.this.trans <- tp.previous.trans <- NULL
+  tp.estimation.end <- NULL
 
   dt.tp.first.last[, tp.estimation.end := clv.time@timepoint.estimation.end]
 

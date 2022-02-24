@@ -550,11 +550,11 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
     }
 
     if(return_intermediate_results){
-      intermediate_results(0) = Bjsum;
-      intermediate_results(1) = dT;
-      intermediate_results(2) = arma::datum::nan;
-      intermediate_results(3) = arma::datum::nan;
-      intermediate_results(4) = arma::datum::nan;
+      intermediate_results(0) = dT;
+      intermediate_results(1) = a1T;
+      intermediate_results(2) = b1T;
+      intermediate_results(3) = a1;
+      intermediate_results(4) = b1;
       intermediate_results(5) = arma::datum::nan;
       intermediate_results(6) = arma::datum::nan;
       intermediate_results(7) = arma::datum::nan;
@@ -573,28 +573,6 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
     const double aT = Bjsum + BT + (c.T_cal * AkT);
     const double bT  = DT + c.T_cal * CkT;
 
-    const double F2_1 = pnbd_dyncov_LL_i_F2_1(r, alpha_0, s, beta_0,
-                                              c.x, dT,
-                                              a1, b1,
-                                              A1T, C1T);
-    if(!arma::is_finite(F2_1)){
-      return(F2_1);
-    }
-
-    const double F2_2 = pnbd_dyncov_LL_i_F2_2(r, alpha_0, s, beta_0,
-                                              c.x,
-                                              akt, bkT,
-                                              aT, bT,
-                                              AkT, CkT);
-    if(!arma::is_finite(F2_2)){
-      return(F2_2);
-    }
-
-    const double F2_3 = pnbd_dyncov_LL_i_F2_3(r, alpha_0, s, beta_0,
-                                              c,
-                                              Bjsum, dT);
-
-
     if(return_intermediate_results){
       intermediate_results(0) = dT;
       intermediate_results(1) = a1T;
@@ -606,12 +584,35 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
       intermediate_results(6) = bkT;
       intermediate_results(7) = aT;
       intermediate_results(8) = bT;
-
-      intermediate_results(9) = F2_1;
-      intermediate_results(10) = F2_2;
-      intermediate_results(11) = F2_3;
-
+      intermediate_results(9) = arma::datum::nan;
+      intermediate_results(10) = arma::datum::nan;
+      intermediate_results(11) = arma::datum::nan;
     }
+
+    const double F2_1 = pnbd_dyncov_LL_i_F2_1(r, alpha_0, s, beta_0,
+                                              c.x, dT,
+                                              a1, b1,
+                                              A1T, C1T);
+    intermediate_results(9) = F2_1;
+    if(!arma::is_finite(F2_1)){
+      return(F2_1);
+    }
+
+    const double F2_2 = pnbd_dyncov_LL_i_F2_2(r, alpha_0, s, beta_0,
+                                              c.x,
+                                              akt, bkT,
+                                              aT, bT,
+                                              AkT, CkT);
+    intermediate_results(10) = F2_2;
+    if(!arma::is_finite(F2_2)){
+      return(F2_2);
+    }
+
+    const double F2_3 = pnbd_dyncov_LL_i_F2_3(r, alpha_0, s, beta_0,
+                                              c,
+                                              Bjsum, dT);
+    intermediate_results(11) = F2_3;
+
     return(F2_1 + F2_2 + F2_3);
   }
 }
@@ -869,45 +870,45 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
 }
 
 // [[Rcpp::export]]
-double pnbd_dyncov_LL_sum(const arma::vec& params,
-                          const arma::vec& X,
-                          const arma::vec& t_x,
-                          const arma::vec& T_cal,
-                          const arma::vec& d_omega,
+double pnbd_dyncov_LL_negsum(const arma::vec& params,
+                             const arma::vec& X,
+                             const arma::vec& t_x,
+                             const arma::vec& T_cal,
+                             const arma::vec& d_omega,
 
-                          const arma::mat& walkinfo_aux_life,
-                          const arma::mat& walkinfo_real_life,
-                          const arma::mat& walkinfo_aux_trans,
-                          const arma::mat& walkinfo_real_trans,
+                             const arma::mat& walkinfo_aux_life,
+                             const arma::mat& walkinfo_real_life,
+                             const arma::mat& walkinfo_aux_trans,
+                             const arma::mat& walkinfo_real_trans,
 
-                          const arma::vec& walkinfo_trans_real_from,
-                          const arma::vec& walkinfo_trans_real_to,
+                             const arma::vec& walkinfo_trans_real_from,
+                             const arma::vec& walkinfo_trans_real_to,
 
-                          const arma::mat& covdata_aux_life,
-                          const arma::mat& covdata_real_life,
-                          const arma::mat& covdata_aux_trans,
-                          const arma::mat& covdata_real_trans){
+                             const arma::mat& covdata_aux_life,
+                             const arma::mat& covdata_real_life,
+                             const arma::mat& covdata_aux_trans,
+                             const arma::mat& covdata_real_trans){
 
-  return(Rcpp::sum(pnbd_dyncov_LL_ind(params,
-                                      X,
-                                      t_x,
-                                      T_cal,
-                                      d_omega,
+  return(-Rcpp::sum(pnbd_dyncov_LL_ind(params,
+                                       X,
+                                       t_x,
+                                       T_cal,
+                                       d_omega,
 
-                                      walkinfo_aux_life,
-                                      walkinfo_real_life,
-                                      walkinfo_aux_trans,
-                                      walkinfo_real_trans,
+                                       walkinfo_aux_life,
+                                       walkinfo_real_life,
+                                       walkinfo_aux_trans,
+                                       walkinfo_real_trans,
 
-                                      walkinfo_trans_real_from,
-                                      walkinfo_trans_real_to,
+                                       walkinfo_trans_real_from,
+                                       walkinfo_trans_real_to,
 
-                                      covdata_aux_life,
-                                      covdata_real_life,
-                                      covdata_aux_trans,
-                                      covdata_real_trans,
+                                       covdata_aux_life,
+                                       covdata_real_life,
+                                       covdata_aux_trans,
+                                       covdata_real_trans,
 
-                                      false)));
+                                       false)));
 }
 
 // [[Rcpp::export]]
@@ -931,7 +932,7 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
                                        const arma::mat& covdata_real_trans,
 
                                        const bool return_intermediate_results=false){
-  // Do not abort in case of error
+  // Do not abort in case of error in gsl functions (hypergeoms)
   gsl_set_error_handler_off();
 
   const arma::uword num_cov_life  = covdata_aux_life.n_cols;
@@ -953,6 +954,10 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
   const arma::vec adj_covdata_real_life  = arma::exp(covdata_real_life  * params_life);
   const arma::vec adj_covdata_aux_trans  = arma::exp(covdata_aux_trans  * params_trans);
   const arma::vec adj_covdata_real_trans = arma::exp(covdata_real_trans * params_trans);
+
+
+  // Rcpp::Rcout<<"accu(exp(gamma'*X) - life)"<<arma::accu(adj_covdata_aux_life)+arma::accu(adj_covdata_real_life)<<std::endl;
+  // Rcpp::Rcout<<"accu(exp(gamma'*X) - trans)"<<arma::accu(adj_covdata_aux_trans)+arma::accu(adj_covdata_real_trans)<<std::endl;
 
 
   // Rcpp::Rcout<<"13311-1: "<<adj_covdata_aux_life(13311-1)<<"  13312-1: "<<adj_covdata_aux_life(13312-1)<<"  13313-1: "<<adj_covdata_aux_life(13313-1)<<"  13314-1: "<<adj_covdata_aux_life(13314-1)<<std::endl;

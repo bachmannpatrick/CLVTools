@@ -175,19 +175,19 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
                                      const bool return_intermediate_results);
 
 
-double pnbd_dyncov_LL_sum(const arma::vec& params,
-                          const arma::vec& X,
-                          const arma::vec& t_x,
-                          const arma::vec& T_cal,
-                          const arma::vec& d_omega,
-                          const arma::vec& walkinfo_trans_from,
-                          const arma::vec& walkinfo_trans_to,
-                          const arma::vec& walkinfo_life_from,
-                          const arma::vec& walkinfo_life_to,
-                          const arma::mat& walk_info_life,
-                          const arma::mat& walk_info_trans,
-                          const arma::mat& cov_data_life,
-                          const arma::mat& cov_data_trans);
+double pnbd_dyncov_LL_negsum(const arma::vec& params,
+                             const arma::vec& X,
+                             const arma::vec& t_x,
+                             const arma::vec& T_cal,
+                             const arma::vec& d_omega,
+                             const arma::vec& walkinfo_trans_from,
+                             const arma::vec& walkinfo_trans_to,
+                             const arma::vec& walkinfo_life_from,
+                             const arma::vec& walkinfo_life_to,
+                             const arma::mat& walk_info_life,
+                             const arma::mat& walk_info_trans,
+                             const arma::mat& cov_data_life,
+                             const arma::mat& cov_data_trans);
 
 Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
                                        const arma::vec& X,
