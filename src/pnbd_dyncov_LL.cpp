@@ -193,12 +193,31 @@ double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
   //                              &gsl_res);
 
   if(status == GSL_EMAXITER || status == GSL_EDOM){
+    // Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_alpha_ge_beta, z1, status: "<<status <<std::endl;
     // hyp.z1 := (1-z.1)^(r+x)*exp(log.C) / beta_1^(r+s+x)]
     hyp_z1 = std::pow(1.0 - z1, r + x) * std::exp(log_C) / std::pow(beta_1, r + s + x);
   }else{
     // cbs.z[, hyp.z1 := l.hyp.z1$value / (alpha_1^(r+s+x))]
     hyp_z1 = gsl_res.val / std::pow(alpha_1, r + s + x);
   }
+
+  // Questions for JEFF:
+  //
+  // Stable:
+  //  is /pow(beta_1, r+s+x): beta_1 oder alpha_1? Because alpha_1 in non-stable version but then changes
+  //  is /pow(., r+s+x) = pow(., a) or fix pow(., r+s+x)
+  //  can hyp_z all positive terms such that can do exp(log(hyp_z))?
+  //
+  // Potential speed ups:
+  //    do not return Rcpp data types, only arma (pass intermediate results to given mat)
+  //    sum(LL) as running sum, avoiding allocating result vector
+  //    store walks only as pointers: especially vector<walks*>, avoid allocation of empty walks
+  //    use more light-weight structure than vector<> in customer
+  //    do not copy x, tx, Tcal into customers but point to arma::vec elements (is possible?)
+  //    walks view on memory not allocating fresh memory (bench vs explicit allocation)
+  //    write large matrix exp(X*gamma) to pre-allocated memory shared in-between calls to LL
+  //    retain all structures and their view on memory in-between calls to LL
+  //    parallelize across customers with openmp
 
 
   // Z2
@@ -216,6 +235,7 @@ double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
   //                              &gsl_res);
   if(status == GSL_EMAXITER || status == GSL_EDOM){
     // hyp.z2 := (1-z.2)^(r+x)*exp(log.C) / beta_2^(r+s+x)]
+    // Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_alpha_ge_beta, z2, status: "<<status <<std::endl;
     hyp_z2 = std::pow(1.0 - z2, r + x) * std::exp(log_C) / std::pow(beta_2, r + s + x);
   }else{
     // cbs.z[, hyp.z2 := l.hyp.z2$value / (alpha_2^(r+s+x))]
@@ -237,8 +257,8 @@ double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
 
   // cbs.z[,z.1 := (beta_1-alpha_1)/beta_1]
   // cbs.z[,z.2 := (beta_2-alpha_2)/beta_2]
-  const double z1 = 1.0 - (beta_1/alpha_1);
-  const double z2 = 1.0 - (beta_2/alpha_2);
+  const double z1 = 1.0 - (alpha_1/beta_1);
+  const double z2 = 1.0 - (alpha_2/beta_2);
 
   // c + <b-1> -a -b
   // cbs.z[,log.C :=  lgamma(r+s+x+1) + lgamma(r+x-1) - lgamma(r+s+x) - lgamma(r+x) ]
@@ -266,6 +286,7 @@ double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
     //                                  r + s + x + 1.0,
     //                                  z1, &gsl_res);
     if(status == GSL_EMAXITER || status == GSL_EDOM){
+      // Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_beta_g_alpha, z1, status: "<<status <<std::endl;
       // hyp.z1 := (1-z.1)^(s+1)*exp(log.C) / (alpha_1)^(r+s+x)]
       hyp_z1 = std::pow(1.0 - z1, s + 1.0) * std::exp(log_C) / std::pow(alpha_1, r + s + x);
     }else{
@@ -287,6 +308,7 @@ double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
     //                              z2, &gsl_res);
 
     if(status == GSL_EMAXITER || status == GSL_EDOM){
+      // Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_beta_g_alpha, z2, status: "<<status <<std::endl;
       // hyp.z2 := (1-z.2)^(s+1)*exp(log.C) / (alpha_2)^(r+s+x)]
       hyp_z2 = std::pow(1.0 - z2, s + 1.0) * std::exp(log_C) / std::pow(alpha_2, r + s + x);
     }else{
@@ -546,6 +568,7 @@ double pnbd_dyncov_LL_i_F2_3(const double r, const double alpha_0, const double 
                        alpha_1, beta_1,
                        alpha_2, beta_2);
     }
+
     // abort immediately, do not waste more loops
     if(!arma::is_finite(F2_3)){
       // Rcpp::Rcout<<"alpha_1: "<<alpha_1<<"  alpha_2:"<<alpha_2<<"  beta_1:"<<beta_1<<"  beta_2:"<<beta_2<<std::endl;
@@ -942,7 +965,7 @@ double pnbd_dyncov_LL_negsum(const arma::vec& params,
                              const arma::mat& covdata_aux_trans,
                              const arma::mat& covdata_real_trans){
 
-  double res = -Rcpp::sum(pnbd_dyncov_LL_ind(params,
+  return(-Rcpp::sum(pnbd_dyncov_LL_ind(params,
                                        X,
                                        t_x,
                                        T_cal,
@@ -961,9 +984,7 @@ double pnbd_dyncov_LL_negsum(const arma::vec& params,
                                        covdata_aux_trans,
                                        covdata_real_trans,
 
-                                       false));
-  // Rcpp::Rcout<<"LLsum: "<<res<<std::endl;
-  return(res);
+                                       false)));
 }
 
 // [[Rcpp::export]]
@@ -989,7 +1010,6 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
                                        const bool return_intermediate_results=false){
   // Do not abort in case of error in gsl functions (hypergeoms)
   gsl_set_error_handler_off();
-  // Rcpp::Rcout<<params.t()<<std::endl;
 
   const arma::uword num_cov_life  = covdata_aux_life.n_cols;
   const arma::uword num_cov_trans = covdata_aux_trans.n_cols;
