@@ -1,5 +1,5 @@
 fct.testthat.runability.clvfittedspending <- function(name.model, method,
-                                                      data.cdnow, data.apparelTrans, data.apparelStaticCov,
+                                                      data.cdnow, data.apparelTrans, data.apparelStaticCov, data.apparelDynCov,
                                                       start.params.model,
                                                       failed.optimization.methods.expected.message){
 
@@ -61,7 +61,7 @@ fct.testthat.runability.clvfittedspending <- function(name.model, method,
                                                              l.args.test.all.s3 = l.args.test.all.s3.cov)
 
   # And dyncov data as well (has holdout, but can use eith way)
-  fitted.dyncov    <- fct.helper.dyncov.load.fitted()
+  fitted.dyncov    <- fct.helper.dyncov.quickfit.apparel.data(data.apparelTrans=data.apparelTrans, data.apparelDynCov=data.apparelDynCov)
   clv.data.dyn.cov <- fitted.dyncov@clv.data
 
   l.args.test.all.s3.dyncov <- list(full.names = param.names, clv.newdata.nohold = clv.data.dyn.cov,

@@ -1,50 +1,48 @@
 # Load Data ------------------------------------------------------------------------------------------------------------------
 data("apparelTrans")
 data("apparelDynCov")
-apparelDynCov <- apparelDynCov[Cov.Date > "2005-01-01" ] #otherwise "cutoff" message
 
-
-# DO NOT RUN ANYTHING DYNCOV ON CRAN
 skip_on_cran()
 
 
 # Basic runability ---------------------------------------------------------------------------------
 context("Runability - PNBD dynamiccov - Basic runability")
 
-# Take a sample of customers only
-mini.apparelTrans <- apparelTrans[Id %in% unique(apparelTrans$Id)[1:100]]
-mini.apparelDynCov <- apparelDynCov[Id %in% mini.apparelTrans$Id]
+# # Take a sample of customers only
+# apparelDynCov <- apparelDynCov[Cov.Date > "2005-01-01" ] #otherwise "cutoff" message
+# mini.apparelTrans <- apparelTrans[Id %in% unique(apparelTrans$Id)[1:100]]
+# mini.apparelDynCov <- apparelDynCov[Id %in% mini.apparelTrans$Id]
+#
+# expect_silent(clv.data.trans <- clvdata(data.transactions = mini.apparelTrans, date.format = "ymd",
+#                                         time.unit = "W", estimation.split = 40))
+#
+# expect_silent(clv.data.mini.dyncov <-
+#                 SetDynamicCovariates(clv.data = clv.data.trans,
+#                                      data.cov.life = mini.apparelDynCov,
+#                                      data.cov.trans = mini.apparelDynCov,
+#                                      names.cov.life = "Gender",
+#                                      names.cov.trans = "Gender",
+#                                      name.date = "Cov.Date"))
+#
+#
+# # Can fit dyncov pnbd. Do outside so only have to fit once but use for all tests
+# #   high tolerance to converge quickly
+# #   no hessian to avoid additional evaluations after convergence
+# expect_warning(fitted.dyncov <- pnbd(clv.data.mini.dyncov,
+#                                      start.params.model = c(r=0.4011475, alpha=22.7155565,
+#                                                             s=0.2630372, beta=19.1752426),
+#                                      start.params.life = c(Gender=0.9304636),
+#                                      start.params.trans = c(Gender=1.0934721),
+#                                      optimx.args = list(method="Nelder-Mead", # NelderMead verifies nothing = faster
+#                                                         hessian=FALSE, # no hessian
+#                                                         control=list(kkt=FALSE, # kkt takes forever
+#                                                                      reltol = 1000))),
+#                # trace=6, REPORT=1))),
+#                regexp = "Hessian could not be derived.")
 
-expect_silent(clv.data.trans <- clvdata(data.transactions = mini.apparelTrans, date.format = "ymd",
-                                        time.unit = "W", estimation.split = 40))
+# **TODO: Should? Do not call usual helper for S3 checks as they take too long
 
-expect_silent(clv.data.mini.dyncov <-
-                SetDynamicCovariates(clv.data = clv.data.trans,
-                                     data.cov.life = mini.apparelDynCov,
-                                     data.cov.trans = mini.apparelDynCov,
-                                     names.cov.life = "Gender",
-                                     names.cov.trans = "Gender",
-                                     name.date = "Cov.Date"))
-
-
-# Can fit dyncov pnbd. Do outside so only have to fit once but use for all tests
-#   high tolerance to converge quickly
-#   no hessian to avoid additional evaluations after convergence
-expect_warning(fitted.dyncov <- pnbd(clv.data.mini.dyncov,
-                                     start.params.model = c(r=0.4011475, alpha=22.7155565,
-                                                            s=0.2630372, beta=19.1752426),
-                                     start.params.life = c(Gender=0.9304636),
-                                     start.params.trans = c(Gender=1.0934721),
-                                     optimx.args = list(method="Nelder-Mead", # NelderMead verifies nothing = faster
-                                                        hessian=FALSE, # no hessian
-                                                        control=list(kkt=FALSE, # kkt takes forever
-                                                                     reltol = 1000))),
-               # trace=6, REPORT=1))),
-               regexp = "Hessian could not be derived.")
-
-# Do not call usual helper for S3 checks as they take too long
-
-# **TODO: Or do load an already fitted object at this point for verification??
+fitted.dyncov <- fct.helper.dyncov.quickfit.apparel.data(data.apparelTrans = apparelTrans, data.apparelDynCov = apparelDynCov)
 
 # Cheat and set a fake hessian as it was not estimated during optimization for speed reasons
 # Hessian from static cov pnbd
@@ -127,6 +125,7 @@ fct.testthat.runability.dynamiccov.plot.longer.with.newdata(clv.fitted = fitted.
 context("Runability - PNBD dynamiccov - Overlong data")
 
 # Cannot do without holdout because takes too long to estimate
+# **TOOD: Why pass method?
 fct.testthat.runability.dynamiccov.can.predict.plot.beyond.holdout(method = pnbd,
                                                                    clv.data.trans = clv.data.trans,
                                                                    mini.apparelDynCov.long = mini.apparelDynCov.long,

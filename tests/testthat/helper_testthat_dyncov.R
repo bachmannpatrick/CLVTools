@@ -25,10 +25,10 @@ fct.helper.create.clvdata.apparel.dyncov <- function(data.apparelTrans,  data.ap
   return(clv.dyn)
 }
 
-fct.helper.dyncov.load.fitted <- function(){
-  # Created using fct.helper.dyncov.quickfit.apparel.data
-  return(readRDS(file = "fitted_dyncov.rds"))
-}
+# fct.helper.dyncov.load.fitted <- function(){
+#   # Created using fct.helper.dyncov.quickfit.apparel.data
+#   return(readRDS(file = "fitted_dyncov.rds"))
+# }
 
 fct.helper.dyncov.LLdata.from.clvdata <- function(clv.data, params){
   return(pnbd_dyncov_getLLdata(clv.fitted=fct.helper.dyncov.quickfit(clv.data), params=params))
@@ -37,17 +37,13 @@ fct.helper.dyncov.LLdata.from.clvdata <- function(clv.data, params){
 fct.testthat.correctness.dyncov.expectation <- function(data.apparelTrans, data.apparelDynCov){
   skip_on_cran()
 
-  p.dyn <- fct.helper.dyncov.load.fitted()
-
   # For customer 1041, set all dyncov data to 0
   data.apparelDynCov <- copy(data.apparelDynCov)
   data.apparelDynCov[Id == "1041", Marketing := 0]
   data.apparelDynCov[Id == "1041", Gender    := 0]
   data.apparelDynCov[Id == "1041", Channel   := 0]
 
-  p.dyn@clv.data@data.cov.life  <- copy(data.apparelDynCov)
-  p.dyn@clv.data@data.cov.trans <- copy(data.apparelDynCov)
-  # p.dyn <- fct.helper.dyncov.quickfit.apparel.data(data.apparelTrans = data.apparelTrans, data.apparelDynCov = data.apparelDynCov)
+  p.dyn <- fct.helper.dyncov.quickfit.apparel.data(data.apparelTrans = data.apparelTrans, data.apparelDynCov = data.apparelDynCov)
 
 
   # Same params for life and trans to check Bbar_i = Dbar_i
@@ -144,14 +140,14 @@ fct.testthat.correctness.dyncov.LL <- function(data.apparelTrans, data.apparelDy
     # DkT = CkT * c.T_cal + DT
     # bkT = DT + CkT * (c.t_x + dT + n_walks - 2.0);
     # DkT is correct =>  DT and CkT are correct -> only dT could be wrong
-    # expect_true(dt.LLdata[, isTRUE(all.equal(bkT, C*T.cal))]) # *** TODO: DYNCOV LL wrong for bkT. likely dT
+    expect_true(dt.LLdata[!is.na(bkT), isTRUE(all.equal(bkT, C*T.cal))]) # *** TODO: DYNCOV LL wrong for bkT. likely dT
     expect_true(dt.LLdata[, isTRUE(all.equal(DkT, C*T.cal))])
   }
 
   test_that("Dyncov LL yields correct intemdiate results",{
     skip_on_cran()
 
-    p.dyn <- fct.helper.dyncov.load.fitted()
+    p.dyn <- fct.helper.dyncov.quickfit.apparel.data(data.apparelTrans = apparelTrans, data.apparelDynCov = apparelDynCov)
     params.model <- c(log.r=-1, log.alpha=0, log.s=1.23, log.beta = 2.344)
 
     # Gamma=0 ------------------------------------------------------------------------------------------------
@@ -183,16 +179,16 @@ fct.testthat.correctness.dyncov.LL <- function(data.apparelTrans, data.apparelDy
     params.static.cov <- c(params.model,
                            life.Marketing  = 0.123, life.Gender  = 0.678, life.Channel = 1.234,
                            trans.Marketing = 0.111, trans.Gender = 2.222, trans.Channel= 1.756)
-    dt.LLdata.static.cov <- pnbd_dyncov_getLLdata(p.dyn, params=params.static.cov)
+    dt.LLdata.static.cov <- pnbd_dyncov_getLLdata(p.dyn.static, params=params.static.cov)
 
     dt.A <- p.dyn.static@data.walks.trans.aux[, .(A=head(exp(0.111*Marketing+2.222*Gender+1.756*Channel), 1)), keyby="Id"]
     dt.C <- p.dyn.static@data.walks.life.aux[,  .(C=head(exp(0.123*Marketing+0.678*Gender+1.234*Channel), 1)), keyby="Id"]
     fct.verify.LL.intermediate.results(dt.LLdata = dt.LLdata.static.cov, dt.A = dt.A, dt.C = dt.C, dt.cbs=p.dyn@cbs)
 
     # Same LL values as staticcov
-    m.cov <- data.matrix(apparelDynCov.static[, head(.SD, 1), keyby="Id"][, c("Channel", "Gender", "Marketing")])
+    m.cov <- data.matrix(apparelDynCov.static[, head(.SD, 1), keyby="Id"][, c("Marketing", "Gender", "Channel")])
     expect_equal(dt.LLdata.static.cov$LL, drop(pnbd_staticcov_LL_ind(vParams = params.static.cov,
-                                                                  vX = p.dyn@cbs$x, vT_x = p.dyn@cbs$t.x, vT_cal = p.dyn@cbs$T.cal,
+                                                                  vX = p.dyn.static@cbs$x, vT_x = p.dyn.static@cbs$t.x, vT_cal = p.dyn.static@cbs$T.cal,
                                                                   mCov_life = m.cov, mCov_trans = m.cov)))
   })
 
@@ -235,7 +231,7 @@ fct.testthat.correctness.dyncov.CET <- function(data.apparelTrans, data.apparelD
   data.apparelDynCov[, Gender    := sample(x = c(0, 1), size = 1), by="Id"]
   data.apparelDynCov[, Channel   := sample(x = c(0, 1), size = 1), by="Id"]
 
-  p.dyn <- fct.helper.dyncov.load.fitted()
+  p.dyn <- fct.helper.dyncov.quickfit.apparel.data(data.apparelTrans = data.apparelTrans, data.apparelDynCov = data.apparelDynCov)
   p.dyn@clv.data@data.cov.life  <- copy(data.apparelDynCov)
   p.dyn@clv.data@data.cov.trans <- copy(data.apparelDynCov)
   p.dyn@prediction.params.life  <- c(Marketing = 1.23, Gender = 0.678, Channel = 2.34)
