@@ -1,7 +1,7 @@
 fct.testthat.runability.clvfittedtransactions.predict <- function(fitted.transactions, clv.newdata.nohold, clv.newdata.withhold){
 
 
-  # Only for models which were fit with heldout data
+  # Only for models which were fit with holdout data
   if(clv.data.has.holdout(fitted.transactions@clv.data)){
     test_that("Works without parameters (has holdout)", {
       expect_silent(predict(fitted.transactions, verbose=FALSE))

@@ -231,7 +231,8 @@ fct.helper.has.DERT <- function(clv.fitted.transactions){
   })
 }
 
-.fct.helper.clvfitted.all.s3 <- function(clv.fitted, full.names){
+.fct.helper.clvfitted.all.s3.except.plot.and.predict <- function(clv.fitted, full.names){
+
   .fct.helper.s3.fitted.coef(clv.fitted = clv.fitted, full.names = full.names)
 
   .fct.helper.s3.fitted.vcov(clv.fitted = clv.fitted, full.names = full.names)
@@ -251,7 +252,7 @@ fct.helper.has.DERT <- function(clv.fitted.transactions){
 fct.helper.clvfittedtransactions.all.s3 <- function(clv.fitted, full.names,
                                                     clv.newdata.nohold, clv.newdata.withhold){
 
-  .fct.helper.clvfitted.all.s3(clv.fitted = clv.fitted, full.names = full.names)
+  .fct.helper.clvfitted.all.s3.except.plot.and.predict(clv.fitted = clv.fitted, full.names = full.names)
 
   fct.testthat.runability.clvfittedtransactions.plot(clv.fitted = clv.fitted, clv.newdata.nohold=clv.newdata.nohold,
                                                      clv.newdata.withhold=clv.newdata.withhold)
@@ -268,7 +269,7 @@ fct.helper.clvfittedtransactions.all.s3 <- function(clv.fitted, full.names,
 fct.helper.clvfittedspending.all.s3 <- function(clv.fitted, full.names,
                                                 clv.newdata.nohold, clv.newdata.withhold){
 
-  .fct.helper.clvfitted.all.s3(clv.fitted = clv.fitted, full.names = full.names)
+  .fct.helper.clvfitted.all.s3.except.plot.and.predict(clv.fitted = clv.fitted, full.names = full.names)
 
   fct.testthat.runability.clvfittedspending.plot(fitted.spending = clv.fitted)
 

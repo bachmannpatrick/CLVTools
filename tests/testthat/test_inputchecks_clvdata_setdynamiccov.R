@@ -85,7 +85,7 @@ test_that("Fails if missing/NULL/NA", {
                regexp = "type data.frame or data.table")
 })
 
-test_that("Fails if not dataframe/datetable", {
+test_that("Fails if not data.frame/data.table", {
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                    data.cov.life  = as.list(apparelDynCov), names.cov.life = c("Marketing", "Gender", "Channel"),
                                    data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),

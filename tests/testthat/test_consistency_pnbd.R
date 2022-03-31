@@ -11,8 +11,8 @@ fct.testthat.consistency(name.model = "PNBD", method = pnbd,
                          fct.LL.ind.nocov = pnbd_nocov_LL_ind, fct.LL.ind.static.cov = pnbd_staticcov_LL_ind)
 
 # nocov vs dyncov --------------------------------------------------------------------------------------
-#   same fit with all covs=0 - cannot do because fitting dyncov takes too long
 #   same predict with gamma=0
+
 
 expect_silent(clv.apparel <- clvdata(data.transactions = apparelTrans, date.format = "ymd",
                                      time.unit = "w",estimation.split = 38))
@@ -23,7 +23,7 @@ expect_silent(p.nocov     <- pnbd(clv.apparel, verbose = FALSE))
 # Fake the parameters to be exactly the same and 0 for covariates
 #   Replace model coefs with that from nocov
 fct.helper.dyncov.g0.with.predition.params.model <- function(p.dyncov, prediction.params.model){
-  # fct.helper.dyncov.load.fitted()#
+
   expect_silent(p.dyncov@prediction.params.model[c("r", "alpha", "s", "beta")] <- prediction.params.model[c("r", "alpha", "s", "beta")])
 
   expect_silent(p.dyncov@prediction.params.life[] <- 0)
@@ -39,6 +39,7 @@ fct.helper.dyncov.g0.with.predition.params.model <- function(p.dyncov, predictio
 
 p.dyncov.g0 <- fct.helper.dyncov.quickfit.apparel.data(data.apparelTrans = apparelTrans, data.apparelDynCov = apparelDynCov)
 p.dyncov.g0 <- fct.helper.dyncov.g0.with.predition.params.model(p.dyncov = p.dyncov.g0, prediction.params.model = p.nocov@prediction.params.model[c("r", "alpha", "s", "beta")])
+
 
 # . Dyncov: Compare nocov vs dyncov LL, prediction & plot -------------------------------------------------------
 fct.testthat.consistency.cov.params.0.predict.same(fitted.nocov = p.nocov,
