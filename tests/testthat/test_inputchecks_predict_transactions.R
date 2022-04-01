@@ -86,7 +86,7 @@ fct.testthat.inputchecks.clvfittedtransactions.predict.predict.spending.has.NA <
   test_that("Predict spending fails if prediction.end has NA coefs", {
     skip_on_cran()
     # fit spending model
-    expect_silent(fitted.spending <- gg(clvdata(data.cdnow, "ymd", "w"), verbose=FALSE))
+    expect_silent(fitted.spending <- gg(fct.helper.create.clvdata.cdnow(data.cdnow), verbose=FALSE))
     # set 1 coef to NA
     coef(fitted.spending@optimx.estimation.output)[1] <- NA_real_
     expect_error(predict(clv.fitted.transactions, predict.spending = fitted.spending, prediction.end = 6), regexp = "contain NA")

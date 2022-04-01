@@ -211,16 +211,10 @@ fct.testthat.inputchecks.staticcov... <- function(method, l.std.args){
 
 fct.testthat.inputchecks.staticcov <- function(name.method, method, start.params.model, has.cor, data.apparelTrans, data.apparelStaticCov){
 
-  expect_silent(clv.data.apparel.no.holdout   <- clvdata(data.apparelTrans, date.format = "ymd", time.unit = "w"))
-  expect_silent(clv.data.apparel.with.holdout <- clvdata(data.apparelTrans, date.format = "ymd", time.unit = "w"))
-
-  expect_silent(clv.data.apparel.no.holdout <- SetStaticCovariates(clv.data = clv.data.apparel.no.holdout,
-                                                                   data.cov.life = data.apparelStaticCov, names.cov.life = "Gender",
-                                                                   data.cov.trans = data.apparelStaticCov, names.cov.trans = "Gender"))
-  expect_silent(clv.data.apparel.with.holdout <- SetStaticCovariates(clv.data = clv.data.apparel.with.holdout,
-                                                                     data.cov.life = data.apparelStaticCov, names.cov.life = "Gender",
-                                                                     data.cov.trans = data.apparelStaticCov, names.cov.trans = "Gender"))
-  l.std.args.noholdout   <- list(clv.data=clv.data.apparel.no.holdout)
+  l.std.args.noholdout   <- list(clv.data=fct.helper.create.clvdata.apparel.staticcov(estimation.split=NULL, data.apparelTrans=data.apparelTrans, data.apparelStaticCov=data.apparelStaticCov,
+                                                                                      names.cov.life="Gender", names.cov.trans="Gender"))
+  clv.data.apparel.with.holdout <- fct.helper.create.clvdata.apparel.staticcov(estimation.split=38, data.apparelTrans=data.apparelTrans, data.apparelStaticCov=data.apparelStaticCov,
+                                                                               names.cov.life="Gender", names.cov.trans="Gender")
   l.std.args.withholdout <- list(clv.data=clv.data.apparel.with.holdout)
 
 

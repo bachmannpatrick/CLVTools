@@ -6,9 +6,10 @@ fct.testthat.runability.clvfittedspending <- function(name.model, method,
   context(paste0("Runability - ",name.model," - Basic runability"))
 
   # Data objects: normal data
-  expect_silent(clv.data.cdnow.noholdout   <- clvdata( data.cdnow, date.format = "ymd", time.unit = "W"))
-  expect_silent(clv.data.cdnow.withholdout <- clvdata(data.cdnow, date.format = "ymd", time.unit = "W",
-                                                      estimation.split = 37))
+
+
+  clv.data.cdnow.noholdout   <- fct.helper.create.clvdata.cdnow(data.cdnow, estimation.split=NULL)
+  clv.data.cdnow.withholdout <- fct.helper.create.clvdata.cdnow(data.cdnow, estimation.split=37)
 
   clv.newdata.nohold   <- fct.helper.create.fake.newdata.nocov(data = data.cdnow, estimation.split = NULL)
   clv.newdata.withhold <- fct.helper.create.fake.newdata.nocov(data = data.cdnow, estimation.split = 37)

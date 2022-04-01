@@ -46,18 +46,16 @@ fct.testthat.correctness.clvfittedtransactions.nocov.newdata.fitting.sample.pred
   })
 }
 
-fct.testthat.correctness.clvfittedtransactions.staticcov.covariate.row.sorting <- function(method, clv.apparel, apparelStaticCov, m.fitted.static){
+fct.testthat.correctness.clvfittedtransactions.staticcov.covariate.row.sorting <- function(method, data.apparelTrans, data.apparelStaticCov, m.fitted.static){
   test_that("Same result for differently sorted covariate data (row)", {
     skip_on_cran()
 
-    # shuffle
-    expect_silent(apparelStaticCov.shuffle <- apparelStaticCov[sample.int(n = nrow(apparelStaticCov), replace = FALSE), ])
-    expect_silent(clv.apparel.shuffle <- SetStaticCovariates(clv.apparel,
-                                                             names.cov.life = c("Gender", "Channel"), names.cov.trans = c("Gender", "Channel"),
-                                                             data.cov.life = apparelStaticCov.shuffle, data.cov.trans = apparelStaticCov.shuffle))
+    # shuffled
+    clv.apparel.shuffle <- fct.helper.create.clvdata.apparel.staticcov(estimation.split=m.fitted.static@clv.data@clv.time@timepoint.estimation.end,
+                                                                       data.apparelTrans=data.apparelTrans,
+                                                                       data.apparelStaticCov=apparelStaticCov[sample.int(n = nrow(apparelStaticCov), replace = FALSE),])
 
-    l.args <- list(clv.data=clv.apparel.shuffle, verbose=FALSE)
-    expect_silent(m.static.shuffle <- do.call(what = method, args = l.args))
+    expect_silent(m.static.shuffle <- do.call(what = method, args = list(clv.data=clv.apparel.shuffle, verbose=FALSE)))
 
 
     # All should be exactly the same, except the call and optimx time
@@ -72,17 +70,14 @@ fct.testthat.correctness.clvfittedtransactions.staticcov.covariate.row.sorting <
   })
 }
 
-fct.testthat.correctness.clvfittedtransactions.staticcov.covariate.column.sorting <- function(method, clv.apparel, apparelStaticCov, m.fitted.static){
+fct.testthat.correctness.clvfittedtransactions.staticcov.covariate.column.sorting <- function(method, data.apparelTrans, data.apparelStaticCov, m.fitted.static){
   test_that("Same result for differently sorted covariate data (columns)", {
     skip_on_cran()
 
     # Sort columns the opposite way
-    expect_silent(apparelStaticCov.reverse <- apparelStaticCov[, .SD, .SDcols = rev(colnames(apparelStaticCov))])
-    names.cov <- colnames(apparelStaticCov) # keep in same order as data (ie reversed)
-    names.cov <- names.cov[names.cov != "Id"]
-    expect_silent(clv.apparel.reverse <- SetStaticCovariates(clv.apparel,
-                                                             names.cov.life = names.cov, names.cov.trans = names.cov,
-                                                             data.cov.life = apparelStaticCov.reverse, data.cov.trans = apparelStaticCov.reverse))
+    clv.apparel.reverse <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans=data.apparelTrans,
+                                                                       data.apparelStaticCov=data.apparelStaticCov[, .SD, .SDcols = rev(colnames(data.apparelStaticCov))],
+                                                                       estimation.split=m.fitted.static@clv.data@clv.time@timepoint.estimation.end)
 
     l.args <- list(clv.data=clv.apparel.reverse, verbose=FALSE)
     expect_silent(m.static.reverse <- do.call(what = method, args = l.args))
@@ -179,18 +174,15 @@ fct.testthat.correctness.clvfittedtransactions.pmf.smaller.p.the.larger.Tcal.for
 }
 
 
-fct.testthat.correctness.clvfittedtransactions.staticcov.fitting.sample.predicting.full.data.equal <- function(method, apparelTrans, apparelStaticCov, clv.apparel.staticcov){
+fct.testthat.correctness.clvfittedtransactions.staticcov.fitting.sample.predicting.full.data.equal <- function(method, data.apparelTrans, data.apparelStaticCov, clv.apparel.staticcov){
   test_that("Fitting with sample but predicting full data yields same results as predicting sample only", {
     skip_on_cran()
 
     # Sample only
-    apparel.id.sample    <- unique(apparelTrans$Id)[1:100]
-    apparelTrans.sample  <- apparelTrans[Id %in% apparel.id.sample]
-    expect_silent(clv.apparel.sample <- clvdata(data.transactions = apparelTrans.sample, date.format = "ymd",
-                                                time.unit = "w", estimation.split = clv.apparel.staticcov@clv.time@timepoint.estimation.end))
-    clv.apparel.static.sample <- SetStaticCovariates(clv.apparel.sample,
-                                                     data.cov.life = apparelStaticCov[Id %in% apparel.id.sample], data.cov.trans = apparelStaticCov[Id%in%apparel.id.sample],
-                                                     names.cov.life = c("Gender", "Channel"), names.cov.trans = c("Gender", "Channel"))
+    id.sample <- unique(apparelTrans$Id)[1:100]
+    clv.apparel.static.sample <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans[Id %in% id.sample],
+                                                                             data.apparelStaticCov = data.apparelStaticCov[Id %in% id.sample],
+                                                                             estimation.split = clv.apparel.staticcov@clv.time@timepoint.estimation.end)
 
     # Fit on sample only
     l.args <- list(clv.data = clv.apparel.static.sample, verbose = FALSE)
@@ -264,10 +256,14 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method, d
 
 
   context(paste0("Correctness - ",name.model," static cov - Data sorting"))
-  fct.testthat.correctness.clvfittedtransactions.staticcov.covariate.row.sorting(method = method, clv.apparel = clv.apparel.nocov,
-                                                                                 apparelStaticCov = data.apparelStaticCov, m.fitted.static = obj.fitted.static)
-  fct.testthat.correctness.clvfittedtransactions.staticcov.covariate.column.sorting(method = method, clv.apparel = clv.apparel.nocov,
-                                                                                    apparelStaticCov = data.apparelStaticCov, m.fitted.static = obj.fitted.static)
+  fct.testthat.correctness.clvfittedtransactions.staticcov.covariate.row.sorting(method = method,
+                                                                                 data.apparelTrans=data.apparelTrans,
+                                                                                 data.apparelStaticCov=data.apparelStaticCov,
+                                                                                 m.fitted.static = obj.fitted.static)
+  fct.testthat.correctness.clvfittedtransactions.staticcov.covariate.column.sorting(method = method,
+                                                                                    data.apparelTrans=data.apparelTrans,
+                                                                                    data.apparelStaticCov=data.apparelStaticCov,
+                                                                                    m.fitted.static = obj.fitted.static)
 
 
   context(paste0("Correctness - ",name.model," static cov - Example data"))
@@ -277,9 +273,9 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method, d
 
   context(paste0("Correctness - ",name.model," static cov - predict"))
   fct.testthat.correctness.clvfittedtransactions.CET.0.for.no.prediction.period(clv.fitted = obj.fitted.static)
-  fct.testthat.correctness.clvfittedtransactions.staticcov.fitting.sample.predicting.full.data.equal(method = method, apparelTrans = data.apparelTrans,
-                                                                                                     clv.apparel.staticcov = clv.apparel.staticcov,
-                                                                                                     apparelStaticCov = data.apparelStaticCov)
+  fct.testthat.correctness.clvfittedtransactions.staticcov.fitting.sample.predicting.full.data.equal(method = method, data.apparelTrans = data.apparelTrans,
+                                                                                                     data.apparelStaticCov = data.apparelStaticCov,
+                                                                                                     clv.apparel.staticcov = clv.apparel.staticcov)
   fct.testhat.correctness.clvfittedtransactions.same.spending.as.independent.spending.model(method = method, clv.data = clv.apparel.staticcov)
 
 

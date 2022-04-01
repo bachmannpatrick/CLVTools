@@ -7,7 +7,6 @@ data("apparelDynCov")
 
 fct.testthat.consistency(name.model = "PNBD", method = pnbd,
                          data.apparelTrans = apparelTrans, data.apparelStaticCov=apparelStaticCov,
-                         param.names = c("r", "alpha", "beta", "s"),
                          fct.LL.ind.nocov = pnbd_nocov_LL_ind, fct.LL.ind.static.cov = pnbd_staticcov_LL_ind)
 
 # nocov vs dyncov --------------------------------------------------------------------------------------

@@ -15,6 +15,17 @@ fct.helper.has.DERT <- function(clv.fitted.transactions){
   }
 }
 
+# has.cor NEVER HAS FITTED MODEL :(
+# fct.helper.has.cor <- function(clv.fitted.transactions){
+#   # pnbd nocov and staticcov have, all other do not
+#   if((is(clv.fitted.transactions, "clv.pnbd") | is(clv.fitted.transactions, "clv.pnbd.static.cov"))
+#      & !is(clv.fitted.transactions, "clv.pnbd.dynamic.cov")){
+#     return(TRUE)
+#   }else{
+#     return(FALSE)
+#   }
+# }
+
 .fct.helper.s3.fitted.coef <- function(clv.fitted, full.names){
 
   expect_silent(res.coef <- coef(clv.fitted))
