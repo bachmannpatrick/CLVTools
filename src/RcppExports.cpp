@@ -840,27 +840,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// start_profiler
-SEXP start_profiler(SEXP str);
-RcppExport SEXP _CLVTools_start_profiler(SEXP strSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type str(strSEXP);
-    rcpp_result_gen = Rcpp::wrap(start_profiler(str));
-    return rcpp_result_gen;
-END_RCPP
-}
-// stop_profiler
-SEXP stop_profiler();
-RcppExport SEXP _CLVTools_stop_profiler() {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(stop_profiler());
-    return rcpp_result_gen;
-END_RCPP
-}
 
 RcppExport SEXP run_testthat_tests(SEXP);
 
@@ -914,8 +893,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CLVTools_pnbd_dyncov_LL_negsum", (DL_FUNC) &_CLVTools_pnbd_dyncov_LL_negsum, 15},
     {"_CLVTools_pnbd_dyncov_LL_ind", (DL_FUNC) &_CLVTools_pnbd_dyncov_LL_ind, 16},
     {"_CLVTools_LL_i_single_walk", (DL_FUNC) &_CLVTools_LL_i_single_walk, 22},
-    {"_CLVTools_start_profiler", (DL_FUNC) &_CLVTools_start_profiler, 1},
-    {"_CLVTools_stop_profiler", (DL_FUNC) &_CLVTools_stop_profiler, 0},
     {"run_testthat_tests", (DL_FUNC) &run_testthat_tests, 1},
     {NULL, NULL, 0}
 };

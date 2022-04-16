@@ -546,11 +546,3 @@ LL_i_single_walk <- function(r, alpha_0, s, beta_0, x, t_x, T_cal, d_omega, num_
     .Call(`_CLVTools_LL_i_single_walk`, r, alpha_0, s, beta_0, x, t_x, T_cal, d_omega, num_walks, B1, BT, DT, D1, F2_3, params_life, params_trans, cov_data_life, cov_data_trans, walkinfo_aux_life, walkinfo_real_life, walkinfo_aux_trans, walkinfo_real_trans)
 }
 
-start_profiler <- function(str) {
-    .Call(`_CLVTools_start_profiler`, str)
-}
-
-stop_profiler <- function() {
-    .Call(`_CLVTools_stop_profiler`)
-}
-
