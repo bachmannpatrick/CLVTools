@@ -1,6 +1,62 @@
+pnbd_dyncov_assert_walk_assumptions <- function(clv.fitted){
+  # all aux walks:
+  #   every Id only once
+  #   every Id in walks
+  #   same length per customer
+  stopifnot(clv.fitted@data.walks.life.aux[, list(num_walks = uniqueN(walk_id)), by="Id"][, all(num_walks==1)])
+  stopifnot(clv.fitted@data.walks.life.aux[, uniqueN(Id)] == nobs(clv.fitted))
+  stopifnot(setequal(clv.fitted@data.walks.life.aux[, unique(Id)], clv.fitted@cbs$Id))
+
+  stopifnot(clv.fitted@data.walks.trans.aux[, list(num_walks = uniqueN(walk_id)), by="Id"][, all(num_walks==1)])
+  stopifnot(clv.fitted@data.walks.trans.aux[, uniqueN(Id)] == nobs(clv.fitted))
+  stopifnot(setequal(clv.fitted@data.walks.trans.aux[, unique(Id)], clv.fitted@cbs$Id))
+
+  stopifnot(identical(clv.fitted@data.walks.life.aux[, .N, keyby="Id"],
+                      clv.fitted@data.walks.trans.aux[, .N, keyby="Id"]))
+
+  # lifetime aux walk:
+  #   no date overlap with real lifetime walks
+  dt.tmp <- clv.fitted@data.walks.life.aux[, list(first_cov_aux = min(tp.cov.lower)), keyby="Id"]
+  dt.tmp[clv.fitted@data.walks.life.real[, list(first_cov_real = min(tp.cov.lower)) , keyby="Id"], first_cov_real := i.first_cov_real, on="Id"]
+  # some first_cov_real are NA because have no real walk
+  stopifnot(dt.tmp[first_cov_aux < first_cov_real, .N] == 0)
+
+  # lifetime real walk:
+  #   exactly 1 walk per customer
+  #   all ids except where aux walk reaches to the first transactions (coming alive)
+  #   (number of customers = num customers in trans real walks where .N>1)
+  #   n real walk + n aux walk >= ceiling(Tcal)
+  stopifnot(clv.fitted@data.walks.life.real[, list(num_walks=uniqueN(walk_id)), keyby="Id"][, all(num_walks == 1)])
+  # dt.tmp[clv.fitted@clv.data@data.transactions[, list(last_trans = max(Date)), by="Id"], last_trans := i.last_trans, on="Id"]
+  dt.tmp[clv.fitted@cbs, first_trans := i.date.first.actual.trans, on="Id"]
+  stopifnot(setequal(clv.fitted@data.walks.life.real[, unique(Id)],
+                     dt.tmp[first_cov_aux > first_trans, Id]))
+
+  # trans real walks:
+  #   every Id with x>0 is in ...
+  #            ... with x-1 walks
+  stopifnot(setequal(clv.fitted@data.walks.trans.real[, unique(Id)], clv.fitted@cbs[x>0, Id]))
+  stopifnot(identical(clv.fitted@data.walks.trans.real[, list(num_walks=as.double(uniqueN(walk_id))), keyby="Id"],
+                      clv.fitted@cbs[x>0, list(num_walks=as.double(x)), keyby="Id"]))
+
+  # trans walks
+  #   tjk >= 0 (== 0 when t.x=T)
+  stopifnot(clv.fitted@data.walks.trans.aux[tjk < 0, .N] == 0)
+  stopifnot(clv.fitted@data.walks.trans.real[tjk < 0, .N] == 0)
+
+  # d1 and d_omega measures are in (0,1]
+  stopifnot(clv.fitted@cbs[, all(d_omega > 0 & d_omega <= 1)])
+  stopifnot(clv.fitted@data.walks.trans.aux[, all(d1 > 0 & d1 <= 1)])
+  stopifnot(clv.fitted@data.walks.trans.real[, all(d1 > 0 & d1 <= 1)])
+
+}
+
+
 pnbd_dyncov_getLLcallargs <-function(clv.fitted){
   i.walk_from <- i.walk_to <- i.d <- i.tjk <- NULL
   walkinfo_trans_real_from <- walkinfo_trans_real_to <- i.id_from <- i.id_to <- NULL
+
+  pnbd_dyncov_assert_walk_assumptions(clv.fitted)
 
   pnbd_dyncov_addwalkinfo_single <- function(dt.cbs, dt.walk, name, cols.walkinfo){
     dt.walkinfo <- unique(dt.walk[, .SD, .SDcols=cols.walkinfo])
@@ -154,7 +210,7 @@ pnbd_dyncov_creatwalks_add_d1 <- function(dt.walk, clv.time){
   #   "For any two successive transactions (j − 1), j, this is the time of the
   #    transaction (j-1) to the end of the first interval"
   #
-  #    Number of periods between walk's last transaction to cov interval it is in
+  #    Number of periods between walk's last transaction and the end of the cov interval it is in
 
   dt.walk[, d1 := pnbd_dyncov_walk_d(clv.time=clv.time, tp.relevant.transaction=tp.previous.trans)]
 
