@@ -139,13 +139,12 @@ pnbd_dyncov_walk_d <- function(clv.time, tp.relevant.transaction){
   #                                                                                     timepoint=tp.trans))))
 
 
-  # Lubridate::ceiling_date() has the argument change_on_boundary since Version 1.5.6 (2016-04-06)
-  #   this should make +1 obsolete
-
+  # lubridate::ceiling_date() has the argument change_on_boundary since Version 1.5.6 (2016-04-06)
+  #   this makes +1 of previous implementations obsolete
   return(clv.time.interval.in.number.tu(clv.time=clv.time,
                                         interv = interval(start = tp.relevant.transaction,
                                                           end = clv.time.ceiling.date(clv.time=clv.time,
-                                                                                      timepoint=tp.relevant.transaction + clv.time.epsilon(clv.time) ))))
+                                                                                      timepoint=tp.relevant.transaction))))
 }
 
 pnbd_dyncov_creatwalks_add_d1 <- function(dt.walk, clv.time){

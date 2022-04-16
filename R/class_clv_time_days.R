@@ -44,7 +44,7 @@ setMethod("clv.time.floor.date",  signature = signature(clv.time="clv.time.days"
 
 #' @importFrom lubridate ceiling_date
 setMethod("clv.time.ceiling.date",  signature = signature(clv.time="clv.time.days"), function(clv.time,timepoint){
-  return(ceiling_date(x=timepoint, unit="days", change_on_boundary = FALSE))
+  return(ceiling_date(x=timepoint, unit="days", change_on_boundary = TRUE))
 })
 
 
