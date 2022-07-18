@@ -20,12 +20,12 @@ If multiple optimization methods are specified, only the result of the last meth
 \item{verbose}{Show details about the running of the function.}
 }
 \description{
-Fit latent attrition models for transaction with a formula interface
+Fit latent attrition models for transaction with a formula interface xxxxxxxx
 }
 \details{
 The formula argument follows a multipart notation:
 A formula describing how to prepare and the model.
-If data is provided as data.frame, the formula is required to have a LHS
+If data is provided as data.frame, the formula is required to have a LHS xxxxxxxx
 
 
 See the example section for illustrations on how to specify the formula parameter.

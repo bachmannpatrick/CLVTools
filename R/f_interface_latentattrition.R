@@ -4,16 +4,24 @@
 #' @template template_param_formulainterface_formula
 #' @template template_param_optimxargs
 #' @template template_param_verbose
-#' @param cov Optional data.frame or data.table of covariate data.
+#' @param cov Optional data.frame or data.table of covariate data
 #'
 #' @description
-#' Fit latent attrition models for transaction with a formula interface xxxxxxxx
+#' Fit latent attrition models for transaction with a formula interface
 #'
 #' @details
 #' The formula argument follows a multipart notation:
 #' A formula describing how to prepare and the model.
-#' If data is provided as data.frame, the formula is required to have a LHS xxxxxxxx
+#' If data is provided as data.frame, the formula is required to have a LHS.
 #'
+#'
+#' \code{cov}: data.frame or data.table of covariate data. For time-invariant covariates the data contains exactly 
+#' one single row of covariate data for every customer appearing in the transaction data. For time-varying covariates
+#' the data contains exactly 1 row for every combination of timepoint and customer. For each customer appearing in 
+#' the transaction data there needs to be covariate data at every timepoint that marks the start of a period as defined 
+#' by time.unit. It has to range from the start of the estimation sample (timepoint.estimation.start) until the end of 
+#' the period in which the end of the holdout sample (timepoint.holdout.end) falls. See the the provided data apparelDynCov 
+#' for illustration. Covariates of class character or factor are converted to k-1 numeric dummies.
 #'
 #' See the example section for illustrations on how to specify the formula parameter.
 #'
@@ -45,7 +53,7 @@
 #' # Fit ggomnbd without covariates
 #' latentAttrition(~ggomnbd(), data=clv.nocov)
 #'
-#' # Fit pnbd with start.parameters and correlation
+#' # Fit pnbd with start parameters and correlation
 #' latentAttrition(~pnbd(start.params.model=c(r=1, alpha=10, s=2, beta=8),
 #'                       use.cor=TRUE),
 #'                 data=clv.nocov)
@@ -55,6 +63,10 @@
 #'
 #' # Fit pnbd with selected covariates
 #' latentAttrition(~pnbd()|Gender|Channel+Gender, clv.staticcov)
+#'
+#' # Fit pnbd with start parameters for covariates
+#' latentAttrition(~pnbd(start.params.life = c(Gender = 0.6, Channel = 0.4), 
+#'                       start.params.trans = c(Gender = 0.6, Channel = 0.4))|.|., clv.staticcov)
 #'
 #' # Fit pnbd with transformed covariate data
 #' latentAttrition(~pnbd()|Gender|I(log(Channel+2)), clv.staticcov)

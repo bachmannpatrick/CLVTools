@@ -17,8 +17,11 @@ If multiple optimization methods are specified, only the result of the last meth
 
 \item{verbose}{Show details about the running of the function.}
 }
+\value{
+Returns an object of the respective model which was fit.
+}
 \description{
-Formula Interface for Spending Models
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 }
 \examples{
 \donttest{
