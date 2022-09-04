@@ -4,26 +4,51 @@
 #' @template template_param_formulainterface_formula
 #' @template template_param_optimxargs
 #' @template template_param_verbose
-#' @param cov Optional data.frame or data.table of covariate data
+#' @param cov Optional \code{data.frame} or \code{data.table} of covariate data for the lifetime and transaction process. See Details.
 #'
 #' @description
 #' Fit latent attrition models for transaction with a formula interface
 #'
 #' @details
-#' The formula argument follows a multipart notation:
-#' A formula describing how to prepare and the model.
-#' If data is provided as data.frame, the formula is required to have a LHS.
+#' \subsection{Formula}{
+#' A multi-part formula describing how to prepare data and fit the model.
 #'
+#' Formula left hand side (LHS) specifies the data preparation which depends on the provided argument \code{data}.
+#' \itemize{
+#' \item{If \code{data} is \code{clvdata}: }{Nothing, LHS is required to be empty.}
+#' \item{If \code{data} is a \code{data.frame}: }{Data preparation using formula special \code{clvdata(time.unit, date.format, split)}. The formula is required to have a LHS.}
+#' }
 #'
-#' \code{cov}: data.frame or data.table of covariate data. For time-invariant covariates the data contains exactly 
-#' one single row of covariate data for every customer appearing in the transaction data. For time-varying covariates
-#' the data contains exactly 1 row for every combination of timepoint and customer. For each customer appearing in 
-#' the transaction data there needs to be covariate data at every timepoint that marks the start of a period as defined 
-#' by time.unit. It has to range from the start of the estimation sample (timepoint.estimation.start) until the end of 
-#' the period in which the end of the holdout sample (timepoint.holdout.end) falls. See the the provided data apparelDynCov 
-#' for illustration. Covariates of class character or factor are converted to k-1 numeric dummies.
+#' Formula right hand side (RHS) specifies the model fitting and follows a multi-part notation.
+#' \itemize{
+#' \item{1st part (required): }{The model to fit. One of either \code{\link{pnbd}}, \code{\link{bgnbd}}, or \code{\link{ggomnbd}}. Depending on the model additional arguments may be given. See the respective model functions for details.}
+#' }
+#'
+#' If the model is fit with covariates, further parts separated by \code{|} are required:
+#' \itemize{
+#' \item{2nd part (required): }{Which covariates to include for the lifetime process, potentially transforming them.}
+#' \item{3rd part (required): }{Which covariates to include for the transaction process, potentially transforming them.}
+#' \item{4th part (optional): }{Formula special \code{regularization(trans=, life=)} to specify the lambdas for regularization and \code{constraint(...)} to specify parameters to be equal on both processes.
+#' Both specials separated by \code{+} may be given.}
+#' }
 #'
 #' See the example section for illustrations on how to specify the formula parameter.
+#' }
+#'
+#' \subsection{Covariate Data}{
+#'
+#' For time-invariant covariates the data contains exactly one single row of covariate data for every customer appearing in the transaction data.
+#' Requires a column \code{Id} of customer identifiers.
+#' See \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}} for details.
+#'
+#' For time-varying covariates the data contains exactly 1 row for every combination of timepoint and customer.
+#' Requires a column \code{Id} of customer identifiers and a column \code{Cov.Date} of dates.
+#' For each customer appearing in the transaction data there needs to be covariate data at every timepoint that marks the start of a period as defined
+#' by time.unit. It has to range from the start of the estimation sample (timepoint.estimation.start) until the end of
+#' the period in which the end of the holdout sample (timepoint.holdout.end) falls.
+#' Covariates of class character or factor are converted to k-1 numeric dummies.
+#' See \code{\link[CLVTools:SetDynamicCovariates]{SetDynamicCovariates}} and the the provided dataset \code{\link{apparelDynCov}} for illustration.
+#' }
 #'
 #'
 #' @seealso Models for inputs to: \link{pnbd}, \link{ggomnbd}, \link{bgnbd}.
@@ -62,14 +87,14 @@
 #' latentAttrition(~pnbd()|.|., clv.staticcov)
 #'
 #' # Fit pnbd with selected covariates
-#' latentAttrition(~pnbd()|Gender|Channel+Gender, clv.staticcov)
+#' latentAttrition(~pnbd()|Gender|Channel+Gender, data=clv.staticcov)
 #'
 #' # Fit pnbd with start parameters for covariates
-#' latentAttrition(~pnbd(start.params.life = c(Gender = 0.6, Channel = 0.4), 
-#'                       start.params.trans = c(Gender = 0.6, Channel = 0.4))|.|., clv.staticcov)
+#' latentAttrition(~pnbd(start.params.life = c(Gender = 0.6, Channel = 0.4),
+#'                       start.params.trans = c(Gender = 0.6, Channel = 0.4))|.|., data=clv.staticcov)
 #'
 #' # Fit pnbd with transformed covariate data
-#' latentAttrition(~pnbd()|Gender|I(log(Channel+2)), clv.staticcov)
+#' latentAttrition(~pnbd()|Gender|I(log(Channel+2)), data=clv.staticcov)
 #'
 #' # Fit pnbd with all covs and regularization
 #' latentAttrition(~pnbd()|.|.|regularization(life=3, trans=8), clv.staticcov)
@@ -82,10 +107,10 @@
 #' # Same but also give date format and period definition
 #' latentAttrition(data(split=39, format=ymd, unit=w)~pnbd(), data=apparelTrans)
 #'
-#' # Fit pnbd on given data.frame w/ all covariates
+#' # Fit pnbd on given data.frames w/ all covariates
 #' latentAttrition(data()~pnbd()|.|., data=apparelTrans, cov=apparelStaticCov)
 #'
-#' # Fit pnbd on given data.frame w/ selected covariates
+#' # Fit pnbd on given data.frames w/ selected covariates
 #' latentAttrition(data()~pnbd()|Channel+Gender|Gender,
 #'                 data=apparelTrans, cov=apparelStaticCov)
 #'

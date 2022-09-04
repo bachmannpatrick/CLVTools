@@ -21,7 +21,7 @@ If multiple optimization methods are specified, only the result of the last meth
 Returns an object of the respective model which was fit.
 }
 \description{
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+Fit latent Gamma-Gamma model for customer spending with a formula interface
 }
 \examples{
 \donttest{
@@ -60,5 +60,5 @@ spending(data(split=39, format=ymd, unit=w)~gg(), data=cdnow)
 \seealso{
 Spending models for inputs: \link{gg}.
 
-\link{latentAttrition} to fit transactions models with a formula interface
+\link{latentAttrition} to fit latent attrition models with a formula interface
 }
