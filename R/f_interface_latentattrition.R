@@ -26,8 +26,8 @@
 #'
 #' If the model is fit with covariates, further parts separated by \code{|} are required:
 #' \itemize{
-#' \item{2nd part (required): }{Which covariates to include for the lifetime process, potentially transforming them.}
-#' \item{3rd part (required): }{Which covariates to include for the transaction process, potentially transforming them.}
+#' \item{2nd part (required): }{Which covariates to include for the lifetime process, potentially transforming them and adding interactions. The dot ('.') refers to all columns in the data except the identifier variables.}
+#' \item{3rd part (required): }{Which covariates to include for the transaction process, potentially transforming them and adding interactions. The dot ('.') refers to all columns in the data except the identifier variables.}
 #' \item{4th part (optional): }{Formula special \code{regularization(trans=, life=)} to specify the lambdas for regularization and \code{constraint(...)} to specify parameters to be equal on both processes.
 #' Both specials separated by \code{+} may be given.}
 #' }
@@ -176,8 +176,10 @@ latentAttrition <- function(formula, data, cov, optimx.args=list(), verbose=TRUE
     #   do not need to concat multiple separate constraint() if params.as.chars.only=TRUE
     names.constr <- formula_readout_special_arguments(F.formula = F.formula, name.special = "constraint", from.lhs = 0, from.rhs = 4,
                                                       params.as.chars.only = TRUE)
-
     # if(length(names.constr)){
+    # To have names match covariate data names if there are any transformations applied or special symbols in the cov name
+    # spaces in operations are handled by
+    names.constr <- make.names(names.constr)
     args <- modifyList(args, list(names.cov.constr=unname(names.constr)), keep.null = TRUE)
     # }
 
@@ -217,26 +219,47 @@ formulainterface_dataframe_toclvdata <- function(F.formula, data, cl){
 }
 
 formulainterface_create_clvdataobj <- function(F.formula, create.dyncov, clv.data.nocov, dt.cov.life, dt.cov.trans){
-  # Apply formula on cov data
-  mf.cov.life  <- model.frame(F.formula, data=dt.cov.life,  lhs=0, rhs=2)
-  mf.cov.trans <- model.frame(F.formula, data=dt.cov.trans, lhs=0, rhs=3)
 
-  # Create new cov data object
-  #   from given data, is copy-ed in Set*Cov()
   if(create.dyncov){
     cov.id.vars <- c("Id", "Cov.Date")
-    mf.cov.life  <- cbind(mf.cov.life,  dt.cov.life[,  .SD, .SDcols=cov.id.vars])
-    mf.cov.trans <- cbind(mf.cov.trans, dt.cov.trans[, .SD, .SDcols=cov.id.vars])
+  }else{
+    cov.id.vars <- "Id"
+  }
+
+  # Have to use model.matrix() in order to build interactions from given data
+  # model.frame() would otherwise be more desirable as it creates the relevant cols (incl transformations) but without dummifying
+  # model.matrix() also creates the intercept and expands the dot to include Id and Cov.Date which are dummified. Therefore need to remove ids vars and intercept from formula by subtracting with '-Id-1'
+  # update.formula() requires expanding the dot '.' with the names in the given data.
+  # use terms() so subset Formula to relevant rhs and expand dot.
+
+  # Considered alternatives:
+  #   - reformulate(terms(F, data), intercept=F) but remove Id, Cov.Date lables from returned terms object. Good option but manipulating formula seems more natural.
+  #   - use terms() but remove columns Id and Cov.Date from data to not expand dot to include these. May incur substantial overhead if data is large.
+
+  # f.remove: formula to remove intercept and covariate ids
+  f.remove <- eval(parse(text=paste0('~ . - 1 - ', paste0(cov.id.vars, collapse = '-'))))
+  f.formula.life  <- update(terms(F.formula, lhs=0, rhs=2, data=dt.cov.life),  f.remove)
+  f.formula.trans <- update(terms(F.formula, lhs=0, rhs=3, data=dt.cov.trans), f.remove)
+
+  # Apply formula on cov data
+  mm.cov.life  <- as.data.table(model.matrix(f.formula.life,  data=dt.cov.life ))
+  mm.cov.trans <- as.data.table(model.matrix(f.formula.trans, data=dt.cov.trans))
+
+  # Add Id vars to data
+  mm.cov.life  <- cbind(mm.cov.life,  dt.cov.life[,  .SD, .SDcols=cov.id.vars])
+  mm.cov.trans <- cbind(mm.cov.trans, dt.cov.trans[, .SD, .SDcols=cov.id.vars])
+
+  # Create new cov data object
+  #   from given clvdata object, is copy-ed in Set*Cov()
+  if(create.dyncov){
     data <- SetDynamicCovariates(clv.data = clv.data.nocov,
-                                 data.cov.life = mf.cov.life, names.cov.life = setdiff(colnames(mf.cov.life), cov.id.vars),
-                                 data.cov.trans = mf.cov.trans, names.cov.trans = setdiff(colnames(mf.cov.trans), cov.id.vars),
+                                 data.cov.life = mm.cov.life, names.cov.life = setdiff(colnames(mm.cov.life), cov.id.vars),
+                                 data.cov.trans = mm.cov.trans, names.cov.trans = setdiff(colnames(mm.cov.trans), cov.id.vars),
                                  name.id = "Id", name.date = "Cov.Date")
   }else{
-    mf.cov.life  <- cbind(mf.cov.life,  dt.cov.life[,  "Id"])
-    mf.cov.trans <- cbind(mf.cov.trans, dt.cov.trans[, "Id"])
     data <- SetStaticCovariates(clv.data = clv.data.nocov,
-                                data.cov.life  = mf.cov.life,  names.cov.life = setdiff(colnames(mf.cov.life), "Id"),
-                                data.cov.trans = mf.cov.trans, names.cov.trans = setdiff(colnames(mf.cov.trans), "Id"),
+                                data.cov.life  = mm.cov.life,  names.cov.life = setdiff(colnames(mm.cov.life), cov.id.vars),
+                                data.cov.trans = mm.cov.trans, names.cov.trans = setdiff(colnames(mm.cov.trans), cov.id.vars),
                                 name.id = "Id")
   }
   return(data)

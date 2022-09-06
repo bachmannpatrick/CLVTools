@@ -39,8 +39,8 @@ Formula right hand side (RHS) specifies the model fitting and follows a multi-pa
 
 If the model is fit with covariates, further parts separated by \code{|} are required:
 \itemize{
-\item{2nd part (required): }{Which covariates to include for the lifetime process, potentially transforming them.}
-\item{3rd part (required): }{Which covariates to include for the transaction process, potentially transforming them.}
+\item{2nd part (required): }{Which covariates to include for the lifetime process, potentially transforming them and adding interactions. The dot ('.') refers to all columns in the data except the identifier variables.}
+\item{3rd part (required): }{Which covariates to include for the transaction process, potentially transforming them and adding interactions. The dot ('.') refers to all columns in the data except the identifier variables.}
 \item{4th part (optional): }{Formula special \code{regularization(trans=, life=)} to specify the lambdas for regularization and \code{constraint(...)} to specify parameters to be equal on both processes.
 Both specials separated by \code{+} may be given.}
 }
