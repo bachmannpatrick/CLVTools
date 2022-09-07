@@ -4,6 +4,7 @@
 #'
 #' @template template_params_estimate
 #' @template template_params_estimate_cov
+#' @template template_param_optimxargs
 #' @template template_param_verbose
 #' @template template_param_dots
 #'

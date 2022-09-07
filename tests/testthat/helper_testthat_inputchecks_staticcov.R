@@ -51,6 +51,11 @@ fct.testthat.inputchecks.namescovconstr <- function(method, l.std.args){
                  regexp = "character vector")
   })
 
+  test_that("Fails if empty", {
+    expect_error(do.call(method, modifyList(l.std.args, list(names.cov.constr=character(0)))),
+                 regexp = "not be empty")
+  })
+
   test_that("Fails if any NA", {
     expect_error(do.call(method, modifyList(l.std.args, list(names.cov.constr=c(NA_character_)))),
                  regexp = "no NA")

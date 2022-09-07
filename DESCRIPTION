@@ -33,6 +33,7 @@ Description:
     Further, we provide an implementation of the Gamma/Gamma model to model the spending process of individuals.
 Imports:
     data.table (>= 1.12.0),
+    Formula (>= 1.2-4),
     ggplot2 (>= 3.2.0),
     lubridate (>= 1.7.8),
     Matrix (>= 1.2-17),
@@ -112,12 +113,14 @@ Collate:
     'f_interface_clvdata.R'
     'f_interface_gg.R'
     'f_interface_ggomnbd.R'
+    'f_interface_latentattrition.R'
     'f_interface_pmf.R'
     'f_interface_pnbd.R'
     'f_interface_predict_clvfittedspending.R'
     'f_interface_predict_clvfittedtransactions.R'
     'f_interface_setdynamiccovariates.R'
     'f_interface_setstaticcovariates.R'
+    'f_interface_spending.R'
     'f_s3generics_clvdata.R'
     'f_s3generics_clvdata_dynamiccov.R'
     'f_s3generics_clvdata_plot.R'
@@ -142,5 +145,5 @@ Collate:
     'pnbd_dyncov_expectation.R'
     'pnbd_dyncov_makewalks.R'
     'pnbd_dyncov_palive.R'
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 VignetteBuilder: knitr
