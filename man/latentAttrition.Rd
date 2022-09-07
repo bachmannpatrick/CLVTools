@@ -108,6 +108,9 @@ latentAttrition(~pnbd()|Gender|I(log(Channel+2)), data=clv.staticcov)
 # Fit pnbd with all covs and regularization
 latentAttrition(~pnbd()|.|.|regularization(life=3, trans=8), clv.staticcov)
 
+# Fit pnbd with all covs and constraint parameters for Channel
+latentAttrition(~pnbd()|.|.|constraint(Channel), clv.staticcov)
+
 # Fit pnbd on given data.frame, no split
 latentAttrition(data()~pnbd(), data=apparelTrans)
 

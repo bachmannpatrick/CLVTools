@@ -2,7 +2,7 @@ fct.helper.dyncov.get.optimxargs.quickfit <- function(){
   return(list(method="Nelder-Mead", # NelderMead verifies nothing = faster
               itnmax = 2,
               hessian=FALSE, # no hessian
-              control=list(kkt = FALSE, # kkt takes forever
+              control=list(kkt = FALSE, # kkt takes forever because requires hessian
                            reltol = 1000))) # anything counts as converged
 }
 

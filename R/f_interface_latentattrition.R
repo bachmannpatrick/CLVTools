@@ -1,5 +1,4 @@
 #' Formula Interface for Latent Attrition Models
-#'
 #' @template template_param_formulainterface_data
 #' @template template_param_formulainterface_formula
 #' @template template_param_optimxargs
@@ -99,6 +98,9 @@
 #' # Fit pnbd with all covs and regularization
 #' latentAttrition(~pnbd()|.|.|regularization(life=3, trans=8), clv.staticcov)
 #'
+#' # Fit pnbd with all covs and constraint parameters for Channel
+#' latentAttrition(~pnbd()|.|.|constraint(Channel), clv.staticcov)
+#'
 #' # Fit pnbd on given data.frame, no split
 #' latentAttrition(data()~pnbd(), data=apparelTrans)
 #'
@@ -176,12 +178,13 @@ latentAttrition <- function(formula, data, cov, optimx.args=list(), verbose=TRUE
     #   do not need to concat multiple separate constraint() if params.as.chars.only=TRUE
     names.constr <- formula_readout_special_arguments(F.formula = F.formula, name.special = "constraint", from.lhs = 0, from.rhs = 4,
                                                       params.as.chars.only = TRUE)
-    # if(length(names.constr)){
-    # To have names match covariate data names if there are any transformations applied or special symbols in the cov name
-    # spaces in operations are handled by
-    names.constr <- make.names(names.constr)
-    args <- modifyList(args, list(names.cov.constr=unname(names.constr)), keep.null = TRUE)
-    # }
+    if(length(names.constr)){
+      # To have names match covariate data names if there are any transformations applied or special symbols in the cov name
+      # spaces in operations are handled by
+      # Will make empty names.constr (NULL) to character(0) which is illegal input. Therefore have to wrap in if(length)
+      names.constr <- make.names(names.constr)
+      args <- modifyList(args, list(names.cov.constr=unname(names.constr)), keep.null = TRUE)
+    }
 
   }
 
@@ -453,7 +456,7 @@ check_userinput_latentattrition_formulavsdata_RHS4 <- function(F.formula){
   # Check that has only allowed specials and nothing else allowed
   if("." %in% all.vars(formula(F.formula, lhs=0, rhs=4))){
     # no suitable data argument to terms() as required to resolve "."
-    err.msg <- c(err.msg, "Please choose only from the following for the fourth RHS: regularization(), constraint().")
+    err.msg <- c(err.msg, "Please do not use <.> in the fourth RHS.")
   }else{
     F.terms.rhs4 <- terms(F.formula, lhs=0, rhs=4, specials=c("regularization", "constraint"))
     num.rhs4.specials <- formula_num_specials(F.formula, lhs=0, rhs=4, specials=c("regularization", "constraint"))

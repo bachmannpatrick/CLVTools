@@ -114,7 +114,14 @@ fct.testthat.correctness.latentattrition.staticcov <- function(l.std.args, f.lhs
     expect_setequal(p.constr@names.original.params.constr, c("Gender", "Channel"))
   })
 
+  test_that("Correct cov data when using interactions and all except (. -)", {
+    skip_on_cran()
+    expect_silent(p.inter <- do.call(latentAttrition, c(l.std.args, list(formula=update(as.Formula(~pnbd()|Gender*Channel|.-Gender), new=f.lhs)))))
+    expect_setequal(c("Channel", "Gender", "Gender.Channel", "Id"), colnames(p.inter@clv.data@data.cov.life))
+    expect_setequal(c("Channel", "Id"), colnames(p.inter@clv.data@data.cov.trans))
+  })
 }
+
 
 context("Correctness - latentAttrition - static cov, data=clv.data")
 # Test with clv.static.cov object
@@ -167,6 +174,14 @@ fct.testthat.correctness.latentattrition.dyncov <- function(l.std.args, f.lhs, c
                    "Hessian")
     expect_setequal(colnames(p.dyn@clv.data@data.cov.life), c(clv.dyn.common.cols, "Channel", "Gender", "Marketing"))
     expect_setequal(colnames(p.dyn@clv.data@data.cov.trans), c(clv.dyn.common.cols, "Channel", "Gender", "Marketing", "I.Gender...1."))
+  })
+
+  test_that("Correct cov data when using interactions and all except (. -)", {
+    skip_on_cran()
+    expect_warning(p.dyn <- do.call(latentAttrition, c(l.std.args, list(formula=update(as.Formula(~pnbd()|Gender*Channel|.-Gender), new=f.lhs)))),
+                   "Hessian")
+    expect_setequal(c("Channel", "Gender", "Gender.Channel", "Id", "Cov.Date"), colnames(p.dyn@clv.data@data.cov.life))
+    expect_setequal(c("Channel", "Marketing", "Id", "Cov.Date"), colnames(p.dyn@clv.data@data.cov.trans))
   })
 }
 

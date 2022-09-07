@@ -95,7 +95,7 @@ test_that("Fails if no RHS2/3 but cov clv.data",{
 
 # . RHS4 -----------------------------------------------------------------------------------------------
 test_that("Fails if RHS 4 has wrong content", {
-  expect_error(latentAttrition(~pnbd()|.|.|., clv.apparel.cov), "from the following")
+  expect_error(latentAttrition(~pnbd()|.|.|., clv.apparel.cov), "do not use <.>")
   expect_error(latentAttrition(~pnbd()|.|.|reg(life=10, trans=10), clv.apparel.cov), "from the following")
   expect_error(latentAttrition(~pnbd()|.|.|constr(abc), clv.apparel.cov), "from the following")
 })
@@ -129,9 +129,8 @@ test_that("Fails if multiple regularization", {
 
 # . constraint() ------------------------------------------------------------------------------------
 test_that("Fails if constraint() does not have valid content", {
-  # **TODO: allow or not??
   # expect_error(latentAttrition(~pnbd()|.|.|constraint(), clv.apparel.cov), "")
-  # expect_error(latentAttrition(~pnbd()|.|.|constraint(.), clv.apparel.cov), "")
+  expect_error(latentAttrition(~pnbd()|.|.|constraint(.), clv.apparel.cov), "do not use <.> in the")
   expect_error(latentAttrition(~pnbd()|.|.|constraint(NULL), clv.apparel.cov), "could not be found")
   expect_error(latentAttrition(~pnbd()|.|.|constraint(123), clv.apparel.cov), "could not be found")
   expect_error(latentAttrition(~pnbd()|.|.|constraint(abc), clv.apparel.cov), "could not be found")
