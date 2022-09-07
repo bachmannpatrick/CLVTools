@@ -221,6 +221,7 @@ formulainterface_dataframe_toclvdata <- function(F.formula, data, cl){
   return(data)
 }
 
+#' @importFrom stats update
 formulainterface_create_clvdataobj <- function(F.formula, create.dyncov, clv.data.nocov, dt.cov.life, dt.cov.trans){
 
   if(create.dyncov){

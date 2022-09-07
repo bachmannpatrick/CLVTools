@@ -271,12 +271,12 @@ check_user_data_namesconstr <- function(clv.fitted, names.cov.constr){
       err.msg <- c(err.msg, paste0("The constraint covariate named ", n, " could not be found in the Lifetime covariate data!"))
 
     if(!(n %in% colnames(clv.fitted@clv.data@data.cov.trans)))
-      err.msg <- c(err.msg, paste0("The Constraint covariate named ", n, " could not be found in the Transaction covariate data!"))
+      err.msg <- c(err.msg, paste0("The constraint covariate named ", n, " could not be found in the Transaction covariate data!"))
   }
 
   # Found only once
   if(length(names.cov.constr) != length(unique(names.cov.constr)))
-    err.msg <- c(err.msg, "Every covariate name for Constraint covariates may only appear exactly once!")
+    err.msg <- c(err.msg, "Every covariate name for constraint covariates may only appear exactly once!")
 
   return(err.msg)
 }
