@@ -1,14 +1,16 @@
 #include "ggomnbd.h"
 
 
-// integrand<-function(omega){omega*exp(b*omega)*(beta_i[i]+exp(b*omega)-1)^-(s+1)}
-double ggomnbd_CET_integrand(double omega, void * p_params){
+double ggomnbd_CET_integrand(double tau, void * p_params){
   struct integration_params * params = (struct integration_params*)p_params;
+  const double x = (params -> x_i);
   const double b = (params -> b);
   const double s = (params -> s);
+  const double r = (params -> r);
   const double beta_i = (params -> beta_i);
+  const double alpha_i = (params -> alpha_i);
 
-  return(omega * std::exp(b * omega) * std::pow(beta_i + std::exp(b * omega) - 1.0, -(s+1.0) ) );
+  return(std::exp(b*tau) / (std::pow(std::exp(b*tau) + beta_i - 1.0,  s + 1.0) * std::pow(alpha_i + r, r + x)));
 }
 
 
@@ -40,25 +42,37 @@ arma::vec ggomnbd_CET(const double r,
                       const arma::vec& vAlpha_i,
                       const arma::vec& vBeta_i){
 
-  // Expectation is Formula 20: PAlive()*Expectation()
-  //
-  //  with
-  //    r *    = r + x
-  //    alpha* = alpha + Tcal
-  //    beta*  = beta + exp(b*Tcal) - 1
-  //    t_i    = dPeriods
+  // Errata by Adler (2022), https://pubsonline.informs.org/doi/10.1287/mnsc.2022.4422
+  // See https://github.com/bachmannpatrick/CLVTools/issues/206
 
+  const arma::vec v1 = clv::vec_fill(1.0, vX.n_elem);
+  const arma::vec vS = clv::vec_fill(s, vX.n_elem);
+  const arma::vec vSplus1 = clv::vec_fill(s + 1.0, vX.n_elem);
+  const arma::vec vBetaIminus1 = vBeta_i - 1.0;
+  const arma::vec vExpbTpart = arma::exp(b*vT_cal) + vBetaIminus1;
+  const arma::vec vExpbTTstarpart = arma::exp(b*(vT_cal + dPeriods)) + vBetaIminus1;
 
-  const arma::vec vPAlive = ggomnbd_PAlive(r,b,s,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
+  const arma::vec vHyp1 = clv::vec_hyp2F1(v1, vS, vSplus1, vBetaIminus1 / vExpbTpart);
+  const arma::vec vHyp2 = clv::vec_hyp2F1(v1, vS, vSplus1, vBetaIminus1 / vExpbTTstarpart);
+  const arma::vec vUpper = vHyp1 - arma::pow(vExpbTpart / vExpbTTstarpart, s) % vHyp2;
 
-  const arma::vec vRStar     = r + vX;
-  const arma::vec vAlphaStar = vAlpha_i + vX;
-  const arma::vec vBetaStar  = vBeta_i + arma::exp(b * vT_cal) - 1.0;
+  const arma::vec vIntegral = ggomnbd_integrate(r, b, s, vAlpha_i, vBeta_i,vX,
+                                                &ggomnbd_CET_integrand,
+                                                vT_x, vT_cal);
+  const arma::vec vLower = b*s * (1.0 + (b * s) * clv::vec_pow(vAlpha_i + vT_cal, r + vX) % arma::pow(vExpbTpart, s) % vIntegral);
+  const arma::vec vFront = (r + vX)/(vAlpha_i + vT_cal);
 
-  const arma::vec vPeriods = clv::vec_fill(dPeriods, vX.n_elem);
-  const arma::vec vExpectation = ggomnbd_expectation(b, s, vRStar, vAlphaStar, vBetaStar, vPeriods);
+  Rcpp::Rcout << "vFront" << vFront.head(10) << std::endl;
+  Rcpp::Rcout << "vBetaIminus1" << vBetaIminus1.head(10) << std::endl;
+  Rcpp::Rcout << "vExpbTpart" << vExpbTpart.head(10) << std::endl;
+  Rcpp::Rcout << "vExpbTTstarpart" << vExpbTTstarpart.head(10) << std::endl;
+  Rcpp::Rcout << "vHyp1" << vHyp1.head(10) << std::endl;
+  Rcpp::Rcout << "vHyp2" << vHyp2.head(10) << std::endl;
+  Rcpp::Rcout << "vUpper" << vUpper.head(10) << std::endl;
+  Rcpp::Rcout << "vLower" << vLower.head(10) << std::endl;
+  Rcpp::Rcout << "vIntegral" << vIntegral.head(10) << std::endl;
 
-  return(vPAlive % vExpectation);
+  return(vFront % vUpper / vLower);
 }
 
 
