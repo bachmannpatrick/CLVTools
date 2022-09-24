@@ -226,8 +226,7 @@ arma::vec ggomnbd_integrate(const double r,
   // Do not abort in case of error
   gsl_set_error_handler_off();
 
-  gsl_integration_workspace *workspace
-    = gsl_integration_workspace_alloc (1000);
+  gsl_integration_workspace *workspace = gsl_integration_workspace_alloc(1000);
 
   gsl_function integrand;
   integrand.function = p_integrationFunction;
@@ -250,10 +249,12 @@ arma::vec ggomnbd_integrate(const double r,
 
     integrand.params = &params_i;
 
-    gsl_integration_qags(&integrand, vLower(i), vUpper(i), 1.0e-8, 1.0e-8, 0, workspace, &res, &err);
+    gsl_integration_qags(&integrand, vLower(i), vUpper(i), 1.0e-8, 1.0e-8, 1000, workspace, &res, &err);
     vRes(i) = res;
   }
 
+
+  gsl_integration_workspace_free(workspace);
   return(vRes);
 }
 
