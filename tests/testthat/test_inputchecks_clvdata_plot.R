@@ -90,3 +90,23 @@ test_that("interpurchasetime - cannot select holdout data if none present", {
   expect_error(plot(clv.cdnow.nohold, which="interpurchasetime", sample="holdout"), regexp = "has no holdout data")
 })
 
+
+# . timings specific args -------------------------------------------------------------------------
+test_that("timings - annotate.ids is valid", {
+  skip_on_cran()
+  expect_error(plot(clv.cdnow.nohold, which="timings", annotate.ids=NA), regexp = "cannot be")
+  expect_error(plot(clv.cdnow.nohold, which="timings", annotate.ids=NULL), regexp = "of type logical")
+  expect_error(plot(clv.cdnow.nohold, which="timings", annotate.ids=""), regexp = "of type logical")
+  expect_error(plot(clv.cdnow.nohold, which="timings", annotate.ids=c("1", "2")), regexp = "of type logical")
+})
+
+test_that("timings - Ids is valid", {
+  skip_on_cran()
+  expect_error(plot(clv.cdnow.nohold, which="timings", Ids=NA), regexp = "may not contain")
+  expect_error(plot(clv.cdnow.nohold, which="timings", Ids=-1), regexp = "strictly positive")
+  expect_error(plot(clv.cdnow.nohold, which="timings", Ids=0), regexp = "strictly positive")
+  expect_error(plot(clv.cdnow.nohold, which="timings", Ids=1:10), regexp = "single number")
+  expect_error(plot(clv.cdnow.nohold, which="timings", Ids=""), regexp = "empty text")
+  expect_error(plot(clv.cdnow.nohold, which="timings", Ids=c("1", "", "2")), regexp = "empty text")
+})
+

@@ -112,7 +112,7 @@ check_userinput_datanocov_ids <- function(Ids){
 
 
   if(is.numeric(Ids)){
-    err.msg <- c(err.msg, .check_user_data_single_numeric(Ids))
+    err.msg <- c(err.msg, .check_user_data_single_numeric(Ids, var.name = 'Ids'))
     # if(any(!is.finite(Ids))){
     #   return("Ids may not contain any non-finite elements if numeric!")
     # }
@@ -124,8 +124,15 @@ check_userinput_datanocov_ids <- function(Ids){
     }
   }
 
-  if(is.character(Ids) & length(Ids) == 0){
-    return("Ids has to contain at least 1 element if character vector")
+  if(is.character(Ids)){
+    if(length(Ids) == 0){
+      err.msg <- c(err.msg, "Ids has to contain at least 1 element if character vector")
+    }else{
+      if(any(nchar(Ids) == 0)){
+        err.msg <- c(err.msg, "Ids may not be empty text")
+      }
+    }
+
   }
 
   return(err.msg)
