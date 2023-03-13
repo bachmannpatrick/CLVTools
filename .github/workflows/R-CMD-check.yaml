@@ -37,6 +37,17 @@ jobs:
             http-user-agent: ${{ matrix.config.http-user-agent }}
             use-public-rspm: true
 
+        - name: Install mac system dependencies
+          if: runner.os == 'macOS'
+          run: |
+            brew install gsl
+
+        - name: Install Windows system dependencies
+          if: runner.os == 'Windows'
+          run: |
+            pacman -Sy # Update repo index
+            pacman -S --noconfirm mingw-w64-x86_64-gsl mingw-w64-i686-gsl mingw-w64-ucrt-x86_64-gsl
+
         - uses: r-lib/actions/setup-r-dependencies@v2
           with:
             extra-packages: any::rcmdcheck
