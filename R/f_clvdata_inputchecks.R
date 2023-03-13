@@ -95,6 +95,42 @@ check_userinput_datanocov_transbins <- function(trans.bins, count.repeat.trans){
   return(c())
 }
 
+check_userinput_datanocov_ids <- function(Ids){
+  err.msg <- c()
+
+  if(is.null(Ids)){
+    return(err.msg)
+  }
+
+  if(anyNA(Ids)){
+    return("Ids may not contain any NA!")
+  }
+
+  if(!is.numeric(Ids) & !is.character(Ids)){
+    return("Ids has to be a single numeric value or a character vector!")
+  }
+
+
+  if(is.numeric(Ids)){
+    err.msg <- c(err.msg, .check_user_data_single_numeric(Ids))
+    # if(any(!is.finite(Ids))){
+    #   return("Ids may not contain any non-finite elements if numeric!")
+    # }
+    # if(length(Ids) != 1){
+    #   return("Ids has to be of length 1 if numeric!")
+    # }
+    if(!all(Ids > 0)){
+      err.msg <- c(err.msg, "Ids has to be strictly positive (>0)")
+    }
+  }
+
+  if(is.character(Ids) & length(Ids) == 0){
+    return("Ids has to contain at least 1 element if character vector")
+  }
+
+  return(err.msg)
+}
+
 check_userinput_datanocov_columnname <- function(name.col, data){
 
   if(is.null(name.col))
