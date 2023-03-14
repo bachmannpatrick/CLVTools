@@ -368,10 +368,10 @@ clv.data.plot.density.spending <- function(x, sample, mean.spending, plot, verbo
   }
 }
 
-#' @importFrom ggplot2 aes_string
+
 clv.data.plot.density.interpurchase.time <- function(clv.data, sample,
                                                      plot, verbose, color, geom, ...){
-  interp.time <- NULL
+  interp.time <- mean.interpurchase.time <- NULL
   dt.trans <- clv.data.select.sample.data(clv.data=clv.data, sample=sample, choices=c("estimation", "full", "holdout"))
 
   # interpurchase time in given period
@@ -386,7 +386,7 @@ clv.data.plot.density.interpurchase.time <- function(clv.data, sample,
 
   if(plot){
     return(clv.data.make.density.plot(dt.data = dt.mean.interp,
-                                      mapping = aes_string(x = "mean.interpurchase.time"),
+                                      mapping = aes(x = mean.interpurchase.time),
                                       labs_x = labs_x,
                                       title = "Density of Customer's Mean Time between Transactions",
                                       geom = geom, color = color, ...))
@@ -396,7 +396,7 @@ clv.data.plot.density.interpurchase.time <- function(clv.data, sample,
 }
 
 
-#' @importFrom ggplot2 ggplot geom_col aes_string labs geom_text position_dodge rel
+#' @importFrom ggplot2 ggplot geom_col labs geom_text position_dodge rel
 clv.data.plot.barplot.frequency <- function(clv.data, count.repeat.trans, count.remaining, label.remaining, trans.bins,
                                            sample, plot, verbose, color, ...){
   x <- num.customers <- num.transactions <- NULL
@@ -459,8 +459,7 @@ clv.data.plot.barplot.frequency <- function(clv.data, count.repeat.trans, count.
     return(dt.bins)
   }else{
     #   use geom_col because geom_bar does the counting itself
-    p <- ggplot(data = dt.bins) + geom_col(mapping = aes_string(x="num.transactions",
-                                                                y="num.customers"),
+    p <- ggplot(data = dt.bins) + geom_col(mapping = aes(x=num.transactions, y=num.customers),
                                            fill=color,
                                            width = 0.5,
                                            show.legend = FALSE)
@@ -470,8 +469,7 @@ clv.data.plot.barplot.frequency <- function(clv.data, count.repeat.trans, count.
                   title="Distribution of Transaction Count")
 
     # add count annotation
-    p <- p + geom_text(aes_string(label = "num.customers",
-                                  x = "num.transactions", y = "num.customers"),
+    p <- p + geom_text(aes(label = num.customers, x = num.transactions, y = num.customers),
                        position = position_dodge(width = 0.8),
                        vjust = -0.6,
                        size = rel(3))
@@ -490,7 +488,7 @@ clv.data.plot.transaction.timings <- function(clv.data, Ids, annotate.ids, plot,
 
   err.msg <- c()
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=annotate.ids, var.name="annotate.ids"))
-  err.msg <- c(err.msg, check_userinput_datanocov_ids(Id=Ids))
+  err.msg <- c(err.msg, check_userinput_datanocov_ids(Ids=Ids))
   err.msg <- c(err.msg, check_user_data_emptyellipsis(...))
   check_err_msg(err.msg)
 

@@ -335,14 +335,14 @@ test_that("Spending plot - ggplot styling works correctly", {
 
   # defaults to line
   expect_silent(gg.default <- plot(clv.cdnow, which="spending", verbose=FALSE))
-  expect_silent(gg.dots    <- plot(clv.cdnow, which="spending", verbose=FALSE, size=0.1))
+  expect_silent(gg.dots    <- plot(clv.cdnow, which="spending", verbose=FALSE, linewidth=0.1))
   expect_silent(gg.geom    <- plot(clv.cdnow, which="spending", verbose=FALSE, geom="point"))
   # args passed in ...
   expect_silent(gg.color   <- plot(clv.cdnow, which="spending", verbose=FALSE, color="green"))
 
   expect_s3_class(gg.default$layers[[1]]$geom, "GeomLine")
   expect_s3_class(gg.geom$layers[[1]]$geom, "GeomPoint")
-  expect_true(gg.dots$layers[[1]]$aes_params[["size"]] == 0.1)
+  expect_true(gg.dots$layers[[1]]$aes_params[["linewidth"]] == 0.1)
   expect_true(gg.color$layers[[1]]$aes_params[["colour"]] == "green")
 })
 
