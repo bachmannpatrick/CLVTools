@@ -6,6 +6,8 @@
     err.msg <- c(err.msg, paste0(var.name," has to be exactly 1 single number!"))
   if(anyNA(n))
     err.msg <- c(err.msg, paste0(var.name," may not be NA!"))
+  if(any(!is.finite(n)))
+    err.msg <- c(err.msg, paste0(var.name," may not contain any non-finite items!"))
   return(err.msg)
 }
 
