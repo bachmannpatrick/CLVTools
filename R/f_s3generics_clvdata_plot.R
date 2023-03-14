@@ -587,7 +587,8 @@ clv.data.plot.transaction.timings <- function(clv.data, Ids, annotate.ids, plot,
   # holdout points & split line
   if(clv.data.has.holdout(clv.data)){
     g <- g + geom_point(aes(x=x, y=y), data=dt.holdout, color="#454545", fill="#999999", pch=21)
-    g <- g + geom_vline(aes(xintercept=x), data=data.frame(x=clv.data@clv.time@timepoint.estimation.end))
+    g <- g + geom_vline(aes(xintercept=x), linetype="dashed", show.legend = FALSE,
+                        data=data.frame(x=clv.data@clv.time@timepoint.estimation.end))
   }
 
   # mark ids
