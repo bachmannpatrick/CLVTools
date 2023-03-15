@@ -322,8 +322,8 @@ clv.data.plot.tracking <- function(x, prediction.end, cumulative, plot, verbose,
     return(dt.plot)
 
   # Plot table with formatting, label etc
-  line.colors <- setNames(object = "black", nm = label.transactions)
-  p <- clv.controlflow.plot.tracking.base(dt.plot = dt.plot, clv.data = x, line.colors = line.colors)
+  p <- clv.controlflow.plot.tracking.base(dt.plot = dt.plot, clv.data = x,
+                                          color.mapping = setNames(object = "black", nm = label.transactions))
   p <- p + theme(legend.position = "none")
   return(p)
 }

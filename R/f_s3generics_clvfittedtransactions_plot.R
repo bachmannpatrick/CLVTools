@@ -145,7 +145,9 @@
 #' @method plot clv.fitted.transactions
 #' @aliases plot
 #' @export
-plot.clv.fitted.transactions <- function (x, which=c("tracking", "pmf"),
+plot.clv.fitted.transactions <- function (x,
+                                          which=c("tracking", "pmf"),
+                                          other.models=list(),
                                           # tracking
                                           prediction.end=NULL, cumulative=FALSE,
                                           # pmf
@@ -167,8 +169,6 @@ plot.clv.fitted.transactions <- function (x, which=c("tracking", "pmf"),
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=plot, var.name="plot"))
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
   err.msg <- c(err.msg, check_user_data_emptyellipsis(...))
-  if(!is.null(label)) # null is allowed = std. model name
-    err.msg <- c(err.msg, .check_userinput_single_character(char=label, var.name="label"))
   check_err_msg(err.msg)
 
   # Newdata ------------------------------------------------------------------------------------------------
@@ -189,7 +189,7 @@ plot.clv.fitted.transactions <- function (x, which=c("tracking", "pmf"),
 
 
   return(switch(match.arg(arg = tolower(which), choices = c("tracking","pmf")),
-    "tracking" = clv.fitted.transactions.plot.tracking(x=x, newdata=newdata, prediction.end=prediction.end,
+    "tracking" = clv.fitted.transactions.plot.tracking(x=x, other.models=other.models, newdata=newdata, prediction.end=prediction.end,
                                                        cumulative=cumulative, transactions=transactions,
                                                        label=label, plot=plot, verbose=verbose),
     "pmf" = clv.fitted.transactions.plot.barplot.pmf(x=x, trans.bins=trans.bins, transactions=transactions,
@@ -204,10 +204,12 @@ setMethod("plot", signature(x="clv.fitted.transactions"), definition = plot.clv.
 
 
 #' @importFrom ggplot2 ggplot aes geom_line geom_vline labs scale_fill_manual guide_legend
-clv.controlflow.plot.tracking.base <- function(dt.plot, clv.data, line.colors){
-  # clv.xxx.plot.tracking.base
+clv.controlflow.plot.tracking.base <- function(dt.plot, clv.data, color.mapping){
   # cran silence
   period.until <- value <- variable <- NULL
+
+  # Plotting order
+  dt.plot[, variable := factor(variable, levels=names(color.mapping), ordered = TRUE)]
 
   p <- ggplot(data = dt.plot, aes(x=period.until, y=value, colour=variable)) + geom_line()
 
@@ -218,7 +220,7 @@ clv.controlflow.plot.tracking.base <- function(dt.plot, clv.data, line.colors){
   }
 
   # Variable color and name
-  p <- p + scale_fill_manual(values = line.colors,
+  p <- p + scale_fill_manual(values = color.mapping,
                              aesthetics = c("color", "fill"),
                              guide = guide_legend(title="Legend"))
 
@@ -230,7 +232,7 @@ clv.controlflow.plot.tracking.base <- function(dt.plot, clv.data, line.colors){
 }
 
 # Tracking plot --------------------------------------------------------------------------------------------
-clv.fitted.transactions.plot.tracking <- function(x, newdata, prediction.end, cumulative, transactions,
+clv.fitted.transactions.plot.tracking <- function(x, other.models, newdata, prediction.end, cumulative, transactions,
                                                   label, plot, verbose, ...){
   period.until <- period.num <- NULL
 
@@ -244,17 +246,40 @@ clv.fitted.transactions.plot.tracking <- function(x, newdata, prediction.end, cu
   clv.controlflow.plot.check.inputs(obj=x, prediction.end=prediction.end, cumulative=cumulative,
                                     plot=plot, label.line=label, verbose=verbose)
 
-  dt.plot <- clv.fitted.transactions.plot.tracking.get.data(
-    x=x, prediction.end = prediction.end, cumulative=cumulative, label=label, transactions=transactions, verbose=verbose)
+  if(length(other.models) == 0){
 
-  if(length(label)==0){
-    label.model <- x@clv.model@name.model
+    dt.plot <- clv.fitted.transactions.plot.tracking.get.data(
+      x=x, prediction.end = prediction.end, cumulative=cumulative, label=label, transactions=transactions, verbose=verbose)
+
+    if(length(label)==0){
+      label <- x@clv.model@name.model
+    }
+    dt.plot[variable == "expectation", variable := label]
+    dt.plot[variable == "num.repeat.trans", variable := "Actual"]
+
+    colors <- 'red'
+
   }else{
-    label.model <- label
+    label <- clv.fitted.transactions.plot.multiple.models.prepare.label(label=label, main.model=x, other.models=other.models)
+    other.models <- clv.fitted.transactions.plot.multiple.models.prepare.othermodels(other.models=other.models)
+
+    if(verbose){
+      message("Collecting data for other models...")
+    }
+    dt.plot <- clv.fitted.transactions.plot.multiple.models.get.data(main=x, other.models=other.models, label=label,
+                                                                     l.plot.args = list(which='tracking', prediction.end=prediction.end,
+                                                                                        cumulative=cumulative, transactions=transactions, verbose=verbose))
+
+    # main model always in red
+    colors <- c('red', names(other.models))
   }
 
-  dt.plot[variable == "expectation", variable := label.model]
-  dt.plot[variable == "num.repeat.trans", variable := "Actual"]
+
+  # add color and label for actuals
+  if(transactions){
+    label <- c('Actual', label) # Add 'Actual' as first! Required for correct ordering
+    colors <-c('black', colors)
+  }
 
   if(!plot){
 
@@ -266,14 +291,18 @@ clv.fitted.transactions.plot.tracking <- function(x, newdata, prediction.end, cu
 
     return(dt.plot)
   }else{
-    if(transactions){
-      line.colors <- setNames(object = c("black", "red"), nm = c("Actual", label.model))
-    }else{
-      line.colors <- setNames(object = "red", nm = label.model)
-    }
+    # if(transactions){
+    #   color.mapping <- setNames(object = c("black", "red"), nm = c("Actual", label.model))
+    # }else{
+    #   color.mapping <- setNames(object = "red", nm = label.model)
+    # }
+
+    # Plotting order as in label
+    dt.plot[, variable := factor(variable, levels=label, ordered = TRUE)]
+
 
     # Plot table with formatting, label etc
-    return(clv.controlflow.plot.tracking.base(dt.plot = dt.plot, clv.data = x@clv.data, line.colors = line.colors))
+    return(clv.controlflow.plot.tracking.base(dt.plot = dt.plot, clv.data = x@clv.data, color.mapping = setNames(colors, label)))
   }
 
 }
@@ -340,9 +369,24 @@ clv.fitted.transactions.plot.barplot.pmf <- function(x, trans.bins, transactions
   check_err_msg(check_user_data_integer_vector_greater0(vec=trans.bins, var.name="trans.bins"))
   check_err_msg(.check_userinput_single_character(char=label.remaining, var.name="label.remaining"))
   check_err_msg(.check_user_data_single_boolean(b=calculate.remaining, var.name="calculate.remaining"))
+  if(!is.null(label)){ # null is allowed = std. model name
+    check_err_msg(.check_userinput_single_character(char=label, var.name="label"))
+  }
 
   dt.plot <- clv.fitted.transactions.plot.barplot.pmf.get.data(
     x=x, trans.bins = trans.bins, calculate.remaining=calculate.remaining, label.remaining = label.remaining, transactions = transactions)
+
+  # Rename variable before returning. Required when collecting data for other models
+  if(is.null(label)){
+    label.model <- x@clv.model@name.model
+  }else{
+    label.model <- label
+  }
+
+  dt.plot[variable=="expected.customers",   variable := label.model]
+  if(transactions){
+    dt.plot[variable=="actual.num.customers", variable := "Actual"]
+  }
 
   if(!plot){
     # data.table does not print when returned because it is returned directly after last [:=]
@@ -354,21 +398,16 @@ clv.fitted.transactions.plot.barplot.pmf <- function(x, trans.bins, transactions
     return(dt.plot)
   }else{
 
-    if(is.null(label)){
-      label.model <- x@clv.model@name.model
-    }else{
-      label.model <- label
-    }
-
-    dt.plot[variable=="expected.customers",   variable := label.model]
-
     if(transactions){
       dt.plot[variable=="actual.num.customers", variable := "Actual"]
-      lines.color <- setNames(object = c("black", "red"),
+      color.mapping <- setNames(object = c("black", "red"),
                               nm = c("Actual", label.model))
     }else{
-      lines.color <- setNames(object = "red", nm = label.model)
+      color.mapping <- setNames(object = "red", nm = label.model)
     }
+
+    # Plotting order
+    dt.plot[, variable := factor(variable, levels=names(color.mapping), ordered = TRUE)]
 
     p <- ggplot(dt.plot)+geom_col(aes(x=num.transactions, fill=variable, y=value),
                                   width = 0.5, position=position_dodge2(width = 0.9))
@@ -381,7 +420,7 @@ clv.fitted.transactions.plot.barplot.pmf <- function(x, trans.bins, transactions
                        size = rel(3))
 
     # Variable color and name
-    p <- p + scale_fill_manual(values = lines.color,
+    p <- p + scale_fill_manual(values = color.mapping,
                                aesthetics = c("color", "fill"),
                                guide = guide_legend(title="Legend"))
 
@@ -428,7 +467,7 @@ clv.fitted.transactions.plot.barplot.pmf.get.data <- function(x, trans.bins, cal
   dt.actuals[dt.pmf, expected.customers    := i.expected.customers, on = "char.num.transactions"]
   dt.actuals[, char.num.transactions := NULL]
 
-  dt.actuals[, num.customers := as.numeric(num.customers)] # integer, leads to melt warning
+  dt.actuals[, num.customers := as.numeric(num.customers)] # integer leads to melt warning
   setnames(dt.actuals, "num.customers", "actual.num.customers")
 
   if(!transactions){
@@ -438,4 +477,61 @@ clv.fitted.transactions.plot.barplot.pmf.get.data <- function(x, trans.bins, cal
 
 
   return(melt(dt.actuals, id.vars="num.transactions", variable.factor=FALSE))
+}
+
+
+
+clv.fitted.transactions.plot.multiple.models.prepare.label <- function(label, main.model, other.models){
+
+  # create labels from model's name if missing
+  if(length(label)==0){
+    label <- c(main.model@clv.model@name.model,
+               sapply(other.models, function(m){
+                 m@clv.model@name.model
+               }))
+
+    # postfix duplicate names because it breaks data stored in long-format
+    label <- make.unique(label, sep = "_")
+  }
+
+  return(label)
+}
+
+clv.fitted.transactions.plot.multiple.models.prepare.othermodels <- function(other.models){
+
+  if(is.null(names(other.models))){
+    names(other.models) <- rep_len("", length.out = length(other.models))
+  }
+
+  # replace missing names with colors
+  other.models.not.named <- nchar(names(other.models)) == 0
+  if(sum(other.models.not.named) > 0){
+    # cbbPalette without black and red
+    palette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#CC79A7")
+    names(other.models)[other.models.not.named] <- palette[seq(sum(other.models.not.named))]
+  }
+
+  return(other.models)
+}
+
+#' @importFrom utils modifyList
+clv.fitted.transactions.plot.multiple.models.get.data <- function(main.model, other.models, label, l.plot.args){
+
+  # Collect plot data for main model separately because includes actuals if desired
+  dt.plot <- do.call(plot, args = modifyList(x = l.plot.args,
+                                             val=list(x=main.model, plot=FALSE, label=label[1]),
+                                             keep.null = TRUE))
+
+  # Collect plot data for all other models (always without actuals)
+  # use for instead of lapply because requires access to label (and mapply is cumbersome)
+  l.plot.others <- list()
+  for(i in seq(other.models)){
+    # Have to call plot() generic and not relevant function because there could be newdata which has to be updated in each model
+    l.plot.others[[i]] <- do.call(plot, args = modifyList(x=l.plot.args,
+                                                          val=list(x=other.models[[i]], plot=FALSE, transactions=FALSE, label= label[i+1]),
+                                                          keep.null = TRUE))
+  }
+
+  return(rbindlist(c(list(dt.plot), l.plot.others), use.names = T))
+
 }
