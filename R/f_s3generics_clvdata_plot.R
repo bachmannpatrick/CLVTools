@@ -306,7 +306,10 @@ clv.data.plot.tracking <- function(x, prediction.end, cumulative, plot, verbose,
   #   To be sure to have all dates, merge data on original dates
   dt.dates.expectation[, period.num := NULL]
   dt.dates.expectation[dt.repeat.trans, (label.transactions) := get(label.transactions), on="period.until"]
-  dt.plot <- dt.dates.expectation
+  dt.plot <- melt(dt.dates.expectation, id.vars="period.until")
+
+  # last period often has NA as it marks the full span of the period
+  dt.plot <- dt.plot[!is.na(value)]
 
   # data.table does not print when returned because it is returned directly after last [:=]
   # " if a := is used inside a function with no DT[] before the end of the function, then the next
@@ -320,7 +323,7 @@ clv.data.plot.tracking <- function(x, prediction.end, cumulative, plot, verbose,
 
   # Plot table with formatting, label etc
   line.colors <- setNames(object = "black", nm = label.transactions)
-  p <- clv.controlflow.plot.make.plot(dt.data = dt.plot, clv.data = x, line.colors = line.colors)
+  p <- clv.controlflow.plot.tracking.base(dt.plot = dt.plot, clv.data = x, line.colors = line.colors)
   p <- p + theme(legend.position = "none")
   return(p)
 }
