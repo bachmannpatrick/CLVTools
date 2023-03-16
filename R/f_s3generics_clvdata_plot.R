@@ -254,7 +254,7 @@ clv.data.plot.add.default.theme <- function(p, custom=list()){
 
 clv.data.plot.tracking <- function(x, prediction.end, cumulative, plot, verbose, ...){
 
-  period.until <- period.num <- NULL
+  period.until <- period.num <- value <- NULL
 
   # This is nearly the same as plot.clv
   #   However, creating a single plotting controlflow leads to all kinds of side effects and special cases.
@@ -318,8 +318,9 @@ clv.data.plot.tracking <- function(x, prediction.end, cumulative, plot, verbose,
   dt.plot[]
 
   # Only if needed
-  if(!plot)
+  if(!plot){
     return(dt.plot)
+  }
 
   # Plot table with formatting, label etc
   p <- clv.controlflow.plot.tracking.base(dt.plot = dt.plot, clv.data = x,
@@ -407,7 +408,7 @@ clv.data.plot.barplot.frequency <- function(clv.data, count.repeat.trans, count.
   err.msg <- c()
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=count.repeat.trans, var.name="count.repeat.trans"))
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=count.remaining,    var.name="count.remaining"))
-  err.msg <- c(err.msg, .check_userinput_single_character(char=label.remaining, var.name="label.remaining"))
+  err.msg <- c(err.msg, .check_userinput_charactervec(char=label.remaining, var.name="label.remaining", n=1))
   err.msg <- c(err.msg, check_user_data_emptyellipsis(...))
   check_err_msg(err.msg) # count.repeat.trans has to be checked first
   check_err_msg(check_userinput_datanocov_transbins(trans.bins=trans.bins, count.repeat.trans=count.repeat.trans))

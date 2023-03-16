@@ -300,3 +300,19 @@ check_user_data_containsspendingdata <- function(clv.data){
 
   return(err.msg)
 }
+
+check_user_data_othermodels <- function(other.models){
+  if(!is.list(other.models)){
+    return("Parameter other.models has to be a list of fitted transaction models!")
+  }
+
+  # each element in list is a transaction model
+
+  if(!all(sapply(other.models, is, class2 = "clv.fitted.transactions"))){
+    return("All elements in 'other.models' have to be fitted transaction models, e.g the output of pnbd(), bgnbd(), or ggomnbd()!")
+  }
+
+  return(c())
+}
+
+
