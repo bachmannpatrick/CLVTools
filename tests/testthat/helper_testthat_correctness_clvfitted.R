@@ -11,7 +11,7 @@ fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box <- function(m
 
     expect_false(fct.DT.any.non.finite(predict(fitted, verbose = FALSE)))
     if(is(fitted, "clv.fitted.transactions")){
-      expect_false(fct.DT.any.non.finite(plot(fitted, plot = FALSE, verbose = FALSE)[, !"Actual"]))
+      expect_false(fct.DT.any.non.finite(plot(fitted, plot = FALSE, verbose = FALSE)))
     }
     # KKTs both true
     expect_true(res.sum$kkt1)

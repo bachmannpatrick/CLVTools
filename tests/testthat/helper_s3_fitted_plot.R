@@ -34,8 +34,7 @@ fct.testthat.runability.clvfittedtransactions.plot.tracking <- function(clv.fitt
   test_that("Works for plot=FALSE and always has 0 repeat trans and expectation on first",{
     skip_on_cran()
     expect_silent(dt.plot <- plot(clv.fitted, plot=FALSE, verbose=FALSE))
-    expect_true(isTRUE(all.equal( unlist(dt.plot[period.until == min(period.until), 2:3]),
-                                  c(0,0), check.attributes = FALSE)))
+    expect_true(isTRUE(all.equal( dt.plot[period.until == min(period.until), value], c(0,0), check.attributes = FALSE)))
   })
 
   test_that("Works with newdata", {
@@ -93,9 +92,9 @@ fct.testthat.runability.clvfittedtransactions.plot.tracking <- function(clv.fitt
     expect_silent(dt.plot <- plot(clv.fitted, plot=FALSE, verbose=FALSE))
     expect_s3_class(dt.plot, "data.table")
 
-    # expect_true(all(c("period.until", "variable", "value") %in% colnames(dt.plot)))
-    expect_true(all(c("period.until", "Actual", clv.fitted@clv.model@name.model)
-                    %in% colnames(dt.plot)))
+    expect_true(all(c("period.until", "variable", "value") %in% colnames(dt.plot)))
+    expect_true(all(c("Actual", clv.fitted@clv.model@name.model) %in% dt.plot[, variable]))
+
     # Num repeat trans may have some NA if prediction.end beyond holdout.end
     expect_false(anyNA(dt.plot[, c("period.until", clv.fitted@clv.model@name.model)]))
 
@@ -103,7 +102,7 @@ fct.testthat.runability.clvfittedtransactions.plot.tracking <- function(clv.fitt
     expect_true(ncol(dt.plot) == 3)
 
     expect_silent(dt.plot <- plot(clv.fitted, transactions = FALSE, plot=FALSE, verbose=FALSE))
-    expect_true(ncol(dt.plot) == 2)
+    expect_true(ncol(dt.plot) == 3)
 
     # Same dates/periods for transactions and expectations
     #   = also not some expectations missing
