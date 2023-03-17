@@ -15,6 +15,7 @@
 #'
 #' @param newdata An object of class clv.data for which the plotting should be made with the fitted model.
 #' If none or NULL is given, the plot is made for the data on which the model was fit.
+#' If \code{other.models} was specified, the data in each model is replaced with \code{newdata}.
 #' @param transactions Whether the actual observed repeat transactions should be plotted.
 #' @param label Character vector to label each model. If NULL, the model(s) internal name is used (see examples).
 #' @param plot Whether a plot is created or only the assembled data is returned.
@@ -208,7 +209,12 @@ plot.clv.fitted.transactions <- function (x,
   # Newdata ------------------------------------------------------------------------------------------------
   # Because many of the following steps refer to the data stored in the fitted model,
   #   it first is replaced with newdata before any other steps are done
-  if(!is.null(newdata)){
+  #
+  # Skip replacing newdata if there are other models, as each model will be called again separately with newdata.
+  # This saves replacing the clv.data in the main model (x) two times at initial call with other.models and separte call to plot for x only.
+  # (costly mem copy and some models require re-doing LL)
+  if(!is.null(newdata) & length(other.models)==0){
+
     # check newdata
     clv.controlflow.check.newdata(clv.fitted = x, user.newdata = newdata, prediction.end=prediction.end)
 
@@ -226,7 +232,7 @@ plot.clv.fitted.transactions <- function (x,
     "tracking" = clv.fitted.transactions.plot.tracking(x=x, other.models=other.models, newdata=newdata, prediction.end=prediction.end,
                                                        cumulative=cumulative, transactions=transactions,
                                                        label=label, plot=plot, verbose=verbose),
-    "pmf" = clv.fitted.transactions.plot.barplot.pmf(x=x, other.models=other.models, trans.bins=trans.bins, transactions=transactions,
+    "pmf" = clv.fitted.transactions.plot.barplot.pmf(x=x, newdata=newdata, other.models=other.models, trans.bins=trans.bins, transactions=transactions,
                                                      calculate.remaining=calculate.remaining, label.remaining=label.remaining,
                                                      label=label, plot=plot, verbose=verbose)))
 }
@@ -298,7 +304,9 @@ clv.fitted.transactions.plot.tracking <- function(x, other.models, newdata, pred
       message("Collecting data for other models...")
     }
     dt.plot <- clv.fitted.transactions.plot.multiple.models.get.data(main.model=x, other.models=other.models, label=label,
-                                                                     l.plot.args = list(which='tracking', prediction.end=prediction.end,
+                                                                     l.plot.args = list(which='tracking',
+                                                                                        prediction.end=prediction.end,
+                                                                                        newdata=newdata,
                                                                                         cumulative=cumulative, transactions=transactions, verbose=verbose))
     # main model always in red
     colors <- c('red', names(other.models))
@@ -385,7 +393,7 @@ clv.fitted.transactions.plot.tracking.get.data <- function(x, prediction.end, cu
 
 # PMF plot -----------------------------------------------------------------------------------------------
 #' @importFrom ggplot2 ggplot geom_col position_dodge2 guide_legend scale_x_discrete
-clv.fitted.transactions.plot.barplot.pmf <- function(x, other.models, trans.bins, transactions, label,
+clv.fitted.transactions.plot.barplot.pmf <- function(x, newdata, other.models, trans.bins, transactions, label,
                                                      calculate.remaining, label.remaining, plot, verbose){
   pmf.x <- pmf.value  <- actual.num.customers <- expected.customers <- i.expected.customers <- NULL
   num.customers <- num.transactions <- variable <- value <- NULL
@@ -411,7 +419,10 @@ clv.fitted.transactions.plot.barplot.pmf <- function(x, other.models, trans.bins
       message("Collecting data for other models...")
     }
     dt.plot <- clv.fitted.transactions.plot.multiple.models.get.data(main.model = x, other.models = other.models, label = label,
-                                                                     l.plot.args = list(which="pmf", trans.bins=trans.bins, label.remaining=label.remaining,
+                                                                     l.plot.args = list(which="pmf",
+                                                                                        trans.bins=trans.bins,
+                                                                                        newdata=newdata,
+                                                                                        label.remaining=label.remaining,
                                                                                         calculate.remaining=calculate.remaining, verbose=verbose))
     colors <- c('red', names(other.models))
   }

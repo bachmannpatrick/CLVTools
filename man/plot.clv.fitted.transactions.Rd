@@ -58,7 +58,8 @@
 \item{label.remaining}{"pmf": Label for the last bar, if \code{calculate.remaining=TRUE}.}
 
 \item{newdata}{An object of class clv.data for which the plotting should be made with the fitted model.
-If none or NULL is given, the plot is made for the data on which the model was fit.}
+If none or NULL is given, the plot is made for the data on which the model was fit.
+If \code{other.models} was specified, the data in each model is replaced with \code{newdata}.}
 
 \item{transactions}{Whether the actual observed repeat transactions should be plotted.}
 
