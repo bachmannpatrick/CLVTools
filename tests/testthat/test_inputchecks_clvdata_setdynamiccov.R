@@ -577,7 +577,7 @@ test_that("Fails if NA/NULL", {
   expect_error(do.call(SetDynamicCovariates, modifyList(l.std.args, list(name.id=NA_character_))),
                regexp = "any NA")
   expect_error(do.call(SetDynamicCovariates, modifyList(l.std.args, list(name.id=character(0)))),
-               regexp = "single element")
+               regexp = "exactly 1 element")
 })
 
 test_that("Fails if not character", {
@@ -591,11 +591,11 @@ test_that("Fails if not character", {
 
 test_that("Fails if multiple", {
   expect_error(do.call(SetDynamicCovariates, modifyList(l.std.args, list(name.id=c("Id", "Id")), keep.null = TRUE)),
-               regexp = "single element")
+               regexp = "exactly 1 element")
   expect_error(do.call(SetDynamicCovariates, modifyList(l.std.args, list(name.id=c("Id", "Id")), keep.null = TRUE)),
-               regexp = "single element")
+               regexp = "exactly 1 element")
   expect_error(do.call(SetDynamicCovariates, modifyList(l.std.args, list(name.id=c("Id", "Date")), keep.null = TRUE)),
-               regexp = "single element")
+               regexp = "exactly 1 element")
 })
 
 test_that("Fails if not in transaction data", {
@@ -626,7 +626,7 @@ test_that("Fails if NA/NULL", {
   expect_error(do.call(SetDynamicCovariates, modifyList(l.std.args, list(name.date=NA_character_))),
                regexp = "any NA")
   expect_error(do.call(SetDynamicCovariates, modifyList(l.std.args, list(name.date=character(0)))),
-               regexp = "single element")
+               regexp = "exactly 1 element")
 })
 
 test_that("Fails if not character", {
@@ -640,11 +640,11 @@ test_that("Fails if not character", {
 
 test_that("Fails if multiple", {
   expect_error(do.call(SetDynamicCovariates, modifyList(l.std.args, list(name.date=c("Id", "Id")), keep.null = TRUE)),
-               regexp = "single element")
+               regexp = "exactly 1 element")
   expect_error(do.call(SetDynamicCovariates, modifyList(l.std.args, list(name.date=c("Id", "Id")), keep.null = TRUE)),
-               regexp = "single element")
+               regexp = "exactly 1 element")
   expect_error(do.call(SetDynamicCovariates, modifyList(l.std.args, list(name.date=c("Id", "Date")), keep.null = TRUE)),
-               regexp = "single element")
+               regexp = "exactly 1 element")
 })
 
 test_that("Fails if not in transaction data", {

@@ -9,7 +9,7 @@ check_err_msg <- function(err.msg){
   if(!is.logical(b))
     return(paste0("The parameter ", var.name, " needs to be of type logical (True/False)!"))
   if(length(b)>1)
-    err.msg <- c(err.msg, paste0("The parameter ", var.name, " can only contain a single element!"))
+    err.msg <- c(err.msg, paste0("The parameter ", var.name, " can only contain 1 element!"))
   if(anyNA(b))
     err.msg <- c(err.msg, paste0("The parameter ", var.name, " cannot be NA!"))
   return(err.msg)

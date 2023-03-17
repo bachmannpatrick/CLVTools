@@ -90,7 +90,7 @@ test_that("Fails if not character", {
   expect_error(clvdata(date.format = lubridate::ymd, data.transactions = cdnow, time.unit = "w"), regexp = "character")
   expect_error(clvdata(date.format = Sys.Date(), data.transactions = cdnow, time.unit = "w"), regexp = "character")
 
-  expect_error(clvdata(date.format = character(0), data.transactions = cdnow, time.unit = "w"), regexp = "single")
+  expect_error(clvdata(date.format = character(0), data.transactions = cdnow, time.unit = "w"), regexp = "exactly 1 element")
   expect_error(clvdata(date.format = list("ymd"), data.transactions = cdnow, time.unit = "w"), regexp = "character")
   expect_error(clvdata(date.format = data.frame("ymd"), data.transactions = cdnow, time.unit = "w"), regexp = "character")
 })
@@ -105,8 +105,8 @@ test_that("Fails if date.format wrong format", {
 })
 
 test_that("Fails if has multiple", {
-  expect_error(clvdata(date.format = c("ymd", "ymd"), data.transactions = cdnow, time.unit = "w"), regexp = "single")
-  expect_error(clvdata(date.format = c("ymd", "dmy"), data.transactions = cdnow, time.unit = "w"), regexp = "single")
+  expect_error(clvdata(date.format = c("ymd", "ymd"), data.transactions = cdnow, time.unit = "w"), regexp = "exactly 1 element")
+  expect_error(clvdata(date.format = c("ymd", "dmy"), data.transactions = cdnow, time.unit = "w"), regexp = "exactly 1 element")
 })
 
 
@@ -141,7 +141,7 @@ test_that("Fails if not character", {
 
 test_that("Fails if wrong time.unit format", {
   expect_error(clvdata(time.unit = character(0), data.transactions = cdnow, date.format="ymd"),
-               regexp = "one single element")
+               regexp = "exactly 1 element")
   expect_error(clvdata(time.unit = "beeks", data.transactions = cdnow, date.format="ymd"),
                regexp = "one of the following")
   expect_error(clvdata(time.unit = "decade", data.transactions = cdnow, date.format="ymd"),
@@ -154,9 +154,9 @@ test_that("Fails if wrong time.unit format", {
 
 test_that("Fails if has multiple", {
   expect_error(clvdata(time.unit = c("weeks", "years"), data.transactions = cdnow, date.format="ymd"),
-               regexp = "one single element")
+               regexp = "exactly 1 element")
   expect_error(clvdata(time.unit = c("weeks", "weeks"), data.transactions = cdnow, date.format="ymd"),
-               regexp = "single element")
+               regexp = "exactly 1 element")
 })
 
 test_that("Has no default argument", {
@@ -182,11 +182,11 @@ test_that("Fails if not numeric, character, or date",{
                regexp = "can be converted")
 
   expect_error(clvdata(estimation.split = character(0),time.unit = "w", data.transactions = cdnow, date.format="ymd"),
-               regexp = "one single element")
+               regexp = "exactly one single element")
   expect_error(clvdata(estimation.split = numeric(),time.unit = "w", data.transactions = cdnow, date.format="ymd"),
-               regexp = "one single element")
+               regexp = "exactly one single element")
   expect_error(clvdata(estimation.split = as.Date(character(0)),time.unit = "w", data.transactions = cdnow, date.format="ymd"),
-               regexp = "one single element")
+               regexp = "exactly one single element")
   expect_error(clvdata(estimation.split = as.Date(NA_character_),time.unit = "w", data.transactions = cdnow, date.format="ymd"),
                regexp = "any NA")
 })
@@ -241,7 +241,7 @@ test_that("Fails if NA/NULL", {
   expect_error(clvdata(name.id = NA_character_, time.unit = "w", data.transactions = cdnow, date.format="ymd"),
                regexp = "any NA")
   expect_error(clvdata(name.id = character(0), time.unit = "w", data.transactions = cdnow, date.format="ymd"),
-               regexp = "single element")
+               regexp = "exactly 1 element")
 })
 
 test_that("Fails if not character", {
@@ -255,9 +255,9 @@ test_that("Fails if not character", {
 
 test_that("Fails if multiple", {
   expect_error(clvdata(name.id = c("Id", "Id"), time.unit = "w", data.transactions = cdnow, date.format="ymd"),
-               regexp = "single element")
+               regexp = "exactly 1 element")
   expect_error(clvdata(name.id = c("Id", "Date"), time.unit = "w", data.transactions = cdnow, date.format="ymd"),
-               regexp = "single element")
+               regexp = "exactly 1 element")
 })
 
 test_that("Fails if not in transaction data", {
@@ -288,7 +288,7 @@ test_that("Fails if NA/NULL", {
   expect_error(clvdata(name.date = NA_character_, time.unit = "w", data.transactions = cdnow, date.format="ymd"),
                regexp = "any NA")
   expect_error(clvdata(name.date = character(0), time.unit = "w", data.transactions = cdnow, date.format="ymd"),
-               regexp = "single element")
+               regexp = "exactly 1 element")
 })
 
 test_that("Fails if not character", {
@@ -302,9 +302,9 @@ test_that("Fails if not character", {
 
 test_that("Fails if multiple", {
   expect_error(clvdata(name.date = c("Id", "Id"), time.unit = "w", data.transactions = cdnow, date.format="ymd"),
-               regexp = "single element")
+               regexp = "exactly 1 element")
   expect_error(clvdata(name.date = c("Id", "Date"), time.unit = "w", data.transactions = cdnow, date.format="ymd"),
-               regexp = "single element")
+               regexp = "exactly 1 element")
 })
 
 test_that("Fails if not in transaction data", {
@@ -338,7 +338,7 @@ test_that("Fails if NA/empty", {
   expect_error(clvdata(name.price = NA_character_, time.unit = "w", data.transactions = cdnow, date.format="ymd"),
                regexp = "any NA")
   expect_error(clvdata(name.price = character(0), time.unit = "w", data.transactions = cdnow, date.format="ymd"),
-               regexp = "single element")
+               regexp = "exactly 1 element")
 })
 
 test_that("Fails if not character", {
@@ -352,9 +352,9 @@ test_that("Fails if not character", {
 
 test_that("Fails if multiple", {
   expect_error(clvdata(name.price = c("Id", "Id"), time.unit = "w", data.transactions = cdnow, date.format="ymd"),
-               regexp = "single element")
+               regexp = "exactly 1 element")
   expect_error(clvdata(name.price = c("Id", "Date"), time.unit = "w", data.transactions = cdnow, date.format="ymd"),
-               regexp = "single element")
+               regexp = "exactly 1 element")
 })
 
 test_that("Fails if not in transaction data", {
