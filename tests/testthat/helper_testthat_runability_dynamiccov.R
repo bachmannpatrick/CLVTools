@@ -19,8 +19,7 @@ fct.testthat.runability.dynamiccov.plot.has.0.repeat.transactions.expectations <
   test_that("Plot always has 0 on repeat transactions and expectations", {
     expect_warning(dt.plot <- plot(clv.fitted, prediction.end = 5, verbose=FALSE, plot=FALSE),
                    regexp = "Not plotting full holdout period")
-    expect_true(isTRUE(all.equal(unlist(dt.plot[period.until == min(period.until), c(2,3)]),
-                                 c(0,0), check.attributes = FALSE)))
+    expect_true(isTRUE(all.equal(dt.plot[period.until == min(period.until), value], c(0,0))))
   })
 }
 

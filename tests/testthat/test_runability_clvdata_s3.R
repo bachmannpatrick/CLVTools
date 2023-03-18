@@ -68,7 +68,7 @@ fct.helper.test.runability.clv.data.trackingplot <- function(clv.data){
     skip_on_cran()
     expect_message(dt.plot <- plot(clv.data, plot=FALSE), regexp = "Plotting")
     expect_s3_class(dt.plot, "data.table")
-    expect_true(isTRUE(all.equal(unlist(dt.plot[period.until == min(period.until), value]), 0, check.attributes = FALSE)))
+    expect_true(isTRUE(all.equal(dt.plot[period.until == min(period.until), value], 0)))
   })
 
   test_that("plot, verbose = TRUE", {
