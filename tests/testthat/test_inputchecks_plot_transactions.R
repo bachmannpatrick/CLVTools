@@ -27,6 +27,47 @@ fct.testthat.inputchecks.clvfittedtransactions.plot.ellipsis <- function(l.std.a
   })
 }
 
+fct.testthat.inputchecks.clvfittedtransactions.othermodels.are.not.fitted.transaction.models <- function(clv.fitted, which){
+  test_that("other.models is not list", {
+    expect_error(plot(clv.fitted, which=which, other.models=NULL), regexp = "list of fitted transaction models")
+    expect_error(plot(clv.fitted, which=which, other.models=123), regexp = "list of fitted transaction models")
+    expect_error(plot(clv.fitted, which=which, other.models=clv.fitted), regexp = "list of fitted transaction models")
+    expect_error(plot(clv.fitted, which=which, other.models=clv.fitted@clv.data), regexp = "list of fitted transaction models")
+    expect_error(plot(clv.fitted, which=which, other.models=bgnbd), regexp = "list of fitted transaction models")
+  })
+
+  test_that("other.models contains element which are not clv.fitted.transactions", {
+    expect_error(plot(clv.fitted, which=which, other.models=list(1, 2, 3)), regexp = "fitted transaction models")
+    expect_error(plot(clv.fitted, which=which, other.models=list(clv.fitted, NA)), regexp = "fitted transaction models")
+    expect_error(plot(clv.fitted, which=which, other.models=list(clv.fitted, 2, clv.fitted)), regexp = "fitted transaction models")
+    expect_error(plot(clv.fitted, which=which, other.models=list(clv.fitted@clv.data)), regexp = "fitted transaction models")
+    expect_error(plot(clv.fitted, which=which, other.models=list(pnbd, bgnbd)), regexp = "fitted transaction models")
+  })
+}
+
+
+fct.testthat.inputchecks.clvfittedtransactions.plot.label.with.othermodels <- function(clv.fitted, which, clv.fitted.other){
+
+  test_that("label has required length", {
+    expect_error(plot(clv.fitted, which=which, other.models=list(clv.fitted.other), label="other"), regexp = "contain exactly")
+    expect_error(plot(clv.fitted, which=which, other.models=list(clv.fitted.other, clv.fitted.other), label=c("this", "other")), regexp = "contain exactly")
+  })
+
+
+  test_that("label has no empty text elements", {
+    expect_error(plot(clv.fitted, which=which, other.models=list(clv.fitted.other), label=c("this", "")), regexp = "empty")
+    expect_error(plot(clv.fitted, which=which, other.models=list(clv.fitted.other), label=c("", "other")), regexp = "empty")
+    expect_error(plot(clv.fitted, which=which, other.models=list(clv.fitted.other), label=c("", "")), regexp = "empty")
+    expect_error(plot(clv.fitted, which=which, other.models=list(clv.fitted.other, clv.fitted.other), label=c("this", "other", "")), regexp = "empty")
+  })
+
+  test_that("label has no duplicates", {
+    expect_error(plot(clv.fitted, which=which, other.models=list(clv.fitted.other), label=c("other", "other")), regexp = "duplicate")
+    expect_error(plot(clv.fitted, which=which, other.models=list(clv.fitted.other, clv.fitted.other), label=c("this", "other", "other")), regexp = "duplicate")
+  })
+
+}
+
 fct.testthat.inputchecks.clvfittedtransactions.plot.pmf.trans.bins <- function(clv.fitted){
   test_that("trans.bins is valid input (integer vector)", {
     skip_on_cran()
@@ -117,12 +158,19 @@ fct.testthat.inputchecks.clvfittedtransactions.plot.common <- function(which, l.
                                                                             clv.data.no.cov = clv.data.cdnow.nohold,
                                                                             clv.data.static.cov = clv.data.apparel.static.cov)
 
+  context(paste0("Inputchecks - clv.fitted.transactions plot ",which," - other.models"))
+  fct.testthat.inputchecks.clvfittedtransactions.othermodels.are.not.fitted.transaction.models(clv.fitted = fitted.cdnow.nohold, which = which)
+  fct.testthat.inputchecks.clvfittedtransactions.othermodels.are.not.fitted.transaction.models(clv.fitted = fitted.apparel.static, which = which)
+
+  # Label for single model and for when other.models is specified
+  context(paste0("Inputchecks - clv.fitted.transactions plot ", which," - label, no other.models"))
+  fct.helper.inputcheck.single.character(fct = plot, l.std.args = l.std.args, name.param = "label", null.allowed = TRUE)
+
+  context(paste0("Inputchecks - clv.fitted.transactions plot ", which," - label, with other.models"))
+  fct.testthat.inputchecks.clvfittedtransactions.plot.label.with.othermodels(clv.fitted=fitted.cdnow.nohold, which=which, clv.fitted.other=fitted.apparel.static)
 
   context(paste0("Inputchecks - clv.fitted.transactions plot ", which," - transactions"))
   .fct.helper.inputchecks.single.logical(fct = plot, l.std.args = l.std.args, name.param = "transactions")
-
-  context(paste0("Inputchecks - clv.fitted.transactions plot ", which," - label"))
-  fct.helper.inputcheck.single.character(fct = plot, l.std.args = l.std.args, name.param = "label", null.allowed = TRUE)
 
   context(paste0("Inputchecks - clv.fitted.transactions plot ", which," - plot"))
   .fct.helper.inputchecks.single.logical(fct = plot, l.std.args = l.std.args, name.param = "plot")

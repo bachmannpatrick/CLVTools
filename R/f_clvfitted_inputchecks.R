@@ -316,3 +316,24 @@ check_user_data_othermodels <- function(other.models){
 }
 
 
+check_user_data_label <- function(label, other.models){
+  if(is.null(label)){
+    # null is allowed = std. model name(s)
+    return(c())
+  }
+  if(length(other.models)==0){
+      return(.check_userinput_charactervec(char=label, var.name="label", n=1))
+  }else{
+
+    # requires names for main and all other models
+    err.msg <- .check_userinput_charactervec(char=label, var.name="label", n=1+length(other.models))
+    if(length(err.msg)){
+      return(err.msg)
+    }
+
+    if(any(duplicated(label))){
+      err.msg <- c(err.msg, "Parameter label may not contain any duplicates!")
+    }
+    return(err.msg)
+  }
+}

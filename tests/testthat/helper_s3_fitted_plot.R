@@ -1,5 +1,4 @@
-fct.testthat.runability.clvfittedtransactions.plot.common <- function(clv.fitted, clv.newdata.nohold, clv.newdata.withhold,
-                                                                      which){
+fct.testthat.runability.clvfittedtransactions.plot.common <- function(clv.fitted, which){
   test_that("Works with/without transactions=TRUE/FALSE",{
     skip_on_cran()
     expect_silent(plot(clv.fitted, which=which, transactions=TRUE, verbose=FALSE))
@@ -10,8 +9,43 @@ fct.testthat.runability.clvfittedtransactions.plot.common <- function(clv.fitted
     skip_on_cran()
     expect_silent(plot(clv.fitted, which=which, label="ABC", verbose=FALSE))
   })
-
 }
+
+fct.testthat.runability.clvfittedtransactions.plot.other.models <- function(clv.fitted, which, clv.fitted.other){
+
+  test_that("works with and without label",{
+    skip_on_cran()
+    expect_silent(plot(clv.fitted, which=which, other.models=list(clv.fitted, clv.fitted.other), label=c(), verbose=FALSE))
+    expect_silent(dt.plot <- plot(clv.fitted, which=which, other.models=list(clv.fitted, clv.fitted.other), label=c("this", "again", "other"), verbose=FALSE, plot=FALSE))
+    expect_setequal(dt.plot[, unique(variable)], c("Actual", "this", "again", "other"))
+  })
+
+  test_that("works with and without colors",{
+    skip_on_cran()
+    expect_silent(plot(clv.fitted, which=which, other.models=list(clv.fitted, clv.fitted.other), verbose=FALSE))
+    expect_silent(plot(clv.fitted, which=which, other.models=list("blue"=clv.fitted, "#00ff00"=clv.fitted.other), verbose=FALSE))
+    # partly named other models
+    expect_silent(plot(clv.fitted, which=which, other.models=list(blue=clv.fitted, clv.fitted.other), verbose=FALSE))
+  })
+
+  test_that("works with newdata",{
+    skip_on_cran()
+    expect_silent(plot(clv.fitted, which=which, other.models=list(clv.fitted, clv.fitted.other), newdata=clv.fitted@clv.data, verbose=FALSE))
+  })
+
+  test_that("works with additional parameters",{
+    skip_on_cran()
+    if(tolower(which)=="pmf"){
+      expect_silent(plot(clv.fitted, which=which, other.models=list(clv.fitted, clv.fitted.other), trans.bins=0:3, label.remaining="rest", calculate.remaining=TRUE, transactions=TRUE, verbose=FALSE))
+
+    }
+    if(tolower(which) == "tracking"){
+      expect_silent(plot(clv.fitted, which=which, other.models=list(clv.fitted, clv.fitted.other), prediction.end=50, cumulative=TRUE, transactions=TRUE,  verbose=FALSE))
+    }
+  })
+}
+
+
 
 fct.testthat.runability.clvfittedtransactions.plot.tracking <- function(clv.fitted, clv.newdata.nohold, clv.newdata.withhold){
   test_that("Works for verbose=TRUE",{
@@ -190,13 +224,13 @@ fct.testthat.runability.clvfittedtransactions.plot.pmf <- function(clv.fitted, c
 
 fct.testthat.runability.clvfittedtransactions.plot <- function(clv.fitted, clv.newdata.nohold, clv.newdata.withhold){
 
-  fct.testthat.runability.clvfittedtransactions.plot.common(clv.fitted=clv.fitted, clv.newdata.nohold=clv.newdata.nohold, clv.newdata.withhold=clv.newdata.withhold,
-                                                            which="tracking")
+  fct.testthat.runability.clvfittedtransactions.plot.common(clv.fitted=clv.fitted, which="tracking")
   fct.testthat.runability.clvfittedtransactions.plot.tracking(clv.fitted=clv.fitted, clv.newdata.nohold=clv.newdata.nohold, clv.newdata.withhold=clv.newdata.withhold)
+  fct.testthat.runability.clvfittedtransactions.plot.other.models(clv.fitted = clv.fitted, clv.fitted.other=clv.fitted, which="tracking")
 
   if(fct.helper.has.pmf(clv.fitted)){
-    fct.testthat.runability.clvfittedtransactions.plot.common(clv.fitted=clv.fitted, clv.newdata.nohold=clv.newdata.nohold, clv.newdata.withhold=clv.newdata.withhold,
-                                                              which="pmf")
+    fct.testthat.runability.clvfittedtransactions.plot.common(clv.fitted=clv.fitted, which="pmf")
+    fct.testthat.runability.clvfittedtransactions.plot.other.models(clv.fitted = clv.fitted, clv.fitted.other=clv.fitted, which="pmf")
     fct.testthat.runability.clvfittedtransactions.plot.pmf(clv.fitted=clv.fitted, clv.newdata.nohold=clv.newdata.nohold, clv.newdata.withhold=clv.newdata.withhold)
   }
 }

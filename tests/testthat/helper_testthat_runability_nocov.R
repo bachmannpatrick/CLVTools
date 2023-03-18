@@ -73,9 +73,11 @@ fct.testthat.runability.nocov <- function(name.model, method, cdnow,
   clv.newdata.nohold   <- fct.helper.create.fake.newdata.nocov(data = cdnow, estimation.split = NULL)
   clv.newdata.withhold <- fct.helper.create.fake.newdata.nocov(data = cdnow, estimation.split = 37)
 
+  # S3 are tested in .testthat. functions using l.args.test.all.s3 args
   param.names <- names(start.params.model)
   l.args.test.all.s3 <- list(full.names = param.names, clv.newdata.nohold = clv.newdata.nohold,
                              clv.newdata.withhold = clv.newdata.withhold)
+
 
   # Common tests ------------------------------------------------------------------------------------------------------------
   fct.testthat.runability.clvfitted.out.of.the.box.no.hold(method = method, clv.data.noholdout = clv.data.cdnow.noholdout,

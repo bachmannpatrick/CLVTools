@@ -191,19 +191,8 @@ plot.clv.fitted.transactions <- function (x,
   err.msg <- c(err.msg, check_user_data_othermodels(other.models=other.models))
   err.msg <- c(err.msg, check_user_data_emptyellipsis(...))
   check_err_msg(err.msg)
+  check_err_msg(check_user_data_label(label=label, other.models=other.models))
 
-  if(length(other.models)==0){
-    if(!is.null(label)){ # null is allowed = std. model name
-      check_err_msg(.check_userinput_charactervec(char=label, var.name="label", n=1))
-    }else{
-      label <- x@clv.model@name.model
-    }
-  }else{
-    # names for main and all other models
-    if(!is.null(label)){
-      check_err_msg(.check_userinput_charactervec(char=label, var.name="label", n=1+length(other.models)))
-    }
-  }
 
 
   # Newdata ------------------------------------------------------------------------------------------------
@@ -287,6 +276,9 @@ clv.fitted.transactions.plot.tracking <- function(x, other.models, newdata, pred
                                     plot=plot, label.line=label, verbose=verbose)
 
   if(length(other.models) == 0){
+    if(length(label) == 0){
+      label <- x@clv.model@name.model
+    }
 
     dt.plot <- clv.fitted.transactions.plot.tracking.get.data(
       x=x, prediction.end = prediction.end, cumulative=cumulative, label=label, transactions=transactions, verbose=verbose)
@@ -403,6 +395,9 @@ clv.fitted.transactions.plot.barplot.pmf <- function(x, newdata, other.models, t
   check_err_msg(.check_user_data_single_boolean(b=calculate.remaining, var.name="calculate.remaining"))
 
   if(length(other.models) == 0){
+    if(length(label) == 0){
+      label <- x@clv.model@name.model
+    }
 
     dt.plot <- clv.fitted.transactions.plot.barplot.pmf.get.data(
       x=x, trans.bins = trans.bins, calculate.remaining=calculate.remaining, label.remaining = label.remaining, transactions = transactions)
@@ -519,7 +514,7 @@ clv.fitted.transactions.plot.barplot.pmf.get.data <- function(x, trans.bins, cal
 }
 
 
-
+# other.models -----------------------------------------------------------------------------------------------
 clv.fitted.transactions.plot.multiple.models.prepare.label <- function(label, main.model, other.models){
 
   # create labels from model's name if missing
