@@ -161,7 +161,7 @@ fct.testthat.runability.clvfittedtransactions.predict <- function(fitted.transac
     skip_on_cran()
 
     fct.predict <- function(end.1, end.2, end.3, ...){
-      if(is(fitted.transactions@clv.data@clv.time, "clv.time.date") & (is.POSIXct(end.1) | is.POSIXlt(end.1))){
+      if(is(fitted.transactions@clv.data@clv.time, "clv.time.date") & (is.POSIXct(end.1) | lubridate::is.POSIXlt(end.1))){
         expect_message(dt.pred.1 <- predict(fitted.transactions,prediction.end = end.1, predict.spending=FALSE, verbose=FALSE), regexp = "cut off")
         expect_message(dt.pred.2 <- predict(fitted.transactions,prediction.end = end.2, predict.spending=FALSE, verbose=FALSE), regexp = "cut off")
         expect_message(dt.pred.3 <- predict(fitted.transactions,prediction.end = end.3, predict.spending=FALSE, verbose=FALSE), regexp = "cut off")

@@ -149,9 +149,9 @@ fct.testthat.runability.clvfittedtransactions.plot.tracking <- function(clv.fitt
       skip_on_cran()
 
       if(is(clv.fitted@clv.data@clv.time, "clv.time.date")){
-        tp.end <- clv.fitted@clv.data@clv.time@timepoint.holdout.end-lubridate::days(3)
+        tp.end <- clv.fitted@clv.data@clv.time@timepoint.estimation.end+lubridate::days(10)
       }else{
-        tp.end <- clv.fitted@clv.data@clv.time@timepoint.holdout.end-lubridate::hours(8)
+        tp.end <- clv.fitted@clv.data@clv.time@timepoint.estimation.end+lubridate::hours(10)
       }
 
       # prediction.end as character, Date, posix, numeric
@@ -285,22 +285,22 @@ fct.testthat.runability.clvfittedtransactions.plot.pmf <- function(clv.fitted, c
 }
 
 fct.testthat.runability.clvfittedtransactions.plot <- function(clv.fitted, clv.newdata.nohold, clv.newdata.withhold){
-  # context("fct.testthat.runability.clvfittedtransactions.plot.common")
-  # fct.testthat.runability.clvfittedtransactions.plot.common(clv.fitted=clv.fitted, which="tracking")
+  context("fct.testthat.runability.clvfittedtransactions.plot.common")
+  fct.testthat.runability.clvfittedtransactions.plot.common(clv.fitted=clv.fitted, which="tracking")
   context("fct.testthat.runability.clvfittedtransactions.plot.tracking")
   fct.testthat.runability.clvfittedtransactions.plot.tracking(clv.fitted=clv.fitted, clv.newdata.nohold=clv.newdata.nohold, clv.newdata.withhold=clv.newdata.withhold)
-  # context("fct.testthat.runability.clvfittedtransactions.plot.other.models")
-  # fct.testthat.runability.clvfittedtransactions.plot.other.models(clv.fitted = clv.fitted, clv.fitted.other=clv.fitted, which="tracking")
-  # context("fct.helper.has.pmf")
-  # test_that("fct.helper.has.pmf", {expect_true(TRUE)})
-  # if(fct.helper.has.pmf(clv.fitted)){
-  #   context("fct.testthat.runability.clvfittedtransactions.plot.common")
-  #   fct.testthat.runability.clvfittedtransactions.plot.common(clv.fitted=clv.fitted, which="pmf")
-  #   context("fct.testthat.runability.clvfittedtransactions.plot.other.models")
-  #   fct.testthat.runability.clvfittedtransactions.plot.other.models(clv.fitted = clv.fitted, clv.fitted.other=clv.fitted, which="pmf")
-  #   context("fct.testthat.runability.clvfittedtransactions.plot.pmf")
-  #   fct.testthat.runability.clvfittedtransactions.plot.pmf(clv.fitted=clv.fitted, clv.newdata.nohold=clv.newdata.nohold, clv.newdata.withhold=clv.newdata.withhold)
-  # }
+  context("fct.testthat.runability.clvfittedtransactions.plot.other.models")
+  fct.testthat.runability.clvfittedtransactions.plot.other.models(clv.fitted = clv.fitted, clv.fitted.other=clv.fitted, which="tracking")
+  context("fct.helper.has.pmf")
+  test_that("fct.helper.has.pmf", {expect_true(TRUE)})
+  if(fct.helper.has.pmf(clv.fitted)){
+    context("fct.testthat.runability.clvfittedtransactions.plot.common")
+    fct.testthat.runability.clvfittedtransactions.plot.common(clv.fitted=clv.fitted, which="pmf")
+    context("fct.testthat.runability.clvfittedtransactions.plot.other.models")
+    fct.testthat.runability.clvfittedtransactions.plot.other.models(clv.fitted = clv.fitted, clv.fitted.other=clv.fitted, which="pmf")
+    context("fct.testthat.runability.clvfittedtransactions.plot.pmf")
+    fct.testthat.runability.clvfittedtransactions.plot.pmf(clv.fitted=clv.fitted, clv.newdata.nohold=clv.newdata.nohold, clv.newdata.withhold=clv.newdata.withhold)
+  }
 }
 
 
