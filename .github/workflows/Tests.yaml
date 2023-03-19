@@ -42,6 +42,6 @@ jobs:
             print("Not on release branch: Dont run all tests (skip_on_ci())")
           }
 
-          reporter <- RStudioReporter$new() # has to be defined outside capture.output to still print
+          reporter <- ParallelProgressReporter$new() # has to be defined outside capture.output to still print
           capture.output(devtools::test(reporter = reporter, stop_on_failure=TRUE, stop_on_warning=TRUE))
         shell: Rscript {0}
