@@ -5,7 +5,6 @@ data("apparelStaticCov")
 data("apparelDynCov")
 
 # nocov ------------------------------------------------------------------------------------------
-context("Runability - spending() - nocov")
 clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
 
 test_that("Works out of the box with clv.data", {
@@ -39,7 +38,6 @@ test_that("Works with optimx args", {
 })
 
 # static cov --------------------------------------------------------------------------------------
-context("Runability - spending() - static cov")
 clv.apparel.static <- fct.helper.create.clvdata.apparel.staticcov(apparelTrans, apparelStaticCov, estimation.split = NULL)
 
 test_that("Works with clv.data static cov", {
@@ -49,7 +47,6 @@ test_that("Works with clv.data static cov", {
 
 
 # dyn cov -----------------------------------------------------------------------------------------
-context("Runability - spending() - dynamic cov")
 clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(apparelTrans, apparelDynCov, estimation.split = NULL)
 
 test_that("Works with clv.data dyn cov", {

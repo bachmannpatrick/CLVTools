@@ -12,8 +12,6 @@ fct.testthat.correctness.clvfittedtransactions(name.model = "GGompertz/NBD", met
                                                kkt2.true = FALSE)
 
 
-context("Correctness - GGompertz/NBD nocov - Recover parameters")
-
 # Bemmaor and Glady (2012)
 #   Table 2, p. 1018
 fct.testthat.correctness.clvfitted.correct.coefs(method = ggomnbd,
@@ -80,7 +78,6 @@ expect_silent(beta_i  <- beta  * exp( -m.cov.data.life  %*% clv.ggomnbd@predicti
 
 
 # . Expectation -----------------------------------------------------------------------------------------
-context("Correctness - GGompertz/NBD nocov - Expectation")
 
 test_that("Expectation in Rcpp matches expectation in R (nocov)", {
   skip_on_cran()
@@ -125,7 +122,6 @@ test_that("Expectation in Rcpp matches expectation in R (staticcov)", {
 
 
 # .CET ------------------------------------------------------------------------------------------
-context("Correctness - GGompertz/NBD nocov - CET")
 test_that("Same result for CET as previous implementation based on matlab code",{
 
   # Basically, PALive * Expectation but explicitely formulated
@@ -193,7 +189,6 @@ test_that("Same result for CET as previous implementation based on matlab code",
 
 
 # .LL ------------------------------------------------------------------------------------------
-context("Correctness - GGompertz/NBD nocov - LL")
 test_that("Same LL as in matlab code", {
 
   fct.ggomnbd.LL.ind <- function(r, b, s, alpha, beta, x, t.x, tcal){
@@ -243,7 +238,6 @@ test_that("Same LL as in matlab code", {
 
 
 # .PAlive ------------------------------------------------------------------------------------------
-context("Correctness - GGompertz/NBD nocov - PAlive")
 test_that("Same PAlive as in matlab code", {
 
   fct.ggomnbd.PAlive <- function(r, b, s, alpha, beta, x, t.x, tcal){

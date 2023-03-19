@@ -290,12 +290,9 @@ fct.testthat.correctness.dyncov.CET <- function(data.apparelTrans, data.apparelD
 
 fct.testthat.correctness.dyncov <- function(data.apparelTrans, data.apparelDynCov){
 
-  context("Correctness - PNBD dyncov - Expectation")
   fct.testthat.correctness.dyncov.expectation(data.apparelTrans = data.apparelTrans, data.apparelDynCov = data.apparelDynCov)
 
-  context("Correctness - PNBD dyncov - CET")
   fct.testthat.correctness.dyncov.CET(data.apparelTrans = data.apparelTrans, data.apparelDynCov = data.apparelDynCov)
 
-  context("Correctness - PNBD dyncov - LL")
   fct.testthat.correctness.dyncov.LL(data.apparelTrans = data.apparelTrans, data.apparelDynCov = data.apparelDynCov)
 }

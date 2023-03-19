@@ -9,7 +9,6 @@ skip_on_cran()
 
 
 # Basic runability ---------------------------------------------------------------------------------
-context("Runability - PNBD dynamiccov - Basic runability")
 
 # Take a sample of customers only
 mini.apparelTrans <- apparelTrans[Id %in% unique(apparelTrans$Id)[1:100]]
@@ -117,14 +116,11 @@ expect_silent(clv.data.mini.extra <- SetDynamicCovariates(clv.data.trans,
                                                           name.date = "Cov.Date"))
 
 # Newdata ----------------------------------------------------------------------------------------------------------
-context("Runability - PNBD dynamiccov - newdata")
-
 fct.testthat.runability.dynamiccov.predict.longer.with.newdata(clv.fitted = fitted.dyncov, clv.data.mini.extra = clv.data.mini.extra, clv.data.trans = clv.data.trans)
 
 fct.testthat.runability.dynamiccov.plot.longer.with.newdata(clv.fitted = fitted.dyncov, clv.data.mini.extra = clv.data.mini.extra, clv.data.trans = clv.data.trans)
 
 # Overlong data ------------------------------------------------------------------------------
-context("Runability - PNBD dynamiccov - Overlong data")
 
 # Cannot do without holdout because takes too long to estimate
 fct.testthat.runability.dynamiccov.can.predict.plot.beyond.holdout(method = pnbd,

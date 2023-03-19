@@ -2,7 +2,6 @@ data("cdnow")
 data("apparelTrans") # for years
 
 # estimation.split ---------------------------------------------------------------------
-context("Correctness - clvdata - estimation.split")
 
 
 # **clv.time: predict(, 10). regexp 10 Weeks + regexp holdout.start
@@ -126,7 +125,6 @@ test_that("No estimation.split ends on last transaction date", {
 })
 
 # time.unit ------------------------------------------------------------------------------
-context("Correctness - clvdata - time.units")
 
 test_that("Different units with same split results in same dates", {
   #skip_on_cran()
@@ -153,7 +151,6 @@ test_that("Different units with same split results in same dates", {
 
 
 # transaction.data ----------------------------------------------------------------------------
-context("Correctness - clvdata - data.transactions")
 
 test_that("Same result for differently sorted transactions", {
   skip_on_cran()
@@ -246,7 +243,6 @@ test_that("Transaction data was properly copied", {
 
 
 # aggregate.transactions ----------------------------------------------------------------------------
-context("Correctness - clvdata - aggregate.transactions")
 
 test_that("Only one transaction per timepoint and Id exits (date)", {
   skip_on_cran()
@@ -310,7 +306,6 @@ test_that("Same timepoint transactions are summed (posix)", {
 })
 
 # repeat.transactions ----------------------------------------------------------------------------
-context("Correctness - clvdata - repeat.transactions")
 
 test_that("Removes correct transaction",{
   # Correctly remove first transaction, regardless of sorting

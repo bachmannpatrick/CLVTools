@@ -5,7 +5,6 @@ data("apparelStaticCov")
 
 
 # no cov ---------------------------------------------------------------------------------------------------
-context("Correctness - latentAttrition - nocov")
 clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split=37)
 
 test_that("Same as std interface", {
@@ -123,13 +122,11 @@ fct.testthat.correctness.latentattrition.staticcov <- function(l.std.args, f.lhs
 }
 
 
-context("Correctness - latentAttrition - static cov, data=clv.data")
 # Test with clv.static.cov object
 clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(apparelTrans, apparelStaticCov, estimation.split = NULL)
 fct.testthat.correctness.latentattrition.staticcov(l.std.args = list(verbose=FALSE, data=clv.apparel.cov),
                                                    f.lhs=~., clv.apparel.cov=clv.apparel.cov)
 
-context("Correctness - latentAttrition - static cov, data=data.frame")
 # Test with data.frame input
 fct.testthat.correctness.latentattrition.staticcov(l.std.args = list(data=apparelTrans, cov=apparelStaticCov,verbose=FALSE),
                                                    f.lhs=data(split=NULL, unit=w, format=ymd)~., clv.apparel.cov=clv.apparel.cov)
@@ -185,14 +182,12 @@ fct.testthat.correctness.latentattrition.dyncov <- function(l.std.args, f.lhs, c
   })
 }
 
-context("Correctness - latentAttrition - dynamic cov, data=clv.data")
 # # Test with clv.dyn.cov object
 clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(apparelTrans, apparelDynCov, estimation.split = 40)
 fct.testthat.correctness.latentattrition.dyncov(l.std.args = list(verbose=FALSE, data=clv.apparel.dyn,
                                                                   optimx.args=fct.helper.dyncov.get.optimxargs.quickfit()),
                                                 f.lhs=~., clv.apparel.dyn=clv.apparel.dyn)
 
-context("Correctness - latentAttrition - dynamic cov, data=data.frame")
 # Test with data.frame input
 fct.testthat.correctness.latentattrition.dyncov(l.std.args = list(verbose=FALSE, data=apparelTrans, cov=apparelDynCov,
                                                                   optimx.args=fct.helper.dyncov.get.optimxargs.quickfit()),

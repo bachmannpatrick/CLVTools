@@ -12,7 +12,6 @@ fct.testthat.correctness.clvfittedtransactions(name.model = "BG/NBD", method=bgn
 
 
 
-context("Correctness - BG/NBD nocov - Recover parameters")
 # As reported in Fader, Hardie, Lee (2005)
 fct.testthat.correctness.clvfitted.correct.coefs(method = bgnbd,
                                                  cdnow = cdnow,
@@ -20,7 +19,6 @@ fct.testthat.correctness.clvfitted.correct.coefs(method = bgnbd,
                                                  params.nocov.coef = c(r = 0.243, alpha = 4.414, a = 0.793, b = 2.426),
                                                  LL.nocov = -9582.4)
 
-context("Correctness - BG/NBD nocov - Expectation")
 
 test_that("Expectation in Rcpp matches expectation in R (nocov)", {
   skip_on_cran()
@@ -53,7 +51,6 @@ test_that("Expectation in Rcpp matches expectation in R (nocov)", {
                                                                                obj.fitted = obj.fitted)
 })
 
-context("Correctness - BG/NBD staticcov - Expectation")
 
 test_that("Expectation in Rcpp matches expectation in R (staticcov)", {
   skip_on_cran()
