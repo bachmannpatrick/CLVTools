@@ -233,7 +233,7 @@ test_that("Same LL as in matlab code", {
                                                     vX = vX, vT_x = vT_x, vT_cal = vT_cal,
                                                     mCov_life = m.cov.data.life, mCov_trans = m.cov.data.trans))
   # Difference are verified to stem from numerical integration
-  expect_equal(drop(LL_R), drop(LL_Rcpp), check.attributes=FALSE, tolerance = 1e-4)
+  expect_equal(unname(drop(LL_R)), drop(LL_Rcpp), tolerance = 1e-4)
 })
 
 
@@ -289,7 +289,7 @@ test_that("Same PAlive as in matlab code", {
                                                                vX = vX, vT_x = vT_x, vT_cal = vT_cal,
                                                                mCov_life = m.cov.data.life, mCov_trans = m.cov.data.trans))
   # Difference are verified to stem from numerical integration
-  expect_equal(drop(LL_R), drop(LL_Rcpp), check.attributes=FALSE, tolerance = 1e-4)
+  expect_equal(unname(drop(LL_R)), drop(LL_Rcpp), tolerance = 1e-4)
 
 
 })
