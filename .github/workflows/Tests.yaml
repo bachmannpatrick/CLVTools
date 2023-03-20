@@ -28,10 +28,17 @@ jobs:
         with:
           extra-packages: devtools
 
+      - name: diag output
+        run: lscpu -p
+
       - name: Run tests
         run: |
           library(testthat)
           library(devtools)
+
+          Sys.getenv("TESTTHAT_CPUS")
+          Sys.setenv(TESTTHAT_CPUS=2)
+          Sys.getenv("TESTTHAT_CPUS")
 
           # If on a release branch (name starts with 'release'),
           #   run all tests, including lengthy ones marked with skip_on_ci()
