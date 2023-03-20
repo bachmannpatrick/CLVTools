@@ -1,4 +1,22 @@
 pnbd_dyncov_assert_walk_assumptions <- function(clv.fitted){
+  # All walks:
+  #   keys: Id, walk_id, tp.this.trans, tp.cov.lower (and therefore also sorted)
+  #   sorted, increasing:
+  #     strictly monotonic: abs_pos
+  #     monotonic: walk_id, walk_from, walk_to
+  assert_coreelements <- function(dt.walks){
+    stopifnot(setequal(key(dt.walks), c("Id", "walk_id", "tp.this.trans", "tp.cov.lower")))
+    stopifnot(dt.walks[, !is.unsorted(abs_pos,   strictly = TRUE)])
+    stopifnot(dt.walks[, !is.unsorted(walk_id,   strictly = FALSE)])
+    stopifnot(dt.walks[, !is.unsorted(walk_from, strictly = FALSE)])
+    stopifnot(dt.walks[, !is.unsorted(walk_to,   strictly = FALSE)])
+  }
+
+  assert_coreelements(clv.fitted@data.walks.life.aux)
+  assert_coreelements(clv.fitted@data.walks.trans.aux)
+  assert_coreelements(clv.fitted@data.walks.life.real)
+  assert_coreelements(clv.fitted@data.walks.trans.real)
+
   # all aux walks:
   #   every Id only once
   #   every Id in walks
@@ -123,14 +141,15 @@ pnbd_dyncov_getLLcallargs <-function(clv.fitted){
 pnbd_dyncov_getLLdata <- function(clv.fitted, params){
   # get LL with all values, not just ind LL or summed LL
   l.LL.args <- pnbd_dyncov_getLLcallargs(clv.fitted)
-  l.LL.args[["params"]] = params
-  l.LL.args[["return_intermediate_results"]] = TRUE
+  l.LL.args[["params"]] <- params
+  l.LL.args[["return_intermediate_results"]] <- TRUE
+
+  # DATA HAS TO BE SAME ORDER AS PARAMS
   stopifnot(all(names(params) ==
                   c(clv.fitted@clv.model@names.prefixed.params.model,
                     clv.fitted@names.prefixed.params.after.constr.life,
                     clv.fitted@names.prefixed.params.after.constr.trans)))
 
-  # DATA HAS TO BE SAME ORDER AS PARAMS (params and data have to be in same order)
 
   dt.LLdata <- data.table(Id = clv.fitted@cbs$Id,
                           do.call(what = pnbd_dyncov_LL_ind, args = l.LL.args),
@@ -148,29 +167,37 @@ pnbd_dyncov_creatwalks_add_tjk <- function(dt.walk, clv.time){
   return(dt.walk)
 }
 
-pnbd_dyncov_createwalks_add_walkid <- function(dt.walks){
-  # what defines data that belongs to a walk (tp.this.trans required because of multiple real trans walk)
-  cols.walk.def <- c("Id", "tp.this.trans")
-  cols.keys <- c(cols.walk.def, "tp.cov.lower", "walk_id")
 
-  # Add walk_id
-  #   per what defines a walk
-  setkeyv(dt.walks, cols.walk.def)
-  dt.walks[,  walk_id := .GRP, by=cols.walk.def]
-  setkeyv(dt.walks, cols.keys)
+pnbd_dyncov_createwalks_add_corelements <- function(dt.walks){
+  # Add elements shared by all walks: walk_id, abs_pos, walk_from, walk_to
+  # Do at single point to ensure sorting guarantees
 
-  return(dt.walks)
-}
+  # Add walk ids:
+  #   Does not require sorting, only marks what belongs together
+  dt.walks[,  walk_id := .GRP, by=c("Id", "tp.this.trans")]
+
+  # Sort walks:
+  #  For each customer, walks in chronological order, actual data in walk in chronological order:
+  #   Id, tp transaction, tp.cov.lower
+  #  For completeness also add walk_id as key
+  setkeyv(dt.walks, c("Id", "tp.this.trans", "tp.cov.lower", "walk_id"))
 
 
-pnbd_dyncov_createwalks_add_fromto <- function(dt.walks){
-  # Add absolute position in data
-  #   sort each walk together and then also by cov date
-  dt.walks[order(walk_id, tp.cov.lower), abs_pos := seq(.N)]
+  # absolute position in data
+  dt.walks[, abs_pos := seq(.N)]
 
-  # Add from to of walk
-  dt.walks[, walk_from := min(abs_pos), by="walk_id"]
-  dt.walks[, walk_to   := max(abs_pos), by="walk_id"]
+  # walk_from/to: Start and end position in data of each walk
+
+  # min() and max() give warning if table is empty (if there is not a single real walk for lifetime)
+  if(nrow(dt.walks) > 0){
+    # Add from to of walk
+    dt.walks[, walk_from := min(abs_pos), by="walk_id"]
+    dt.walks[, walk_to   := max(abs_pos), by="walk_id"]
+  }else{
+    dt.walks[, walk_from := numeric(0)]
+    dt.walks[, walk_to   := numeric(0)]
+  }
+
   return(dt.walks)
 }
 
@@ -219,6 +246,8 @@ pnbd_dyncov_creatwalks_add_d1 <- function(dt.walk, clv.time){
 
 
 pnbd_dyncov_creatwalks_matchcovstocuts <- function(dt.cov, dt.cuts, names.cov){
+  # Match the cov data to the points given in dt.cuts
+
   # **TODO: Update comment: Walks are covs that have an effect from coming alive until last transaction [0, T] (or (0. T))
   by.covs <- c("Id", "tp.cov.lower", "tp.cov.upper")
   by.cuts <- c("Id", "tp.cut.lower", "tp.cut.upper")
@@ -233,6 +262,9 @@ pnbd_dyncov_creatwalks_matchcovstocuts <- function(dt.cov, dt.cuts, names.cov){
 pnbd_dyncov_createwalks_singletrans <- function(dt.cov, dt.tp.first.last,
                                                 name.lower, name.upper,
                                                 names.cov, clv.time){
+  # Create the walks for a given single transaction of customers
+  # walk includes: id, abs_pos, from, to
+
   tp.cut.lower <- tp.cut.upper <- tp.this.trans <- tp.previous.trans <- NULL
 
   dt.cuts <- copy(dt.tp.first.last)
@@ -247,14 +279,7 @@ pnbd_dyncov_createwalks_singletrans <- function(dt.cov, dt.tp.first.last,
   dt.walks[, tp.this.trans := get(name.upper)]
   dt.walks[, tp.previous.trans := get(name.lower)]
 
-  dt.walks <- pnbd_dyncov_createwalks_add_walkid(dt.walks)
-  # min() and max() give warning if table is empty (if there is not a single real walk for lifetime)
-  if(nrow(dt.walks) > 0){
-    dt.walks <- pnbd_dyncov_createwalks_add_fromto(dt.walks)
-  }else{
-    dt.walks[, from := numeric(0)]
-    dt.walks[, to := numeric(0)]
-  }
+  dt.walks <- pnbd_dyncov_createwalks_add_corelements(dt.walks)
 
   return(dt.walks)
 }
@@ -324,8 +349,7 @@ pnbd_dyncov_createwalks_real_trans <- function(clv.data, dt.trans, dt.tp.first.l
                                                           dt.cuts = dt.cuts.real,
                                                           names.cov = clv.data.get.names.cov.trans(clv.data))
 
-  dt.walks.real <- pnbd_dyncov_createwalks_add_walkid(dt.walks.real)
-  dt.walks.real <- pnbd_dyncov_createwalks_add_fromto(dt.walks.real)
+  dt.walks.real <- pnbd_dyncov_createwalks_add_corelements(dt.walks.real)
   dt.walks.real <- pnbd_dyncov_creatwalks_add_tjk(dt.walks.real, clv.time)
   dt.walks.real <- pnbd_dyncov_creatwalks_add_d1(dt.walks.real, clv.time)
 
@@ -436,7 +460,7 @@ pnbd_dyncov_createwalks <- function(clv.data){
   dt.walks.aux.trans <- pnbd_dyncov_creatwalks_add_d1(dt.walks.aux.trans, clv.time = clv.data@clv.time)
 
   # Create actual walk tables ------------------------------------------------------------
-  cols.common <-  c("Id", "tp.this.trans", "walk_id", "tp.cov.lower", "tp.cov.upper", "abs_pos", "walk_from", "walk_to")
+  cols.common <-  c("abs_pos", "Id", "tp.this.trans", "walk_id", "tp.cov.lower", "tp.cov.upper", "walk_from", "walk_to")
   cols.life  <- c(cols.common, names.cov.life)
   cols.trans <- c(cols.common, names.cov.trans, "tjk", "d1")
 
