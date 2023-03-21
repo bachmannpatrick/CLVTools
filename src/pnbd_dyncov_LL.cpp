@@ -76,8 +76,8 @@ void LifetimeWalk::set_walk_data(const arma::vec& cov_data, const arma::uword fr
   if(this->walk_data.n_elem >= 3){
     this->val_sum_middle_elems = arma::accu(this->walk_data.subvec(1, this->walk_data.n_elem-2));
   }else{
-    // Return NA to propagate to optimizer if sum_middle_elems() is called erroneously
-    // **TODO: Or throw?
+    // Set to NA to mark as not calculated
+    // This also propagates NA to optimizer if sum_middle_elems() is called erroneously
     this->val_sum_middle_elems = arma::datum::nan;
   }
 
@@ -135,8 +135,10 @@ double LifetimeWalk::get_elem(const arma::uword i) const{
 }
 
 double LifetimeWalk::sum_middle_elems() const{
+  if(this-> n_elem() < 3){
+    throw Rcpp::exception("sum_middle_elems() is CALLED erroneously with less than 3 elements!");
+  }
   return(this->val_sum_middle_elems);
-  // **TODO: Assert that only called if at least 3 elements
 }
 
 double LifetimeWalk::sum_from_to(const arma::uword from, const arma::uword to) const{
