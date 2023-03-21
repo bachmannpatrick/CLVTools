@@ -395,18 +395,16 @@ double pnbd_dyncov_LL_i_Bi(const arma::uword i, const double t_x, const Transact
  *         It depends on how long the walk from alive until i is (length of continuous walk until i)
  *  First element is *d_omega. First element is either from real walk or from aux walk (if no real walk)
  */
-double pnbd_dyncov_LL_i_Di(const arma::uword i, const LifetimeWalk& real_walk_life,
-                           const LifetimeWalk& aux_walk_life, const double d_omega){
-
-  // **TODO: rename to remove "life" as clear from type
+double pnbd_dyncov_LL_i_Di(const arma::uword i, const LifetimeWalk& real_walk,
+                           const LifetimeWalk& aux_walk, const double d_omega){
 
   // Real and Aux walk are guaranteed to not overlap
   //  Cov where last transaction is in belongs only to aux walk
 
-  // Cannot always sum up real_walk_life first and then add aux_walk sum because
-  //  for the case real_walk_life.n_elem() == 0, d_omega has to be multiplied with aux_walk.first() not to real_walk_life.first()
-  //  Therefore do real_walk_life.n_elem() == 0 separately
-  if(real_walk_life.n_elem() == 0){
+  // Cannot always sum up real_walk first and then add aux_walk sum because
+  //  for the case real_walk.n_elem() == 0, d_omega has to be multiplied with aux_walk.first() not to real_walk.first()
+  //  Therefore do real_walk.n_elem() == 0 separately
+  if(real_walk.n_elem() == 0){
     // Delta = 1 for all other than i==1
 
     // Directly sum up the aux walk until Walk_i, including first()*d
@@ -416,13 +414,13 @@ double pnbd_dyncov_LL_i_Di(const arma::uword i, const LifetimeWalk& real_walk_li
     }else{
       if(i == 2){
         // k0x+i-3 = 1+2-3 = 0. Last multpart * delta disappears
-        return(aux_walk_life.first()*d_omega + aux_walk_life.get_elem(1)*(-d_omega));
+        return(aux_walk.first()*d_omega + aux_walk.get_elem(1)*(-d_omega));
       }else{
         // i >= 3: Walk_1*domega + sum(Walk_2, Walk_i-1) + Walk_i*lastmult
         // lastmult=(-d_omega - delta*(k0x + static_cast<double>(i) - 3.0))
         //    where k0x=1, delta=1
         double last_mult = (-d_omega - (1.0 + static_cast<double>(i) - 3.0));
-        return(aux_walk_life.first()*d_omega + aux_walk_life.sum_from_to(1, i-2) + aux_walk_life.get_elem(i-1)*last_mult);
+        return(aux_walk.first()*d_omega + aux_walk.sum_from_to(1, i-2) + aux_walk.get_elem(i-1)*last_mult);
       }
     }
   }else{
@@ -431,32 +429,32 @@ double pnbd_dyncov_LL_i_Di(const arma::uword i, const LifetimeWalk& real_walk_li
 
     double sum_real_walk = 0.0;
     // branch because of summing middle elements
-    if(real_walk_life.n_elem() == 1){
-      sum_real_walk = real_walk_life.first()*d_omega;
+    if(real_walk.n_elem() == 1){
+      sum_real_walk = real_walk.first()*d_omega;
     }else{
-      if(real_walk_life.n_elem() == 2){
-        sum_real_walk = real_walk_life.first()*d_omega + real_walk_life.last();
+      if(real_walk.n_elem() == 2){
+        sum_real_walk = real_walk.first()*d_omega + real_walk.last();
       }else{
         // >= 3: everything in real walk
-        sum_real_walk = real_walk_life.first()*d_omega + real_walk_life.sum_middle_elems() + real_walk_life.last();
+        sum_real_walk = real_walk.first()*d_omega + real_walk.sum_middle_elems() + real_walk.last();
       }
     }
 
     // Sum up aux walk until i
     //   aux_walk.first()*d_omega is not required because done with real_walk.first()
     //   delta is always 1 here, because start period is in real walk and end period in auxwalk
-    double k0x = static_cast<double>(real_walk_life.n_elem()) + 1.0; // +1 to also count period of x (first in aux walk)
+    double k0x = static_cast<double>(real_walk.n_elem()) + 1.0; // +1 to also count period of x (first in aux walk)
     double last_mult = -d_omega - (k0x + static_cast<double>(i) - 3.0);
 
     double sum_aux_walk = 0.0;
     if(i == 1){
-      sum_aux_walk = aux_walk_life.first()*last_mult;
+      sum_aux_walk = aux_walk.first()*last_mult;
     }else{
       if(i == 2){
-        sum_aux_walk = aux_walk_life.first() + aux_walk_life.get_elem(1)*last_mult;
+        sum_aux_walk = aux_walk.first() + aux_walk.get_elem(1)*last_mult;
       }else{
         // i >= 3
-        sum_aux_walk = aux_walk_life.first() + aux_walk_life.sum_from_to(1,i-2) + aux_walk_life.get_elem(i-1)*last_mult;
+        sum_aux_walk = aux_walk.first() + aux_walk.sum_from_to(1,i-2) + aux_walk.get_elem(i-1)*last_mult;
       }
     }
 
