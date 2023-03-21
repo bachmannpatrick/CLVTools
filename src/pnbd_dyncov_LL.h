@@ -16,8 +16,8 @@
  */
 struct LifetimeWalk {
 
+  // storing as arma::subview_col<double> walk_data leads to copy/move constructor issues
   arma::vec walk_data; // exp(gamma*X) of this walk
-  // arma::subview_col<double> walk_data;
 
  /*
   * MUST PASS DATA VEC BY REF TO CONSTRUCTORS
@@ -80,6 +80,8 @@ struct TransactionWalk : LifetimeWalk{
 
 
 struct Customer {
+  // All members are public to facilitate access & readability
+
   const double x, t_x, T_cal;
   const double d_omega;
 

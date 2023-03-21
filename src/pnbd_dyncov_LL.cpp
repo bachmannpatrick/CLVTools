@@ -1,23 +1,5 @@
 #include "pnbd_dyncov_LL.h"
 
-// void Customer::set_walks_life(const arma::vec& adj_covdata_full_life, const arma::rowvec& walkinfo_aux_life,
-//                               const arma::uword customer_covdata_life_from){
-//   // Create aux walk
-//   this->aux_walk_life = LifetimeWalk(adj_covdata_full_life, walkinfo_aux_life);
-//
-//   // Create real walk from what is left in this customer's covdata before aux walk starts
-//   const arma::uword aux_from = Walk::read_from(walkinfo_aux_life);
-//   if(aux_from == customer_covdata_life_from){
-//     // aux starts from first covariate of customer = no space for real walk
-//     this->real_walk_life = EmptyWalk();
-//   }else{
-//     const arma::uword to = aux_from - 1
-//     const arma::uword from = customer_covdata_life_from;
-//     this->real_walk_life = RealWalkLife();
-//   }
-//
-// }
-
 void Customer::set_real_walk_life(const arma::vec& adj_covdata_real_life, const arma::rowvec& walkinfo_real_life){
   if(arma::is_finite(walkinfo_real_life(0)) && arma::is_finite(walkinfo_real_life(1))){
     this->real_walk_life = LifetimeWalk(adj_covdata_real_life, walkinfo_real_life);
@@ -45,8 +27,6 @@ Customer::Customer(const double x, const double t_x, const double T_cal, const d
   for(arma::uword i = 0; i < walkinfo_real_trans.n_rows; i++){
     this->real_walks_trans.at(i) = TransactionWalk(adj_covdata_real_trans, walkinfo_real_trans.row(i));
   }
-  // **TODO: Throw error if aux walks are not the same length (n_elems())
-  // assert(this->aux_walk_life.n_elems() == this->aux_walk_trans.n_elems())
 }
 
 // Without real trans walks (ie zero-repeater)
@@ -67,21 +47,36 @@ Customer::Customer(const double x, const double t_x, const double T_cal, const d
 
 
 
-
+// ***TODO: Move inplace
 void LifetimeWalk::set_walk_data(const arma::vec& cov_data, const arma::uword from, const arma::uword to){
 
-  const arma::uword n_elems = to-from+1;
-  double* ptr = const_cast<double*>(cov_data.memptr());
-  this->walk_data = arma::vec(ptr+from, n_elems, false, true);
+  // https://arma.sourceforge.net/docs.html
+  // vec(ptr_aux_mem, number_of_elements, copy_aux_mem = true, strict = false)
+  // ... However, if copy_aux_mem is set to false, the vector will instead directly use the auxiliary memory (ie. no copying); this is faster, but can be dangerous unless you know what you are doing!
+  // The strict parameter comes into effect only when copy_aux_mem is set to false
+  //  - when strict is set to false, the vector will use the auxiliary memory until a size change or an aliasing event
+  //  - when strict is set to true, the vector will be bound to the auxiliary memory for its lifetime; the number of elements in the vector can't be changed
+  //
+  // I dont like that have to cast to non-const pointer and have to do raw pointer arithmetic
+  // const arma::uword n_elems = to-from+1;
+  // double* ptr = const_cast<double*>(cov_data.memptr());
+  // this->walk_data = arma::vec(ptr+from, n_elems, false, true);
 
-  // this->walk_data = arma::vec(cov_data.memptr()+from, view.n_elem);
-  // const arma::subview_col<double> view = cov_data.subvec(from, to);
-  // this->walk_data = arma::vec(view.colptr(0), view.n_elem);
+  // vec(const ptr_aux_mem, number_of_elements)
+  //    Create a column vector by copying data from read-only auxiliary memory, where ptr_aux_mem is a pointer to the memory
+  //
+  // this->walk_data = arma::vec(cov_data.memptr()+from, view.n_elem); // rather not as doing raw pointer arithmetic with + from (forward <from> steps of size <type of memptr>)
+  //
+  // safer way to find position of memory. use subview_vector instead? need to adapt from and to +-1??
+  // benchmark vs first approach (maybe reference or pointer instead of regular instance?)
+  // on small dataset (250customers) this is about 5% slower than pointer arithmetic
+  const arma::subview_col<double> view = cov_data.subvec(from, to);
+  this->walk_data = arma::vec(view.colptr(0), view.n_elem);
 
   if(this->walk_data.n_elem >= 3){
     this->val_sum_middle_elems = arma::accu(this->walk_data.subvec(1, this->walk_data.n_elem-2));
   }else{
-    // To propagate to optimizer if sum_middle_elems() called erroneously
+    // Return NA to propagate to optimizer if sum_middle_elems() is called erroneously
     // **TODO: Or throw?
     this->val_sum_middle_elems = arma::datum::nan;
   }
@@ -89,10 +84,8 @@ void LifetimeWalk::set_walk_data(const arma::vec& cov_data, const arma::uword fr
 }
 
 LifetimeWalk::LifetimeWalk(const arma::vec& cov_data, const arma::rowvec& walk_info){
-  /*
-   * May not store refs/pointers to walk_info as will only receive subviews (mat.row())
-   */
 
+   // May _not_ store refs/pointers to walk_info as will only receive subviews (mat.row()) which will vanish when function is done!
   arma::uword from = static_cast<arma::uword>(walk_info(0))-1;
   arma::uword to = static_cast<arma::uword>(walk_info(1))-1;
   this->set_walk_data(cov_data, from, to);
@@ -159,6 +152,8 @@ double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
                                           const double x,
                                           const double alpha_1, const double beta_1,
                                           const double alpha_2, const double beta_2){
+  // Do not abort in case of error in gsl functions (hypergeoms)
+  gsl_set_error_handler_off();
 
   const double z1 = 1.0 - (beta_1/alpha_1);
   const double z2 = 1.0 - (beta_2/alpha_2);
@@ -193,7 +188,7 @@ double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
   //                              &gsl_res);
 
   if(status == GSL_EMAXITER || status == GSL_EDOM){
-    // Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_alpha_ge_beta, z1, status: "<<status <<std::endl;
+    Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_alpha_ge_beta, z1, status: "<<status <<std::endl;
     // hyp.z1 := (1-z.1)^(r+x)*exp(log.C) / beta_1^(r+s+x)]
     hyp_z1 = std::pow(1.0 - z1, r + x) * std::exp(log_C) / std::pow(beta_1, r + s + x);
   }else{
@@ -207,17 +202,6 @@ double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
   //  is /pow(beta_1, r+s+x): beta_1 oder alpha_1? Because alpha_1 in non-stable version but then changes
   //  is /pow(., r+s+x) = pow(., a) or fix pow(., r+s+x)
   //  can hyp_z all positive terms such that can do exp(log(hyp_z))?
-  //
-  // Potential speed ups:
-  //    do not return Rcpp data types, only arma (pass intermediate results to given mat)
-  //    sum(LL) as running sum, avoiding allocating result vector
-  //    store walks only as pointers: especially vector<walks*>, avoid allocation of empty walks
-  //    use more light-weight structure than vector<> in customer
-  //    do not copy x, tx, Tcal into customers but point to arma::vec elements (is possible?)
-  //    walks view on memory not allocating fresh memory (bench vs explicit allocation)
-  //    write large matrix exp(X*gamma) to pre-allocated memory shared in-between calls to LL
-  //    retain all structures and their view on memory in-between calls to LL
-  //    parallelize across customers with openmp
 
 
   // Z2
@@ -235,7 +219,7 @@ double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
   //                              &gsl_res);
   if(status == GSL_EMAXITER || status == GSL_EDOM){
     // hyp.z2 := (1-z.2)^(r+x)*exp(log.C) / beta_2^(r+s+x)]
-    // Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_alpha_ge_beta, z2, status: "<<status <<std::endl;
+    Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_alpha_ge_beta, z2, status: "<<status <<std::endl;
     hyp_z2 = std::pow(1.0 - z2, r + x) * std::exp(log_C) / std::pow(beta_2, r + s + x);
   }else{
     // cbs.z[, hyp.z2 := l.hyp.z2$value / (alpha_2^(r+s+x))]
@@ -254,6 +238,9 @@ double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
                                          const double x,
                                          const double alpha_1, const double beta_1,
                                          const double alpha_2, const double beta_2){
+
+  // Do not abort in case of error in gsl functions (hypergeoms)
+  gsl_set_error_handler_off();
 
   // cbs.z[,z.1 := (beta_1-alpha_1)/beta_1]
   // cbs.z[,z.2 := (beta_2-alpha_2)/beta_2]
@@ -286,7 +273,7 @@ double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
     //                                  r + s + x + 1.0,
     //                                  z1, &gsl_res);
     if(status == GSL_EMAXITER || status == GSL_EDOM){
-      // Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_beta_g_alpha, z1, status: "<<status <<std::endl;
+      Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_beta_g_alpha, z1, status: "<<status <<std::endl;
       // hyp.z1 := (1-z.1)^(s+1)*exp(log.C) / (alpha_1)^(r+s+x)]
       hyp_z1 = std::pow(1.0 - z1, s + 1.0) * std::exp(log_C) / std::pow(alpha_1, r + s + x);
     }else{
@@ -308,7 +295,7 @@ double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
     //                              z2, &gsl_res);
 
     if(status == GSL_EMAXITER || status == GSL_EDOM){
-      // Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_beta_g_alpha, z2, status: "<<status <<std::endl;
+      Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_beta_g_alpha, z2, status: "<<status <<std::endl;
       // hyp.z2 := (1-z.2)^(s+1)*exp(log.C) / (alpha_2)^(r+s+x)]
       hyp_z2 = std::pow(1.0 - z2, s + 1.0) * std::exp(log_C) / std::pow(alpha_2, r + s + x);
     }else{
@@ -322,7 +309,7 @@ double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
 /*
  * A1sum: Sum up covariates which were active during transaction
  *        **TODO: Verify last vs first are the relevant ones during transaction
- *        Name is choosen randomly
+ *        Name is chosen randomly
  */
 double pnbd_dyncov_LL_i_A1sum(const std::vector<TransactionWalk>& real_walks_trans){
 
@@ -403,7 +390,6 @@ double pnbd_dyncov_LL_i_Bi(const arma::uword i, const double t_x, const Transact
  * Sum up all covs from coming alive until i periods after last transaction (Walk_i in aux walk)
  *  Treat as if real and aux walk were one continuous walk
  *    Real and aux walk may therefore not overlap
- *    Summing same as in _Bi()
  *  k0x: the number of covariate periods (active covs) from 0 to x (all real walk elems + first aux elem)
  *  delta: whether the start (coming alive, 0) and the end of the sum (given by i) are in same covariate period.
  *         It depends on how long the walk from alive until i is (length of continuous walk until i)
@@ -411,6 +397,8 @@ double pnbd_dyncov_LL_i_Bi(const arma::uword i, const double t_x, const Transact
  */
 double pnbd_dyncov_LL_i_Di(const arma::uword i, const LifetimeWalk& real_walk_life,
                            const LifetimeWalk& aux_walk_life, const double d_omega){
+
+  // **TODO: rename to remove "life" as clear from type
 
   // Real and Aux walk are guaranteed to not overlap
   //  Cov where last transaction is in belongs only to aux walk
@@ -571,9 +559,6 @@ double pnbd_dyncov_LL_i_F2_3(const double r, const double alpha_0, const double 
 
     // abort immediately, do not waste more loops
     if(!arma::is_finite(F2_3)){
-      // Rcpp::Rcout<<"alpha_1: "<<alpha_1<<"  alpha_2:"<<alpha_2<<"  beta_1:"<<beta_1<<"  beta_2:"<<beta_2<<std::endl;
-      // Rcpp::Rcout<<"Ai: "<<Ai<<"  Ci: "<<Ci<<"  c.x: "<<c.x<<std::endl;
-      // Rcpp::Rcout<<"ended in drama in i="<<i<<std::endl;
       return(F2_3);
     }
   }
@@ -595,8 +580,7 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
                            const bool return_intermediate_results,
                            arma::vec& intermediate_results){
 
-  // **TODO: Verify if this is calculated correctly in walk creation
-  // dT is d1 in the formula. It is d1 around T, ie d1 of aux walk
+  // dT is d1 in the formula. It is d1 around tx, ie d1 of aux walk
   const double dT = c.aux_walk_trans.d1;
 
   const double a1T = Bjsum + B1 + c.T_cal * A1T;
@@ -698,25 +682,13 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
                                      const Customer& c,
                                      const bool return_intermediate_results){
 
-  // // #data.work.trans[AuxTrans==T, adj.transaction.cov.dyn]]
-  // const double adj_transaction_cov_dyn,
-  // // #cbs[, CkT:= data.work.life[AuxTrans==T, adj.lifetime.cov.dyn]]
-  // const double adj_lifetime_cov_dyn,
-  // // #cbs[, dT:= data.work.trans[AuxTrans==T, d]]
-  // const double dT,
-  // // #cbs[, A1T:= data.work.trans[AuxTrans==T, adj.Walk1]]
-  // // #const arma::vec& cov_aux_trans,
-  // const double A1T_R,
-  // // #cbs[, C1T:= data.work.life[AuxTrans==T, adj.Walk1]]
-  // // #const arma::vec& cov_aux_life,
-  // const double C1T_R,
-
   // Transaction Process ------------------------------------------------
   const double A1T = c.aux_walk_trans.first();
+  // *** TODO: remove wrapper, read directly from walk
   const double AkT = c.adj_transaction_cov_dyn();
   const double A1sum = pnbd_dyncov_LL_i_A1sum(c.real_walks_trans);
-  const double B1 = pnbd_dyncov_LL_i_Bi(1, c.t_x, c.aux_walk_trans);
 
+  const double B1 = pnbd_dyncov_LL_i_Bi(1, c.t_x, c.aux_walk_trans);
   const double BT = pnbd_dyncov_LL_i_Bi(c.aux_walk_trans.n_elem(), c.t_x, c.aux_walk_trans);
   const double Bjsum = pnbd_dyncov_LL_i_BjSum(c.real_walks_trans);
   const double Bksum = pnbd_dyncov_LL_i_BkSum(Bjsum, c.aux_walk_trans);
@@ -812,7 +784,6 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
   //         max(log(F1) + log(F2), log(B))  + log(1+exp(min(log.F1 + log(F2), log.F3) - max(log.F1 + log(F2),log.F3)))
   //         cbs[F2 >  0,  LL.other :=log.F0 +  pmax(log.F1 + log(F2), log.F3)  + log1p(exp(pmin(log.F1 + log(F2), log.F3) - pmax(log.F1 + log(F2),log.F3)))]
 
-
   const double log_F0 = r*std::log(alpha_0) + s*std::log(beta_0) + std::lgamma(c.x+r) - std::lgamma(r) + A1sum;
   const double log_F1 = std::log(s) - std::log(r+s+c.x);
 
@@ -863,12 +834,10 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
   }
 
 
-
-
   if(!return_intermediate_results){
     return(Rcpp::NumericVector::create(LL));
   }else{
-    // R: data.table(Id=cbs$Id,LL=cbs$LL, Akprod=exp(cbs$A1sum), Bksum=cbs$Bksum, DkT=cbs$DkT, Z=cbs$F2)
+
     double Akprod = std::exp(A1sum);
     Rcpp::NumericVector res (30);
 
@@ -920,28 +889,6 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
     res.names() = res_names;
     return(res);
 
-    // return(Rcpp::NumericVector::create(Rcpp::_["LL"]=LL,
-    //                                    Rcpp::_["Akprod"]=Akprod,
-    //                                    Rcpp::_["Bksum"]=Bksum,
-    //                                    // Rcpp::_["Bjsum"]= F2_intermediate_results(0),
-    //                                    Rcpp::_["B1"]=B1,
-    //                                    Rcpp::_["BT"]=BT,
-    //                                    Rcpp::_["D1"]=D1,
-    //                                    Rcpp::_["DT"]=DT,
-    //                                    Rcpp::_["DkT"]=DkT,
-    //                                    Rcpp::_["log.F0"]=log_F0,
-    //                                    Rcpp::_["log.F1"]=log_F1,
-    //                                    Rcpp::_["log.F3"]=log_F3,
-    //                                    Rcpp::_["F2"]=F2,
-    //                                    Rcpp::_["dT"]=F2_intermediate_results(0),
-    //                                    Rcpp::_["a1T"]=F2_intermediate_results(1),
-    //                                    Rcpp::_["b1T"]=F2_intermediate_results(2),
-    //                                    Rcpp::_["a1"]=F2_intermediate_results(3),
-    //                                    Rcpp::_["b1"]=F2_intermediate_results(4),
-    //                                    Rcpp::_["akt"]=F2_intermediate_results(5),
-    //                                    Rcpp::_["bkT"]=F2_intermediate_results(6),
-    //                                    Rcpp::_["aT"]=F2_intermediate_results(7),
-    //                                    Rcpp::_["bT"]=F2_intermediate_results(8)));
   }
 }
 
@@ -1008,8 +955,6 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
                                        const arma::mat& covdata_real_trans,
 
                                        const bool return_intermediate_results=false){
-  // Do not abort in case of error in gsl functions (hypergeoms)
-  gsl_set_error_handler_off();
 
   const arma::uword num_cov_life  = covdata_aux_life.n_cols;
   const arma::uword num_cov_trans = covdata_aux_trans.n_cols;
@@ -1026,18 +971,11 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
 
   // exp(gamma'*X)
   //  The only thing that changes between calls to the LL during optimization
+  //  Has to be const because arma::vec in walk classes are reusing this memory
   const arma::vec adj_covdata_aux_life   = arma::exp(covdata_aux_life   * params_life);
   const arma::vec adj_covdata_real_life  = arma::exp(covdata_real_life  * params_life);
   const arma::vec adj_covdata_aux_trans  = arma::exp(covdata_aux_trans  * params_trans);
   const arma::vec adj_covdata_real_trans = arma::exp(covdata_real_trans * params_trans);
-
-
-  // Rcpp::Rcout<<"accu(exp(gamma'*X) - life)"<<arma::accu(adj_covdata_aux_life)+arma::accu(adj_covdata_real_life)<<std::endl;
-  // Rcpp::Rcout<<"accu(exp(gamma'*X) - trans)"<<arma::accu(adj_covdata_aux_trans)+arma::accu(adj_covdata_real_trans)<<std::endl;
-
-
-  // Rcpp::Rcout<<"13311-1: "<<adj_covdata_aux_life(13311-1)<<"  13312-1: "<<adj_covdata_aux_life(13312-1)<<"  13313-1: "<<adj_covdata_aux_life(13313-1)<<"  13314-1: "<<adj_covdata_aux_life(13314-1)<<std::endl;
-  // Rcpp::Rcout<<"13311-1: "<<adj_covdata_aux_trans(13311-1)<<"  13312-1: "<<adj_covdata_aux_trans(13312-1)<<"  13313-1: "<<adj_covdata_aux_trans(13313-1)<<"  13314-1: "<<adj_covdata_aux_trans(13314-1)<<std::endl;
 
   Rcpp::NumericMatrix res;
   if(return_intermediate_results){
@@ -1073,15 +1011,6 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
                                         adj_covdata_aux_trans, walkinfo_aux_trans.row(i)),
                                return_intermediate_results);
     }
-    // if( i == 141-1){
-    //   Customer c(X(i), t_x(i), T_cal(i), d_omega(i),
-    //            adj_covdata_aux_life, walkinfo_aux_life.row(i),
-    //            adj_covdata_real_life, walkinfo_real_life.row(i),
-    //            adj_covdata_aux_trans, walkinfo_aux_trans.row(i));
-    //   Rcpp::Rcout<<"i=141-1"<<std::endl;
-    //   Rcpp::Rcout<<"c.aux_walk_life.first()"<<c.aux_walk_life.first()<<std::endl;
-    //   Rcpp::Rcout<<"walkinfo_aux_life.row(i)"<<walkinfo_aux_life.row(i)<<std::endl;
-    // }
 
     res(i, Rcpp::_) = res_i;
   }
@@ -1104,52 +1033,4 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
   }
   Rcpp::colnames(res) = c_names;
   return(res);
-}
-
-
-
-
-// [[Rcpp::export]]
-Rcpp::NumericVector LL_i_single_walk(const double r, const double alpha_0, const double s, const double beta_0,
-                                     const double x, const double t_x, const double T_cal, const double d_omega,
-                                     const int num_walks,
-                                     const double B1, const double BT,
-                                     const double DT, const double D1,
-                                     const double F2_3,
-
-                                     const arma::vec& params_life,
-                                     const arma::vec& params_trans,
-
-                                     const arma::mat& cov_data_life,
-                                     const arma::mat& cov_data_trans,
-
-                                     const arma::mat& walkinfo_aux_life,
-                                     const arma::mat& walkinfo_real_life,
-                                     const arma::mat& walkinfo_aux_trans,
-                                     const arma::mat& walkinfo_real_trans){
-  // Do not abort in case of error
-  gsl_set_error_handler_off();
-
-  arma::vec adj_cov_data_life = arma::exp(cov_data_life * params_life);
-  arma::vec adj_cov_data_trans = arma::exp(cov_data_trans * params_trans);
-  if(walkinfo_real_trans.is_finite()){
-    // Rcpp::Rcout<<"Creating a customer with real trans walks."<<std::endl;
-    // Customer w/o real life walks
-    return pnbd_dyncov_LL_i(r, alpha_0, s, beta_0,
-                            Customer(x, t_x, T_cal, d_omega,
-                                     adj_cov_data_life, walkinfo_aux_life.row(0),
-                                     adj_cov_data_life, walkinfo_real_life.row(0),
-                                     adj_cov_data_trans, walkinfo_aux_trans.row(0),
-                                     adj_cov_data_trans, walkinfo_real_trans),
-                                     true);
-  }else{
-    // Rcpp::Rcout<<"Creating a customer w/o real trans walks."<<std::endl;
-    // Customer w/o real life walks
-    return pnbd_dyncov_LL_i(r, alpha_0, s, beta_0,
-                            Customer(x, t_x, T_cal, d_omega,
-                                     adj_cov_data_life, walkinfo_aux_life.row(0),
-                                     adj_cov_data_life, walkinfo_real_life.row(0),
-                                     adj_cov_data_trans, walkinfo_aux_trans.row(0)),
-                            true);
-  }
 }

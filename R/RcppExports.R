@@ -542,7 +542,3 @@ pnbd_dyncov_LL_ind <- function(params, X, t_x, T_cal, d_omega, walkinfo_aux_life
     .Call(`_CLVTools_pnbd_dyncov_LL_ind`, params, X, t_x, T_cal, d_omega, walkinfo_aux_life, walkinfo_real_life, walkinfo_aux_trans, walkinfo_real_trans, walkinfo_trans_real_from, walkinfo_trans_real_to, covdata_aux_life, covdata_real_life, covdata_aux_trans, covdata_real_trans, return_intermediate_results)
 }
 
-LL_i_single_walk <- function(r, alpha_0, s, beta_0, x, t_x, T_cal, d_omega, num_walks, B1, BT, DT, D1, F2_3, params_life, params_trans, cov_data_life, cov_data_trans, walkinfo_aux_life, walkinfo_real_life, walkinfo_aux_trans, walkinfo_real_trans) {
-    .Call(`_CLVTools_LL_i_single_walk`, r, alpha_0, s, beta_0, x, t_x, T_cal, d_omega, num_walks, B1, BT, DT, D1, F2_3, params_life, params_trans, cov_data_life, cov_data_trans, walkinfo_aux_life, walkinfo_real_life, walkinfo_aux_trans, walkinfo_real_trans)
-}
-
