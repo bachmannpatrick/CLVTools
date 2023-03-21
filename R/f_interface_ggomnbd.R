@@ -11,6 +11,7 @@ setGeneric("ggomnbd", def = function(clv.data, start.params.model=c(), optimx.ar
 #' @description Fits Gamma-Gompertz/NBD models on transactional data with static and without covariates.
 #' @template template_params_estimate
 #' @template template_params_estimate_cov
+#' @template template_param_optimxargs
 #' @template template_param_verbose
 #' @template template_param_dots
 #'
@@ -24,11 +25,11 @@ setGeneric("ggomnbd", def = function(clv.data, start.params.model=c(), optimx.ar
 #' values for DERT and CLV.
 #'
 #' \subsection{The Gamma-Gompertz/NBD model}{
-#' There are two key differences of the gamma/Gompertz/NBD (GGom/NBD) model compared to the relative to the well-known Pareto/NBD
+#' There are two key differences of the gamma/Gompertz/NBD (GGompertz/NBD) model compared to the relative to the well-known Pareto/NBD
 #' model: (i) its probability density function can exhibit a mode at zero or an interior mode, and (ii) it can be skewed
-#' to the right or to the left. Therefore, the GGom/NBD model is more flexible than the Pareto/NBD model.
+#' to the right or to the left. Therefore, the GGompertz/NBD model is more flexible than the Pareto/NBD model.
 #' According to Bemmaor and Glady (2012) can indicate substantial differences in expected residual lifetimes compared to the Pareto/NBD.
-#' The GGom/NBD tends to be appropriate when firms are reputed and their offerings are differentiated.
+#' The GGompertz/NBD tends to be appropriate when firms are reputed and their offerings are differentiated.
 #' }
 #'
 #' @return Depending on the data object on which the model was fit, \code{ggomnbd} returns either an object of

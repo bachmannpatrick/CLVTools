@@ -8,8 +8,8 @@
 \S4method{gg}{clv.data}(
   clv.data,
   start.params.model = c(),
-  optimx.args = list(),
   remove.first.transaction = TRUE,
+  optimx.args = list(),
   verbose = TRUE,
   ...
 )
@@ -19,10 +19,10 @@
 
 \item{start.params.model}{Named start parameters containing the optimization start parameters for the model without covariates.}
 
+\item{remove.first.transaction}{Whether customer's first transaction are removed. If \code{TRUE} all zero-repeaters are excluded from model fitting.}
+
 \item{optimx.args}{Additional arguments to control the optimization which are forwarded to \code{\link[optimx:optimx]{optimx::optimx}}.
 If multiple optimization methods are specified, only the result of the last method is further processed.}
-
-\item{remove.first.transaction}{Whether customer's first transaction are removed. If \code{TRUE} all zero-repeaters are excluded from model fitting.}
 
 \item{verbose}{Show details about the running of the function.}
 
@@ -92,10 +92,10 @@ predict(apparel.gg)
 }
 \references{
 Colombo R, Jiang W (1999). \dQuote{A stochastic RFM model.}
-Journal of Interactive Marketing, 13(3), 2–12.
+Journal of Interactive Marketing, 13(3), 2-12.
 
 Fader PS, Hardie BG, Lee K (2005). \dQuote{RFM and CLV: Using Iso-Value Curves for
-Customer Base Analysis.} Journal of Marketing Research, 42(4), 415–430.
+Customer Base Analysis.} Journal of Marketing Research, 42(4), 415-430.
 
 Fader PS, Hardie BG (2013). \dQuote{The Gamma-Gamma Model of Monetary Value.}
 URL \url{http://www.brucehardie.com/notes/025/gamma_gamma.pdf}.

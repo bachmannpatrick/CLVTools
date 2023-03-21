@@ -75,7 +75,7 @@ t
 #' \describe{
 #'   \item{Id}{Customer Id}
 #'   \item{Cov.Date}{Date of contextual factor}
-#'   \item{Marketing}{Direct marketing variable: 1 if customer was contacted with direct marketing in this time period}
+#'   \item{Marketing}{Direct marketing variable: number of times a customer was contacted with direct marketing in this time period}
 #'   \item{Gender}{0=male, 1=female}
 #'   \item{Channel}{Acquisition channel: 0=online, 1=offline}
 #' }

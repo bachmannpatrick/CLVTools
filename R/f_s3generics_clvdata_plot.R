@@ -1,7 +1,7 @@
 #' @title Plot Diagnostics for the Transaction data in a clv.data Object
 #'
 #' @param x The clv.data object to plot
-#' @param which Which plot to produce, either "tracking", "frequency", "spending" or "interpurchasetime".
+#' @param which Which plot to produce, either "tracking", "frequency", "spending", "interpurchasetime", or "timings".
 #' May be abbreviated but only one may be selected. Defaults to "tracking".
 #'
 #' @template template_param_verbose
@@ -20,18 +20,24 @@
 #' @param mean.spending "spending": Whether customer's mean spending per transaction (\code{TRUE}, default) or the
 #' value of every transaction in the data (\code{FALSE}) should be plotted.
 #'
+#' @param Ids "timings": A character vector of customer ids or a single integer specifying the number of customers to sample.
+#' Defaults to \code{NULL} for which 50 random customers are selected.
+#' @param annotate.ids "timings": Whether timelines should be annotated with customer ids.
+#'
 #' @param sample Name of the sample for which the plot should be made, either
-#' "estimation", "full", or "holdout". Defaults to "estimation". Not for "tracking".
-#' @param color Color of resulting geom object in the plot. Not for "tracking".
-#' @param geom The geometric object of ggplot2 to display the data. Forwarded to
-#' \link[ggplot2:stat_density]{ggplot2::stat_density}. Not for "tracking" and "frequency".
+#' "estimation", "full", or "holdout". Defaults to "estimation". Not for "tracking" and "timing".
+#' @param color Color of resulting geom object in the plot. Not for "tracking" and "timing".
+#' @param geom "spending" and "interpurchasetime": The geometric object of ggplot2 to display the data. Forwarded to
+#' \link[ggplot2:stat_density]{ggplot2::stat_density}.
 #' @param ... Forwarded to \link[ggplot2:stat_density]{ggplot2::stat_density} ("spending", "interpurchasetime")
-#' or \link[ggplot2:geom_bar]{ggplot2::geom_bar} ("frequency"). Not for "tracking".
+#' or \link[ggplot2:geom_bar]{ggplot2::geom_bar} ("frequency"). Not for "tracking" and "timings".
 #'
 #'
 #'
 #' @description
-#' Depending on the value of parameter \code{which}, one of the following plots will be produced:
+#' Depending on the value of parameter \code{which}, one of the following plots will be produced.
+#' Note that the \code{sample} parameter determines the period for which the
+#' selected plot is made (either estimation, holdout, or full).
 #'
 #' \subsection{Tracking Plot}{
 #' Plot the aggregated repeat transactions per period over the given time-horizon (\code{prediction.end}).
@@ -55,6 +61,10 @@
 #' Plot the empirical density of customer's mean time (in number of periods) between transactions,
 #' after aggregating transactions of the same customer on a single time point.
 #' Note that customers without repeat-transactions are removed.
+#' }
+#'
+#' \subsection{Transaction Timing Plot}{
+#' Plot the transaction timings of selected or sampled customers on their respective timelines.
 #' }
 #'
 #' @template template_details_predictionend
@@ -82,6 +92,9 @@
 #' excluding customers with no repeat-transactions.}
 #' \item{num.transactions}{The number of (repeat) transactions, depending on \code{count.repeat.trans}.}
 #' \item{num.customers}{The number of customers.}
+#' \item{type}{"timings": Which purpose the value in this row is used for.}
+#' \item{variable}{"timings": Coordinate (x or y) for which to use the value in this row for.}
+#' \item{value}{"timings": Date or numeric (stored as string)}
 #'
 #'
 #' @examples
@@ -137,11 +150,23 @@
 #'      geom="point", color="blue", size=0.02)
 #'
 #'
+#' ### TIMING PATTERNS
+#' # selected customers and annotating them
+#' plot(clv.cdnow, which="timings", Ids=c("123", "1041"), annotate.ids=TRUE)
+#'
+#' # plot 25 random customers
+#' plot(clv.cdnow, which="timings", Ids=25)
+#'
+#' # plot all customers
+#' \donttest{\dontrun{
+#' plot(clv.cdnow, which="timings", Ids=nobs(clv.cdnow))
+#' }}
+#'
 #' @importFrom graphics plot
 #' @include all_generics.R class_clv_data.R
 #' @method plot clv.data
 #' @export
-plot.clv.data <- function(x, which=c("tracking", "frequency", "spending", "interpurchasetime"),
+plot.clv.data <- function(x, which=c("tracking", "frequency", "spending", "interpurchasetime", "timings"),
                           # tracking plot
                           prediction.end=NULL, cumulative=FALSE,
                           # frequency
@@ -149,6 +174,9 @@ plot.clv.data <- function(x, which=c("tracking", "frequency", "spending", "inter
                           label.remaining="10+",
                           # spending density
                           mean.spending=TRUE,
+                          # timings
+                          annotate.ids=FALSE,
+                          Ids=c(),
                           # all density
                           sample=c("estimation", "full", "holdout"),
                           geom="line", color="black",
@@ -159,12 +187,12 @@ plot.clv.data <- function(x, which=c("tracking", "frequency", "spending", "inter
   err.msg <- c()
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=plot, var.name="plot"))
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
-  err.msg <- c(err.msg, .check_userinput_matcharg(char=which, choices=c("tracking", "frequency", "spending", "interpurchasetime"),
+  err.msg <- c(err.msg, .check_userinput_matcharg(char=which, choices=c("tracking", "frequency", "spending", "interpurchasetime", "timings"),
                                                   var.name="which"))
   check_err_msg(err.msg)
 
   return(
-    switch(EXPR = match.arg(arg=tolower(which), choices = c("tracking", "frequency", "spending", "interpurchasetime"),
+    switch(EXPR = match.arg(arg=tolower(which), choices = c("tracking", "frequency", "spending", "interpurchasetime", "timings"),
                             several.ok = FALSE),
            "tracking" =
              clv.data.plot.tracking(x=x, prediction.end = prediction.end, cumulative = cumulative,
@@ -184,7 +212,12 @@ plot.clv.data <- function(x, which=c("tracking", "frequency", "spending", "inter
                                           label.remaining=label.remaining,
                                           count.remaining=count.remaining,
                                           plot=plot, verbose=verbose,
-                                          color=color, ...)
+                                          color=color, ...),
+         "timings" =
+           clv.data.plot.transaction.timings(clv.data = x, Ids = Ids,
+                                             annotate.ids = annotate.ids,
+                                             plot = plot, verbose = verbose,
+                                             ...)
          ))
 }
 
@@ -335,10 +368,10 @@ clv.data.plot.density.spending <- function(x, sample, mean.spending, plot, verbo
   }
 }
 
-#' @importFrom ggplot2 aes_string
+
 clv.data.plot.density.interpurchase.time <- function(clv.data, sample,
                                                      plot, verbose, color, geom, ...){
-  interp.time <- NULL
+  interp.time <- mean.interpurchase.time <- NULL
   dt.trans <- clv.data.select.sample.data(clv.data=clv.data, sample=sample, choices=c("estimation", "full", "holdout"))
 
   # interpurchase time in given period
@@ -353,7 +386,7 @@ clv.data.plot.density.interpurchase.time <- function(clv.data, sample,
 
   if(plot){
     return(clv.data.make.density.plot(dt.data = dt.mean.interp,
-                                      mapping = aes_string(x = "mean.interpurchase.time"),
+                                      mapping = aes(x = mean.interpurchase.time),
                                       labs_x = labs_x,
                                       title = "Density of Customer's Mean Time between Transactions",
                                       geom = geom, color = color, ...))
@@ -363,7 +396,7 @@ clv.data.plot.density.interpurchase.time <- function(clv.data, sample,
 }
 
 
-#' @importFrom ggplot2 ggplot geom_col aes_string labs geom_text position_dodge rel
+#' @importFrom ggplot2 ggplot geom_col labs geom_text position_dodge rel
 clv.data.plot.barplot.frequency <- function(clv.data, count.repeat.trans, count.remaining, label.remaining, trans.bins,
                                            sample, plot, verbose, color, ...){
   x <- num.customers <- num.transactions <- NULL
@@ -426,8 +459,7 @@ clv.data.plot.barplot.frequency <- function(clv.data, count.repeat.trans, count.
     return(dt.bins)
   }else{
     #   use geom_col because geom_bar does the counting itself
-    p <- ggplot(data = dt.bins) + geom_col(mapping = aes_string(x="num.transactions",
-                                                                y="num.customers"),
+    p <- ggplot(data = dt.bins) + geom_col(mapping = aes(x=num.transactions, y=num.customers),
                                            fill=color,
                                            width = 0.5,
                                            show.legend = FALSE)
@@ -437,8 +469,7 @@ clv.data.plot.barplot.frequency <- function(clv.data, count.repeat.trans, count.
                   title="Distribution of Transaction Count")
 
     # add count annotation
-    p <- p + geom_text(aes_string(label = "num.customers",
-                                  x = "num.transactions", y = "num.customers"),
+    p <- p + geom_text(aes(label = num.customers, x = num.transactions, y = num.customers),
                        position = position_dodge(width = 0.8),
                        vjust = -0.6,
                        size = rel(3))
@@ -449,3 +480,142 @@ clv.data.plot.barplot.frequency <- function(clv.data, count.repeat.trans, count.
 }
 
 
+
+#' @importFrom ggplot2 ggplot geom_segment geom_point geom_text geom_vline theme xlab ylim ggtitle element_blank scale_x_datetime scale_x_date
+clv.data.plot.transaction.timings <- function(clv.data, Ids, annotate.ids, plot, verbose, ...){
+  # cran silence
+  Id <- x <- y <- i.y <- date.first.actual.trans <- xstart <- xend <- ystart <- yend <- type <- Date <- NULL
+
+  err.msg <- c()
+  err.msg <- c(err.msg, .check_user_data_single_boolean(b=annotate.ids, var.name="annotate.ids"))
+  err.msg <- c(err.msg, check_userinput_datanocov_ids(Ids=Ids))
+  err.msg <- c(err.msg, check_user_data_emptyellipsis(...))
+  check_err_msg(err.msg)
+
+
+  # Draw lines with segments
+  #   For each customer: xstart, ystart, xend, yend
+  # Add calibration points
+  #   For each customer x,y of varying number
+  # Add holdout points
+  #   For each customer x,y of varying number
+
+  x.max <- clv.data@clv.time@timepoint.holdout.end
+
+  # Select first transaction of all ids, sample if ids not given
+  dt.customer.y <- pnbd_cbs(clv.data)
+
+  Ids <- unique(Ids)
+  if(is.null(Ids) | (length(Ids) == 1 & is.numeric(Ids))){
+    # sample given number of random customers (50 if none given)
+    if(is.null(Ids)){
+      Ids <- 50
+    }
+    if(Ids > nobs(clv.data)){
+      Ids <- nobs(clv.data)
+      warning(paste0("Id may not be larger than the number of customers and is set to ", nobs(clv.data), "."))
+    }
+    Ids <- dt.customer.y[, sample(x = Id, size = Ids, replace = FALSE)]
+  }
+  if(!all(Ids %in% dt.customer.y[, unique(Id)])){
+    warning("Not all given Ids were found in the transaction data.", call. = FALSE)
+  }
+  dt.customer.y <- dt.customer.y[Id %in% Ids, c("Id", "date.first.actual.trans")]
+
+  # Determine y position based on date of first transaction
+  #   shortest on top, ordered by Id if same timepoint
+  setorderv(dt.customer.y, c("date.first.actual.trans", "Id"), order = c(1, -1))
+  dt.customer.y[, y := seq(from=10, length.out=.N, by=10)]
+
+  # Line segments
+  #   x: from first transaction (start) to holdout end (end)
+  #   y: start and end same per customer
+  dt.segments <- dt.customer.y[, list(Id, xstart=date.first.actual.trans, xend=x.max, ystart=y, yend=y)]
+
+  # Points in calibration period
+  # x: transaction
+  # y: per customer y
+  dt.calibration <- clv.data.get.transactions.in.estimation.period(clv.data)
+  dt.calibration <- dt.calibration[Id %in% Ids]
+  dt.calibration[, x := Date]
+  dt.calibration[dt.customer.y, y := i.y, on="Id"]
+
+  # Points in holdout period
+  if(clv.data.has.holdout(clv.data)){
+    dt.holdout <- clv.data.get.transactions.in.holdout.period(clv.data)
+    dt.holdout <- dt.holdout[Id %in% Ids]
+    dt.holdout[, x := Date]
+    dt.holdout[dt.customer.y, y := i.y, on="Id"]
+  }
+
+
+  if(!plot){
+    # put data in single data.table to return if needed
+    # columns: Id, type, x, y
+    #   types: point_calibration, point_holdout, segment_start, segment_end
+    #   x: Date
+    #   y: number
+
+    dt.segments.start <- dt.segments[, list(Id, x=xstart, y=ystart, type="segment_start")]
+    dt.segments.end <- dt.segments[, list(Id, x=xend, y=yend, type="segment_end")]
+    dt.calibration[, type := "point_calibration"]
+    if(clv.data.has.holdout(clv.data)){
+      dt.holdout[, type := "point_holdout"]
+      l.plot <- list(dt.segments.start, dt.segments.end, dt.calibration, dt.holdout)
+    }else{
+      l.plot <- list(dt.segments.start, dt.segments.end, dt.calibration)
+    }
+
+    # melt all tables to bind them to common long-format
+    dt.plot <- rbindlist(lapply(l.plot, function(dt){
+        dt[, x := as.character(x)] # return x and y as chars to mix different types
+        dt[, y := as.character(y)]
+        dt <- melt(dt, id.vars = c('Id', 'type'), measure.vars = c('x', 'y'), variable.factor=FALSE)
+        dt
+      }))
+    return(dt.plot)
+  }
+
+  # Use single data.tables for plotting each part because much simpler than subsetting and cast()ing dt.plot
+
+  # Customer lines
+  g <- ggplot() + geom_segment(aes(x=xstart, xend=xend, y=ystart, yend=yend), data=dt.segments, color="#efefef")
+
+  # transaction points
+  g <- g + geom_point(aes(x=x, y=y), data=dt.calibration, color="#454545")
+
+  # holdout points & split line
+  if(clv.data.has.holdout(clv.data)){
+    g <- g + geom_point(aes(x=x, y=y), data=dt.holdout, color="#454545", fill="#999999", pch=21)
+    g <- g + geom_vline(aes(xintercept=x), linetype="dashed", show.legend = FALSE,
+                        data=data.frame(x=clv.data@clv.time@timepoint.estimation.end))
+  }
+
+  # mark ids
+  if(annotate.ids){
+    g <- g + geom_text(aes(x=x, y=y, label=Id),
+                       data = dt.customer.y[, list(Id, y, x=min(date.first.actual.trans))],
+                       nudge_x = -50, size=2.5, fontface="bold")
+  }
+
+  # y limits start at 0 to ensure a gap between first line and x axis
+  g <- g + ylim(c(0, dt.customer.y[, max(y)] + 10))
+
+  # x limits from first transaction to holdout/estimation end
+  # exactly 4 breaks from first plotted transaction to end
+  # dont set limits as id annotations will fall outside and trigger a waring
+  x.breaks <- seq(from=dt.customer.y[, min(date.first.actual.trans)], to=x.max, length.out=4)
+  if(is(clv.data@clv.time, "clv.time.date")){
+    g <- g + scale_x_date(breaks = x.breaks)
+  }else{
+    g <- g + scale_x_datetime(breaks = x.breaks)
+  }
+
+  # cosmetics
+  g <- clv.data.plot.add.default.theme(g)
+  g <- g + theme(axis.title.y = element_blank(), axis.line.y = element_blank(), axis.ticks.y = element_blank(), axis.text.y = element_blank(), panel.grid.major = element_blank())
+  g <- g + xlab("Date")
+  g <- g + ggtitle('Transaction Timings', subtitle = paste0("Estimation end: ",  clv.time.format.timepoint(clv.time=clv.data@clv.time, timepoint=clv.data@clv.time@timepoint.estimation.end)))
+
+  return(g)
+}

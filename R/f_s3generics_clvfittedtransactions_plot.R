@@ -332,11 +332,11 @@ clv.fitted.transactions.plot.tracking <- function(x, newdata, prediction.end, cu
 
 
 # PMF plot -----------------------------------------------------------------------------------------------
-#' @importFrom ggplot2 ggplot geom_col aes_string position_dodge2 guide_legend scale_x_discrete
+#' @importFrom ggplot2 ggplot geom_col position_dodge2 guide_legend scale_x_discrete
 clv.fitted.transactions.plot.barplot.pmf <- function(x, trans.bins, transactions, label,
                                                      calculate.remaining, label.remaining, plot, verbose){
   pmf.x <- pmf.value  <- actual.num.customers <- expected.customers <- i.expected.customers <- NULL
-  num.customers <- num.transactions <- char.num.transactions <- variable <- NULL
+  num.customers <- num.transactions <- char.num.transactions <- variable <- value <- NULL
 
   check_err_msg(check_user_data_integer_vector_greater0(vec=trans.bins, var.name="trans.bins"))
   check_err_msg(.check_userinput_single_character(char=label.remaining, var.name="label.remaining"))
@@ -408,12 +408,12 @@ clv.fitted.transactions.plot.barplot.pmf <- function(x, trans.bins, transactions
       lines.color <- setNames(object = "red", nm = label.model)
     }
 
-    p <- ggplot(dt.plot)+geom_col(aes_string(x="num.transactions", fill="variable", y="value"),
+    p <- ggplot(dt.plot)+geom_col(aes(x=num.transactions, fill=variable, y=value),
                                   width = 0.5, position=position_dodge2(width = 0.9))
 
     # add count annotation
-    p <- p + geom_text(aes_string(group="variable", label = "round(value, digits=1)",
-                                  x = "num.transactions", y = "value"),
+    p <- p + geom_text(aes(group=variable, label = round(value, digits=1),
+                                  x = num.transactions, y = value),
                        position = position_dodge2(width = 0.5),
                        vjust = -0.6,
                        size = rel(3))
