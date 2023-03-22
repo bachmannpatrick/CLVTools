@@ -45,10 +45,13 @@ Customer::Customer(const double x, const double t_x, const double T_cal, const d
   this->set_real_walk_life(adj_covdata_real_life, walkinfo_real_life);
 }
 
+LifetimeWalk::LifetimeWalk(const arma::vec& cov_data, const arma::rowvec& walk_info){
 
+   // May _not_ store refs/pointers to walk_info as will only receive subviews (mat.row()) which will vanish when function is done!
+  arma::uword from = static_cast<arma::uword>(walk_info(0))-1;
+  arma::uword to = static_cast<arma::uword>(walk_info(1))-1;
 
-// ***TODO: Move inplace
-void LifetimeWalk::set_walk_data(const arma::vec& cov_data, const arma::uword from, const arma::uword to){
+  // Set actual walk data
 
   // https://arma.sourceforge.net/docs.html
   // vec(ptr_aux_mem, number_of_elements, copy_aux_mem = true, strict = false)
@@ -69,7 +72,7 @@ void LifetimeWalk::set_walk_data(const arma::vec& cov_data, const arma::uword fr
   //
   // safer way to find position of memory. use subview_vector instead? need to adapt from and to +-1??
   // benchmark vs first approach (maybe reference or pointer instead of regular instance?)
-  // on small dataset (250customers) this is about 5% slower than pointer arithmetic
+  // on small dataset (250 customers) this is about 5% slower than pointer arithmetic
   const arma::subview_col<double> view = cov_data.subvec(from, to);
   this->walk_data = arma::vec(view.colptr(0), view.n_elem);
 
@@ -80,15 +83,6 @@ void LifetimeWalk::set_walk_data(const arma::vec& cov_data, const arma::uword fr
     // This also propagates NA to optimizer if sum_middle_elems() is called erroneously
     this->val_sum_middle_elems = arma::datum::nan;
   }
-
-}
-
-LifetimeWalk::LifetimeWalk(const arma::vec& cov_data, const arma::rowvec& walk_info){
-
-   // May _not_ store refs/pointers to walk_info as will only receive subviews (mat.row()) which will vanish when function is done!
-  arma::uword from = static_cast<arma::uword>(walk_info(0))-1;
-  arma::uword to = static_cast<arma::uword>(walk_info(1))-1;
-  this->set_walk_data(cov_data, from, to);
 }
 
 

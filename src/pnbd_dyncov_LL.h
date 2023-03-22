@@ -35,7 +35,6 @@ struct LifetimeWalk {
 
 protected:
   double val_sum_middle_elems;
-  void set_walk_data(const arma::vec& cov_data, const arma::uword from, const arma::uword to);
 };
 
 
