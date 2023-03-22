@@ -304,8 +304,8 @@ double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
 
 /*
  * A1sum: Sum up covariates which were active during transaction
- *        **TODO: Verify last vs first are the relevant ones during transaction
- *        Name is chosen randomly
+ *        Jeff/Patrik: Use the original covariate (log of adj cov) that is active active during transaction. This transaction is the upper end of the walk because the walk goes from [previous transaction, this transaction].
+ *        Jeff: Name A1sum is chosen randomly
  */
 double pnbd_dyncov_LL_i_A1sum(const std::vector<TransactionWalk>& real_walks_trans){
 
@@ -316,6 +316,7 @@ double pnbd_dyncov_LL_i_A1sum(const std::vector<TransactionWalk>& real_walks_tra
   }else{
     double A1sum = 0.0;
     for(const TransactionWalk& w : real_walks_trans){
+      // w.last() is covariate active when customer transacts as walk is [previous, this]
       A1sum += std::log(w.last());
     }
     return(A1sum);
