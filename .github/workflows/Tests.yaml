@@ -41,7 +41,7 @@ jobs:
           library(devtools)
 
           Sys.getenv("TESTTHAT_CPUS")
-          Sys.setenv(TESTTHAT_CPUS=2)
+          Sys.setenv(TESTTHAT_CPUS=3)
           Sys.getenv("TESTTHAT_CPUS")
 
           # If on a release branch (name starts with 'release'),
