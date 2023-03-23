@@ -5,7 +5,6 @@ data("apparelStaticCov")
 data("apparelDynCov")
 
 # nocov ---------------------------------------------------------------------------------
-context("Runability - latentAttrition - nocov")
 clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
 
 
@@ -41,7 +40,6 @@ test_that("Works with args to model", {
 
 
 # static cov ------------------------------------------------------------------------------------
-context("Runability - latentAttrition - static cov")
 clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(apparelTrans, apparelStaticCov, estimation.split = NULL)
 
 test_that("Every model works without specials", {
@@ -81,7 +79,6 @@ test_that("Works with . excluding covs", {
 
 # dyn cov ------------------------------------------------------------------------------------
 # Do one single test to verify formula interface works also with dyncov
-context("Runability - latentAttrition - dyn cov")
 clv.apparel.dyn.cov <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=apparelTrans,  data.apparelDynCov=apparelDynCov, estimation.split=40)
 
 test_that("Works with . and excluding covs", {
@@ -92,7 +89,6 @@ test_that("Works with . and excluding covs", {
 
 
 # data.frame ------------------------------------------------------------------------------------------------------------------------
-context("Runability - latentAttrition - data.frame")
 
 test_that("Works out-of-the-box, nocov", {
   skip_on_cran()

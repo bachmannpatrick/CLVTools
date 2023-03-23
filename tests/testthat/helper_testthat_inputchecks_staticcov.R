@@ -229,7 +229,6 @@ fct.testthat.inputchecks.staticcov <- function(name.method, method, start.params
   l.std.args.withholdout <- list(clv.data=clv.data.apparel.with.holdout)
 
 
-  context(paste0("Inputchecks - ", name.method," staticcov - Parameter start.params.model"))
   fct.testthat.inputchecks.startparamsmodel(method = method,
                                             l.std.args = l.std.args.noholdout,
                                             correct.params = start.params.model,
@@ -239,20 +238,16 @@ fct.testthat.inputchecks.staticcov <- function(name.method, method, start.params
                                             correct.params = start.params.model,
                                             names.params = names(start.params.model))
 
-  context(paste0("Inputchecks - ", name.method," staticcov - Parameter optimx.args"))
   fct.testthat.inputchecks.optimxargs(method, l.std.args.noholdout)
   fct.testthat.inputchecks.optimxargs(method, l.std.args.withholdout)
 
-  context(paste0("Inputchecks - ",name.method," staticcov - Parameter ..."))
   fct.testthat.inputchecks.staticcov...(method = method, l.std.args = l.std.args.noholdout)
   fct.testthat.inputchecks.staticcov...(method = method, l.std.args = l.std.args.withholdout)
 
   if(has.cor){
-    context(paste0("Inputchecks - ",name.method," staticcov - Parameter use.cor"))
     fct.testthat.inputchecks.usecor(method = method, l.std.args = l.std.args.noholdout)
     fct.testthat.inputchecks.usecor(method = method, l.std.args = l.std.args.withholdout)
 
-    context(paste0("Inputchecks - ",name.method," staticcov - Parameter start.param.cor"))
     fct.testthat.inputchecks.startparamcor(method = method, l.std.args = l.std.args.noholdout,   correct.param = 0.5)
     fct.testthat.inputchecks.startparamcor(method = method, l.std.args = l.std.args.withholdout, correct.param = 0.5)
   }else{
@@ -267,23 +262,18 @@ fct.testthat.inputchecks.staticcov <- function(name.method, method, start.params
 
   # Covariate specific inputs ---------------------------------------------------------------
 
-  context(paste0("Inputchecks - ",name.method," staticcov - Parameter start.param.life"))
   fct.testthat.inputchecks.startparamcov(method = method, l.std.args = l.std.args.noholdout, name.param = "start.params.life")
   fct.testthat.inputchecks.startparamcov(method = method, l.std.args = l.std.args.withholdout, name.param = "start.params.life")
 
-  context(paste0("Inputchecks - ",name.method," staticcov - Parameter start.param.trans"))
   fct.testthat.inputchecks.startparamcov(method = method, l.std.args = l.std.args.noholdout, name.param = "start.params.trans")
   fct.testthat.inputchecks.startparamcov(method = method, l.std.args = l.std.args.withholdout, name.param = "start.params.trans")
 
-  context(paste0("Inputchecks - ",name.method," staticcov - Parameter names.cov.constr"))
   fct.testthat.inputchecks.namescovconstr(method = method, l.std.args = l.std.args.noholdout)
   fct.testthat.inputchecks.namescovconstr(method = method, l.std.args = l.std.args.withholdout)
 
-  context(paste0("Inputchecks - ",name.method," staticcov - Parameter start.params.constr"))
   fct.testthat.inputchecks.startparamconstr(method = method, l.std.args = l.std.args.noholdout)
   fct.testthat.inputchecks.startparamconstr(method = method, l.std.args = l.std.args.withholdout)
 
-  context(paste0("Inputchecks - ",name.method," staticcov - Parameter reg.lambdas"))
   fct.testthat.inputchecks.reglambdas(method = method, l.std.args = l.std.args.noholdout)
   fct.testthat.inputchecks.reglambdas(method = method, l.std.args = l.std.args.withholdout)
 

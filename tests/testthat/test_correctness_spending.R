@@ -4,7 +4,6 @@ data("apparelTrans")
 data("apparelStaticCov")
 
 
-context("Correctness - spending()")
 clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split=37)
 
 test_that("LHS same as std interface", {

@@ -2,7 +2,6 @@
 data("apparelTrans")
 data("apparelStaticCov")
 
-context("Inputchecks - SetStaticCovariates - Parameter clv.data")
 expect_silent(clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w"))
 
 
@@ -46,7 +45,6 @@ test_that("Fails if already has covariates", {
 
 
 # Parameter data.cov.life ---------------------------------------------------------------------------------------
-context("Inputchecks - SetStaticCovariates - Parameter data.cov.life")
 # ** TODO: id type wrong?
 
 test_that("Fails if missing/NULL/NA", {
@@ -113,8 +111,6 @@ test_that("Fails for variable with single category", {
 
 
 # Parameter data.cov.trans ---------------------------------------------------------------------------------------
-context("Inputchecks - SetStaticCovariates - Parameter data.cov.trans")
-
 test_that("Fails if missing/NULL/NA", {
   expect_error(SetStaticCovariates(clv.data = clv.data.apparel,
                                    data.cov.life  = apparelStaticCov, names.cov.life = "Gender",
@@ -180,7 +176,6 @@ test_that("Fails for variable with single category", {
 
 
 # Parameter name.cov.life ---------------------------------------------------------------------------------------
-context("Inputchecks - SetStaticCovariates - Parameter name.cov.life")
 test_that("Fails if missing/NULL/NA/empty",{
   expect_error(SetStaticCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelStaticCov, names.cov.life = ,
@@ -249,7 +244,6 @@ test_that("Fails if has duplicate names", {
 
 
 # Parameter name.cov.trans ---------------------------------------------------------------------------------------
-context("Inputchecks - SetStaticCovariates - Parameter name.cov.trans")
 test_that("Fails if missing/NULL/NA/empty",{
   expect_error(SetStaticCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelStaticCov, names.cov.life = "Gender",
