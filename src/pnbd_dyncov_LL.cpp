@@ -679,8 +679,7 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
 
   // Transaction Process ------------------------------------------------
   const double A1T = c.aux_walk_trans.first();
-  // *** TODO: remove wrapper, read directly from walk
-  const double AkT = c.adj_transaction_cov_dyn();
+  const double AkT = c.aux_walk_trans.last(); // used to be adj_transaction_cov_dyn
   const double A1sum = pnbd_dyncov_LL_i_A1sum(c.real_walks_trans);
 
   const double B1 = pnbd_dyncov_LL_i_Bi(1, c.t_x, c.aux_walk_trans);
@@ -691,7 +690,7 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
 
   // Lifetime Process ---------------------------------------------------
   const double C1T = c.aux_walk_life.first();
-  const double CkT = c.adj_lifetime_cov_dyn();
+  const double CkT = c.aux_walk_life.last(); // used to be adj_lifetime_cov_dyn
   const double D1 = pnbd_dyncov_LL_i_Di(1, c.real_walk_life, c.aux_walk_life, c.d_omega);
   const double DT = pnbd_dyncov_LL_i_Di(c.aux_walk_life.n_elem(), c.real_walk_life, c.aux_walk_life, c.d_omega);
 

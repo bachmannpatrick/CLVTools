@@ -44,7 +44,7 @@ struct EmptyLifetimeWalk : LifetimeWalk{
 };
 
 struct TransactionWalk : LifetimeWalk{
-  double d1;
+  double d1; // d (number of periods to end of covariate period) of the first transcation from which the walk is built
   double tjk;
   TransactionWalk(); // used in vector<>
   TransactionWalk(const arma::vec&, const arma::rowvec&);
@@ -106,14 +106,6 @@ struct Customer {
            const arma::vec& adj_covdata_aux_life,   const arma::rowvec& walkinfo_aux_life,
            const arma::vec& adj_covdata_real_life,  const arma::rowvec& walkinfo_real_life,
            const arma::vec& adj_covdata_aux_trans,  const arma::rowvec& walkinfo_aux_trans);
-
-  double adj_transaction_cov_dyn() const{
-    return(this->aux_walk_trans.last());
-  }
-
-  double adj_lifetime_cov_dyn() const{
-    return(this->aux_walk_life.last());
-  }
 
 private:
   void set_real_walk_life(const arma::vec&, const arma::rowvec&);
