@@ -277,7 +277,6 @@ fct.helper.test.runability.clv.data.others3 <- function(clv.data){
 }
 
 # This all falls under the context of runability for the fitted models
-context("Runability - clvdata - S3")
 
 # Create with and withouth holdout, with and withouth static covariates
 expect_silent(apparel.holdout    <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w", estimation.split = 39))

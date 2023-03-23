@@ -6,7 +6,6 @@ skip_on_cran()
 
 
 # Basic runability ---------------------------------------------------------------------------------
-context("Runability - PNBD dynamiccov - Basic runability")
 
 fitted.dyncov <- fct.helper.dyncov.quickfit.apparel.data(data.apparelTrans = apparelTrans,
                                                          data.apparelDynCov = apparelDynCov,
@@ -41,7 +40,6 @@ fct.testthat.runability.dynamiccov.predict.newdata.works(clv.fitted = fitted.dyn
 
 
 # Newdata ----------------------------------------------------------------------------------------------------------
-context("Runability - PNBD dynamiccov - newdata")
 apparelDynCov.extra <- fct.helper.dyncov.create.longer.dyncov.data(num.additional = 100,
                                                                         data.apparelDynCov = apparelDynCov)
 clv.data.extra <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=apparelTrans,
@@ -53,7 +51,6 @@ fct.testthat.runability.dynamiccov.predict.longer.with.newdata(clv.fitted = fitt
 fct.testthat.runability.dynamiccov.plot.longer.with.newdata(clv.fitted = fitted.dyncov, clv.data.extra = clv.data.extra, clv.data.trans = clv.data.trans)
 
 # Overlong data ------------------------------------------------------------------------------
-context("Runability - PNBD dynamiccov - Overlong data")
 
 # Cannot do without holdout because takes too long to estimate
 fct.testthat.runability.dynamiccov.can.predict.plot.beyond.holdout(data.apparelTrans=apparelTrans,

@@ -3,7 +3,6 @@ data("apparelTrans")
 data("apparelStaticCov")
 
 # Covariate dummies ---------------------------------------------------------------------------------------
-context("Correctness - SetStaticCovariates - Covariate dummies")
 
 expect_silent(clv.data.apparel.nohold   <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w"))
 expect_silent(clv.data.apparel.withhold <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w",
@@ -123,7 +122,6 @@ test_that("Creates correct number of dummies - 3 categories",{
 
 
 # Covariate datatypes ---------------------------------------------------------------------------
-context("Correctness - SetStaticCovariates - Covariate datatypes")
 
 test_that("Converts categories to dummies - no numeric", {
   skip_on_cran()

@@ -11,7 +11,6 @@ apparelDynCov <- apparelDynCov[Cov.Date > "2005-01-01" ]
 apparelTrans[, Date:=as.POSIXct(Date)]
 
 # Covariate dummies ---------------------------------------------------------------------------------------
-context("Correctness - SetDynamicCovariates - Covariate dummies")
 
 expect_message(clv.data.apparel.nohold   <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w"), regexp = "ignored")
 expect_message(clv.data.apparel.withhold <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w",
@@ -185,7 +184,6 @@ test_that("Creates correct number of dummies - 3 categories",{
 
 
 # Covariate datatypes ---------------------------------------------------------------------------
-context("Correctness - SetDynamicCovariates - Covariate datatypes")
 
 test_that("Converts categories to dummies - no numeric", {
   skip_on_cran()

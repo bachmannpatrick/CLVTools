@@ -48,6 +48,7 @@ Suggests:
     rmarkdown,
     testthat,
     xml2
+    testthat (>= 3.0.0)
 License: GPL-3
 URL: https://github.com/bachmannpatrick/CLVTools
 BugReports: https://github.com/bachmannpatrick/CLVTools/issues
@@ -147,3 +148,5 @@ Collate:
     'pnbd_dyncov_palive.R'
 RoxygenNote: 7.2.3
 VignetteBuilder: knitr
+Config/testthat/parallel: true
+Config/testthat/edition: 3

@@ -1,7 +1,6 @@
 skip_on_cran()
 data("cdnow")
 
-context("Inputchecks - spending() - data=clv.data")
 clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
 
 # data -----------------------------------------------------------------------------------------------
@@ -21,7 +20,6 @@ test_that("Fails if data() but given clv.data", {
 
 
 # model -----------------------------------------------------------------------------------------------
-context("Inputchecks - spending() - model")
 test_that("Fails if no model in RHS1", {
   skip_on_cran()
   expect_error(spending(~., data = clv.cdnow), "of the following models")
@@ -78,7 +76,6 @@ test_that("Fails if explicit args verbose or optimx.args given to model", {
 })
 
 
-context("Inputchecks - spending() - data=data.frame")
 
 test_that("Fails if no data in LHS1",{
   skip_on_cran()

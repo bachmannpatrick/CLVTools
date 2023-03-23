@@ -6,8 +6,6 @@ data("apparelStaticCov")
 # cutoff first as will result in "cutoff" message and not silent anymore
 apparelDynCov <- apparelDynCov[Cov.Date > "2005-01-01" ]
 
-context("Inputchecks - SetDynamicCovariates - Parameter clv.data")
-
 expect_silent(clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w"))
 
 
@@ -63,7 +61,6 @@ test_that("Fails if already has covariates", {
 
 
 # Parameter data.cov.life ---------------------------------------------------------------------------------------
-context("Inputchecks - SetDynamicCovariates - Parameter data.cov.life")
 
 # ** TODO: id type wrong?
 
@@ -227,7 +224,6 @@ test_that("Fails for variable with single category", {
 
 
 # Parameter data.cov.trans ---------------------------------------------------------------------------------------
-context("Inputchecks - SetDynamicCovariates - Parameter data.cov.trans")
 
 test_that("Fails if missing/NULL/NA", {
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
@@ -391,7 +387,7 @@ test_that("Fails for variable with single category", {
 })
 
 # Parameter name.cov.life ---------------------------------------------------------------------------------------
-context("Inputchecks - SetDynamicCovariates - Parameter name.cov.life")
+
 test_that("Fails if missing/NULL/NA/empty",{
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelDynCov, names.cov.life = ,
@@ -478,7 +474,6 @@ test_that("Fails if has duplicate names", {
 
 
 # Parameter name.cov.trans ---------------------------------------------------------------------------------------
-context("Inputchecks - SetDynamicCovariates - Parameter name.cov.trans")
 test_that("Fails if missing/NULL/NA/empty",{
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                     data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),

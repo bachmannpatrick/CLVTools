@@ -7,7 +7,6 @@ data("apparelDynCov")
 apparelDynCov <- apparelDynCov[Cov.Date > "2005-01-01" ] #otherwise "cutoff" message
 
 # Parameter clv.data ---------------------------------------------------------------------------------------
-context("Runability - SetDynamicCovariates - Data inputs")
 expect_silent(clv.data.apparel.nohold   <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w"))
 expect_silent(clv.data.apparel.withhold <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w",
                                                     estimation.split = 39))
@@ -22,7 +21,6 @@ test_that("Works with and withouth holdout period", {
 })
 
 # Covariate length longer than holdout.end ---------------------------------------------------------------------------------------
-context("Runability - SetDynamicCovariates - Covariate length")
 
 test_that("Works with cov data longer than estimation.end/holdout.end", {
   skip_on_cran()

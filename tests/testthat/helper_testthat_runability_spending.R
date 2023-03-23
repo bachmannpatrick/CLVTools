@@ -3,8 +3,6 @@ fct.testthat.runability.clvfittedspending <- function(name.model, method,
                                                       start.params.model,
                                                       failed.optimization.methods.expected.message){
 
-  context(paste0("Runability - ",name.model," - Basic runability"))
-
   # Data objects: normal data
 
 

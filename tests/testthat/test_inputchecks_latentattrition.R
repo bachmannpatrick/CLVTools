@@ -6,7 +6,6 @@ data("apparelStaticCov")
 # **IMPORTANT TODO: FAIL IF COV GIVEN BUT data=CLV.DATA
 
 # nocov, clv.data -----------------------------------------------------------------------------------------------
-context("Inputchecks - latentAttrition - nocov, clv.data")
 clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
 
 # .data -----------------------------------------------------------------------------------------------
@@ -82,8 +81,6 @@ test_that("Fails if explicit args verbose or optimx.args given to model", {
 
 
 # static cov, clv.data -----------------------------------------------------------------------------------------------
-context("Inputchecks - latentAttrition - static cov, clv.data")
-
 clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = apparelTrans, data.apparelStaticCov = apparelStaticCov,
                                                                estimation.split = NULL)
 
@@ -144,7 +141,6 @@ test_that("Fails if constraint() does not have valid content", {
 
 
 # nocov, data.frame -----------------------------------------------------------------------------------------------
-context("Inputchecks - latentAttrition - no cov, data.frame")
 
 test_that("Fails if no LHS1",{
   skip_on_cran()
@@ -193,7 +189,6 @@ test_that("Fails if not parsable content in data()",{
 
 
 # static cov, data.frame -----------------------------------------------------------------------------------------------
-context("Inputchecks - latentAttrition - static cov, data.frame")
 
 test_that("Fails if cov is not data.frame/table", {
   skip_on_cran()
@@ -238,8 +233,6 @@ test_that("Fails if mixing clv.data and data.frame static cov data",{
 
 
 # dyncov cov, data.frame -----------------------------------------------------------------------------------------------
-context("Inputchecks - latentAttrition - dyn cov, data.frame")
-
 
 test_that("Fails if dyn cov data but missing RHS2/3",{
   skip_on_cran()

@@ -222,15 +222,11 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method, d
                                      name.id = "Id", name.date = "Date", name.price = "Price"))
   expect_silent(obj.fitted <- do.call(method, list(clv.data = clv.cdnow, verbose = FALSE)))
 
-  context(paste0("Correctness - ",name.model," nocov - Recover parameters"))
   fct.testthat.correctness.clvfitted.correct.coefs(method = method, cdnow = data.cdnow, start.params.model = correct.start.params.model,
                                                    params.nocov.coef = correct.params.nocov.coef, LL.nocov = correct.LL.nocov)
 
-  context(paste0("Correctness - ",name.model," nocov - Example data"))
   fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box(method = method, clv.data = clv.cdnow, kkt2.true = kkt2.true)
 
-
-  context(paste0("Correctness - ",name.model," nocov - predict"))
   fct.testthat.correctness.clvfittedtransactions.predict.actual.x(method = method, data.cdnow = data.cdnow)
   fct.testthat.correctness.clvfitted.newdata.same.predicting.fitting(clv.fitted = obj.fitted)
   fct.testthat.correctness.clvfittedtransactions.CET.0.for.no.prediction.period(clv.fitted = obj.fitted)
@@ -239,7 +235,6 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method, d
   fct.testhat.correctness.clvfittedtransactions.same.spending.as.independent.spending.model(method = method, clv.data = clv.cdnow)
 
   if(fct.helper.has.pmf(obj.fitted)){
-    context(paste0("Correctness - ",name.model," nocov - pmf"))
     fct.testthat.correctness.clvfittedtransactions.pmf.more.x.more.p(clv.fitted = obj.fitted)
     fct.testthat.correctness.clvfittedtransactions.pmf.valid.values(clv.fitted = obj.fitted)
     fct.testthat.correctness.clvfittedtransactions.pmf.only.depends.on.Tcal(clv.fitted = obj.fitted)
@@ -255,7 +250,6 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method, d
   expect_silent(obj.fitted.static <- do.call(method, list(clv.data=clv.apparel.staticcov, verbose=FALSE)))
 
 
-  context(paste0("Correctness - ",name.model," static cov - Data sorting"))
   fct.testthat.correctness.clvfittedtransactions.staticcov.covariate.row.sorting(method = method,
                                                                                  data.apparelTrans=data.apparelTrans,
                                                                                  data.apparelStaticCov=data.apparelStaticCov,
@@ -265,21 +259,15 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method, d
                                                                                     data.apparelStaticCov=data.apparelStaticCov,
                                                                                     m.fitted.static = obj.fitted.static)
 
-
-  context(paste0("Correctness - ",name.model," static cov - Example data"))
   fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box(method = method, clv.data = clv.apparel.nocov, kkt2.true = kkt2.true)
   fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box(method = method, clv.data = clv.apparel.staticcov, kkt2.true = kkt2.true)
 
-
-  context(paste0("Correctness - ",name.model," static cov - predict"))
   fct.testthat.correctness.clvfittedtransactions.CET.0.for.no.prediction.period(clv.fitted = obj.fitted.static)
   fct.testthat.correctness.clvfittedtransactions.staticcov.fitting.sample.predicting.full.data.equal(method = method, data.apparelTrans = data.apparelTrans,
                                                                                                      data.apparelStaticCov = data.apparelStaticCov,
                                                                                                      clv.apparel.staticcov = clv.apparel.staticcov)
   fct.testhat.correctness.clvfittedtransactions.same.spending.as.independent.spending.model(method = method, clv.data = clv.apparel.staticcov)
 
-
-  context(paste0("Correctness - ",name.model," static cov - regularization"))
   fct.testthat.correctness.clvfittedtransactions.staticcov.regularization.lambda.0.no.regularization(method = method, clv.apparel.staticcov = clv.apparel.staticcov,
                                                                                                      m.fitted.static = obj.fitted.static)
 }

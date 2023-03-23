@@ -76,8 +76,8 @@ fct.helper.has.DERT <- function(clv.fitted.transactions){
   })
   test_that("Names same order as coef(summary())", {
     skip_on_cran()
-    expect_equal(rownames(coef(summary(clv.fitted))), rownames(res.vcov), ignore.case = FALSE, ignore.order = FALSE)
-    expect_equal(rownames(coef(summary(clv.fitted))), colnames(res.vcov), ignore.case = FALSE, ignore.order = FALSE)
+    expect_equal(rownames(coef(summary(clv.fitted))), rownames(res.vcov))
+    expect_equal(rownames(coef(summary(clv.fitted))), colnames(res.vcov))
   })
   test_that("No NAs",{
     expect_false(anyNA(res.vcov))
