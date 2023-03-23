@@ -41,16 +41,9 @@ jobs:
           library(testthat)
           library(devtools)
 
-          Sys.getenv("TESTTHAT_CPUS")
-          Sys.setenv(TESTTHAT_CPUS=3)
-          Sys.getenv("TESTTHAT_CPUS")
-
-          print(getOption("Ncpus"))
-          print(getOption("Ncpu"))
+          # Ncpus=1 by default, and takes precedence over TESTTHAT_CPUS env var
+          # set to 3 which is default num cpus on mac GH actions runner
           options(Ncpus=3)
-          options(Ncpu=3)
-          print(getOption("Ncpus"))
-          print(getOption("Ncpu"))
 
           # If on a release branch (name starts with 'release'),
           #   run all tests, including lengthy ones marked with skip_on_ci()
