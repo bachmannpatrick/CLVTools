@@ -37,12 +37,20 @@ jobs:
 
       - name: Run tests
         run: |
-          library(testthat)
-          library(devtools)
 
           Sys.getenv("TESTTHAT_CPUS")
           Sys.setenv(TESTTHAT_CPUS=3)
           Sys.getenv("TESTTHAT_CPUS")
+
+          print(getOption("Ncpus"))
+          print(getOption("Ncpu"))
+          options(Ncpus=3)
+          options(Ncpu=3)
+          print(getOption("Ncpus"))
+          print(getOption("Ncpu"))
+
+          library(testthat)
+          library(devtools)
 
           # If on a release branch (name starts with 'release'),
           #   run all tests, including lengthy ones marked with skip_on_ci()
