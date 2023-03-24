@@ -17,6 +17,11 @@ pnbd_dyncov_assert_walk_assumptions <- function(clv.fitted){
   assert_coreelements(clv.fitted@data.walks.life.real)
   assert_coreelements(clv.fitted@data.walks.trans.real)
 
+  stopifnot(!anyNA(clv.fitted@data.walks.life.aux))
+  stopifnot(!anyNA(clv.fitted@data.walks.trans.aux))
+  stopifnot(!anyNA(clv.fitted@data.walks.life.real))
+  stopifnot(!anyNA(clv.fitted@data.walks.trans.real))
+
   # all aux walks:
   #   every Id only once
   #   every Id in walks
@@ -112,7 +117,9 @@ pnbd_dyncov_getLLcallargs <-function(clv.fitted){
   m.walkinfo.aux.trans  <- data.matrix(dt.cbs[, .SD, .SDcols=paste0("walk_aux_trans_", cols.walk.ordered.trans, sep="")])
   m.walkinfo.real.trans <- data.matrix(dt.walkinfo.real.trans[, c("walk_from", "walk_to", "d1", "tjk")])
 
-  # **TODO: check col sorting is same as parameters! (correct.col.names == )
+  # check col sorting is same as parameters!
+  stopifnot(names(clv.fitted@prediction.params.life) == clv.fitted@clv.data@names.cov.data.life)
+  stopifnot(names(clv.fitted@prediction.params.trans) == clv.fitted@clv.data@names.cov.data.trans)
   m.cov.data.aux.life    <- data.matrix(clv.fitted@data.walks.life.aux[,   .SD, .SDcols=clv.fitted@clv.data@names.cov.data.life])
   m.cov.data.real.life   <- data.matrix(clv.fitted@data.walks.life.real[,  .SD, .SDcols=clv.fitted@clv.data@names.cov.data.life])
   m.cov.data.aux.trans   <- data.matrix(clv.fitted@data.walks.trans.aux[,  .SD, .SDcols=clv.fitted@clv.data@names.cov.data.trans])
@@ -188,7 +195,7 @@ pnbd_dyncov_createwalks_add_corelements <- function(dt.walks){
 
   # walk_from/to: Start and end position in data of each walk
 
-  # min() and max() give warning if table is empty (if there is not a single real walk for lifetime)
+  # min() and max() give warning if table is empty (if there is not a single real lifetime walk)
   if(nrow(dt.walks) > 0){
     # Add from to of walk
     dt.walks[, walk_from := min(abs_pos), by="walk_id"]
@@ -202,7 +209,8 @@ pnbd_dyncov_createwalks_add_corelements <- function(dt.walks){
 }
 
 pnbd_dyncov_walk_d <- function(clv.time, tp.relevant.transaction){
-  # d shall be 1 if it is exactly on the time.unit boundary! **TODO: Correct statement?
+  # d shall be 1 if it is exactly on the time.unit boundary!
+  # **TODO: Correct statement?
   # **TODO: clv.time.ceiling.date does not change on boundary (ie d1=0 if on boundary)
 
   # # . d ---------------------------------------------------------------------
@@ -248,7 +256,6 @@ pnbd_dyncov_creatwalks_add_d1 <- function(dt.walk, clv.time){
 pnbd_dyncov_creatwalks_matchcovstocuts <- function(dt.cov, dt.cuts, names.cov){
   # Match the cov data to the points given in dt.cuts
 
-  # **TODO: Update comment: Walks are covs that have an effect from coming alive until last transaction [0, T] (or (0. T))
   by.covs <- c("Id", "tp.cov.lower", "tp.cov.upper")
   by.cuts <- c("Id", "tp.cut.lower", "tp.cut.upper")
   setkeyv(dt.cov, by.covs)
@@ -293,13 +300,9 @@ pnbd_dyncov_covariate_add_interval_bounds <- function(dt.cov, clv.time){
   dt.cov[, tp.cov.lower := Cov.Date]
 
   # Do not use shift() because leaves NA which will then have to be fixed
+  #   has a test which verifies that same result as if shifting
   single.timeperiod <- clv.time.number.timeunits.to.timeperiod(clv.time, user.number.periods=1L)
   dt.cov[, tp.cov.upper := tp.cov.lower + single.timeperiod - clv.time.epsilon(clv.time)]
-
-  # **TODO: test: same as if shifted + short manual
-  #         test: no NAs in tp columns
-  # dt.cov[, tp.cov.upper := shift(tp.cov.lower, n=-1L), by="Id"]
-  # dt.cov[, tp.cov.upper := tp.cov.upper - clv.time.epsilon(clv.time)]
 
   return(dt.cov)
 }
@@ -311,7 +314,7 @@ pnbd_dyncov_createwalks_real_trans <- function(clv.data, dt.trans, dt.tp.first.l
   dt.cov <- clv.data@data.cov.trans
 
   # Covariates affecting repeat-transactions
-  #   Zero-repeaters have 0 real walks
+  #   Zero-repeaters have no real walks
   #   No walk for the first transaction
   #   A transaction is influenced some time between the last and actual trans
   #     -> Interval [last trans + eps, this trans]
@@ -322,17 +325,18 @@ pnbd_dyncov_createwalks_real_trans <- function(clv.data, dt.trans, dt.tp.first.l
 
   # If 2 transactions are on the same date, shift+1 will lead to Date.Start > Date.End
   #   Cannot/Should have no 2 transactions on same tp because are aggregated
-  #   No aux trans, only real trans present
-  #     min dist is 1 eps, hence can fall together again
+  #   No aux trans, only real trans present and therefore there is no aux trans on T (no distance between transactions) in this data
+  #   min dist between transactions is 1 eps, hence tp.cut.lower and tp.cut.upper can fall together when shifting. Although the length of this interval is 0, foverlaps() matches these to covariates and produces walks of length 1
   setkeyv(dt.cuts.real, cols=c("Id", "Date"))
   dt.cuts.real[, tp.this.trans := Date]
   dt.cuts.real[, tp.previous.trans := shift(tp.this.trans, n=1), by="Id"]
-  # dt.cuts.real[, tp.cut.lower := tp.previous.trans + clv.time.epsilon(clv.time)]
+  # walk is [t_j, t_k] and not [t_j+eps, t_k]
+  # dt.cuts.real[, tp.cut.lower := tp.previous.trans + clv.time.epsilon(clv.time)] # if we add + eps, lower > upper if they are only 1 eps apart (because we also shift)
   dt.cuts.real[, tp.cut.lower := tp.previous.trans]
   dt.cuts.real[, tp.cut.upper := tp.this.trans]
 
   # remove cut for first transaction
-  #   - which has NA in tp.previous.trans because of shift()ing (and cannot match to cov)
+  #   - which has NA in tp.previous.trans because of shift()ing (and then cannot match to cov anyway)
   #   - for which no walk shall be created
   # dt.cuts.real <- dt.cuts.real[!is.na(tp.previous.trans)]
   dt.cuts.real[, is.first := tp.this.trans == min(tp.this.trans), by="Id"]
@@ -365,7 +369,6 @@ pnbd_dyncov_createwalks_real_life <- function(clv.data, dt.tp.first.last, dt.wal
   #   Only ever needed in Di() where they are summed additionally to the aux walk
   #   For some customers, there might be no real walk, if the aux walk starts in the customer's first period
   #   Still, every customer may have 1 real walk at maximum
-  # **TODO: Test real + aux gives original data (until estimation end)
 
   # Create from residuals given the aux walks
   #   Eligible covs:
@@ -392,9 +395,6 @@ pnbd_dyncov_createwalks_real_life <- function(clv.data, dt.tp.first.last, dt.wal
                                                        name.upper="tp.last.trans",
                                                        names.cov=clv.data.get.names.cov.life(clv.data),
                                                        clv.time=clv.data@clv.time)
-
-
-  # **TODO: Add test: same first cov date as real walks for transaction process + has no gaps in Cov.Dates
 
   return(dt.walks.real)
 }
