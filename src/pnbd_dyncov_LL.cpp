@@ -184,7 +184,7 @@ double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
   //                              &gsl_res);
 
   if(status == GSL_EMAXITER || status == GSL_EDOM){
-    Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_alpha_ge_beta, z1, status: "<<status <<std::endl;
+    // Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_alpha_ge_beta, z1, status: "<<status <<std::endl;
     // hyp.z1 := (1-z.1)^(r+x)*exp(log.C) / beta_1^(r+s+x)]
     hyp_z1 = std::pow(1.0 - z1, r + x) * std::exp(log_C) / std::pow(beta_1, r + s + x);
   }else{
@@ -215,7 +215,7 @@ double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
   //                              &gsl_res);
   if(status == GSL_EMAXITER || status == GSL_EDOM){
     // hyp.z2 := (1-z.2)^(r+x)*exp(log.C) / beta_2^(r+s+x)]
-    Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_alpha_ge_beta, z2, status: "<<status <<std::endl;
+    // Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_alpha_ge_beta, z2, status: "<<status <<std::endl;
     hyp_z2 = std::pow(1.0 - z2, r + x) * std::exp(log_C) / std::pow(beta_2, r + s + x);
   }else{
     // cbs.z[, hyp.z2 := l.hyp.z2$value / (alpha_2^(r+s+x))]
