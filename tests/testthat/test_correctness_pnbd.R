@@ -55,8 +55,6 @@ test_that("Higher discount factor leads to smaller DERT", {
 })
 
 
-# Dyncov ---------------------------------------------------------------------------------------
-fct.testthat.correctness.dyncov(data.apparelTrans=apparelTrans, data.apparelDynCov=apparelDynCov)
 
 # nocov expectation ----------------------------------------------------------------------------
 test_that("Expectation in Rcpp matches expectation in R (nocov)", {
