@@ -8,7 +8,7 @@ void Customer::set_real_walk_life(const arma::vec& adj_covdata_real_life, const 
   }
 }
 
-// With real life walk
+// With real life walk (ie repeat buyer)
 Customer::Customer(const double x, const double t_x, const double T_cal, const double d_omega,
                    const arma::vec& adj_covdata_aux_life,   const arma::rowvec& walkinfo_aux_life,
                    const arma::vec& adj_covdata_real_life,  const arma::rowvec& walkinfo_real_life,
@@ -52,35 +52,52 @@ LifetimeWalk::LifetimeWalk(const arma::vec& cov_data, const arma::rowvec& walk_i
   arma::uword to = static_cast<arma::uword>(walk_info(1))-1;
 
   // Set actual walk data
+  // Re-use the memory of cov_data for this->walk_data rather than allocating own memory which would be much slower.
+  // Use advanced constructor that uses auxiliary memory without copying
+  //
+  //
+  // Can either
+  // - arma::vec(ptr+from, n, copy, strict), requires to
+  //    - cast pointer of cov_data to non-const pointer
+  //    - calculating n=to-from+1
+  //    - have to do raw pointer arithmetic with ptr+from
+  //
+  // - arma::vec(ptr+from, n)
+  //    - no pointer casting
+  //    - calculating n=to-from+1
+  //    - have to do raw pointer arithmetic with ptr+from
+  //
+  // - use subview to get pointer position and number of elements to use in arma::vec(ptr+from, n)
+  //    - no pointer casting
+  //    - no pointer arithmetic
+  //    - not calculating number of elements
+  //    - slightly slower as requires subview
+  //
+  // Subview approach is deemed prefereable because no raw pointer arithmetic required.
+  //  Was measured to be about 5% slower on small dataset (250 customers) but worth it because safer (reading from correct positions)
 
-  // https://arma.sourceforge.net/docs.html
-  // vec(ptr_aux_mem, number_of_elements, copy_aux_mem = true, strict = false)
-  // ... However, if copy_aux_mem is set to false, the vector will instead directly use the auxiliary memory (ie. no copying); this is faster, but can be dangerous unless you know what you are doing!
-  // The strict parameter comes into effect only when copy_aux_mem is set to false
-  //  - when strict is set to false, the vector will use the auxiliary memory until a size change or an aliasing event
-  //  - when strict is set to true, the vector will be bound to the auxiliary memory for its lifetime; the number of elements in the vector can't be changed
-  //
-  // I dont like that have to cast to non-const pointer and have to do raw pointer arithmetic
-  // const arma::uword n_elems = to-from+1;
-  // double* ptr = const_cast<double*>(cov_data.memptr());
-  // this->walk_data = arma::vec(ptr+from, n_elems, false, true);
-
-  // vec(const ptr_aux_mem, number_of_elements)
-  //    Create a column vector by copying data from read-only auxiliary memory, where ptr_aux_mem is a pointer to the memory
-  //
-  // this->walk_data = arma::vec(cov_data.memptr()+from, view.n_elem); // rather not as doing raw pointer arithmetic with + from (forward <from> steps of size <type of memptr>)
-  //
-  // safer way to find position of memory. use subview_vector instead? need to adapt from and to +-1??
-  // benchmark vs first approach (maybe reference or pointer instead of regular instance?)
-  // on small dataset (250 customers) this is about 5% slower than pointer arithmetic
   const arma::subview_col<double> view = cov_data.subvec(from, to);
   this->walk_data = arma::vec(view.colptr(0), view.n_elem);
+
+
+  // For completeness, the other discussed approaches
+  //
+  // const arma::uword n_elems = to-from+1;
+  //
+  // // using arma::vec(ptr+from, n, copy, strict)
+  // double* ptr = const_cast<double*>(cov_data.memptr());
+  // this->walk_data = arma::vec(ptr+from, n_elems, false, true);
+  //
+  // // using arma::vec(ptr+from, n)
+  // this->walk_data = arma::vec(cov_data.memptr()+from, n_elems);
+
 
   if(this->walk_data.n_elem >= 3){
     this->val_sum_middle_elems = arma::accu(this->walk_data.subvec(1, this->walk_data.n_elem-2));
   }else{
+
     // Set to NA to mark as not calculated
-    // This also propagates NA to optimizer if sum_middle_elems() is called erroneously
+    // This propagates NA to optimizer if sum_middle_elems() is called erroneously
     this->val_sum_middle_elems = arma::datum::nan;
   }
 }
@@ -269,7 +286,7 @@ double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
     //                                  r + s + x + 1.0,
     //                                  z1, &gsl_res);
     if(status == GSL_EMAXITER || status == GSL_EDOM){
-      Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_beta_g_alpha, z1, status: "<<status <<std::endl;
+      // Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_beta_g_alpha, z1, status: "<<status <<std::endl;
       // hyp.z1 := (1-z.1)^(s+1)*exp(log.C) / (alpha_1)^(r+s+x)]
       hyp_z1 = std::pow(1.0 - z1, s + 1.0) * std::exp(log_C) / std::pow(alpha_1, r + s + x);
     }else{
@@ -291,7 +308,7 @@ double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
     //                              z2, &gsl_res);
 
     if(status == GSL_EMAXITER || status == GSL_EDOM){
-      Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_beta_g_alpha, z2, status: "<<status <<std::endl;
+      // Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_beta_g_alpha, z2, status: "<<status <<std::endl;
       // hyp.z2 := (1-z.2)^(s+1)*exp(log.C) / (alpha_2)^(r+s+x)]
       hyp_z2 = std::pow(1.0 - z2, s + 1.0) * std::exp(log_C) / std::pow(alpha_2, r + s + x);
     }else{
@@ -544,12 +561,12 @@ double pnbd_dyncov_LL_i_F2_3(const double r, const double alpha_0, const double 
 
     if(alpha_1 >= beta_1){
       F2_3 += std::pow(Ai/Ci, s) * pnbd_dyncov_LL_i_hyp_alpha_ge_beta(r, s, c.x,
-                      alpha_1, beta_1,
-                      alpha_2, beta_2);
+                                                                      alpha_1, beta_1,
+                                                                      alpha_2, beta_2);
     }else{
       F2_3 += std::pow(Ai/Ci, s) * pnbd_dyncov_LL_i_hyp_beta_g_alpha(r, s, c.x,
-                       alpha_1, beta_1,
-                       alpha_2, beta_2);
+                                                                     alpha_1, beta_1,
+                                                                     alpha_2, beta_2);
     }
 
     // abort immediately, do not waste more loops
@@ -797,17 +814,17 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
   //
   //  F2 may be non-finite (especially NaN):
   //    Propagate to LL
-  //    Avoid that it falls into the default branch where it is omitted (LL = log_F0 + log_F3).
+  //    Avoid that it falls into the default branch where it is omitted (LL = log_F0 + log_F3)
   //
-  //  Floating point comparison, around 0:
-  //    Like in R: Treat as equal if close enough, ie abs(diff) < sqrt(MachineEps)
-  //    Set F2 to 0 if it is close enough to 0: abs(F2) < sqrt(MachineEps)
+  //  Cannot set F2=0.0 when it is 'reasonably' small (<sqrt(machineeps)) in order to more often take
+  //    advantage of the much simpler case F2==0 because also very small abs(F2) are really relevant for correct results!
+  //
   double LL = 0;
   if(!arma::is_finite(F2)){
     LL = F2;
   }else{
-    // **TODO: Cannot because small F2 really are relevant for results!
-    // Set F2 to exact 0 if it is reasonably small
+
+    // Cannot: Set F2 to exact 0 if it is reasonably small. Wrong results :(
     // if(std::fabs(F2 - 0.0) < std::sqrt(arma::datum::eps)){
     //   F2 = 0.0;
     // }
@@ -1008,18 +1025,6 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
 
     res(i, Rcpp::_) = res_i;
   }
-
-  // # Try cheating for stabilty -----------------------------------------------------
-  // # Replace infinite LL values with the most extreme (finite) LL value
-  // # If we have less than 5 % infinite values impute them with the max value we have in the likelihood
-  //   most extreme value in the likelihood (without the infinity values)
-  //     most.extreme.LL <- cbs[is.finite(LL), max(abs(LL))]
-  //
-  // # If the value we have is -infinity set the value to the largest negative value...
-  //   cbs[is.infinite(LL) & sign(LL) == -1, LL := -abs(most.extreme.LL)]
-  // # ...if +infinity set it to largest positive value.
-  //   cbs[is.infinite(LL) & sign(LL) == 1,  LL :=  abs(most.extreme.LL)]
-  // # Else, if > 5%, let it propagate
 
   Rcpp::CharacterVector c_names = {"LL"};
   if(return_intermediate_results){
