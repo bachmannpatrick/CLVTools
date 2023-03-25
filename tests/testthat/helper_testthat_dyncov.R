@@ -1,5 +1,5 @@
 fct.helper.dyncov.quickfit.apparel.data <- function(data.apparelTrans, data.apparelDynCov, hessian=FALSE){
-  clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=data.apparelTrans,  data.apparelDynCov=data.apparelDynCov, estimation.end=38)
+  clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=data.apparelTrans,  data.apparelDynCov=data.apparelDynCov, estimation.split=38)
   fitted.dyncov <- fct.helper.dyncov.quickfit(clv.apparel.dyn, hessian=hessian)
 
   # Cheat and set a fake hessian as it was not estimated during optimization for speed reasons
@@ -54,7 +54,8 @@ fct.helper.create.clvdata.apparel.dyncov <- function(data.apparelTrans,  data.ap
   expect_silent(clv.dyn <- clvdata(data.apparelTrans, date.format = "ymd", time.unit = "w", estimation.split = estimation.split))
   expect_message(clv.dyn <- SetDynamicCovariates(clv.dyn, data.cov.life = data.apparelDynCov, data.cov.trans = data.apparelDynCov,
                                                  names.cov.life = c("Marketing", "Gender", "Channel"), names.cov.trans = c("Marketing", "Gender", "Channel"),
-                                                 name.date = "Cov.Date"), regexp = "cut")
+                                                 name.date = "Cov.Date"),
+                 regexp = "cut")
   return(clv.dyn)
 }
 
