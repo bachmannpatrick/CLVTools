@@ -173,7 +173,7 @@ test_that("Aux walk splitting method correct (in resulting walk table)", {
 })
 
 
-test_that("Does not loose aux walks if there are covariates only for the calibration period (see #134)", {
+test_that("Aux walks not lost if there are covariates only for the calibration period (see #134)", {
   skip_on_cran()
 
   clv.short <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=apparelTrans[Date <= "2005-12-31"],
@@ -185,7 +185,7 @@ test_that("Does not loose aux walks if there are covariates only for the calibra
 })
 
 
-test_that("real trans walk correct as in excel", {
+test_that("Real Trans Walk correct as in excel", {
   skip_on_cran()
 
   # dt.trans <- data.table(Id = c(1, 1, 2),
@@ -199,12 +199,49 @@ test_that("real trans walk correct as in excel", {
   #            Price=0)
   # d <- new('clv.data.dynamic.covariates')
   # d@data.cov.trans <- data.table()
+})
 
+test_that("All walks have basic correctness", {
+  # *** Test with estimation.split at every week day
+
+  # From asserts
+
+  # no NA
+
+  # walks are backwards looking from second transaction: transaction must be after all of walks' lower covariate periods
+  # all transactions must be after all of walks' lower covariate periods
+  # expect_true(l.walks$data.walks.trans.real[tp.this.trans < tp.cov.lower, .N] == 0)
+
+  # All transactions on weekstart are longer than 1 walk (because also include cov of period before)
+  # l.walks$data.walks.trans.real[wday(tp.this.trans) == getOption("lubridate.week.start", 1), walk_id]
+
+  # number of real trans walks == num repeat transactions
+
+
+})
+
+test_that("Real Trans Walk do no lose walk if transactions only 1 eps apart", {
+  skip_on_cran()
   # real trans walk gives walk and not lost if transactions only 1 eps apart
+  #   Customer 1 is zero repeater. Add 8 transactions only 1 day apart for 1 week
+  clv.dyn <- fct.helper.create.clvdata.apparel.dyncov(
+    data.apparelTrans=rbind(apparelTrans,
+                            data.table(Id=1, Price = 10,
+                                       Date = seq.Date(from=apparelTrans[Id==1, min(Date)]+1,
+                                                       length.out = 8, by="1 day"))),
+    data.apparelDynCov=apparelDynCov,
+    estimation.split=NULL)
 
-  # real trans walk same number as num repeat transactions
+  l.walks <- pnbd_dyncov_createwalks(clv.dyn)
 
+  # every repeat-transaction is in walks (not lost)
+  #   unique(tp.this.trans) because has a walk longer than 1 period (when tp.this.trans on week start)
+  expect_equal(l.walks$data.walks.trans.real[Id == 1, sort(unique(tp.this.trans))],
+               sort(clv.dyn@data.transactions[Id==1, Date][-1]))
 
+  # number of walks == num repeat transactions
+  #   cannot check .N==8 because some walks may be longer than 1 period if second transaction on week start
+  expect_true(l.walks$data.walks.trans.real[Id == 1, uniqueN(walk_id)] == 8)
 })
 
 
@@ -235,9 +272,15 @@ test_that("real life walk + aux life walk give original covariate data",{
   }
 
   # many are zerorep and do not have real trans walk
-  fct.real.plus.aux("10")
-  fct.real.plus.aux("100")
-  fct.real.plus.aux("1000")
+  # fct.real.plus.aux("10")
+  # fct.real.plus.aux("100")
+  # fct.real.plus.aux("1000")
+
+  # all repeat buyers (zeroreps do not have real trans walk)
+  for(id in apparelTrans[, .N, by="Id"][N>1][1:25, Id]){
+    fct.real.plus.aux(id)
+  }
+
 })
 
 test_that("repeat buyers: life walk and first trans walk start on the same timepoint",{

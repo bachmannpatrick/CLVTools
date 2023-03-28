@@ -8,23 +8,24 @@ pnbd_dyncov_assert_walk_assumptions <- function(clv.fitted){
   #   sorted, increasing:
   #     strictly monotonic: abs_pos
   #     monotonic: walk_id, walk_from, walk_to
-  assert_coreelements <- function(dt.walks){
+  assert_allwalks <- function(dt.walks){
+    # coreelements
     stopifnot(setequal(key(dt.walks), c("Id", "walk_id", "tp.this.trans", "tp.cov.lower")))
     stopifnot(dt.walks[, !is.unsorted(abs_pos,   strictly = TRUE)])
     stopifnot(dt.walks[, !is.unsorted(walk_id,   strictly = FALSE)])
     stopifnot(dt.walks[, !is.unsorted(walk_from, strictly = FALSE)])
     stopifnot(dt.walks[, !is.unsorted(walk_to,   strictly = FALSE)])
+
+    stopifnot(!anyNA(dt.walks))
+    # backwards looking from second transaction
+    stopifnot(l.walks$data.walks.trans.real[tp.this.trans < tp.cov.lower, .N] == 0)
   }
 
-  assert_coreelements(clv.fitted@data.walks.life.aux)
-  assert_coreelements(clv.fitted@data.walks.trans.aux)
-  assert_coreelements(clv.fitted@data.walks.life.real)
-  assert_coreelements(clv.fitted@data.walks.trans.real)
+  assert_allwalks(clv.fitted@data.walks.life.aux)
+  assert_allwalks(clv.fitted@data.walks.trans.aux)
+  assert_allwalks(clv.fitted@data.walks.life.real)
+  assert_allwalks(clv.fitted@data.walks.trans.real)
 
-  stopifnot(!anyNA(clv.fitted@data.walks.life.aux))
-  stopifnot(!anyNA(clv.fitted@data.walks.trans.aux))
-  stopifnot(!anyNA(clv.fitted@data.walks.life.real))
-  stopifnot(!anyNA(clv.fitted@data.walks.trans.real))
 
   # all aux walks:
   #   every Id only once
@@ -40,6 +41,8 @@ pnbd_dyncov_assert_walk_assumptions <- function(clv.fitted){
 
   stopifnot(identical(clv.fitted@data.walks.life.aux[, .N, keyby="Id"],
                       clv.fitted@data.walks.trans.aux[, .N, keyby="Id"]))
+
+
 
   # lifetime aux walk:
   #   no date overlap with real lifetime walks
@@ -227,14 +230,6 @@ pnbd_dyncov_walk_d <- function(clv.time, tp.relevant.transaction){
   #                                                         interv = interval( start = Prev.Trans.Date.Plus.Eps - 1L,
   #                                                                            end   = clv.time.ceiling.date(clv.time=clv.time,
   #                                                                                                          timepoint=Prev.Trans.Date.Plus.Eps)))]
-  #
-
-
-  # return(clv.time.interval.in.number.tu(clv.time=clv.time,
-  #                                       interv = interval(start = tp.relevant.transaction,
-  #                                                         end = clv.time.ceiling.date(clv.time=tp.relevant.transaction,
-  #                                                                                     timepoint=tp.trans))))
-
 
   # lubridate::ceiling_date() has the argument change_on_boundary since Version 1.5.6 (2016-04-06)
   #   this makes +1 of previous implementations obsolete
@@ -251,7 +246,7 @@ pnbd_dyncov_creatwalks_add_d1 <- function(dt.walk, clv.time){
   #   "For any two successive transactions (j − 1), j, this is the time of the
   #    transaction (j-1) to the end of the first interval"
   #
-  #    Number of periods between walk's last transaction and the end of the cov interval it is in
+  #    Number of periods between walk's first transaction and the end of the cov interval it is in
 
   dt.walk[, d1 := pnbd_dyncov_walk_d(clv.time=clv.time, tp.relevant.transaction=tp.previous.trans)]
 
@@ -348,12 +343,6 @@ pnbd_dyncov_createwalks_real_trans <- function(clv.data, dt.trans, dt.tp.first.l
   dt.cuts.real[, is.first := tp.this.trans == min(tp.this.trans), by="Id"]
   dt.cuts.real <- dt.cuts.real[is.first == FALSE]
   dt.cuts.real[, is.first := NULL]
-
-  # **TODO: test: Even if trans only 1 eps apart, gives walk
-  #         test: Number of walks = num repeat trans
-  # dt.cuts.real[tp.cut.lower > tp.cut.upper, tp.cut.lower := tp.cut.upper]??
-  # print(dt.cuts.real)
-  # print(dt.cuts.real[is.na(tp.cut.lower)])
 
   dt.walks.real <- pnbd_dyncov_creatwalks_matchcovstocuts(dt.cov = dt.cov,
                                                           dt.cuts = dt.cuts.real,
