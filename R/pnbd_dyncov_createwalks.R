@@ -1,4 +1,8 @@
 pnbd_dyncov_assert_walk_assumptions <- function(clv.fitted){
+  abs_pos <- walk_id <- walk_from <- walk_to <- num_walks <- Id <- tp.cov.lower <- NULL
+  first_cov_real <- i.first_cov_real <- first_cov_aux <- first_cov_real <- NULL
+  i.date.first.actual.trans <- x <- tjk <- d_omega <- d1 <- first_trans <- NULL
+
   # All walks:
   #   keys: Id, walk_id, tp.this.trans, tp.cov.lower (and therefore also sorted)
   #   sorted, increasing:
@@ -176,6 +180,8 @@ pnbd_dyncov_creatwalks_add_tjk <- function(dt.walk, clv.time){
 
 
 pnbd_dyncov_createwalks_add_corelements <- function(dt.walks){
+  walk_id <- abs_pos <- walk_from <- walk_to <- NULL
+
   # Add elements shared by all walks: walk_id, abs_pos, walk_from, walk_to
   # Do at single point to ensure sorting guarantees
 
@@ -361,7 +367,7 @@ pnbd_dyncov_createwalks_real_trans <- function(clv.data, dt.trans, dt.tp.first.l
 }
 
 pnbd_dyncov_createwalks_real_life <- function(clv.data, dt.tp.first.last, dt.walks.aux.life){
-  tp.first.aux.cov.lower <- i.tp.first.aux.cov.lower <- tp.cov.lower <- NULL
+  tp.first.aux.cov.lower <- i.tp.first.aux.cov.lower <- tp.cov.lower <- Cov.Date <- NULL
 
   # Real walks for the lifetime process are all covs before the one covariate where the last transaction happens in
   #   Given the aux walk, they are the residual covs since coming alive
