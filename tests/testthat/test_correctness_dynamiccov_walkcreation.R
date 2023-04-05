@@ -29,6 +29,10 @@ test_that("Math for d_x is correct (Excel, tab Walk d)", {
   clv.week <- clv.time.weeks("ymd")
 
   # assuming Sunday (day 7) being the start of the week
+
+  oldval <- getOption("lubridate.week.start", 7)
+  options(lubridate.week.start=7)
+
   # Monday = 2007-01-01
   expect_equal(pnbd_dyncov_walk_d(clv.time=clv.week, tp.relevant.transaction = lubridate::ymd("2007-01-01")), 6/7)
   expect_equal(pnbd_dyncov_walk_d(clv.time=clv.week, tp.relevant.transaction = lubridate::ymd("2007-01-02")), 5/7)
@@ -38,6 +42,8 @@ test_that("Math for d_x is correct (Excel, tab Walk d)", {
   expect_equal(pnbd_dyncov_walk_d(clv.time=clv.week, tp.relevant.transaction = lubridate::ymd("2007-01-06")), 1/7)
   # Sunday, on boundary
   expect_equal(pnbd_dyncov_walk_d(clv.time=clv.week, tp.relevant.transaction = lubridate::ymd("2007-01-07")), 0)
+
+  options(lubridate.week.start=oldval)
 })
 
 test_that("d_x changes correctly on boundary", {
@@ -96,7 +102,7 @@ test_that("d_x changes correctly on boundary", {
 
 test_that("d1 is actually correct in walk", {
   skip_on_cran()
-
+  # **TODO
 })
 
 test_that("d_omega is actually correct in cbs", {
@@ -124,7 +130,7 @@ test_that("d_omega is actually correct in cbs", {
 })
 
 test_that("tjk is correctly calculated (as in excel)", {
-
+  # **TODO
 })
 
 test_that("tjk is correctly calculated for aux trans with t.x=Tcal", {
@@ -170,8 +176,42 @@ test_that("Aux walk splitting method correct", {
 test_that("Aux walk splitting method correct (in resulting walk table)", {
   skip_on_cran()
   # Same input as aux splitting method, but run over full walk methods (pnbd_dyncov_createwalks_auxwalk)
+
+  # **TODO
 })
 
+test_that("Aux walk is 2 periods if T is on week start and alive at T-1 one day before (and has no real life walk)", {
+  # T on week start, alive is T-1 -> aux walk is 2 periods, but no real life walk (run test with T on all 7 days)
+
+  for(i in seq(7)){
+    data.trans <- copy(apparelTrans)
+    data.cov <- copy(apparelDynCov)
+
+    oldval <- getOption("lubridate.week.start")
+    options(lubridate.week.start=(7+i-1) %% 7+1)
+    # print(getOption("lubridate.week.start"))
+
+    # make cov dates to be on week start
+    data.cov[, Cov.Date := Cov.Date + i]
+    print(data.cov)
+    # split is on start of week
+    date.estimation.split <- lubridate::ymd("2005-06-26") + i
+
+    # Id==1 is zero-repeater
+    data.trans[Id==1, Date := date.estimation.split-1]
+    clv <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=data.trans,
+                                                    data.apparelDynCov=data.cov,
+                                                    estimation.split=date.estimation.split)
+    l.walks <- pnbd_dyncov_createwalks(clv)
+
+    # has 2 aux walks
+    expect_true(l.walks$data.walks.life.aux[Id==1, .N] == 2)
+    # no real walk
+    expect_true(l.walks$data.walks.life.real[Id==1, .N] == 0)
+
+    options(lubridate.week.start=oldval)
+  }
+})
 
 test_that("Aux walks not lost if there are covariates only for the calibration period (see #134)", {
   skip_on_cran()
@@ -179,7 +219,7 @@ test_that("Aux walks not lost if there are covariates only for the calibration p
   clv.short <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=apparelTrans[Date <= "2005-12-31"],
                                                         data.apparelDynCov=apparelDynCov[Cov.Date <= "2005-12-31"],
                                                         estimation.split=NULL)
-  l.walks <- CLVTools:::pnbd_dyncov_createwalks(clv.short)
+  l.walks <- pnbd_dyncov_createwalks(clv.short)
   expect_true(l.walks$data.walks.life.aux[, uniqueN(Id)] == 250)
   expect_true(l.walks$data.walks.trans.aux[, uniqueN(Id)] == 250)
 })
@@ -187,6 +227,8 @@ test_that("Aux walks not lost if there are covariates only for the calibration p
 
 test_that("Real Trans Walk correct as in excel", {
   skip_on_cran()
+
+  # **TODO
 
   # dt.trans <- data.table(Id = c(1, 1, 2),
   #                        Date = lubridate::ymd(c("2000 01 01", "2000 01 02", "2000 01 10")),
@@ -201,22 +243,97 @@ test_that("Real Trans Walk correct as in excel", {
   # d@data.cov.trans <- data.table()
 })
 
-test_that("All walks have basic correctness", {
-  # *** Test with estimation.split at every week day
+test_that("All walks have basic correctness, estimation.split at every day of week", {
+  skip_on_cran()
+  # From walk creation asserts function
 
-  # From asserts
+  # Test with estimation.split at every week day
+  for(i in seq(7)){
 
-  # no NA
+    clv <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=apparelTrans,
+                                                    data.apparelDynCov=apparelDynCov,
+                                                    # move split by i days
+                                                    estimation.split=lubridate::ymd("2005-06-30") + i)
+    l.walks <- pnbd_dyncov_createwalks(clv)
+    dt.cbs <- pnbd_dyncov_cbs(clv)
 
-  # walks are backwards looking from second transaction: transaction must be after all of walks' lower covariate periods
-  # all transactions must be after all of walks' lower covariate periods
-  # expect_true(l.walks$data.walks.trans.real[tp.this.trans < tp.cov.lower, .N] == 0)
+    fct.walk.basic.correctness <- function(dt.walks){
 
-  # All transactions on weekstart are longer than 1 walk (because also include cov of period before)
-  # l.walks$data.walks.trans.real[wday(tp.this.trans) == getOption("lubridate.week.start", 1), walk_id]
+      # no NA# coreelements
+      expect_true(setequal(key(dt.walks), c("Id", "walk_id", "tp.this.trans", "tp.cov.lower")))
+      expect_true(dt.walks[, !is.unsorted(abs_pos,   strictly = TRUE)])
+      expect_true(dt.walks[, !is.unsorted(walk_id,   strictly = FALSE)])
+      expect_true(dt.walks[, !is.unsorted(walk_from, strictly = FALSE)])
+      expect_true(dt.walks[, !is.unsorted(walk_to,   strictly = FALSE)])
 
-  # number of real trans walks == num repeat transactions
+      expect_true(!anyNA(dt.walks))
+      # walks are backwards looking from second transaction: transaction must be after all of walks' lower covariate periods
+      # all transactions must be after all of walks' lower covariate periods
+    }
 
+    fct.walk.basic.correctness(l.walks$data.walks.life.aux)
+    fct.walk.basic.correctness(l.walks$data.walks.life.real)
+    fct.walk.basic.correctness(l.walks$data.walks.trans.aux)
+    fct.walk.basic.correctness(l.walks$data.walks.trans.real)
+
+    expect_true(l.walks$data.walks.trans.real[tp.this.trans < tp.cov.lower, .N] == 0)
+
+    # All transactions on week start are longer than 1 walk (because also include cov of period before)
+    l.walks$data.walks.trans.real[wday(tp.this.trans) == getOption("lubridate.week.start", 1), walk_id]
+
+    # number of real trans walks == num repeat transactions
+
+    # all aux walks:
+    #   every Id only once
+    #   every Id in walks
+    #   same length per customer
+    expect_true(l.walks$data.walks.life.aux[, list(num_walks = uniqueN(walk_id)), by="Id"][, all(num_walks==1)])
+    expect_true(l.walks$data.walks.life.aux[, uniqueN(Id)] == apparelTrans[, uniqueN(Id)])
+    expect_true(setequal(l.walks$data.walks.life.aux[, unique(Id)], apparelTrans[, unique(Id)]))
+
+    expect_true(l.walks$data.walks.trans.aux[, list(num_walks = uniqueN(walk_id)), by="Id"][, all(num_walks==1)])
+    expect_true(l.walks$data.walks.trans.aux[, uniqueN(Id)] == apparelTrans[, uniqueN(Id)])
+    expect_true(setequal(l.walks$data.walks.trans.aux[, unique(Id)], apparelTrans[, unique(Id)]))
+
+    expect_true(identical(l.walks$data.walks.life.aux[, .N, keyby="Id"],
+                          l.walks$data.walks.trans.aux[, .N, keyby="Id"]))
+
+
+    # lifetime aux walk:
+    #   no date overlap with real lifetime walks
+    dt.tmp <- l.walks$data.walks.life.aux[, list(first_cov_aux = min(tp.cov.lower)), keyby="Id"]
+    dt.tmp[l.walks$data.walks.life.real[, list(first_cov_real = min(tp.cov.lower)) , keyby="Id"], first_cov_real := i.first_cov_real, on="Id"]
+    # some first_cov_real are NA because have no real walk
+    expect_true(dt.tmp[first_cov_aux < first_cov_real, .N] == 0)
+
+    # lifetime real walk:
+    #   exactly 1 walk per customer
+    #   all ids except where aux walk reaches to the first transactions (coming alive)
+    #   (number of customers = num customers in trans real walks where .N>1)
+    #   n real walk + n aux walk >= ceiling(Tcal)
+    expect_true(l.walks$data.walks.life.real[, list(num_walks=uniqueN(walk_id)), keyby="Id"][, all(num_walks == 1)])
+    # dt.tmp[clv.fitted@clv.data@data.transactions[, list(last_trans = max(Date)), by="Id"], last_trans := i.last_trans, on="Id"]
+    dt.tmp[dt.cbs, first_trans := i.date.first.actual.trans, on="Id"]
+    expect_true(setequal(l.walks$data.walks.life.real[, unique(Id)],
+                         dt.tmp[first_cov_aux > first_trans, Id]))
+
+    # trans real walks:
+    #   every Id with x>0 is in ...
+    #            ... with x-1 walks
+    expect_true(setequal(l.walks$data.walks.trans.real[, unique(Id)], dt.cbs[x>0, Id]))
+    expect_true(identical(l.walks$data.walks.trans.real[, list(num_walks=as.double(uniqueN(walk_id))), keyby="Id"],
+                          dt.cbs[x>0, list(num_walks=as.double(x)), keyby="Id"]))
+
+    # trans walks
+    #   tjk >= 0 (== 0 when t.x=T)
+    expect_true(l.walks$data.walks.trans.aux[tjk < 0, .N] == 0)
+    expect_true(l.walks$data.walks.trans.real[tjk < 0, .N] == 0)
+
+    # d1 and d_omega measures are in (0,1]
+    expect_true(dt.cbs[, all(d_omega > 0 & d_omega <= 1)])
+    expect_true(l.walks$data.walks.trans.aux[, all(d1 > 0 & d1 <= 1)])
+    expect_true(l.walks$data.walks.trans.real[, all(d1 > 0 & d1 <= 1)])
+  }
 
 })
 
@@ -252,7 +369,7 @@ test_that("real life walk + aux life walk give original covariate data",{
   # use with estimation split because real+aux only exist in estimation period
   clv.dyn <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=apparelTrans,
                                                       data.apparelDynCov=apparelDynCov,
-                                                      estimation.split="2005 06 30")
+                                                      estimation.split="2005-06-30")
 
   l.walks <- pnbd_dyncov_createwalks(clv.dyn)
 
@@ -267,7 +384,7 @@ test_that("real life walk + aux life walk give original covariate data",{
     # covs same as used to create
     dt.original <- apparelDynCov[Id == id &
         Cov.Date >= apparelTrans[Id == id, floor_date(min(Date), unit = "week")] &
-          Cov.Date <= lubridate::ymd("20050630")]
+          Cov.Date <= lubridate::ymd("2005-06-30")]
     expect_true(all(dt.plus[, .(Id, Cov.Date = tp.cov.lower, Marketing, Gender, Channel)] == dt.original))
   }
 
