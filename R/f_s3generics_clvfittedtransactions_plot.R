@@ -3,6 +3,7 @@
 #' @param x The fitted transaction model for which to produce diagnostic plots
 #' @param which Which plot to produce, either "tracking" or "pmf". May be abbreviated but only one may be selected. Defaults to "tracking".
 #' @param other.models List of fitted transaction models to plot. List names are used as colors, standard colors are chosen if unnamed (see examples).
+#' The \code{clv.data} object stored in each model is used if no \code{newdata} is given.
 #'
 #' @param cumulative "tracking": Whether the cumulative expected (and actual) transactions should be plotted.
 #' @templateVar prefix "tracking":

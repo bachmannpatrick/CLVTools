@@ -45,7 +45,8 @@
 
 \item{which}{Which plot to produce, either "tracking" or "pmf". May be abbreviated but only one may be selected. Defaults to "tracking".}
 
-\item{other.models}{List of fitted transaction models to plot. List names are used as colors, standard colors are chosen if unnamed (see examples).}
+\item{other.models}{List of fitted transaction models to plot. List names are used as colors, standard colors are chosen if unnamed (see examples).
+The \code{clv.data} object stored in each model is used if no \code{newdata} is given.}
 
 \item{prediction.end}{"tracking": Until what point in time to plot. This can be the number of periods (numeric) or a form of date/time object. See details.}
 
