@@ -91,13 +91,10 @@ fct.testthat.inputchecks.clvfittedtransactions.plot.pmf <- function(data.cdnow, 
                                                              data.apparelStaticCov=data.apparelStaticCov)
 
 
-  context("Inputchecks - clv.fitted.transactions plot pmf - trans.bins")
   fct.testthat.inputchecks.clvfittedtransactions.plot.pmf.trans.bins(clv.fitted = fitted.cdnow.nohold)
 
-  context("Inputchecks - clv.fitted.transactions plot pmf - calculate.remaining")
   .fct.helper.inputchecks.single.logical(fct = plot, l.std.args = l.std.args, name.param = "calculate.remaining")
 
-  context("Inputchecks - clv.fitted.transactions plot pmf - label.remaining")
   fct.helper.inputcheck.single.character(fct = plot, l.std.args = l.std.args, name.param = "label.remaining", null.allowed = FALSE)
 
 }
@@ -112,12 +109,10 @@ fct.testthat.inputchecks.clvfittedtransactions.plot.tracking <- function(data.cd
                                                              data.cdnow=data.cdnow, data.apparelTrans=data.apparelTrans,
                                                              data.apparelStaticCov=data.apparelStaticCov)
 
-  context("Inputchecks - clv.fitted.transactions plot tracking- prediction.end")
   fct.testthat.inputchecks.clvfittedtransactions.prediction.end.wrong.format(fitted.transactions = fitted.cdnow.nohold)
   fct.testthat.inputchecks.clvfittedtransactions.plot.prediction.end.before.estimation.start(fitted.transactions = fitted.cdnow.nohold)
   fct.testthat.inputchecks.clvfittedtransactions.prediction.end.uses.newdata(s3method = plot, fitted.cdnow = fitted.cdnow.nohold, data.cdnow = data.cdnow)
 
-  context("Inputchecks - clv.fitted.transactions plot tracking - cumulative")
   .fct.helper.inputchecks.single.logical(fct = plot, l.std.args = l.std.args, name.param = "cumulative")
 }
 
@@ -140,12 +135,10 @@ fct.testthat.inputchecks.clvfittedtransactions.plot.common <- function(which, l.
   fct.testthat.inputchecks.clvfittedtransactions.plot.which(clv.fitted = fitted.cdnow.nohold)
 
 
-  context(paste0("Inputchecks - clv.fitted.transactions plot ",which," - prediction params"))
   fct.testthat.inputchecks.clvfitted.na.in.prediction.params.model(s3method = plot, clv.fitted = fitted.cdnow.nohold, l.s3method.args=l.std.args)
   fct.testthat.inputchecks.clvfittedtransactions.cov.na.in.prediction.params.cov(s3method = plot, clv.fitted.cov = fitted.apparel.static,
                                                                                  l.s3method.args=l.std.args)
 
-  context(paste0("Inputchecks - clv.fitted.transactions plot ",which," - newdata"))
   fct.testthat.inputchecks.clvfitted.newdata.not.clvdata(s3method = plot, l.std.args=l.std.args, data.cdnow = data.cdnow)
   fct.testthat.inputchecks.clvfittedtransactions.newdata.has.different.covs(s3method = plot,
                                                                             l.s3method.args = l.std.args,
@@ -169,16 +162,12 @@ fct.testthat.inputchecks.clvfittedtransactions.plot.common <- function(which, l.
   context(paste0("Inputchecks - clv.fitted.transactions plot ", which," - label, with other.models"))
   fct.testthat.inputchecks.clvfittedtransactions.plot.label.with.othermodels(clv.fitted=fitted.cdnow.nohold, which=which, clv.fitted.other=fitted.apparel.static)
 
-  context(paste0("Inputchecks - clv.fitted.transactions plot ", which," - transactions"))
   .fct.helper.inputchecks.single.logical(fct = plot, l.std.args = l.std.args, name.param = "transactions")
 
-  context(paste0("Inputchecks - clv.fitted.transactions plot ", which," - plot"))
   .fct.helper.inputchecks.single.logical(fct = plot, l.std.args = l.std.args, name.param = "plot")
 
-  context(paste0("Inputchecks - clv.fitted.transactions plot ", which," - verbose"))
   .fct.helper.inputchecks.single.logical(fct = plot, l.std.args = l.std.args, name.param = "verbose")
 
-  context(paste0("Inputchecks - clv.fitted.transactions plot ", which," - ..."))
   fct.testthat.inputchecks.clvfittedtransactions.plot.ellipsis(l.std.args = l.std.args)
 }
 

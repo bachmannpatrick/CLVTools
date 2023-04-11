@@ -139,8 +139,6 @@ fct.testthat.consistency <- function(name.model, method, has.dyncov, data.appare
   expect_silent(clv.apparel <- clvdata(data.transactions = data.apparelTrans, date.format = "ymd",
                                        time.unit = "w", estimation.split = 38))
 
-  context(paste0("Nocov/cov Consistency - ",name.model," - all cov data = 0"))
-
   expect_silent(apparelStaticCov.0 <- data.apparelStaticCov)
   expect_silent(apparelStaticCov.0[,  Gender  := 0])
   expect_silent(apparelStaticCov.0[1, Gender  := 1])
@@ -161,8 +159,6 @@ fct.testthat.consistency <- function(name.model, method, has.dyncov, data.appare
 
   fct.testthat.consistency.cov.data.0.same.LL(fitted.nocov = fitted.nocov, fitted.static.cov0 = fitted.static.cov0,
                                               fct.LL.ind.nocov = fct.LL.ind.nocov, fct.LL.ind.static.cov = fct.LL.ind.static.cov)
-
-  context(paste0("Nocov/cov Consistency - ",name.model," - cov params = 0"))
 
   # Fake the parameters to be exactly the same and 0 for covariates
   #   Replace model coefs with that from nocov

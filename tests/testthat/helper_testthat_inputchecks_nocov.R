@@ -236,7 +236,6 @@ fct.testthat.inputchecks.remove.first.transaction <- function(method, l.std.args
                                                 start.params.model, l.illegal.start.params.model, data.cdnow){
 
 
-  context(paste0("Inputchecks - ", name.method," nocov - Parameter start.params.model"))
   fct.testthat.inputchecks.startparamsmodel(method = method,
                                             l.std.args = l.std.args.noholdout,
                                             correct.params = start.params.model,
@@ -247,16 +246,13 @@ fct.testthat.inputchecks.remove.first.transaction <- function(method, l.std.args
                                             names.params = names(start.params.model))
 
 
-  context(paste0("Inputchecks - ", name.method," nocov - Parameter optimx.args"))
   fct.testthat.inputchecks.optimxargs(method = method, l.std.args = l.std.args.noholdout)
   fct.testthat.inputchecks.optimxargs(method = method, l.std.args = l.std.args.withholdout)
 
-  context(paste0("Inputchecks - ", name.method," nocov - Parameter ..."))
   fct.testthat.inputchecks.nocov...(method = method, l.std.args = l.std.args.noholdout)
   fct.testthat.inputchecks.nocov...(method = method, l.std.args = l.std.args.withholdout)
 
 
-  context(paste0("Inputchecks - ",name.method," nocov - Model specific"))
   fct.testthat.inputchecks.fails.for.start.params.subzero(method = method, l.std.args = l.std.args.noholdout,
                                                           l.illegal.start.params.model = l.illegal.start.params.model)
   fct.testthat.inputchecks.fails.for.start.params.subzero(method = method, l.std.args = l.std.args.withholdout,
@@ -280,11 +276,9 @@ fct.testthat.inputchecks.clvfittedtransactions.nocov <- function(name.method, me
   fct.testthat.inputchecks.cannot.predict.without.spending(method = method, data.cdnow = data.cdnow, is.spending.model = FALSE)
 
   if(has.cor){
-    context(paste0("Inputchecks - ",name.method," nocov - Parameter use.cor"))
     fct.testthat.inputchecks.usecor(method = method, l.std.args = l.std.args.noholdout)
     fct.testthat.inputchecks.usecor(method = method, l.std.args = l.std.args.withholdout)
 
-    context(paste0("Inputchecks - ",name.method," nocov - Parameter start.param.cor"))
     fct.testthat.inputchecks.startparamcor(method = method, l.std.args = l.std.args.noholdout,   correct.param = 0.5)
     fct.testthat.inputchecks.startparamcor(method = method, l.std.args = l.std.args.withholdout, correct.param = 0.5)
   }else{
@@ -311,11 +305,9 @@ fct.testthat.inputchecks.clvfittedspending.nocov <- function(name.method, method
                                       l.illegal.start.params.model=l.illegal.start.params.model, data.cdnow=data.cdnow)
 
 
-  context(paste0("Inputchecks - ",name.method," nocov - Parameter remove.first.transaction"))
   fct.testthat.inputchecks.remove.first.transaction(method = method, l.std.args = l.std.args.noholdout)
   fct.testthat.inputchecks.remove.first.transaction(method = method, l.std.args = l.std.args.withholdout)
 
-  context(paste0("Inputchecks - ",name.method," nocov - Parameter clvdata/newdata always have spending"))
   fct.testthat.inputchecks.cannot.fit.without.spending(method = method, data.cdnow = data.cdnow)
   fct.testthat.inputchecks.cannot.predict.without.spending(method = method, data.cdnow = data.cdnow, is.spending.model = TRUE)
 }

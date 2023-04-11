@@ -65,8 +65,6 @@ fct.testthat.runability.nocov <- function(name.model, method, cdnow,
                                           failed.optimization.methods.expected.message){
 
 
-  context(paste0("Runability - ",name.model," nocov - Basic runability"))
-
   expect_silent(clv.data.cdnow.noholdout   <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "W"))
   expect_silent(clv.data.cdnow.withholdout <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "W",
                                                       estimation.split = 37))

@@ -1,6 +1,5 @@
 data("cdnow")
 skip_on_cran()
-context("Inputchecks - clvdata - plot")
 
 clv.cdnow.nohold <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split = NULL)
 
