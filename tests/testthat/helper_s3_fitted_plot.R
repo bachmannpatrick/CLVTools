@@ -13,21 +13,26 @@ fct.testthat.runability.clvfittedtransactions.plot.common <- function(clv.fitted
 
 fct.testthat.runability.clvfittedtransactions.plot.other.models <- function(clv.fitted, which, clv.fitted.other){
   skip_on_cran()
+
+  # For unknown reasons the if(clv.data.has.holdout()) seems to not work in the 3rd edition of testthat and branches wrongly
+  local_edition(2)
+
   # same tests but separate for pmf and tracking because use prediction.end=1 to speed up tests which also requires changing expect_silent() to expect_warning()
   # otherwise takes unacceptably long
-  fct.expect <- function(...){
+  fct.expect.other.models <- function(fitted, ...){
     l.args <- list(...)
-    l.default.args <- list(x=clv.fitted, which=which, verbose=FALSE)
+    l.default.args <- list(x=fitted, which=which, verbose=FALSE)
     if(tolower(which) == "tracking"){
-      # speed up
+      # speed up: short plotting range
       l.default.args[["prediction.end"]] <- 1
+
       newdata.has.holdout <- FALSE
       if("newdata" %in% names(l.args)){
         if(clv.data.has.holdout(l.args[["newdata"]])){
           newdata.has.holdout <- TRUE
         }
       }
-      if(clv.data.has.holdout(clv.fitted@clv.data) | newdata.has.holdout){
+      if(clv.data.has.holdout(fitted@clv.data) | newdata.has.holdout){
         return(expect_warning(do.call(plot, c(l.args, l.default.args)), regexp = "full holdout"))
       }else{
         return(expect_silent(do.call(plot, c(l.args, l.default.args))))
@@ -37,37 +42,34 @@ fct.testthat.runability.clvfittedtransactions.plot.other.models <- function(clv.
       return(expect_silent(do.call(plot, c(l.args, l.default.args))))
     }
   }
-  context("works with label")
+
   test_that("works withlabel",{
     skip_on_cran()
     # without label is run in most other cases
-    # fct.expect(other.models=list(clv.fitted, clv.fitted.other), label=c())
-    dt.plot <- fct.expect(other.models=list(clv.fitted.other), label=c("this", "other"), plot=FALSE)
+    # fct.expect.other.models(clv.fitted, other.models=list(clv.fitted, clv.fitted.other), label=c())
+    dt.plot <- fct.expect.other.models(clv.fitted, other.models=list(clv.fitted.other), label=c("this", "other"), plot=FALSE)
     expect_setequal(dt.plot[, unique(variable)], c("Actual", "this", "other"))
   })
 
-  context("works with colors")
   test_that("works with colors",{
     skip_on_cran()
-    fct.expect(other.models=list("blue"=clv.fitted, "#00ff00"=clv.fitted.other))
+    fct.expect.other.models(clv.fitted, other.models=list("blue"=clv.fitted, "#00ff00"=clv.fitted.other))
     # partly named other models
-    fct.expect(other.models=list(blue=clv.fitted, clv.fitted.other))
+    fct.expect.other.models(clv.fitted, other.models=list(blue=clv.fitted, clv.fitted.other))
   })
 
-  context("works with newdata")
   test_that("works with newdata",{
     skip_on_cran()
-    fct.expect(other.models=list(clv.fitted), newdata=clv.fitted@clv.data)
+    fct.expect.other.models(clv.fitted, other.models=list(clv.fitted.other), newdata=clv.fitted@clv.data)
   })
 
-  context("works with additional parameters")
   test_that("works with additional parameters",{
     skip_on_cran()
     if(tolower(which)=="pmf"){
-      fct.expect(other.models=list(clv.fitted), trans.bins=0:3, label.remaining="rest", calculate.remaining=TRUE, transactions=TRUE)
+      fct.expect.other.models(clv.fitted, other.models=list(clv.fitted.other), trans.bins=0:3, label.remaining="rest", calculate.remaining=TRUE, transactions=TRUE)
     }
     if(tolower(which) == "tracking"){
-      fct.expect(other.models=list(clv.fitted), cumulative=TRUE, transactions=TRUE)
+      fct.expect.other.models(clv.fitted, other.models=list(clv.fitted.other), cumulative=TRUE, transactions=TRUE)
     }
   })
 }
@@ -75,20 +77,23 @@ fct.testthat.runability.clvfittedtransactions.plot.other.models <- function(clv.
 
 
 fct.testthat.runability.clvfittedtransactions.plot.tracking <- function(clv.fitted, clv.newdata.nohold, clv.newdata.withhold){
+  # For unknown reasons the if(clv.data.has.holdout()) seems to not work in the 3rd edition of testthat and branches wrongly
+  local_edition(2)
+
   # short prediction.end to speed up tests
-  fct.expect <- function(...){
+  fct.expect.plot.tracking <- function(fitted, ...){
     l.args <- list(...)
-    l.default.args <- list(x=clv.fitted, prediction.end=3, verbose=FALSE, plot=FALSE)
+    l.default.args <- list(x=fitted, prediction.end=3, verbose=FALSE, plot=FALSE)
     l.default.args <- modifyList(l.default.args, l.args)
 
-    if(clv.data.has.holdout(clv.fitted@clv.data)){
+    # return(expect_no_error(do.call(plot, l.default.args)))
+    if(clv.data.has.holdout(fitted@clv.data)){
       return(expect_warning(do.call(plot, l.default.args), regexp = "full holdout"))
     }else{
       return(expect_silent(do.call(plot, l.default.args)))
     }
   }
 
-  context("1")
   test_that("Works for verbose=TRUE",{
     skip_on_cran()
     expect_message(plot(clv.fitted, verbose=TRUE))
@@ -100,34 +105,27 @@ fct.testthat.runability.clvfittedtransactions.plot.tracking <- function(clv.fitt
     })
   }
 
-  context("2")
   test_that("Works for cumulative=TRUE",{
     skip_on_cran()
-    fct.expect(cumulative=TRUE)
-    # fct.expect(cumulative=FALSE) # is default anyways
-    # expect_silent(plot(clv.fitted, prediction.end=6, cumulative=TRUE, verbose=FALSE))
-    # expect_silent(plot(clv.fitted, prediction.end=6, cumulative=FALSE, verbose=FALSE))
+    fct.expect.plot.tracking(clv.fitted, cumulative=TRUE)
+    # fct.expect.plot.tracking(clv.fitted, cumulative=FALSE) # is default anyways
   })
 
   test_that("Works for plot=FALSE and always has 0 repeat trans and expectation on first",{
     skip_on_cran()
-    dt.plot <- fct.expect(plot=FALSE)
-    # expect_silent(dt.plot <- plot(clv.fitted, prediction.end=6, plot=FALSE, verbose=FALSE))
+    dt.plot <- fct.expect.plot.tracking(clv.fitted, plot=FALSE)
     expect_true(isTRUE(all.equal(dt.plot[period.until == min(period.until), value], c(0,0))))
   })
 
-  context("3")
   test_that("Works with newdata", {
     skip_on_cran()
     expect_silent(dt.plot <- plot(clv.fitted, newdata = clv.newdata.nohold, prediction.end=3, plot=FALSE, verbose=FALSE))
     expect_false(anyNA(dt.plot))
 
-    # dt.plot <- fct.expect(plot=FALSE, newdata = clv.newdata.withhold)
     expect_warning(dt.plot <- plot(clv.fitted, newdata = clv.newdata.withhold, prediction.end=3, plot=FALSE, verbose=FALSE), regexp = "full holdout")
     expect_false(anyNA(dt.plot))
   })
 
-  context("4")
   test_that("Works for prediction.end in different formats, after holdout", {
     skip_on_cran()
     if(is(clv.fitted@clv.data@clv.time, "clv.time.date")){
@@ -135,7 +133,7 @@ fct.testthat.runability.clvfittedtransactions.plot.tracking <- function(clv.fitt
     }else{
       tp.end <- clv.fitted@clv.data@clv.time@timepoint.holdout.end+lubridate::hours(26)
     }
-    # prediction.end as character, Date, posix, numeric (fct.expect not working here)
+    # prediction.end as character, Date, posix, numeric (fct.expect.plot.tracking not working here)
     expect_silent(plot(clv.fitted, prediction.end = as.character(tp.end), verbose=FALSE))
     expect_silent(plot(clv.fitted, prediction.end = as.Date(tp.end, tz=""), verbose=FALSE))
     expect_silent(plot(clv.fitted, prediction.end = tp.end, verbose=FALSE))
@@ -162,7 +160,6 @@ fct.testthat.runability.clvfittedtransactions.plot.tracking <- function(clv.fitt
     })
   }
 
-  context("5")
   test_that("Works for negative prediction.end", {
     skip_on_cran()
     if(clv.data.has.holdout(clv.fitted@clv.data)){
@@ -175,15 +172,15 @@ fct.testthat.runability.clvfittedtransactions.plot.tracking <- function(clv.fitt
                      regexp = "Not plotting full estimation period.")
     }
   })
-  context("6")
+
   test_that("Correct return structure", {
     skip_on_cran()
 
     # expect_silent(gg.plot <- plot(clv.fitted, prediction.end=6, plot=TRUE, verbose=FALSE))
-    gg.plot <- fct.expect(plot=TRUE)
+    gg.plot <- fct.expect.plot.tracking(clv.fitted, plot=TRUE)
     expect_s3_class(gg.plot, "ggplot")
 
-    dt.plot <- fct.expect(plot=FALSE)
+    dt.plot <- fct.expect.plot.tracking(clv.fitted, plot=FALSE)
     # expect_silent(dt.plot <- plot(clv.fitted, prediction.end=6, plot=FALSE, verbose=FALSE))
     expect_s3_class(dt.plot, "data.table")
     expect_true(all(c("period.until", "variable", "value") %in% colnames(dt.plot)))
@@ -283,20 +280,20 @@ fct.testthat.runability.clvfittedtransactions.plot.pmf <- function(clv.fitted, c
 }
 
 fct.testthat.runability.clvfittedtransactions.plot <- function(clv.fitted, clv.newdata.nohold, clv.newdata.withhold){
-  context("fct.testthat.runability.clvfittedtransactions.plot.common")
+
   fct.testthat.runability.clvfittedtransactions.plot.common(clv.fitted=clv.fitted, which="tracking")
-  context("fct.testthat.runability.clvfittedtransactions.plot.tracking")
+
   fct.testthat.runability.clvfittedtransactions.plot.tracking(clv.fitted=clv.fitted, clv.newdata.nohold=clv.newdata.nohold, clv.newdata.withhold=clv.newdata.withhold)
-  context("fct.testthat.runability.clvfittedtransactions.plot.other.models")
+
   fct.testthat.runability.clvfittedtransactions.plot.other.models(clv.fitted = clv.fitted, clv.fitted.other=clv.fitted, which="tracking")
-  context("fct.helper.has.pmf")
+
   test_that("fct.helper.has.pmf", {expect_true(TRUE)})
   if(fct.helper.has.pmf(clv.fitted)){
-    context("fct.testthat.runability.clvfittedtransactions.plot.common")
+
     fct.testthat.runability.clvfittedtransactions.plot.common(clv.fitted=clv.fitted, which="pmf")
-    context("fct.testthat.runability.clvfittedtransactions.plot.other.models")
+
     fct.testthat.runability.clvfittedtransactions.plot.other.models(clv.fitted = clv.fitted, clv.fitted.other=clv.fitted, which="pmf")
-    context("fct.testthat.runability.clvfittedtransactions.plot.pmf")
+
     fct.testthat.runability.clvfittedtransactions.plot.pmf(clv.fitted=clv.fitted, clv.newdata.nohold=clv.newdata.nohold, clv.newdata.withhold=clv.newdata.withhold)
   }
 }

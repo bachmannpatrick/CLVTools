@@ -151,15 +151,12 @@ fct.testthat.inputchecks.clvfittedtransactions.plot.common <- function(which, l.
                                                                             clv.data.no.cov = clv.data.cdnow.nohold,
                                                                             clv.data.static.cov = clv.data.apparel.static.cov)
 
-  context(paste0("Inputchecks - clv.fitted.transactions plot ",which," - other.models"))
   fct.testthat.inputchecks.clvfittedtransactions.othermodels.are.not.fitted.transaction.models(clv.fitted = fitted.cdnow.nohold, which = which)
   fct.testthat.inputchecks.clvfittedtransactions.othermodels.are.not.fitted.transaction.models(clv.fitted = fitted.apparel.static, which = which)
 
   # Label for single model and for when other.models is specified
-  context(paste0("Inputchecks - clv.fitted.transactions plot ", which," - label, no other.models"))
   fct.helper.inputcheck.single.character(fct = plot, l.std.args = l.std.args, name.param = "label", null.allowed = TRUE)
 
-  context(paste0("Inputchecks - clv.fitted.transactions plot ", which," - label, with other.models"))
   fct.testthat.inputchecks.clvfittedtransactions.plot.label.with.othermodels(clv.fitted=fitted.cdnow.nohold, which=which, clv.fitted.other=fitted.apparel.static)
 
   .fct.helper.inputchecks.single.logical(fct = plot, l.std.args = l.std.args, name.param = "transactions")
