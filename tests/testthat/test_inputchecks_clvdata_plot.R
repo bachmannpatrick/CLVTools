@@ -41,8 +41,8 @@ test_that("tracking - Stops for unneeded parameters", {
 test_that("frequency - label.remaining is single character", {
   expect_error(plot(clv.cdnow.nohold, which="frequency", label.remaining=NA_character_), regexp = "may not contain")
   expect_error(plot(clv.cdnow.nohold, which="frequency", label.remaining=NULL), regexp = "of type character")
-  expect_error(plot(clv.cdnow.nohold, which="frequency", label.remaining=character(0)), regexp = "single element")
-  expect_error(plot(clv.cdnow.nohold, which="frequency", label.remaining=c("10+", ">10")), regexp = "single element")
+  expect_error(plot(clv.cdnow.nohold, which="frequency", label.remaining=character(0)), regexp = "exactly 1 element")
+  expect_error(plot(clv.cdnow.nohold, which="frequency", label.remaining=c("10+", ">10")), regexp = "exactly 1 element")
 })
 
 test_that("frequency - trans.bins is valid", {

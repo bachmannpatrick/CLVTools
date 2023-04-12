@@ -250,7 +250,6 @@ fct.helper.has.DERT <- function(clv.fitted.transactions){
 
 fct.helper.clvfittedtransactions.all.s3 <- function(clv.fitted, full.names,
                                                     clv.newdata.nohold, clv.newdata.withhold){
-
   .fct.helper.clvfitted.all.s3(clv.fitted = clv.fitted, full.names = full.names)
 
   fct.testthat.runability.clvfittedtransactions.plot(clv.fitted = clv.fitted, clv.newdata.nohold=clv.newdata.nohold,

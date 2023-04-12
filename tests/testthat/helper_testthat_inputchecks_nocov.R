@@ -88,7 +88,7 @@ fct.testthat.inputchecks.startparamcor <- function(method, l.std.args, correct.p
   test_that("Fails if more than 1", {
     expect_error(do.call(method, modifyList(l.std.args,
                                             list(start.param.cor = rep(correct.param,2)))),
-                 regexp = "single")
+                 regexp = "exactly 1 single number")
   })
 
   test_that("Fails if is NA", {

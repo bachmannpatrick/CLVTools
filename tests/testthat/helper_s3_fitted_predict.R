@@ -1,6 +1,5 @@
 fct.testthat.runability.clvfittedtransactions.predict <- function(fitted.transactions, clv.newdata.nohold, clv.newdata.withhold){
 
-
   # Only for models which were fit with heldout data
   if(clv.data.has.holdout(fitted.transactions@clv.data)){
     test_that("Works without parameters (has holdout)", {
@@ -8,7 +7,8 @@ fct.testthat.runability.clvfittedtransactions.predict <- function(fitted.transac
     })
     test_that("Works with prediction end in holdout period", {
       skip_on_cran()
-      expect_silent(dt.pred <- predict(fitted.transactions,prediction.end = as.character(fitted.transactions@clv.data@clv.time@timepoint.holdout.end - lubridate::days(30)), verbose=FALSE))
+      expect_silent(dt.pred <- predict(fitted.transactions,prediction.end = as.character(fitted.transactions@clv.data@clv.time@timepoint.holdout.end - lubridate::days(1)),
+                                       predict.spending=FALSE, verbose=FALSE))
       # then also has actuals
       expect_true(c("actual.x" %in% colnames(dt.pred)))
 
@@ -26,8 +26,8 @@ fct.testthat.runability.clvfittedtransactions.predict <- function(fitted.transac
   #   actual.total.spending all > 0
   #   actual.transactions all > 0
   # predicted CLV is = X*Y
-
   if(clv.data.has.spending(fitted.transactions@clv.data)){
+
     test_that("Predict works with logical for predict.spending", {
       skip_on_cran()
       skip_on_ci()
@@ -57,7 +57,9 @@ fct.testthat.runability.clvfittedtransactions.predict <- function(fitted.transac
       # mix it all up: predict for clv.newdata.withhold using spending model fitted on clv.newdata.nohold
       #   but use newdata with different Ids to see a difference to the one used for spending model fitting
       subset.id  <- fitted.transactions@clv.data@data.transactions[, sample(x = unique(Id), size = uniqueN(Id)/2)]
-      clv.subset <- clvdata(fitted.transactions@clv.data@data.transactions[Id %in% subset.id], "ymd", "w")
+      clv.subset <- clvdata(fitted.transactions@clv.data@data.transactions[Id %in% subset.id],
+                            date.format=fitted.transactions@clv.data@clv.time@time.format,
+                            time.unit=fitted.transactions@clv.data@clv.time@name.time.unit)
       if(is(fitted.transactions@clv.data, "clv.data.static.covariates")){
         clv.subset <- SetStaticCovariates(clv.subset,
                                           data.cov.life  = fitted.transactions@clv.data@data.cov.life[Id %in% subset.id],  names.cov.life = fitted.transactions@clv.data@names.cov.data.life,
@@ -89,7 +91,7 @@ fct.testthat.runability.clvfittedtransactions.predict <- function(fitted.transac
 
   test_that("Formal correct", {
     skip_on_cran()
-    expect_silent(dt.pred <- predict(fitted.transactions, prediction.end = 6, verbose = FALSE))
+    expect_silent(dt.pred <- predict(fitted.transactions, prediction.end = 6, predict.spending=FALSE, verbose = FALSE))
     expect_true(dt.pred[, data.table::uniqueN(Id)] == fitted.transactions@clv.data@data.transactions[, data.table::uniqueN(Id)])
     # all ids in predictions
     expect_true(nrow(data.table::fsetdiff(fitted.transactions@clv.data@data.transactions[, "Id"], dt.pred[, "Id"]))==0)
@@ -126,9 +128,9 @@ fct.testthat.runability.clvfittedtransactions.predict <- function(fitted.transac
   if(fct.helper.has.DERT(fitted.transactions)){
     test_that("Works with discount factor", {
       skip_on_cran()
-      expect_silent(dt.pred.1 <- predict(fitted.transactions, continuous.discount.factor = 0.001,prediction.end = 6, verbose=FALSE))
-      expect_silent(dt.pred.2 <- predict(fitted.transactions, continuous.discount.factor = 0.06, prediction.end = 6, verbose=FALSE))
-      expect_silent(dt.pred.3 <- predict(fitted.transactions, continuous.discount.factor = 0.99, prediction.end = 6, verbose=FALSE))
+      expect_silent(dt.pred.1 <- predict(fitted.transactions, continuous.discount.factor = 0.001,prediction.end = 6, predict.spending=FALSE, verbose=FALSE))
+      expect_silent(dt.pred.2 <- predict(fitted.transactions, continuous.discount.factor = 0.06, prediction.end = 6, predict.spending=FALSE, verbose=FALSE))
+      expect_silent(dt.pred.3 <- predict(fitted.transactions, continuous.discount.factor = 0.99, prediction.end = 6, predict.spending=FALSE, verbose=FALSE))
       expect_false(isTRUE(all.equal(dt.pred.1, dt.pred.2)))
       expect_false(isTRUE(all.equal(dt.pred.2, dt.pred.3)))
       expect_true(dt.pred.1[, all(is.finite(DERT))])
@@ -136,23 +138,6 @@ fct.testthat.runability.clvfittedtransactions.predict <- function(fitted.transac
       expect_true(dt.pred.3[, all(is.finite(DERT))])
     })
   }
-
-  test_that("Works with different types of prediction.end: number, date, posix, char (short) ",{
-    # not checking anything correctness on cran, just run
-    expect_silent(predict(fitted.transactions,prediction.end = 4, verbose=FALSE))
-    pred.end.char <- as.character(as.Date(fitted.transactions@clv.data@clv.time@timepoint.estimation.end+lubridate::days(30), tz=""))
-
-    expect_silent(predict(fitted.transactions,prediction.end = pred.end.char, verbose=FALSE))
-    expect_silent(predict(fitted.transactions,prediction.end = as.Date(lubridate::ymd(pred.end.char)), verbose=FALSE))
-    if(lubridate::is.POSIXct(fitted.transactions@clv.data@clv.time@timepoint.estimation.start)){
-      expect_silent(predict(fitted.transactions,prediction.end = as.POSIXct(lubridate::ymd(pred.end.char)), verbose=FALSE))
-      expect_silent(predict(fitted.transactions,prediction.end = as.POSIXlt(lubridate::ymd(pred.end.char)), verbose=FALSE))
-    }else{
-      expect_message(predict(fitted.transactions,prediction.end = as.POSIXct(lubridate::ymd(pred.end.char)), verbose=FALSE), regexp = "ignored")
-      expect_message(predict(fitted.transactions,prediction.end = as.POSIXlt(lubridate::ymd(pred.end.char)), verbose=FALSE), regexp = "ignored")
-    }
-  })
-
 
   test_that("Works with different newdata", {
     skip_on_cran()
@@ -172,57 +157,66 @@ fct.testthat.runability.clvfittedtransactions.predict <- function(fitted.transac
     expect_true(all(unique(clv.newdata.nohold@data.transactions$Id) %in% dt.pred$Id))
   })
 
-  # **TODO: Fix date converting
   test_that("Works with different types of prediction.end: number, date, posix, char (long)", {
     skip_on_cran()
 
-    expect_silent(dt.pred.1 <- predict(fitted.transactions,prediction.end = 4, verbose=FALSE))
-    expect_silent(dt.pred.2 <- predict(fitted.transactions,prediction.end = 26, verbose=FALSE))
-    expect_silent(dt.pred.3 <- predict(fitted.transactions,prediction.end = 104, verbose=FALSE))
-    expect_false(isTRUE(all.equal(dt.pred.1, dt.pred.2)))
-    expect_false(isTRUE(all.equal(dt.pred.2, dt.pred.3)))
-
-    pred.end.char.1 <- as.character(fitted.transactions@clv.data@clv.time@timepoint.estimation.end+lubridate::days(30))
-    pred.end.char.2 <- as.character(fitted.transactions@clv.data@clv.time@timepoint.estimation.end+lubridate::days(180))
-    pred.end.char.3 <- as.character(fitted.transactions@clv.data@clv.time@timepoint.estimation.end+lubridate::years(1))
-
-    expect_silent(dt.pred.1 <- predict(fitted.transactions,prediction.end = pred.end.char.1, verbose=FALSE))
-    expect_silent(dt.pred.2 <- predict(fitted.transactions,prediction.end = pred.end.char.2, verbose=FALSE))
-    expect_silent(dt.pred.3 <- predict(fitted.transactions,prediction.end = pred.end.char.3, verbose=FALSE))
-    expect_false(isTRUE(all.equal(dt.pred.1, dt.pred.2)))
-    expect_false(isTRUE(all.equal(dt.pred.2, dt.pred.3)))
-
-    expect_silent(dt.pred.1 <- predict(fitted.transactions,prediction.end = lubridate::ymd(pred.end.char.1), verbose=FALSE))
-    expect_silent(dt.pred.2 <- predict(fitted.transactions,prediction.end = lubridate::ymd(pred.end.char.2), verbose=FALSE))
-    expect_silent(dt.pred.3 <- predict(fitted.transactions,prediction.end = lubridate::ymd(pred.end.char.3), verbose=FALSE))
-    expect_false(isTRUE(all.equal(dt.pred.1, dt.pred.2)))
-    expect_false(isTRUE(all.equal(dt.pred.2, dt.pred.3)))
-
-    if(lubridate::is.POSIXct(fitted.transactions@clv.data@clv.time@timepoint.estimation.start)){
-      expect_silent(dt.pred.1 <- predict(fitted.transactions,prediction.end = as.POSIXct(lubridate::ymd(pred.end.char.1)), verbose=FALSE))
-      expect_silent(dt.pred.2 <- predict(fitted.transactions,prediction.end = as.POSIXct(lubridate::ymd(pred.end.char.2)), verbose=FALSE))
-      expect_silent(dt.pred.3 <- predict(fitted.transactions,prediction.end = as.POSIXct(lubridate::ymd(pred.end.char.3)), verbose=FALSE))
-      expect_false(isTRUE(all.equal(dt.pred.1, dt.pred.2)))
-      expect_false(isTRUE(all.equal(dt.pred.2, dt.pred.3)))
-
-      expect_silent(dt.pred.1 <- predict(fitted.transactions,prediction.end = as.POSIXlt(lubridate::ymd(pred.end.char.1)), verbose=FALSE))
-      expect_silent(dt.pred.2 <- predict(fitted.transactions,prediction.end = as.POSIXlt(lubridate::ymd(pred.end.char.2)), verbose=FALSE))
-      expect_silent(dt.pred.3 <- predict(fitted.transactions,prediction.end = as.POSIXlt(lubridate::ymd(pred.end.char.3)), verbose=FALSE))
-      expect_false(isTRUE(all.equal(dt.pred.1, dt.pred.2)))
-      expect_false(isTRUE(all.equal(dt.pred.2, dt.pred.3)))
-    }else{
-      expect_message(dt.pred.1 <- predict(fitted.transactions,prediction.end = as.POSIXct(lubridate::ymd(pred.end.char.1)), verbose=FALSE), regexp = "ignored")
-      expect_message(dt.pred.2 <- predict(fitted.transactions,prediction.end = as.POSIXct(lubridate::ymd(pred.end.char.2)), verbose=FALSE), regexp = "ignored")
-      expect_message(dt.pred.3 <- predict(fitted.transactions,prediction.end = as.POSIXct(lubridate::ymd(pred.end.char.3)), verbose=FALSE), regexp = "ignored")
-      expect_false(isTRUE(all.equal(dt.pred.1, dt.pred.2)))
-      expect_false(isTRUE(all.equal(dt.pred.2, dt.pred.3)))
-
-      expect_message(dt.pred.1 <- predict(fitted.transactions,prediction.end = as.POSIXlt(lubridate::ymd(pred.end.char.1)), verbose=FALSE), regexp = "ignored")
-      expect_message(dt.pred.2 <- predict(fitted.transactions,prediction.end = as.POSIXlt(lubridate::ymd(pred.end.char.2)), verbose=FALSE), regexp = "ignored")
-      expect_message(dt.pred.3 <- predict(fitted.transactions,prediction.end = as.POSIXlt(lubridate::ymd(pred.end.char.3)), verbose=FALSE), regexp = "ignored")
+    fct.predict <- function(end.1, end.2, end.3, ...){
+      if(is(fitted.transactions@clv.data@clv.time, "clv.time.date") & (is.POSIXct(end.1) | lubridate::is.POSIXlt(end.1))){
+        expect_message(dt.pred.1 <- predict(fitted.transactions,prediction.end = end.1, predict.spending=FALSE, verbose=FALSE), regexp = "cut off")
+        expect_message(dt.pred.2 <- predict(fitted.transactions,prediction.end = end.2, predict.spending=FALSE, verbose=FALSE), regexp = "cut off")
+        expect_message(dt.pred.3 <- predict(fitted.transactions,prediction.end = end.3, predict.spending=FALSE, verbose=FALSE), regexp = "cut off")
+      }else{
+        expect_silent(dt.pred.1 <- predict(fitted.transactions,prediction.end = end.1, predict.spending=FALSE, verbose=FALSE))
+        expect_silent(dt.pred.2 <- predict(fitted.transactions,prediction.end = end.2, predict.spending=FALSE, verbose=FALSE))
+        expect_silent(dt.pred.3 <- predict(fitted.transactions,prediction.end = end.3, predict.spending=FALSE, verbose=FALSE))
+      }
       expect_false(isTRUE(all.equal(dt.pred.1, dt.pred.2)))
       expect_false(isTRUE(all.equal(dt.pred.2, dt.pred.3)))
     }
+
+
+    if(lubridate::is.POSIXct(fitted.transactions@clv.data@clv.time@timepoint.estimation.start)){
+      # long enough to not such that as.Date() falls below estimation.split
+      pred.end.char.1 <- as.character(fitted.transactions@clv.data@clv.time@timepoint.estimation.end+lubridate::hours(24))
+      pred.end.char.2 <- as.character(fitted.transactions@clv.data@clv.time@timepoint.estimation.end+lubridate::hours(100))
+      pred.end.char.3 <- as.character(fitted.transactions@clv.data@clv.time@timepoint.estimation.end+lubridate::hours(200))
+
+      # sure different from each other and after estimation.end
+      pred.end.date.1 <- as.Date(lubridate::ymd_hms(pred.end.char.1))
+      pred.end.date.2 <- as.Date(lubridate::ymd_hms(pred.end.char.2))
+      pred.end.date.3 <- as.Date(lubridate::ymd_hms(pred.end.char.3))
+
+      pred.end.posixct.1 <- as.POSIXct(lubridate::ymd_hms(pred.end.char.1), tz="UTC")
+      pred.end.posixct.2 <- as.POSIXct(lubridate::ymd_hms(pred.end.char.2), tz="UTC")
+      pred.end.posixct.3 <- as.POSIXct(lubridate::ymd_hms(pred.end.char.3), tz="UTC")
+
+      pred.end.posixlt.1 <- as.POSIXlt(lubridate::ymd_hms(pred.end.char.1), tz="UTC")
+      pred.end.posixlt.2 <- as.POSIXlt(lubridate::ymd_hms(pred.end.char.2), tz="UTC")
+      pred.end.posixlt.3 <- as.POSIXlt(lubridate::ymd_hms(pred.end.char.3), tz="UTC")
+
+    }else{
+      pred.end.char.1 <- as.character(fitted.transactions@clv.data@clv.time@timepoint.estimation.end+lubridate::days(3))
+      pred.end.char.2 <- as.character(fitted.transactions@clv.data@clv.time@timepoint.estimation.end+lubridate::days(180))
+      pred.end.char.3 <- as.character(fitted.transactions@clv.data@clv.time@timepoint.estimation.end+lubridate::days(365))
+
+      pred.end.date.1 <- lubridate::ymd(pred.end.char.1)
+      pred.end.date.2 <- lubridate::ymd(pred.end.char.2)
+      pred.end.date.3 <- lubridate::ymd(pred.end.char.3)
+
+      pred.end.posixct.1 <- as.POSIXct(lubridate::ymd(pred.end.char.1))
+      pred.end.posixct.2 <- as.POSIXct(lubridate::ymd(pred.end.char.2))
+      pred.end.posixct.3 <- as.POSIXct(lubridate::ymd(pred.end.char.3))
+
+      pred.end.posixlt.1 <- as.POSIXlt(lubridate::ymd(pred.end.char.1))
+      pred.end.posixlt.2 <- as.POSIXlt(lubridate::ymd(pred.end.char.2))
+      pred.end.posixlt.3 <- as.POSIXlt(lubridate::ymd(pred.end.char.3))
+    }
+
+    fct.predict(4, 26, 52)
+    fct.predict(pred.end.char.1, pred.end.char.2, pred.end.char.3)
+    fct.predict(pred.end.date.1, pred.end.date.2, pred.end.date.3)
+    fct.predict(pred.end.posixct.1, pred.end.posixct.2, pred.end.posixct.3)
+    fct.predict(pred.end.posixlt.1, pred.end.posixlt.2, pred.end.posixlt.3)
   })
 
 }

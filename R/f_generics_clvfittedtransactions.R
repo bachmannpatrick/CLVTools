@@ -37,7 +37,7 @@ setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.
       }else{
         # Is logical
         if(length(predict.spending)>1)
-          err.msg <- c(err.msg, paste0("The parameter predict.spending can only contain a single element!"))
+          err.msg <- c(err.msg, paste0("The parameter predict.spending can only contain 1 element!"))
         if(anyNA(predict.spending))
           err.msg <- c(err.msg, paste0("The parameter predict.spending cannot be NA!"))
       }

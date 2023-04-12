@@ -9,24 +9,27 @@ check_err_msg <- function(err.msg){
   if(!is.logical(b))
     return(paste0("The parameter ", var.name, " needs to be of type logical (True/False)!"))
   if(length(b)>1)
-    err.msg <- c(err.msg, paste0("The parameter ", var.name, " can only contain a single element!"))
+    err.msg <- c(err.msg, paste0("The parameter ", var.name, " can only contain 1 element!"))
   if(anyNA(b))
     err.msg <- c(err.msg, paste0("The parameter ", var.name, " cannot be NA!"))
   return(err.msg)
 }
 
-.check_userinput_single_character <- function(char, var.name){
+.check_userinput_charactervec <- function(char, var.name, n){
   err.msg <- c()
+
   if(!is.character(char))
     return(paste0(var.name, " needs to be of type character (text)!"))
-  if(length(char) != 1)
-    err.msg <- c(err.msg, paste0(var.name, " must contain exactly one single element!"))
+  if(length(char) != n)
+    err.msg <- c(err.msg, paste0(var.name, " must contain exactly ", n, " element(s)!"))
   if(anyNA(char))
     err.msg <- c(err.msg, paste0(var.name, " may not contain any NA!"))
+
   if(length(err.msg) == 0){
     # is non empty vec, but check is not no text ("")
-    if(nchar(char[[1]]) == 0)
-      err.msg <- c(err.msg, paste0(var.name, " may not be empty text!"))
+    if(any(sapply(char, nchar) == 0)){
+      err.msg <- c(err.msg, paste0(var.name, " may not contain elements which are empty text!"))
+    }
   }
 
   return(err.msg)
@@ -143,7 +146,7 @@ check_userinput_datanocov_columnname <- function(name.col, data){
   if(is.null(name.col))
     return("Column names cannot be NULL!") #return already as NULL will break code
 
-  err.msg <- .check_userinput_single_character(char=name.col, var.name="Column names")
+  err.msg <- .check_userinput_charactervec(char=name.col, var.name="Column names", n=1)
 
   # check if column is exactly in data
   if(length(err.msg) == 0)
@@ -158,8 +161,7 @@ check_userinput_datanocov_timeunit <- function(time.unit){
   if(is.null(time.unit))
     return("Time unit cannot be NULL!") #return already as NULL will break code
 
-  err.msg <- .check_userinput_single_character(char=time.unit,
-                                               var.name = "time.unit")
+  err.msg <- .check_userinput_charactervec(char=time.unit, var.name = "time.unit", n=1)
 
 
   # use pmatch to match the input againts the possible time units
