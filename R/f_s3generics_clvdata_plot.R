@@ -86,15 +86,16 @@
 #' which contains some of the following columns:
 #' \item{Id}{Customer Id}
 #' \item{period.until}{The timepoint that marks the end (up until and including) of the period to which the data in this row refers.}
-#' \item{Number of Repeat Transactions}{The number of actual repeat transactions in the period that ends at \code{period.until}.}
 #' \item{Spending}{Spending as defined by parameter \code{mean.spending}.}
 #' \item{mean.interpurchase.time}{Mean number of periods between transactions per customer,
 #' excluding customers with no repeat-transactions.}
 #' \item{num.transactions}{The number of (repeat) transactions, depending on \code{count.repeat.trans}.}
 #' \item{num.customers}{The number of customers.}
 #' \item{type}{"timings": Which purpose the value in this row is used for.}
-#' \item{variable}{"timings": Coordinate (x or y) for which to use the value in this row for.}
-#' \item{value}{"timings": Date or numeric (stored as string)}
+#' \item{variable}{"tracking": The number of actual repeat transactions in the period that ends at \code{period.until}.\cr
+#'                 "timings": Coordinate (x or y) for which to use the value in this row for.}
+#' \item{value}{"timings":  Date or numeric (stored as string) \cr
+#'              "tracking": numeric}
 #'
 #'
 #' @examples
