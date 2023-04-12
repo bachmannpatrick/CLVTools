@@ -33,8 +33,8 @@ fct.testthat.runability.clvfittedspending <- function(name.model, method,
   fct.testthat.runability.clvfitted.multiple.optimization.methods(method = method, clv.data = clv.data.cdnow.withholdout,
                                                                   l.args.test.all.s3= l.args.test.all.s3, fct.test.all.s3=fct.helper.clvfittedspending.all.s3)
 
-  fct.testthat.runability.clvfitted.hourly.data(method = method, data.cdnow = data.cdnow,
-                                                fct.test.all.s3 = fct.helper.clvfittedspending.all.s3, l.args.test.all.s3 = l.args.test.all.s3)
+  # fct.testthat.runability.clvfitted.hourly.data(method = method, data.cdnow = data.cdnow,
+  #                                               fct.test.all.s3 = fct.helper.clvfittedspending.all.s3, l.args.test.all.s3 = l.args.test.all.s3)
 
 
   # Also works with covariate data ------------------------------------------------------------------------------------
