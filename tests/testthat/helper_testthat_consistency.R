@@ -110,11 +110,7 @@ fct.testthat.consistency.cov.params.0.plot.same <- function(fitted.nocov, fitted
     expect_warning(dt.plot.nocov     <- plot(fitted.nocov,  verbose=FALSE, plot=FALSE, prediction.end = 10), regexp = "full holdout")
     expect_warning(dt.plot.cov       <- plot(fitted.cov.g0, verbose=FALSE, plot=FALSE, prediction.end = 10), regexp = "full holdout")
 
-    # Rename to random names because have different colnames by model
-    data.table::setnames(dt.plot.nocov,  c("A", "B", "C"))
-    data.table::setnames(dt.plot.cov ,   c("A", "B", "C"))
-
-    expect_true(isTRUE(all.equal(dt.plot.nocov, dt.plot.cov)))
+    expect_true(isTRUE(all.equal(dt.plot.nocov[, c("period.until", "value")], dt.plot.cov[, c("period.until", "value")])))
   })
 }
 
@@ -127,8 +123,8 @@ fct.testthat.consistency.cov.params.0.pmf.same <- function(fitted.nocov, fitted.
 
 fct.testthat.consistency.cov.params.0.pmf.plot.same <- function(fitted.nocov, fitted.cov.g0){
   test_that("pmf plot same results for all models with gamma=0", {
-    expect_true(isTRUE(all.equal(plot(fitted.nocov,  which="pmf", verbose=FALSE, plot=FALSE),
-                                 plot(fitted.cov.g0, which="pmf", verbose=FALSE, plot=FALSE))))
+    expect_true(isTRUE(all.equal(plot(fitted.nocov,  which="pmf", verbose=FALSE, plot=FALSE)[, c("num.transactions", "value")],
+                                 plot(fitted.cov.g0, which="pmf", verbose=FALSE, plot=FALSE)[, c("num.transactions", "value")])))
   })
 }
 

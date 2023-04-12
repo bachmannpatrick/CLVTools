@@ -300,3 +300,40 @@ check_user_data_containsspendingdata <- function(clv.data){
 
   return(err.msg)
 }
+
+check_user_data_othermodels <- function(other.models){
+  if(!is.list(other.models)){
+    return("Parameter other.models has to be a list of fitted transaction models!")
+  }
+
+  # each element in list is a transaction model
+
+  if(!all(sapply(other.models, is, class2 = "clv.fitted.transactions"))){
+    return("All elements in 'other.models' have to be fitted transaction models, e.g the output of pnbd(), bgnbd(), or ggomnbd()!")
+  }
+
+  return(c())
+}
+
+
+check_user_data_label <- function(label, other.models){
+  if(is.null(label)){
+    # null is allowed = std. model name(s)
+    return(c())
+  }
+  if(length(other.models)==0){
+      return(.check_userinput_charactervec(char=label, var.name="label", n=1))
+  }else{
+
+    # requires names for main and all other models
+    err.msg <- .check_userinput_charactervec(char=label, var.name="label", n=1+length(other.models))
+    if(length(err.msg)){
+      return(err.msg)
+    }
+
+    if(any(duplicated(label))){
+      err.msg <- c(err.msg, "Parameter label may not contain any duplicates!")
+    }
+    return(err.msg)
+  }
+}

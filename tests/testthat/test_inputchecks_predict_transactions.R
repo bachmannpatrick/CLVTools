@@ -61,7 +61,7 @@ fct.testthat.inputchecks.clvfittedtransactions.predict.predict.spending.wrong.ty
 
     # illegal logical
     expect_error(predict(clv.fitted.transactions, prediction.end = 6, predict.spending = NA), regexp = "cannot be NA")
-    expect_error(predict(clv.fitted.transactions, prediction.end = 6, predict.spending = c(TRUE, TRUE)), regexp = "single")
+    expect_error(predict(clv.fitted.transactions, prediction.end = 6, predict.spending = c(TRUE, TRUE)), regexp = "only contain 1 element")
 
     # other than logical
     expect_error(predict(clv.fitted.transactions, prediction.end = 6, predict.spending = NULL), regexp = "has to be either")
