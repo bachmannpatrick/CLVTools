@@ -2,6 +2,7 @@ skip_on_cran()
 data("cdnow")
 data("apparelTrans")
 data("apparelStaticCov")
+data("apparelDynCov")
 
 
 # no cov ---------------------------------------------------------------------------------------------------
