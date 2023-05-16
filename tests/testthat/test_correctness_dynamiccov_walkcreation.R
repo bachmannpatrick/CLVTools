@@ -41,37 +41,46 @@ test_that("Math for d_x is correct (Excel, tab Walk d)", {
   expect_equal(pnbd_dyncov_walk_d(clv.time=clv.week, tp.relevant.transaction = lubridate::ymd("2007-01-05")), 2/7)
   expect_equal(pnbd_dyncov_walk_d(clv.time=clv.week, tp.relevant.transaction = lubridate::ymd("2007-01-06")), 1/7)
   # Sunday, on boundary
-  expect_equal(pnbd_dyncov_walk_d(clv.time=clv.week, tp.relevant.transaction = lubridate::ymd("2007-01-07")), 0)
+  expect_equal(pnbd_dyncov_walk_d(clv.time=clv.week, tp.relevant.transaction = lubridate::ymd("2007-01-07")), 1)
 
   options(lubridate.week.start=oldval)
 })
 
-test_that("d_x changes correctly on boundary", {
+test_that("d_x changes correctly on (lower) boundary", {
   skip_on_cran()
+
+  fct.expect.d.between.0.1 <- function(clv, d){
+    d <- clv.time.convert.user.input.to.timepoint(clv, user.timepoint = d)
+    expect_true(pnbd_dyncov_walk_d(clv.time=clv, tp.relevant.transaction = d) > 0)
+    expect_true(pnbd_dyncov_walk_d(clv.time=clv, tp.relevant.transaction = d) < 1)
+  }
+
+  fct.expect.d.equal.1 <- function(clv, d){
+    d <- clv.time.convert.user.input.to.timepoint(clv, user.timepoint = d)
+    expect_true(pnbd_dyncov_walk_d(clv.time=clv, tp.relevant.transaction = d) == 1)
+  }
+
   # year
-  # 2006-12-31 < 1 and >0 (just before boundary)
+  # 2006-12-31 < 1 and >0 (just before (lower) boundary)
   # 2007-01-02: first after boundary, >0 and <1
-  # 2006-01-01: on boundary -> change -> 1
-  # 2007-01-01: on boundary -> 1
-  # 2008-01-01: on boundary -> 1 (also test for leap year)
+  # 2006-01-01: on (lower) boundary -> change -> 1
+  # 2007-01-01: on (lower) boundary -> 1
+  # 2008-01-01: on (lower) boundary -> 1 (also test for leap year)
   clv.year <- clv.time.years("ymd")
-  expect_true(pnbd_dyncov_walk_d(clv.time=clv.year, tp.relevant.transaction = lubridate::ymd("2005-12-31")) > 0)
-  expect_true(pnbd_dyncov_walk_d(clv.time=clv.year, tp.relevant.transaction = lubridate::ymd("2005-12-31")) < 1)
+  fct.expect.d.between.0.1(clv.year, d="2005-12-31")
+  fct.expect.d.between.0.1(clv.year, d="2007-01-02")
 
-  expect_true(pnbd_dyncov_walk_d(clv.time=clv.year, tp.relevant.transaction = lubridate::ymd("2007-01-02")) < 1)
-  expect_true(pnbd_dyncov_walk_d(clv.time=clv.year, tp.relevant.transaction = lubridate::ymd("2007-01-02")) > 0)
-
-  expect_true(pnbd_dyncov_walk_d(clv.time=clv.year, tp.relevant.transaction = lubridate::ymd("2006-01-01")) == 1)
-  expect_true(pnbd_dyncov_walk_d(clv.time=clv.year, tp.relevant.transaction = lubridate::ymd("2007-01-01")) == 1)
-  expect_true(pnbd_dyncov_walk_d(clv.time=clv.year, tp.relevant.transaction = lubridate::ymd("2008-01-01")) == 1)
+  fct.expect.d.equal.1(clv.year, d="2006-01-01")
+  fct.expect.d.equal.1(clv.year, d="2007-01-01")
+  fct.expect.d.equal.1(clv.year, d="2008-01-01")
 
 
   # week
-  #   2007-01-01: monday, first day after boundary
-  #   2007-01-07: sunday, on boundary -> change -> 1
+  #   2007-01-01: monday, first day after (lower) boundary
+  #   2007-01-07: sunday, on (lower) boundary -> change -> 1
   clv.week <- clv.time.weeks("ymd")
   expect_equal(pnbd_dyncov_walk_d(clv.time=clv.week, tp.relevant.transaction = lubridate::ymd("2007-01-01")), 6/7)
-  expect_equal(pnbd_dyncov_walk_d(clv.time=clv.week, tp.relevant.transaction = lubridate::ymd("2007-01-07")), 1)
+  fct.expect.d.equal.1(clv.week, d="2007-01-07")
 
   # day
   # ** TODO: changes always??, always == 1??
@@ -86,17 +95,20 @@ test_that("d_x changes correctly on boundary", {
   #   00:59:59: < 1 and > 0 (just before boundary)
   #   00:00:00: == 1
   #   00:01:00: == 1
-  clv.hour <- clv.time.hours("ymd hms")
-  expect_true(pnbd_dyncov_walk_d(clv.time=clv.hour, tp.relevant.transaction = lubridate::ymd_hms("2007-01-01 00:00:01")) < 1)
-  expect_true(pnbd_dyncov_walk_d(clv.time=clv.hour, tp.relevant.transaction = lubridate::ymd_hms("2007-01-01 00:00:01")) > 0)
-  expect_true(pnbd_dyncov_walk_d(clv.time=clv.hour, tp.relevant.transaction = lubridate::ymd_hms("2007-01-01 00:00:59")) < 1)
-  expect_true(pnbd_dyncov_walk_d(clv.time=clv.hour, tp.relevant.transaction = lubridate::ymd_hms("2007-01-01 00:01:00")) < 1)
-  expect_true(pnbd_dyncov_walk_d(clv.time=clv.hour, tp.relevant.transaction = lubridate::ymd_hms("2007-01-01 00:59:00")) < 1)
-  expect_true(pnbd_dyncov_walk_d(clv.time=clv.hour, tp.relevant.transaction = lubridate::ymd_hms("2007-01-01 00:59:59")) > 0)
-  expect_true(pnbd_dyncov_walk_d(clv.time=clv.hour, tp.relevant.transaction = lubridate::ymd_hms("2007-01-01 00:59:59")) < 1)
-  # on boundary jumps
-  expect_true(pnbd_dyncov_walk_d(clv.time=clv.hour, tp.relevant.transaction = lubridate::ymd_hms("2007-01-01 00:00:00")) == 1)
-  expect_true(pnbd_dyncov_walk_d(clv.time=clv.hour, tp.relevant.transaction = lubridate::ymd_hms("2007-01-01 01:00:00")) == 1)
+  clv.hour <- clv.time.hours("ymd HMS")
+  fct.expect.d.between.0.1(clv.hour, d="2007-01-01 00:00:01")
+  fct.expect.d.between.0.1(clv.hour, d="2007-01-01 00:00:59")
+  fct.expect.d.between.0.1(clv.hour, d="2007-01-01 00:01:00")
+  fct.expect.d.between.0.1(clv.hour, d="2007-01-01 00:59:00")
+  fct.expect.d.between.0.1(clv.hour, d="2007-01-01 00:59:59")
+  fct.expect.d.between.0.1(clv.hour, d="2007-01-01 00:59:59")
+  fct.expect.d.between.0.1(clv.hour, d="2007-01-01 23:59:59")
+
+  # on lower boundary
+  fct.expect.d.equal.1(clv.hour, d="2007-01-01 00:00:00")
+  fct.expect.d.equal.1(clv.hour, d="2007-01-01 01:00:00")
+  fct.expect.d.equal.1(clv.hour, d="2007-01-01 23:00:00")
+  fct.expect.d.equal.1(clv.hour, d="2007-12-31 23:00:00")
 
 })
 
@@ -193,7 +205,7 @@ test_that("Aux walk is 2 periods if T is on week start and alive at T-1 one day 
 
     # make cov dates to be on week start
     data.cov[, Cov.Date := Cov.Date + i]
-    print(data.cov)
+
     # split is on start of week
     date.estimation.split <- lubridate::ymd("2005-06-26") + i
 

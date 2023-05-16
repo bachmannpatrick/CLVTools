@@ -322,7 +322,7 @@ double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
 /*
  * A1sum: Sum up covariates which were active during transaction
  *        Jeff/Patrik: Use the original covariate (log of adj cov) that is active active during transaction. This transaction is the upper end of the walk because the walk goes from [previous transaction, this transaction].
- *        Jeff: Name A1sum is chosen randomly
+ *        Jeff: Name A1sum is arbitrary
  */
 double pnbd_dyncov_LL_i_A1sum(const std::vector<TransactionWalk>& real_walks_trans){
 

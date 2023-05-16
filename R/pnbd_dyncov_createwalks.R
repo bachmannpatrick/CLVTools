@@ -227,18 +227,10 @@ pnbd_dyncov_createwalks_add_corelements <- function(dt.walks){
 }
 
 pnbd_dyncov_walk_d <- function(clv.time, tp.relevant.transaction){
-  # d shall be 1 if it is exactly on the time.unit boundary!
-  # **TODO: Correct statement?
-  # **TODO: clv.time.ceiling.date does not change on boundary (ie d1=0 if on boundary)
 
-  # # . d ---------------------------------------------------------------------
-  # # time between date.lagged and period end (ceiling(data.lagged+1))
-  # # d shall be 1 if it is exactly on the time.unit boundary!
-  # # Plus.Eps is already "+ 1"
-  # data.transactions[, d := clv.time.interval.in.number.tu(clv.time = clv.time,
-  #                                                         interv = interval( start = Prev.Trans.Date.Plus.Eps - 1L,
-  #                                                                            end   = clv.time.ceiling.date(clv.time=clv.time,
-  #                                                                                                          timepoint=Prev.Trans.Date.Plus.Eps)))]
+  # . d ---------------------------------------------------------------------
+  # d shall be 1 if it is exactly on the time unit lower boundary
+  # see comments on d_ in #205
 
   # lubridate::ceiling_date() has the argument change_on_boundary since Version 1.5.6 (2016-04-06)
   #   this makes +1 of previous implementations obsolete
