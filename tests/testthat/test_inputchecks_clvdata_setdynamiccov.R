@@ -444,32 +444,30 @@ test_that("Fails if contains NA", {
 })
 
 test_that("Fails if names not in data", {
-  # ** TODO: Check and fail properly
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "ChannelBender"),
                                    data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
-               regexp = "could not be found")
+               regexp = "could not be found in the Lifetime covariate")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
                                    data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "ChannelBender"),
                                    name.date = "Cov.Date"),
-               regexp = "could not be found")
+               regexp = "could not be found in the Transaction covariate")
 })
 
 test_that("Fails if has duplicate names", {
-  # ** TODO: Fail properly
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel", "Channel"),
                                    data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
-               regexp = "duplicates")
+               regexp = "Lifetime covariate may not contain any duplicates")
 
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                     data.cov.life = apparelDynCov, names.cov.life = c("Gender", "Gender"),
                                     data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
-               regexp = "duplicates")
+               regexp = "Lifetime covariate may not contain any duplicates")
 })
 
 
@@ -530,32 +528,30 @@ test_that("Fails if contains NA", {
 })
 
 test_that("Fails if names not in data", {
-  # ** TODO: Check and fail properly
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                     data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
                                     data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "GenderBender"),
                                     name.date = "Cov.Date"),
-               regexp = "could not be found")
+               regexp = "GenderBender could not be found in the Transaction covariate data")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                     data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gend", "Channel"),
                                     data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gend", "Channel"),
                                     name.date = "Cov.Date"),
-               regexp = "could not be found")
+               regexp = "Gend could not be found")
 })
 
 test_that("Fails if has duplicate names", {
-  # ** TODO: Fail properly
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                     data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
                                     data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel", "Channel"),
                                     name.date = "Cov.Date"),
-               regexp = "duplicates")
+               regexp = "Transaction covariate may not contain any duplicates")
 
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                     data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
                                     data.cov.trans = apparelDynCov, names.cov.trans = c("Gender", "Gender"),
                                     name.date = "Cov.Date"),
-               regexp = "duplicates")
+               regexp = "Transaction covariate may not contain any duplicates")
 })
 
 

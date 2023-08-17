@@ -112,11 +112,6 @@ test_that("d_x changes correctly on (lower) boundary", {
 
 })
 
-test_that("d1 is actually correct in walk", {
-  skip_on_cran()
-  # **TODO
-})
-
 test_that("d_omega is actually correct in cbs", {
   skip_on_cran()
   apparelTrans.spaced <- copy(apparelTrans)
@@ -141,8 +136,24 @@ test_that("d_omega is actually correct in cbs", {
   dt.cbs[weekday == "Sun", unique(d_omega) == 1]
 })
 
-test_that("tjk is correctly calculated (as in excel)", {
-  # **TODO
+test_that("tjk is correctly calculated", {
+  skip_on_cran()
+
+  # Fake transactions for customer 1
+  # - dates: 2005-01-03, 2005-01-04, 2005-01-05, 2005-01-07, 2005-01-18
+  # - Id: Replace existing transactions of "1" because also requires covariates
+  #
+  # 2005-01-03 -> 2005-01-04: tjk=1/7
+  # 2005-01-04 -> 2005-01-05: tjk=1/7
+  # 2005-01-05 -> 2005-01-07: tjk=2/7
+  # 2005-01-07 -> 2005-01-18: tjk=11/7
+  apparelTrans.tjk <- rbindlist(list(apparelTrans[Id != "1"],
+                                     data.table(Id="1", Date=lubridate::ymd(c("2005-01-03", "2005-01-04", "2005-01-05", "2005-01-07", "2005-01-18")), Price=12.34)))
+  l.walks <- pnbd_dyncov_createwalks(fct.helper.create.clvdata.apparel.dyncov(apparelTrans.tjk, apparelDynCov, estimation.split = NULL))
+
+  expect_equal(unique(l.walks$data.walks.trans.real[Id == "1", c("tp.this.trans", "tjk")])[order(tp.this.trans)],
+               data.table(tp.this.trans=lubridate::ymd(c("2005-01-04", "2005-01-05", "2005-01-07", "2005-01-18")),
+                          tjk=c(1/7, 1/7, 2/7, 11/7)))
 })
 
 test_that("tjk is correctly calculated for aux trans with t.x=Tcal", {
@@ -160,8 +171,9 @@ test_that("tjk is correctly calculated for aux trans with t.x=Tcal", {
 })
 
 
-# ***TODO: Is this from excel ?? ***
 test_that("Aux walk splitting method correct", {
+  # this is not from test case excel
+
   skip_on_cran()
   clv.time <- clv.time.weeks("ymd")
   # Start of week: Monday = 2007-01-01
@@ -183,13 +195,6 @@ test_that("Aux walk splitting method correct", {
   dt.walk <- fct.get.walk(tp.last.trans = "2007-01-05", tp.estimation.end = "2007-01-08")
   expect_true(dt.walk[, .N] == 2)
   expect_true(all(dt.walk[, cov.data] == c(0.123, 0.678)))
-})
-
-test_that("Aux walk splitting method correct (in resulting walk table)", {
-  skip_on_cran()
-  # Same input as aux splitting method, but run over full walk methods (pnbd_dyncov_createwalks_auxwalk)
-
-  # **TODO
 })
 
 test_that("Aux walk is 2 periods if T is on week start and alive at T-1 one day before (and has no real life walk)", {
@@ -237,22 +242,40 @@ test_that("Aux walks not lost if there are covariates only for the calibration p
 })
 
 
-test_that("Real Trans Walk correct as in excel", {
+test_that("Real Trans Walk correct", {
   skip_on_cran()
 
-  # **TODO
-
-  # dt.trans <- data.table(Id = c(1, 1, 2),
-  #                        Date = lubridate::ymd(c("2000 01 01", "2000 01 02", "2000 01 10")),
-  #                        Price=0)
-  # dt.cov <- data.table(Id = 1, Date = lubridate::ymd("2000 01 01"), cov=1)
-  # SetDynamicCovariates(clvdata(dt.trans, "ymd", "w", estimation.split = NULL), data.cov.life = dt.cov, data.cov.trans = dt.cov, names.cov.life = "cov", names.cov.trans = "cov")
+  # Fake transactions for customer "1"
+  # - Id: Replace existing transactions of "1" because also requires covariates
+  # - on and off the cov boundary
+  #   - cov boundaries: [2005-01-02, 2005-01-08][2005-01-09, 2005-01-15][2005-01-16, 2005-01-22][2005-01-23, 2005-01-29][2005-01-30, 2005-02-05]
+  #   - cov values:              0.123                   0.234                   0.345                    0.456                   0.567
+  #   - transaction dates: 2005-01-02, 2005-01-07, 2005-01-10, 2005-01-15, 2005-01-16, 2005-01-30
   #
-  # data.table(Id = c(1),
-  #            Date = lubridate::ymd(c("2000 01 01"))
-  #            Price=0)
-  # d <- new('clv.data.dynamic.covariates')
-  # d@data.cov.trans <- data.table()
+  # Real Trans Walk: Covariates up to a repeat transaction
+  # Resulting real trans walks
+  # 2005-01-07: [0.123]
+  # 2005-01-10: [0.123], [0.234]
+  # 2005-01-15: [0.234]
+  # 2005-01-16: [0.234], [0.345]
+  # 2005-01-30: [0.345], [0.456], [0.567]
+  #
+  apparelTrans.realwalk <- rbindlist(list(apparelTrans[Id != "1"],
+                                     data.table(Id="1", Date=lubridate::ymd(c("2005-01-02", "2005-01-07", "2005-01-10", "2005-01-15", "2005-01-16", "2005-01-30")), Price=12.34)))
+  dates.cov.realwalk <- lubridate::ymd(c("2005-01-02", "2005-01-09", "2005-01-16", "2005-01-23", "2005-01-30"))
+  values.cov.realwalk <- c(0.123, 0.234, 0.345, 0.456, 0.567)
+  cov.realwalk <- rbindlist(list(apparelDynCov[!(Id == "1" & Cov.Date %in% dates.cov.realwalk)],
+                                 data.table(Id="1", Cov.Date=dates.cov.realwalk, Marketing=c(0.123, 0.234, 0.345, 0.456, 0.567), Gender=0, Channel=0)))
+  l.walks <- pnbd_dyncov_createwalks(fct.helper.create.clvdata.apparel.dyncov(apparelTrans.realwalk, cov.realwalk, estimation.split = NULL))
+
+  expect_equal(
+    l.walks$data.walks.trans.real[Id==1][order(tp.this.trans), list(tp.this.trans=as.character(tp.this.trans), Marketing)],
+    rbindlist(list(
+      data.table(tp.this.trans="2005-01-07", Marketing=0.123),
+      data.table(tp.this.trans="2005-01-10", Marketing=c(0.123, 0.234)),
+      data.table(tp.this.trans="2005-01-15", Marketing=0.234),
+      data.table(tp.this.trans="2005-01-16", Marketing=c(0.234, 0.345)),
+      data.table(tp.this.trans="2005-01-30", Marketing=c(0.345, 0.456, 0.567)))))
 })
 
 test_that("All walks have basic correctness, estimation.split at every day of week", {
