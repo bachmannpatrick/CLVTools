@@ -149,7 +149,7 @@ test_that("tjk is correctly calculated", {
   # 2005-01-07 -> 2005-01-18: tjk=11/7
   apparelTrans.tjk <- rbindlist(list(apparelTrans[Id != "1"],
                                      data.table(Id="1", Date=lubridate::ymd(c("2005-01-03", "2005-01-04", "2005-01-05", "2005-01-07", "2005-01-18")), Price=12.34)))
-  l.walks <- pnbd_dyncov_createwalks(fct.helper.create.clvdata.apparel.dyncov(apparelTrans.tjk, apparelDynCov, estimation.split = NULL))
+  expect_silent(l.walks <- pnbd_dyncov_createwalks(fct.helper.create.clvdata.apparel.dyncov(apparelTrans.tjk, apparelDynCov, estimation.split = NULL)))
 
   expect_equal(unique(l.walks$data.walks.trans.real[Id == "1", c("tp.this.trans", "tjk")])[order(tp.this.trans)],
                data.table(tp.this.trans=lubridate::ymd(c("2005-01-04", "2005-01-05", "2005-01-07", "2005-01-18")),
@@ -162,7 +162,7 @@ test_that("tjk is correctly calculated for aux trans with t.x=Tcal", {
   # ensure at least one with t.x=T
   apparelTrans.zeroaux <- rbindlist(list(apparelTrans, data.table(Id="1", Date=tp.T, Price=12.34)))
   clv.dyn.zeroaux <- fct.helper.create.clvdata.apparel.dyncov(apparelTrans.zeroaux, apparelDynCov, estimation.split = tp.T)
-  l.walks <- pnbd_dyncov_createwalks(clv.dyn.zeroaux)
+  expect_silent(l.walks <- pnbd_dyncov_createwalks(clv.dyn.zeroaux))
 
   ids.tx.eq.T <- apparelTrans.zeroaux[Date == tp.T, Id]
   expect_true(l.walks$data.walks.trans.aux[Id %in% ids.tx.eq.T, all(tjk == 0)])
@@ -219,7 +219,7 @@ test_that("Aux walk is 2 periods if T is on week start and alive at T-1 one day 
     clv <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=data.trans,
                                                     data.apparelDynCov=data.cov,
                                                     estimation.split=date.estimation.split)
-    l.walks <- pnbd_dyncov_createwalks(clv)
+    expect_silent(l.walks <- pnbd_dyncov_createwalks(clv))
 
     # has 2 aux walks
     expect_true(l.walks$data.walks.life.aux[Id==1, .N] == 2)
@@ -236,7 +236,7 @@ test_that("Aux walks not lost if there are covariates only for the calibration p
   clv.short <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=apparelTrans[Date <= "2005-12-31"],
                                                         data.apparelDynCov=apparelDynCov[Cov.Date <= "2005-12-31"],
                                                         estimation.split=NULL)
-  l.walks <- pnbd_dyncov_createwalks(clv.short)
+  expect_silent(l.walks <- pnbd_dyncov_createwalks(clv.short))
   expect_true(l.walks$data.walks.life.aux[, uniqueN(Id)] == 250)
   expect_true(l.walks$data.walks.trans.aux[, uniqueN(Id)] == 250)
 })
@@ -266,7 +266,7 @@ test_that("Real Trans Walk correct", {
   values.cov.realwalk <- c(0.123, 0.234, 0.345, 0.456, 0.567)
   cov.realwalk <- rbindlist(list(apparelDynCov[!(Id == "1" & Cov.Date %in% dates.cov.realwalk)],
                                  data.table(Id="1", Cov.Date=dates.cov.realwalk, Marketing=c(0.123, 0.234, 0.345, 0.456, 0.567), Gender=0, Channel=0)))
-  l.walks <- pnbd_dyncov_createwalks(fct.helper.create.clvdata.apparel.dyncov(apparelTrans.realwalk, cov.realwalk, estimation.split = NULL))
+  expect_silent(l.walks <- pnbd_dyncov_createwalks(fct.helper.create.clvdata.apparel.dyncov(apparelTrans.realwalk, cov.realwalk, estimation.split = NULL)))
 
   expect_equal(
     l.walks$data.walks.trans.real[Id==1][order(tp.this.trans), list(tp.this.trans=as.character(tp.this.trans), Marketing)],
@@ -289,7 +289,7 @@ test_that("All walks have basic correctness, estimation.split at every day of we
                                                     data.apparelDynCov=apparelDynCov,
                                                     # move split by i days
                                                     estimation.split=lubridate::ymd("2005-06-30") + i)
-    l.walks <- pnbd_dyncov_createwalks(clv)
+    expect_silent(l.walks <- pnbd_dyncov_createwalks(clv))
     dt.cbs <- pnbd_dyncov_cbs(clv)
 
     fct.walk.basic.correctness <- function(dt.walks){
@@ -384,7 +384,7 @@ test_that("Real Trans Walk do no lose walk if transactions only 1 eps apart", {
     data.apparelDynCov=apparelDynCov,
     estimation.split=NULL)
 
-  l.walks <- pnbd_dyncov_createwalks(clv.dyn)
+  expect_silent(l.walks <- pnbd_dyncov_createwalks(clv.dyn))
 
   # every repeat-transaction is in walks (not lost)
   #   unique(tp.this.trans) because has a walk longer than 1 period (when tp.this.trans on week start)
@@ -397,6 +397,28 @@ test_that("Real Trans Walk do no lose walk if transactions only 1 eps apart", {
 })
 
 
+test_that("Real Trans Walk: None if there are no repeat transactions", {
+  skip_on_cran()
+
+  # Real trans walks only exist for repeat transactions
+  #   if there are no repeat transactions, there should be no real trans walks
+  #
+  # Data: Remove repeat transactions of each customer from apparelTrans
+
+  # only keep first transaction of every customer
+  # Because in apparelTrans all customers have their transaction on the first date,
+  # no clvdata object can be created as it requires at least 1 period.
+  # Therefore move dates forward by up to 30days
+  apparelTrans.norepeat <- apparelTrans[order(Date), head(.SD, n=1), by="Id"]
+  apparelTrans.norepeat[, Date := Date + .I %% 30]
+  expect_silent(l.walks <- pnbd_dyncov_createwalks(fct.helper.create.clvdata.apparel.dyncov(apparelTrans.norepeat, apparelDynCov, estimation.split = NULL)))
+
+  expect_true(nrow(l.walks$data.walks.trans.real) == 0)
+  expect_true(ncol(l.walks$data.walks.trans.real) == 13)
+  expect_true(all(colnames(l.walks$data.walks.trans.real) == colnames(l.walks$data.walks.trans.aux)))
+
+})
+
 
 test_that("real life walk + aux life walk give original covariate data",{
   skip_on_cran()
@@ -406,7 +428,7 @@ test_that("real life walk + aux life walk give original covariate data",{
                                                       data.apparelDynCov=apparelDynCov,
                                                       estimation.split="2005-06-30")
 
-  l.walks <- pnbd_dyncov_createwalks(clv.dyn)
+  expect_silent(l.walks <- pnbd_dyncov_createwalks(clv.dyn))
 
   fct.real.plus.aux <- function(id){
     dt.plus <- rbind(l.walks$data.walks.life.real[Id == id],
@@ -442,7 +464,7 @@ test_that("repeat buyers: life walk and first trans walk start on the same timep
                                                       data.apparelDynCov=apparelDynCov,
                                                       estimation.split="2005 06 30")
 
-  l.walks <- pnbd_dyncov_createwalks(clv.dyn)
+  expect_silent(l.walks <- pnbd_dyncov_createwalks(clv.dyn))
   expect_true(l.walks$data.walks.life.real[Id == "10", min(tp.cov.lower)] == l.walks$data.walks.trans.real[Id == "10", min(tp.cov.lower)])
   expect_true(l.walks$data.walks.life.real[Id == "100", min(tp.cov.lower)] == l.walks$data.walks.trans.real[Id == "100", min(tp.cov.lower)])
   expect_true(l.walks$data.walks.life.real[Id == "1000", min(tp.cov.lower)] == l.walks$data.walks.trans.real[Id == "1000", min(tp.cov.lower)])

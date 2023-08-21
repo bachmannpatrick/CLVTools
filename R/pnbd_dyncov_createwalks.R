@@ -1,5 +1,5 @@
 pnbd_dyncov_assert_walk_assumptions <- function(clv.fitted){
-  abs_pos <- walk_id <- walk_from <- walk_to <- num_walks <- Id <- tp.cov.lower <- NULL
+  abs_pos <- walk_id <- walk_from <- walk_to <- num_walks <- Id <- tp.cov.lower <- tp.this.trans <- NULL
   first_cov_real <- i.first_cov_real <- first_cov_aux <- first_cov_real <- NULL
   i.date.first.actual.trans <- x <- tjk <- d_omega <- d1 <- first_trans <- NULL
 
@@ -328,7 +328,8 @@ pnbd_dyncov_createwalks_real_trans <- function(clv.data, dt.trans, dt.tp.first.l
   # If 2 transactions are on the same date, shift+1 will lead to Date.Start > Date.End
   #   Cannot/Should have no 2 transactions on same tp because are aggregated
   #   No aux trans, only real trans present and therefore there is no aux trans on T (no distance between transactions) in this data
-  #   min dist between transactions is 1 eps, hence tp.cut.lower and tp.cut.upper can fall together when shifting. Although the length of this interval is 0, foverlaps() matches these to covariates and produces walks of length 1
+  #   min dist between transactions is 1 eps, hence tp.cut.lower and tp.cut.upper can fall together when shifting. Although the length of this interval is 0,
+  #   foverlaps() matches these to covariates and produces walks of length 1
   setkeyv(dt.cuts.real, cols=c("Id", "Date"))
   dt.cuts.real[, tp.this.trans := Date]
   dt.cuts.real[, tp.previous.trans := shift(tp.this.trans, n=1), by="Id"]
@@ -341,7 +342,13 @@ pnbd_dyncov_createwalks_real_trans <- function(clv.data, dt.trans, dt.tp.first.l
   #   - which has NA in tp.previous.trans because of shift()ing (and then cannot match to cov anyway)
   #   - for which no walk shall be created
   # dt.cuts.real <- dt.cuts.real[!is.na(tp.previous.trans)]
-  dt.cuts.real[, is.first := tp.this.trans == min(tp.this.trans), by="Id"]
+
+  # May be empty if there are no real trans walks (all zero-repeaters)
+  if(nrow(dt.cuts.real) > 0){
+    dt.cuts.real[, is.first := tp.this.trans == min(tp.this.trans), by="Id"]
+  }else{
+    dt.cuts.real[, is.first := logical(0), by="Id"]
+  }
   dt.cuts.real <- dt.cuts.real[is.first == FALSE]
   dt.cuts.real[, is.first := NULL]
 
