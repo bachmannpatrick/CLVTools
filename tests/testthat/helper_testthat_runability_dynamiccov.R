@@ -67,24 +67,24 @@ fct.testthat.runability.dynamiccov.predict.newdata.works <- function(clv.fitted,
   })
 }
 
-fct.testthat.runability.dynamiccov.predict.longer.with.newdata <- function(clv.fitted, clv.data.extra, clv.data.trans){
+fct.testthat.runability.dynamiccov.predict.longer.with.newdata <- function(clv.fitted, clv.data.extra){
   test_that("Can predict longer with newdata than with the data used for fitting", {
     expect_error(predict(clv.fitted, prediction.end = "2018-01-01", predict.spending=FALSE),
                  regexp = "in the fitted model are not long enough")
     expect_silent(dt.predict <- predict(clv.fitted, newdata=clv.data.extra, predict.spending=FALSE,
                                         prediction.end = "2006-07-26",verbose=FALSE))
-    expect_true(dt.predict[, max(period.last)] > clv.data.trans@clv.time@timepoint.holdout.end)
+    expect_true(dt.predict[, max(period.last)] > clv.fitted@clv.data@clv.time@timepoint.holdout.end)
   })
 
 }
 
-fct.testthat.runability.dynamiccov.plot.longer.with.newdata <- function(clv.fitted, clv.data.extra, clv.data.trans){
+fct.testthat.runability.dynamiccov.plot.longer.with.newdata <- function(clv.fitted, clv.data.extra){
   test_that("Can plot longer with newdata than with the data used for fitting", {
     expect_error(plot(clv.fitted, prediction.end = "2018-01-01"),
                  regexp = "in the fitted model are not long enough")
     expect_silent(dt.plot <- plot(clv.fitted, newdata=clv.data.extra, plot=FALSE,
                                   prediction.end = "2006-07-26",verbose=FALSE))
-    expect_true(dt.plot[, max(period.until)] > clv.data.trans@clv.time@timepoint.holdout.end)
+    expect_true(dt.plot[, max(period.until)] > clv.fitted@clv.data@clv.time@timepoint.holdout.end)
   })
 }
 
@@ -99,16 +99,16 @@ fct.testthat.runability.dynamiccov.can.predict.plot.beyond.holdout <- function(d
     # Only predict & plots until transaction data end / holdout end....
     expect_silent(dt.plot <- plot(fitted.dyncov, plot=FALSE, verbose=FALSE))
     expect_silent(dt.predict <- predict(fitted.dyncov, verbose=FALSE, predict.spending=FALSE))
-    expect_true(dt.plot[, max(period.until)] <= ceiling_date(clv.data.trans@clv.time@timepoint.holdout.end, unit="week"))
-    expect_true(dt.predict[, max(period.last)] <= clv.data.trans@clv.time@timepoint.holdout.end)
+    expect_true(dt.plot[, max(period.until)] <= ceiling_date(fitted.dyncov@clv.data@clv.time@timepoint.holdout.end, unit="week"))
+    expect_true(dt.predict[, max(period.last)] <= fitted.dyncov@clv.data@clv.time@timepoint.holdout.end)
 
     # ...but: Can also predict & plot further because there are more covariates present
-    prediction.end.over <-  clv.data.trans@clv.time@timepoint.holdout.end + lubridate::period(10, "weeks")
+    prediction.end.over <-  fitted.dyncov@clv.data@clv.time@timepoint.holdout.end + lubridate::period(10, "weeks")
     expect_silent(dt.plot <- plot(fitted.dyncov, plot=FALSE, verbose=FALSE, prediction.end = prediction.end.over))
     expect_silent(dt.predict <- predict(fitted.dyncov, verbose=FALSE, prediction.end = prediction.end.over, predict.spending=FALSE))
 
-    expect_true(dt.plot[, max(period.until)] > clv.data.trans@clv.time@timepoint.holdout.end)
-    expect_true(dt.predict[, max(period.last)] > clv.data.trans@clv.time@timepoint.holdout.end)
+    expect_true(dt.plot[, max(period.until)] > fitted.dyncov@clv.data@clv.time@timepoint.holdout.end)
+    expect_true(dt.predict[, max(period.last)] > fitted.dyncov@clv.data@clv.time@timepoint.holdout.end)
   })
 
 }

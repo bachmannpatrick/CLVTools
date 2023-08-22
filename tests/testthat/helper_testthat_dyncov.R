@@ -24,7 +24,9 @@ fct.helper.dyncov.quickfit.apparel.data <- function(data.apparelTrans, data.appa
 fct.helper.dyncov.quickfit <- function(clv.data.dyn, hessian){
 
   l.args <- list(clv.data=clv.data.dyn,
-                 start.params.model = c(r=1, alpha=3, s=1, beta=3),
+                 # start params from std model fitted before apparel dyncov
+                 # other start params may yield estimated params which are unsuitable for prediction/plot (NAs & Inf) which removes dates during plotting
+                 start.params.model = c(r= 0.7579, alpha= 4.7419, s= 0.5432, beta=22.1892),
                  optimx.args = list(method="Nelder-Mead", # Nelder-Mead verifies nothing = faster
                                     itnmax=2,
                                     hessian=hessian,

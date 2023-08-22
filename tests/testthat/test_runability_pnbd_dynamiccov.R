@@ -41,14 +41,14 @@ fct.testthat.runability.dynamiccov.predict.newdata.works(clv.fitted = fitted.dyn
 
 # Newdata ----------------------------------------------------------------------------------------------------------
 apparelDynCov.extra <- fct.helper.dyncov.create.longer.dyncov.data(num.additional = 100,
-                                                                        data.apparelDynCov = apparelDynCov)
+                                                                   data.apparelDynCov = apparelDynCov)
 clv.data.extra <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=apparelTrans,
                                                            data.apparelDynCov=apparelDynCov.extra,
                                                            estimation.split=38)
 
-fct.testthat.runability.dynamiccov.predict.longer.with.newdata(clv.fitted = fitted.dyncov, clv.data.extra = clv.data.extra, clv.data.trans = clv.data.trans)
+fct.testthat.runability.dynamiccov.predict.longer.with.newdata(clv.fitted = fitted.dyncov, clv.data.extra = clv.data.extra)
 
-fct.testthat.runability.dynamiccov.plot.longer.with.newdata(clv.fitted = fitted.dyncov, clv.data.extra = clv.data.extra, clv.data.trans = clv.data.trans)
+fct.testthat.runability.dynamiccov.plot.longer.with.newdata(clv.fitted = fitted.dyncov, clv.data.extra = clv.data.extra)
 
 # Overlong data ------------------------------------------------------------------------------
 
