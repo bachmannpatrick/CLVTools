@@ -2,6 +2,7 @@ skip_on_cran()
 data("cdnow")
 data("apparelTrans")
 data("apparelStaticCov")
+data("apparelDynCov")
 
 
 # no cov ---------------------------------------------------------------------------------------------------
@@ -139,7 +140,7 @@ fct.testthat.correctness.latentattrition.staticcov(l.std.args = list(data=appare
 
 fct.testthat.correctness.latentattrition.dyncov <- function(l.std.args, f.lhs, clv.apparel.dyn){
   skip_on_cran()
-  clv.dyn.common.cols <- c("Id", "Cov.Date") #,"tp.cov.lower","tp.cov.upper")
+  clv.dyn.common.cols <- c("Id", "Cov.Date","tp.cov.lower","tp.cov.upper")
 
   test_that("Same as std interface", {
     skip_on_cran()
@@ -177,8 +178,8 @@ fct.testthat.correctness.latentattrition.dyncov <- function(l.std.args, f.lhs, c
     skip_on_cran()
     expect_warning(p.dyn <- do.call(latentAttrition, c(l.std.args, list(formula=update(as.Formula(~pnbd()|Gender*Channel|.-Gender), new=f.lhs)))),
                    "Hessian")
-    expect_setequal(c("Channel", "Gender", "Gender.Channel", "Id", "Cov.Date"), colnames(p.dyn@clv.data@data.cov.life))
-    expect_setequal(c("Channel", "Marketing", "Id", "Cov.Date"), colnames(p.dyn@clv.data@data.cov.trans))
+    expect_setequal(c("Channel", "Gender", "Gender.Channel", clv.dyn.common.cols), colnames(p.dyn@clv.data@data.cov.life))
+    expect_setequal(c("Channel", "Marketing", clv.dyn.common.cols), colnames(p.dyn@clv.data@data.cov.trans))
   })
 }
 

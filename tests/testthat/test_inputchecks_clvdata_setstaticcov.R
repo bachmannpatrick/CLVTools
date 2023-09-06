@@ -223,23 +223,21 @@ test_that("Fails if contains NA", {
 })
 
 test_that("Fails if names not in data", {
-  # ** TODO: Check and fail properly
   expect_error(SetStaticCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelStaticCov, names.cov.life = "GenderBender",
                                    data.cov.trans = apparelStaticCov, names.cov.trans = "Gender"),
-               regexp = "could not be found")
+               regexp = "GenderBender could not be found in the Lifetime covariate data")
   expect_error(SetStaticCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelStaticCov, names.cov.life = "gender",
                                    data.cov.trans = apparelStaticCov, names.cov.trans = "Gender"),
-               regexp = "could not be found")
+               regexp = "gender could not be found in the Lifetime covariate data")
 })
 
 test_that("Fails if has duplicate names", {
-  # ** TODO: Fail properly
   expect_error(SetStaticCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelStaticCov, names.cov.life = c("Gender", "Gender"),
                                    data.cov.trans = apparelStaticCov, names.cov.trans = "Gender"),
-               regexp = "duplicates")
+               regexp = "Lifetime covariate may not contain any duplicates")
 })
 
 

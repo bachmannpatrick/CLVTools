@@ -33,8 +33,8 @@ fct.testthat.correctness.clvfittedspending <- function(name.model, method,
                                                        data.cdnow, data.apparelTrans, data.apparelStaticCov,
                                                        correct.start.params.model, correct.params.coef, correct.LL){
 
-  expect_silent(clv.cdnow.hold   <- clvdata(data.cdnow, "ymd", "w", estimation.split = 37))
-  expect_silent(clv.cdnow.nohold <- clvdata(data.cdnow, "ymd", "w", estimation.split = NULL))
+  clv.cdnow.hold   <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split=37)
+  clv.cdnow.nohold <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split=NULL)
   clv.apparel.staticcov <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
                                                                        estimation.split = 52)
   clv.apparel.nocov <- as(clv.apparel.staticcov, "clv.data")

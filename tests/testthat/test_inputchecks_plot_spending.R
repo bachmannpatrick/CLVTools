@@ -10,7 +10,7 @@ fct.testthat.inputchecks.clvfittedspending.plot.ellipsis <- function(fitted.spen
 
 fct.testthat.inputchecks.clvfittedspending.plot <- function(data.cdnow){
 
-  expect_silent(gg.cdnow <- gg(clvdata(data.cdnow, date.format = "ymd", time.unit = "w", estimation.split = 37), verbose = FALSE))
+  expect_silent(gg.cdnow <- gg(fct.helper.create.clvdata.cdnow(data.cdnow), verbose = FALSE))
   l.std.args <- list(x = gg.cdnow)
 
   fct.helper.inputcheck.single.numeric(fct = plot, l.std.args = l.std.args, name.param = "n")

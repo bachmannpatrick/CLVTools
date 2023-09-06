@@ -57,13 +57,15 @@ setMethod(f = "clv.controlflow.estimate.put.inputs", signature = signature(clv.f
   if(verbose)
     message("Creating walks...")
 
-  l.walks <- pnbd_dyncov_makewalks(clv.data = clv.fitted@clv.data)
+  l.walks <- pnbd_dyncov_createwalks(clv.data = clv.fitted@clv.data)
+
+  clv.fitted@data.walks.life.aux    <- l.walks[["data.walks.life.aux"]]
+  clv.fitted@data.walks.life.real   <- l.walks[["data.walks.life.real"]]
+  clv.fitted@data.walks.trans.aux   <- l.walks[["data.walks.trans.aux"]]
+  clv.fitted@data.walks.trans.real  <- l.walks[["data.walks.trans.real"]]
 
   if(verbose)
     message("Walks created.")
-
-  clv.fitted@data.walks.life  = l.walks[["data.walks.life"]]
-  clv.fitted@data.walks.trans = l.walks[["data.walks.trans"]]
 
   return(clv.fitted)
 })

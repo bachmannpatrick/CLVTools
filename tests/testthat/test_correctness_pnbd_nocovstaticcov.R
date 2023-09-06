@@ -55,19 +55,12 @@ test_that("Higher discount factor leads to smaller DERT", {
 })
 
 
-# Dyncov ---------------------------------------------------------------------------------------
-fct.testthat.correctness.dyncov(data.apparelTrans=apparelTrans, data.apparelDynCov=apparelDynCov)
 
 # nocov expectation ----------------------------------------------------------------------------
 test_that("Expectation in Rcpp matches expectation in R (nocov)", {
 
   skip_on_cran()
-  expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow,
-                                     date.format = "ymd", time.unit = "W", estimation.split = 38,
-                                     name.id = "Id", name.date = "Date", name.price = "Price"))
-
-
-  expect_silent(obj.fitted <- pnbd(clv.data = clv.cdnow, verbose = FALSE))
+  expect_silent(obj.fitted <- pnbd(fct.helper.create.clvdata.cdnow(cdnow), verbose = FALSE))
 
   params_i <- obj.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
 

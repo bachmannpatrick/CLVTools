@@ -82,9 +82,7 @@ expect_silent(beta_i  <- beta  * exp( -m.cov.data.life  %*% clv.ggomnbd@predicti
 test_that("Expectation in Rcpp matches expectation in R (nocov)", {
   skip_on_cran()
 
-  expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow,
-                                     date.format = "ymd", time.unit = "W", estimation.split = 38))
-  expect_silent(fitted.cdnow <- ggomnbd(clv.data = clv.cdnow, verbose = FALSE))
+  expect_silent(fitted.cdnow <- ggomnbd(clv.data = fct.helper.create.clvdata.cdnow(cdnow), verbose = FALSE))
 
   params_i <- fitted.cdnow@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
   params_i[, r       := fitted.cdnow@prediction.params.model[["r"]]]

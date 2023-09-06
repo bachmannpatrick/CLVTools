@@ -149,9 +149,21 @@ latentAttrition <- function(formula, data, cov, optimx.args=list(), verbose=TRUE
     # data is clv.data object
     # if it has covariates, they need to be transformed
     if(is(data, "clv.data.static.covariates")){
-      data <- formulainterface_create_clvdataobj(F.formula = F.formula, clv.data.nocov = as(data, "clv.data"),
-                                                 create.dyncov = is(data, "clv.data.dynamic.covariates"),
-                                                 dt.cov.life = data@data.cov.life, dt.cov.trans = data@data.cov.trans)
+
+      if(is(data, "clv.data.dynamic.covariates")){
+        # better to remove tp.cov.x columns here than trying to figure out whether
+        # there are any in formulainterface_create_clvdataobj()
+        data <- formulainterface_create_clvdataobj(F.formula = F.formula, clv.data.nocov = as(data, "clv.data"),
+                                                   create.dyncov = TRUE,
+                                                   dt.cov.life = data@data.cov.life[, !c("tp.cov.lower", "tp.cov.upper")],
+                                                   dt.cov.trans = data@data.cov.trans[, !c("tp.cov.lower", "tp.cov.upper")])
+      }else{
+        # Dont need to remove Id column
+        data <- formulainterface_create_clvdataobj(F.formula = F.formula, clv.data.nocov = as(data, "clv.data"),
+                                                   create.dyncov = FALSE,
+                                                   dt.cov.life = data@data.cov.life,
+                                                   dt.cov.trans = data@data.cov.trans)
+      }
     }
   }
 

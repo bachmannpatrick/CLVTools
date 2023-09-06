@@ -294,11 +294,8 @@ fct.testthat.inputchecks.clvfittedtransactions.nocov <- function(name.method, me
 fct.testthat.inputchecks.clvfittedspending.nocov <- function(name.method, method, start.params.model, l.illegal.start.params.model,
                                                              data.cdnow){
 
-  expect_silent(clv.data.cdnow.no.holdout   <- clvdata(data.cdnow, date.format = "ymd", time.unit = "w", estimation.split = NULL))
-  expect_silent(clv.data.cdnow.with.holdout <- clvdata(data.cdnow, date.format = "ymd", time.unit = "w", estimation.split = 37))
-
-  l.std.args.noholdout   <- list(clv.data=clv.data.cdnow.no.holdout)
-  l.std.args.withholdout <- list(clv.data=clv.data.cdnow.with.holdout)
+  l.std.args.noholdout   <- list(clv.data=fct.helper.create.clvdata.cdnow(data.cdnow, estimation.split=NULL))
+  l.std.args.withholdout <- list(clv.data=fct.helper.create.clvdata.cdnow(data.cdnow, estimation.split=37))
 
   .fct.testthat.inputchecks.clvfitted(name.method=name.method, method=method, start.params.model=start.params.model,
                                       l.std.args.noholdout=l.std.args.noholdout, l.std.args.withholdout=l.std.args.withholdout,
