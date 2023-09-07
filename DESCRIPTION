@@ -52,7 +52,6 @@ License: GPL-3
 URL: https://github.com/bachmannpatrick/CLVTools
 BugReports: https://github.com/bachmannpatrick/CLVTools/issues
 NeedsCompilation: yes
-SystemRequirements: C++11
 LinkingTo: Rcpp, RcppArmadillo (>= 0.9.500.2.0), RcppGSL (>= 0.3.7), testthat
 LazyLoad: yes
 Encoding: UTF-8
