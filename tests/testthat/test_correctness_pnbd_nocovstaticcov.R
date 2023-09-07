@@ -13,7 +13,6 @@ fct.testthat.correctness.clvfittedtransactions(name.model = "PNBD", method=pnbd,
 
 
 # Recover parameters ---------------------------------------------------------------------------------
-context("Correctness - PNBD nocov - Recover parameters")
 
 # As also reported to compare against bgnbd in Fader, Hardie, Lee (2005)
 fct.testthat.correctness.clvfitted.correct.coefs(method = pnbd,
@@ -28,8 +27,6 @@ fct.testthat.correctness.clvfitted.nocov.correct.se(method = pnbd,
 
 
 # nocov - PAlive --------------------------------------------------------------------------------
-context("Correctness - PNBD nocov - PAlive")
-
 test_that("Can calculate numerically stable PAlive that produced NaNs in previous implementation", {
 
   vX     <- c(221,       254,      161,      204)
@@ -45,7 +42,6 @@ test_that("Can calculate numerically stable PAlive that produced NaNs in previou
 
 
 # nocov - DERT --------------------------------------------------------------------------------
-context("Correctness - PNBD nocov - DERT")
 
 test_that("Higher discount factor leads to smaller DERT", {
   skip_on_cran()
@@ -59,21 +55,12 @@ test_that("Higher discount factor leads to smaller DERT", {
 })
 
 
-# Dyncov ---------------------------------------------------------------------------------------
-fct.testthat.correctness.dyncov(data.apparelTrans=apparelTrans, data.apparelDynCov=apparelDynCov)
 
 # nocov expectation ----------------------------------------------------------------------------
-context("Correctness - PNBD nocov - Expectation")
-
 test_that("Expectation in Rcpp matches expectation in R (nocov)", {
 
   skip_on_cran()
-  expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow,
-                                     date.format = "ymd", time.unit = "W", estimation.split = 38,
-                                     name.id = "Id", name.date = "Date", name.price = "Price"))
-
-
-  expect_silent(obj.fitted <- pnbd(clv.data = clv.cdnow, verbose = FALSE))
+  expect_silent(obj.fitted <- pnbd(fct.helper.create.clvdata.cdnow(cdnow), verbose = FALSE))
 
   params_i <- obj.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
 
@@ -93,8 +80,6 @@ test_that("Expectation in Rcpp matches expectation in R (nocov)", {
 
 
 # staticcov expectation --------------------------------------------------------------------------
-context("Correctness - PNBD staticcov - Expectation")
-
 test_that("Expectation in Rcpp matches expectation in R (staticcov)", {
 
   skip_on_cran()

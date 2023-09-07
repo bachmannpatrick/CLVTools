@@ -44,8 +44,7 @@ setMethod("clv.time.floor.date",  signature = signature(clv.time="clv.time.weeks
 #' @importFrom lubridate ceiling_date
 setMethod("clv.time.ceiling.date",  signature = signature(clv.time="clv.time.weeks"), function(clv.time,timepoint){
   # getOption is default, but be explicit and might change in the future
-  return(ceiling_date(x=timepoint, unit="weeks", week_start = getOption("lubridate.week.start", 7),
-                      change_on_boundary = FALSE))
+  return(ceiling_date(x=timepoint, unit="weeks", week_start = getOption("lubridate.week.start", 7), change_on_boundary = TRUE))
 })
 
 

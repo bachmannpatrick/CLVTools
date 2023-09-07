@@ -132,7 +132,21 @@ devtools::install_github("bachmannpatrick/CLVTools", ref = "development")
 ```
 
 
+## General workflow
 
+Independent of the latent attrition model applied in `CLVTools`, the general workflow consists of three main steps:
+
+1. Create a `clv.data` object containing the dataset and required meta-information such as date formats and column names in the dataset. After initializing the object, there is the option to add additional information on covariates in a separate step.
+
+2. Fit the model on the data provided.
+
+3. Use the estimated model parameters to predict future customer purchase behavior.
+
+![Workflow for `CLVTools`](vignettes/figures/WALKTHROUGH-steps.png)
+
+`CLVTools` provides two ways for evaluating latent attrition models: you can use of the provided formula interface or you can use standard functions (non-formula interface). Both offer the same functionality, however the formula interface is especially helpful when covariates are included in the model. We will illustrate both options.
+
+Reporting and plotting results is facilitated by the implementation of well-known generic methods such as `plot()`, `print()` and `summary()`. These commands adapt their output according to the model state and may be used at any point of the workﬂow.
 
 
 ## A Minimal Example
@@ -142,7 +156,6 @@ Start by loading the package:
 ```{r load-library}
 library("CLVTools")
 ```
-
 
 As Input data `CLVTools` requires customers' transaction history. Every transaction record consists of a purchase date and customer ID.
 
@@ -168,6 +181,14 @@ Be aware that probabilistic models such as the ones implemented in CLVTools are 
 
 As a first probabilistic latent attrition model we estimate the standard Pareto/NBD model and therefore, use the command `pnbd()` to fit the model and estimate model parameters. Other models such as the BG/NBD model (`bgnbd()`) and the GGomp/NBD (`ggomnbd()`) are also available.
 
+### **Estimating the model using formula interface:**
+```{r estimate-model-formula}
+   est.pnbd <- latentAttrition(~pnbd(), 
+                               data=clv.apparel)
+   est.pnbd
+```
+
+### **Estimating the model using non-formula interface:**
 ```{r estimate-model}
 est.pnbd <- pnbd(clv.data = clv.apparel)
 est.pnbd

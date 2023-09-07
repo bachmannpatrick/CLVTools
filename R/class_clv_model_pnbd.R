@@ -13,7 +13,7 @@ setClass(Class = "clv.model.pnbd.no.cov", contains = "clv.model.with.correlation
 clv.model.pnbd.no.cov <- function(){
 
   return(new("clv.model.pnbd.no.cov",
-             name.model                  = "Pareto NBD Standard",
+             name.model                  = "Pareto/NBD Standard",
              names.original.params.model = c(r="r", alpha="alpha", s="s", beta="beta"),
              names.prefixed.params.model = c("log.r","log.alpha", "log.s", "log.beta"),
              start.params.model          = c(r=1, alpha=1, s=1, beta=1),

@@ -15,7 +15,7 @@ clv.model.pnbd.dynamic.cov <- function(){
   return(new("clv.model.pnbd.dynamic.cov",
              clv.model.pnbd.static.cov(),
 
-             name.model       = "Pareto NBD with Dynamic Covariates",
+             name.model       = "Pareto/NBD with Dynamic Covariates",
              # Overwrite optimx default args
              optimx.defaults  = list(method = "Nelder-Mead",
                                      itnmax = 3000,
@@ -43,13 +43,16 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
             # Everything to call the LL function
             optimx.args <- modifyList(prepared.optimx.args,
                                       list(
-                                        clv.fitted = clv.fitted,
-                                        LL.function.sum = pnbd_dyncov_LL_sum,
+                                        LL.function.sum = pnbd_dyncov_LL_negsum,
                                         LL.function.ind = pnbd_dyncov_LL_ind, # if doing correlation
-                                        # Ordering does not actually matter for dyncov_LL(params), just need all params
                                         LL.params.names.ordered = c(clv.model@names.prefixed.params.model,
                                                                     clv.fitted@names.prefixed.params.after.constr.life,
                                                                     clv.fitted@names.prefixed.params.after.constr.trans)))
+
+            l.dyncov.args <- pnbd_dyncov_getLLcallargs(clv.fitted)
+            optimx.args <- modifyList(optimx.args, l.dyncov.args)
+
+
             return(optimx.args)
           })
 
@@ -77,8 +80,7 @@ setMethod(f = "clv.model.process.post.estimation", signature = signature(clv.mod
                       setNames(clv.fitted@prediction.params.trans, clv.fitted@names.prefixed.params.after.constr.trans))
 
     # get LL with all values, not just ind LL or summed LL
-    clv.fitted@LL.data <- pnbd_dyncov_LL(params = final.params, clv.fitted=clv.fitted)
-    setkeyv(clv.fitted@LL.data, cols = "Id")
+    clv.fitted@LL.data <- pnbd_dyncov_getLLdata(clv.fitted=clv.fitted, params=final.params)
   }else{
     warning("Could not derive dyncov LL data with these final parameters - cannot predict and plot!", call. = FALSE)
   }
@@ -114,14 +116,13 @@ setMethod(f = "clv.model.process.newdata", signature = signature(clv.model = "cl
                     setNames(clv.fitted@prediction.params.trans, clv.fitted@names.prefixed.params.after.constr.trans))
 
   # also need to re-do the walks if there is new data
-  l.walks <- pnbd_dyncov_makewalks(clv.data = clv.fitted@clv.data)
-  clv.fitted@data.walks.life  = l.walks[["data.walks.life"]]
-  clv.fitted@data.walks.trans = l.walks[["data.walks.trans"]]
+  l.walks <- pnbd_dyncov_createwalks(clv.data = clv.fitted@clv.data)
+  clv.fitted@data.walks.life.aux    <- l.walks[["data.walks.life.aux"]]
+  clv.fitted@data.walks.life.real   <- l.walks[["data.walks.life.real"]]
+  clv.fitted@data.walks.trans.aux   <- l.walks[["data.walks.trans.aux"]]
+  clv.fitted@data.walks.trans.real  <- l.walks[["data.walks.trans.real"]]
 
-  # get LL with all values, not just ind LL or summed LL
-  clv.fitted@LL.data <- pnbd_dyncov_LL(params = final.params, clv.fitted=clv.fitted)
-  setkeyv(clv.fitted@LL.data, cols = "Id")
-
+  clv.fitted@LL.data <- pnbd_dyncov_getLLdata(clv.fitted=clv.fitted, params=final.params)
   return(clv.fitted)
 })
 

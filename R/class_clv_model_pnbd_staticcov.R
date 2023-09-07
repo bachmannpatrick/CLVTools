@@ -22,7 +22,7 @@ clv.model.pnbd.static.cov <- function(){
   return(new("clv.model.pnbd.static.cov",
              clv.model.pnbd.no.cov(),
              # Overwrite nocov name
-             name.model      = "Pareto NBD with Static Covariates",
+             name.model      = "Pareto/NBD with Static Covariates",
              start.param.cov = 0.1))
 }
 

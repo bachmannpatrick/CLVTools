@@ -246,14 +246,10 @@ fct.helper.create.fake.newdata.staticcov <- function(data.trans, estimation.spli
 fct.helper.create.clvdata.apparel.staticcov <- function(data.apparelTrans, data.apparelStaticCov, estimation.split,
                                                         names.cov.life = c("Gender", "Channel"), names.cov.trans = c("Gender", "Channel")){
 
-  expect_silent(clv.data.apparel <- clvdata(data.transactions = data.apparelTrans, date.format = "ymd", time.unit = "W",
-                                            estimation.split = estimation.split))
-
-  expect_silent(clv.data.apparel    <- SetStaticCovariates(clv.data.apparel,
-                                                           data.cov.life = data.apparelStaticCov, data.cov.trans = data.apparelStaticCov,
-                                                           names.cov.life = names.cov.life, names.cov.trans = names.cov.trans))
-
-  return(clv.data.apparel)
+  return(SetStaticCovariates(clvdata(data.transactions = data.apparelTrans, date.format = "ymd", time.unit = "W",
+                                     estimation.split = estimation.split),
+                             data.cov.life = data.apparelStaticCov, data.cov.trans = data.apparelStaticCov,
+                             names.cov.life = names.cov.life, names.cov.trans = names.cov.trans))
 }
 
 
@@ -261,7 +257,6 @@ fct.helper.create.clvdata.apparel.staticcov <- function(data.apparelTrans, data.
 fct.testthat.runability.staticcov <- function(name.model, method, start.params.model, has.cor,
                                               data.apparelTrans, data.apparelStaticCov,
                                               failed.optimization.methods.expected.message){
-  context(paste0("Runability - ",name.model," staticcov - Basic runability"))
 
   # Data objects: normal data
   clv.data.cov.no.holdout <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
@@ -309,8 +304,6 @@ fct.testthat.runability.staticcov <- function(name.model, method, start.params.m
 
 
   if(has.cor){
-    context(paste0("Runability - ",name.model," static cov - w/ Correlation"))
-
     fct.testthat.runability.common.works.with.cor(method = method,
                                                   clv.data.holdout = clv.data.cov.holdout,
                                                   clv.newdata.nohold = clv.newdata.nohold,
@@ -324,7 +317,6 @@ fct.testthat.runability.staticcov <- function(name.model, method, start.params.m
                                                                names.params.model = names(start.params.model))
   }
 
-  context(paste0("Runability - ",name.model," static cov - w/ Constraint"))
   fct.testthat.runability.staticcov.works.with.2.constraints(method = method,
                                                              param.names.model = names(start.params.model),
                                                              clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold,
@@ -335,7 +327,6 @@ fct.testthat.runability.staticcov <- function(name.model, method, start.params.m
                                                                    clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold,
                                                                    clv.data.holdout = clv.data.cov.holdout, clv.data.no.holdout = clv.data.cov.no.holdout)
 
-  context(paste0("Runability - ",name.model," static cov - w/ Regularization"))
   fct.testthat.runability.staticcov.works.with.regularization(method = method,
                                                               param.names.model = names(start.params.model),
                                                               clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold,
@@ -346,7 +337,6 @@ fct.testthat.runability.staticcov <- function(name.model, method, start.params.m
                                                          clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold,
                                                          clv.data.holdout = clv.data.cov.holdout, clv.data.no.holdout = clv.data.cov.no.holdout)
 
-  context(paste0("Runability - ",name.model," static cov - w/ Combinations"))
   if(has.cor){
     fct.testthat.runability.staticcov.works.with.combined.interlayers.with.cor(method = method,
                                                                                model.param.names = names(start.params.model),

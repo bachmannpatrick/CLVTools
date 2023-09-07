@@ -6,6 +6,8 @@
     err.msg <- c(err.msg, paste0(var.name," has to be exactly 1 single number!"))
   if(anyNA(n))
     err.msg <- c(err.msg, paste0(var.name," may not be NA!"))
+  if(any(!is.finite(n)))
+    err.msg <- c(err.msg, paste0(var.name," may not contain any non-finite items!"))
   return(err.msg)
 }
 
@@ -254,26 +256,29 @@ check_user_data_namesconstr <- function(clv.fitted, names.cov.constr){
     return(err.msg) #return("Covariate names may not be NULL")
 
   if(!is.character(names.cov.constr))
-    return("Covariate names for Constraint covariates must be an unnamed character vector!")
+    return("Covariate names for constraint covariates must be an unnamed character vector!")
 
   if(!is.null(names(names.cov.constr)))
-    err.msg <- c(err.msg, "Covariate names for constraint covariates should be provided as unnamed vector!")
+    err.msg <- c(err.msg, "Covariate names for constraint covariates have to be provided as unnamed vector!")
+
+  if(length(names.cov.constr) == 0)
+    err.msg <- c(err.msg, "The names for constraint covariates may not be empty!")
 
   if(anyNA(names.cov.constr))
-    err.msg <- c(err.msg, "There may be no NAs in the covariate names for Constraint covariates!")
+    err.msg <- c(err.msg, "There may be no NAs in the covariate names for constraint covariates!")
 
   # Check that every name is in both data
   for(n in names.cov.constr){
     if(!(n %in% colnames(clv.fitted@clv.data@data.cov.life)))
-      err.msg <- c(err.msg, paste0("The Constraint covariate named ", n, " could not be found in the Lifetime covariate data!"))
+      err.msg <- c(err.msg, paste0("The constraint covariate named ", n, " could not be found in the Lifetime covariate data!"))
 
     if(!(n %in% colnames(clv.fitted@clv.data@data.cov.trans)))
-      err.msg <- c(err.msg, paste0("The Constraint covariate named ", n, " could not be found in the Transaction covariate data!"))
+      err.msg <- c(err.msg, paste0("The constraint covariate named ", n, " could not be found in the Transaction covariate data!"))
   }
 
   # Found only once
   if(length(names.cov.constr) != length(unique(names.cov.constr)))
-    err.msg <- c(err.msg, "Every covariate name for Constraint covariates may only appear exactly once!")
+    err.msg <- c(err.msg, "Every covariate name for constraint covariates may only appear exactly once!")
 
   return(err.msg)
 }
@@ -294,4 +299,41 @@ check_user_data_containsspendingdata <- function(clv.data){
     err.msg <- c(err.msg, "The data object is required to contain spending data!")
 
   return(err.msg)
+}
+
+check_user_data_othermodels <- function(other.models){
+  if(!is.list(other.models)){
+    return("Parameter other.models has to be a list of fitted transaction models!")
+  }
+
+  # each element in list is a transaction model
+
+  if(!all(sapply(other.models, is, class2 = "clv.fitted.transactions"))){
+    return("All elements in 'other.models' have to be fitted transaction models, e.g the output of pnbd(), bgnbd(), or ggomnbd()!")
+  }
+
+  return(c())
+}
+
+
+check_user_data_label <- function(label, other.models){
+  if(is.null(label)){
+    # null is allowed = std. model name(s)
+    return(c())
+  }
+  if(length(other.models)==0){
+      return(.check_userinput_charactervec(char=label, var.name="label", n=1))
+  }else{
+
+    # requires names for main and all other models
+    err.msg <- .check_userinput_charactervec(char=label, var.name="label", n=1+length(other.models))
+    if(length(err.msg)){
+      return(err.msg)
+    }
+
+    if(any(duplicated(label))){
+      err.msg <- c(err.msg, "Parameter label may not contain any duplicates!")
+    }
+    return(err.msg)
+  }
 }

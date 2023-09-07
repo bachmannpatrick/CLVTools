@@ -50,7 +50,7 @@
 #' clv.data.apparel <- clvdata(apparelTrans, time.unit="w",
 #'                             date.format="ymd")
 #'
-#' # Add static covariate data
+#' # Add dynamic covariate data
 #' clv.data.dyn.cov  <-
 #'    SetDynamicCovariates(clv.data.apparel,
 #'                        data.cov.life  = apparelDynCov,
