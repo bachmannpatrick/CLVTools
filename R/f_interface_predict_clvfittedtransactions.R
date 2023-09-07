@@ -5,9 +5,9 @@
 #' @param object A fitted clv transaction model for which prediction is desired.
 #' @param newdata A clv data object for which predictions should be made with the fitted model. If none or NULL is given, predictions are made for the data on which the model was fit.
 #' @param predict.spending Whether and how to predict spending and based on it also CLV, if possible. See details.
-#' @param continuous.discount.factor The continuous discount factor used to calculate \code{DERT/DECT}, defaults
-#' to \code{0.1} (=10\%). See details for how to calculate it appropriately.
-#'
+#' @param continuous.discount.factor continuous discount factor to use to calculate \code{DERT/DECT}
+#' @templateVar prefix {}
+#' @templateVar plot_or_predict predict
 #' @template template_param_predictionend
 #' @template template_param_verbose
 #' @template template_param_dots

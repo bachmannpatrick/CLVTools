@@ -8,9 +8,9 @@
 #' @param plot Whether a plot should be created or only the assembled data returned.
 #'
 #' @param cumulative "tracking": Whether the cumulative actual repeat transactions should be plotted.
-# @template template_param_predictionend
-#' @param prediction.end "tracking": Until what point in time to plot. This can be the number of periods (numeric) or
-#' a form of date/time object. See details.
+#' @templateVar prefix "tracking":
+#' @templateVar plot_or_predict plot
+#' @template template_param_predictionend
 #'
 #' @param trans.bins "frequency": Vector of integers indicating the number of transactions (x axis) for which the customers should be counted.
 #' @param count.repeat.trans "frequency": Whether repeat transactions (TRUE, default) or all transactions (FALSE) should be counted.
@@ -31,7 +31,9 @@
 #'
 #'
 #' @description
-#' Depending on the value of parameter \code{which}, one of the following plots will be produced:
+#' Depending on the value of parameter \code{which}, one of the following plots will be produced.
+#' Note that the \code{sample} parameter determines the period for which the
+#' selected plot is made (either estimation, holdout, or full).
 #'
 #' \subsection{Tracking Plot}{
 #' Plot the aggregated repeat transactions per period over the given time-horizon (\code{prediction.end}).
@@ -164,7 +166,7 @@ plot.clv.data <- function(x, which=c("tracking", "frequency", "spending", "inter
   check_err_msg(err.msg)
 
   return(
-    switch(EXPR = match.arg(arg=which, choices = c("tracking", "frequency", "spending", "interpurchasetime"),
+    switch(EXPR = match.arg(arg=tolower(which), choices = c("tracking", "frequency", "spending", "interpurchasetime"),
                             several.ok = FALSE),
            "tracking" =
              clv.data.plot.tracking(x=x, prediction.end = prediction.end, cumulative = cumulative,
@@ -188,9 +190,10 @@ plot.clv.data <- function(x, which=c("tracking", "frequency", "spending", "inter
          ))
 }
 
-#' @importFrom ggplot2 rel
-clv.data.plot.add.theme <- function(p){
-  return(p + theme(
+#' @importFrom ggplot2 theme rel element_text element_blank element_rect element_line
+#' @importFrom utils modifyList
+clv.data.plot.add.default.theme <- function(p, custom=list()){
+  l.default.args <- list(
     plot.title = element_text(face = "bold", size = rel(1.5)),
     text = element_text(),
     panel.background = element_blank(),
@@ -209,7 +212,12 @@ clv.data.plot.add.theme <- function(p){
     legend.direction = "horizontal",
     legend.title = element_text(face="italic"),
     strip.background=element_rect(colour="#d2d2d2",fill="#d2d2d2"),
-    strip.text = element_text(face="bold", size = rel(0.8))))
+    strip.text = element_text(face="bold", size = rel(0.8)))
+
+  # Overwrite with custom args
+  l.default.args <- modifyList(l.default.args, custom)
+
+  return(p + do.call(what=theme, args = l.default.args))
 }
 
 
@@ -256,8 +264,8 @@ clv.data.plot.tracking <- function(x, prediction.end, cumulative, plot, verbose,
 
   # Get repeat transactions ----------------------------------------------------------------------------------------
   label.transactions <- "Number of Repeat Transactions"
-  dt.repeat.trans <- clv.controlflow.plot.get.data(obj=x, dt.expectation.seq=dt.dates.expectation,
-                                                   cumulative=cumulative, verbose=verbose)
+  dt.repeat.trans <- clv.data.add.repeat.transactions.to.periods(clv.data=x, dt.date.seq=dt.dates.expectation,
+                                                                 cumulative=cumulative)
   setnames(dt.repeat.trans, old = "num.repeat.trans", new = label.transactions)
 
 
@@ -281,7 +289,9 @@ clv.data.plot.tracking <- function(x, prediction.end, cumulative, plot, verbose,
 
   # Plot table with formatting, label etc
   line.colors <- setNames(object = "black", nm = label.transactions)
-  return(clv.controlflow.plot.make.plot(dt.data = dt.plot, clv.data = x, line.colors = line.colors))
+  p <- clv.controlflow.plot.make.plot(dt.data = dt.plot, clv.data = x, line.colors = line.colors)
+  p <- p + theme(legend.position = "none")
+  return(p)
 }
 
 clv.data.make.density.plot <- function(dt.data, mapping, labs_x, title, geom, ...){
@@ -291,7 +301,7 @@ clv.data.make.density.plot <- function(dt.data, mapping, labs_x, title, geom, ..
   # Axis and title
   p <- p + labs(x = labs_x, y="Density", title=title)
 
-  return(clv.data.plot.add.theme(p))
+  return(clv.data.plot.add.default.theme(p))
 }
 
 #' @importFrom ggplot2 aes
@@ -410,6 +420,11 @@ clv.data.plot.barplot.frequency <- function(clv.data, count.repeat.trans, count.
   dt.bins[, num.transactions := factor(num.transactions, levels = levels.bins, ordered = TRUE)]
 
   if(!plot){
+    # data.table does not print when returned because it is returned directly after last [:=]
+    # " if a := is used inside a function with no DT[] before the end of the function, then the next
+    #   time DT or print(DT) is typed at the prompt, nothing will be printed. A repeated DT or print(DT)
+    #   will print. To avoid this: include a DT[] after the last := in your function."
+    dt.bins[]
     return(dt.bins)
   }else{
     #   use geom_col because geom_bar does the counting itself
@@ -430,7 +445,8 @@ clv.data.plot.barplot.frequency <- function(clv.data, count.repeat.trans, count.
                        vjust = -0.6,
                        size = rel(3))
 
-    return(clv.data.plot.add.theme(p))
+    # Standard theme, but make x ticks for the bins bold (num repeat trans)
+    return(clv.data.plot.add.default.theme(p, custom = list(axis.text.x = element_text(face="bold"))))
   }
 }
 

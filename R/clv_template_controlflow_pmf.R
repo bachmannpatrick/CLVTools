@@ -1,4 +1,7 @@
-clv.template.controlflow.pmf <- function(clv.fitted, x, plot = FALSE){
+clv.template.controlflow.pmf <- function(clv.fitted, x){
+
+  clv.controlflow.check.prediction.params(clv.fitted)
+  x <- sort(unique(x))
 
   l.res.pmf <- lapply(x, function(i){
     dt.pmf <- clv.model.pmf(clv.model = clv.fitted@clv.model, clv.fitted = clv.fitted, x = i)

@@ -28,7 +28,7 @@
 #' the t-statistic and corresponding (two-sided) p-value.}
 #' \item{estimated.LL}{the value of the log-likelihood function at the found solution.}
 #' \item{AIC}{Akaike's An Information Criterion for the fitted model.}
-#' \item{BIC}{Schwarz's Bayesian Information Criterion for the fitted model.}
+#' \item{BIC}{Schwarz' Bayesian Information Criterion for the fitted model.}
 #' \item{KKT1}{Karush-Kuhn-Tucker optimality conditions of the first order, as returned by optimx.}
 #' \item{KKT2}{Karush-Kuhn-Tucker optimality conditions of the second order, as returned by optimx.}
 #' \item{fevals}{The number of calls to the log-likelihood function during optimization.}

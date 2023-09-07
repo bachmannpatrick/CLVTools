@@ -1,9 +1,9 @@
 Package: CLVTools
 Title: Tools for Customer Lifetime Value Estimation
-Version: 0.8.2
-Date: 2021-10-13
+Version: 0.9.0
+Date: 2022-01-07
 Authors@R: c(
-    person(given="Patrick", family="Bachmann",    email = "patrick.bachmann@business.uzh.ch", role = c("cre","aut")),
+    person(given="Patrick", family="Bachmann",    email = "pbachma@ethz.ch", role = c("cre","aut")),
     person(given="Niels",   family="Kuebler",     email = "niels.kuebler@uzh.ch", role = "aut"),
     person(given="Markus",  family="Meierer",     email = "markus.meierer@business.uzh.ch", role = "aut"),
     person(given="Jeffrey", family="Naef",        email = "naef@stat.math.ethz.ch",role = "aut"),
@@ -43,7 +43,6 @@ Imports:
     utils
 Suggests:
     covr,
-    future,
     knitr,
     rmarkdown,
     testthat
@@ -100,7 +99,6 @@ Collate:
     'f_DoExpectation.R'
     'f_clvdata_inputchecks.R'
     'f_clvfitted_inputchecks.R'
-    'f_generics_clvdata.R'
     'f_generics_clvfitted.R'
     'f_generics_clvfitted_estimate.R'
     'f_generics_clvfittedspending.R'

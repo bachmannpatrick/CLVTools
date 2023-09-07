@@ -408,6 +408,8 @@ vcov.summary.clv.fitted <- function(object, ...){
 
 #' @title Extract Unconditional Expectation
 #' @param object A fitted clv model for which the unconditional expectation is desired.
+#' @templateVar prefix {}
+#' @templateVar plot_or_predict predict
 #' @template template_param_predictionend
 #' @template template_param_verbose
 #' @template template_param_dots

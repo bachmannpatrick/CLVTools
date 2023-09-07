@@ -1,7 +1,7 @@
 #include "clv_vectorized.h"
 
 
-//' @title GSL Hypergeom 2f0 for equal length vectors
+//' @title GSL Hypergeometric 2F0 for equal length vectors
 //'
 //' @param vA Vector of values for parameter a
 //' @param vB Vector of values for parameter b
@@ -35,7 +35,7 @@ Rcpp::List vec_gsl_hyp2f0_e(const RcppGSL::Vector& vA, const RcppGSL::Vector& vB
                             Rcpp::Named("status") = Rcpp::wrap(vStatus));
 }
 
-//' @title GSL Hypergeom 2f1 for equal length vectors
+//' @title GSL Hypergeometric 2F1 for equal length vectors
 //'
 //' @param vA Vector of values for parameter a
 //' @param vB Vector of values for parameter b

@@ -1,6 +1,6 @@
 #'
 #' @details
-#' Model parameters for the GGompertz /NBD model are \code{r, alpha, beta, b and s}. \cr
+#' Model parameters for the GGompertz/NBD model are \code{r, alpha, beta, b and s}. \cr
 #' \code{r}: shape parameter of the Gamma distribution of the purchase process.
 #' The smaller \code{r}, the stronger the heterogeneity of the purchase process.\cr
 #' \code{alpha}: scale parameter of the Gamma distribution of the purchase process.\cr

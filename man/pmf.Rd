@@ -10,7 +10,7 @@
 \arguments{
 \item{object}{The fitted transaction model.}
 
-\item{x}{Vector of positive integer numbers (>=1) indicating the number of transactions x for
+\item{x}{Vector of positive integer numbers (>=0) indicating the number of repeat transactions x for
 which the PMF should be calculated.}
 }
 \value{
@@ -20,9 +20,9 @@ for one value in \code{x}.
 \item{pmf.x.Y}{PMF values for Y number of transactions}
 }
 \description{
-Calculate P(X(t)=x), the probability to make exactly x repeat transactions in
-the interval (0, T] (the estimation period). Note that T is the observation period T.cal which
-differs by customer.
+Calculate P(X(t)=x), the probability to make exactly \code{x} repeat transactions in
+the interval (0, t]. This interval is in the estimation period and excludes values of \code{t=0}.
+Note that here \code{t} is defined as the observation period \code{T.cal} which differs by customer.
 }
 \examples{
 \donttest{
@@ -56,4 +56,7 @@ pmf(pnbd.cdnow, x=0:10)
 \seealso{
 The model fitting functions \code{\link[CLVTools:pnbd]{pnbd},
 \link[CLVTools:bgnbd]{bgnbd}, \link[CLVTools:ggomnbd]{ggomnbd}}.
+
+\code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} to visually compare
+the PMF values against actuals.
 }

@@ -113,11 +113,13 @@ fct.testthat.inputchecks.clvfittedtransactions.predict <- function(data.cdnow, d
   expect_silent(fitted.cdnow.nohold   <- pnbd(clv.data.cdnow.nohold, verbose = FALSE))
 
 
-  fct.testthat.inputchecks.clvfitted.newdata.not.clvdata(clv.fitted = fitted.cdnow.nohold, data.cdnow = data.cdnow)
+  fct.testthat.inputchecks.clvfitted.newdata.not.clvdata(s3method=predict, l.std.args=list(fitted.cdnow.nohold, prediction.end=6), data.cdnow = data.cdnow)
   fct.testthat.inputchecks.clvfittedtransactions.newdata.has.different.covs(s3method = predict,
+                                                                            l.s3method.args=list(prediction.end=6),
                                                                             clv.fitted.apparel.cov = fitted.apparel.static,
                                                                             data.apparelStaticCov = data.apparelStaticCov)
   fct.testthat.inputchecks.clvfittedtransactions.newdata.is.different.class(s3method = predict,
+                                                                            l.s3method.args = list(prediction.end=6),
                                                                             clv.fitted.transactions.nocov = fitted.cdnow.nohold,
                                                                             clv.fitted.transactions.staticcov = fitted.apparel.static,
                                                                             clv.data.no.cov = clv.data.cdnow.nohold,
@@ -125,8 +127,10 @@ fct.testthat.inputchecks.clvfittedtransactions.predict <- function(data.cdnow, d
 
 
   # General inputchecks
-  fct.testthat.inputchecks.clvfitted.na.in.prediction.params.model(s3method = predict, clv.fitted = fitted.cdnow.nohold)
-  fct.testthat.inputchecks.clvfittedtransactions.cov.na.in.prediction.params.cov(s3method = predict, clv.fitted.cov = fitted.apparel.static)
+  fct.testthat.inputchecks.clvfitted.na.in.prediction.params.model(s3method = predict, clv.fitted = fitted.cdnow.nohold,
+                                                                   l.s3method.args=list(prediction.end=6))
+  fct.testthat.inputchecks.clvfittedtransactions.cov.na.in.prediction.params.cov(s3method = predict, clv.fitted.cov = fitted.apparel.static,
+                                                                                 l.s3method.args = list(prediction.end=6))
 
   context("Inputchecks - clv.fitted.transactions predict - prediction.end")
   fct.testthat.inputchecks.clvfittedtransactions.prediction.end.wrong.format(fitted.transactions = fitted.cdnow.nohold)

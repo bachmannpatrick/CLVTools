@@ -31,43 +31,43 @@ continuous and discrete time.
 
 Currently, CLVTools implements the following probabilistic models:
 
-1)  Standard Pareto/NBD model (Schmittlein, Morrison & Colombo 1987)
+1.  Standard Pareto/NBD model (Schmittlein, Morrison & Colombo 1987)
 
-2)  Pareto/NBD model with **time-invariant** contextual factors (Fader &
+2.  Pareto/NBD model with **time-invariant** contextual factors (Fader &
     Hardie 2007)
 
-3)  Pareto/NBD model with **time-varying** contextual factors (Bachmann,
-    Meierer & Näf 2020)
+3.  Pareto/NBD model with **time-varying** contextual factors (Bachmann,
+    Meierer & Näf 2021)
 
-4)  Standard BG/NBD model (Fader, Hardie, & Lee 2005)
+4.  Standard BG/NBD model (Fader, Hardie, & Lee 2005)
 
-5)  BG/NBD model with **time-invariant** contextual factors (Fader &
+5.  BG/NBD model with **time-invariant** contextual factors (Fader &
     Hardie 2007)
 
-6)  Standard Gamma/Gompertz/NBD (Bemmaor & Glady 2012)
+6.  Standard Gamma/Gompertz/NBD (Bemmaor & Glady 2012)
 
-7)  Gamma/Gompertz/NBD model with **time-invariant** contextual factors
+7.  Gamma/Gompertz/NBD model with **time-invariant** contextual factors
     (Näf, Bachmann & Meierer 2020)
 
-8)  Gamma/Gamma model to estimate customer spending (Colombo & Jiang
+8.  Gamma/Gamma model to estimate customer spending (Colombo & Jiang
     1999; Fader, Hardie & Lee 2005; Fader & Hardie 2013)
 
 In future versions of `CLVTools` the following models are added. See
 [GitHub Issues](https://github.com/bachmannpatrick/CLVTools/projects)
 for a time-line.
 
-9)  Standard BG/BB model (Fader, Hardie, & Shang 2010)
+9.  Standard BG/BB model (Fader, Hardie, & Shang 2010)
 
 In addition the framework features a system of layers between the
 optimizer and the log-likelihood function to allow the flexible addition
 of model extensions during the model fitting process. Currently these
 layers include:
 
-  - Correlation of the purchase and the attrition process
+-   Correlation of the purchase and the attrition process
 
-  - L2 regularization for parameters of contextual factors
+-   L2 regularization for parameters of contextual factors
 
-  - Equality constraints between parameters of contextual factors for
+-   Equality constraints between parameters of contextual factors for
     the purchase and the attrition process.
 
 ## Installation
@@ -90,45 +90,58 @@ from source. Follow these 3 steps:
 
 2.  Install the external dependency (`GSL`):
 
-<!-- end list -->
+*For Linux:*  
 
-  - *For Linux:*
-    
-        apt-get update
-        apt-get install libgsl0-dev
-    
-    If you are using an R Docker container with Linux
-    (e.g. rocker/tidyverse), you can build up on these Docker images as
-    follows
-    
-        FROM rocker/tidyverse
-        RUN apt-get update -qq && apt-get -y install \
+<!-- -->
+
+    apt-get update
+    apt-get install libgsl0-dev
+
+If you are using an R Docker container with Linux
+(e.g. rocker/tidyverse), you can build up on these Docker images as
+follows
+
+    FROM rocker/tidyverse
+    RUN apt-get update -qq && apt-get -y install \
         libgsl0-dev
-    
-    Alternatively, follow the instruction in the section “Installing
-    Dependencies external to the R system” at
-    <https://ropenscilabs.github.io/r-docker-tutorial/03-install-packages.html>
-    to install `GSL` in a running Docker container with Linux.
 
-  - *For Mac:*
-    
-        brew install gsl
+Alternatively, follow the instruction in the section “Installing
+Dependencies external to the R system” at
+<https://ropenscilabs.github.io/r-docker-tutorial/03-install-packages.html>
+to install `GSL` in a running Docker container with Linux.
 
-  - *For Windows:*  
-    First, install `RTools` through
-    <https://cran.r-project.org/bin/windows/Rtools/> (\> v4.0). Next,
-    use the new `RTools` package manager to install the `GSL` library
-    (see
-    <https://github.com/r-windows/docs/blob/master/rtools40.md#readme>)
-    by using `pacman` through the `RTools Bash`:
-    
-        pacman -S mingw-w64-{i686,x86_64}-gsl
+*For Mac with Intel chip:* :
 
-<!-- end list -->
+    brew install gsl
+
+*For Mac with Apple Silicon:*  
+
+1.  Download gsl-latest.tar.gz from <https://ftp.gnu.org/gnu/gsl/> and
+    unzip it.
+
+2.  Navigate to the unziped folder, e.g. `cd ~/Downloads/gsl-2.7.1`
+
+3.  run the following commands line by line:
+
+<!-- -->
+
+    sudo make clean
+    sudo chown -R $USER .
+    ./configure && make
+    make install
+
+*For Windows:*  
+First, install `RTools` through
+<https://cran.r-project.org/bin/windows/Rtools/> (> v4.0). Next, use the
+new `RTools` package manager to install the `GSL` library (see
+<https://github.com/r-windows/docs/blob/master/rtools40.md#readme>) by
+using `pacman` through the `RTools Bash`:
+
+    pacman -S mingw-w64-{i686,x86_64}-gsl
 
 3.  Install the development version from source:
 
-<!-- end list -->
+<!-- -->
 
     devtools::install_github("bachmannpatrick/CLVTools", ref = "development")
 
@@ -263,11 +276,11 @@ on the object with the estimated parameters (i.e. `est.pnbd`). In
 general, probabilistic customer attrition model predict three expected
 characteristics for every customer:
 
-  - “conditional expected transactions” (CET), which is the number of
+-   “conditional expected transactions” (CET), which is the number of
     transactions to expect form a customer during the prediction period,
-  - “probability of a customer being alive” (PAlive) at the end of the
+-   “probability of a customer being alive” (PAlive) at the end of the
     estimation period and
-  - “discounted expected residual transactions” (DERT) for every
+-   “discounted expected residual transactions” (DERT) for every
     customer, which is the total number of transactions for the residual
     lifetime of a customer discounted to the end of the estimation
     period.
@@ -320,7 +333,7 @@ plot(est.pnbd)
 
 ## Contributions
 
-Feedback and contributions to this package are welcome\! Please use
+Feedback and contributions to this package are welcome! Please use
 [GitHub Issues](https://github.com/bachmannpatrick/CLVTools/issues) for
 filing bug reports. Provide your contributions in the form of [Pull
 Requests](https://help.github.com/articles/about-pull-requests/). See

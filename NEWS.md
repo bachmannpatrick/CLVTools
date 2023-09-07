@@ -1,3 +1,16 @@
+# CLVTools 0.9.0
+
+### NEW FEATURES
+* Three new diagnostic plots for transaction data to analyse frequency, spending and interpurchase time
+* New diagnostic plot for fitted transaction models (PMF plot)
+* New function to calculate the probability mass function of selected models
+* Calculate summary statistics only for the transaction data of selected customers
+* Canonical transformation from data.frame/data.table to transaction data object and vice-versa
+* Canonical subset for the data stored in the transaction data object
+* Pareto/NBD DERT: Improved numerical stability
+
+
+
 # CLVTools 0.8.1
 
 ### BUG FIXES
@@ -25,7 +38,7 @@
 * Improved documentation and walkthrough
 
 ### BUG FIXES
-* Pareto/NBD LogLikelihood: For the case Tcal = t.x and for the case alpha == beta
+* Pareto/NBD log-likelihood: For the case Tcal = t.x and for the case alpha == beta
 * Static or dynamic covariates with syntactically invalid names (spaces, start with numbers, etc) could not be fit
 
 
@@ -44,5 +57,5 @@
 * Pareto/NBD model to predict repeat transactions without and with static or dynamic covariates 
 * Gamma-Gamma model to predict average spending
 * Predicting CLV and future transactions per customer
-* Data class to pre-process transaction data and to provide summary statistics
+* Data class to preprocess transaction data and to provide summary statistics
 * Plot of expected repeat transactions as by the fitted model compared against actuals

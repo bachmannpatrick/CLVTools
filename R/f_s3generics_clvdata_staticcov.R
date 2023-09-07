@@ -21,14 +21,18 @@ print.summary.clv.data.static.covariates <- function(x, digits=max(3L, getOption
 
   NextMethod()
 
-  cat("Covariates")
-  # cat(x$name.covariates.type)
-  .print.list(list( "Trans. Covariates   " = paste(x$names.cov.data.trans, collapse=", "),
-                    "       # covs"        = length(x$names.cov.data.trans),
-                    "Life.  Covariates   " = paste(x$names.cov.data.life,  collapse=", "),
-                    "       # covs "       = length(x$names.cov.data.life)))
+  # Do not print if interested in specific Ids
+  if(is.null(x$selected.ids)){
 
-  cat("\n")
+    cat("Covariates")
+    # cat(x$name.covariates.type)
+    .print.list(list( "Trans. Covariates   " = paste(x$names.cov.data.trans, collapse=", "),
+                      "       # covs"        = length(x$names.cov.data.trans),
+                      "Life.  Covariates   " = paste(x$names.cov.data.life,  collapse=", "),
+                      "       # covs "       = length(x$names.cov.data.life)))
+
+    cat("\n")
+  }
 
   invisible(x)
 }
