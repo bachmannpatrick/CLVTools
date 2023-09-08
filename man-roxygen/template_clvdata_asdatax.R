@@ -12,7 +12,7 @@
 #' A \code{<%=name_data_code%>} with columns \code{Id}, \code{Date}, and \code{Price} (if present).
 #'
 #' @examples
-#'
+#'  \donttest{
 #' data("cdnow")
 #' clv.data.cdnow <- clvdata(data.transactions = cdnow,
 #'                           date.format="ymd",
@@ -32,4 +32,5 @@
 #' # Extract transaction data of Ids "1", "2", and "999" in estimation period
 #' <%=name_res%> <- as.<%=name_data_code%>(clv.data.cdnow, Ids = c("1", "2", "999"),
 #'                           sample="estimation")
+#'}
 #'

@@ -28,6 +28,7 @@ Possible rows to subset and select are \code{Id}, \code{Date}, and \code{Price} 
 }
 \examples{
 
+\donttest{ # dont test because ncpu=2 limit on cran (too fast)
 library(data.table) # for between()
 data(cdnow)
 
@@ -63,6 +64,7 @@ subset(clv.cdnow, between(Price, 50, 100))
 
 # only keep Id of transactions on "1997-02-16"
 subset(clv.cdnow, Date == "1997-02-16", "Id")
+}
 
 }
 \seealso{

@@ -137,6 +137,8 @@ contain \code{NA} in column \code{Number of Repeat Transactions}.
 }
 \examples{
 
+\donttest{
+
 data("cdnow")
 clv.cdnow <- clvdata(cdnow, time.unit="w",estimation.split=37,
                      date.format="ymd")
@@ -196,9 +198,8 @@ plot(clv.cdnow, which="timings", Ids=c("123", "1041"), annotate.ids=TRUE)
 plot(clv.cdnow, which="timings", Ids=25)
 
 # plot all customers
-\donttest{\dontrun{
 plot(clv.cdnow, which="timings", Ids=nobs(clv.cdnow))
-}}
+}
 
 }
 \seealso{

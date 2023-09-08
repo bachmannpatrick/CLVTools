@@ -62,6 +62,8 @@
 #'
 #' @examples
 #'
+#' \donttest{
+#'
 #' data("cdnow")
 #'
 #' # create clv data object with weekly periods
@@ -82,18 +84,16 @@
 #'                           time.unit = "w",
 #'                           estimation.split = "1997-10-15")
 #'
-#' \donttest{
-#'
 #' # summary of the transaction data
 #' summary(clv.data.cdnow)
 #'
 #' # plot the total number of transactions per period
 #' plot(clv.data.cdnow)
 #'
+#' \dontrun{
 #' # create data with the weekly periods defined to
 #' #   start on Mondays
 #'
-#' \dontrun{
 #' # set start of week to Monday
 #' oldopts <- options("lubridate.week.start"=1)
 #'

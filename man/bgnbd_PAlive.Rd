@@ -52,7 +52,7 @@ Returns a vector with the PAlive for each customer.
 Calculates the probability of a customer being alive at the end of the calibration period,
 based on a customer's past transaction behavior and the BG/NBD model parameters.
 
-\itemize{
+\describe{
 \item{\code{bgnbd_nocov_PAlive}}{ P(alive) for the BG/NBD model without covariates}
 \item{\code{bgnbd_staticcov_PAlive}}{ P(alive) for the BG/NBD model with static covariates}
 }

@@ -14,21 +14,21 @@
 #'
 #' Formula left hand side (LHS) specifies the data preparation which depends on the provided argument \code{data}.
 #' \itemize{
-#' \item{If \code{data} is \code{clvdata}: }{Nothing, LHS is required to be empty.}
-#' \item{If \code{data} is a \code{data.frame}: }{Data preparation using formula special \code{clvdata(time.unit, date.format, split)}. The formula is required to have a LHS.}
+#' \item If \code{data} is \code{clvdata}: Nothing, LHS is required to be empty.
+#' \item If \code{data} is a \code{data.frame}: Data preparation using formula special \code{clvdata(time.unit, date.format, split)}. The formula is required to have a LHS.
 #' }
 #'
 #' Formula right hand side (RHS) specifies the model fitting and follows a multi-part notation.
 #' \itemize{
-#' \item{1st part (required): }{The model to fit. One of either \code{\link{pnbd}}, \code{\link{bgnbd}}, or \code{\link{ggomnbd}}. Depending on the model additional arguments may be given. See the respective model functions for details.}
+#' \item 1st part (required): The model to fit. One of either \code{\link{pnbd}}, \code{\link{bgnbd}}, or \code{\link{ggomnbd}}. Depending on the model additional arguments may be given. See the respective model functions for details.
 #' }
 #'
 #' If the model is fit with covariates, further parts separated by \code{|} are required:
 #' \itemize{
-#' \item{2nd part (required): }{Which covariates to include for the lifetime process, potentially transforming them and adding interactions. The dot ('.') refers to all columns in the data except the identifier variables.}
-#' \item{3rd part (required): }{Which covariates to include for the transaction process, potentially transforming them and adding interactions. The dot ('.') refers to all columns in the data except the identifier variables.}
-#' \item{4th part (optional): }{Formula special \code{regularization(trans=, life=)} to specify the lambdas for regularization and \code{constraint(...)} to specify parameters to be equal on both processes.
-#' Both specials separated by \code{+} may be given.}
+#' \item 2nd part (required): Which covariates to include for the lifetime process, potentially transforming them and adding interactions. The dot ('.') refers to all columns in the data except the identifier variables.
+#' \item 3rd part (required): Which covariates to include for the transaction process, potentially transforming them and adding interactions. The dot ('.') refers to all columns in the data except the identifier variables.
+#' \item 4th part (optional): Formula special \code{regularization(trans=, life=)} to specify the lambdas for regularization and \code{constraint(...)} to specify parameters to be equal on both processes.
+#' Both specials separated by \code{+} may be given.
 #' }
 #'
 #' See the example section for illustrations on how to specify the formula parameter.

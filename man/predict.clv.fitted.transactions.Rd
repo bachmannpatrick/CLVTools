@@ -35,8 +35,7 @@
 
 \item{predict.spending}{Whether and how to predict spending and based on it also CLV, if possible. See details.}
 
-\item{continuous.discount.factor}{The continuous discount factor used to calculate \code{DERT/DECT}, defaults
-to \code{0.1} (=10\%). See details for how to calculate it appropriately.}
+\item{continuous.discount.factor}{continuous discount factor to use to calculate \code{DERT/DECT}}
 
 \item{verbose}{Show details about the running of the function.}
 

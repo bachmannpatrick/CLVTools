@@ -63,7 +63,7 @@ Returns a vector with the DERT for each customer.
 \description{
 Calculates the discounted expected residual transactions.
 
-\itemize{
+\describe{
 \item{\code{pnbd_nocov_DERT}}{ Discounted expected residual transactions for the Pareto/NBD model without covariates}
 \item{\code{pnbd_staticcov_DERT}}{ Discounted expected residual transactions for the Pareto/NBD model with static covariates}
 }

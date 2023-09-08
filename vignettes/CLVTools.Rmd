@@ -20,6 +20,10 @@ knitr::opts_chunk$set(
   #fig.path = "figures/WALKTHROUGH-",
   out.width = "100%"
 )
+
+# On CRAN, code may not run with more than 2 threads
+# Otherwise results in failed check with "Re-building vignettes had CPU time xxx times elapsed time"
+data.table::setDTthreads(threads = 2)
 ```
 
 # Prerequisites: Setup the R environment
@@ -203,7 +207,7 @@ To estimate the GGom/NBD model we apply the `ggomnbd()`to the `clv.apparel` obje
 To execute the model estimation you have the choice between a formula-based interface and a non-formula-based interface. In the following we illustrate the two alternatives.
 
 ### **Estimating the model using formula interface:**
-```{r estimate-ggomnbd-formula}
+```{r estimate-ggomnbd-formula, eval=FALSE}
   est.ggomnbd <- latentAttrition(~ggomnbd(start.params.model=
                                           c(r=0.7, alpha=5, b=0.005,  s=0.02, beta=0.001)),
                                     optimx.args = list(method="Nelder-Mead"),
@@ -347,7 +351,7 @@ To execute the model estimation you have the choice between a formula-based inte
 ### **Estimating the model using formula interface**:
 
 We use all present covariates:
-```{r static-cov-estimate-formula1, message=TRUE, warning=FALSE}
+```{r static-cov-estimate-formula1, message=TRUE, warning=FALSE, eval=FALSE}
   est.pnbd.static <- latentAttrition(~pnbd()|.|., clv.static)
 ```
 Using the formula interface, we can use only selected covariates (only Gender for the lifetime process and both, Channel and Gender for the transaction process):
@@ -426,7 +430,7 @@ In the following we illustrate code for both, a formula-based interface a non-fo
 ***Regularization*** helps to prevent overfitting of the model when using covariates. We can add regularization lambdas for the two processes. The larger the lambdas the stronger the effects of the regularization. Regularization only affects the parameters of the covariates. The use of regularization is indicated at the end of the `summary()` output.
 
 ### **Estimating the model using formula interface:**
-```{r reg-formula}
+```{r reg-formula, eval=FALSE}
 est.pnbd.reg <- latentAttrition(~pnbd()|.|.|regularization(life=3, trans=8), clv.static)
 summary(est.pnbd.reg)
 ```
@@ -444,7 +448,7 @@ summary(est.pnbd.reg)
 ***Constraints*** implement equality constraints for contextual factors with regards to the two processes. For example the variable "gender" is forced to have the same effect on the purchase as well as on the attrition process. We can use the argument `names.cov.constr`(i.e. `names.cov.constr=c("Gender")`). In this case, the output only contains one parameter for "Gender" as it is constrained to be the same for both processes. To provide starting parameters for the constrained variable use `start.params.constr`. The use of constraints is indicated at the end of the `summary()` output.
 
 ### **Estimating the model using formula interface:**
-```{r constr-formula}
+```{r constr-formula, eval=FALSE}
 est.pnbd.constr <- latentAttrition(~pnbd(names.cov.constr=c("Gender"), 
                                          start.params.constr = c(Gender = 0.6))|.|., 
                                    clv.static)
@@ -453,7 +457,7 @@ summary(est.pnbd.constr)
 Note: providing a starting parameter for the constrained variable is optional.
 
 ### **Estimating the model using non-formula interface:**
-```{r constr-advOptions,}
+```{r constr-advOptions, eval=FALSE}
 est.pnbd.constr <- pnbd(clv.static, 
                          start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
                          start.params.constr = c(Gender=0.6),
@@ -531,7 +535,7 @@ est.gg<- gg(start.params.model=c(p=0.5, q=15, gamma=2), clv.data = clv.apparel)
 est.gg
 ```
 Specify the option to NOT remove the first transaction:
-```{r spending-estimate-model3, eval=TRUE}
+```{r spending-estimate-model3, eval=FALSE}
 est.gg<- gg(clv.data = clv.apparel, remove.first.transaction=FALSE)
 est.gg
 ```

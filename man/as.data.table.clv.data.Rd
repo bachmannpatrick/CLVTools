@@ -33,7 +33,7 @@ into a data.table.
 }
 \examples{
 library(data.table)
-
+ \donttest{
 data("cdnow")
 clv.data.cdnow <- clvdata(data.transactions = cdnow,
                           date.format="ymd",
@@ -53,5 +53,6 @@ dt.trans <- as.data.table(clv.data.cdnow, Ids = c("1", "2", "999"))
 # Extract transaction data of Ids "1", "2", and "999" in estimation period
 dt.trans <- as.data.table(clv.data.cdnow, Ids = c("1", "2", "999"),
                           sample="estimation")
+}
 
 }
