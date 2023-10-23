@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0</span>
       </span>
     </div>
 
@@ -52,7 +52,7 @@
   <a href="../../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -84,7 +84,7 @@
 
       
 
-      </header><script src="internal_docu_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Internal Package Documentation</h1>
@@ -97,32 +97,150 @@
 
     
     
-<p>coefficients logging of params is only a trick to restrict parameters to &gt; 0. This trick in the estimation however affects coef(optimx), hessian and vcov. Save as exp()ed coefs to ensure can be used readily in all kind of prediction functions. Store life and trans params separately as they are separately multiplied with the respective cov data. Store constraint params in the life and trans params because needed in them when predicting to multiply with cov data. Store optimx names to know what part of coef(optimx) to readout. Always needed for m. Always needed for constraint parameters to know which to add to the normal trans/life covariate params. optimx names are only used for start params and reading out of coefs. Otherwise always the display name is used. Constraint params only appear in the optimx start params (only one param per cov and named differently) and when storing the covariate params. At all other locations, except coef/vcov/, life and trans params are handled as if unconstraint</p>
-<p>Reporting of constraint params is because want to publish in JSS and for this need to stick to canonical way to calculate SE from vcov and offer vcov() function, but vcov comes from optimx hessian which only has constr params. A proper vcov is required to be PsD and hence the constraint params may not be duplicated and renamed as they would constitute a linear combination. Constraint params hence are reported everywhere as such with prefix “constr.”. In other words, constraint params transpire from optimx/hessian through vcov into general reporting.</p>
-<p>In vcov(), the constraint params may not be doubled and renamed to trans/life as they would be a linear combination and vcov hence not positive-semidefinite which a vcov has to be per definition. vcov is calculated with the deltamethod from whole optimx hessian because of math. Then subsetted to not include correlation param m because of consistency with reporting correlation and not param m and to fit output of coef(). The vcov is named after original params and not “log” because the vcov is essentially back-transformed with the deltamethod and covariates are named with prefixes trans/life/constr.</p>
-<p>coef() reports the back-transformed params (model) and not transformed params (log) to not confuse users and separate free life/trans and constr params for consistency with overall reporting and vcov specifically. Parameter m is not reported in coef() and neither because and not its not reported like this .</p>
-<p>param m is not reported in coef() and vcov() because it is non-sensical to users. Correlation is reported in summary but not in vcov() (and hence no SE+pvalue) because its not possible to calculate vcov of correlation from param m it (maybe it is with deltamethod?).</p>
-<p>prediction.params.model/life/trans are the parameters used for all prediction related calculations after estimation and include constraint and unconstraint parameters per covariate. Named with original names to fit the covariate data names. These params are not reported to the user because cov params might be undistinguishable without prefix and it would be inconsistent with the overall reporting in coef()/vcov(). Also not named estimated.params to avoid confusion if they are free or constraint, for prediction they have to contain all params for a process.</p>
-<p>“free params” are all life and trans covariate params which are not constraint</p>
-<p>Original names are needed for free but also constr params to map the constr params back to their original names when creating prediction.params.</p>
-<p>The original names of the cov data is needed to read out the data and ensuring the cov params have the correct order.</p>
-<p>start params are generated or readout are fixed built-in, ie independent from model code because it would require the model code to do all kinds of inputchecks, naming, and determining which free and constr params. But the model has to supply the default params. The model specific transformations are then still performed on these start params afterwards.</p>
+<p>coefficients logging of params is only a trick to restrict parameters
+to &gt; 0. This trick in the estimation however affects coef(optimx),
+hessian and vcov. Save as exp()ed coefs to ensure can be used readily in
+all kind of prediction functions. Store life and trans params separately
+as they are separately multiplied with the respective cov data. Store
+constraint params in the life and trans params because needed in them
+when predicting to multiply with cov data. Store optimx names to know
+what part of coef(optimx) to readout. Always needed for m. Always needed
+for constraint parameters to know which to add to the normal trans/life
+covariate params. optimx names are only used for start params and
+reading out of coefs. Otherwise always the display name is used.
+Constraint params only appear in the optimx start params (only one param
+per cov and named differently) and when storing the covariate params. At
+all other locations, except coef/vcov/, life and trans params are
+handled as if unconstraint</p>
+<p>Reporting of constraint params is because want to publish in JSS and
+for this need to stick to canonical way to calculate SE from vcov and
+offer vcov() function, but vcov comes from optimx hessian which only has
+constr params. A proper vcov is required to be PsD and hence the
+constraint params may not be duplicated and renamed as they would
+constitute a linear combination. Constraint params hence are reported
+everywhere as such with prefix “constr.”. In other words, constraint
+params transpire from optimx/hessian through vcov into general
+reporting.</p>
+<p>In vcov(), the constraint params may not be doubled and renamed to
+trans/life as they would be a linear combination and vcov hence not
+positive-semidefinite which a vcov has to be per definition. vcov is
+calculated with the deltamethod from whole optimx hessian because of
+math. Then subsetted to not include correlation param m because of
+consistency with reporting correlation and not param m and to fit output
+of coef(). The vcov is named after original params and not “log” because
+the vcov is essentially back-transformed with the deltamethod and
+covariates are named with prefixes trans/life/constr.</p>
+<p>coef() reports the back-transformed params (model) and not
+transformed params (log) to not confuse users and separate free
+life/trans and constr params for consistency with overall reporting and
+vcov specifically. Parameter m is not reported in coef() and neither
+because and not its not reported like this .</p>
+<p>param m is not reported in coef() and vcov() because it is
+non-sensical to users. Correlation is reported in summary but not in
+vcov() (and hence no SE+pvalue) because its not possible to calculate
+vcov of correlation from param m it (maybe it is with deltamethod?).</p>
+<p>prediction.params.model/life/trans are the parameters used for all
+prediction related calculations after estimation and include constraint
+and unconstraint parameters per covariate. Named with original names to
+fit the covariate data names. These params are not reported to the user
+because cov params might be undistinguishable without prefix and it
+would be inconsistent with the overall reporting in coef()/vcov(). Also
+not named estimated.params to avoid confusion if they are free or
+constraint, for prediction they have to contain all params for a
+process.</p>
+<p>“free params” are all life and trans covariate params which are not
+constraint</p>
+<p>Original names are needed for free but also constr params to map the
+constr params back to their original names when creating
+prediction.params.</p>
+<p>The original names of the cov data is needed to read out the data and
+ensuring the cov params have the correct order.</p>
+<p>start params are generated or readout are fixed built-in, ie
+independent from model code because it would require the model code to
+do all kinds of inputchecks, naming, and determining which free and
+constr params. But the model has to supply the default params. The model
+specific transformations are then still performed on these start params
+afterwards.</p>
 <p>tl;dr</p>
-<p>prediction.params - back-transformed params only, ready for prediction - per covariate put together from free + constraint params</p>
-<p>names - optimx names in general to have clarity in what transformation (ie log) params are - optimx names for model to readout what to back-transform - optimx names for free/constr params to readout per covariate type and back-transform if needed later on / by model - optimx names for free params to distinguish life and trans because the covs commonly have the same name (ie gender for both processes) - original names for model to display the coefs as known by user - original names required for free / constr params to match the data naming when operating on covariate data (ensure correct order) - original names for model to readout when predicting - names of cov params keep the life/trans/constr prefix after estimation to distinguish them if they have the same name and because vcov requires - prefixed names can only be created when estimating because before its unknown which params are free and constraint - prefixed names with all free and constr names per process to readout params in interlayers after constraint interlayer</p>
-<p>original names are needed for - presenting model params - name of model params from coef() - model prediction params to read out - cov prediction params to ensure cov param ordered like data - for free/constr params to map constr params back to original names - reading out cov data - reading out model start params - reading out cov start params</p>
-<p>prefixed names are needed - transformed model params when optimizing LL - presenting cov params - name of cov params from coef(), vcov(), summary() - because of last 2 arguments prefix cov params already during optimization</p>
-<p>creating names: - from cov params original name and exact same order as cov data - prefixed model exact same order as original but with prefix - reducing cov data requires that cov original names are recreated - if no name is available (ie no free or no constr params) they shall be character(0)</p>
-<p>creating start params - default model start params per model - default covariate param per model - default start params named prefixed - input start params come named with original names and therefore copied out with original names</p>
-<p>model wise: Because of possible parameter restraints through transformations (such as log()) some functions are required to be model specific and extra steps are needed. - transform input/start parameters before optimization - transform parameters after optimization - creating prediction.params - start parameters for model and covariates - vcov(), deltamethod - coef() - init model - model param names - model param optimx names - model name - predict - expectation - optimize.LL (- reduce covs)</p>
-<p>It is preferred not to actually inherit from both, base and covariates, but to have only a java-style interface for covariates. Unfortunately, this is not possible.</p>
-<p>before optimization - reduce cov data as/if specified, before anything else to determine actual covs - store user’s estimation settings in object - determine which covariate params are constraint or free trans/life params, cor or not - create prefixed names for model and cov params. - generate and transform start params from estimation settings. Should not do naming and transformation separately, because prefix needed to distinguish between covs in a single vector but this is wrong because before transformation the model parms have prefix already but are not transformed yet. Therefore, generation of params is a generic function for model params and covariates. Defaults or user input passed into generic and generic returns transformed params. Output of generic is then labeled with prefix. - put together interlayer arguments</p>
-<p>after optimization - store optimx result - readout and transform correlation param - put together prediction.params from back-transformed params (get from coef()), name with original names - store non-sum LL (LL.output)</p>
-<p>reporting (summary, vcov, coef) - model params are reported in display names - free and constr cov params are reported in optimx names</p>
-<p>start params - readout for model params with display names because its the only state that the user knows them (not log)</p>
-<p>generics: - transform.start.params for cov and model - optimize.LL - reporting: summary/coef/vcov</p>
-<p>vcov() - vcov from optimx hessian, deltamethod to back-transform - return model + constr/free cov params - should be per model to account for model specific (back-)transformations</p>
-<p>coef() - return back-transformed model params + constr/free cov params - does the back-transformation of the params from the optimx result. Not actually stored</p>
+<p>prediction.params - back-transformed params only, ready for
+prediction - per covariate put together from free + constraint
+params</p>
+<p>names - optimx names in general to have clarity in what
+transformation (ie log) params are - optimx names for model to readout
+what to back-transform - optimx names for free/constr params to readout
+per covariate type and back-transform if needed later on / by model -
+optimx names for free params to distinguish life and trans because the
+covs commonly have the same name (ie gender for both processes) -
+original names for model to display the coefs as known by user -
+original names required for free / constr params to match the data
+naming when operating on covariate data (ensure correct order) -
+original names for model to readout when predicting - names of cov
+params keep the life/trans/constr prefix after estimation to distinguish
+them if they have the same name and because vcov requires - prefixed
+names can only be created when estimating because before its unknown
+which params are free and constraint - prefixed names with all free and
+constr names per process to readout params in interlayers after
+constraint interlayer</p>
+<p>original names are needed for - presenting model params - name of
+model params from coef() - model prediction params to read out - cov
+prediction params to ensure cov param ordered like data - for
+free/constr params to map constr params back to original names - reading
+out cov data - reading out model start params - reading out cov start
+params</p>
+<p>prefixed names are needed - transformed model params when optimizing
+LL - presenting cov params - name of cov params from coef(), vcov(),
+summary() - because of last 2 arguments prefix cov params already during
+optimization</p>
+<p>creating names: - from cov params original name and exact same order
+as cov data - prefixed model exact same order as original but with
+prefix - reducing cov data requires that cov original names are
+recreated - if no name is available (ie no free or no constr params)
+they shall be character(0)</p>
+<p>creating start params - default model start params per model -
+default covariate param per model - default start params named prefixed
+- input start params come named with original names and therefore copied
+out with original names</p>
+<p>model wise: Because of possible parameter restraints through
+transformations (such as log()) some functions are required to be model
+specific and extra steps are needed. - transform input/start parameters
+before optimization - transform parameters after optimization - creating
+prediction.params - start parameters for model and covariates - vcov(),
+deltamethod - coef() - init model - model param names - model param
+optimx names - model name - predict - expectation - optimize.LL (-
+reduce covs)</p>
+<p>It is preferred not to actually inherit from both, base and
+covariates, but to have only a java-style interface for covariates.
+Unfortunately, this is not possible.</p>
+<p>before optimization - reduce cov data as/if specified, before
+anything else to determine actual covs - store user’s estimation
+settings in object - determine which covariate params are constraint or
+free trans/life params, cor or not - create prefixed names for model and
+cov params. - generate and transform start params from estimation
+settings. Should not do naming and transformation separately, because
+prefix needed to distinguish between covs in a single vector but this is
+wrong because before transformation the model parms have prefix already
+but are not transformed yet. Therefore, generation of params is a
+generic function for model params and covariates. Defaults or user input
+passed into generic and generic returns transformed params. Output of
+generic is then labeled with prefix. - put together interlayer
+arguments</p>
+<p>after optimization - store optimx result - readout and transform
+correlation param - put together prediction.params from back-transformed
+params (get from coef()), name with original names - store non-sum LL
+(LL.output)</p>
+<p>reporting (summary, vcov, coef) - model params are reported in
+display names - free and constr cov params are reported in optimx
+names</p>
+<p>start params - readout for model params with display names because
+its the only state that the user knows them (not log)</p>
+<p>generics: - transform.start.params for cov and model - optimize.LL -
+reporting: summary/coef/vcov</p>
+<p>vcov() - vcov from optimx hessian, deltamethod to back-transform -
+return model + constr/free cov params - should be per model to account
+for model specific (back-)transformations</p>
+<p>coef() - return back-transformed model params + constr/free cov
+params - does the back-transformation of the params from the optimx
+result. Not actually stored</p>
 <p>summary() - calculate param summary from vcov() and coef()</p>
 <!-- **discuss sorting of name vectors** -->
   </div>
@@ -137,12 +255,12 @@
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, Elliot Oblander, Patrik Schilter.</p>
+<p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, E. Shin Oblander, Patrik Schilter.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

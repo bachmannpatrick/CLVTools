@@ -24,7 +24,7 @@ possible holdout sample, and descriptive statistics of the transaction data."><!
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0</span>
       </span>
     </div>
 
@@ -36,7 +36,7 @@ possible holdout sample, and descriptive statistics of the transaction data."><!
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -74,58 +74,79 @@ possible holdout sample, and descriptive statistics of the transaction data.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for clv.data</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">object</span>, Id <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for summary.clv.data</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">3L</span>, <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"digits"</span><span class="op">)</span> <span class="op">-</span> <span class="fl">3L</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for clv.data.dynamic.covariates</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for summary.clv.data.dynamic.covariates</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">3L</span>, <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"digits"</span><span class="op">)</span> <span class="op">-</span> <span class="fl">3L</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for clv.data.static.covariates</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for summary.clv.data.static.covariates</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">3L</span>, <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"digits"</span><span class="op">)</span> <span class="op">-</span> <span class="fl">3L</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for clv.data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">object</span>, Id <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for summary.clv.data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">3L</span>, <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"digits"</span><span class="op">)</span> <span class="op">-</span> <span class="fl">3L</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for clv.data.dynamic.covariates</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for summary.clv.data.dynamic.covariates</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">3L</span>, <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"digits"</span><span class="op">)</span> <span class="op">-</span> <span class="fl">3L</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for clv.data.static.covariates</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for summary.clv.data.static.covariates</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">3L</span>, <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"digits"</span><span class="op">)</span> <span class="op">-</span> <span class="fl">3L</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>A CLV data object containing transactional data and potentially also contextual factors.</p></dd>
+
+
 <dt>Id</dt>
 <dd><p>A character vector of customer ids for which the transaction data is summarized. Defaults to
 <code>NULL</code> for all customers.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Ignored</p></dd>
+
+
 <dt>x</dt>
 <dd><p>An object of class <code>"summary.clv.data"</code>, usually, a result of a call to <code>summary.clv.data</code>.</p></dd>
+
+
 <dt>digits</dt>
 <dd><p>The number of significant digits to use when printing.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>This function computes and returns summary statistics of the
+    
+
+<p>This function computes and returns summary statistics of the
 transactional and covariates data given in <code>object</code>. This is a list of
 class <code>summary.clv.data</code> and contains the elements:</p>
 <dl><dt>name</dt>
 <dd><p>Human readable description of the type of data.</p></dd>
+
 <dt>summary.clv.time</dt>
 <dd><p>Summary information about the stored <code>clv.time</code> object.</p></dd>
+
 <dt>descriptives.transactions</dt>
 <dd><p>A <code>data.table</code> with summary statistics of
 the transactions overall and in the estimation and holdout sample.</p></dd>
+
 <dt>selected.ids</dt>
 <dd><p>Ids for which the transaction data was summarized. <code>NULL</code> if all Ids were used.</p></dd>
-</dl><p>For static covariates data, the list additionally is of class <code>summary.clv.data.static.covariates</code>and further contains the elements:</p>
+
+
+</dl><p>For static covariates data, the list additionally is of class <code>summary.clv.data.static.covariates</code></p>
+
+
+<p>and further contains the elements:</p>
 <dl><dt>names.cov.data.trans</dt>
 <dd><p>Names of the covariates for the Transaction process.</p></dd>
+
 <dt>names.cov.data.life</dt>
 <dd><p>Names of the covariates for the Lifetime process.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -176,16 +197,16 @@ including standard deviation (SD).</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelTrans"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">clv.data.apparel</span> <span class="op">&lt;-</span> <span class="fu"><a href="clvdata.html">clvdata</a></span><span class="op">(</span><span class="va">apparelTrans</span>, date.format <span class="op">=</span> <span class="st">"ymd"</span>,</span>
-<span class="r-in">                            time.unit <span class="op">=</span> <span class="st">"w"</span>,</span>
-<span class="r-in">                            estimation.split <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># summary of transaction data and split</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">clv.data.apparel</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelTrans"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">clv.data.apparel</span> <span class="op">&lt;-</span> <span class="fu"><a href="clvdata.html">clvdata</a></span><span class="op">(</span><span class="va">apparelTrans</span>, date.format <span class="op">=</span> <span class="st">"ymd"</span>,</span></span>
+<span class="r-in"><span>                            time.unit <span class="op">=</span> <span class="st">"w"</span>,</span></span>
+<span class="r-in"><span>                            estimation.split <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># summary of transaction data and split</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">clv.data.apparel</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> CLV Transaction Data </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Time unit         Weeks         </span>
@@ -208,9 +229,9 @@ including standard deviation (SD).</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mean Interpurchase time            7.361           5.756           9.462     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               6.791           6.394           12.266    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># transaction summary of customer "1219"</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">clv.data.apparel</span>, Id<span class="op">=</span><span class="st">"1219"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># transaction summary of customer "1219"</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">clv.data.apparel</span>, Id<span class="op">=</span><span class="st">"1219"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Transaction Data Summary for Given Customers (n=1)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                    Estimation      Holdout         Total     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of customers                -               -               1         </span>
@@ -227,9 +248,9 @@ including standard deviation (SD).</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mean Interpurchase time            8.857           2.088           3.881     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               -               -               -         </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># transaction summary of customers "1", "10", "100", and "1000"</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">clv.data.apparel</span>, Id<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1"</span>, <span class="st">"10"</span>, <span class="st">"100"</span>, <span class="st">"1000"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># transaction summary of customers "1", "10", "100", and "1000"</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">clv.data.apparel</span>, Id<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1"</span>, <span class="st">"10"</span>, <span class="st">"100"</span>, <span class="st">"1000"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Transaction Data Summary for Given Customers (n=4)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                    Estimation      Holdout         Total     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of customers                -               -               4         </span>
@@ -246,18 +267,18 @@ including standard deviation (SD).</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mean Interpurchase time            3.676           1.727           3.515     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               2.519           0.0551          2.647     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># add contextual factors</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelStaticCov"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">clv.data.apparel.cov</span> <span class="op">&lt;-</span></span>
-<span class="r-in"> <span class="fu"><a href="SetStaticCovariates.html">SetStaticCovariates</a></span><span class="op">(</span><span class="va">clv.data.apparel</span>,</span>
-<span class="r-in">                     data.cov.life <span class="op">=</span> <span class="va">apparelStaticCov</span>,</span>
-<span class="r-in">                     names.cov.life <span class="op">=</span> <span class="st">"Gender"</span>,</span>
-<span class="r-in">                     data.cov.trans <span class="op">=</span> <span class="va">apparelStaticCov</span>,</span>
-<span class="r-in">                     names.cov.trans <span class="op">=</span> <span class="st">"Gender"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># additional info about the covariates</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">clv.data.apparel.cov</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># add contextual factors</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelStaticCov"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">clv.data.apparel.cov</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="SetStaticCovariates.html">SetStaticCovariates</a></span><span class="op">(</span><span class="va">clv.data.apparel</span>,</span></span>
+<span class="r-in"><span>                     data.cov.life <span class="op">=</span> <span class="va">apparelStaticCov</span>,</span></span>
+<span class="r-in"><span>                     names.cov.life <span class="op">=</span> <span class="st">"Gender"</span>,</span></span>
+<span class="r-in"><span>                     data.cov.trans <span class="op">=</span> <span class="va">apparelStaticCov</span>,</span></span>
+<span class="r-in"><span>                     names.cov.trans <span class="op">=</span> <span class="st">"Gender"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># additional info about the covariates</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">clv.data.apparel.cov</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> CLV Transaction Data with Static Covariates </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Time unit         Weeks         </span>
@@ -286,8 +307,8 @@ including standard deviation (SD).</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Life.  Covariates    Gender</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        # covs        1     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span class="co"># }</span></span>
-<span class="r-in"></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -298,11 +319,11 @@ including standard deviation (SD).</p></dd>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, Elliot Oblander, Patrik Schilter.</p>
+  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, E. Shin Oblander, Patrik Schilter.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

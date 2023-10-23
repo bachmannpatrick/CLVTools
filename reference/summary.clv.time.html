@@ -24,7 +24,7 @@ the estimation and possible holdout sample."><!-- mathjax --><script src="https:
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0</span>
       </span>
     </div>
 
@@ -36,7 +36,7 @@ the estimation and possible holdout sample."><!-- mathjax --><script src="https:
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -74,37 +74,50 @@ the estimation and possible holdout sample.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for clv.time</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">3L</span>, <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"digits"</span><span class="op">)</span> <span class="op">-</span> <span class="fl">3L</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for clv.time</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for clv.time</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">3L</span>, <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"digits"</span><span class="op">)</span> <span class="op">-</span> <span class="fl">3L</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for clv.time</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>An object of class <code>"summary.clv.time"</code>, usually, a result of a call to <code>summary.clv.time</code>.</p></dd>
+
+
 <dt>digits</dt>
 <dd><p>The number of significant digits to use when printing.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Ignored.</p></dd>
+
+
 <dt>object</dt>
 <dd><p>A CLV time object</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>This function computes and returns summary statistics of the
+    
+
+<p>This function computes and returns summary statistics of the
 time related information stored in <code>object</code>. It returns a list of
 class <code>summary.clv.time</code> that contains the elements:</p>
 <dl><dt>time.unit</dt>
 <dd><p>What time unit defines a single period.</p></dd>
+
 <dt>estimation.period.in.tu</dt>
 <dd><p>Length of estimation period in time units.</p></dd>
+
 <dt>has.holdout</dt>
 <dd><p>Whether the object has a holdout data sample.</p></dd>
+
 <dt>holdout.period.in.tu</dt>
 <dd><p>Length of holdout period in time units, if any.</p></dd>
+
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>
@@ -119,11 +132,11 @@ class <code>summary.clv.time</code> that contains the elements:</p>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, Elliot Oblander, Patrik Schilter.</p>
+  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, E. Shin Oblander, Patrik Schilter.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

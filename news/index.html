@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0</span>
       </span>
     </div>
 
@@ -35,7 +35,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -66,6 +66,16 @@
       <small>Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.10.0" id="clvtools-0100">CLVTools 0.10.0<small>2023-10-23</small><a class="anchor" aria-label="anchor" href="#clvtools-0100"></a></h2>
+<div class="section level4">
+<h4 id="new-features-0-10-0">NEW FEATURES<a class="anchor" aria-label="anchor" href="#new-features-0-10-0"></a></h4>
+<ul><li>We add an interface to specify models using a formula notation (<code><a href="../reference/latentAttrition.html">latentAttrition()</a></code> and <code><a href="../reference/spending.html">spending()</a></code>)</li>
+<li>New method to plot customer’s transaction timings (<code>plot.clv.data(which='timings')</code>)</li>
+<li>Draw diagnostic plots of multiple models in single plot (<code>plot(other.models=list(), label=c())</code>)</li>
+<li>MUCH faster fitting for the Pareto/NBD with time-varying covariates because we implemented the LL in Rcpp</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.9.0" id="clvtools-090">CLVTools 0.9.0<small>2022-01-09</small><a class="anchor" aria-label="anchor" href="#clvtools-090"></a></h2>
 <div class="section level4">
@@ -144,11 +154,11 @@
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, Elliot Oblander, Patrik Schilter.</p>
+  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, E. Shin Oblander, Patrik Schilter.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

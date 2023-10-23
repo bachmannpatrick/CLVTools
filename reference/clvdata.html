@@ -27,7 +27,7 @@ to an object returned from this function."><!-- mathjax --><script src="https://
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@ to an object returned from this function."><!-- mathjax --><script src="https://
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -80,39 +80,59 @@ to an object returned from this function.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">clvdata</span><span class="op">(</span>
-  <span class="va">data.transactions</span>,
-  <span class="va">date.format</span>,
-  <span class="va">time.unit</span>,
-  estimation.split <span class="op">=</span> <span class="cn">NULL</span>,
-  name.id <span class="op">=</span> <span class="st">"Id"</span>,
-  name.date <span class="op">=</span> <span class="st">"Date"</span>,
-  name.price <span class="op">=</span> <span class="st">"Price"</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">clvdata</span><span class="op">(</span></span>
+<span>  <span class="va">data.transactions</span>,</span>
+<span>  <span class="va">date.format</span>,</span>
+<span>  <span class="va">time.unit</span>,</span>
+<span>  estimation.split <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  name.id <span class="op">=</span> <span class="st">"Id"</span>,</span>
+<span>  name.date <span class="op">=</span> <span class="st">"Date"</span>,</span>
+<span>  name.price <span class="op">=</span> <span class="st">"Price"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data.transactions</dt>
 <dd><p>Transaction data as <code>data.frame</code> or <code>data.table</code>. See details.</p></dd>
+
+
 <dt>date.format</dt>
 <dd><p>Character string that indicates the format of the date variable in the data used. See details.</p></dd>
+
+
 <dt>time.unit</dt>
 <dd><p>What time unit defines a period. May be abbreviated, capitalization is ignored. See details.</p></dd>
+
+
 <dt>estimation.split</dt>
 <dd><p>Indicates the length of the estimation period. See details.</p></dd>
+
+
 <dt>name.id</dt>
 <dd><p>Column name of the customer id in <code>data.transactions</code>.</p></dd>
+
+
 <dt>name.date</dt>
 <dd><p>Column name of the transaction date in <code>data.transactions</code>.</p></dd>
+
+
 <dt>name.price</dt>
 <dd><p>Column name of price in <code>data.transactions</code>. NULL if no spending data is present.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An object of class <code>clv.data</code>.
-See the class definition <a href="clv.data-class.html">clv.data</a>for more details about the returned object.
-The function <code>summary</code> can be used to obtain and print a summary of the data.
+    
+
+<p>An object of class <code>clv.data</code>.
+See the class definition <a href="clv.data-class.html">clv.data</a></p>
+
+
+<p>for more details about the returned object.</p>
+
+
+<p>The function <code>summary</code> can be used to obtain and print a summary of the data.
 The generic accessor function <code>nobs</code> is available to read out the number of customers.</p>
     </div>
     <div id="details">
@@ -157,31 +177,31 @@ are determined from the aggregated transactions.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"cdnow"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># create clv data object with weekly periods</span></span>
-<span class="r-in"><span class="co">#    and no splitting</span></span>
-<span class="r-in"><span class="va">clv.data.cdnow</span> <span class="op">&lt;-</span> <span class="fu">clvdata</span><span class="op">(</span>data.transactions <span class="op">=</span> <span class="va">cdnow</span>,</span>
-<span class="r-in">                          date.format<span class="op">=</span><span class="st">"ymd"</span>,</span>
-<span class="r-in">                          time.unit <span class="op">=</span> <span class="st">"weeks"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># same but split after 37 periods</span></span>
-<span class="r-in"><span class="va">clv.data.cdnow</span> <span class="op">&lt;-</span> <span class="fu">clvdata</span><span class="op">(</span>data.transactions <span class="op">=</span> <span class="va">cdnow</span>,</span>
-<span class="r-in">                          date.format<span class="op">=</span><span class="st">"ymd"</span>,</span>
-<span class="r-in">                          time.unit <span class="op">=</span> <span class="st">"w"</span>,</span>
-<span class="r-in">                          estimation.split <span class="op">=</span> <span class="fl">37</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># same but estimation end on the 15th Oct 1997</span></span>
-<span class="r-in"><span class="va">clv.data.cdnow</span> <span class="op">&lt;-</span> <span class="fu">clvdata</span><span class="op">(</span>data.transactions <span class="op">=</span> <span class="va">cdnow</span>,</span>
-<span class="r-in">                          date.format<span class="op">=</span><span class="st">"ymd"</span>,</span>
-<span class="r-in">                          time.unit <span class="op">=</span> <span class="st">"w"</span>,</span>
-<span class="r-in">                          estimation.split <span class="op">=</span> <span class="st">"1997-10-15"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># summary of the transaction data</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">clv.data.cdnow</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"cdnow"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># create clv data object with weekly periods</span></span></span>
+<span class="r-in"><span><span class="co">#    and no splitting</span></span></span>
+<span class="r-in"><span><span class="va">clv.data.cdnow</span> <span class="op">&lt;-</span> <span class="fu">clvdata</span><span class="op">(</span>data.transactions <span class="op">=</span> <span class="va">cdnow</span>,</span></span>
+<span class="r-in"><span>                          date.format<span class="op">=</span><span class="st">"ymd"</span>,</span></span>
+<span class="r-in"><span>                          time.unit <span class="op">=</span> <span class="st">"weeks"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># same but split after 37 periods</span></span></span>
+<span class="r-in"><span><span class="va">clv.data.cdnow</span> <span class="op">&lt;-</span> <span class="fu">clvdata</span><span class="op">(</span>data.transactions <span class="op">=</span> <span class="va">cdnow</span>,</span></span>
+<span class="r-in"><span>                          date.format<span class="op">=</span><span class="st">"ymd"</span>,</span></span>
+<span class="r-in"><span>                          time.unit <span class="op">=</span> <span class="st">"w"</span>,</span></span>
+<span class="r-in"><span>                          estimation.split <span class="op">=</span> <span class="fl">37</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># same but estimation end on the 15th Oct 1997</span></span></span>
+<span class="r-in"><span><span class="va">clv.data.cdnow</span> <span class="op">&lt;-</span> <span class="fu">clvdata</span><span class="op">(</span>data.transactions <span class="op">=</span> <span class="va">cdnow</span>,</span></span>
+<span class="r-in"><span>                          date.format<span class="op">=</span><span class="st">"ymd"</span>,</span></span>
+<span class="r-in"><span>                          time.unit <span class="op">=</span> <span class="st">"w"</span>,</span></span>
+<span class="r-in"><span>                          estimation.split <span class="op">=</span> <span class="st">"1997-10-15"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># summary of the transaction data</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">clv.data.cdnow</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> CLV Transaction Data </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Time unit         Weeks         </span>
@@ -204,33 +224,33 @@ are determined from the aggregated transactions.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mean Interpurchase time            9.738           7.996           16.017    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               8.250           6.185           14.533    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># plot the total number of transactions per period</span></span>
-<span class="r-in"><span class="fu"><a href="plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">clv.data.cdnow</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># plot the total number of transactions per period</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">clv.data.cdnow</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Plotting from 1997-01-01 until 1998-07-05.</span>
 <span class="r-plt img"><img src="clvdata-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># create data with the weekly periods defined to</span></span>
-<span class="r-in"><span class="co">#   start on Mondays</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># set start of week to Monday</span></span>
-<span class="r-in"><span class="va">oldopts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"lubridate.week.start"</span><span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># create clv.data while Monday is the beginning of the week</span></span>
-<span class="r-in"><span class="va">clv.data.cdnow</span> <span class="op">&lt;-</span> <span class="fu">clvdata</span><span class="op">(</span>data.transactions <span class="op">=</span> <span class="va">cdnow</span>,</span>
-<span class="r-in">                          date.format<span class="op">=</span><span class="st">"ymd"</span>,</span>
-<span class="r-in">                          time.unit <span class="op">=</span> <span class="st">"weeks"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Dynamic covariates now have to be supplied for every Monday</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># set week start to what it was before</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="va">oldopts</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># }</span></span>
-<span class="r-in"></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># create data with the weekly periods defined to</span></span></span>
+<span class="r-in"><span><span class="co">#   start on Mondays</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># set start of week to Monday</span></span></span>
+<span class="r-in"><span><span class="va">oldopts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="st">"lubridate.week.start"</span><span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># create clv.data while Monday is the beginning of the week</span></span></span>
+<span class="r-in"><span><span class="va">clv.data.cdnow</span> <span class="op">&lt;-</span> <span class="fu">clvdata</span><span class="op">(</span>data.transactions <span class="op">=</span> <span class="va">cdnow</span>,</span></span>
+<span class="r-in"><span>                          date.format<span class="op">=</span><span class="st">"ymd"</span>,</span></span>
+<span class="r-in"><span>                          time.unit <span class="op">=</span> <span class="st">"weeks"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Dynamic covariates now have to be supplied for every Monday</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># set week start to what it was before</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="va">oldopts</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -241,11 +261,11 @@ are determined from the aggregated transactions.</p>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, Elliot Oblander, Patrik Schilter.</p>
+  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, E. Shin Oblander, Patrik Schilter.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0</span>
       </span>
     </div>
 
@@ -35,7 +35,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -72,33 +72,45 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for clv.fitted.spending</span>
-<span class="fu"><a href="predict.clv.fitted.transactions.html">predict</a></span><span class="op">(</span><span class="va">object</span>, newdata <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S4 method for clv.fitted.spending</span>
-<span class="fu"><a href="predict.clv.fitted.transactions.html">predict</a></span><span class="op">(</span><span class="va">object</span>, newdata <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for clv.fitted.spending</span></span>
+<span><span class="fu"><a href="predict.clv.fitted.transactions.html">predict</a></span><span class="op">(</span><span class="va">object</span>, newdata <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for clv.fitted.spending</span></span>
+<span><span class="fu"><a href="predict.clv.fitted.transactions.html">predict</a></span><span class="op">(</span><span class="va">object</span>, newdata <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>A fitted spending model for which prediction is desired.</p></dd>
+
+
 <dt>newdata</dt>
 <dd><p>A clv data object for which predictions should be made with the fitted model. If none or NULL is given, predictions are made for the data on which the model was fit.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>Show details about the running of the function.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Ignored</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An object of class <code>data.table</code> with columns:</p>
+    
+
+<p>An object of class <code>data.table</code> with columns:</p>
 <dl><dt>Id</dt>
 <dd><p>The respective customer identifier</p></dd>
+
 <dt>actual.mean.spending</dt>
 <dd><p>Actual mean spending per transaction in the holdout period. Only if there is a holdout period otherwise it is not reported.</p></dd>
+
 <dt>predicted.mean.spending</dt>
 <dd><p>The mean spending per transaction as predicted by the fitted spending model.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -115,18 +127,18 @@ this will be applied to <code>newdata</code> as well.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelTrans"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Fit gg model on data</span></span>
-<span class="r-in"><span class="va">apparel.holdout</span> <span class="op">&lt;-</span> <span class="fu"><a href="clvdata.html">clvdata</a></span><span class="op">(</span><span class="va">apparelTrans</span>, time.unit<span class="op">=</span><span class="st">"w"</span>,</span>
-<span class="r-in">                           estimation.split<span class="op">=</span><span class="fl">37</span>, date.format<span class="op">=</span><span class="st">"ymd"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">apparel.gg</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg.html">gg</a></span><span class="op">(</span><span class="va">apparel.holdout</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelTrans"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Fit gg model on data</span></span></span>
+<span class="r-in"><span><span class="va">apparel.holdout</span> <span class="op">&lt;-</span> <span class="fu"><a href="clvdata.html">clvdata</a></span><span class="op">(</span><span class="va">apparelTrans</span>, time.unit<span class="op">=</span><span class="st">"w"</span>,</span></span>
+<span class="r-in"><span>                           estimation.split<span class="op">=</span><span class="fl">37</span>, date.format<span class="op">=</span><span class="st">"ymd"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">apparel.gg</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg.html">gg</a></span><span class="op">(</span><span class="va">apparel.holdout</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimation finished!</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Predict customers' future mean spending per transaction</span></span>
-<span class="r-in"><span class="fu"><a href="predict.clv.fitted.transactions.html">predict</a></span><span class="op">(</span><span class="va">apparel.gg</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Predict customers' future mean spending per transaction</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="predict.clv.fitted.transactions.html">predict</a></span><span class="op">(</span><span class="va">apparel.gg</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        Id actual.mean.spending predicted.mean.spending</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1:    1              0.00000                40.39473</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   2:   10              0.00000                57.49121</span>
@@ -139,9 +151,9 @@ this will be applied to <code>newdata</code> as well.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 248: 1220              0.00000                40.39473</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 249: 1221             33.62778                34.00868</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 250: 1222              0.00000                48.80122</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># }</span></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -152,11 +164,11 @@ this will be applied to <code>newdata</code> as well.</p>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, Elliot Oblander, Patrik Schilter.</p>
+  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, E. Shin Oblander, Patrik Schilter.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

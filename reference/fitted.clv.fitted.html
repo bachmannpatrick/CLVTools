@@ -24,7 +24,7 @@ This is the unconditional expectation data that is used when plotting the fitted
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0</span>
       </span>
     </div>
 
@@ -36,7 +36,7 @@ This is the unconditional expectation data that is used when plotting the fitted
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -74,30 +74,42 @@ This is the unconditional expectation data that is used when plotting the fitted
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for clv.fitted</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted</a></span><span class="op">(</span><span class="va">object</span>, prediction.end <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for clv.fitted</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted</a></span><span class="op">(</span><span class="va">object</span>, prediction.end <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>A fitted clv model for which the unconditional expectation is desired.</p></dd>
+
+
 <dt>prediction.end</dt>
 <dd><p>Until what point in time to predict. This can be the number of periods (numeric) or a form of date/time object. See details.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>Show details about the running of the function.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Ignored</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>data.table</code> which contains the following columns:</p>
+    
+
+<p>A <code>data.table</code> which contains the following columns:</p>
 <dl><dt>period.until</dt>
 <dd><p>The timepoint that marks the end (up until and including) of the period to which the data in this row refers.</p></dd>
+
 <dt>period.num</dt>
 <dd><p>The number of this period.</p></dd>
+
 <dt>expectation</dt>
 <dd><p>The value of the unconditional expectation for the period that ends on <code>period.until</code>.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -128,11 +140,11 @@ If <code>prediction.end</code> indicates a timepoint on which to end, this timep
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, Elliot Oblander, Patrik Schilter.</p>
+  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, E. Shin Oblander, Patrik Schilter.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

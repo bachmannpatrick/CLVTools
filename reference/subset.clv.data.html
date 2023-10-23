@@ -25,7 +25,7 @@ Possible rows to subset and select are Id, Date, and Price (if present)."><!-- m
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0</span>
       </span>
     </div>
 
@@ -37,7 +37,7 @@ Possible rows to subset and select are Id, Date, and Price (if present)."><!-- m
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -76,26 +76,37 @@ Possible rows to subset and select are <code>Id</code>, <code>Date</code>, and <
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for clv.data</span>
-<span class="fu">subset</span><span class="op">(</span><span class="va">x</span>, <span class="va">subset</span>, <span class="va">select</span>, sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"full"</span>, <span class="st">"estimation"</span>, <span class="st">"holdout"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for clv.data</span></span>
+<span><span class="fu">subset</span><span class="op">(</span><span class="va">x</span>, <span class="va">subset</span>, <span class="va">select</span>, sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"full"</span>, <span class="st">"estimation"</span>, <span class="st">"holdout"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p><code>clv.data</code> to subset</p></dd>
+
+
 <dt>subset</dt>
 <dd><p>logical expression indicating rows to keep</p></dd>
+
+
 <dt>select</dt>
 <dd><p>expression indicating columns to keep</p></dd>
+
+
 <dt>sample</dt>
 <dd><p>Name of sample for which transactions should be extracted,</p></dd>
+
+
 <dt>...</dt>
 <dd><p>further arguments passed to <code><a href="https://Rdatatable.gitlab.io/data.table/reference/subset.data.table.html" class="external-link">data.table::subset</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A copy of the <code>data.table</code> of selected transactions. May contain columns <code>Id</code>, <code>Date</code>, and <code>Price</code>.</p>
+    
+
+<p>A copy of the <code>data.table</code> of selected transactions. May contain columns <code>Id</code>, <code>Date</code>, and <code>Price</code>.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -104,41 +115,42 @@ Possible rows to subset and select are <code>Id</code>, <code>Date</code>, and <
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span> <span class="co"># for between()</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">cdnow</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">clv.cdnow</span> <span class="op">&lt;-</span> <span class="fu"><a href="clvdata.html">clvdata</a></span><span class="op">(</span><span class="va">cdnow</span>,</span>
-<span class="r-in">  date.format<span class="op">=</span><span class="st">"ymd"</span>,</span>
-<span class="r-in">  time.unit <span class="op">=</span> <span class="st">"week"</span>,</span>
-<span class="r-in">  estimation.split <span class="op">=</span> <span class="st">"1997-09-30"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># all transactions of customer "1"</span></span>
-<span class="r-in"><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="va">Id</span><span class="op">==</span><span class="st">"1"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="co"># dont test because ncpu=2 limit on cran (too fast)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span> <span class="co"># for between()</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">cdnow</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">clv.cdnow</span> <span class="op">&lt;-</span> <span class="fu"><a href="clvdata.html">clvdata</a></span><span class="op">(</span><span class="va">cdnow</span>,</span></span>
+<span class="r-in"><span>  date.format<span class="op">=</span><span class="st">"ymd"</span>,</span></span>
+<span class="r-in"><span>  time.unit <span class="op">=</span> <span class="st">"week"</span>,</span></span>
+<span class="r-in"><span>  estimation.split <span class="op">=</span> <span class="st">"1997-09-30"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># all transactions of customer "1"</span></span></span>
+<span class="r-in"><span><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="va">Id</span><span class="op">==</span><span class="st">"1"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Id       Date Price</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:  1 1997-01-01 29.33</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2:  1 1997-01-18 29.73</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3:  1 1997-08-02 14.96</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4:  1 1997-12-12 26.48</span>
-<span class="r-in"><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, subset <span class="op">=</span> <span class="va">Id</span><span class="op">==</span><span class="st">"1"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, subset <span class="op">=</span> <span class="va">Id</span><span class="op">==</span><span class="st">"1"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Id       Date Price</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:  1 1997-01-01 29.33</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2:  1 1997-01-18 29.73</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3:  1 1997-08-02 14.96</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4:  1 1997-12-12 26.48</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># all transactions of customer "111" in the estimation period...</span></span>
-<span class="r-in"><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="va">Id</span><span class="op">==</span><span class="st">"111"</span>, sample<span class="op">=</span><span class="st">"estimation"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># all transactions of customer "111" in the estimation period...</span></span></span>
+<span class="r-in"><span><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="va">Id</span><span class="op">==</span><span class="st">"111"</span>, sample<span class="op">=</span><span class="st">"estimation"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Id       Date Price</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1: 111 1997-01-06  9.97</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2: 111 1997-01-08 12.97</span>
-<span class="r-in"><span class="co"># ... and in the holdout period</span></span>
-<span class="r-in"><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="va">Id</span><span class="op">==</span><span class="st">"111"</span>, sample<span class="op">=</span><span class="st">"holdout"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="co"># ... and in the holdout period</span></span></span>
+<span class="r-in"><span><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="va">Id</span><span class="op">==</span><span class="st">"111"</span>, sample<span class="op">=</span><span class="st">"holdout"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Id       Date Price</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1: 111 1998-06-04 12.58</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># all transactions of customers "1", "2", and "999"</span></span>
-<span class="r-in"><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="va">Id</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1"</span>,<span class="st">"2"</span>,<span class="st">"999"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># all transactions of customers "1", "2", and "999"</span></span></span>
+<span class="r-in"><span><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="va">Id</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1"</span>,<span class="st">"2"</span>,<span class="st">"999"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Id       Date Price</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:   1 1997-01-01 29.33</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2:   1 1997-01-18 29.73</span>
@@ -148,9 +160,9 @@ Possible rows to subset and select are <code>Id</code>, <code>Date</code>, and <
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6:   2 1997-01-13 11.77</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7: 999 1997-02-07 10.78</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8: 999 1997-02-19 10.78</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># all transactions on "1997-02-16"</span></span>
-<span class="r-in"><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="va">Date</span> <span class="op">==</span> <span class="st">"1997-02-16"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># all transactions on "1997-02-16"</span></span></span>
+<span class="r-in"><span><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="va">Date</span> <span class="op">==</span> <span class="st">"1997-02-16"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Id       Date  Price</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  1: 1154 1997-02-16  14.96</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  2: 1207 1997-02-16  46.29</span>
@@ -197,9 +209,9 @@ Possible rows to subset and select are <code>Id</code>, <code>Date</code>, and <
 <span class="r-out co"><span class="r-pr">#&gt;</span> 43:  793 1997-02-16  50.30</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 44:  845 1997-02-16  88.18</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Id       Date  Price</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># all transactions between "1997-02-01" and "1997-02-16"</span></span>
-<span class="r-in"><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="va">Date</span> <span class="op">&gt;=</span> <span class="st">"1997-02-01"</span> <span class="op">&amp;</span> <span class="va">Date</span> <span class="op">&lt;=</span> <span class="st">"1997-02-16"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># all transactions between "1997-02-01" and "1997-02-16"</span></span></span>
+<span class="r-in"><span><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="va">Date</span> <span class="op">&gt;=</span> <span class="st">"1997-02-01"</span> <span class="op">&amp;</span> <span class="va">Date</span> <span class="op">&lt;=</span> <span class="st">"1997-02-16"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        Id       Date Price</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1: 1000 1997-02-07  9.97</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   2: 1001 1997-02-07 38.77</span>
@@ -212,8 +224,8 @@ Possible rows to subset and select are <code>Id</code>, <code>Date</code>, and <
 <span class="r-out co"><span class="r-pr">#&gt;</span> 629:  997 1997-02-07 11.77</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 630:  998 1997-02-07 28.76</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 631:  999 1997-02-07 10.78</span>
-<span class="r-in"><span class="co"># same using data.table's between</span></span>
-<span class="r-in"><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/between.html" class="external-link">between</a></span><span class="op">(</span><span class="va">Date</span>, <span class="st">"1997-02-01"</span>,<span class="st">"1997-02-16"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="co"># same using data.table's between</span></span></span>
+<span class="r-in"><span><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/between.html" class="external-link">between</a></span><span class="op">(</span><span class="va">Date</span>, <span class="st">"1997-02-01"</span>,<span class="st">"1997-02-16"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        Id       Date Price</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1: 1000 1997-02-07  9.97</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   2: 1001 1997-02-07 38.77</span>
@@ -226,9 +238,9 @@ Possible rows to subset and select are <code>Id</code>, <code>Date</code>, and <
 <span class="r-out co"><span class="r-pr">#&gt;</span> 629:  997 1997-02-07 11.77</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 630:  998 1997-02-07 28.76</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 631:  999 1997-02-07 10.78</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># all transactions with a value between 50 and 100</span></span>
-<span class="r-in"><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="va">Price</span> <span class="op">&gt;=</span> <span class="fl">50</span> <span class="op">&amp;</span> <span class="va">Price</span> <span class="op">&lt;=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># all transactions with a value between 50 and 100</span></span></span>
+<span class="r-in"><span><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="va">Price</span> <span class="op">&gt;=</span> <span class="fl">50</span> <span class="op">&amp;</span> <span class="va">Price</span> <span class="op">&lt;=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Id       Date Price</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    1: 1003 1997-02-07 59.34</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2: 1003 1997-08-13 68.31</span>
@@ -241,8 +253,8 @@ Possible rows to subset and select are <code>Id</code>, <code>Date</code>, and <
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1018:  990 1998-06-10 60.49</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1019:  994 1997-02-07 59.96</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1020:  994 1998-02-25 62.96</span>
-<span class="r-in"><span class="co"># same using data.table's between</span></span>
-<span class="r-in"><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/between.html" class="external-link">between</a></span><span class="op">(</span><span class="va">Price</span>, <span class="fl">50</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="co"># same using data.table's between</span></span></span>
+<span class="r-in"><span><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/between.html" class="external-link">between</a></span><span class="op">(</span><span class="va">Price</span>, <span class="fl">50</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Id       Date Price</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    1: 1003 1997-02-07 59.34</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    2: 1003 1997-08-13 68.31</span>
@@ -255,9 +267,9 @@ Possible rows to subset and select are <code>Id</code>, <code>Date</code>, and <
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1018:  990 1998-06-10 60.49</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1019:  994 1997-02-07 59.96</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1020:  994 1998-02-25 62.96</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># only keep Id of transactions on "1997-02-16"</span></span>
-<span class="r-in"><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="va">Date</span> <span class="op">==</span> <span class="st">"1997-02-16"</span>, <span class="st">"Id"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># only keep Id of transactions on "1997-02-16"</span></span></span>
+<span class="r-in"><span><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="va">Date</span> <span class="op">==</span> <span class="st">"1997-02-16"</span>, <span class="st">"Id"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Id</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  1: 1154</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  2: 1207</span>
@@ -304,7 +316,8 @@ Possible rows to subset and select are <code>Id</code>, <code>Date</code>, and <
 <span class="r-out co"><span class="r-pr">#&gt;</span> 43:  793</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 44:  845</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Id</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -315,11 +328,11 @@ Possible rows to subset and select are <code>Id</code>, <code>Date</code>, and <
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, Elliot Oblander, Patrik Schilter.</p>
+  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, E. Shin Oblander, Patrik Schilter.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

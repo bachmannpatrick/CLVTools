@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0</span>
       </span>
     </div>
 
@@ -35,7 +35,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -72,21 +72,28 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">gg_LL</span><span class="op">(</span><span class="va">vLogparams</span>, <span class="va">vX</span>, <span class="va">vM_x</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gg_LL</span><span class="op">(</span><span class="va">vLogparams</span>, <span class="va">vX</span>, <span class="va">vM_x</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>vLogparams</dt>
 <dd><p>a vector containing the log of the parameters p, q, gamma</p></dd>
+
+
 <dt>vX</dt>
 <dd><p>frequency vector of length n counting the numbers of purchases</p></dd>
+
+
 <dt>vM_x</dt>
 <dd><p>the observed average spending for every customer during the calibration time.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Returns the Log-Likelihood value for the Gamma-Gamma model.</p>
+    
+
+<p>Returns the Log-Likelihood value for the Gamma-Gamma model.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -113,11 +120,11 @@ URL <a href="http://www.brucehardie.com/notes/025/gamma_gamma.pdf" class="extern
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, Elliot Oblander, Patrik Schilter.</p>
+  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, E. Shin Oblander, Patrik Schilter.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

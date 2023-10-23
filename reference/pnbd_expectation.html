@@ -24,7 +24,7 @@ for a randomly selected customer, where 0 is defined as the point when the custo
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0</span>
       </span>
     </div>
 
@@ -36,7 +36,7 @@ for a randomly selected customer, where 0 is defined as the point when the custo
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -74,31 +74,46 @@ for a randomly selected customer, where 0 is defined as the point when the custo
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">pnbd_nocov_expectation</span><span class="op">(</span><span class="va">r</span>, <span class="va">s</span>, <span class="va">alpha_0</span>, <span class="va">beta_0</span>, <span class="va">vT_i</span><span class="op">)</span>
-
-<span class="fu">pnbd_staticcov_expectation</span><span class="op">(</span><span class="va">r</span>, <span class="va">s</span>, <span class="va">vAlpha_i</span>, <span class="va">vBeta_i</span>, <span class="va">vT_i</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pnbd_nocov_expectation</span><span class="op">(</span><span class="va">r</span>, <span class="va">s</span>, <span class="va">alpha_0</span>, <span class="va">beta_0</span>, <span class="va">vT_i</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pnbd_staticcov_expectation</span><span class="op">(</span><span class="va">r</span>, <span class="va">s</span>, <span class="va">vAlpha_i</span>, <span class="va">vBeta_i</span>, <span class="va">vT_i</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>r</dt>
 <dd><p>shape parameter of the Gamma distribution of the purchase process. The smaller r, the stronger the heterogeneity of the purchase process</p></dd>
+
+
 <dt>s</dt>
 <dd><p>shape parameter of the Gamma distribution for the lifetime process. The smaller s, the stronger the heterogeneity of customer lifetimes</p></dd>
+
+
 <dt>alpha_0</dt>
 <dd><p>rate parameter of the Gamma distribution of the purchase process</p></dd>
+
+
 <dt>beta_0</dt>
 <dd><p>rate parameter for the Gamma distribution for the lifetime process.</p></dd>
+
+
 <dt>vT_i</dt>
 <dd><p>Number of periods since the customer came alive</p></dd>
+
+
 <dt>vAlpha_i</dt>
 <dd><p>Vector of individual parameters alpha</p></dd>
+
+
 <dt>vBeta_i</dt>
 <dd><p>Vector of individual parameters beta</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Returns the expected transaction values according to the chosen model.</p>
+    
+
+<p>Returns the expected transaction values according to the chosen model.</p>
     </div>
     <div id="references">
     <h2>References</h2>
@@ -125,11 +140,11 @@ URL <a href="https://www.brucehardie.com/notes/012/pareto_NBD_pmf_derivation_rev
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, Elliot Oblander, Patrik Schilter.</p>
+  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, E. Shin Oblander, Patrik Schilter.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

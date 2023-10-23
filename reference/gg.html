@@ -24,7 +24,7 @@ spending per transaction."><!-- mathjax --><script src="https://cdnjs.cloudflare
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0</span>
       </span>
     </div>
 
@@ -36,7 +36,7 @@ spending per transaction."><!-- mathjax --><script src="https://cdnjs.cloudflare
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -74,37 +74,52 @@ spending per transaction.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for clv.data</span>
-<span class="fu">gg</span><span class="op">(</span>
-  <span class="va">clv.data</span>,
-  start.params.model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,
-  optimx.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,
-  remove.first.transaction <span class="op">=</span> <span class="cn">TRUE</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for clv.data</span></span>
+<span><span class="fu">gg</span><span class="op">(</span></span>
+<span>  <span class="va">clv.data</span>,</span>
+<span>  start.params.model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  remove.first.transaction <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  optimx.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>clv.data</dt>
 <dd><p>The data object on which the model is fitted.</p></dd>
+
+
 <dt>start.params.model</dt>
 <dd><p>Named start parameters containing the optimization start parameters for the model without covariates.</p></dd>
+
+
+<dt>remove.first.transaction</dt>
+<dd><p>Whether customer's first transaction are removed. If <code>TRUE</code> all zero-repeaters are excluded from model fitting.</p></dd>
+
+
 <dt>optimx.args</dt>
 <dd><p>Additional arguments to control the optimization which are forwarded to <code><a href="https://rdrr.io/pkg/optimx/man/optimx.html" class="external-link">optimx::optimx</a></code>.
 If multiple optimization methods are specified, only the result of the last method is further processed.</p></dd>
-<dt>remove.first.transaction</dt>
-<dd><p>Whether customer's first transaction are removed. If <code>TRUE</code> all zero-repeaters are excluded from model fitting.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>Show details about the running of the function.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Ignored</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An object of class <a href="clv.gg-class.html">clv.gg</a> is returned.
-The function <code><a href="summary.clv.fitted.html">summary</a></code> can be used to obtain and print a summary of the results.
+    
+
+<p>An object of class <a href="clv.gg-class.html">clv.gg</a> is returned.</p>
+
+
+<p>The function <code><a href="summary.clv.fitted.html">summary</a></code> can be used to obtain and print a summary of the results.
 The generic accessor functions <code>coefficients</code>, <code><a href="vcov.clv.fitted.html">vcov</a></code>, <code><a href="fitted.clv.fitted.html">fitted</a></code>,
 <code>logLik</code>, <code>AIC</code>, <code>BIC</code>, and <code>nobs</code> are available.</p>
     </div>
@@ -141,13 +156,13 @@ URL <a href="http://www.brucehardie.com/notes/025/gamma_gamma.pdf" class="extern
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelTrans"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">clv.data.apparel</span> <span class="op">&lt;-</span> <span class="fu"><a href="clvdata.html">clvdata</a></span><span class="op">(</span><span class="va">apparelTrans</span>, date.format <span class="op">=</span> <span class="st">"ymd"</span>,</span>
-<span class="r-in">                            time.unit <span class="op">=</span> <span class="st">"w"</span>, estimation.split <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Fit the gg model</span></span>
-<span class="r-in"><span class="fu">gg</span><span class="op">(</span><span class="va">clv.data.apparel</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelTrans"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">clv.data.apparel</span> <span class="op">&lt;-</span> <span class="fu"><a href="clvdata.html">clvdata</a></span><span class="op">(</span><span class="va">apparelTrans</span>, date.format <span class="op">=</span> <span class="st">"ymd"</span>,</span></span>
+<span class="r-in"><span>                            time.unit <span class="op">=</span> <span class="st">"w"</span>, estimation.split <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Fit the gg model</span></span></span>
+<span class="r-in"><span><span class="fu">gg</span><span class="op">(</span><span class="va">clv.data.apparel</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimation finished!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Gamma-Gamma Model</span>
@@ -160,10 +175,10 @@ URL <a href="http://www.brucehardie.com/notes/025/gamma_gamma.pdf" class="extern
 <span class="r-out co"><span class="r-pr">#&gt;</span>   2.305   17.148  279.974  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Give initial guesses for the model parameters</span></span>
-<span class="r-in"><span class="fu">gg</span><span class="op">(</span><span class="va">clv.data.apparel</span>,</span>
-<span class="r-in">     start.params.model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>p<span class="op">=</span><span class="fl">0.5</span>, q<span class="op">=</span><span class="fl">15</span>, gamma<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Give initial guesses for the model parameters</span></span></span>
+<span class="r-in"><span><span class="fu">gg</span><span class="op">(</span><span class="va">clv.data.apparel</span>,</span></span>
+<span class="r-in"><span>     start.params.model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>p<span class="op">=</span><span class="fl">0.5</span>, q<span class="op">=</span><span class="fl">15</span>, gamma<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimation finished!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Gamma-Gamma Model</span>
@@ -177,20 +192,20 @@ URL <a href="http://www.brucehardie.com/notes/025/gamma_gamma.pdf" class="extern
 <span class="r-out co"><span class="r-pr">#&gt;</span>   2.305   17.148  279.976  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># pass additional parameters to the optimizer (optimx)</span></span>
-<span class="r-in"><span class="co">#    Use Nelder-Mead as optimization method and print</span></span>
-<span class="r-in"><span class="co">#    detailed information about the optimization process</span></span>
-<span class="r-in"><span class="va">apparel.gg</span> <span class="op">&lt;-</span> <span class="fu">gg</span><span class="op">(</span><span class="va">clv.data.apparel</span>,</span>
-<span class="r-in">                     optimx.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method<span class="op">=</span><span class="st">"Nelder-Mead"</span>,</span>
-<span class="r-in">                                        control<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>trace<span class="op">=</span><span class="fl">6</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># pass additional parameters to the optimizer (optimx)</span></span></span>
+<span class="r-in"><span><span class="co">#    Use Nelder-Mead as optimization method and print</span></span></span>
+<span class="r-in"><span><span class="co">#    detailed information about the optimization process</span></span></span>
+<span class="r-in"><span><span class="va">apparel.gg</span> <span class="op">&lt;-</span> <span class="fu">gg</span><span class="op">(</span><span class="va">clv.data.apparel</span>,</span></span>
+<span class="r-in"><span>                     optimx.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method<span class="op">=</span><span class="st">"Nelder-Mead"</span>,</span></span>
+<span class="r-in"><span>                                        control<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>trace<span class="op">=</span><span class="fl">6</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> fn is  fn </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fn is  fn1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Looking for method =  Nelder-Mead </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Methods to be used:[1] "Nelder-Mead"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> optcfg:$fname</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "fn"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "fn1"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $npar</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3</span>
@@ -243,35 +258,10 @@ URL <a href="http://www.brucehardie.com/notes/025/gamma_gamma.pdf" class="extern
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ufn</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function (LL.params, LL.param.names.to.optimx, LL.function.sum, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     use.interlayer.constr, use.interlayer.reg, reg.lambda.trans, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     reg.lambda.life, use.cor, ...) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     all.other.args &lt;- list(...)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     names(LL.params) &lt;- LL.param.names.to.optimx</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     interlayers.to.use &lt;- list(callLL = interlayer_callLL)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (use.cor == T &amp; !anyNA(use.cor)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         interlayers.to.use &lt;- c(correlation = interlayer_correlation, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             interlayers.to.use)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (use.interlayer.reg == T &amp; !is.null(reg.lambda.trans) &amp; </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         !anyNA(reg.lambda.trans) &amp; !is.null(reg.lambda.life) &amp; </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         !anyNA(reg.lambda.life)) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         interlayers.to.use &lt;- c(regularization = interlayer_regularization, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             interlayers.to.use)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (use.interlayer.constr == TRUE) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         interlayers.to.use &lt;- c(constraints = interlayer_constraints, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             interlayers.to.use)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     interlayer.call.args &lt;- list(next.interlayers = interlayers.to.use, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         LL.function.sum = LL.function.sum, LL.params = LL.params, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         reg.lambda.life = reg.lambda.life, reg.lambda.trans = reg.lambda.trans)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     interlayer.call.args &lt;- modifyList(interlayer.call.args, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         all.other.args)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     return(do.call(what = interlayer_callnextinterlayer, args = interlayer.call.args))</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x7f9e4becd3d8&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:CLVTools&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function (par) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fn(par, ...)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x7fb5826c0950&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x7fb5a1211a50&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $have.bounds</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
@@ -482,18 +472,18 @@ URL <a href="http://www.brucehardie.com/notes/025/gamma_gamma.pdf" class="extern
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $xtimes</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> user.self </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     0.066 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     0.068 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Assemble the answers</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimation finished!</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># estimated coefs</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">apparel.gg</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># estimated coefs</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">apparel.gg</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          p          q      gamma </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   2.304062  17.150658 280.070758 </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># summary of the fitted model</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">apparel.gg</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># summary of the fitted model</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">apparel.gg</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Gamma-Gamma  Model </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
@@ -521,14 +511,14 @@ URL <a href="http://www.brucehardie.com/notes/025/gamma_gamma.pdf" class="extern
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT 2  TRUE       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> fevals 322.0000   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Method Nelder-Mead</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Plot model vs empirical distribution</span></span>
-<span class="r-in"><span class="fu"><a href="plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">apparel.gg</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Plot model vs empirical distribution</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">apparel.gg</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="gg-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># predict mean spending and compare against</span></span>
-<span class="r-in"><span class="co">#    actuals in the holdout period</span></span>
-<span class="r-in"><span class="fu"><a href="predict.clv.fitted.transactions.html">predict</a></span><span class="op">(</span><span class="va">apparel.gg</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># predict mean spending and compare against</span></span></span>
+<span class="r-in"><span><span class="co">#    actuals in the holdout period</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="predict.clv.fitted.transactions.html">predict</a></span><span class="op">(</span><span class="va">apparel.gg</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        Id actual.mean.spending predicted.mean.spending</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1:    1              0.00000                39.95506</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   2:   10              0.00000                55.22646</span>
@@ -541,7 +531,7 @@ URL <a href="http://www.brucehardie.com/notes/025/gamma_gamma.pdf" class="extern
 <span class="r-out co"><span class="r-pr">#&gt;</span> 248: 1220              0.00000                39.95506</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 249: 1221             33.62778                34.29084</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 250: 1222              0.00000                47.35301</span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -552,11 +542,11 @@ URL <a href="http://www.brucehardie.com/notes/025/gamma_gamma.pdf" class="extern
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, Elliot Oblander, Patrik Schilter.</p>
+  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, E. Shin Oblander, Patrik Schilter.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

@@ -205,6 +205,9 @@
     <loc>https://www.clvtools.com/reference/index.html</loc>
   </url>
   <url>
+    <loc>https://www.clvtools.com/reference/latentAttrition.html</loc>
+  </url>
+  <url>
     <loc>https://www.clvtools.com/reference/nobs.clv.data.html</loc>
   </url>
   <url>
@@ -248,6 +251,9 @@
   </url>
   <url>
     <loc>https://www.clvtools.com/reference/predict.clv.fitted.transactions.html</loc>
+  </url>
+  <url>
+    <loc>https://www.clvtools.com/reference/spending.html</loc>
   </url>
   <url>
     <loc>https://www.clvtools.com/reference/subset.clv.data.html</loc>

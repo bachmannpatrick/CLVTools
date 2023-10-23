@@ -26,7 +26,7 @@ At least 1 covariate is needed for both processes and no categorical covariate m
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0</span>
       </span>
     </div>
 
@@ -38,7 +38,7 @@ At least 1 covariate is needed for both processes and no categorical covariate m
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -78,38 +78,56 @@ The returned object can be used to fit models with dynamic covariates.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">SetDynamicCovariates</span><span class="op">(</span>
-  <span class="va">clv.data</span>,
-  <span class="va">data.cov.life</span>,
-  <span class="va">data.cov.trans</span>,
-  <span class="va">names.cov.life</span>,
-  <span class="va">names.cov.trans</span>,
-  name.id <span class="op">=</span> <span class="st">"Id"</span>,
-  name.date <span class="op">=</span> <span class="st">"Date"</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">SetDynamicCovariates</span><span class="op">(</span></span>
+<span>  <span class="va">clv.data</span>,</span>
+<span>  <span class="va">data.cov.life</span>,</span>
+<span>  <span class="va">data.cov.trans</span>,</span>
+<span>  <span class="va">names.cov.life</span>,</span>
+<span>  <span class="va">names.cov.trans</span>,</span>
+<span>  name.id <span class="op">=</span> <span class="st">"Id"</span>,</span>
+<span>  name.date <span class="op">=</span> <span class="st">"Date"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>clv.data</dt>
 <dd><p>CLV data object to add the covariates data to.</p></dd>
+
+
 <dt>data.cov.life</dt>
 <dd><p>Dynamic covariate data as <code>data.frame</code> or <code>data.table</code> for the lifetime process.</p></dd>
+
+
 <dt>data.cov.trans</dt>
 <dd><p>Dynamic covariate data as <code>data.frame</code> or <code>data.table</code> for the transaction process.</p></dd>
+
+
 <dt>names.cov.life</dt>
 <dd><p>Vector with names of the columns in <code>data.cov.life</code> that contain the covariates.</p></dd>
+
+
 <dt>names.cov.trans</dt>
 <dd><p>Vector with names of the columns in <code>data.cov.trans</code> that contain the covariates.</p></dd>
+
+
 <dt>name.id</dt>
 <dd><p>Name of the column to find the Id data for both, <code>data.cov.life</code> and <code>data.cov.trans</code>.</p></dd>
+
+
 <dt>name.date</dt>
 <dd><p>Name of the column to find the Date data for both, <code>data.cov.life</code> and <code>data.cov.trans</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An object of class <code>clv.data.dynamic.covariates</code>.
-See the class definition <a href="clv.data.dynamic.covariates-class.html">clv.data.dynamic.covariates</a>for more details about the returned object.</p>
+    
+
+<p>An object of class <code>clv.data.dynamic.covariates</code>.
+See the class definition <a href="clv.data.dynamic.covariates-class.html">clv.data.dynamic.covariates</a></p>
+
+
+<p>for more details about the returned object.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -128,31 +146,31 @@ creating the the <code>clv.data</code> object is used for parsing.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelTrans"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelDynCov"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create a clv data object without covariates</span></span>
-<span class="r-in"><span class="va">clv.data.apparel</span> <span class="op">&lt;-</span> <span class="fu"><a href="clvdata.html">clvdata</a></span><span class="op">(</span><span class="va">apparelTrans</span>, time.unit<span class="op">=</span><span class="st">"w"</span>,</span>
-<span class="r-in">                            date.format<span class="op">=</span><span class="st">"ymd"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Add static covariate data</span></span>
-<span class="r-in"><span class="va">clv.data.dyn.cov</span>  <span class="op">&lt;-</span></span>
-<span class="r-in">   <span class="fu">SetDynamicCovariates</span><span class="op">(</span><span class="va">clv.data.apparel</span>,</span>
-<span class="r-in">                       data.cov.life  <span class="op">=</span> <span class="va">apparelDynCov</span>,</span>
-<span class="r-in">                       names.cov.life <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Marketing"</span>, <span class="st">"Gender"</span>, <span class="st">"Channel"</span><span class="op">)</span>,</span>
-<span class="r-in">                       data.cov.trans <span class="op">=</span> <span class="va">apparelDynCov</span>,</span>
-<span class="r-in">                       names.cov.trans <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Marketing"</span>, <span class="st">"Gender"</span>, <span class="st">"Channel"</span><span class="op">)</span>,</span>
-<span class="r-in">                       name.id <span class="op">=</span> <span class="st">"Id"</span>,</span>
-<span class="r-in">                       name.date <span class="op">=</span> <span class="st">"Cov.Date"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># summary output about covariates data</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">clv.data.dyn.cov</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># fit pnbd model with dynamic covariates</span></span>
-<span class="r-in"><span class="fu"><a href="pnbd.html">pnbd</a></span><span class="op">(</span><span class="va">clv.data.dyn.cov</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelTrans"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelDynCov"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create a clv data object without covariates</span></span></span>
+<span class="r-in"><span><span class="va">clv.data.apparel</span> <span class="op">&lt;-</span> <span class="fu"><a href="clvdata.html">clvdata</a></span><span class="op">(</span><span class="va">apparelTrans</span>, time.unit<span class="op">=</span><span class="st">"w"</span>,</span></span>
+<span class="r-in"><span>                            date.format<span class="op">=</span><span class="st">"ymd"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Add dynamic covariate data</span></span></span>
+<span class="r-in"><span><span class="va">clv.data.dyn.cov</span>  <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>   <span class="fu">SetDynamicCovariates</span><span class="op">(</span><span class="va">clv.data.apparel</span>,</span></span>
+<span class="r-in"><span>                       data.cov.life  <span class="op">=</span> <span class="va">apparelDynCov</span>,</span></span>
+<span class="r-in"><span>                       names.cov.life <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Marketing"</span>, <span class="st">"Gender"</span>, <span class="st">"Channel"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                       data.cov.trans <span class="op">=</span> <span class="va">apparelDynCov</span>,</span></span>
+<span class="r-in"><span>                       names.cov.trans <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Marketing"</span>, <span class="st">"Gender"</span>, <span class="st">"Channel"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                       name.id <span class="op">=</span> <span class="st">"Id"</span>,</span></span>
+<span class="r-in"><span>                       name.date <span class="op">=</span> <span class="st">"Cov.Date"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># summary output about covariates data</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">clv.data.dyn.cov</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># fit pnbd model with dynamic covariates</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="pnbd.html">pnbd</a></span><span class="op">(</span><span class="va">clv.data.dyn.cov</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -163,11 +181,11 @@ creating the the <code>clv.data</code> object is used for parsing.</p>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, Elliot Oblander, Patrik Schilter.</p>
+  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, E. Shin Oblander, Patrik Schilter.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

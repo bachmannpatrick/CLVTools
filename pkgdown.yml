@@ -1,10 +1,10 @@
-pandoc: 2.7.3
-pkgdown: 2.0.1.9000
-pkgdown_sha: e25bd0bb6a604ecc60d704c7154f291afbf0dd7b
+pandoc: 2.19.2
+pkgdown: 2.0.7
+pkgdown_sha: ~
 articles:
   CLVTools: CLVTools.html
   internal_docu: internal_docu/internal_docu.html
-last_built: 2022-01-10T14:48Z
+last_built: 2023-10-23T23:22Z
 urls:
   reference: https://www.clvtools.com/reference
   article: https://www.clvtools.com/articles

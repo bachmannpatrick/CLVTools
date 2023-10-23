@@ -6,7 +6,8 @@ during the prediction period,
 "discounted expected residual transactions" (DERT) for every customer, which is the total number of
 transactions for the residual lifetime of a customer discounted to the end of the estimation period.
 In the case of time-varying covariates, instead of DERT, "discounted expected conditional transactions" (DECT)
-is predicted. DECT does only cover a finite time horizon in contrast to DERT. For continuous.discount.factor=0, DECT corresponds to CET.
+is predicted. DECT does only cover a finite time horizon in contrast to DERT.
+For continuous.discount.factor=0, DECT corresponds to CET.
 
 
 In order to derive a monetary value such as CLV, customer spending has to be considered.
@@ -40,7 +41,7 @@ In this case, the prediction additionally contains the following two columns:
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0</span>
       </span>
     </div>
 
@@ -52,7 +53,7 @@ In this case, the prediction additionally contains the following two columns:
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -91,7 +92,8 @@ during the prediction period,</p></li>
 <li><p>"discounted expected residual transactions" (<code>DERT</code>) for every customer, which is the total number of
 transactions for the residual lifetime of a customer discounted to the end of the estimation period.
 In the case of time-varying covariates, instead of <code>DERT</code>, "discounted expected conditional transactions" (<code>DECT</code>)
-is predicted. <code>DECT</code> does only cover a finite time horizon in contrast to <code>DERT</code>. For <code>continuous.discount.factor=0</code>, <code>DECT</code> corresponds to <code>CET</code>.</p></li>
+is predicted. <code>DECT</code> does only cover a finite time horizon in contrast to <code>DERT</code>.
+For <code>continuous.discount.factor=0</code>, <code>DECT</code> corresponds to <code>CET</code>.</p></li>
 </ul><p>In order to derive a monetary value such as CLV, customer spending has to be considered.
 If the <code>clv.data</code> object contains spending information, customer spending can be predicted using a Gamma/Gamma spending model for
 parameter <code>predict.spending</code> and the predicted CLV is be calculated (if the transaction model supports <code>DERT/DECT</code>).
@@ -100,71 +102,97 @@ In this case, the prediction additionally contains the following two columns:</p
 </ul></div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for clv.fitted.transactions</span>
-<span class="fu">predict</span><span class="op">(</span>
-  <span class="va">object</span>,
-  newdata <span class="op">=</span> <span class="cn">NULL</span>,
-  prediction.end <span class="op">=</span> <span class="cn">NULL</span>,
-  predict.spending <span class="op">=</span> <span class="va">gg</span>,
-  continuous.discount.factor <span class="op">=</span> <span class="fl">0.1</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S4 method for clv.fitted.transactions</span>
-<span class="fu">predict</span><span class="op">(</span>
-  <span class="va">object</span>,
-  newdata <span class="op">=</span> <span class="cn">NULL</span>,
-  prediction.end <span class="op">=</span> <span class="cn">NULL</span>,
-  predict.spending <span class="op">=</span> <span class="va">gg</span>,
-  continuous.discount.factor <span class="op">=</span> <span class="fl">0.1</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for clv.fitted.transactions</span></span>
+<span><span class="fu">predict</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  newdata <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  prediction.end <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  predict.spending <span class="op">=</span> <span class="va">gg</span>,</span>
+<span>  continuous.discount.factor <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for clv.fitted.transactions</span></span>
+<span><span class="fu">predict</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  newdata <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  prediction.end <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  predict.spending <span class="op">=</span> <span class="va">gg</span>,</span>
+<span>  continuous.discount.factor <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>A fitted clv transaction model for which prediction is desired.</p></dd>
+
+
 <dt>newdata</dt>
 <dd><p>A clv data object for which predictions should be made with the fitted model. If none or NULL is given, predictions are made for the data on which the model was fit.</p></dd>
+
+
 <dt>prediction.end</dt>
 <dd><p>Until what point in time to predict. This can be the number of periods (numeric) or a form of date/time object. See details.</p></dd>
+
+
 <dt>predict.spending</dt>
 <dd><p>Whether and how to predict spending and based on it also CLV, if possible. See details.</p></dd>
+
+
 <dt>continuous.discount.factor</dt>
 <dd><p>continuous discount factor to use to calculate <code>DERT/DECT</code></p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>Show details about the running of the function.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Ignored</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An object of class <code>data.table</code> with columns:</p>
+    
+
+<p>An object of class <code>data.table</code> with columns:</p>
 <dl><dt>Id</dt>
 <dd><p>The respective customer identifier</p></dd>
+
 <dt>period.first</dt>
 <dd><p>First timepoint of prediction period</p></dd>
+
 <dt>period.last</dt>
 <dd><p>Last timepoint of prediction period</p></dd>
+
 <dt>period.length</dt>
 <dd><p>Number of time units covered by the period indicated by <code>period.first</code> and <code>period.last</code> (including both ends).</p></dd>
+
 <dt>PAlive</dt>
 <dd><p>Probability to be alive at the end of the estimation period</p></dd>
+
 <dt>CET</dt>
 <dd><p>The Conditional Expected Transactions</p></dd>
+
 <dt>DERT or DECT</dt>
 <dd><p>Discounted Expected Residual Transactions or Discounted Expected Conditional Transactions for dynamic covariates models</p></dd>
+
 <dt>actual.x</dt>
 <dd><p>Actual number of transactions until prediction.end. Only if there is a holdout period and the prediction ends in it, otherwise it is not reported.</p></dd>
+
 <dt>actual.total.spending</dt>
 <dd><p>Actual total spending until prediction.end. Only if there is a holdout period and the prediction ends in it, otherwise it is not reported.</p></dd>
+
 <dt>predicted.mean.spending</dt>
 <dd><p>The mean spending per transactions as predicted by the spending model.</p></dd>
+
 <dt>predicted.CLV</dt>
 <dd><p>Customer Lifetime Value based on <code>DERT/DECT</code> and <code>predicted.mean.spending</code>.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -194,9 +222,10 @@ of the first prediction period is Monday 2019-01-02. Each prediction period incl
 the first prediction period therefore will end on, and include, Sunday 2019-01-08. Subsequent prediction periods
 again start on Mondays and end on Sundays.
 If <code>prediction.end</code> indicates a timepoint on which to end, this timepoint is included in the prediction period.</p>
-<p><code>continuous.discount.factor</code> allows to adjust the discount rate used to estimated the discounted expected
-transactions (<code>DERT/DECT</code>).
-The default value is <code>0.1</code> (=10%). Note that a continuous rate needs to be provided.</p>
+<p><code>continuous.discount.factor</code> is the continuous rate used to discount the expected residual
+transactions (<code>DERT/DECT</code>). An annual rate of (100 x d)% equals a continuous rate delta = ln(1+d).
+To account for time units which are not annual, the continuous rate has to be further adjusted
+to delta=ln(1+d)/k, where k are the number of time units in a year.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -207,19 +236,19 @@ The default value is <code>0.1</code> (=10%). Note that a continuous rate needs 
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelTrans"</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># Fit pnbd standard model on data, WITH holdout</span></span>
-<span class="r-in"><span class="va">apparel.holdout</span> <span class="op">&lt;-</span> <span class="fu"><a href="clvdata.html">clvdata</a></span><span class="op">(</span><span class="va">apparelTrans</span>, time.unit<span class="op">=</span><span class="st">"w"</span>,</span>
-<span class="r-in">                           estimation.split<span class="op">=</span><span class="fl">37</span>, date.format<span class="op">=</span><span class="st">"ymd"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">apparel.pnbd</span> <span class="op">&lt;-</span> <span class="fu"><a href="pnbd.html">pnbd</a></span><span class="op">(</span><span class="va">apparel.holdout</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelTrans"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Fit pnbd standard model on data, WITH holdout</span></span></span>
+<span class="r-in"><span><span class="va">apparel.holdout</span> <span class="op">&lt;-</span> <span class="fu"><a href="clvdata.html">clvdata</a></span><span class="op">(</span><span class="va">apparelTrans</span>, time.unit<span class="op">=</span><span class="st">"w"</span>,</span></span>
+<span class="r-in"><span>                           estimation.split<span class="op">=</span><span class="fl">37</span>, date.format<span class="op">=</span><span class="st">"ymd"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">apparel.pnbd</span> <span class="op">&lt;-</span> <span class="fu"><a href="pnbd.html">pnbd</a></span><span class="op">(</span><span class="va">apparel.holdout</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimation finished!</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Predict until the end of the holdout period</span></span>
-<span class="r-in"><span class="fu">predict</span><span class="op">(</span><span class="va">apparel.pnbd</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Predict until the end of the holdout period</span></span></span>
+<span class="r-in"><span><span class="fu">predict</span><span class="op">(</span><span class="va">apparel.pnbd</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2005-09-20 until (incl.) 2006-07-16 (42.86 Weeks).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating gg model to predict spending...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
@@ -248,10 +277,10 @@ The default value is <code>0.1</code> (=10%). Note that a continuous rate needs 
 <span class="r-out co"><span class="r-pr">#&gt;</span> 248: 0.3909507  0.269518 0.06742987                40.39473      2.723811</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 249: 0.9762838  4.960046 1.24093869                34.00868     42.202689</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 250: 0.4471937  0.701030 0.17538854                48.80122      8.559174</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Predict until 10 periods (weeks in this case) after</span></span>
-<span class="r-in"><span class="co">#   the end of the 37 weeks fitting period</span></span>
-<span class="r-in"><span class="fu">predict</span><span class="op">(</span><span class="va">apparel.pnbd</span>, prediction.end <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="co"># ends on 2010-11-28</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Predict until 10 periods (weeks in this case) after</span></span></span>
+<span class="r-in"><span><span class="co">#   the end of the 37 weeks fitting period</span></span></span>
+<span class="r-in"><span><span class="fu">predict</span><span class="op">(</span><span class="va">apparel.pnbd</span>, prediction.end <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="co"># ends on 2010-11-28</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2005-09-20 until (incl.) 2005-11-28 (10 Weeks).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating gg model to predict spending...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
@@ -280,9 +309,9 @@ The default value is <code>0.1</code> (=10%). Note that a continuous rate needs 
 <span class="r-out co"><span class="r-pr">#&gt;</span> 248: 0.3909507 0.06948088 0.06742987                40.39473      2.723811</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 249: 0.9762838 1.27868441 1.24093869                34.00868     42.202689</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 250: 0.4471937 0.18072335 0.17538854                48.80122      8.559174</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Predict until 31th Dec 2016 with the timepoint as a character</span></span>
-<span class="r-in"><span class="fu">predict</span><span class="op">(</span><span class="va">apparel.pnbd</span>, prediction.end <span class="op">=</span> <span class="st">"2016-12-31"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Predict until 31th Dec 2016 with the timepoint as a character</span></span></span>
+<span class="r-in"><span><span class="fu">predict</span><span class="op">(</span><span class="va">apparel.pnbd</span>, prediction.end <span class="op">=</span> <span class="st">"2016-12-31"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2005-09-20 until (incl.) 2016-12-31 (588.71 Weeks).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating gg model to predict spending...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
@@ -311,9 +340,9 @@ The default value is <code>0.1</code> (=10%). Note that a continuous rate needs 
 <span class="r-out co"><span class="r-pr">#&gt;</span> 248: 0.06742987                40.39473      2.723811</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 249: 1.24093869                34.00868     42.202689</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 250: 0.17538854                48.80122      8.559174</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Predict until 31th Dec 2016 with the timepoint as a Date</span></span>
-<span class="r-in"><span class="fu">predict</span><span class="op">(</span><span class="va">apparel.pnbd</span>, prediction.end <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd.html" class="external-link">ymd</a></span><span class="op">(</span><span class="st">"2016-12-31"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Predict until 31th Dec 2016 with the timepoint as a Date</span></span></span>
+<span class="r-in"><span><span class="fu">predict</span><span class="op">(</span><span class="va">apparel.pnbd</span>, prediction.end <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd.html" class="external-link">ymd</a></span><span class="op">(</span><span class="st">"2016-12-31"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2005-09-20 until (incl.) 2016-12-31 (588.71 Weeks).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating gg model to predict spending...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
@@ -342,10 +371,10 @@ The default value is <code>0.1</code> (=10%). Note that a continuous rate needs 
 <span class="r-out co"><span class="r-pr">#&gt;</span> 248: 0.06742987                40.39473      2.723811</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 249: 1.24093869                34.00868     42.202689</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 250: 0.17538854                48.80122      8.559174</span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Predict future transactions but not spending and CLV</span></span>
-<span class="r-in"><span class="fu">predict</span><span class="op">(</span><span class="va">apparel.pnbd</span>, predict.spending <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Predict future transactions but not spending and CLV</span></span></span>
+<span class="r-in"><span><span class="fu">predict</span><span class="op">(</span><span class="va">apparel.pnbd</span>, predict.spending <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2005-09-20 until (incl.) 2006-07-16 (42.86 Weeks).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        Id period.first period.last period.length actual.x actual.total.spending</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1:    1   2005-09-20  2006-07-16      42.85714        0                  0.00</span>
@@ -371,9 +400,9 @@ The default value is <code>0.1</code> (=10%). Note that a continuous rate needs 
 <span class="r-out co"><span class="r-pr">#&gt;</span> 248: 0.3909507  0.269518 0.06742987</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 249: 0.9762838  4.960046 1.24093869</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 250: 0.4471937  0.701030 0.17538854</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Predict spending by fitting a Gamma-Gamma model</span></span>
-<span class="r-in"><span class="fu">predict</span><span class="op">(</span><span class="va">apparel.pnbd</span>, predict.spending <span class="op">=</span> <span class="va">gg</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Predict spending by fitting a Gamma-Gamma model</span></span></span>
+<span class="r-in"><span><span class="fu">predict</span><span class="op">(</span><span class="va">apparel.pnbd</span>, predict.spending <span class="op">=</span> <span class="va">gg</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2005-09-20 until (incl.) 2006-07-16 (42.86 Weeks).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating gg model to predict spending...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
@@ -402,12 +431,12 @@ The default value is <code>0.1</code> (=10%). Note that a continuous rate needs 
 <span class="r-out co"><span class="r-pr">#&gt;</span> 248: 0.3909507  0.269518 0.06742987                40.39473      2.723811</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 249: 0.9762838  4.960046 1.24093869                34.00868     42.202689</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 250: 0.4471937  0.701030 0.17538854                48.80122      8.559174</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Fit a spending model separately and use it to predict spending</span></span>
-<span class="r-in"><span class="va">apparel.gg</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg.html">gg</a></span><span class="op">(</span><span class="va">apparel.holdout</span>, remove.first.transaction <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Fit a spending model separately and use it to predict spending</span></span></span>
+<span class="r-in"><span><span class="va">apparel.gg</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg.html">gg</a></span><span class="op">(</span><span class="va">apparel.holdout</span>, remove.first.transaction <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimation finished!</span>
-<span class="r-in"><span class="fu">predict</span><span class="op">(</span><span class="va">apparel.pnbd</span>, predict.spending <span class="op">=</span> <span class="va">apparel.gg</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">predict</span><span class="op">(</span><span class="va">apparel.pnbd</span>, predict.spending <span class="op">=</span> <span class="va">apparel.gg</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2005-09-20 until (incl.) 2006-07-16 (42.86 Weeks).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        Id period.first period.last period.length actual.x actual.total.spending</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1:    1   2005-09-20  2006-07-16      42.85714        0                  0.00</span>
@@ -433,20 +462,20 @@ The default value is <code>0.1</code> (=10%). Note that a continuous rate needs 
 <span class="r-out co"><span class="r-pr">#&gt;</span> 248: 0.3909507  0.269518 0.06742987                37.82832      2.550759</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 249: 0.9762838  4.960046 1.24093869                30.88611     38.327763</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 250: 0.4471937  0.701030 0.17538854                48.29395      8.470205</span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Fit pnbd standard model WITHOUT holdout</span></span>
-<span class="r-in"><span class="va">pnc</span> <span class="op">&lt;-</span> <span class="fu"><a href="pnbd.html">pnbd</a></span><span class="op">(</span><span class="fu"><a href="clvdata.html">clvdata</a></span><span class="op">(</span><span class="va">apparelTrans</span>, time.unit<span class="op">=</span><span class="st">"w"</span>, date.format<span class="op">=</span><span class="st">"ymd"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Fit pnbd standard model WITHOUT holdout</span></span></span>
+<span class="r-in"><span><span class="va">pnc</span> <span class="op">&lt;-</span> <span class="fu"><a href="pnbd.html">pnbd</a></span><span class="op">(</span><span class="fu"><a href="clvdata.html">clvdata</a></span><span class="op">(</span><span class="va">apparelTrans</span>, time.unit<span class="op">=</span><span class="st">"w"</span>, date.format<span class="op">=</span><span class="st">"ymd"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimation finished!</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># This fails, because without holdout, a prediction.end is required</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="fu">predict</span><span class="op">(</span><span class="va">pnc</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># But it works if providing a prediction.end</span></span>
-<span class="r-in"><span class="fu">predict</span><span class="op">(</span><span class="va">pnc</span>, prediction.end <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="co"># ends on 2016-12-17</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># This fails, because without holdout, a prediction.end is required</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="fu">predict</span><span class="op">(</span><span class="va">pnc</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># But it works if providing a prediction.end</span></span></span>
+<span class="r-in"><span><span class="fu">predict</span><span class="op">(</span><span class="va">pnc</span>, prediction.end <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="co"># ends on 2016-12-17</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2006-07-17 until (incl.) 2006-09-24 (10 Weeks).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating gg model to predict spending...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
@@ -475,8 +504,8 @@ The default value is <code>0.1</code> (=10%). Note that a continuous rate needs 
 <span class="r-out co"><span class="r-pr">#&gt;</span> 248: 0.01636655                38.64708     0.6325194</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 249: 1.46846574                34.22209    50.2539634</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 250: 0.02458767                44.10134     1.0843494</span>
-<span class="r-in"><span class="co"># }</span></span>
-<span class="r-in"></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -487,11 +516,11 @@ The default value is <code>0.1</code> (=10%). Note that a continuous rate needs 
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, Elliot Oblander, Patrik Schilter.</p>
+  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, E. Shin Oblander, Patrik Schilter.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

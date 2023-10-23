@@ -26,7 +26,7 @@ the last method/row of the resulting optimx object."><!-- mathjax --><script src
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0</span>
       </span>
     </div>
 
@@ -38,7 +38,7 @@ the last method/row of the resulting optimx object."><!-- mathjax --><script src
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -78,68 +78,93 @@ the last method/row of the resulting <code>optimx</code> object.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for clv.fitted</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for clv.fitted.transactions.static.cov</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for summary.clv.fitted</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span>
-  <span class="va">x</span>,
-  digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">3L</span>, <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"digits"</span><span class="op">)</span> <span class="op">-</span> <span class="fl">3L</span><span class="op">)</span>,
-  signif.stars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"show.signif.stars"</span><span class="op">)</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for clv.fitted</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for clv.fitted.transactions.static.cov</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for summary.clv.fitted</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">3L</span>, <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"digits"</span><span class="op">)</span> <span class="op">-</span> <span class="fl">3L</span><span class="op">)</span>,</span>
+<span>  signif.stars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"show.signif.stars"</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>A fitted CLV model</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Ignored for <code>summary</code>, forwarded to <code>printCoefmat</code> for <code>print</code>.</p></dd>
+
+
 <dt>x</dt>
 <dd><p>an object of class <code>"summary.clv.no.covariates"</code>, usually, a result of a call to <code>summary.clv.no.covariates</code>.</p></dd>
+
+
 <dt>digits</dt>
 <dd><p>the number of significant digits to use when printing.</p></dd>
+
+
 <dt>signif.stars</dt>
 <dd><p>logical. If TRUE, ‘significance stars’ are printed for each coefficient.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>This function computes and returns a list of summary information of the fitted model
+    
+
+<p>This function computes and returns a list of summary information of the fitted model
 given in <code>object</code>. It returns a list of class <code>summary.clv.no.covariates</code> that contains the
 following components:</p>
 <dl><dt>name.model</dt>
 <dd><p>the name of the fitted model.</p></dd>
+
 <dt>call</dt>
 <dd><p>The call used to fit the model.</p></dd>
+
 <dt>tp.estimation.start</dt>
 <dd><p>Date or POSIXct indicating when the fitting period started.</p></dd>
+
 <dt>tp.estimation.end</dt>
 <dd><p>Date or POSIXct indicating when the fitting period ended.</p></dd>
+
 <dt>estimation.period.in.tu</dt>
 <dd><p>Length of fitting period in <code>time.unit</code>s.</p></dd>
+
 <dt>time.unit</dt>
 <dd><p>Time unit that defines a single period.</p></dd>
+
 <dt>coefficients</dt>
 <dd><p>a <code>px4</code> matrix with columns for the estimated coefficients, its standard error,
 the t-statistic and corresponding (two-sided) p-value.</p></dd>
+
 <dt>estimated.LL</dt>
 <dd><p>the value of the log-likelihood function at the found solution.</p></dd>
+
 <dt>AIC</dt>
 <dd><p>Akaike's An Information Criterion for the fitted model.</p></dd>
+
 <dt>BIC</dt>
 <dd><p>Schwarz' Bayesian Information Criterion for the fitted model.</p></dd>
+
 <dt>KKT1</dt>
 <dd><p>Karush-Kuhn-Tucker optimality conditions of the first order, as returned by optimx.</p></dd>
+
 <dt>KKT2</dt>
 <dd><p>Karush-Kuhn-Tucker optimality conditions of the second order, as returned by optimx.</p></dd>
+
 <dt>fevals</dt>
 <dd><p>The number of calls to the log-likelihood function during optimization.</p></dd>
+
 <dt>method</dt>
 <dd><p>The last method used to obtain the final solution.</p></dd>
+
 <dt>additional.options</dt>
 <dd><p>A list of additional options used for model fitting.</p><dl><dt>Correlation</dt>
 <dd><p>Whether the correlation between the purchase and the attrition process was estimated.</p></dd>
@@ -148,7 +173,12 @@ the t-statistic and corresponding (two-sided) p-value.</p></dd>
 <dd><p>Correlation coefficient measuring the correlation between the two processes, if used.</p></dd>
 
 </dl></dd>
-</dl><p>For models fits with static covariates, the list additionally is of class <code>summary.clv.static.covariates</code>and the list in <code>additional.options</code> contains the following elements:</p>
+
+
+</dl><p>For models fits with static covariates, the list additionally is of class <code>summary.clv.static.covariates</code></p>
+
+
+<p>and the list in <code>additional.options</code> contains the following elements:</p>
 <dl><dt>additional.options</dt>
 <dd><p></p><dl><dt>Regularization</dt>
 <dd><p>Whether L2 regularization for parameters of contextual factors was used.</p></dd>
@@ -166,6 +196,7 @@ the t-statistic and corresponding (two-sided) p-value.</p></dd>
 <dd><p>Name of the covariate parameters which were constraint, if used.</p></dd>
 
 </dl></dd>
+
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>
@@ -176,20 +207,20 @@ function <code>vcov</code> will extract the <code>vcov</code> from the returned 
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelTrans"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Fit pnbd standard model, no covariates</span></span>
-<span class="r-in"><span class="va">clv.data.apparel</span> <span class="op">&lt;-</span> <span class="fu"><a href="clvdata.html">clvdata</a></span><span class="op">(</span><span class="va">apparelTrans</span>, time.unit<span class="op">=</span><span class="st">"w"</span>,</span>
-<span class="r-in">                                estimation.split<span class="op">=</span><span class="fl">40</span>, date.format<span class="op">=</span><span class="st">"ymd"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">pnbd.apparel</span> <span class="op">&lt;-</span> <span class="fu"><a href="pnbd.html">pnbd</a></span><span class="op">(</span><span class="va">clv.data.apparel</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelTrans"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Fit pnbd standard model, no covariates</span></span></span>
+<span class="r-in"><span><span class="va">clv.data.apparel</span> <span class="op">&lt;-</span> <span class="fu"><a href="clvdata.html">clvdata</a></span><span class="op">(</span><span class="va">apparelTrans</span>, time.unit<span class="op">=</span><span class="st">"w"</span>,</span></span>
+<span class="r-in"><span>                                estimation.split<span class="op">=</span><span class="fl">40</span>, date.format<span class="op">=</span><span class="st">"ymd"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pnbd.apparel</span> <span class="op">&lt;-</span> <span class="fu"><a href="pnbd.html">pnbd</a></span><span class="op">(</span><span class="va">clv.data.apparel</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimation finished!</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># summary about model fit</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">pnbd.apparel</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Pareto NBD Standard  Model </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># summary about model fit</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">pnbd.apparel</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Pareto/NBD Standard  Model </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> pnbd(clv.data = clv.data.apparel)</span>
@@ -219,27 +250,27 @@ function <code>vcov</code> will extract the <code>vcov</code> from the returned 
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Used Options:                 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Correlation FALSE</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Add static covariate data</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelStaticCov"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">data.apparel.cov</span>  <span class="op">&lt;-</span></span>
-<span class="r-in">   <span class="fu"><a href="SetStaticCovariates.html">SetStaticCovariates</a></span><span class="op">(</span><span class="va">clv.data.apparel</span>,</span>
-<span class="r-in">                       data.cov.life  <span class="op">=</span> <span class="va">apparelStaticCov</span>,</span>
-<span class="r-in">                       names.cov.life <span class="op">=</span> <span class="st">"Gender"</span>,</span>
-<span class="r-in">                       data.cov.trans <span class="op">=</span> <span class="va">apparelStaticCov</span>,</span>
-<span class="r-in">                       names.cov.trans <span class="op">=</span> <span class="st">"Gender"</span>,</span>
-<span class="r-in">                       name.id <span class="op">=</span> <span class="st">"Id"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># fit model with covariates and regualization</span></span>
-<span class="r-in"><span class="va">pnbd.apparel.cov</span> <span class="op">&lt;-</span> <span class="fu"><a href="pnbd.html">pnbd</a></span><span class="op">(</span><span class="va">data.apparel.cov</span>,</span>
-<span class="r-in">                         reg.lambdas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>life<span class="op">=</span><span class="fl">2</span>, trans<span class="op">=</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Add static covariate data</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelStaticCov"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">data.apparel.cov</span>  <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>   <span class="fu"><a href="SetStaticCovariates.html">SetStaticCovariates</a></span><span class="op">(</span><span class="va">clv.data.apparel</span>,</span></span>
+<span class="r-in"><span>                       data.cov.life  <span class="op">=</span> <span class="va">apparelStaticCov</span>,</span></span>
+<span class="r-in"><span>                       names.cov.life <span class="op">=</span> <span class="st">"Gender"</span>,</span></span>
+<span class="r-in"><span>                       data.cov.trans <span class="op">=</span> <span class="va">apparelStaticCov</span>,</span></span>
+<span class="r-in"><span>                       names.cov.trans <span class="op">=</span> <span class="st">"Gender"</span>,</span></span>
+<span class="r-in"><span>                       name.id <span class="op">=</span> <span class="st">"Id"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># fit model with covariates and regualization</span></span></span>
+<span class="r-in"><span><span class="va">pnbd.apparel.cov</span> <span class="op">&lt;-</span> <span class="fu"><a href="pnbd.html">pnbd</a></span><span class="op">(</span><span class="va">data.apparel.cov</span>,</span></span>
+<span class="r-in"><span>                         reg.lambdas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>life<span class="op">=</span><span class="fl">2</span>, trans<span class="op">=</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimation finished!</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># additional summary about covariate parameters</span></span>
-<span class="r-in"><span class="co">#   and used regularization</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">pnbd.apparel.cov</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Pareto NBD with Static Covariates  Model </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># additional summary about covariate parameters</span></span></span>
+<span class="r-in"><span><span class="co">#   and used regularization</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">pnbd.apparel.cov</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Pareto/NBD with Static Covariates  Model </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> pnbd(clv.data = data.apparel.cov, reg.lambdas = c(life = 2, trans = 4))</span>
@@ -273,9 +304,9 @@ function <code>vcov</code> will extract the <code>vcov</code> from the returned 
 <span class="r-out co"><span class="r-pr">#&gt;</span>    lambda.life  2.0000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    lambda.trans 4.0000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Constraint covs FALSE </span>
-<span class="r-in"><span class="co"># }</span></span>
-<span class="r-in"></span>
-<span class="r-in"></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -286,11 +317,11 @@ function <code>vcov</code> will extract the <code>vcov</code> from the returned 
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, Elliot Oblander, Patrik Schilter.</p>
+  <p></p><p>Developed by Patrick Bachmann, Niels Kuebler, Markus Meierer, Jeffrey Naef, E. Shin Oblander, Patrik Schilter.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
