@@ -218,6 +218,7 @@ setMethod(f = "show", signature = signature(object="clv.data"), definition = fun
 #'
 #' @examples
 #'
+#' \donttest{ # dont test because ncpu=2 limit on cran (too fast)
 #' library(data.table) # for between()
 #' data(cdnow)
 #'
@@ -253,6 +254,7 @@ setMethod(f = "show", signature = signature(object="clv.data"), definition = fun
 #'
 #' # only keep Id of transactions on "1997-02-16"
 #' subset(clv.cdnow, Date == "1997-02-16", "Id")
+#' }
 #'
 #' @export
 subset.clv.data <- function(x,

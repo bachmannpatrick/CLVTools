@@ -146,7 +146,7 @@ fct.testthat.inputchecks.clvfittedtransactions.prediction.end.uses.newdata <- fu
     data.cdnow.earlier <- copy(data.cdnow)
     data.cdnow.earlier[, Date := as.Date(Date)]
     data.cdnow.earlier[, Date := Date - 1000] # 1000days back -> 1994-04-07 is first
-    expect_silent(clv.newdata <- clvdata(data.cdnow.earlier, date.format = "ymd", time.unit = "w", estimation.split = 37))
+    clv.newdata <- fct.helper.create.clvdata.cdnow(data.cdnow.earlier, estimation.split=37)
 
     # Cannot predict/plot with normal cdnow
     expect_error(do.call(s3method, list(fitted.cdnow, prediction.end = "1996-06-06", verbose=FALSE)))

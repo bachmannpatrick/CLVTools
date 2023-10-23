@@ -56,7 +56,7 @@ customers in the BG/NBD model.
 Calculates the expected number of transactions in a given time period based
 on a customer's past transaction behavior and the BG/NBD model parameters.
 
-\itemize{
+\describe{
 \item{\code{bgnbd_nocov_CET}}{ Conditional Expected Transactions without covariates}
 \item{\code{bgnbd_staticcov_CET}}{ Conditional Expected Transactions with static covariates}
 }

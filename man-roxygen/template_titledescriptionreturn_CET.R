@@ -5,7 +5,7 @@
 #' Calculates the expected number of transactions in a given time period based
 #' on a customer's past transaction behavior and the <%=name_model_full %> model parameters.
 #'
-#' \itemize{
+#' \describe{
 #' \item{\code{<%=name_model_short%>_nocov_CET}}{ Conditional Expected Transactions without covariates}
 #' \item{\code{<%=name_model_short%>_staticcov_CET}}{ Conditional Expected Transactions with static covariates}
 #' }

@@ -1,8 +1,6 @@
 data("cdnow")
 
 # summary ---------------------------------------------------------------------------------------------------------
-context("Correctness - clvdata - summary")
-
 
 test_that("Zero repeaters are counted correctly", {
   skip_on_cran()
@@ -100,7 +98,6 @@ test_that("Holdout is - if customer has no transactions in holdout period", {
 
 
 # as.data.x ---------------------------------------------------------------------------------------------------------
-context("Correctness - clvdata - as.data.x")
 test_that("Correct data format is returned", {
   skip_on_cran()
   clv.cdnow <- fct.helper.create.clvdata.cdnow(data.cdnow=cdnow)
@@ -172,7 +169,6 @@ test_that("Always returns a copy", {
 
 
 # subset ---------------------------------------------------------------------
-context("Correctness - clvdata - subset")
 
 test_that("Correct data selected", {
   skip_on_cran()
@@ -272,7 +268,6 @@ test_that("Always returns a copy of the data", {
 
 
 # plot ---------------------------------------------------------------------
-context("Correctness - clvdata - plot")
 
 # . frequency ---------------------------------------------------------------
 test_that("frequency plot - actual trans has no 0", {
@@ -335,14 +330,14 @@ test_that("Spending plot - ggplot styling works correctly", {
 
   # defaults to line
   expect_silent(gg.default <- plot(clv.cdnow, which="spending", verbose=FALSE))
-  expect_silent(gg.dots    <- plot(clv.cdnow, which="spending", verbose=FALSE, size=0.1))
+  expect_silent(gg.dots    <- plot(clv.cdnow, which="spending", verbose=FALSE, linewidth=0.1))
   expect_silent(gg.geom    <- plot(clv.cdnow, which="spending", verbose=FALSE, geom="point"))
   # args passed in ...
   expect_silent(gg.color   <- plot(clv.cdnow, which="spending", verbose=FALSE, color="green"))
 
   expect_s3_class(gg.default$layers[[1]]$geom, "GeomLine")
   expect_s3_class(gg.geom$layers[[1]]$geom, "GeomPoint")
-  expect_true(gg.dots$layers[[1]]$aes_params[["size"]] == 0.1)
+  expect_true(gg.dots$layers[[1]]$aes_params[["linewidth"]] == 0.1)
   expect_true(gg.color$layers[[1]]$aes_params[["colour"]] == "green")
 })
 

@@ -757,110 +757,59 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// pnbd_dyncov_LL_Bi_cpp
-arma::vec pnbd_dyncov_LL_Bi_cpp(const int i, const arma::vec& t_x, const arma::vec& d, const arma::vec& delta, const arma::ivec& n_walks, const arma::vec& max_walks, const arma::mat& walks);
-RcppExport SEXP _CLVTools_pnbd_dyncov_LL_Bi_cpp(SEXP iSEXP, SEXP t_xSEXP, SEXP dSEXP, SEXP deltaSEXP, SEXP n_walksSEXP, SEXP max_walksSEXP, SEXP walksSEXP) {
+// pnbd_dyncov_LL_negsum
+double pnbd_dyncov_LL_negsum(const arma::vec& params, const arma::vec& X, const arma::vec& t_x, const arma::vec& T_cal, const arma::vec& d_omega, const arma::mat& walkinfo_aux_life, const arma::mat& walkinfo_real_life, const arma::mat& walkinfo_aux_trans, const arma::mat& walkinfo_real_trans, const arma::vec& walkinfo_trans_real_from, const arma::vec& walkinfo_trans_real_to, const arma::mat& covdata_aux_life, const arma::mat& covdata_real_life, const arma::mat& covdata_aux_trans, const arma::mat& covdata_real_trans);
+RcppExport SEXP _CLVTools_pnbd_dyncov_LL_negsum(SEXP paramsSEXP, SEXP XSEXP, SEXP t_xSEXP, SEXP T_calSEXP, SEXP d_omegaSEXP, SEXP walkinfo_aux_lifeSEXP, SEXP walkinfo_real_lifeSEXP, SEXP walkinfo_aux_transSEXP, SEXP walkinfo_real_transSEXP, SEXP walkinfo_trans_real_fromSEXP, SEXP walkinfo_trans_real_toSEXP, SEXP covdata_aux_lifeSEXP, SEXP covdata_real_lifeSEXP, SEXP covdata_aux_transSEXP, SEXP covdata_real_transSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const int >::type i(iSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type X(XSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type t_x(t_xSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type d(dSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type delta(deltaSEXP);
-    Rcpp::traits::input_parameter< const arma::ivec& >::type n_walks(n_walksSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type max_walks(max_walksSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type walks(walksSEXP);
-    rcpp_result_gen = Rcpp::wrap(pnbd_dyncov_LL_Bi_cpp(i, t_x, d, delta, n_walks, max_walks, walks));
+    Rcpp::traits::input_parameter< const arma::vec& >::type T_cal(T_calSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type d_omega(d_omegaSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type walkinfo_aux_life(walkinfo_aux_lifeSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type walkinfo_real_life(walkinfo_real_lifeSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type walkinfo_aux_trans(walkinfo_aux_transSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type walkinfo_real_trans(walkinfo_real_transSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type walkinfo_trans_real_from(walkinfo_trans_real_fromSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type walkinfo_trans_real_to(walkinfo_trans_real_toSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type covdata_aux_life(covdata_aux_lifeSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type covdata_real_life(covdata_real_lifeSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type covdata_aux_trans(covdata_aux_transSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type covdata_real_trans(covdata_real_transSEXP);
+    rcpp_result_gen = Rcpp::wrap(pnbd_dyncov_LL_negsum(params, X, t_x, T_cal, d_omega, walkinfo_aux_life, walkinfo_real_life, walkinfo_aux_trans, walkinfo_real_trans, walkinfo_trans_real_from, walkinfo_trans_real_to, covdata_aux_life, covdata_real_life, covdata_aux_trans, covdata_real_trans));
     return rcpp_result_gen;
 END_RCPP
 }
-// pnbd_dyncov_LL_Di_cpp
-arma::vec pnbd_dyncov_LL_Di_cpp(const int i, const arma::vec& real_d, const arma::vec& aux_d, const arma::ivec& real_n_walks, const arma::ivec& aux_n_walks, const arma::vec& real_max_walks, const arma::vec& aux_max_walks, const arma::vec& real_adj_walk1, const arma::mat& real_walks, const arma::mat& aux_walks);
-RcppExport SEXP _CLVTools_pnbd_dyncov_LL_Di_cpp(SEXP iSEXP, SEXP real_dSEXP, SEXP aux_dSEXP, SEXP real_n_walksSEXP, SEXP aux_n_walksSEXP, SEXP real_max_walksSEXP, SEXP aux_max_walksSEXP, SEXP real_adj_walk1SEXP, SEXP real_walksSEXP, SEXP aux_walksSEXP) {
+// pnbd_dyncov_LL_ind
+Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params, const arma::vec& X, const arma::vec& t_x, const arma::vec& T_cal, const arma::vec& d_omega, const arma::mat& walkinfo_aux_life, const arma::mat& walkinfo_real_life, const arma::mat& walkinfo_aux_trans, const arma::mat& walkinfo_real_trans, const arma::vec& walkinfo_trans_real_from, const arma::vec& walkinfo_trans_real_to, const arma::mat& covdata_aux_life, const arma::mat& covdata_real_life, const arma::mat& covdata_aux_trans, const arma::mat& covdata_real_trans, const bool return_intermediate_results);
+RcppExport SEXP _CLVTools_pnbd_dyncov_LL_ind(SEXP paramsSEXP, SEXP XSEXP, SEXP t_xSEXP, SEXP T_calSEXP, SEXP d_omegaSEXP, SEXP walkinfo_aux_lifeSEXP, SEXP walkinfo_real_lifeSEXP, SEXP walkinfo_aux_transSEXP, SEXP walkinfo_real_transSEXP, SEXP walkinfo_trans_real_fromSEXP, SEXP walkinfo_trans_real_toSEXP, SEXP covdata_aux_lifeSEXP, SEXP covdata_real_lifeSEXP, SEXP covdata_aux_transSEXP, SEXP covdata_real_transSEXP, SEXP return_intermediate_resultsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const int >::type i(iSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type real_d(real_dSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type aux_d(aux_dSEXP);
-    Rcpp::traits::input_parameter< const arma::ivec& >::type real_n_walks(real_n_walksSEXP);
-    Rcpp::traits::input_parameter< const arma::ivec& >::type aux_n_walks(aux_n_walksSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type real_max_walks(real_max_walksSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type aux_max_walks(aux_max_walksSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type real_adj_walk1(real_adj_walk1SEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type real_walks(real_walksSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type aux_walks(aux_walksSEXP);
-    rcpp_result_gen = Rcpp::wrap(pnbd_dyncov_LL_Di_cpp(i, real_d, aux_d, real_n_walks, aux_n_walks, real_max_walks, aux_max_walks, real_adj_walk1, real_walks, aux_walks));
+    Rcpp::traits::input_parameter< const arma::vec& >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type t_x(t_xSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type T_cal(T_calSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type d_omega(d_omegaSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type walkinfo_aux_life(walkinfo_aux_lifeSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type walkinfo_real_life(walkinfo_real_lifeSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type walkinfo_aux_trans(walkinfo_aux_transSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type walkinfo_real_trans(walkinfo_real_transSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type walkinfo_trans_real_from(walkinfo_trans_real_fromSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type walkinfo_trans_real_to(walkinfo_trans_real_toSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type covdata_aux_life(covdata_aux_lifeSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type covdata_real_life(covdata_real_lifeSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type covdata_aux_trans(covdata_aux_transSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type covdata_real_trans(covdata_real_transSEXP);
+    Rcpp::traits::input_parameter< const bool >::type return_intermediate_results(return_intermediate_resultsSEXP);
+    rcpp_result_gen = Rcpp::wrap(pnbd_dyncov_LL_ind(params, X, t_x, T_cal, d_omega, walkinfo_aux_life, walkinfo_real_life, walkinfo_aux_trans, walkinfo_real_trans, walkinfo_trans_real_from, walkinfo_trans_real_to, covdata_aux_life, covdata_real_life, covdata_aux_trans, covdata_real_trans, return_intermediate_results));
     return rcpp_result_gen;
 END_RCPP
 }
-// hyp_alpha_ge_beta_cpp
-arma::vec hyp_alpha_ge_beta_cpp(const arma::vec& alpha_1, const arma::vec& beta_1, const arma::vec& alpha_2, const arma::vec& beta_2, const arma::vec& x, const double r, const double s);
-RcppExport SEXP _CLVTools_hyp_alpha_ge_beta_cpp(SEXP alpha_1SEXP, SEXP beta_1SEXP, SEXP alpha_2SEXP, SEXP beta_2SEXP, SEXP xSEXP, SEXP rSEXP, SEXP sSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type alpha_1(alpha_1SEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type beta_1(beta_1SEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type alpha_2(alpha_2SEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type beta_2(beta_2SEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const double >::type r(rSEXP);
-    Rcpp::traits::input_parameter< const double >::type s(sSEXP);
-    rcpp_result_gen = Rcpp::wrap(hyp_alpha_ge_beta_cpp(alpha_1, beta_1, alpha_2, beta_2, x, r, s));
-    return rcpp_result_gen;
-END_RCPP
-}
-// hyp_beta_g_alpha_cpp
-arma::vec hyp_beta_g_alpha_cpp(const arma::vec& alpha_1, const arma::vec& beta_1, const arma::vec& alpha_2, const arma::vec& beta_2, const arma::vec& x, const double r, const double s);
-RcppExport SEXP _CLVTools_hyp_beta_g_alpha_cpp(SEXP alpha_1SEXP, SEXP beta_1SEXP, SEXP alpha_2SEXP, SEXP beta_2SEXP, SEXP xSEXP, SEXP rSEXP, SEXP sSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type alpha_1(alpha_1SEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type beta_1(beta_1SEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type alpha_2(alpha_2SEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type beta_2(beta_2SEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const double >::type r(rSEXP);
-    Rcpp::traits::input_parameter< const double >::type s(sSEXP);
-    rcpp_result_gen = Rcpp::wrap(hyp_beta_g_alpha_cpp(alpha_1, beta_1, alpha_2, beta_2, x, r, s));
-    return rcpp_result_gen;
-END_RCPP
-}
-// F2_3_vecs_cpp
-arma::vec F2_3_vecs_cpp(const arma::ivec& n_walks_cbs, const arma::vec& dT_cbs, const arma::vec& Bjsum_cbs, const arma::vec& x_cbs, const arma::vec& t_x_cbs, const arma::ivec& n_walks_trans, const arma::mat& walks_trans, const arma::vec& d_trans, const arma::vec& delta_trans, const arma::vec& max_walks_trans, const arma::ivec& n_walks_life_real, const arma::vec& d_life_real, const arma::vec& max_walks_life_real, const arma::vec& adj_walk1_life_real, const arma::mat& walks_life_real, const arma::ivec& n_walks_life_aux, const arma::vec& d_life_aux, const arma::vec& max_walks_life_aux, const arma::mat& walks_life_aux, const double r, const double alpha, const double s, const double beta);
-RcppExport SEXP _CLVTools_F2_3_vecs_cpp(SEXP n_walks_cbsSEXP, SEXP dT_cbsSEXP, SEXP Bjsum_cbsSEXP, SEXP x_cbsSEXP, SEXP t_x_cbsSEXP, SEXP n_walks_transSEXP, SEXP walks_transSEXP, SEXP d_transSEXP, SEXP delta_transSEXP, SEXP max_walks_transSEXP, SEXP n_walks_life_realSEXP, SEXP d_life_realSEXP, SEXP max_walks_life_realSEXP, SEXP adj_walk1_life_realSEXP, SEXP walks_life_realSEXP, SEXP n_walks_life_auxSEXP, SEXP d_life_auxSEXP, SEXP max_walks_life_auxSEXP, SEXP walks_life_auxSEXP, SEXP rSEXP, SEXP alphaSEXP, SEXP sSEXP, SEXP betaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::ivec& >::type n_walks_cbs(n_walks_cbsSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type dT_cbs(dT_cbsSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type Bjsum_cbs(Bjsum_cbsSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type x_cbs(x_cbsSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type t_x_cbs(t_x_cbsSEXP);
-    Rcpp::traits::input_parameter< const arma::ivec& >::type n_walks_trans(n_walks_transSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type walks_trans(walks_transSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type d_trans(d_transSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type delta_trans(delta_transSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type max_walks_trans(max_walks_transSEXP);
-    Rcpp::traits::input_parameter< const arma::ivec& >::type n_walks_life_real(n_walks_life_realSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type d_life_real(d_life_realSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type max_walks_life_real(max_walks_life_realSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type adj_walk1_life_real(adj_walk1_life_realSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type walks_life_real(walks_life_realSEXP);
-    Rcpp::traits::input_parameter< const arma::ivec& >::type n_walks_life_aux(n_walks_life_auxSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type d_life_aux(d_life_auxSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type max_walks_life_aux(max_walks_life_auxSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type walks_life_aux(walks_life_auxSEXP);
-    Rcpp::traits::input_parameter< const double >::type r(rSEXP);
-    Rcpp::traits::input_parameter< const double >::type alpha(alphaSEXP);
-    Rcpp::traits::input_parameter< const double >::type s(sSEXP);
-    Rcpp::traits::input_parameter< const double >::type beta(betaSEXP);
-    rcpp_result_gen = Rcpp::wrap(F2_3_vecs_cpp(n_walks_cbs, dT_cbs, Bjsum_cbs, x_cbs, t_x_cbs, n_walks_trans, walks_trans, d_trans, delta_trans, max_walks_trans, n_walks_life_real, d_life_real, max_walks_life_real, adj_walk1_life_real, walks_life_real, n_walks_life_aux, d_life_aux, max_walks_life_aux, walks_life_aux, r, alpha, s, beta));
-    return rcpp_result_gen;
-END_RCPP
-}
+
+RcppExport SEXP run_testthat_tests(SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
     {"_CLVTools_bgnbd_nocov_CET", (DL_FUNC) &_CLVTools_bgnbd_nocov_CET, 8},
@@ -909,11 +858,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CLVTools_pnbd_staticcov_PAlive", (DL_FUNC) &_CLVTools_pnbd_staticcov_PAlive, 11},
     {"_CLVTools_pnbd_nocov_PMF", (DL_FUNC) &_CLVTools_pnbd_nocov_PMF, 6},
     {"_CLVTools_pnbd_staticcov_PMF", (DL_FUNC) &_CLVTools_pnbd_staticcov_PMF, 6},
-    {"_CLVTools_pnbd_dyncov_LL_Bi_cpp", (DL_FUNC) &_CLVTools_pnbd_dyncov_LL_Bi_cpp, 7},
-    {"_CLVTools_pnbd_dyncov_LL_Di_cpp", (DL_FUNC) &_CLVTools_pnbd_dyncov_LL_Di_cpp, 10},
-    {"_CLVTools_hyp_alpha_ge_beta_cpp", (DL_FUNC) &_CLVTools_hyp_alpha_ge_beta_cpp, 7},
-    {"_CLVTools_hyp_beta_g_alpha_cpp", (DL_FUNC) &_CLVTools_hyp_beta_g_alpha_cpp, 7},
-    {"_CLVTools_F2_3_vecs_cpp", (DL_FUNC) &_CLVTools_F2_3_vecs_cpp, 23},
+    {"_CLVTools_pnbd_dyncov_LL_negsum", (DL_FUNC) &_CLVTools_pnbd_dyncov_LL_negsum, 15},
+    {"_CLVTools_pnbd_dyncov_LL_ind", (DL_FUNC) &_CLVTools_pnbd_dyncov_LL_ind, 16},
+    {"run_testthat_tests", (DL_FUNC) &run_testthat_tests, 1},
     {NULL, NULL, 0}
 };
 

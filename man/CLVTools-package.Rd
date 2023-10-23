@@ -59,7 +59,7 @@ Authors:
   \item Niels Kuebler \email{niels.kuebler@uzh.ch}
   \item Markus Meierer \email{markus.meierer@business.uzh.ch}
   \item Jeffrey Naef \email{naef@stat.math.ethz.ch}
-  \item Elliot Oblander \email{eoblander23@gsb.columbia.edu}
+  \item E. Shin Oblander \email{eoblander23@gsb.columbia.edu}
   \item Patrik Schilter \email{patrik.schilter@gmail.com}
 }
 

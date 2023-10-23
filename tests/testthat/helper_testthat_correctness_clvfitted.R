@@ -11,7 +11,7 @@ fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box <- function(m
 
     expect_false(fct.DT.any.non.finite(predict(fitted, verbose = FALSE)))
     if(is(fitted, "clv.fitted.transactions")){
-      expect_false(fct.DT.any.non.finite(plot(fitted, plot = FALSE, verbose = FALSE)[, !"Actual"]))
+      expect_false(fct.DT.any.non.finite(plot(fitted, plot = FALSE, verbose = FALSE)))
     }
     # KKTs both true
     expect_true(res.sum$kkt1)
@@ -22,9 +22,8 @@ fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box <- function(m
 
 fct.testthat.correctness.clvfitted.nocov.correct.se <- function(method, cdnow, start.params.model, params.nocov.se){
   test_that("Cdnow nocov correct SE", {
-    expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "w", estimation.split = "1997-09-30"))
-
-    l.args <- list(clv.data=clv.cdnow, start.params.model = start.params.model, verbose=FALSE)
+    l.args <- list(clv.data=fct.helper.create.clvdata.cdnow(cdnow, estimation.split="1997-09-30"),
+                   start.params.model = start.params.model, verbose=FALSE)
     expect_silent(p.cdnow <- do.call(what = method, args = l.args))
 
     # From previous fit
@@ -35,9 +34,9 @@ fct.testthat.correctness.clvfitted.nocov.correct.se <- function(method, cdnow, s
 fct.testthat.correctness.clvfitted.correct.coefs <- function(method, cdnow, start.params.model, params.nocov.coef, LL.nocov){
   test_that("Cdnow nocov correct coefs", {
     skip_on_cran()
-    expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "w", estimation.split = "1997-09-30"))
 
-    l.args <- list(clv.data=clv.cdnow, start.params.model = start.params.model, verbose=FALSE)
+    l.args <- list(clv.data=fct.helper.create.clvdata.cdnow(cdnow, estimation.split="1997-09-30"),
+                   start.params.model = start.params.model, verbose=FALSE)
     expect_silent(p.cdnow <- do.call(what = method, args = l.args))
 
     # From previous fit

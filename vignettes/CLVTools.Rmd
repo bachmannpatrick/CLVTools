@@ -3,6 +3,7 @@ title: "Walkthrough for the CLVTools Package"
 output:
   pdf_document:
     latex_engine: xelatex
+    toc: true
     number_sections: yes
 bibliography: bibliography.bib
 vignette: >
@@ -19,6 +20,10 @@ knitr::opts_chunk$set(
   #fig.path = "figures/WALKTHROUGH-",
   out.width = "100%"
 )
+
+# On CRAN, code may not run with more than 2 threads
+# Otherwise results in failed check with "Re-building vignettes had CPU time xxx times elapsed time"
+data.table::setDTthreads(threads = 2)
 ```
 
 # Prerequisites: Setup the R environment
@@ -33,7 +38,7 @@ Install the development version from GitHub (using the `devtools` package [@devt
 
 ```{r install-package-GITHUB, eval = FALSE}
 install.packages("devtools")
-devtools::install_github("bachmannpatrick/CLVTools", ref = "master")
+devtools::install_github("bachmannpatrick/CLVTools", ref = "development")
 ```
 
 Load the package
@@ -41,11 +46,11 @@ Load the package
 library("CLVTools")
 ```
 
-#Apply the `CLVTools` Package
+# Apply the `CLVTools` Package
 
 ## General workflow
 
-Independent of the probabilistic model applied in `CLVTools`, the general workflow consists of three main steps:
+Independent of the latent attrition model applied in `CLVTools`, the general workflow consists of three main steps:
 
 1. Create a `clv.data` object containing the dataset and required meta-information such as date formats and column names in the dataset. After initializing the object, there is the option to add additional information on covariates in a separate step.
 
@@ -53,16 +58,23 @@ Independent of the probabilistic model applied in `CLVTools`, the general workfl
 
 3. Use the estimated model parameters to predict future customer purchase behavior.
 
+![Workflow for `CLVTools`](figures/WALKTHROUGH-steps.pdf)
+
+`CLVTools` provides two ways for evaluating latent attrition models: you can use of the provided formula interface or you can use standard functions (non-formula interface). Both offer the same functionality, however the formula interface is especially helpful when covariates are included in the model. Through out this walkthrough, we will illustrate both options.
+
 Reporting and plotting results is facilitated by the implementation of well-known generic methods such as `plot()`, `print()` and `summary()`. These commands adapt their output according to the model state and may be used at any point of the workﬂow.
+
+
+
 
 ## Load sample data provided in the package
 As Input data `CLVTools` requires customers' transaction history. Every transaction record consists of a purchase date and customer ID. Optionally, the price of the transaction may be included to allow for prediction of future customer spending using an additional Gamma/Gamma model[@Fader2005b; @Colombo1999]. Using the full history of transaction data allows for comprehensive plots and summary statistics, which allow the identification of possible issues prior to model estimation. Data may be provided as `data.frame` or `data.table` [@data.table].  
 
 It is common practice to split time series data into two parts, an estimation and a holdout period. The model is estimated based on the data from the estimation period while the data from the holdout period allows to rigorously assess model performance. Once model performance is checked on known data one can proceed to predict data without a holdout period. The length of the estimation period is heavily dependent on the characteristics of the analyzed dataset. We recommend to choose an estimation period that contains in minimum the length of the average inter-purchase time. Note that all customers in the dataset need to purchase at least once during the estimation period, i.e. these models do not account for prospects who have not yet a purchase record.
 
-Some models included in `CLVTools` allow to model the impact of covariates. These covariates may explain heterogeneity among the customers and therefore increase the predictive accuracy of the model. At the same time we may also identify and quantify the effects of these covariates on customer purchase and customer attrition. `CLVTools` distinguishes between time-invariant and time-varying covariates. Time-invariant covariates include customer characteristics such as demographics that do not change over time. Time-varying covariates are allowed to change over time. They include for example direct marketing information or seasonal patterns.
+Some models included in `CLVTools` allow to model the impact of covariates. These covariates may explain heterogeneity among the customers and therefore increase the predictive accuracy of the model. At the same time, we may also identify and quantify the effects of these covariates on customer purchase and customer attrition. `CLVTools` distinguishes between time-invariant and time-varying covariates. Time-invariant covariates include customer characteristics such as demographics that do not change over time. Time-varying covariates are allowed to change over time. They include for example direct marketing information or seasonal patterns.
 
-For the following example, we use simulated data comparable to data from a retailer in the apparel industry. The dataset contains transactional detail records for every customer consisting of customer id, date of purchase and the total monetary value of the transaction.The apparel dataset is available in the `CLVTools` package. Use the `data(apparelTrans)` to load it:
+For the following example, we use simulated data comparable to data from a retailer in the apparel industry. The dataset contains transactional detail records for every customer consisting of customer id, date of purchase and the total monetary value of the transaction. The apparel dataset is available in the `CLVTools` package. Use the `data(apparelTrans)` to load it:
 
 
 ```{r load-data}
@@ -74,7 +86,7 @@ apparelTrans
 
 Before we estimate a model, we are required to initialize a data object using the `clvdata()` command. The data object contains the prepared transactional data and is later used as input for model fitting. Make sure to store the generated object in a variable, e.g. in our example `clv.apparel`.
 
-Be aware that probabilistic models such as the ones implemented in CLVTools are usually applied to specific customer cohorts. That means, you analyze customer that have joined your company at the same time (usually same day, week, month, or quarter). For more information on cohort analysis, see also [here](https://en.wikipedia.org/wiki/Cohort_analysis). Consequently, the data apparelTrans in this example is not the full transaction records of a fashion retailer, but rather only the customer cohort of 250 customers purchasing for the first time at this business on the day of 2005-01-03. This has to be done before initializing a data object using the `clvdata()` command.
+Be aware that probabilistic models such as the ones implemented in `CLVTools` are usually applied to specific customer cohorts. That means, you analyze customer that have joined your company at the same time (usually same day, week, month, or quarter). For more information on cohort analysis, see also [here](https://en.wikipedia.org/wiki/Cohort_analysis). Consequently, the data apparelTrans in this example is not the full transaction records of a fashion retailer, but rather only the customer cohort of 250 customers purchasing for the first time at this business on the day of 2005-01-03. This has to be done before initializing a data object using the `clvdata()` command.
 
 Through the argument `data.transactions` a `data.frame` or `data.table` which contains the transaction records, is specified. In our example this is `data.transactions=apparelTrans`. The argument `date.format` is used to indicate the format of the date variable in the data used. The date format in the apparel dataset is given as "year-month-day" (i.e., "2005-01-03"), therefore we set `date.format="ymd"`. Other combinations such as `date.format="dmy"` are possible. See the documentation of `lubridate` [@lubridate] for all details. `time.unit` is the scale used to measure time between two dates. For this dataset and in most other cases The argument `time.unit="week"` is the preferred choice. Abbreviations may be used (i.e. "w"). `estimation.split` indicates the length of the estimation period. Either the length of the estimation period (in previous specified time units) or the date at which the estimation period ends can be specified. If no value is provided, the whole dataset is used as estimation period (i.e. no holdout period). In this example, we use an estimation period of 40 weeks. Finally, the three name arguments indicate the column names for customer ID, date and price in the supplied dataset. Note that the price column is optional.
 
@@ -109,22 +121,44 @@ summary(clv.apparel)
 
 ## Estimate Model Parameters{#estimate}
 
-After initializing the object, we are able to estimate the first probabilistic latent attrition model. We start with the standard Pareto/NBD model [@Schmittlein1987] and therefore use the command `pnbd()` to fit the model and estimate model parameters. `clv.data` specifies the initialized object prepared in the last step. Optionally, starting values for the model parameters and control settings for the optimization algorithm may be provided: The argument `start.params.model` allows to assign a vector (e.g. `c(alpha=1, beta=2, s=1, beta=2)` in the case of the Pareto/NBD model) of starting values for the optimization. This is useful if prior knowledge on the parameters of the distributions are available. By default starting values are set to 1 for all parameters. The argument `optimx.args` provides an option to control settings for the optimization routine. It passes a list of arguments to the optimizer. All options known from the package `optimx` [@optimx1; @optimx2] may be used. This option enables users to specify specific optimization algorithms, set upper and/or lower limits or enable tracing information on the progress of the optimization. In the case of the standard Pareto/NBD model, `CLVTools` uses by default the optimization method `L-BFGS-G` [@byrd1995limited]. If the result of the optimization is in-feasible, the optimization automatically switches to the more robust but often slower `Nelder-Mead` method [@nelder1965simplex]. `verbose` shows additional output. 
+After initializing the object, we can start estimating the first probabilistic latent attrition model. We start with the standard Pareto/NBD model [@Schmittlein1987] and therefore use the command `pnbd()` to fit the model and estimate model parameters. `clv.data` specifies the initialized object prepared in the last step. Optionally, starting values for the model parameters and control settings for the optimization algorithm may be provided: The argument `start.params.model` allows to assign a vector (e.g. `c(alpha=1, beta=2, s=1, beta=2)` in the case of the Pareto/NBD model) of starting values for the optimization. This is useful if prior knowledge on the parameters of the distributions are available. By default starting values are set to 1 for all parameters. The argument `optimx.args` provides an option to control settings for the optimization routine. It passes a list of arguments to the optimizer. All options known from the package `optimx` [@optimx1; @optimx2] may be used. This option enables users to specify specific optimization algorithms, set upper and/or lower limits or enable tracing information on the progress of the optimization. In the case of the standard Pareto/NBD model, `CLVTools` uses by default the optimization method `L-BFGS-G` [@byrd1995limited]. If the result of the optimization is in-feasible, the optimization automatically switches to the more robust but often slower `Nelder-Mead` method [@nelder1965simplex]. `verbose` shows additional output. 
 
+To execute the model estimation you have the choice between a formula-based interface and a non-formula-based interface. In the following we illustrate the two alternatives.
 
-```{r estimate-model}
-est.pnbd <- pnbd(clv.data = clv.apparel)
-est.pnbd
+### **Estimating the model using formula interface:**
+```{r estimate-model-formula}
+   est.pnbd <- latentAttrition(~pnbd(), 
+                               data=clv.apparel)
+   est.pnbd
+```
+    Using start parameters and other additional arguments for the optimzier:
+```{r estimate-model-formula2, eval=FALSE}
+  est.pnbd <- latentAttrition(~pnbd(start.params.model=c(r=1, alpha=10, s=2, beta=8)),
+                                    optimx.args = list(control=list(trace=5),
+                                       method="Nelder-Mead"),
+                              data=clv.apparel)
+```
+    When using the formula interface, it is also possible to fit the model without prior specification of of a `clvdata` object:
+    
+```{r estimate-model-formula3, eval=FALSE}
+    est.pnbd <- latentAttrition(data(split=40, format=ymd, unit=w)~pnbd(), data=apparelTrans)
 ```
 
-If we assign starting parameters and additional arguments for the optimizer we use: 
+### **Estimating the model using non-formula interface:**
+```{r estimate-model, eval=FALSE}
+    est.pnbd <- pnbd(clv.data = clv.apparel)
+    est.pnbd
+```
+    If we assign starting parameters and additional arguments for the optimizer we use: 
 ```{r estimate-model2, eval=FALSE}
-est.pnbd <- pnbd(clv.data = clv.apparel, 
-                     start.params.model = c(r=1, alpha = 2, s = 1, beta = 2), 
-                     optimx.args = list(control=list(trace=5),
+   est.pnbd <- pnbd(clv.data = clv.apparel, 
+                    start.params.model = c(r=1, alpha = 2, s = 1, beta = 2), 
+                    optimx.args = list(control=list(trace=5),
                                        method="Nelder-Mead" 
                                        ))
 ```
+
+
 
 Parameter estimates may be reported by either printing the estimated object (i.e. `est.pnbd`) directly in the console or by calling `summary(est.pnbd)` to get a more detailed report including the likelihood value as well as AIC and BIC. Alternatively parameters may be directly extracted using `coef(est.pnbd)`. Also `loglik()`, `confint()` and `vcov()` are available to directly access the Loglikelihood value, confidence intervals for the parameters and to calculate the Variance-Covariance Matrix for the fitted model. For the standard Pareto/NBD model, we get 4 parameters $r, \alpha, s$ and $\beta$.  where $r,\alpha$ represent the shape and scale parameter of the gamma distribution that determines the purchase rate and $s,\beta$ of the attrition rate across individual customers. $r/\alpha$ can be interpreted as the mean purchase and $s/\beta$ as the mean attrition rate. A significance level is provided for each parameter estimates. In the case of the apparelTrans dataset we observe a an average purchase rate of $r/\alpha=0.147$ transactions and an average attrition rate of $s/\beta=0.031$ per customer per week. KKT 1 and 2 indicate the Karush-Kuhn-Tucker optimality conditions of the first and second order [@KKT]. If those criteria are not met, the optimizer has probably not arrived at an optimal solution. If this is the case it is usually a good idea to rerun the estimation using alternative starting values.
 
@@ -169,16 +203,27 @@ As an alternative to the Pareto/NBD model `CLVTools` features the BG/NBD model [
 | gg() | Gamma/Gamma  | - | spending model |
 
 To estimate the GGom/NBD model we apply the `ggomnbd()`to the `clv.apparel` object. The GGom/NBD model is more flexible than the Pareto/NBD model, however it sometimes is challenging to optimize. Note that in this particular case providing start parameters is essential to arrive at an optimal solution (i.e. `kkt1: TRUE` and `kkt2: TRUE`).
+
+To execute the model estimation you have the choice between a formula-based interface and a non-formula-based interface. In the following we illustrate the two alternatives.
+
+### **Estimating the model using formula interface:**
+```{r estimate-ggomnbd-formula, eval=FALSE}
+  est.ggomnbd <- latentAttrition(~ggomnbd(start.params.model=
+                                          c(r=0.7, alpha=5, b=0.005,  s=0.02, beta=0.001)),
+                                    optimx.args = list(method="Nelder-Mead"),
+                                 data=clv.apparel)
+```
+
+### **Estimating the model using non-formula interface:**
 ```{r estimate-ggomnbd, eval=FALSE}
 est.ggomnbd <- ggomnbd(clv.data = clv.apparel, 
-                     start.params.model = c(r=0.7, alpha=5, b=0.005,  s=0.02, beta=0.001), 
-                     optimx.args = list(control=list(trace=5),
-                                       method="Nelder-Mead"))
+                       start.params.model = c(r=0.7, alpha=5, b=0.005,  s=0.02, beta=0.001), 
+                       optimx.args = list(method="Nelder-Mead"))
 ```
 
 ## Predict Customer Behavior{#predict}
 
-Once the model parameters are estimated, we are able to predict future customer behavior on an individual level. To do so, we use `predict()` on the object with the estimated parameters (i.e. `est.pnbd`). The prediction period may be varied by specifying `prediction.end`. It is possible to provide either an end-date or a duration using the same time unit as specified when initializing the object (i.e  `prediction.end = "2006-05-08"` or `prediction.end = 30`). By default, the prediction is made until the end of the dataset specified in the `clvdata()` command. The argument `continuous.discount.factor` allows to adjust the discount rate used to estimated the discounted expected transactions (DERT). The default value is `0.1` (=10%). Probabilistic customer attrition model predict in general three expected characteristics for every customer:
+Once the model parameters are estimated, we are able to predict future customer behavior on an individual level. To do so, we use `predict()` on the object with the estimated parameters (i.e. `est.pnbd`). The prediction period may be varied by specifying `prediction.end`. It is possible to provide either an end-date or a duration using the same time unit as specified when initializing the object (i.e  `prediction.end = "2006-05-08"` or `prediction.end = 30`). By default, the prediction is made until the end of the dataset specified in the `clvdata()` command. The argument `continuous.discount.factor` allows to adjust the discount rate used to estimated the discounted expected transactions (DERT). The default value is `0.1` (=10%). Make sure to convert your discount rate if you use annual/monthly/weekly discount rates. An annual rate of `(100 x d)\%` equals a continuous rate `delta = ln(1+d)`. To account for time units which are not annual, the continuous rate has to be further adjusted to `delta=ln(1+d)/k`, where `k` are the number of time units in a year. Probabilistic customer attrition model predict in general three expected characteristics for every customer:
 
 * "conditional expected transactions" (CET), which is the number of transactions to expect form a customer during the prediction period,
 * "probability of a customer being alive" (PAlive) at the end of the estimation period and
@@ -212,7 +257,7 @@ predict(est.pnbd, prediction.end = "2006-05-08")
 ```
 
 
-## Plotting
+## Plotting{#plotting}
 `CLVTools`, offers a variety of different plots. All `clvdata` objects may be plotted using the `plot()` command. Similar to `summary()`, the output of `plot()` and the corresponding options are dependent on the current modeling step. When applied to a data object created the `clvdata()` command, the following plots can be selected using the `which` option of plotting:
 
 * Tracking plot (`which="tracking"`): plots the the aggregated repeat transactions per period over a given time period. The period can be specified using the `prediction.end` option. It is also possible to generate cumulative tracking plots (`cumulative = FALSE`). The tracking plot is the default option.
@@ -258,7 +303,7 @@ plot(est.pnbd, which="pmf", trans.bins=0:5, label.remaining="6+")
 ```
 
 ## Covariates
-`CLVTools` provides the option to include covariates into probabilistic customer attrition models. Covariates may affect the purchase or the attrition process, or both. It is also possible to include different covariates for the two processes. However, support for covariates is dependent on the model. Not all implemented models provide the option for covariates. In general, `CLVTools` distinguishes between two types of covariates: time-invariant and time-varying. The former include factors that do not change over time such as customer demographics or customer acquisition information. The latter may change over time and include marketing activities or seasonal patterns.
+`CLVTools` provides the option to include covariates into probabilistic customer attrition models. Covariates may affect the purchase or the attrition process, or both. It is also possible to include different covariates for the two processes. However, support for covariates is dependent on the model. Not all implemented models provide an option for covariates. In general, `CLVTools` distinguishes between two types of covariates: time-invariant and time-varying. The former include factors that do not change over time such as customer demographics or customer acquisition information. The latter may change over time and include marketing activities or seasonal patterns.
 
 Data for time-invariant covariates must contain a unique customer ID and a single value for each covariate. It should be supplied as a `data.frame` or `data.table`. In the example of the apparel retailer we use demographic information "gender" as time-invariant and information on the acquisition channel as covariate for both, the purchase and the attrition process. Use the `data("apparelStaticCov")` command to load the time-invariant covariates. In this example gender is coded as a dummy variable with `male=0` and `female=1` and channel with `online=0` and `offline=1`.
 
@@ -301,20 +346,51 @@ In order to include time-invariant covariates in a time-varying model, they may 
 
 Once the covariates are added to the model the estimation process is almost identical to the standard model without covariates. The only difference is that the provided object now data for contains either time-invariant or time-varying covariates and the option to define start parameters for the covariates of both processes using the arguments `start.params.life` and `start.params.trans`. If not set, the staring values are set to 1. To define starting parameters for the covariates, the name of the corresponding factor has to be used. For example in the case of time-invariant covariates:
 
-```{r Static-cov-estimate, message=TRUE, warning=FALSE}
+To execute the model estimation you have the choice between a formula-based interface and a non-formula-based interface. In the following we illustrate the two alternatives.
+
+### **Estimating the model using formula interface**:
+
+We use all present covariates:
+```{r static-cov-estimate-formula1, message=TRUE, warning=FALSE, eval=FALSE}
+  est.pnbd.static <- latentAttrition(~pnbd()|.|., clv.static)
+```
+Using the formula interface, we can use only selected covariates (only Gender for the lifetime process and both, Channel and Gender for the transaction process):
+```{r static-cov-estimate-formula2, warning=FALSE, eval=FALSE}
+  est.pnbd.static <- latentAttrition(~pnbd()|Gender|Channel+Gender, clv.static)
+
+```
+Or we can transform covariates:
+```{r, static-covariates-formula3, warning=FALSE, eval=FALSE}
+  est.pnbd.static <- latentAttrition(~pnbd()|Channel+Gender|I(log(Channel+2)), clv.static)
+```
+It is also possible to not initialize a `clvdata` object for the covariates but instead specify the covariate data directly in the model:
+```{r static-covariates-formula4, warning=FALSE, eval=FALSE}
+  est.pnbd.static <- latentAttrition(data()~pnbd()|.|.,
+                                     data=apparelTrans, cov=apparelStaticCov)
+```
+
+
+Analogously, we can estimate the model containing time-varying covariates. In this example we also activate output of the optimizer in order to observe the progress.
+```{r dyn-cov-formula1, eval=FALSE}
+est.pnbd.dyn <- latentAttrition(~pnbd()|.|., optimx.args = list(control=list(trace=5)), 
+                                clv.dyn)
+```
+
+
+### **Estimating the model using non-formula interface**:
+```{r static-cov-estimate, message=TRUE, warning=FALSE}
 est.pnbd.static <- pnbd(clv.static, 
                          start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
                          start.params.life = c(Gender=0.6, Channel=0.4),
                          start.params.trans = c(Gender=0.6, Channel=0.4))
 ```
-
-Analogously, we can estimate the model containing time-varying covariates.
-
-```{r Dyn-cov-estimate, eval=FALSE}
+It is not possible to alter or select covariates in the non-formula interface, but, we can also estimate a model containing time-varying covariates:
+```{r dyn-cov-estimate, eval=FALSE}
 est.pnbd.dyn <- pnbd(clv.dyn, 
                      start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
                      start.params.life = c(Marketing=0.5, Gender=0.6, Channel=0.4),
-                     start.params.trans = c(Marketing=0.5, Gender=0.6, Channel=0.4))
+                     start.params.trans = c(Marketing=0.5, Gender=0.6, Channel=0.4),
+                     optimx.args = list(control=list(trace=5)))
 ```
 
 To inspect the estimated model we use `summary()`, however all other commands such as `print()`, `coef()`, `loglike()`, `confint()` and `vcov()` are also available. Now, output contains also parameters for the covariates for both processes. Since covariates are added separately for the purchase and the attrition process, there are also separate model parameters for the two processes. These parameters are directly interpretable as rate elasticity of the corresponding factors: A 1% change in a contextual factor $\bf{X}^{P}$ or $\bf{X}^{L}$ changes the purchase or the attrition rate by $\gamma_{purch}\bf{X}^{P}$ or $\gamma_{life}\bf{X}^{L}$ percent, respectively  [@Gupta1991]. In the example of the apparel retailer, we observe that female customer purchase significantly more (`trans.Gender=1.42576`). Note, that female customers are coded as 1, male customers as 0. Also customers acquired offline (coded as Channel=1), purchase more (`trans.Channel=0.40304`) and stay longer (`life.Channel=0.9343`). Make sure to check the Karush-Kuhn-Tucker optimality conditions of the first and second order [@KKT] (KKT1 and KKT1) before interpreting the parameters. If those criteria are not met, the optimizer has probably not arrived at an optimal solution. If this is the case it is usually a good idea to rerun the estimation using alternative starting values.
@@ -328,33 +404,60 @@ summary(est.pnbd.static)
 To predict future customer behavior we use `predict()`.  Note that dependent on the model, the predicted metrics may differ. For example, in the case of the Pareto/NBD model with time-varying covariates, instead of DERT, DECT is predicted. DECT only covers a finite time horizon in contrast to DERT. Time-varying covariates must be provided for the entire prediction period. If the data initially provided in the `SetDynamicCovariates()` command does not cover the complete prediction period, the argument `new.data` offers the ability to supply new data for the time-varying covariates in the from of a `clvdata` object.
 
 ## Add Correlation to the model
-To relax the assumption of independence between the purchase and the attrition process, `CLVTools` provides the option to specify the argument `use.cor` in the command t fit the model (i.e. `pnbd`). In case of `use.cor=TRUE`, a Sarmanov approach is used to correlate the two processes. `start.param.cor` allows to optionally specify a starting value for the correlation parameter.
+To relax the assumption of independence between the purchase and the attrition process, `CLVTools` provides the option to specify the argument `use.cor` when fitting the model (i.e. `pnbd`). In case of `use.cor=TRUE`, a Sarmanov approach is used to correlate the two processes. `start.param.cor` allows to optionally specify a starting value for the correlation parameter. Correlation can be added with or without covariates.
 
+To execute the model estimation you have the choice between a formula-based interface and a non-formula-based interface. In the following we illustrate the two alternatives.
+
+### **Estimating the model using formula interface:**
+```{r cor-formula1, eval=FALSE}
+est.pnbd.cor <- latentAttrition(~pnbd(use.cor=TRUE),
+                data=clv.apparel)
+```
+### **Estimating the model using non-formula interface:**
 ```{r Cov-cor, eval=FALSE}
 est.pnbd.cor <- pnbd(clv.apparel, 
                      use.cor= TRUE)
 summary(est.pnbd.cor)
 ```
 
-The parameter `Cor(life,trans)` is added to the parameter estimates that may be directly interpreted as a correlation. In the example of the apparel retailer the correlation parameter is not significant and the correlation is very close to zero, indicating that the purchase and the attrition process are independent.
+The parameter `Cor(life,trans)` is added to the parameter estimates that may be directly interpreted as a correlation. In the example of the apparel retailer the correlation parameter is not significant and the correlation is very close to zero, indicating that the purchase and the attrition process may be independent.
 
-## Advanced Options for Contextual Factors
-`CLVTools` provides two additional estimation options for models containing covariates (time-invariant or time-varying): regularization and constraints for the parameters of the covariates.  Both options are included in the command to fit the model (i.e., `pnbd()`. Support for this option is dependent on the model. They may be used simultaneously.
+## Advanced Options for Covariates
+`CLVTools` provides two additional estimation options for models containing covariates (time-invariant or time-varying): regularization and constraints for the parameters of the covariates. Support for this option is dependent on the model. They may be used simultaneously.
 
-* The argument `reg.lambdas` provides the possibility to specify separate `\lambda_{reg}` for the two processes (i.e. `reg.lambdas = c(trans=100, life=100)`. The larger the `\lambda_{reg}` the stronger the effects of the regularization. Regularization only affects the parameters of the covariates.
-* The argument `names.cov.constr` implements equality constraints for contextual factors with regards to the two processes. For example the variable "gender" is forced to have the same effect on the purchase as well as on the attrition process. To do so, the option `names.cov.constr` is available (i.e. `names.cov.constr=c("Gender")`). To provide starting parameters for the constrained variable use `start.params.constr`.
+In the following we illustrate code for both, a formula-based interface a non-formula-based interface.
 
-To enable regularization for the covariates, we use the following command:
+***Regularization*** helps to prevent overfitting of the model when using covariates. We can add regularization lambdas for the two processes. The larger the lambdas the stronger the effects of the regularization. Regularization only affects the parameters of the covariates. The use of regularization is indicated at the end of the `summary()` output.
 
-```{r reg-advOptions,}
+### **Estimating the model using formula interface:**
+```{r reg-formula, eval=FALSE}
+est.pnbd.reg <- latentAttrition(~pnbd()|.|.|regularization(life=3, trans=8), clv.static)
+summary(est.pnbd.reg)
+```
+
+### **Estimating the model using non-formula interface:**
+
+We use the argument `reg.lambdas` to specify the lambdas for the two processes (i.e. `reg.lambdas = c(trans=100, life=100)`:
+```{r reg-advOptions, eval=FALSE}
 est.pnbd.reg <- pnbd(clv.static, 
                          start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
                          reg.lambdas = c(trans=100, life=100))
 summary(est.pnbd.reg)
 ```
-To constrain "Gender" to have the same effect on both processes we use the following command. Note, that the output now only contains one parameter for "Gender" as it is constrained to be the same for both processes.
 
-```{r constr-advOptions,}
+***Constraints*** implement equality constraints for contextual factors with regards to the two processes. For example the variable "gender" is forced to have the same effect on the purchase as well as on the attrition process. We can use the argument `names.cov.constr`(i.e. `names.cov.constr=c("Gender")`). In this case, the output only contains one parameter for "Gender" as it is constrained to be the same for both processes. To provide starting parameters for the constrained variable use `start.params.constr`. The use of constraints is indicated at the end of the `summary()` output.
+
+### **Estimating the model using formula interface:**
+```{r constr-formula, eval=FALSE}
+est.pnbd.constr <- latentAttrition(~pnbd(names.cov.constr=c("Gender"), 
+                                         start.params.constr = c(Gender = 0.6))|.|., 
+                                   clv.static)
+summary(est.pnbd.constr)
+```
+Note: providing a starting parameter for the constrained variable is optional.
+
+### **Estimating the model using non-formula interface:**
+```{r constr-advOptions, eval=FALSE}
 est.pnbd.constr <- pnbd(clv.static, 
                          start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
                          start.params.constr = c(Gender=0.6),
@@ -363,10 +466,11 @@ summary(est.pnbd.constr)
 ```
 
 # Customer Spending {#spending}
-Customer lifetime value (CLV) is composed of three components of every customer: the future level of transactions, expected attrition behaviour (i.e. probability of being alive) and the monetary value.
-While probabilistic latent attrition models provide metrics for the first two components, they do not predict customer spending. To predict customer spending an additional model is required. The `CLVTools`package features the Gamma/Gamma (G/G) [@Fader2005b; @Colombo1999] model for predicting customer spending. For convenience, the `predict()` command allows to automatically predict customer spending for all latent attrition models using the option `predict.spending=TRUE` (see section [Customer Spending](#spending)). However, to provide more options and more granular insights the Gamma/Gamma model can be estimated independently. In the following, we discuss how to estimate a Gamma/Gamma model using `CLVTools`.
+Customer lifetime value (CLV) is composed of three components of every customer: the future level of transactions, expected attrition behaviour (i.e. probability of being alive) and the monetary value. While probabilistic latent attrition models provide metrics for the first two components, they do not predict customer spending. To predict customer spending an additional model is required. The `CLVTools`package features the Gamma/Gamma (G/G) [@Fader2005b; @Colombo1999] model for predicting customer spending. For convenience, the `predict()` command allows to automatically predict customer spending for all latent attrition models using the option `predict.spending=TRUE` (see section [Customer Spending](#spending)). However, to provide more options and more granular insights the Gamma/Gamma model can be estimated independently. In the following, we discuss how to estimate a Gamma/Gamma model using `CLVTools`.
 
 The general workflow remains identical. It consists of the three main steps: (1) creating a `clv.data` object containing the dataset and required meta-information, (2) fitting the model on the provided data and (3) predicting future customer purchase behavior based on the fitted model.
+
+`CLVTools` provides two ways for evaluating spending models: you can use of the formula interface or you can use standard functions (non-formula interface). Both offer the same functionality. Through out this walkthrough, we will illustrate both options.
 
 Reporting and plotting results is facilitated by the implementation of well-known generic methods such as `plot()`, `print()` and `summary()`.
 
@@ -392,15 +496,46 @@ clv.apparel <- clvdata(apparelTrans,
 ## Estimate Model Parameters
 To estimate the Gamma/Gamma spending model, we use the command `gg()` on the initialized `clvdata` object. `clv.data` specifies the initialized object prepared in the last step. Optionally, starting values for the model parameters and control settings for the optimization algorithm may be provided: The argument `start.params.model` allows to assign a vector of starting values for the optimization (i.e `c(p=1, q=2, gamma=1)` for the the Gamma/Gamma model). This is useful if prior knowledge on the parameters of the distributions are available. By default starting values are set to 1 for all parameters. The argument `optimx.args` provides an option to control settings for the optimization routine (see section [Estimate Model Parameters](#estimate)).
 
+In line with literature, `CLVTools` does not use by default the monetary value of the first transaction to fit the model since it might be atypical of future purchases. If the first transaction should be considered the argument `remove.first.transaction` can be set to `FALSE`.
 
-```{r spending-estimate-model}
+To execute the model estimation you have the choice between a formula-based interface and a non-formula-based interface. In the following we illustrate the two alternatives.
+
+### **Estimating the model using formula interface:**
+```{r spending-estimate-formula1}
+est.gg <- spending(~gg(),
+         data=clv.apparel)
+est.gg
+```
+Using start parameters or other additional arguments for the optimzier:
+```{r spending-estimate-formula2, eval=FALSE}
+est.gg <- spending(~gg(start.params.model=c(p=0.5, q=15, gamma=2)),
+                       optimx.args = list(control=list(trace=5)),
+                   data=clv.apparel)
+```
+Specify the option to NOT remove the first transaction:
+```{r spending-estimate-formula3, eval=FALSE}
+est.gg <- spending(~gg(remove.first.transaction=FALSE), 
+                   data=clv.apparel)
+```
+
+When using the formula interface, it is also possible to fit the model without prior specification of of a `clvdata` object:
+```{r estimate-model-formula4, eval=FALSE}
+est.gg <- spending(data(split=40, format=ymd, unit=w)~gg(), 
+                   data=apparelTrans)
+```
+
+### **Estimating the model using non-formula interface:**
+```{r spending-estimate-model1, eval=FALSE}
 est.gg<- gg(clv.data = clv.apparel)
 est.gg
 ```
-
-In line with literature, `CLVTools` does not use by default the monetary value of the first transaction to fit the model since it might be atypical of future purchases. If the first transaction should be considered the argument `remove.first.transaction` can be set to `FALSE`.
-
-```{r spendsing-estimate-model2, eval=TRUE}
+Using start parameters and other additional arguments for the optimzier:
+```{r spending-estimate-model2, eval=FALSE}
+est.gg<- gg(start.params.model=c(p=0.5, q=15, gamma=2), clv.data = clv.apparel)
+est.gg
+```
+Specify the option to NOT remove the first transaction:
+```{r spending-estimate-model3, eval=FALSE}
 est.gg<- gg(clv.data = clv.apparel, remove.first.transaction=FALSE)
 est.gg
 ```

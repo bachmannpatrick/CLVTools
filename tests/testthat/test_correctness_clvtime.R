@@ -1,6 +1,4 @@
 # clv.time.epsilon --------------------------------------------------------------------------------
-context("Correctness - clv.time - epsilon")
-
 
 for(clv.t in c(fct.helper.clv.time.create.test.objects(with.holdout = FALSE),
                fct.helper.clv.time.create.test.objects(with.holdout = TRUE))){
@@ -13,7 +11,6 @@ for(clv.t in c(fct.helper.clv.time.create.test.objects(with.holdout = FALSE),
 
 
 # set.sample.periods --------------------------------------------------------------------------------
-context("Correctness - clv.time - set.sample.periods")
 for(clv.t in list(clv.time.hours(time.format="ymd HMS"),
                   clv.time.days( time.format="ymd"),
                   clv.time.weeks(time.format="ymd"),
@@ -37,8 +34,6 @@ fct.testthat.correctness.clvtime.set.sample.periods.stop.holdout.length.less.2.p
                                                                                       clv.t.years = clv.time.years(time.format="ymd"))
 
 # convert.user.input.to.timepoint --------------------------------------------------------------------------------
-context("Correctness - clv.time - convert.user.input.to.timepoint")
-
 for(clv.t in c(fct.helper.clv.time.create.test.objects(with.holdout = FALSE),
                fct.helper.clv.time.create.test.objects(with.holdout = TRUE))){
   if(is(clv.t, "clv.time.date")){
@@ -55,7 +50,6 @@ for(clv.t in c(fct.helper.clv.time.create.test.objects(with.holdout = FALSE),
 
 
 # number.timeunits.to.timeperiod ----------------------------------------------------------------------
-context("Correctness - clv.time - number.timeunits.to.timeperiod")
 for(clv.t in c(fct.helper.clv.time.create.test.objects(with.holdout = FALSE),
                fct.helper.clv.time.create.test.objects(with.holdout = TRUE))){
   fct.testthat.correctness.clvtime.number.to.time.periods(clv.t)
@@ -65,7 +59,6 @@ for(clv.t in c(fct.helper.clv.time.create.test.objects(with.holdout = FALSE),
 
 
 # floor.date --------------------------------------------------------------------------------
-context("Correctness - clv.time - floor.date")
 for(holdout in c(TRUE, FALSE)){
   l.clv.t <- fct.helper.clv.time.create.test.objects(with.holdout = holdout)
   fct.testthat.correctness.clvtime.floor.date.rounds.down(clv.t.hours = l.clv.t[["clv.t.hours"]],
@@ -80,8 +73,6 @@ for(holdout in c(TRUE, FALSE)){
 
 
 # sequence.of.covariate.timepoints --------------------------------------------------------------------------------
-context("Correctness - clv.time - sequence.of.covariate.timepoints")
-
 # expect_that difference to end is never >= 1 time.unit
 for(holdout in c(TRUE, FALSE)){
   l.clv.t <- fct.helper.clv.time.create.test.objects(with.holdout = holdout)
@@ -106,7 +97,6 @@ for(holdout in c(TRUE, FALSE)){
 
 
 # clv.time.get.prediction.table --------------------------------------------------------------------------------
-context("Correctness - clv.time - get.prediction.table")
 # - check its usage in newdata
 
 for(clv.t in c(fct.helper.clv.time.create.test.objects(with.holdout = TRUE),

@@ -68,8 +68,7 @@ fct.helper.test.runability.clv.data.trackingplot <- function(clv.data){
     skip_on_cran()
     expect_message(dt.plot <- plot(clv.data, plot=FALSE), regexp = "Plotting")
     expect_s3_class(dt.plot, "data.table")
-    expect_true(isTRUE(all.equal(unlist(dt.plot[period.until == min(period.until), 2]),
-                                 0, check.attributes = FALSE)))
+    expect_true(isTRUE(all.equal(dt.plot[period.until == min(period.until), value], 0)))
   })
 
   test_that("plot, verbose = TRUE", {
@@ -205,6 +204,34 @@ fct.helper.test.runability.clv.data.plotinterpurchasetime <- function(clv.data){
   })
 }
 
+fct.helper.test.runability.clv.data.plottimings <- function(clv.data){
+  test_that("plot - timings, Ids", {
+    skip_on_cran()
+    expect_silent(plot(clv.data, which="timings", Ids = 1, verbose=FALSE))
+    expect_silent(plot(clv.data, which="timings", Ids = 5, verbose=FALSE))
+    expect_silent(plot(clv.data, which="timings", Ids = c("1"), verbose=FALSE))
+    expect_silent(plot(clv.data, which="timings", Ids = c("1", "10"), verbose=FALSE))
+    expect_silent(plot(clv.data, which="timings", Ids = nobs(clv.data), verbose=FALSE))
+  })
+
+
+  test_that("plot - timings, annotate.ids", {
+    skip_on_cran()
+    expect_silent(plot(clv.data, which="timings", Ids = 5, annotate.ids=TRUE, verbose=FALSE))
+  })
+
+  test_that("plot - timings, plot=FALSE", {
+    skip_on_cran()
+    expect_silent(dt.plot <- plot(clv.data, which="timings", Ids=c("1", "10"), plot=FALSE, verbose=FALSE))
+    expect_s3_class(dt.plot, "data.table")
+    expect_setequal(colnames(dt.plot), c("Id", "type", "variable", "value"))
+    expect_setequal(dt.plot$Id, c("1", "10"))
+    expect_setequal(dt.plot$variable, c("x", "y"))
+    expect_true(dt.plot[, is.character(variable)])
+  })
+}
+
+
 
 fct.helper.test.runability.clv.data.others3 <- function(clv.data){
   test_that("nobs works", {
@@ -249,7 +276,6 @@ fct.helper.test.runability.clv.data.others3 <- function(clv.data){
 }
 
 # This all falls under the context of runability for the fitted models
-context("Runability - clvdata - S3")
 
 # Create with and withouth holdout, with and withouth static covariates
 expect_silent(apparel.holdout    <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w", estimation.split = 39))
@@ -285,6 +311,7 @@ fct.helper.test.runability.clv.data.runall <- function(clv.data){
   fct.helper.test.runability.clv.data.summary(clv.data)
   fct.helper.test.runability.clv.data.others3(clv.data)
   fct.helper.test.runability.clv.data.plotinterpurchasetime(clv.data)
+  fct.helper.test.runability.clv.data.plottimings(clv.data)
 }
 
 

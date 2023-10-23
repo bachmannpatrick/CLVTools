@@ -61,7 +61,7 @@ customers in the GGompertz/NBD model.
 Calculates the expected number of transactions in a given time period based
 on a customer's past transaction behavior and the GGompertz/NBD model parameters.
 
-\itemize{
+\describe{
 \item{\code{ggomnbd_nocov_CET}}{ Conditional Expected Transactions without covariates}
 \item{\code{ggomnbd_staticcov_CET}}{ Conditional Expected Transactions with static covariates}
 }

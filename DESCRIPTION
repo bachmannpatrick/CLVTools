@@ -1,13 +1,13 @@
 Package: CLVTools
 Title: Tools for Customer Lifetime Value Estimation
-Version: 0.9.0
-Date: 2022-01-07
+Version: 0.10.0
+Date: 2023-10-23
 Authors@R: c(
     person(given="Patrick", family="Bachmann",    email = "pbachma@ethz.ch", role = c("cre","aut")),
     person(given="Niels",   family="Kuebler",     email = "niels.kuebler@uzh.ch", role = "aut"),
     person(given="Markus",  family="Meierer",     email = "markus.meierer@business.uzh.ch", role = "aut"),
     person(given="Jeffrey", family="Naef",        email = "naef@stat.math.ethz.ch",role = "aut"),
-    person(given="Elliot",  family="Oblander",    email = "eoblander23@gsb.columbia.edu",role = "aut"),
+    person(given="E. Shin", family="Oblander",    email = "eoblander23@gsb.columbia.edu",role = "aut"),
     person(given="Patrik",  family="Schilter",    email = "patrik.schilter@gmail.com",role = "aut")
     )
 Depends:
@@ -33,6 +33,7 @@ Description:
     Further, we provide an implementation of the Gamma/Gamma model to model the spending process of individuals.
 Imports:
     data.table (>= 1.12.0),
+    Formula (>= 1.2-4),
     ggplot2 (>= 3.2.0),
     lubridate (>= 1.7.8),
     Matrix (>= 1.2-17),
@@ -45,19 +46,20 @@ Suggests:
     covr,
     knitr,
     rmarkdown,
-    testthat
+    xml2,
+    testthat (>= 3.0.0)
 License: GPL-3
 URL: https://github.com/bachmannpatrick/CLVTools
 BugReports: https://github.com/bachmannpatrick/CLVTools/issues
 NeedsCompilation: yes
-SystemRequirements: C++11
-LinkingTo: Rcpp, RcppArmadillo (>= 0.9.500.2.0), RcppGSL (>= 0.3.7)
+LinkingTo: Rcpp, RcppArmadillo (>= 0.9.500.2.0), RcppGSL (>= 0.3.7), testthat
 LazyLoad: yes
 Encoding: UTF-8
 Collate: 
     'CLVTools.R'
     'RcppExports.R'
     'all_generics.R'
+    'catch-routine-registration.R'
     'class_clv_time.R'
     'class_clv_data.R'
     'class_clv_model.R'
@@ -112,12 +114,14 @@ Collate:
     'f_interface_clvdata.R'
     'f_interface_gg.R'
     'f_interface_ggomnbd.R'
+    'f_interface_latentattrition.R'
     'f_interface_pmf.R'
     'f_interface_pnbd.R'
     'f_interface_predict_clvfittedspending.R'
     'f_interface_predict_clvfittedtransactions.R'
     'f_interface_setdynamiccovariates.R'
     'f_interface_setstaticcovariates.R'
+    'f_interface_spending.R'
     'f_s3generics_clvdata.R'
     'f_s3generics_clvdata_dynamiccov.R'
     'f_s3generics_clvdata_plot.R'
@@ -137,10 +141,10 @@ Collate:
     'pnbd_dyncov_BkSum.R'
     'pnbd_dyncov_CET.R'
     'pnbd_dyncov_DECT.R'
-    'pnbd_dyncov_LL.R'
     'pnbd_dyncov_createwalks.R'
     'pnbd_dyncov_expectation.R'
-    'pnbd_dyncov_makewalks.R'
     'pnbd_dyncov_palive.R'
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 VignetteBuilder: knitr
+Config/testthat/parallel: false
+Config/testthat/edition: 3

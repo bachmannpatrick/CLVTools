@@ -3,7 +3,6 @@
 data("apparelTrans")
 data("cdnow")
 
-context("Runability - clvdata - clvdata")
 
 
 # data.transactions ------------------------------------------------------------------------------------

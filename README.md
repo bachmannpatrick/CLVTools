@@ -217,7 +217,7 @@ est.pnbd <- pnbd(clv.data = clv.apparel)
 #> Starting estimation...
 #> Estimation finished!
 est.pnbd
-#> Pareto NBD Standard Model
+#> Pareto/NBD Standard Model
 #> 
 #> Call:
 #> pnbd(clv.data = clv.apparel)
@@ -238,7 +238,7 @@ before they are estimated):
 ``` r
 #Full detailed summary of the parameter estimates
 summary(est.pnbd)
-#> Pareto NBD Standard  Model 
+#> Pareto/NBD Standard  Model 
 #> 
 #> Call:
 #> pnbd(clv.data = clv.apparel)

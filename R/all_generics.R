@@ -206,11 +206,13 @@ setGeneric("clv.time.format.timepoint", function(clv.time, timepoint)
 #' See section "Details" of \link{clvdata} for more details on parameters and usage.
 #'
 #' @examples
+#' \donttest{ # dont test because ncpu=2 limit on cran (too fast)
 #' data(cdnow)
 #'
 #' # Turn data.table of transaction data into a clv.data object,
 #' #  using default date format and column names but no holdout period
 #' clv.cdnow <- as.clv.data(cdnow)
+#' }
 #'
 #' @export
 as.clv.data <- function(x,

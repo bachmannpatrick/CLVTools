@@ -35,7 +35,7 @@ Extract a copy of the transaction data stored in the given clv.data object
 into a data.frame.
 }
 \examples{
-
+ \donttest{
 data("cdnow")
 clv.data.cdnow <- clvdata(data.transactions = cdnow,
                           date.format="ymd",
@@ -55,5 +55,6 @@ df.trans <- as.data.frame(clv.data.cdnow, Ids = c("1", "2", "999"))
 # Extract transaction data of Ids "1", "2", and "999" in estimation period
 df.trans <- as.data.frame(clv.data.cdnow, Ids = c("1", "2", "999"),
                           sample="estimation")
+}
 
 }

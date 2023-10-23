@@ -39,7 +39,7 @@
   test_that("Fails for multiple", {
     for(illegal.arg in l.illegal.multiples){
       expect_error(do.call(fct, modifyList(l.std.args, setNames(list(param=illegal.arg), name.param))),
-                   regexp="single")
+                   regexp="1")
     }
   })
 }

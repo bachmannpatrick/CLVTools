@@ -4,9 +4,10 @@ fct.testthat.consistency.cov.data.0.cov.params.insignificant <- function(fitted.
   })
 }
 
-fct.testthat.consistency.cov.data.0.model.params.nearly.same <- function(fitted.nocov, fitted.static.cov0, param.names){
+fct.testthat.consistency.cov.data.0.model.params.nearly.same <- function(fitted.nocov, fitted.static.cov0){
   test_that("Model parameters are nearly the same", {
-    expect_true(all.equal(coef(fitted.nocov), coef(fitted.static.cov0)[param.names], tolerance = 0.05))
+    params.nocov <- coef(fitted.nocov)
+    expect_true(all.equal(params.nocov, coef(fitted.static.cov0)[names(params.nocov)], tolerance = 0.05))
   })
 }
 
@@ -109,11 +110,7 @@ fct.testthat.consistency.cov.params.0.plot.same <- function(fitted.nocov, fitted
     expect_warning(dt.plot.nocov     <- plot(fitted.nocov,  verbose=FALSE, plot=FALSE, prediction.end = 10), regexp = "full holdout")
     expect_warning(dt.plot.cov       <- plot(fitted.cov.g0, verbose=FALSE, plot=FALSE, prediction.end = 10), regexp = "full holdout")
 
-    # Rename to random names because have different colnames by model
-    data.table::setnames(dt.plot.nocov,  c("A", "B", "C"))
-    data.table::setnames(dt.plot.cov ,   c("A", "B", "C"))
-
-    expect_true(isTRUE(all.equal(dt.plot.nocov, dt.plot.cov)))
+    expect_true(isTRUE(all.equal(dt.plot.nocov[, c("period.until", "value")], dt.plot.cov[, c("period.until", "value")])))
   })
 }
 
@@ -126,8 +123,8 @@ fct.testthat.consistency.cov.params.0.pmf.same <- function(fitted.nocov, fitted.
 
 fct.testthat.consistency.cov.params.0.pmf.plot.same <- function(fitted.nocov, fitted.cov.g0){
   test_that("pmf plot same results for all models with gamma=0", {
-    expect_true(isTRUE(all.equal(plot(fitted.nocov,  which="pmf", verbose=FALSE, plot=FALSE),
-                                 plot(fitted.cov.g0, which="pmf", verbose=FALSE, plot=FALSE))))
+    expect_true(isTRUE(all.equal(plot(fitted.nocov,  which="pmf", verbose=FALSE, plot=FALSE)[, c("num.transactions", "value")],
+                                 plot(fitted.cov.g0, which="pmf", verbose=FALSE, plot=FALSE)[, c("num.transactions", "value")])))
   })
 }
 
@@ -135,7 +132,7 @@ fct.testthat.consistency.cov.params.0.pmf.plot.same <- function(fitted.nocov, fi
 # Consistency = nocov vs static cov:
 #   same fit with all covs = 0
 #   same predict with gamma = 0
-fct.testthat.consistency <- function(name.model, method, has.dyncov, data.apparelTrans, data.apparelStaticCov, param.names,
+fct.testthat.consistency <- function(name.model, method, has.dyncov, data.apparelTrans, data.apparelStaticCov,
                                      fct.LL.ind.nocov, fct.LL.ind.static.cov){
 
   # Fit object on cov data with all 0
@@ -143,41 +140,37 @@ fct.testthat.consistency <- function(name.model, method, has.dyncov, data.appare
   expect_silent(clv.apparel <- clvdata(data.transactions = data.apparelTrans, date.format = "ymd",
                                        time.unit = "w", estimation.split = 38))
 
-  context(paste0("Nocov/cov Consistency - ",name.model," - all cov data = 0"))
-
-  expect_silent(apparelStaticCov.0 <- data.apparelStaticCov)
+  apparelStaticCov.0 <- copy(data.apparelStaticCov)
   expect_silent(apparelStaticCov.0[,  Gender  := 0])
   expect_silent(apparelStaticCov.0[1, Gender  := 1])
   expect_silent(apparelStaticCov.0[,  Channel := 0])
   expect_silent(apparelStaticCov.0[1, Channel := 1])
-  expect_silent(clv.apparel.static.cov0 <-
-                  SetStaticCovariates(clv.apparel,
-                                      data.cov.life = apparelStaticCov.0, data.cov.trans = apparelStaticCov.0,
-                                      names.cov.life = c("Gender", "Channel"), names.cov.trans = c("Gender", "Channel")))
+
+  clv.apparel.static.cov0 <- fct.helper.create.clvdata.apparel.staticcov(estimation.split=38,
+                                                                         data.apparelTrans=data.apparelTrans,
+                                                                         data.apparelStaticCov=apparelStaticCov.0)
 
   expect_silent(fitted.nocov       <- do.call(method, list(clv.data = clv.apparel, verbose = FALSE)))
   expect_silent(fitted.static.cov0 <- do.call(method, list(clv.data = clv.apparel.static.cov0, verbose = FALSE)))
 
   # **TODO: remove or enable?
   # fct.testthat.consistency.cov.data.0.cov.params.insignificant(fitted.static.cov0 = fitted.static.cov0)
-  # fct.testthat.consistency.cov.data.0.model.params.nearly.same(fitted.nocov = fitted.nocov, fitted.static.cov0 = fitted.static.cov0,
-  #                                                              param.names = param.names)
+
+  fct.testthat.consistency.cov.data.0.model.params.nearly.same(fitted.nocov = fitted.nocov, fitted.static.cov0 = fitted.static.cov0)
 
   fct.testthat.consistency.cov.data.0.same.LL(fitted.nocov = fitted.nocov, fitted.static.cov0 = fitted.static.cov0,
                                               fct.LL.ind.nocov = fct.LL.ind.nocov, fct.LL.ind.static.cov = fct.LL.ind.static.cov)
 
-  context(paste0("Nocov/cov Consistency - ",name.model," - cov params = 0"))
-
   # Fake the parameters to be exactly the same and 0 for covariates
   #   Replace model coefs with that from nocov
-  expect_silent(fitted.static.g0 <- do.call(method, list(clv.data = SetStaticCovariates(clv.apparel,
-                                                                                     data.cov.life = data.apparelStaticCov, data.cov.trans = data.apparelStaticCov,
-                                                                                     names.cov.life = c("Gender", "Channel"), names.cov.trans = c("Gender", "Channel")),
+
+  expect_silent(fitted.static.g0 <- do.call(method, list(clv.data = fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans=data.apparelTrans,
+                                                                                                                data.apparelStaticCov=data.apparelStaticCov,
+                                                                                                                estimation.split=38),
                                                          verbose = FALSE)))
-  expect_silent(fitted.static.g0@prediction.params.model[param.names] <-
-                  fitted.nocov@prediction.params.model[param.names])
-  expect_silent(fitted.static.g0@prediction.params.life[c("Gender", "Channel")]  <- 0)
-  expect_silent(fitted.static.g0@prediction.params.trans[c("Gender", "Channel")] <- 0)
+  expect_silent(fitted.static.g0@prediction.params.model[] <-fitted.nocov@prediction.params.model)
+  expect_silent(fitted.static.g0@prediction.params.life[]  <- 0)
+  expect_silent(fitted.static.g0@prediction.params.trans[] <- 0)
 
 
   fct.testthat.consistency.cov.params.0.same.LL(fct.LL.ind.nocov = fct.LL.ind.nocov, fct.LL.ind.static.cov=fct.LL.ind.static.cov,

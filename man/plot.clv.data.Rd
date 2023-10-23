@@ -6,7 +6,7 @@
 \usage{
 \method{plot}{clv.data}(
   x,
-  which = c("tracking", "frequency", "spending", "interpurchasetime"),
+  which = c("tracking", "frequency", "spending", "interpurchasetime", "timings"),
   prediction.end = NULL,
   cumulative = FALSE,
   trans.bins = 0:9,
@@ -14,6 +14,8 @@
   count.remaining = TRUE,
   label.remaining = "10+",
   mean.spending = TRUE,
+  annotate.ids = FALSE,
+  Ids = c(),
   sample = c("estimation", "full", "holdout"),
   geom = "line",
   color = "black",
@@ -25,7 +27,7 @@
 \arguments{
 \item{x}{The clv.data object to plot}
 
-\item{which}{Which plot to produce, either "tracking", "frequency", "spending" or "interpurchasetime".
+\item{which}{Which plot to produce, either "tracking", "frequency", "spending", "interpurchasetime", or "timings".
 May be abbreviated but only one may be selected. Defaults to "tracking".}
 
 \item{prediction.end}{"tracking": Until what point in time to plot. This can be the number of periods (numeric) or a form of date/time object. See details.}
@@ -43,20 +45,25 @@ May be abbreviated but only one may be selected. Defaults to "tracking".}
 \item{mean.spending}{"spending": Whether customer's mean spending per transaction (\code{TRUE}, default) or the
 value of every transaction in the data (\code{FALSE}) should be plotted.}
 
+\item{annotate.ids}{"timings": Whether timelines should be annotated with customer ids.}
+
+\item{Ids}{"timings": A character vector of customer ids or a single integer specifying the number of customers to sample.
+Defaults to \code{NULL} for which 50 random customers are selected.}
+
 \item{sample}{Name of the sample for which the plot should be made, either
-"estimation", "full", or "holdout". Defaults to "estimation". Not for "tracking".}
+"estimation", "full", or "holdout". Defaults to "estimation". Not for "tracking" and "timing".}
 
-\item{geom}{The geometric object of ggplot2 to display the data. Forwarded to
-\link[ggplot2:stat_density]{ggplot2::stat_density}. Not for "tracking" and "frequency".}
+\item{geom}{"spending" and "interpurchasetime": The geometric object of ggplot2 to display the data. Forwarded to
+\link[ggplot2:stat_density]{ggplot2::stat_density}.}
 
-\item{color}{Color of resulting geom object in the plot. Not for "tracking".}
+\item{color}{Color of resulting geom object in the plot. Not for "tracking" and "timing".}
 
 \item{plot}{Whether a plot should be created or only the assembled data returned.}
 
 \item{verbose}{Show details about the running of the function.}
 
 \item{...}{Forwarded to \link[ggplot2:stat_density]{ggplot2::stat_density} ("spending", "interpurchasetime")
-or \link[ggplot2:geom_bar]{ggplot2::geom_bar} ("frequency"). Not for "tracking".}
+or \link[ggplot2:geom_bar]{ggplot2::geom_bar} ("frequency"). Not for "tracking" and "timings".}
 }
 \value{
 An object of class \code{ggplot} from package \code{ggplot2} is returned by default.
@@ -65,12 +72,16 @@ Depending on which plot was selected, this is a \code{data.table}
 which contains some of the following columns:
 \item{Id}{Customer Id}
 \item{period.until}{The timepoint that marks the end (up until and including) of the period to which the data in this row refers.}
-\item{Number of Repeat Transactions}{The number of actual repeat transactions in the period that ends at \code{period.until}.}
 \item{Spending}{Spending as defined by parameter \code{mean.spending}.}
 \item{mean.interpurchase.time}{Mean number of periods between transactions per customer,
 excluding customers with no repeat-transactions.}
 \item{num.transactions}{The number of (repeat) transactions, depending on \code{count.repeat.trans}.}
 \item{num.customers}{The number of customers.}
+\item{type}{"timings": Which purpose the value in this row is used for.}
+\item{variable}{"tracking": The number of actual repeat transactions in the period that ends at \code{period.until}.\cr
+                "timings": Coordinate (x or y) for which to use the value in this row for.}
+\item{value}{"timings":  Date or numeric (stored as string) \cr
+             "tracking": numeric}
 }
 \description{
 Depending on the value of parameter \code{which}, one of the following plots will be produced.
@@ -99,6 +110,10 @@ Plot the empirical density of customer's mean time (in number of periods) betwee
 after aggregating transactions of the same customer on a single time point.
 Note that customers without repeat-transactions are removed.
 }
+
+\subsection{Transaction Timing Plot}{
+Plot the transaction timings of selected or sampled customers on their respective timelines.
+}
 }
 \details{
 \code{prediction.end} indicates until when to predict or plot and can be given as either
@@ -121,6 +136,8 @@ is plotted. If the data is returned (i.e. with argument \code{plot=FALSE}), the 
 contain \code{NA} in column \code{Number of Repeat Transactions}.
 }
 \examples{
+
+\donttest{
 
 data("cdnow")
 clv.cdnow <- clvdata(cdnow, time.unit="w",estimation.split=37,
@@ -172,6 +189,17 @@ plot(clv.cdnow, which="spending", mean.spending = FALSE)
 plot(clv.cdnow, which="interpurchasetime",
      geom="point", color="blue", size=0.02)
 
+
+### TIMING PATTERNS
+# selected customers and annotating them
+plot(clv.cdnow, which="timings", Ids=c("123", "1041"), annotate.ids=TRUE)
+
+# plot 25 random customers
+plot(clv.cdnow, which="timings", Ids=25)
+
+# plot all customers
+plot(clv.cdnow, which="timings", Ids=nobs(clv.cdnow))
+}
 
 }
 \seealso{

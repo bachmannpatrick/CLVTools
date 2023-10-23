@@ -56,7 +56,7 @@ customers in the Pareto/NBD model.
 Calculates the expected number of transactions in a given time period based
 on a customer's past transaction behavior and the Pareto/NBD model parameters.
 
-\itemize{
+\describe{
 \item{\code{pnbd_nocov_CET}}{ Conditional Expected Transactions without covariates}
 \item{\code{pnbd_staticcov_CET}}{ Conditional Expected Transactions with static covariates}
 }

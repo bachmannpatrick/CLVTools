@@ -12,8 +12,6 @@ fct.testthat.correctness.clvfittedtransactions(name.model = "GGompertz/NBD", met
                                                kkt2.true = FALSE)
 
 
-context("Correctness - GGompertz/NBD nocov - Recover parameters")
-
 # Bemmaor and Glady (2012)
 #   Table 2, p. 1018
 fct.testthat.correctness.clvfitted.correct.coefs(method = ggomnbd,
@@ -80,14 +78,11 @@ expect_silent(beta_i  <- beta  * exp( -m.cov.data.life  %*% clv.ggomnbd@predicti
 
 
 # . Expectation -----------------------------------------------------------------------------------------
-context("Correctness - GGompertz/NBD nocov - Expectation")
 
 test_that("Expectation in Rcpp matches expectation in R (nocov)", {
   skip_on_cran()
 
-  expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow,
-                                     date.format = "ymd", time.unit = "W", estimation.split = 38))
-  expect_silent(fitted.cdnow <- ggomnbd(clv.data = clv.cdnow, verbose = FALSE))
+  expect_silent(fitted.cdnow <- ggomnbd(clv.data = fct.helper.create.clvdata.cdnow(cdnow), verbose = FALSE))
 
   params_i <- fitted.cdnow@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
   params_i[, r       := fitted.cdnow@prediction.params.model[["r"]]]
@@ -125,7 +120,6 @@ test_that("Expectation in Rcpp matches expectation in R (staticcov)", {
 
 
 # .CET ------------------------------------------------------------------------------------------
-context("Correctness - GGompertz/NBD nocov - CET")
 test_that("Same result for CET as previous implementation based on matlab code",{
 
   # Basically, PALive * Expectation but explicitely formulated
@@ -193,7 +187,6 @@ test_that("Same result for CET as previous implementation based on matlab code",
 
 
 # .LL ------------------------------------------------------------------------------------------
-context("Correctness - GGompertz/NBD nocov - LL")
 test_that("Same LL as in matlab code", {
 
   fct.ggomnbd.LL.ind <- function(r, b, s, alpha, beta, x, t.x, tcal){
@@ -238,12 +231,11 @@ test_that("Same LL as in matlab code", {
                                                     vX = vX, vT_x = vT_x, vT_cal = vT_cal,
                                                     mCov_life = m.cov.data.life, mCov_trans = m.cov.data.trans))
   # Difference are verified to stem from numerical integration
-  expect_equal(drop(LL_R), drop(LL_Rcpp), check.attributes=FALSE, tolerance = 1e-4)
+  expect_equal(unname(drop(LL_R)), drop(LL_Rcpp), tolerance = 1e-4)
 })
 
 
 # .PAlive ------------------------------------------------------------------------------------------
-context("Correctness - GGompertz/NBD nocov - PAlive")
 test_that("Same PAlive as in matlab code", {
 
   fct.ggomnbd.PAlive <- function(r, b, s, alpha, beta, x, t.x, tcal){
@@ -295,7 +287,7 @@ test_that("Same PAlive as in matlab code", {
                                                                vX = vX, vT_x = vT_x, vT_cal = vT_cal,
                                                                mCov_life = m.cov.data.life, mCov_trans = m.cov.data.trans))
   # Difference are verified to stem from numerical integration
-  expect_equal(drop(LL_R), drop(LL_Rcpp), check.attributes=FALSE, tolerance = 1e-4)
+  expect_equal(unname(drop(LL_R)), drop(LL_Rcpp), tolerance = 1e-4)
 
 
 })
