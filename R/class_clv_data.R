@@ -89,15 +89,33 @@ clv.data.get.transactions.in.holdout.period <- function(clv.data){
 }
 
 clv.data.make.repeat.transactions <- function(dt.transactions){
-  Date <- previous <- NULL
+  Date <- trans_num <- .N <- NULL
 
-  # Copy because alters table
+  # Copy because alters table by temporarily adding a column
   dt.repeat.transactions <- copy(dt.transactions)
 
-  dt.repeat.transactions[order(Date), previous := shift(x=Date, n = 1L, type = "lag"), by="Id"]
-  # Remove first transaction: Have no previous (ie is NA)
-  dt.repeat.transactions <- dt.repeat.transactions[!is.na(previous)]
-  dt.repeat.transactions[, previous := NULL]
+  # Mark for drop approach
+  # profiled to be faster & more memory efficient than alternatives
+  # Do not have to sort if table is already (physically) sorted by Date
+  if("Date" %in% key(dt.repeat.transactions)){
+    dt.repeat.transactions[,            trans_num := seq(.N), by="Id"]
+  }else{
+    dt.repeat.transactions[order(Date), trans_num := seq(.N), by="Id"]
+  }
+  dt.repeat.transactions <- dt.repeat.transactions[trans_num > 1]
+  dt.repeat.transactions[, trans_num := NULL]
+
+  # Previous implementation: Shift/lag approach
+  # dt.repeat.transactions[order(Date), previous := shift(x=Date, n = 1L, type = "lag"), by="Id"]
+  # # Remove first transaction: Have no previous (ie is NA)
+  # dt.repeat.transactions <- dt.repeat.transactions[!is.na(previous)]
+  # dt.repeat.transactions[, previous := NULL]
+
+  # Alternative
+  # More understandable but uses more memory and takes longer, probably
+  # because allocates many small data.table for each group
+  # dt.repeat.transactions <- dt.transactions[order(Date), tail(.SD, n=.N-1), by="Id"]
+  # using .SD[-1L] inplace of tail() is slower
 
   # Alternative:
   #   Works only because all on same Date were aggregated. Otherwise, there could be more than one removed
