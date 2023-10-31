@@ -26,6 +26,11 @@ test_that("Fails if formula given (but not required because nocov)", {
 
 
 # .family -----------------------------------------------------------------------------------------------
+
+test_that("Fails if family is missing", {
+  expect_error(latentAttrition(formula = , family=, data=clv.cdnow), "of the following families")
+})
+
 test_that("Fails if family is not allowed method", {
   expect_error(latentAttrition(formula = , family=pareto, data=clv.cdnow), "of the following families")
   expect_error(latentAttrition(formula = , family=paretonbd, data=clv.cdnow), "of the following families")
