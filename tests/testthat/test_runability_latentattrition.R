@@ -82,9 +82,9 @@ test_that("Works with . and excluding covs", {
 })
 
 #*** TODO:
-# test_that("Works if extra args are defined in parent frame"{
-#
-# })
+test_that("Works if extra args (dots) are defined in parent frame"{
+  expect_true(FALSE)
+})
 
 # test_that("Every model works with regularization", {
 #   skip_on_cran()
