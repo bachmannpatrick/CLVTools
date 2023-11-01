@@ -61,6 +61,11 @@ test_that("Every model works without specials", {
 })
 
 
+test_that("Works with regularization", {
+  skip_on_cran()
+  expect_silent(latentAttrition(formula =~ .|., family=pnbd, data = clv.apparel.cov, verbose=FALSE, reg.lambdas = c(life=8, trans=10)))
+})
+
 test_that("Works with selecting single covs", {
   skip_on_cran()
   expect_silent(latentAttrition(formula = ~Gender|Gender+Channel, family=pnbd, data=clv.apparel.cov, verbose=FALSE))
@@ -70,8 +75,8 @@ test_that("Works with selecting single covs", {
 test_that("Works with transformations in RHS2/3 and named in constraint()", {
   skip_on_cran()
   # with and without space in transformation (x+y vs x + y)
-  expect_silent(latentAttrition(formula = ~ log(Gender+2)|log(Gender+2), family=pnbd, data = clv.apparel.cov, verbose=FALSE, names.cov.constr="log.Gender.2."))
-  expect_silent(latentAttrition(formula = ~ log(Gender+2)|log(Gender  +  2), family=pnbd, data=clv.apparel.cov, verbose=FALSE, names.cov.constr="log.Gender.2."))
+  expect_silent(latentAttrition(formula = ~ log(Gender+2)|log(Gender+2), family=pnbd, data = clv.apparel.cov, verbose=FALSE, names.cov.constr="log.Gender...2."))
+  expect_silent(latentAttrition(formula = ~ log(Gender+2)|log(Gender  +  2), family=pnbd, data=clv.apparel.cov, verbose=FALSE, names.cov.constr="log.Gender...2."))
 })
 
 test_that("Works with . and excluding covs", {
@@ -82,23 +87,9 @@ test_that("Works with . and excluding covs", {
 })
 
 #*** TODO:
-test_that("Works if extra args (dots) are defined in parent frame"{
-  expect_true(FALSE)
+test_that("Works if extra args (dots) are defined in parent frame", {
+  fail("TODO")
 })
-
-# test_that("Every model works with regularization", {
-#   skip_on_cran()
-#   expect_silent(latentAttrition(formula =~ .|., family=pnbd, data = clv.apparel.cov, verbose=FALSE), reg.lambdas = c(life=8, trans=10))
-#   expect_silent(latentAttrition(formula =~ .|., family=bgnbd, data = clv.apparel.cov, verbose=FALSE), reg.lambdas = c(life=8, trans=10))
-#   expect_silent(latentAttrition(formula =~ .|., family=ggomnbd, data = clv.apparel.cov, verbose=FALSE, reg.lambdas = c(life=8, trans=10)))
-# })
-#
-# test_that("Every model works with constraint", {
-#   skip_on_cran()
-#   expect_silent(latentAttrition(formula =~ .|., family=pnbd, data = clv.apparel.cov, verbose=FALSE), reg.lambdas = c(life=8, trans=10))
-#   expect_silent(latentAttrition(formula =~ .|., family=bgnbd, data = clv.apparel.cov, verbose=FALSE), reg.lambdas = c(life=8, trans=10))
-#   expect_silent(latentAttrition(formula =~ .|., family=ggomnbd, data = clv.apparel.cov, verbose=FALSE, reg.lambdas = c(life=8, trans=10)))
-# })
 
 
 

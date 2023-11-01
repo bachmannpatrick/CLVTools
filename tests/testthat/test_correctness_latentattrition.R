@@ -108,7 +108,7 @@ test_that("Correct transformations applied", {
 
 test_that("Correct cov data when using interactions and all except (. -)", {
   skip_on_cran()
-  expect_silent(p.lA <- latentAttrition(formula=~Gender*Channel|.-Gender, family=pnbd, data=clv.apparel.cov))
+  expect_silent(p.lA <- latentAttrition(formula=~Gender*Channel|.-Gender, family=pnbd, data=clv.apparel.cov, verbose=FALSE))
   expect_setequal(c("Channel", "Gender", "Gender.Channel", "Id"), colnames(p.lA@clv.data@data.cov.life))
   expect_setequal(c("Channel", "Id"), colnames(p.lA@clv.data@data.cov.trans))
 })
@@ -120,10 +120,10 @@ clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(apparelTrans, appare
 clv.dyn.common.cols <- c("Id", "Cov.Date","tp.cov.lower","tp.cov.upper")
 
 .fct.latentattrition.fit.dyncov <- function(formula){
-  return(expect_warning(
-    latentAttrition(formula = formula, family=pnbd, data=clv.apparel.dyn, verbose = FALSE,
-                    optimx.args = fct.helper.dyncov.get.optimxargs.quickfit()),
-    regexp="Hessian"))
+  expect_warning(p.lA <- latentAttrition(formula = formula, family=pnbd, data=clv.apparel.dyn, verbose = FALSE,
+                                         optimx.args = fct.helper.dyncov.get.optimxargs.quickfit()),
+    regexp="Hessian")
+  return(p.lA)
 }
 
 test_that("Same as std interface", {

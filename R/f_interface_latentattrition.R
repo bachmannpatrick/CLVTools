@@ -132,69 +132,40 @@ latentAttrition <- function(formula, family, data, optimx.args=list(), verbose=T
   check_err_msg(check_userinput_dots_family_data(family=family, data=data, ...))
 
   # if data has covariates, they need to be transformed
-  # if(is(data, "clv.data.static.covariates")){
-  #   F.formula <- as.Formula(formula)
-  #
-  #   if(is(data, "clv.data.dynamic.covariates")){
-  #     # better to remove tp.cov.x columns here than trying to figure out whether
-  #     # there are any in formulainterface_create_clvdataobj()
-  #     data <- formulainterface_create_clvdataobj(F.formula = F.formula, clv.data.nocov = as(data, "clv.data"),
-  #                                                create.dyncov = TRUE,
-  #                                                dt.cov.life = data@data.cov.life[, !c("tp.cov.lower", "tp.cov.upper")],
-  #                                                dt.cov.trans = data@data.cov.trans[, !c("tp.cov.lower", "tp.cov.upper")])
-  #   }else{
-  #     # Dont need to remove Id column
-  #     data <- formulainterface_create_clvdataobj(F.formula = F.formula, clv.data.nocov = as(data, "clv.data"),
-  #                                                create.dyncov = FALSE,
-  #                                                dt.cov.life = data@data.cov.life,
-  #                                                dt.cov.trans = data@data.cov.trans)
-  #   }
-  # }
+  if(is(data, "clv.data.static.covariates")){
+    # only has formula if is cov data
+    F.formula <- as.Formula(formula)
 
-  return()
-
+    if(is(data, "clv.data.dynamic.covariates")){
+      # better to remove tp.cov.x columns here than trying to figure out whether
+      # there are any in formulainterface_create_clvdataobj()
+      data <- formulainterface_create_clvdataobj(F.formula = F.formula, clv.data.nocov = as(data, "clv.data"),
+                                                 create.dyncov = TRUE,
+                                                 dt.cov.life = data@data.cov.life[, !c("tp.cov.lower", "tp.cov.upper")],
+                                                 dt.cov.trans = data@data.cov.trans[, !c("tp.cov.lower", "tp.cov.upper")])
+    }else{
+      # Dont need to remove Id column
+      data <- formulainterface_create_clvdataobj(F.formula = F.formula, clv.data.nocov = as(data, "clv.data"),
+                                                 create.dyncov = FALSE,
+                                                 dt.cov.life = data@data.cov.life,
+                                                 dt.cov.trans = data@data.cov.trans)
+    }
+  }
 
 
+  # Fit model ---------------------------------------------------------------------------------------------------
+  # call args
+  #   - from explicitly passed args
+  #   - args in dots which includes all additional options such as regularization and constraint covs
+  args <- list(clv.data = data, verbose=verbose, optimx.args=optimx.args, ...)
 
+  # Fit model
+  obj <- do.call(what = family, args)
 
-  # # Fit model ---------------------------------------------------------------------------------------------------
-  # # default args from explicitly passed args
-  # args <- list(clv.data = data, verbose=verbose, optimx.args=optimx.args)
-  #
-  # # add model call args
-  # model <- formula_read_model_name(F.formula)
-  # l.model.args <- formula_parse_args_of_special(F.formula = F.formula, name.special = model, from.lhs = 0, from.rhs = 1)
-  # args <- modifyList(args, l.model.args, keep.null = TRUE)
-  #
-  # # args passed to model special functions
-  # #   if any given
-  # if(is(data, "clv.data.static.covariates") & length(F.formula)[2] == 4){
-  #   l.args.reg <- formula_parse_args_of_special(F.formula = F.formula, name.special = "regularization", from.lhs=0, from.rhs = 4)
-  #   if(length(l.args.reg)){
-  #     args <- modifyList(args, list(reg.lambdas = c(life=l.args.reg[["life"]], trans=l.args.reg[["trans"]])), keep.null = TRUE)
-  #   }
-  #
-  #   # read char vec of variables to constrain
-  #   #   do not need to concat multiple separate constraint() if params.as.chars.only=TRUE
-  #   names.constr <- formula_readout_special_arguments(F.formula = F.formula, name.special = "constraint", from.lhs = 0, from.rhs = 4,
-  #                                                     params.as.chars.only = TRUE)
-  #   if(length(names.constr)){
-  #     # To have names match covariate data names if there are any transformations applied or special symbols in the cov name
-  #     # spaces in operations are handled by
-  #     # Will make empty names.constr (NULL) to character(0) which is illegal input. Therefore have to wrap in if(length)
-  #     names.constr <- make.names(names.constr)
-  #     args <- modifyList(args, list(names.cov.constr=unname(names.constr)), keep.null = TRUE)
-  #   }
-  #
-  # }
-  #
-  # # Fit model
-  # obj <- do.call(what = model, args)
-  #
-  # # Replace call with call to latentAttrition()
-  # obj@call <- cl
-  #
-  # return(obj)
+  # Replace call with call to latentAttrition()
+  obj@call <- cl
+
+  return(obj)
 }
 
 
@@ -209,7 +180,8 @@ formulainterface_create_clvdataobj <- function(F.formula, create.dyncov, clv.dat
 
   # Have to use model.matrix() in order to build interactions from given data
   # model.frame() would otherwise be more desirable as it creates the relevant cols (incl transformations) but without dummifying
-  # model.matrix() also creates the intercept and expands the dot to include Id and Cov.Date which are dummified. Therefore need to remove ids vars and intercept from formula by subtracting with '-Id-1'
+  # model.matrix() also creates the intercept and expands the dot to include Id and Cov.Date which are dummified.
+  # Therefore need to remove ids vars and intercept from formula by subtracting with '-Id-1'
   # update.formula() requires expanding the dot '.' with the names in the given data.
   # use terms() so subset Formula to relevant rhs and expand dot.
 
@@ -219,8 +191,8 @@ formulainterface_create_clvdataobj <- function(F.formula, create.dyncov, clv.dat
 
   # f.remove: formula to remove intercept and covariate ids
   f.remove <- eval(parse(text=paste0('~ . - 1 - ', paste0(cov.id.vars, collapse = '-'))))
-  f.formula.life  <- update(terms(F.formula, lhs=0, rhs=2, data=dt.cov.life),  f.remove)
-  f.formula.trans <- update(terms(F.formula, lhs=0, rhs=3, data=dt.cov.trans), f.remove)
+  f.formula.life  <- update(terms(F.formula, lhs=0, rhs=1, data=dt.cov.life),  f.remove)
+  f.formula.trans <- update(terms(F.formula, lhs=0, rhs=2, data=dt.cov.trans), f.remove)
 
   # Apply formula on cov data
   mm.cov.life  <- as.data.table(model.matrix(f.formula.life,  data=dt.cov.life ))
