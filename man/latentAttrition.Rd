@@ -4,7 +4,14 @@
 \alias{latentAttrition}
 \title{Formula Interface for Latent Attrition Models}
 \usage{
-latentAttrition(formula, data, cov, optimx.args = list(), verbose = TRUE)
+latentAttrition(
+  formula,
+  family,
+  data,
+  optimx.args = list(),
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{formula}{Formula specifying the model to be fit. See Details.}
@@ -12,12 +19,12 @@ latentAttrition(formula, data, cov, optimx.args = list(), verbose = TRUE)
 \item{data}{Either a \code{clv.data} object or a \code{data.frame} containing transaction
 data on which the model specified in \code{formula} will be fit.}
 
-\item{cov}{Optional \code{data.frame} or \code{data.table} of covariate data for the lifetime and transaction process. See Details.}
-
 \item{optimx.args}{Additional arguments to control the optimization which are forwarded to \code{\link[optimx:optimx]{optimx::optimx}}.
 If multiple optimization methods are specified, only the result of the last method is further processed.}
 
 \item{verbose}{Show details about the running of the function.}
+
+\item{cov}{Optional \code{data.frame} or \code{data.table} of covariate data for the lifetime and transaction process. See Details.}
 }
 \description{
 Fit latent attrition models for transaction with a formula interface

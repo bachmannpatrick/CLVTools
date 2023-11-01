@@ -122,116 +122,81 @@
 #' @importFrom Formula as.Formula
 #' @importFrom stats terms formula
 #' @export
-latentAttrition <- function(formula, data, cov, optimx.args=list(), verbose=TRUE){
+latentAttrition <- function(formula, family, data, optimx.args=list(), verbose=TRUE, ...){
 
   cl  <- match.call(call = sys.call(), expand.dots = TRUE)
 
-  check_err_msg(check_userinput_formula(formula, name.specials.model = c("pnbd", "bgnbd", "ggomnbd")))
-  check_err_msg(check_userinput_formula_data(data))
-  check_err_msg(check_userinput_formula_cov(cov=cov))
-  check_err_msg(check_userinput_latentattrition_formulavsdata(formula=formula, data=data, cov=cov))
+  check_err_msg(check_userinput_family(family=family))
+  check_err_msg(check_userinput_data(data=data))
+  check_err_msg(check_userinput_formula_data(formula=formula, data = data))
+  check_err_msg(check_userinput_dots_family_data(family=family, data=data, ...))
 
-  F.formula <- as.Formula(formula)
+  # if data has covariates, they need to be transformed
+  # if(is(data, "clv.data.static.covariates")){
+  #   F.formula <- as.Formula(formula)
+  #
+  #   if(is(data, "clv.data.dynamic.covariates")){
+  #     # better to remove tp.cov.x columns here than trying to figure out whether
+  #     # there are any in formulainterface_create_clvdataobj()
+  #     data <- formulainterface_create_clvdataobj(F.formula = F.formula, clv.data.nocov = as(data, "clv.data"),
+  #                                                create.dyncov = TRUE,
+  #                                                dt.cov.life = data@data.cov.life[, !c("tp.cov.lower", "tp.cov.upper")],
+  #                                                dt.cov.trans = data@data.cov.trans[, !c("tp.cov.lower", "tp.cov.upper")])
+  #   }else{
+  #     # Dont need to remove Id column
+  #     data <- formulainterface_create_clvdataobj(F.formula = F.formula, clv.data.nocov = as(data, "clv.data"),
+  #                                                create.dyncov = FALSE,
+  #                                                dt.cov.life = data@data.cov.life,
+  #                                                dt.cov.trans = data@data.cov.trans)
+  #   }
+  # }
 
-  # Turn data.frame/table into data if needed
-  if(is.data.frame(data) || is.data.table(data)){
-    # Verified to be data.frame/table
-    data <- formulainterface_dataframe_toclvdata(F.formula = F.formula, data=data, cl=cl)
-
-    # Add covariate data if needed
-    #   if indicated in formula RHS2&3 or cov data given
-    if(!missing(cov)){
-      data <-formulainterface_create_clvdataobj(F.formula = F.formula, clv.data.nocov = data,
-                                                create.dyncov = ("Cov.Date" %in% colnames(cov)),
-                                                dt.cov.life = cov, dt.cov.trans = cov)
-    }
-  }else{
-    # data is clv.data object
-    # if it has covariates, they need to be transformed
-    if(is(data, "clv.data.static.covariates")){
-
-      if(is(data, "clv.data.dynamic.covariates")){
-        # better to remove tp.cov.x columns here than trying to figure out whether
-        # there are any in formulainterface_create_clvdataobj()
-        data <- formulainterface_create_clvdataobj(F.formula = F.formula, clv.data.nocov = as(data, "clv.data"),
-                                                   create.dyncov = TRUE,
-                                                   dt.cov.life = data@data.cov.life[, !c("tp.cov.lower", "tp.cov.upper")],
-                                                   dt.cov.trans = data@data.cov.trans[, !c("tp.cov.lower", "tp.cov.upper")])
-      }else{
-        # Dont need to remove Id column
-        data <- formulainterface_create_clvdataobj(F.formula = F.formula, clv.data.nocov = as(data, "clv.data"),
-                                                   create.dyncov = FALSE,
-                                                   dt.cov.life = data@data.cov.life,
-                                                   dt.cov.trans = data@data.cov.trans)
-      }
-    }
-  }
+  return()
 
 
 
-  # Fit model ---------------------------------------------------------------------------------------------------
-  # default args from explicitly passed args
-  args <- list(clv.data = data, verbose=verbose, optimx.args=optimx.args)
 
-  # add model call args
-  model <- formula_read_model_name(F.formula)
-  l.model.args <- formula_parse_args_of_special(F.formula = F.formula, name.special = model, from.lhs = 0, from.rhs = 1)
-  args <- modifyList(args, l.model.args, keep.null = TRUE)
 
-  # args passed to model special functions
-  #   if any given
-  if(is(data, "clv.data.static.covariates") & length(F.formula)[2] == 4){
-    l.args.reg <- formula_parse_args_of_special(F.formula = F.formula, name.special = "regularization", from.lhs=0, from.rhs = 4)
-    if(length(l.args.reg)){
-      args <- modifyList(args, list(reg.lambdas = c(life=l.args.reg[["life"]], trans=l.args.reg[["trans"]])), keep.null = TRUE)
-    }
-
-    # read char vec of variables to constrain
-    #   do not need to concat multiple separate constraint() if params.as.chars.only=TRUE
-    names.constr <- formula_readout_special_arguments(F.formula = F.formula, name.special = "constraint", from.lhs = 0, from.rhs = 4,
-                                                      params.as.chars.only = TRUE)
-    if(length(names.constr)){
-      # To have names match covariate data names if there are any transformations applied or special symbols in the cov name
-      # spaces in operations are handled by
-      # Will make empty names.constr (NULL) to character(0) which is illegal input. Therefore have to wrap in if(length)
-      names.constr <- make.names(names.constr)
-      args <- modifyList(args, list(names.cov.constr=unname(names.constr)), keep.null = TRUE)
-    }
-
-  }
-
-  # Fit model
-  obj <- do.call(what = model, args)
-
-  # Replace call with call to latentAttrition()
-  obj@call <- cl
-
-  return(obj)
+  # # Fit model ---------------------------------------------------------------------------------------------------
+  # # default args from explicitly passed args
+  # args <- list(clv.data = data, verbose=verbose, optimx.args=optimx.args)
+  #
+  # # add model call args
+  # model <- formula_read_model_name(F.formula)
+  # l.model.args <- formula_parse_args_of_special(F.formula = F.formula, name.special = model, from.lhs = 0, from.rhs = 1)
+  # args <- modifyList(args, l.model.args, keep.null = TRUE)
+  #
+  # # args passed to model special functions
+  # #   if any given
+  # if(is(data, "clv.data.static.covariates") & length(F.formula)[2] == 4){
+  #   l.args.reg <- formula_parse_args_of_special(F.formula = F.formula, name.special = "regularization", from.lhs=0, from.rhs = 4)
+  #   if(length(l.args.reg)){
+  #     args <- modifyList(args, list(reg.lambdas = c(life=l.args.reg[["life"]], trans=l.args.reg[["trans"]])), keep.null = TRUE)
+  #   }
+  #
+  #   # read char vec of variables to constrain
+  #   #   do not need to concat multiple separate constraint() if params.as.chars.only=TRUE
+  #   names.constr <- formula_readout_special_arguments(F.formula = F.formula, name.special = "constraint", from.lhs = 0, from.rhs = 4,
+  #                                                     params.as.chars.only = TRUE)
+  #   if(length(names.constr)){
+  #     # To have names match covariate data names if there are any transformations applied or special symbols in the cov name
+  #     # spaces in operations are handled by
+  #     # Will make empty names.constr (NULL) to character(0) which is illegal input. Therefore have to wrap in if(length)
+  #     names.constr <- make.names(names.constr)
+  #     args <- modifyList(args, list(names.cov.constr=unname(names.constr)), keep.null = TRUE)
+  #   }
+  #
+  # }
+  #
+  # # Fit model
+  # obj <- do.call(what = model, args)
+  #
+  # # Replace call with call to latentAttrition()
+  # obj@call <- cl
+  #
+  # return(obj)
 }
 
-
-# Create clv.data object if needed
-# Apply needed transformations to given data
-formulainterface_dataframe_toclvdata <- function(F.formula, data, cl){
-  # Verified to be data.frame/table
-
-  # std args to create data object with
-  l.data.args <- list(data.transactions = data, date.format="ymd", time.unit="w",
-                      name.id ="Id", name.date="Date", name.price="Price")
-
-  # Overwrite with what is given in data() special
-  l.data.special.args <- formula_parse_args_of_data(F.formula)
-  # rename names in formula specials to data parameters
-  names(l.data.special.args) <- sapply(names(l.data.special.args), function(x){
-    switch(EXPR = x, "unit"="time.unit", "split"="estimation.split", "format"="date.format")})
-
-  l.data.args <- modifyList(l.data.args, l.data.special.args, keep.null = TRUE)
-
-  data <- do.call(what = clvdata, args = l.data.args)
-  data@call <- cl
-
-  return(data)
-}
 
 #' @importFrom stats update
 formulainterface_create_clvdataobj <- function(F.formula, create.dyncov, clv.data.nocov, dt.cov.life, dt.cov.trans){
@@ -282,423 +247,129 @@ formulainterface_create_clvdataobj <- function(F.formula, create.dyncov, clv.dat
 }
 
 
+check_userinput_family <- function(family){
+  # not missing
+  if(missing(family))
+    return("Please provide one of the following inputs for parameter \'family\': pnbd, bgnbd, ggomnbd")
+
+  # has to be exactly one of the methods exported from the package (pnbd, bgnbd, ggomnbd)
+  if(!any(identical(family, pnbd), identical(family, bgnbd), identical(family, ggomnbd))){
+    return("Please provide one of the following inputs for parameter \'family\': pnbd, bgnbd, ggomnbd")
+  }
+  return(c())
+}
+
+check_userinput_data <- function(data){
+  if(missing(data)){
+    return("Please provide a 'clv.data' object as input for \'data\'.")
+  }
+
+  if(!is(data, class2 = "clv.data")){
+    return("Please provide a 'clv.data' object as input for \'data\'.")
+  }
+
+  return(c())
+}
+
+
 #' @importFrom Formula as.Formula is.Formula
 #' @importFrom stats terms formula
 #' @importFrom methods is
-check_userinput_formula <- function(formula, name.specials.model){
-  err.msg <- c()
+check_userinput_formula_data <- function(formula, data){
 
-  if(missing(formula))
-    return("Please provide a valid formula object as \'formula\' parameter.")
-  if(is.null(formula))
-    return("Please provide a valid formula object as \'formula\' parameter.")
-  # Check if it is a formula
-  if(!is(object = formula, class2 = "formula") && !is.Formula(formula))
-    return("Please provide a valid formula object as \'formula\' parameter.")
+  # has to be missing if data has no covariates
+  if(!is(data, class2 = "clv.data.static.covariates")){
+    if(!missing(formula)){
+      return("Parameter 'formula' may not be specified if the data has no covariates.")
+    }
 
-  F.formula <- as.Formula(formula)
-
-
-
-  # Verify LHS ------------------------------------------------------------------------------------------
-  # Check that formula has maximum 1 LHS
-  if(length(F.formula)[1] > 1)
-    return("Please specify maximum 1 dependent variable (data()).")
-
-  # Only verify if there is LHS 1
-  if(length(F.formula)[1] == 1){
-
-    # if(length(all.vars(formula(F.formula, lhs=1, rhs=0))) > 0)
-    #   err.msg <- c(err.msg, "Please specify nothing else but data() in the LHS.")
-
-    # Check that has exactly one special and nothing else in LHS
-    num.lhs1.specials <- formula_num_specials(F.formula, lhs=1, rhs=0, specials = "data")
-    # should exactly be list(data(...))
-    num.variables.content <- length(attr(terms(F.formula, lhs=1, rhs=0, specials="data"), "variables"))
-    if(num.lhs1.specials != 1 || num.variables.content != 2)
-      return("Please specify exactly data() in the LHS.")
-
-
-    # Verify can parse inputs to special
-    l.data.args <- formula_parse_args_of_data(F.formula)
-    if(any(sapply(l.data.args, is, "error")))
-      err.msg <- c(err.msg, paste0("Please provide only arguments to data() which can be parsed!"))
-
-    # **TODO: check that also fails data()+1 ~ pnbd() and pnbd()+1
-
-    # ... no other special function than model in LHS1
-    # ***TODO: There is a bug in Formula: labels() is inconsistent in recognizing specials in the LHS
-    #
-    # Does not recognize abc() special in LHS1:
-    #   # only special in lhs1
-    #   labels(terms(as.Formula(abc()~n), lhs=1, rhs=0, specials="abc"))
-    #   # also var in rhs1
-    #   labels(terms(as.Formula(abc()~n), lhs=1, rhs=1, specials="abc"))
-    #   # also special in rhs1
-    #   labels(terms(as.Formula(abc()~xyz()), lhs=1, rhs=1, specials=c("abc", "xyz")))
-    #   # also special and var in rhs1
-    #   labels(terms(as.Formula(abc()~n+xyz()), lhs=1, rhs=1, specials=c("abc", "xyz")))
-    #
-    # Recognizes abc() in LHS1
-    #   # when adding another variable in LHS1 besides special
-    #   labels(terms(as.Formula(abc()+k~n), lhs=1, rhs=0, specials="abc"))
-    #   # when adding another special in LHS1
-    #   labels(terms(as.Formula(abc()+xyz()~n), lhs=1, rhs=0, specials=c("abc", "xyz")))
-    #
-    # Seems related that there is only a single special in LHS1. A single special in RHS1 is however always recognized
-    # labels(terms(as.Formula(~abc()), lhs=1, rhs=1, specials="abc"))
-
-  }
-
-  # Verify RHS ------------------------------------------------------------------------------------------
-  if("." %in% all.vars(formula(F.formula, rhs=1)))
-    return(paste0("Please choose exactly one of the following models as the first RHS: ",
-                  paste0(paste0(name.specials.model, "()"), collapse = ", "),"."))
-
-  # Check that has exactly one model special and ..
-  num.model.specials <- formula_num_specials(F.formula, rhs=1, lhs=0, specials=name.specials.model)
-  F.terms.rhs1 <- terms(F.formula, lhs=0, rhs=1, specials=name.specials.model)
-
-  # ... no other special function than model in RHS1
-  if(num.model.specials !=1 || length(labels(F.terms.rhs1)) != 1)
-    err.msg <- c(err.msg, paste0("Please choose exactly one of the following models as the first RHS: ",
-                                 paste0(paste0(name.specials.model, "()"), collapse = ", "),"."))
-
-  # Formula too badly structured, unable to do further tests
-  if(length(err.msg)>0)
-    return(err.msg)
-
-  # Verify that can parse all args in model special ...
-  model <- formula_read_model_name(F.formula)
-  l.model.args <- formula_parse_args_of_special(F.formula = F.formula, name.special=model, from.lhs=0, from.rhs=1)
-  if(any(sapply(l.model.args, is, "error")))
-    err.msg <- c(err.msg, paste0("Please provide only arguments to ",model,"() which can be parsed!"))
-
-  # ... and none of the explicit args
-  if(any(c("verbose","optimx.args") %in% names(l.model.args)))
-    err.msg <- c(err.msg, paste0("Please do not specify arguments 'verbose' and 'optimx.args' in ",model,"()!"))
-
-  return(err.msg)
-}
-
-check_userinput_formula_data <- function(data){
-  if(missing(data))
-    return("Please provide an object of class clv.data, data.frame, or data.table for parameter 'data'!")
-
-  if(!is(data, "clv.data") && !is.data.frame(data) && !is.data.table(data)){
-    return("Please provide an object of class clv.data, data.frame, or data.table for parameter 'data'!")
   }else{
-    return(c())
-  }
-}
+    # static or dyn cov data: formula is required
 
-check_userinput_formula_cov <- function(cov){
-  if(missing(cov)){
-    return(c())
-  }
-
-  if(!is.data.frame(cov) && !is.data.table(cov)){
-    return("Please provide an object of class data.frame or data.table for parameter 'cov'!")
-  }
-
-  # if(!("Id"%in%colnames(cov))){
-  #   return("Please provide covariate data with a column named 'Id'.")
-  # }
-}
-
-check_userinput_latentattrition_formulavsdata_LHS1 <- function(F.formula){
-  err.msg <- c()
-
-  # always requires LHS1
-  if(length(F.formula)[1] == 0){
-    return("Please specify a LHS with data() in the formula when supplying a data.frame/table for parameter data.")
-  }
-
-  # requires to have data special in LHS1
-  if(formula_num_specials(F.formula, lhs=1, rhs=0, specials="data") != 1){
-    return("Please specify a LHS with data() in the formula when supplying a data.frame/table for parameter data.")
-  }
-
-  # Verify only allowed args are given to data()
-  names.params.data <- names(formula_readout_special_arguments(F.formula = F.formula, from.lhs = 1, from.rhs = 0,
-                                                               name.special = "data", params.as.chars.only = FALSE)[[1]])
-
-  if("" %in% names.params.data){
-    err.msg <- c(err.msg, "Please specify all inputs to data() as named parameters.")
-  }
-
-  # remove unnamed args because cannot be verified
-  names.params.data <- names.params.data[names.params.data != ""]
-
-  for(n in names.params.data){
-    if(!(n %in% c("unit", "split", "format"))){
-      err.msg <- c(err.msg, paste0("The parameter ",n," is not valid input to data()!"))
+    if(missing(formula)){
+      return("Please provide a valid formula object as \'formula\' parameter.")
     }
-  }
 
-  # already verified in formula alone that all args to data() are parsable
-  return(err.msg)
-}
-
-check_userinput_latentattrition_formulavsdata_RHS23 <- function(F.formula, names.cov.data.life, names.cov.data.trans){
-  err.msg <- c()
-  # verify the specified cov data is in clv.data
-  #   "." is by definition always in the data but remove from names
-  vars.life  <- setdiff(all.vars(formula(F.formula, lhs=0, rhs=2)), ".")
-  vars.trans <- setdiff(all.vars(formula(F.formula, lhs=0, rhs=3)), ".")
-  # may be character(0) if only "."
-  if(length(vars.life)){
-    if(!all(vars.life %in% names.cov.data.life)){
-      err.msg <- c(err.msg, "Not all lifetime covariates specified in the formula could be found in the data!")
+    # Check if it is a formula
+    if(!is(object = formula, class2 = "formula") && !is.Formula(formula)){
+      return("Please provide a valid formula object as \'formula\' parameter.")
     }
-  }
-  if(length(vars.trans)){
-    if(!all(vars.trans %in% names.cov.data.trans)){
-      err.msg <- c(err.msg, "Not all transaction covariates specified in the formula could be found in the data!")
+
+    F.formula <- as.Formula(formula)
+
+    # there may not be any LHS
+    if(length(F.formula)[1] > 0)
+      return("Please specify no dependent variable (left-hand side) in the formula.")
+
+    # there have to be exactly 2 RHS
+    if(length(F.formula)[2] != 2){
+      return("Please specify lifetime and transaction covariates on the right-hand of the formula using a two-part notation with '|' as separator (e.g. ~ covlife | covtrans).")
     }
-  }
-  return(err.msg)
-}
 
-check_userinput_latentattrition_formulavsdata_RHS4 <- function(F.formula){
-  err.msg <- c()
+    # all covs specified in RHS1 and RHS2 have to be in data
+    #   "." is by definition always in the data but remove from names
+    vars.life  <- setdiff(all.vars(formula(F.formula, lhs=0, rhs=1)), ".")
+    vars.trans <- setdiff(all.vars(formula(F.formula, lhs=0, rhs=2)), ".")
 
-  # If has RHS4, may only be allowed ones
-  #   "regularization" or "constraint"
-
-  # Check that has only allowed specials and nothing else allowed
-  if("." %in% all.vars(formula(F.formula, lhs=0, rhs=4))){
-    # no suitable data argument to terms() as required to resolve "."
-    err.msg <- c(err.msg, "Please do not use <.> in the fourth RHS.")
-  }else{
-    F.terms.rhs4 <- terms(F.formula, lhs=0, rhs=4, specials=c("regularization", "constraint"))
-    num.rhs4.specials <- formula_num_specials(F.formula, lhs=0, rhs=4, specials=c("regularization", "constraint"))
-
-    if(length(labels(F.terms.rhs4)) != num.rhs4.specials)
-      err.msg <- c(err.msg, "Please choose only from the following for the fourth RHS: regularization(), constraint().")
-
-    # if has regularization(), check that only once, with allowed args and are parsable
-    if(!is.null(attr(F.terms.rhs4, "specials")[["regularization"]])){
-
-      if(length(attr(F.terms.rhs4, "specials")[["regularization"]]) > 1)
-        err.msg <- c(err.msg, "Please specify regularization() only once!")
-
-      l.reg.args <- formula_parse_args_of_special(F.formula=F.formula, name.special="regularization", from.lhs=0, from.rhs=4)
-      names.reg.args <- names(l.reg.args)
-
-      if(!setequal(names.reg.args, c("life", "trans"))){
-        err.msg <- c(err.msg, "Please give specify arguments life and trans in regularization()! (ie regularization(trans=5, life=7) )")
-      }
-      # and each only given once
-      if(length(names.reg.args) != length(unique(names.reg.args))){
-        err.msg <- c(err.msg, "Please specify every argument in regularization() exactly once!")
-      }
-      if(any(sapply(l.reg.args, is, "error")) | !all(sapply(l.reg.args, is.numeric))){
-        err.msg <- c(err.msg, "Please specify every argument in regularization() as number!")
+    # may be character(0) if only "."
+    if(length(vars.life)){
+      if(!all(vars.life %in% data@names.cov.data.life)){
+        return("Not all lifetime covariates specified in the formula could be found in the data!")
       }
     }
-
-    # if has constraint(), check that only names (not named arguments) and parsable
-    if(!is.null(attr(F.terms.rhs4, "specials")[["constraint"]])){
-      l.constr.args <- formula_readout_special_arguments(F.formula = F.formula, name.special="constraint",
-                                                         from.lhs = 0, from.rhs=4, params.as.chars.only=FALSE)
-      # concat args in multiple constraint() specials
-      l.constr.args <- do.call(c, l.constr.args)
-
-      if(any(names(l.constr.args) != "")){
-        err.msg <- c(err.msg, "Please provide only unnamed arguments to constraint()!")
+    if(length(vars.trans)){
+      if(!all(vars.trans %in% data@names.cov.data.trans)){
+        return("Not all transaction covariates specified in the formula could be found in the data!")
       }
     }
   }
-
-  return(err.msg)
+  return(c())
 }
 
-#' @importFrom Formula as.Formula
-#' @importFrom stats terms
-check_userinput_latentattrition_formulavsdata <- function(formula, data, cov){
-  err.msg <- c()
 
-  # formula is verified to be basic correct
-  F.formula <- as.Formula(formula)
+#' @importFrom methods getMethod signature formalArgs is
+check_userinput_dots_family_data <- function(family, data, ...){
 
-  # raw data
-  if(is.data.frame(data) || is.data.table(data)){
-    err.msg <- check_userinput_latentattrition_formulavsdata_LHS1(formula)
-    if(length(err.msg)){
-      return(err.msg)
-    }
-  }else{
-    if(!missing(cov)){
-      return("Please do not give covariate data if an object of clv.data is given for parameter data!")
-    }
-    if(length(F.formula)[1] != 0){
-      err.msg <- c(err.msg, "Please do not specify any LHS if a clv.data object is given for parameter data!")
-    }
+  # find for which generic it will dispatch
+  method.def <- getMethod(family, signature(clv.data = class(data)))
+  # read the allowed inputs from its args definition
+  allowed.args <- formalArgs(method.def)
+
+  # unfortunately, this does not list the additional args listed for static and dyncov data objects
+  # it defines a function .local within and this .local has the full signature and is then called
+  # the following code works to extract the args from this nested method
+  # formalArgs(eval(body(getMethod(family, signature(clv.data = class(data))))[[2]]))
+  # however, this may not work in the future. therefore rather define manually
+
+  if(is(data, "clv.data.static.covariates")){
+    # static or dyncov methods may take more
+    allowed.args <- c(allowed.args,
+                      # dont allow names of covariates which are specified in the formula already
+                      c(#"names.cov.life",
+                        #"names.cov.trans",
+                        "start.params.life",
+                        "start.params.trans",
+                        "names.cov.constr",
+                        "start.params.constr",
+                        "reg.lambdas"))
   }
 
-  # No covariate data given
-  #   either clv.data w/o cov OR data.frame and no cov object
-
-  # nocov data:  only 1 RHS
-  #   excludes static and dyn cov
-  if(is(data, "clv.data") && !is(data, "clv.data.static.covariates")){
-    if(length(F.formula)[2] != 1){
-      err.msg <- c(err.msg, "The formula may only contain 1 part specifiying the model for data without covariates!")
-    }
-  }
-  if((is.data.frame(data)|| is.data.table(data)) && missing(cov)){
-    if(length(F.formula)[2] != 1){
-      err.msg <- c(err.msg, "The formula may only contain 1 part specifiying the model if no covariate data is given!")
-    }
-  }
+  # these are specified already
+  allowed.args <- setdiff(allowed.args, c("clv.data", "optimx.args", "verbose", "..."))
 
 
-  # Covariate data
-  #   either clv.data obj w/ cov OR data.frame/table with cov
+  # use alist() to not evaluate args in ...
+  # do not use ...names() as it was only introduced in R 4.1.0 which is later
+  # than the min required R version
+  # use one of the proposed implementations of ...names() from https://bugs.r-project.org/show_bug.cgi?id=17705
+  # names.dots <- names(substitute(alist(...)))
+  names.dots <- names(match.call(expand.dots = TRUE))[c(-1L, -2L, -3L)] # remove call, family, data
+  not.allowd.args <- setdiff(names.dots, allowed.args)
 
-  # cov data: requires at least 3 RHS (model, trans, life), max 4
-  #   includes static and dyn covs
-  if(is(data, "clv.data.static.covariates") || !(missing(cov))){
-    if(length(F.formula)[2] < 3){
-      err.msg <- c(err.msg, "The formula needs to specify the model as well as the transaction and the lifetime covariates for data with covariates!")
-      return(err.msg)
-    }
-    if(length(F.formula)[2] > 4){
-      err.msg <- c(err.msg, "The formula may consist of a maximum of 4 parts!")
-    }
-
-
-    # Verify RHS2&3
-    if(is(data, "clv.data.static.covariates")){
-      err.msg <- c(err.msg, check_userinput_latentattrition_formulavsdata_RHS23(F.formula, names.cov.data.life = data@names.cov.data.life,
-                                                                                names.cov.data.trans = data@names.cov.data.trans))
-    }else{
-      cov.names <- setdiff(colnames(cov), c("Id", "Cov.Date"))
-      err.msg <- c(err.msg, check_userinput_latentattrition_formulavsdata_RHS23(F.formula, names.cov.data.life = cov.names, names.cov.data.trans = cov.names))
-    }
-    if(length(err.msg)){
-      return(err.msg)
-    }
-
-    # Verify RHS4
-    if(length(F.formula)[2] == 4){
-      err.msg <- c(err.msg, check_userinput_latentattrition_formulavsdata_RHS4(F.formula))
-    }
-  }
-  return(err.msg)
-}
-
-# only works if special exists once
-formula_parse_args_of_special <- function(F.formula, name.special, from.lhs, from.rhs){
-  # read out args of "model" special. First element because has special only once
-  l.args <- formula_readout_special_arguments(F.formula = F.formula, name.special=name.special,
-                                              from.lhs = from.lhs, from.rhs=from.rhs, params.as.chars.only=FALSE)[[1]]
-
-  # Turn args of special function which are chars into objects
-  #   error obj if not parse-able
-  return(lapply(l.args, function(arg){
-    if(is.null(arg)){
-      return(arg)
-    }else{
-      return(tryCatch(eval(parse(text=arg)),
-                      error=function(e)e))
-    }
-  }))
-
-}
-
-#' @importFrom stats terms
-formula_num_specials <- function(F.formula, lhs, rhs, specials){
-  F.terms <- terms(F.formula, lhs=lhs, rhs=rhs, specials=specials)
-  return(sum(sapply(attr(F.terms, "specials"), length)))
-}
-
-#' @importFrom stats terms formula
-formula_read_model_name <- function(F.formula){
-  F.terms.rhs1 <- terms(formula(F.formula, lhs=0, rhs=1), specials=c("pnbd", "bgnbd", "ggomnbd", "gg"))
-  return(names(unlist(attr(F.terms.rhs1, "specials"))))
-}
-
-
-
-# Needed to parse inputs to data() special because parameters needs to be parsed differently
-formula_parse_args_of_data <- function(F.formula){
-  # list of chars
-  l.args <- formula_readout_special_arguments(F.formula = F.formula, name.special = "data",
-                                              from.lhs = 1, from.rhs = 0, params.as.chars.only = FALSE)[[1]]
-  if("split" %in% names(l.args)){
-    user.split <- l.args[["split"]]
-    # leave NULL if is NULL
-    if(!is.null(user.split)){
-      # Parse split to numeric
-      l.args[["split"]] <- tryCatch(eval(parse(text=user.split)), error=function(e)e)
-    }
-  }
-  # unit and format are left as os (characters or NULL)
-  return(l.args)
-}
-
-# params.as.chars.only=TRUE returns a vector of chars with the parameter names in it.
-#                           Used to readout given param name
-#                           Example:  continuous(X1, X2)
-#                                   => c("X1", "X2")
-# params.as.chars.only=FALSE returns a list of list. The inner list is named after the arg
-#                            and the element contains the actual input as char. Elements in sub-lists have
-#                            to be named so that they do not get matched to unintended args because of their
-#                            position (ie X2 to g)
-#                            Example:  IIV(g=x2, iiv=gp, X1, X2) + IIV()
-#                                   => list(list(g="x2",iiv="gp", X1="X1",X2="X2"), list(..),..)
-#' @importFrom stats terms formula
-formula_readout_special_arguments <- function(F.formula, name.special, from.lhs, from.rhs, params.as.chars.only = TRUE){
-
-  F.terms   <- terms(formula(F.formula, lhs=from.lhs, rhs=from.rhs), specials = name.special)
-
-  # Read out positions in formula
-  # NULL if there are no specials
-  ind.special <- attr(F.terms, "specials")[[name.special]]
-
-  # End if there are no such special in the formula
-  if(is.null(ind.special))
-    return(NULL)
-
-  # Read out commands
-  # +1 because first is "list"
-  lang.special <- attr(F.terms, "variables")[1L+ind.special]
-
-  # Obtain column name is indicated in the function
-  #   create function that is exectuted and simply returns the specified inputs as strings
-
-  # create new function named after special which simply returns the input given
-  assign(x = paste0("fct.", name.special), value = function(...){ return(match.call()[-1])})
-
-  # Execute this function for each special by adding "fct." at the beginning and evaluating
-  names.special  <- lapply(paste0("fct.",lang.special), FUN=function(str){
-    eval(expr=parse(text=str))})
-
-  if(params.as.chars.only){
-    # Return vector with (unique) parameter names only
-    names.special        <- lapply(names.special, function(call){as.character(as.list(call))})
-    names.special        <- unique(unlist(names.special))
-    names(names.special) <- names.special
-  }else{
-    # return list with names=args, entry = arg data
-    # here:list of language object
-    names.special <- lapply(names.special, as.list)
-    # here: nested list of arg-lists
-    names.special <- lapply(names.special, lapply, deparse) # make char representation
-    # replace the "", "NULL" as actual NULLs
-    names.special <- lapply(names.special, lapply, function(char.arg){if(char.arg%in%c("NULL", "", "NA")) NULL else char.arg})
-    # Name unnamed elements (=args) in sublists after the elements
-    # names.special <- lapply(names.special, function(subl){
-    #   unnamed.ind <- which(names(subl)=="")
-    #   names(subl)[unnamed.ind] <- subl[unnamed.ind]
-    #   return(subl)})
-    # Does not need be unique per list, will not mixup entries if regressors are named same as g/iiv
-    #   rather it is caught that they may not be twice
+  if(length(not.allowd.args)){
+    return(paste0(
+      "The following arguments may not be passed to '...': ", paste0(not.allowd.args, collapse=', ')))
   }
 
-  return(names.special)
+  return(c())
 }
-
-
