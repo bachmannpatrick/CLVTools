@@ -309,12 +309,10 @@ test_that("Same timepoint transactions are summed (posix)", {
 
 test_that("Removes correct transaction",{
   # Correctly remove first transaction, regardless of sorting
-  expect_silent(dt.trans <- data.table(Date = c(lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-02"), lubridate::ymd("2019-01-03"),
-                                                lubridate::ymd("2019-06-01"), lubridate::ymd("2019-06-02")),
-                                       Id =   c("1", "1", "1", "2", "2")))
-  expect_silent(dt.trans.correct <- data.table(Date = c(lubridate::ymd("2019-01-02"), lubridate::ymd("2019-01-03"),
-                                                        lubridate::ymd("2019-06-02")),
-                                               Id =   c( "1", "1", "2")))
+  expect_silent(dt.trans <- data.table(Date = lubridate::ymd(c("2019-01-01", "2019-01-02", "2019-01-03", "2019-06-01", "2019-06-02")),
+                                       Id = c("1", "1", "1", "2", "2")))
+  expect_silent(dt.trans.correct <- data.table(Date = lubridate::ymd(c("2019-01-02", "2019-01-03","2019-06-02")),
+                                               Id = c( "1", "1", "2")))
 
   # Ordered by Date
   # Order one way
