@@ -13,7 +13,6 @@ test_that("Same as standard interface", {
 
   # all equal but call and runtime
   gg.std@call <- gg.sp@call
-  gg.std@clv.data@call <- gg.sp@clv.data@call
   gg.std@optimx.estimation.output[1, "xtime"] <- gg.sp@optimx.estimation.output[1, "xtime"]
 
   expect_true(isTRUE(all.equal(gg.std, gg.sp)))

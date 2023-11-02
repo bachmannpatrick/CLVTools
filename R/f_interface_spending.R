@@ -46,70 +46,60 @@
 #' }
 #'
 #'
-#' @importFrom Formula as.Formula
-#' @importFrom stats terms formula
 #' @export
-spending <- function(formula, data, optimx.args=list(), verbose=TRUE){
+spending <- function(family, data, optimx.args=list(), verbose=TRUE, ...){
 
   cl  <- match.call(call = sys.call(), expand.dots = TRUE)
 
-  check_err_msg(check_userinput_formula(formula, name.specials.model = "gg"))
-  check_err_msg(check_userinput_formula_data(data))
-  check_err_msg(check_userinput_spending_formulavsdata(formula=formula, data=data))
 
-  F.formula <- as.Formula(formula)
+  check_err_msg(check_userinput_spending_family(family))
+  check_err_msg(check_userinput_data(data))
+  check_err_msg(check_userinput_spending_dots_family(family=family, ...))
+  # TODO: Check dots to only contain remove.first.transaction
 
-  # Turn data.frame/table into data if needed
-  if(is.data.frame(data) || is.data.table(data)){
-    data <- formulainterface_dataframe_toclvdata(F.formula = F.formula, data=data, cl=cl)
-  }
-
-  # No covariates to be transformed
+  # No formula which could mandate transforming covariates
 
 
-  # default args from explicitly passed args
-  args <- list(clv.data = data, verbose=verbose, optimx.args=optimx.args)
-
-  # add model call args
-  model <- formula_read_model_name(F.formula)
-  l.model.args <- formula_parse_args_of_special(F.formula = F.formula, name.special = model, from.lhs=0, from.rhs = 1)
-  args <- modifyList(args, l.model.args, keep.null = TRUE)
+  # Fit model ---------------------------------------------------------------------------------------------------
+  # call args
+  #   - from explicitly passed args
+  #   - args in dots which includes all additional options such as regularization and constraint covs
+  args <- list(clv.data = data, verbose=verbose, optimx.args=optimx.args, ...)
 
   # Fit model
-  obj <- do.call(what = model, args)
+  obj <- do.call(what = family, args = args)
 
-  # Replace call with call to spending()
+  # Replace call with call to latentAttrition()
   obj@call <- cl
 
   return(obj)
 }
 
 
-#' @importFrom Formula as.Formula
-check_userinput_spending_formulavsdata <- function(formula, data){
-  # only verify formula, not data
+check_userinput_spending_family <- function(family){
+  # not missing
+  if(missing(family))
+    return("Please provide one of the following inputs for parameter \'family\': gg")
 
-  err.msg <- c()
-
-  # formula is verified to be basic correct
-  F.formula <- as.Formula(formula)
-
-  # always only 1 RHS
-  if(length(F.formula)[2] != 1){
-    err.msg <- c(err.msg, "The formula may only contain 1 RHS part specifiying the model!")
+  # has to be exactly one of the methods exported from the package (pnbd, bgnbd, ggomnbd)
+  if(!identical(family, gg)){
+    return("Please provide one of the following inputs for parameter \'family\': gg")
   }
-
-  if(is.data.frame(data) || is.data.table(data)){
-    err.msg <- check_userinput_latentattrition_formulavsdata_LHS1(formula)
-  }else{
-    # many not have any LHS if not raw data
-    if(length(F.formula)[1] != 0){
-      err.msg <- c(err.msg, "Please do not specify any LHS if a clv.data object is given for parameter data!")
-    }
-  }
-
-  return(err.msg)
+  return(c())
 }
 
+check_userinput_spending_dots_family <- function(family, ...){
+  # See explanations in check_userinput_latentattrition_dots_family_data()
 
+  allowed.args <- formalArgs(getMethod(family, signature(clv.data = "clv.data")))
+  allowed.args <- setdiff(allowed.args, c("clv.data", "optimx.args", "verbose", "..."))
 
+  names.dots <- names(match.call(expand.dots = TRUE))[c(-1L, -2L)] # remove call, family
+  not.allowd.args <- setdiff(names.dots, allowed.args)
+
+  if(length(not.allowd.args)){
+    return(paste0("The following arguments may not be passed to '...': ", paste0(not.allowd.args, collapse=', ')))
+  }
+
+  return(c())
+}

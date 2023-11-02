@@ -4,11 +4,9 @@
 \alias{spending}
 \title{Formula Interface for Spending Models}
 \usage{
-spending(formula, data, optimx.args = list(), verbose = TRUE)
+spending(family, data, optimx.args = list(), verbose = TRUE, ...)
 }
 \arguments{
-\item{formula}{Formula specifying the model to be fit. See Details.}
-
 \item{data}{Either a \code{clv.data} object or a \code{data.frame} containing transaction
 data on which the model specified in \code{formula} will be fit.}
 
@@ -16,6 +14,8 @@ data on which the model specified in \code{formula} will be fit.}
 If multiple optimization methods are specified, only the result of the last method is further processed.}
 
 \item{verbose}{Show details about the running of the function.}
+
+\item{formula}{Formula specifying the model to be fit. See Details.}
 }
 \value{
 Returns an object of the respective model which was fit.

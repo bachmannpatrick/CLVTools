@@ -121,15 +121,16 @@
 #'
 #' @importFrom Formula as.Formula
 #' @importFrom stats terms formula
+#' @importFrom methods is
 #' @export
 latentAttrition <- function(formula, family, data, optimx.args=list(), verbose=TRUE, ...){
 
   cl  <- match.call(call = sys.call(), expand.dots = TRUE)
 
-  check_err_msg(check_userinput_family(family=family))
+  check_err_msg(check_userinput_latentattrition_family(family=family))
   check_err_msg(check_userinput_data(data=data))
   check_err_msg(check_userinput_formula_data(formula=formula, data = data))
-  check_err_msg(check_userinput_dots_family_data(family=family, data=data, ...))
+  check_err_msg(check_userinput_latentattrition_dots_family_data(family=family, data=data, ...))
 
   # if data has covariates, they need to be transformed
   if(is(data, "clv.data.static.covariates")){
@@ -160,7 +161,7 @@ latentAttrition <- function(formula, family, data, optimx.args=list(), verbose=T
   args <- list(clv.data = data, verbose=verbose, optimx.args=optimx.args, ...)
 
   # Fit model
-  obj <- do.call(what = family, args)
+  obj <- do.call(what = family, args = args)
 
   # Replace call with call to latentAttrition()
   obj@call <- cl
@@ -219,7 +220,7 @@ formulainterface_create_clvdataobj <- function(F.formula, create.dyncov, clv.dat
 }
 
 
-check_userinput_family <- function(family){
+check_userinput_latentattrition_family <- function(family){
   # not missing
   if(missing(family))
     return("Please provide one of the following inputs for parameter \'family\': pnbd, bgnbd, ggomnbd")
@@ -231,6 +232,7 @@ check_userinput_family <- function(family){
   return(c())
 }
 
+#' @importFrom methods is
 check_userinput_data <- function(data){
   if(missing(data)){
     return("Please provide a 'clv.data' object as input for \'data\'.")
@@ -240,6 +242,7 @@ check_userinput_data <- function(data){
     return("Please provide a 'clv.data' object as input for \'data\'.")
   }
 
+  # all further input checks are done in family(), i.e. gg()
   return(c())
 }
 
@@ -300,7 +303,7 @@ check_userinput_formula_data <- function(formula, data){
 
 
 #' @importFrom methods getMethod signature formalArgs is
-check_userinput_dots_family_data <- function(family, data, ...){
+check_userinput_latentattrition_dots_family_data <- function(family, data, ...){
 
   # find for which generic it will dispatch
   method.def <- getMethod(family, signature(clv.data = class(data)))

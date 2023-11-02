@@ -17,9 +17,10 @@ test_that("Works out of the box", {
   expect_silent(spending(family=gg, start.params.model=c(p=1, q=10, gamma=33), data=clv.cdnow, verbose=FALSE))
 })
 
-test_that("Works with remove.first.transaction", {
+test_that("Works with args in ...", {
   skip_on_cran()
   expect_silent(spending(family=gg, remove.first.transaction=TRUE, data=clv.cdnow, verbose=FALSE))
+  expect_silent(spending(family=gg, start.params.model=NULL, data=clv.cdnow, verbose=FALSE))
 })
 
 test_that("Works with optimx args", {
