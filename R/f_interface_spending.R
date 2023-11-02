@@ -48,7 +48,6 @@ spending <- function(family, data, optimx.args=list(), verbose=TRUE, ...){
   check_err_msg(check_userinput_spending_family(family))
   check_err_msg(check_userinput_data(data))
   check_err_msg(check_userinput_spending_dots_family(family=family, ...))
-  # TODO: Check dots to only contain remove.first.transaction
 
   # No formula which could mandate transforming covariates
 

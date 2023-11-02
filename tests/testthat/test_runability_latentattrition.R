@@ -86,12 +86,6 @@ test_that("Works with . and excluding covs", {
   expect_silent(latentAttrition(formula = ~.-Channel|.-Gender, family=pnbd, data=clv.apparel.cov, verbose=FALSE))
 })
 
-#*** TODO:
-test_that("Works if extra args (dots) are defined in parent frame", {
-  fail("TODO")
-})
-
-
 
 # dyn cov ------------------------------------------------------------------------------------
 clv.apparel.dyn.cov <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=apparelTrans,  data.apparelDynCov=apparelDynCov, estimation.split=40)
