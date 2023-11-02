@@ -4,7 +4,8 @@
 #' @template template_param_verbose
 #' @param family A latentAttrition model. One of \code{pnbd},  \code{bgnbd}, or \code{ggomnbd}.
 #' @param formula Formula to select and transform covariates in \code{data}. Has to be left empty if \code{data} contains no covariates. See Details.
-#' @param data A \code{clv.data} object
+#' @param data A \code{clv.data} object.
+#' @param ... Forwarded to model specified in \code{family}.
 #'
 #' @description
 #' Fit latent attrition models for transaction behavior, using a formula to specify the covariates.

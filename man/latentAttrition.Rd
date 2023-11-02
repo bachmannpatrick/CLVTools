@@ -18,15 +18,17 @@ latentAttrition(
 
 \item{family}{A latentAttrition model. One of \code{pnbd},  \code{bgnbd}, or \code{ggomnbd}.}
 
-\item{data}{A \code{clv.data} object}
+\item{data}{A \code{clv.data} object.}
 
 \item{optimx.args}{Additional arguments to control the optimization which are forwarded to \code{\link[optimx:optimx]{optimx::optimx}}.
 If multiple optimization methods are specified, only the result of the last method is further processed.}
 
 \item{verbose}{Show details about the running of the function.}
+
+\item{...}{Forwarded to model specified in \code{family}.}
 }
 \description{
-Fit latent attrition models for transaction behavior with a formula interface which specifies the covariates.
+Fit latent attrition models for transaction behavior, using a formula to specify the covariates.
 }
 \details{
 A two-part formula is used to select and transform the covariates stored in \code{data} before the model is estimated on it.

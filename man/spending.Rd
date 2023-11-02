@@ -7,14 +7,16 @@
 spending(family, data, optimx.args = list(), verbose = TRUE, ...)
 }
 \arguments{
-\item{family}{A spending model (currently only \code{gg})}
+\item{family}{A spending model (currently only \code{gg}).}
 
-\item{data}{A \code{clv.data} object}
+\item{data}{A \code{clv.data} object.}
 
 \item{optimx.args}{Additional arguments to control the optimization which are forwarded to \code{\link[optimx:optimx]{optimx::optimx}}.
 If multiple optimization methods are specified, only the result of the last method is further processed.}
 
 \item{verbose}{Show details about the running of the function.}
+
+\item{...}{Forwarded to model specified in \code{family}.}
 }
 \value{
 Returns an object of the respective model which was fit.

@@ -5,8 +5,9 @@
 #'
 #' @template template_param_optimxargs
 #' @template template_param_verbose
-#' @param data A \code{clv.data} object
-#' @param family A spending model (currently only \code{gg})
+#' @param data A \code{clv.data} object.
+#' @param family A spending model (currently only \code{gg}).
+#' @param ... Forwarded to model specified in \code{family}.
 #'
 #' @seealso Spending models for \code{family}: \link{gg}.
 #' @seealso \link{latentAttrition} to fit latent attrition models with a
