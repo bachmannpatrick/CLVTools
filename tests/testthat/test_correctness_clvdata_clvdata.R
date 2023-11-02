@@ -389,3 +389,15 @@ test_that("Aggregating first and removing after removes all first transactions",
 })
 
 
+test_that("clv.data.get.repeat.transactions.in.estimation.period() is the same as creating repeat transactions from estimation period data", {
+  skip_on_cran()
+
+  clv.cdnow <- clvdata(cdnow, date.format = "ymd", time.unit = "w", estimation.split = NULL)
+
+  dt.estimation.period   <- clv.data.get.transactions.in.estimation.period(clv.cdnow)
+  dt.self.made.repeat    <- clv.data.make.repeat.transactions(dt.estimation.period)
+
+  expect_true(fsetequal(clv.data.get.repeat.transactions.in.estimation.period(clv.cdnow),
+                        dt.self.made.repeat))
+})
+

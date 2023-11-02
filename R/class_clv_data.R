@@ -82,6 +82,11 @@ clv.data.get.transactions.in.estimation.period <- function(clv.data){
   return(clv.data@data.transactions[Date <= clv.data@clv.time@timepoint.estimation.end])
 }
 
+clv.data.get.repeat.transactions.in.estimation.period <- function(clv.data){
+  Date <- NULL
+  return(clv.data@data.repeat.trans[Date <= clv.data@clv.time@timepoint.estimation.end])
+}
+
 clv.data.get.transactions.in.holdout.period <- function(clv.data){
   Date <- NULL
   stopifnot(clv.data.has.holdout(clv.data))
