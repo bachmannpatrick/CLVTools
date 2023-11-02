@@ -1,15 +1,16 @@
 #' Formula Interface for Spending Models
 #'
 #' @description
-#' Fit latent Gamma-Gamma model for customer spending with a formula interface
+#' Fit models for customer spending (currently only the Gamma-Gamma model).
 #'
-#' @template template_param_formulainterface_formula
-#' @template template_param_formulainterface_data
 #' @template template_param_optimxargs
 #' @template template_param_verbose
+#' @param data A \code{clv.data} object
+#' @param family A spending model (currently only \code{gg})
 #'
-#' @seealso Spending models for inputs: \link{gg}.
-#' @seealso \link{latentAttrition} to fit latent attrition models with a formula interface
+#' @seealso Spending models for \code{family}: \link{gg}.
+#' @seealso \link{latentAttrition} to fit latent attrition models with a
+#' formula interface
 #'
 #' @return Returns an object of the respective model which was fit.
 #'
@@ -21,27 +22,18 @@
 #'                      time.unit = "weeks")
 #'
 #' # Fit gg
-#' spending(~gg(), data=clv.cdnow)
+#' spending(family=gg, data=clv.cdnow)
 #'
 #' # Fit gg with start params
-#' spending(~gg(start.params.model=c(p=0.5, q=15, gamma=2)),
-#'          data=clv.cdnow)
+#' spending(family=gg, data=clv.cdnow,
+#'          start.params.model=c(p=0.5, q=15, gamma=2))
 #'
 #' # Fit gg, do not remove first transaction
-#' spending(~gg(remove.first.transaction=FALSE), data=clv.cdnow)
-#' # same, abreviate parameters
-#' spending(~gg(remo=F), data=clv.cdnow)
+#' spending(family=gg, data=clv.cdnow, remove.first.transaction=FALSE)
 #'
-#' # Fit gg on given data.frame transaction data, no split
-#' spending(data()~gg(), data=cdnow)
 #'
-#' # Fit gg on given data.frame, split after 39 periods
-#' spending(data(split=39)~gg(), data=cdnow)
-#' # same but also give date format and period definition
-#' spending(data(split=39, format=ymd, unit=w)~gg(), data=cdnow)
-#'
-#' ## No covariate may be selected or covariate data.frame may be
-#' ## given because currently no spending model uses covariates
+#' ## No formula may be given to specify covariates because currently
+#' ## no spending model uses covariates
 #'
 #' }
 #'
