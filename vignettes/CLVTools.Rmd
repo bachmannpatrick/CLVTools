@@ -127,22 +127,17 @@ To execute the model estimation you have the choice between a formula-based inte
 
 ### **Estimating the model using formula interface:**
 ```{r estimate-model-formula}
-   est.pnbd <- latentAttrition(~pnbd(), 
-                               data=clv.apparel)
+   est.pnbd <- latentAttrition(formula = , family = pnbd, data=clv.apparel)
    est.pnbd
 ```
     Using start parameters and other additional arguments for the optimzier:
 ```{r estimate-model-formula2, eval=FALSE}
-  est.pnbd <- latentAttrition(~pnbd(start.params.model=c(r=1, alpha=10, s=2, beta=8)),
-                                    optimx.args = list(control=list(trace=5),
-                                       method="Nelder-Mead"),
-                              data=clv.apparel)
+  est.pnbd <- latentAttrition(formula = , family = pnbd, data=clv.apparel, 
+                              optimx.args = list(control=list(trace=5),
+                                       method="Nelder-Mead"), 
+                              start.params.model=c(r=1, alpha=10, s=2, beta=8))
 ```
-    When using the formula interface, it is also possible to fit the model without prior specification of of a `clvdata` object:
-    
-```{r estimate-model-formula3, eval=FALSE}
-    est.pnbd <- latentAttrition(data(split=40, format=ymd, unit=w)~pnbd(), data=apparelTrans)
-```
+
 
 ### **Estimating the model using non-formula interface:**
 ```{r estimate-model, eval=FALSE}
@@ -208,10 +203,9 @@ To execute the model estimation you have the choice between a formula-based inte
 
 ### **Estimating the model using formula interface:**
 ```{r estimate-ggomnbd-formula, eval=FALSE}
-  est.ggomnbd <- latentAttrition(~ggomnbd(start.params.model=
-                                          c(r=0.7, alpha=5, b=0.005,  s=0.02, beta=0.001)),
-                                    optimx.args = list(method="Nelder-Mead"),
-                                 data=clv.apparel)
+  est.ggomnbd <- latentAttrition(formula = , family = ggomnbd, data=clv.apparel, 
+                                 optimx.args = list(method="Nelder-Mead")
+                                 start.params.model=c(r=0.7, alpha=5, b=0.005,  s=0.02, beta=0.001))
 ```
 
 ### **Estimating the model using non-formula interface:**
@@ -352,28 +346,24 @@ To execute the model estimation you have the choice between a formula-based inte
 
 We use all present covariates:
 ```{r static-cov-estimate-formula1, message=TRUE, warning=FALSE, eval=FALSE}
-  est.pnbd.static <- latentAttrition(~pnbd()|.|., clv.static)
+  est.pnbd.static <- latentAttrition(formula = ~ .|., family = pnbd, data=clv.static)
 ```
 Using the formula interface, we can use only selected covariates (only Gender for the lifetime process and both, Channel and Gender for the transaction process):
 ```{r static-cov-estimate-formula2, warning=FALSE, eval=FALSE}
-  est.pnbd.static <- latentAttrition(~pnbd()|Gender|Channel+Gender, clv.static)
+  est.pnbd.static <- latentAttrition(formula = ~ Gender|Channel+Gender, 
+                                     family = pnbd, data=clv.static)
 
 ```
 Or we can transform covariates:
 ```{r, static-covariates-formula3, warning=FALSE, eval=FALSE}
-  est.pnbd.static <- latentAttrition(~pnbd()|Channel+Gender|I(log(Channel+2)), clv.static)
+  est.pnbd.static <- latentAttrition(formula = ~ Channel+Gender|I(log(Channel+2)), 
+                                     family = pnbd, data=clv.static)
 ```
-It is also possible to not initialize a `clvdata` object for the covariates but instead specify the covariate data directly in the model:
-```{r static-covariates-formula4, warning=FALSE, eval=FALSE}
-  est.pnbd.static <- latentAttrition(data()~pnbd()|.|.,
-                                     data=apparelTrans, cov=apparelStaticCov)
-```
-
 
 Analogously, we can estimate the model containing time-varying covariates. In this example we also activate output of the optimizer in order to observe the progress.
 ```{r dyn-cov-formula1, eval=FALSE}
-est.pnbd.dyn <- latentAttrition(~pnbd()|.|., optimx.args = list(control=list(trace=5)), 
-                                clv.dyn)
+est.pnbd.dyn <- latentAttrition(formula = ~ .|., family = pnbd, data = clv.dyn, 
+                                optimx.args = list(control=list(trace=5)))
 ```
 
 
@@ -410,8 +400,8 @@ To execute the model estimation you have the choice between a formula-based inte
 
 ### **Estimating the model using formula interface:**
 ```{r cor-formula1, eval=FALSE}
-est.pnbd.cor <- latentAttrition(~pnbd(use.cor=TRUE),
-                data=clv.apparel)
+est.pnbd.cor <- latentAttrition(formula = , family = pnbd, 
+                                use.cor=TRUE, data=clv.apparel)
 ```
 ### **Estimating the model using non-formula interface:**
 ```{r Cov-cor, eval=FALSE}
@@ -431,7 +421,8 @@ In the following we illustrate code for both, a formula-based interface a non-fo
 
 ### **Estimating the model using formula interface:**
 ```{r reg-formula, eval=FALSE}
-est.pnbd.reg <- latentAttrition(~pnbd()|.|.|regularization(life=3, trans=8), clv.static)
+est.pnbd.reg <- latentAttrition(formula = ~ .|., family = pnbd, 
+                                reg.lambdas=c(life=3, trans=8), data=clv.static)
 summary(est.pnbd.reg)
 ```
 
@@ -449,9 +440,9 @@ summary(est.pnbd.reg)
 
 ### **Estimating the model using formula interface:**
 ```{r constr-formula, eval=FALSE}
-est.pnbd.constr <- latentAttrition(~pnbd(names.cov.constr=c("Gender"), 
-                                         start.params.constr = c(Gender = 0.6))|.|., 
-                                   clv.static)
+est.pnbd.constr <- latentAttrition(formula = ~.|., family = pnbd, data = clv.static,
+                                   names.cov.constr=c("Gender"), 
+                                   start.params.constr = c(Gender = 0.6))
 summary(est.pnbd.constr)
 ```
 Note: providing a starting parameter for the constrained variable is optional.
@@ -502,27 +493,21 @@ To execute the model estimation you have the choice between a formula-based inte
 
 ### **Estimating the model using formula interface:**
 ```{r spending-estimate-formula1}
-est.gg <- spending(~gg(),
-         data=clv.apparel)
+est.gg <- spending(family = gg, data=clv.apparel)
 est.gg
 ```
-Using start parameters or other additional arguments for the optimzier:
+Using start parameters or other additional arguments for the optimizer:
 ```{r spending-estimate-formula2, eval=FALSE}
-est.gg <- spending(~gg(start.params.model=c(p=0.5, q=15, gamma=2)),
-                       optimx.args = list(control=list(trace=5)),
-                   data=clv.apparel)
+est.gg <- spending(family = gg, data=clv.apparel, 
+                   optimx.args = list(control=list(trace=5)),
+                   start.params.model=c(p=0.5, q=15, gamma=2))
 ```
 Specify the option to NOT remove the first transaction:
 ```{r spending-estimate-formula3, eval=FALSE}
-est.gg <- spending(~gg(remove.first.transaction=FALSE), 
-                   data=clv.apparel)
+est.gg <- spending(family = gg, data=clv.apparel, 
+                   remove.first.transaction=FALSE)
 ```
 
-When using the formula interface, it is also possible to fit the model without prior specification of of a `clvdata` object:
-```{r estimate-model-formula4, eval=FALSE}
-est.gg <- spending(data(split=40, format=ymd, unit=w)~gg(), 
-                   data=apparelTrans)
-```
 
 ### **Estimating the model using non-formula interface:**
 ```{r spending-estimate-model1, eval=FALSE}
