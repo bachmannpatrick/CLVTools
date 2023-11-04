@@ -65,3 +65,13 @@ pnbd_dyncov_cbs <- function(clv.data){
 
   return(dt.cbs)
 }
+
+
+
+setMethod("clv.fitted.get.model.estimation.interface.args", signature = "clv.pnbd.dynamic.cov", def = function(clv.fitted){
+  args <- callNextMethod()
+  return(c(args, list(
+    use.cor=clv.fitted@clv.model@estimation.used.correlation
+  )))
+})
+

@@ -68,6 +68,18 @@ setGeneric("clv.controlflow.check.prediction.params", def = function(clv.fitted)
 setGeneric("clv.controlflow.plot.check.inputs", def = function(obj, prediction.end, cumulative, plot, label.line, verbose)
   standardGeneric("clv.controlflow.plot.check.inputs"))
 
+# . Bootstrapping ------------------------------------------------------------------------------------------
+
+# Estimate the model again on new data with its original specification
+# pass arguments incl optimx.args and overwrite any existing settings in ...
+setGeneric("clv.fitted.estimate.same.specification.on.new.data", function(clv.fitted, newdata, ...){
+  standardGeneric("clv.fitted.estimate.same.specification.on.new.data")
+})
+
+# Method to collect the args used when estimating the model. Allows to re-estimate the model
+setGeneric("clv.fitted.get.model.estimation.interface.args", function(clv.fitted){
+  standardGeneric("clv.fitted.get.model.estimation.interface.args")
+})
 
 
 

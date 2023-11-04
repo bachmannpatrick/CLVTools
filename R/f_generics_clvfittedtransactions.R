@@ -186,7 +186,7 @@ setMethod("clv.controlflow.predict.add.actuals", signature(clv.fitted="clv.fitte
 })
 
 
-# . clv.controlflow.predict.post.process.prediction.table ------------------------------------------------------------------------------
+# .clv.controlflow.predict.post.process.prediction.table ------------------------------------------------------------------------------
 setMethod("clv.controlflow.predict.post.process.prediction.table", signature = signature(clv.fitted="clv.fitted.transactions"), function(clv.fitted, dt.predictions, has.actuals, verbose, predict.spending, ...){
   predicted.mean.spending <- i.predicted.mean.spending <- actual.total.spending <- i.actual.total.spending <- NULL
   predicted.CLV <- DECT <- DERT <- NULL
@@ -301,3 +301,12 @@ setMethod("clv.controlflow.predict.post.process.prediction.table", signature = s
 
   return(dt.predictions)
 })
+
+
+# .clv.fitted.get.model.estimation.interface.args --------------------------------------------
+
+setMethod("clv.fitted.get.model.estimation.interface.args", signature = "clv.fitted.transactions", def = function(clv.fitted){
+  # For many models there are no specifc args available (e.g nocov bgnbd and ggomnbd)
+  return(list())
+})
+
