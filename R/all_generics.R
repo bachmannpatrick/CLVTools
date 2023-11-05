@@ -203,6 +203,13 @@ setGeneric("clv.time.format.timepoint", function(clv.time, timepoint)
   standardGeneric("clv.time.format.timepoint"))
 
 
+# clv.data ----------------------------------------------------------------------------------------------------
+# Create clv.data object with same config asbut only transactions and covariates of given ids
+setGeneric("clv.data.create.bootstrapping.data", def = function(clv.data, ids){
+  standardGeneric("clv.data.create.bootstrapping.data")
+})
+
+
 
 # S3 Generics ---------------------------------------------------------------
 #' Coerce to clv.data object
