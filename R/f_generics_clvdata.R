@@ -7,6 +7,9 @@ setMethod("clv.data.create.bootstrapping.data", signature = signature(clv.data="
   #
   # TODO [test]: sampling all customers yields orignal parameters / same cbs for sampled customers
   # TODO [test]: clv.time keeps all other properties
+  # TODO [implement]: When ids appear multiple times in ids (sample with replacement), change their name in the transaction data to have
+  #                   them as duplicates. Otherwise they are aggregated to single transactions in clv.data
+  # TODO [test]: Works correctly when sampling with replacement
 
   cl <- match.call(expand.dots = TRUE)
   ids <- unique(ids)

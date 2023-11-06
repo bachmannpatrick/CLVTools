@@ -32,9 +32,10 @@ setMethod("clv.fitted.estimate.same.specification.on.new.data", signature = "clv
 
   new.fitted <- do.call(
     what = switch (class(clv.fitted@clv.model),
-                   'clv.model.pnbd.no.cov' = pnbd,
-                   'clv.model.bgnbd.no.cov' = bgnbd,
-                   'clv.model.ggomnbd.no.cov' = ggomnbd),
+                   "clv.model.pnbd.no.cov"= pnbd,
+                   "clv.model.bgnbd.no.cov" = bgnbd,
+                   "clv.model.ggomnbd.no.cov" = ggomnbd,
+                   "clv.model.gg" = gg),
     args=args)
 
   new.fitted@call <- cl
