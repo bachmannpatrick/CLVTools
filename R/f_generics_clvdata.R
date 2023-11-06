@@ -14,6 +14,10 @@ setMethod("clv.data.create.bootstrapping.data", signature = signature(clv.data="
   dt.transactions <- clv.data.get.transactions.in.estimation.period(clv.data)
   dt.transactions <- dt.transactions[SJ(Id=ids), on="Id", nomatch=NULL]
 
+  # Repeat transactions are required to fit GG with remove.first.transactions = TRUE
+  dt.repeat.trans <- clv.data.get.repeat.transactions.in.estimation.period(clv.data)
+  dt.repeat.trans <- dt.repeat.trans[SJ(Id=ids), on="Id", nomatch=NULL]
+
   if(dt.transactions[, uniqueN(Id)] != length(ids)){
     warning("Not all given Ids were found and selected into the new data.", call. = FALSE)
   }
@@ -28,7 +32,7 @@ setMethod("clv.data.create.bootstrapping.data", signature = signature(clv.data="
   return(clv.data(
     call = cl,
     data.transactions = dt.transactions,
-    data.repeat.trans = dt.transactions[0], # empty data.table of same structure
+    data.repeat.trans = dt.repeat.trans,
     has.spending = clv.data.has.spending(clv.data),
     clv.time = clv.t))
 })
