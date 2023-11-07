@@ -3,6 +3,10 @@ setMethod("clv.data.create.bootstrapping.data", signature = signature(clv.data="
   # jump over implementation for clv.data.static.covariates
   clv.data.no.cov <- clv.data.create.bootstrapping.data(clv.data=as(object = clv.data, Class = 'clv.data'), ids = ids)
 
+
+  # select full length of existing covariates (= filter only by Id) and not only covariates in the estimation period
+  # this allows to still predict on the original length
+
   return(
     clv.data.dynamic.covariates(
       no.cov.obj = clv.data.no.cov,

@@ -99,8 +99,6 @@ clv.data.get.transactions.in.holdout.period <- function(clv.data){
 clv.data.select.customer.data.with.duplicates <- function(dt.data, ids){
   # clv.data.select.customer.data.duplicating.ids
 
-  # TODO [test]: Subset with few ids and verify keeps duplicate ids with separate name and all their transactions
-
   if(anyDuplicated(ids)){
     dt.ids <- data.table(Id=ids, key = "Id")
     dt.ids[, id_nth := seq(.N), by="Id"]
