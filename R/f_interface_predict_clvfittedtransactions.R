@@ -121,7 +121,7 @@
 #' @method predict clv.fitted.transactions
 #' @aliases predict
 #' @export
-predict.clv.fitted.transactions <- function(object, newdata=NULL, prediction.end=NULL, predict.spending=gg,
+predict.clv.fitted.transactions <- function(object, newdata=NULL, prediction.end=NULL, predict.spending=gg, uncertainty=NULL,
                                             continuous.discount.factor=0.1, verbose=TRUE, ...){
 
   check_err_msg(check_user_data_emptyellipsis(...))
@@ -131,14 +131,15 @@ predict.clv.fitted.transactions <- function(object, newdata=NULL, prediction.end
   #   data object w/o spending
   if(missing(predict.spending)){
     # Only need to disable if has no spending, default argument is a spending model
-    #   (ie prediction.end = gg already)
+    #   (ie predict.spending = gg already)
     if(!clv.data.has.spending(object@clv.data)){
       predict.spending <- FALSE
     }
   }
 
   return(clv.template.controlflow.predict(clv.fitted=object, prediction.end=prediction.end, predict.spending=predict.spending,
-                                   continuous.discount.factor=continuous.discount.factor, verbose=verbose, user.newdata=newdata))
+                                   continuous.discount.factor=continuous.discount.factor, verbose=verbose, user.newdata=newdata,
+                                   uncertainty=uncertainty))
 }
 
 
