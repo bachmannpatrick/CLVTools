@@ -10,8 +10,8 @@
 #'
 #' @param object Fitted model
 #' @param num.boot number of times to sample data and re-fit the model
-#' @param fn.sample Method sampling customer Ids for creating the bootstrapped data. Receives and returns
-#'  a vector of ids (string). If \code{NULL}, 80 percent of customers are sampled without replacement. See examples.
+#' @param fn.sample Method sampling customer ids for creating the bootstrapped data. Receives and returns
+#'  a vector of ids (string). If \code{NULL}, ids are sampled with replacement until reaching original length. See examples.
 #' @param fn.boot.apply Method to apply on each model estimated on the sampled data. See examples.
 #' @param ... Passed to the model estimation method. See examples.
 #'
@@ -59,7 +59,7 @@ bootstrapped.apply <- function(object, num.boot, fn.boot.apply, fn.sample=NULL, 
 
   if(is.null(fn.sample)){
     fn.sample <- function(x){
-      return(sample(x, size = as.integer(0.8*length(x)), replace = FALSE))
+      return(sample(x, size = length(x), replace = TRUE))
     }
   }
 

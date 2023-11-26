@@ -13,8 +13,8 @@ bootstrapped.apply(object, num.boot, fn.boot.apply, fn.sample = NULL, ...)
 
 \item{fn.boot.apply}{Method to apply on each model estimated on the sampled data. See examples.}
 
-\item{fn.sample}{Method sampling customer Ids for creating the bootstrapped data. Receives and returns
-a vector of ids (string). If \code{NULL}, 80 percent of customers are sampled without replacement. See examples.}
+\item{fn.sample}{Method sampling customer ids for creating the bootstrapped data. Receives and returns
+a vector of ids (string). If \code{NULL}, ids are sampled with replacement until reaching original length. See examples.}
 
 \item{...}{Passed to the model estimation method. See examples.}
 }
