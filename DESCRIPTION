@@ -121,6 +121,7 @@ Collate:
     'f_interface_pnbd.R'
     'f_interface_predict_clvfittedspending.R'
     'f_interface_predict_clvfittedtransactions.R'
+    'f_interface_predictnewcustomers.R'
     'f_interface_setdynamiccovariates.R'
     'f_interface_setstaticcovariates.R'
     'f_interface_spending.R'
