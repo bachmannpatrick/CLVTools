@@ -146,8 +146,15 @@ setGeneric(name="clv.model.vcov.jacobi.diag", def=function(clv.model, clv.fitted
 setGeneric(name="clv.model.process.newdata", def=function(clv.model, clv.fitted, user.newdata, verbose)
   standardGeneric("clv.model.process.newdata"))
 
+# .. PMF --------------------------------------------------------------------------------------------------------------------
 setGeneric(name="clv.model.pmf", def=function(clv.model, clv.fitted, x)
   standardGeneric("clv.model.pmf"))
+
+# .. New customer expectation -----------------------------------------------------------------------------------------------
+# predict unconditional expectation until individual t_i for all customers in clv.fitted@clv.data
+setGeneric("clv.model.predict.new.customer.unconditional.expectation", function(clv.model, clv.fitted, t_i)
+  standardGeneric("clv.model.predict.new.customer.unconditional.expectation"))
+
 
 
 # . For covariate models -----------------------------------------------------------------------------------------------------------

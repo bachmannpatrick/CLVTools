@@ -211,6 +211,31 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.static.co
 })
 
 
+
+# . clv.model.predict.new.customer.unconditional.expectation -----------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict.new.customer.unconditional.expectation", signature = signature(clv.model="clv.model.pnbd.static.cov"), definition = function(clv.model, clv.fitted, t_i){
+  #calculate alpha_i, beta_i
+  dt.params_i   <- clv.fitted@cbs[, "Id"]
+  dt.params_i[, t := t_i]
+
+  dt.alpha_i <- CLVTools:::clv.model.pnbd.static.cov.get.alpha_i(clv.fitted)
+  dt.beta_i  <- CLVTools:::clv.model.pnbd.static.cov.get.beta_i(clv.fitted)
+
+  dt.params_i[dt.alpha_i, alpha_i := i.alpha_i, on="Id"]
+  dt.params_i[dt.beta_i,  beta_i  := i.beta_i,  on="Id"]
+
+  dt.params_i[, uncond.exp := CLVTools:::pnbd_staticcov_expectation(
+    r        = clv.fitted@prediction.params.model[["r"]],
+    s        = clv.fitted@prediction.params.model[["s"]],
+    vAlpha_i = dt.params_i$alpha_i,
+    vBeta_i  = dt.params_i$beta_i,
+    vT_i     = dt.params_i$t
+  )]
+  return(dt.params_i)
+})
+
+
+
 # . clv.model.pmf -----------------------------------------------------------------------------------------------------
 setMethod("clv.model.pmf", signature=(clv.model="clv.model.pnbd.static.cov"), function(clv.model, clv.fitted, x){
   Id <- T.cal <- pmf.x <- alpha_i <- beta_i <- i.alpha_i <- i.beta_i <- NULL
