@@ -26,25 +26,12 @@ pnbd_dyncov_alivecovariates <- function(clv.fitted, date.upper.cov){
   dt.life   <- clv.fitted@clv.data@data.cov.life[Cov.Date  >= date.first.cov & Cov.Date <= date.upper.cov, .SD, .SDcols = c("Id", "Cov.Date", names.cov.life)]
   dt.trans  <- clv.fitted@clv.data@data.cov.trans[Cov.Date >= date.first.cov & Cov.Date <= date.upper.cov, .SD, .SDcols = c("Id", "Cov.Date", names.cov.trans)]
 
-  # matrix multiply per date and customer ---------------------------------------------------------------------
-  #   matrix multiplication by=c("date", "Id") is extremely slow, but can do cov1*g1+cov2*g2+cov3*g3+...
-  #   However, row-wise vec*DT is not possible unless also a data.frame/table of same dimension.
-  #     Therefore, add gammas as separate columns to have them as data.table as well
+  # exp.gX.L and exp.gX.P ----------------------------------------------------------------------------
+  dt.life <- pnbd_dyncov_add_expgX(dt.cov=dt.life, names.cov=names.cov.life, params.cov=clv.fitted@prediction.params.life)
+  dt.trans <- pnbd_dyncov_add_expgX(dt.cov=dt.trans, names.cov=names.cov.trans, params.cov=clv.fitted@prediction.params.trans)
+  setnames(dt.life, "exp.gX", "exp.gX.L")
+  setnames(dt.trans, "exp.gX", "exp.gX.P")
 
-  # Gammas need to have separate names from cov data
-  #   Also, this step ensures same order of names and gammas when using as .SDcols when multiplying
-  names.gamma.life  <- paste0("gamma.", names.cov.life)
-  names.gamma.trans <- paste0("gamma.", names.cov.trans)
-
-  # Write gamma values in gamma columns (one whole column per gamma value)
-  #   Subset with names.cov.* to ensure the same order as names.gamma.*
-  dt.life[,  (names.gamma.life)  := data.table(t(clv.fitted@prediction.params.life[names.cov.life]))]
-  dt.trans[, (names.gamma.trans) := data.table(t(clv.fitted@prediction.params.trans[names.cov.trans]))]
-
-  # Multiply data * gammas element-wise and sum row-wise
-  #   actually multiplies data.table*data.table element-wise and then rowSums is like sum per c("Id","Cov.Date")
-  dt.life[,  exp.gX.L := exp(rowSums(dt.life[,  .SD, .SDcols=names.gamma.life]  * dt.life[,  .SD, .SDcols=names.cov.life]))]
-  dt.trans[, exp.gX.P := exp(rowSums(dt.trans[, .SD, .SDcols=names.gamma.trans] * dt.trans[, .SD, .SDcols=names.cov.trans]))]
 
   # Cut to when alive ---------------------------------------------------------------------------------
   # Calculate the period when customer became alive.
@@ -68,6 +55,28 @@ pnbd_dyncov_alivecovariates <- function(clv.fitted, date.upper.cov){
   return(list(dt.trans = dt.trans, dt.life = dt.life))
 }
 
+pnbd_dyncov_add_expgX <- function(dt.cov, names.cov, params.cov){
+
+  # matrix multiply per date and customer
+  #   matrix multiplication by=c("date", "Id") is extremely slow, but can do cov1*g1+cov2*g2+cov3*g3+...
+  #   However, row-wise vec*DT is not possible unless also a data.frame/table of same dimension.
+  #     Therefore, add gammas as separate columns to have them as data.table as well
+
+
+  # Gammas need to have separate names from cov data
+  #   Also, this step ensures same order of names and gammas when using as .SDcols when multiplying
+  names.gamma.cov  <- paste0("gamma.", names.cov)
+
+
+  # Write gamma values in gamma columns (one whole column per gamma value)
+  #   Subset with names.cov.* to ensure the same order as names.gamma.*
+  dt.cov[,  (names.gamma.cov)  := data.table(t(params.cov[names.cov]))]
+
+  # Multiply data * gammas element-wise and sum row-wise
+  #   actually multiplies data.table*data.table element-wise and then rowSums is like sum per c("Id","Cov.Date")
+  # Modify in-place but still return
+  return(dt.cov[,  exp.gX := exp(rowSums(dt.cov[,  .SD, .SDcols=names.gamma.cov]  * dt.cov[,  .SD, .SDcols=names.cov]))])
+}
 
 
 
