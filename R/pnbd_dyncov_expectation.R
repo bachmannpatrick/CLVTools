@@ -247,3 +247,111 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose, onl
 }
 
 
+
+pnbd_dyncov_newcustomer_expectation <- function(clv.fitted, t, first.transaction, dt.cov.life, dt.cov.trans){
+  # TODO[test]: If covs are static, the date of transaction should not matter (same outcome regardless of first.transaction)
+  # TODO[test]: Compare against dt.ABCD in expectation
+
+  r       <- clv.fitted@prediction.params.model[["r"]]
+  alpha_0 <- clv.fitted@prediction.params.model[["alpha"]]
+  s       <- clv.fitted@prediction.params.model[["s"]]
+  beta_0  <- clv.fitted@prediction.params.model[["beta"]]
+
+  # readability
+  clv.time <- clv.fitted@clv.data@clv.time
+
+
+  # We cannot use the preparation from the ordinary expectation because too many things
+  # are relying on clv.data and the cbs. Therefore, re-implement (copy paste) and adapt were necessary
+
+
+
+  # Create ABCD ---------------------------------------------------------------------------------------------
+  # pnbd_dyncov_alivecovariates(): Uses date.first.transaction from cbs
+  # Instead of using pnbd_dyncov_alivecovariates(), only use the relevant parts: Calculating exp.gX.P and exp.gX.L.
+
+  tp.first.cov <- CLVTools:::clv.time.floor.date(clv.time=clv.time, timepoint=first.transaction)
+  dt.cov.life  <- dt.cov.life[Cov.Date >= tp.first.cov]
+  dt.cov.trans <- dt.cov.trans[Cov.Date >= tp.first.cov]
+
+
+  dt.cov.life <- CLVTools:::pnbd_dyncov_add_expgX(
+    dt.cov=dt.cov.life,
+    names.cov=clv.fitted@clv.data@names.cov.data.life,
+    params.cov=clv.fitted@prediction.params.life)
+
+  dt.cov.trans <- CLVTools:::pnbd_dyncov_add_expgX(
+    dt.cov=dt.cov.trans,
+    names.cov=clv.fitted@clv.data@names.cov.data.trans,
+    params.cov=clv.fitted@prediction.params.trans)
+
+  # Merge into single table
+  #   there are no Ids
+  dt.ABCD <- dt.cov.life[, list(Cov.Date, exp.gX.L=exp.gX)]
+  dt.ABCD[dt.cov.trans, exp.gX.P := i.exp.gX, on = "Cov.Date"]
+
+
+
+  # . copied ----------------------------------------------------------------------------------------------
+  # The following parts are copied from pnbd_dyncov_expectation().
+  # See comments there, they are removed here to improve maintainability
+
+  # There is no cbs entry for new customers, hence no d_omega.
+  # d_omega is not known for a new customer. Assume it to be 0
+
+  # . i
+  setorderv(dt.ABCD, cols = "Cov.Date", order=1L)
+  dt.ABCD[, i := seq.int(from = 1, to = .N)]  # remove by="Id"
+
+  # d_omega: Not read from cbs but calculated from given timepoint of first transaction
+  dt.ABCD[, d_omega := CLVTools:::pnbd_dyncov_walk_d(clv.time=clv.time, tp.relevant.transaction = first.transaction)]
+
+  # . Ai & Ci
+  dt.ABCD[, Ai := exp.gX.P]
+  dt.ABCD[, Ci := exp.gX.L]
+
+  # . Bbar_i
+  dt.ABCD[, d1 := d_omega]
+  dt.ABCD[,       Bbar_i := exp.gX.P]
+  dt.ABCD[i == 1, Bbar_i := exp.gX.P * d1]
+  dt.ABCD[,  Bbar_i := cumsum(Bbar_i)]
+  dt.ABCD[, Bbar_i := (Bbar_i - exp.gX.P) + exp.gX.P * (-d1 - (i-2))]
+  dt.ABCD[i == 1, Bbar_i := 0]
+
+  # . Dbar_i
+  dt.ABCD[,       Dbar_i := exp.gX.L]
+  dt.ABCD[i == 1, Dbar_i := exp.gX.L*d_omega]
+  dt.ABCD[, Dbar_i := cumsum(Dbar_i)]
+  dt.ABCD[      , Dbar_i := (Dbar_i - exp.gX.L) + exp.gX.L * (-d_omega - (i-2))]
+  dt.ABCD[i == 1, Dbar_i := 0]
+
+  # . alive --------------------------------------------------------------------------------------------------
+  # There is no need to select out customers which are alive as there is only 1 single customer
+  # which by definition is alive
+
+
+  # Cut data to maximal range as is done in the expectation loop (period.until)
+  # Consider all covariates which are active before and during the period for which the expectation is
+  #   calculated (incl / <= because Cov.Date is the beginning of the covariate period)
+  tp.cov.until <- first.transaction + CLVTools:::clv.time.number.timeunits.to.timeperiod(clv.time = clv.time, user.number.periods = t)
+  dt.ABCD <- dt.ABCD[Cov.Date <= tp.cov.until]
+
+  # Calculating S and f requires a Id and num.periods.alive.expectation.date
+  dt.ABCD[, Id := "<placeholder>"]
+  dt.ABCD[, num.periods.alive.expectation.date := t]
+
+  # S --------------------------------------------------------------------------------------------------------
+  dt.S <- CLVTools:::.pnbd_dyncov_unconditionalexpectation_alive_customers_S(dt.ABCD.alive = dt.ABCD, s=s, beta_0 = beta_0)
+  dt.ABCD[dt.S, S := i.S, on = "Id"]
+
+
+  # F --------------------------------------------------------------------------------------------------------
+  # Add everything else needed
+  #   For all customers Ak0t/Bk0t/Ck0t/Dk0t is the last ABCD value (with max(i) where max(Cov.Date))
+  dt.ABCD_k0t <- dt.ABCD[Cov.Date == max(Cov.Date),
+                         list(Id, A_k0t=Ai, Bbar_k0t=Bbar_i, C_k0t=Ci, Dbar_k0t=Dbar_i, i, num.periods.alive.expectation.date, S)]
+
+  dt.f <- CLVTools:::.pnbd_dyncov_unconditionalexpectation_alive_customers_f(dt.alive.customers=dt.ABCD_k0t, r=r, alpha_0 = alpha_0, s=s, beta_0=beta_0)
+
+  return(dt.f$f)
+}
