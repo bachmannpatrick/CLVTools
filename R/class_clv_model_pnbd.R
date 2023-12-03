@@ -265,19 +265,14 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.no.cov"),
 
 
 # . clv.model.predict.new.customer.unconditional.expectation --------------------------------------------------------------------------------------------------------
-setMethod("clv.model.predict.new.customer.unconditional.expectation", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, t_i){
-  #calculate alpha_i, beta_i
-  dt.params_i   <- clv.fitted@cbs[, "Id"]
-  dt.params_i[, t := t_i]
+setMethod("clv.model.predict.new.customer.unconditional.expectation", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, t){
 
-  dt.params_i[, uncond.exp := CLVTools:::pnbd_nocov_expectation(
-    r = clv.fitted@prediction.params.model[["r"]],
-    s = clv.fitted@prediction.params.model[["s"]],
-    alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
-    beta_0 = clv.fitted@prediction.params.model[["beta"]],
-    vT_i = dt.params_i$t)]
-
-  return(dt.params_i)
+  return(pnbd_nocov_expectation(
+      r = clv.fitted@prediction.params.model[["r"]],
+      s = clv.fitted@prediction.params.model[["s"]],
+      alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+      beta_0 = clv.fitted@prediction.params.model[["beta"]],
+      vT_i = t))
 })
 
 
