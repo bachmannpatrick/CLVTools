@@ -198,12 +198,6 @@ setGeneric("clv.time.format.timepoint", function(clv.time, timepoint)
   standardGeneric("clv.time.format.timepoint"))
 
 
-# clv.data ------------------------------------------------------------------
-# create fake clv.data for predicting new customer's clv using the unconditional expectation
-setGeneric("clv.data.create.new.customer.prediction.data", def = function(clv.data, ids, ...)
-  standardGeneric("clv.data.create.new.customer.prediction.data"))
-
-
 
 # S3 Generics ---------------------------------------------------------------
 #' Coerce to clv.data object
