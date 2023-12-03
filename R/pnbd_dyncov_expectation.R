@@ -166,6 +166,51 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose, onl
 
 
   # S --------------------------------------------------------------------------------------------------------
+  dt.S <- .pnbd_dyncov_unconditionalexpectation_alive_customers_S(dt.ABCD.alive = dt.ABCD.alive, s=s, beta_0 = beta_0)
+
+
+  # F --------------------------------------------------------------------------------------------------------
+
+  # Add everything else needed
+  #   For all customers Ak0t/Bk0t/Ck0t/Dk0t is the last ABCD value (with max(i) where max(Cov.Date))
+  dt.ABCD_k0t <- dt.ABCD.alive[Cov.Date == max(Cov.Date),
+                               list(Id, A_k0t=Ai, Bbar_k0t=Bbar_i, C_k0t=Ci, Dbar_k0t=Dbar_i, i)]
+  dt.alive.customers <- dt.alive.customers[dt.ABCD_k0t, on = "Id"]
+  dt.alive.customers[dt.S, S := i.S, on = "Id"]
+
+
+  dt.f <- .pnbd_dyncov_unconditionalexpectation_alive_customers_f(dt.alive.customers=dt.alive.customers, r=r, alpha_0 = alpha_0, s=s, beta_0=beta_0)
+
+  return(dt.f[, sum(f)])
+}
+
+
+.pnbd_dyncov_unconditionalexpectation_alive_customers_f <- function(dt.alive.customers, r, alpha_0, s, beta_0){
+
+  # Only alive for 1 period is a special case
+  #   Mark who is alive for only one period
+  #     dt.alive.customers is at max(Cov.Date) for every customer and hence i == max(i) and only one entry per customer
+  dt.alive.customers[, only.alive.in.1.period := i == 1]
+  # dt.alive.customers[, only.alive.in.1.period := num.periods.alive.expectation.date <= 1]
+
+  # F value
+  #   t is exact (partial) time from alive until expectation end
+  #   (Bk0tbar + t.customer*Ak0t) == (Bbar_i + t.customer*Ai) == Bi, which is needed, and not Bbar_i
+  #   analogously for Di
+  dt.alive.customers[, f := ((beta_0)^s * r )/ ((s-1) * alpha_0)]
+  dt.alive.customers[only.alive.in.1.period == TRUE,
+                     f := f * ((A_k0t*num.periods.alive.expectation.date*(s-1)) / (beta_0+C_k0t*num.periods.alive.expectation.date)^s + (A_k0t/C_k0t)/beta_0^(s-1) -
+                                 (A_k0t*(num.periods.alive.expectation.date*s + 1/C_k0t*beta_0))/(beta_0+C_k0t*num.periods.alive.expectation.date)^s)]
+  dt.alive.customers[only.alive.in.1.period == FALSE,
+                     # f * (. +S)
+                     f := f * ( (((A_k0t*num.periods.alive.expectation.date+Bbar_k0t) *(s-1)) /
+                                   (beta_0 + (C_k0t*num.periods.alive.expectation.date + Dbar_k0t))^s) + S)]
+
+  return(dt.alive.customers[, list(Id, f)])
+}
+
+
+.pnbd_dyncov_unconditionalexpectation_alive_customers_S <- function(dt.ABCD.alive, s, beta_0){
   # S_i is relative to when alive, ie by i
   # d1 is first.purchase until ceiling_tu(first.purchase) = d_omega
   #   Already added for Bbar_i
@@ -198,35 +243,7 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose, onl
   #   Their f value is calculated without S then
   dt.S <- dt.ABCD.alive[, list(S = sum(S)), keyby="Id"]
 
-
-  # F --------------------------------------------------------------------------------------------------------
-
-  # Add everything else needed
-  #   For all customers Ak0t/Bk0t/Ck0t/Dk0t is the last ABCD value (with max(i) where max(Cov.Date))
-  dt.ABCD_k0t <- dt.ABCD.alive[Cov.Date == max(Cov.Date),
-                               list(Id, A_k0t=Ai, Bbar_k0t=Bbar_i, C_k0t=Ci, Dbar_k0t=Dbar_i, i)]
-  dt.alive.customers <- dt.alive.customers[dt.ABCD_k0t, on = "Id"]
-  dt.alive.customers[dt.S, S := i.S, on = "Id"]
-
-
-  # Only alive for 1 period is a special case
-  #   Mark who is alive for only one period
-  #     dt.alive.customers is at max(Cov.Date) for every customer and hence i == max(i) and only one entry per customer
-  dt.alive.customers[, only.alive.in.1.period := i == 1]
-  # dt.alive.customers[, only.alive.in.1.period := num.periods.alive.expectation.date <= 1]
-
-  # F value
-  #   t is exact (partial) time from alive until expectation end
-  #   (Bk0tbar + t.customer*Ak0t) == (Bbar_i + t.customer*Ai) == Bi, which is needed, and not Bbar_i
-  #   analogously for Di
-  dt.alive.customers[, f := ((beta_0)^s * r )/ ((s-1) * alpha_0)]
-  dt.alive.customers[only.alive.in.1.period == TRUE,
-                     f := f * ((A_k0t*num.periods.alive.expectation.date*(s-1)) / (beta_0+C_k0t*num.periods.alive.expectation.date)^s + (A_k0t/C_k0t)/beta_0^(s-1) -
-                                 (A_k0t*(num.periods.alive.expectation.date*s + 1/C_k0t*beta_0))/(beta_0+C_k0t*num.periods.alive.expectation.date)^s)]
-  dt.alive.customers[only.alive.in.1.period == FALSE,
-                     # f * (. +S)
-                     f := f * ( (((A_k0t*num.periods.alive.expectation.date+Bbar_k0t) *(s-1)) /
-                                   (beta_0 + (C_k0t*num.periods.alive.expectation.date + Dbar_k0t))^s) + S)]
-
-  return(dt.alive.customers[, sum(f)])
+  return(dt.S)
 }
+
+
