@@ -63,6 +63,9 @@ setMethod(f = "predict.new.customers", signature = signature(clv.fitted="clv.fit
   check_err_msg(check_user_data_newcustomer_dyncovdatacov(data.cov=data.cov.trans, names.col = c(names(clv.fitted@prediction.params.trans), "Cov.Date") , name.of.covariate = "Transaction"))
 
 
+  dt.cov.life <- as.data.table(data.cov.life)
+  dt.cov.trans <- as.data.table(data.cov.trans)
+  tp.first.transaction <- clv.time.convert.user.input.to.timepoint(clv.time = clv.fitted@clv.data@clv.time, user.timepoint = first.transaction)
   #
   # }
   # TODO: Check that spaced 1 period apart
