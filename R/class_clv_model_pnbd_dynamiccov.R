@@ -175,8 +175,8 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.dynamic.c
 
 
 # . clv.model.predict.new.customer.unconditional.expectation -----------------------------------------------------------------------------------------------------
-setMethod("clv.model.predict.new.customer.unconditional.expectation", signature = signature(clv.model="clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, t, data.cov.life, data.cov.trans, first.transaction){
-  return(pnbd_dyncov_newcustomer_expectation(clv.fitted=clv.fitted, t=t, first.transaction=first.transaction, dt.cov.life=data.cov.life, dt.cov.trans=data.cov.trans))
+setMethod("clv.model.predict.new.customer.unconditional.expectation", signature = signature(clv.model="clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, t, dt.cov.life, dt.cov.trans, tp.first.transaction){
+  return(pnbd_dyncov_newcustomer_expectation(clv.fitted=clv.fitted, t=t, first.transaction=tp.first.transaction, dt.cov.life=dt.cov.life, dt.cov.trans=dt.cov.trans))
 })
 
 # . clv.model.pmf --------------------------------------------------------------------------------------------------------

@@ -248,8 +248,8 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose, onl
 
 
 
-pnbd_dyncov_newcustomer_expectation <- function(clv.fitted, t, first.transaction, dt.cov.life, dt.cov.trans){
-  # TODO[test]: If covs are static, the date of transaction should not matter (same outcome regardless of first.transaction)
+pnbd_dyncov_newcustomer_expectation <- function(clv.fitted, t, tp.first.transaction, dt.cov.life, dt.cov.trans){
+  # TODO[test]: If covs are static, the date of transaction should not matter (same outcome regardless of tp.first.transaction)
   # TODO[test]: Compare against dt.ABCD in expectation
 
   r       <- clv.fitted@prediction.params.model[["r"]]
@@ -270,7 +270,7 @@ pnbd_dyncov_newcustomer_expectation <- function(clv.fitted, t, first.transaction
   # pnbd_dyncov_alivecovariates(): Uses date.first.transaction from cbs
   # Instead of using pnbd_dyncov_alivecovariates(), only use the relevant parts: Calculating exp.gX.P and exp.gX.L.
 
-  tp.first.cov <- CLVTools:::clv.time.floor.date(clv.time=clv.time, timepoint=first.transaction)
+  tp.first.cov <- CLVTools:::clv.time.floor.date(clv.time=clv.time, timepoint=tp.first.transaction)
   dt.cov.life  <- dt.cov.life[Cov.Date >= tp.first.cov]
   dt.cov.trans <- dt.cov.trans[Cov.Date >= tp.first.cov]
 
@@ -304,7 +304,7 @@ pnbd_dyncov_newcustomer_expectation <- function(clv.fitted, t, first.transaction
   dt.ABCD[, i := seq.int(from = 1, to = .N)]  # remove by="Id"
 
   # d_omega: Not read from cbs but calculated from given timepoint of first transaction
-  dt.ABCD[, d_omega := CLVTools:::pnbd_dyncov_walk_d(clv.time=clv.time, tp.relevant.transaction = first.transaction)]
+  dt.ABCD[, d_omega := CLVTools:::pnbd_dyncov_walk_d(clv.time=clv.time, tp.relevant.transaction = tp.first.transaction)]
 
   # . Ai & Ci
   dt.ABCD[, Ai := exp.gX.P]
@@ -333,7 +333,7 @@ pnbd_dyncov_newcustomer_expectation <- function(clv.fitted, t, first.transaction
   # Cut data to maximal range as is done in the expectation loop (period.until)
   # Consider all covariates which are active before and during the period for which the expectation is
   #   calculated (incl / <= because Cov.Date is the beginning of the covariate period)
-  tp.cov.until <- first.transaction + CLVTools:::clv.time.number.timeunits.to.timeperiod(clv.time = clv.time, user.number.periods = t)
+  tp.cov.until <- tp.first.transaction + CLVTools:::clv.time.number.timeunits.to.timeperiod(clv.time = clv.time, user.number.periods = t)
   dt.ABCD <- dt.ABCD[Cov.Date <= tp.cov.until]
 
   # Calculating S and f requires a Id and num.periods.alive.expectation.date

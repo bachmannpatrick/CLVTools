@@ -353,7 +353,7 @@ check_user_data_newcustomer_staticcovdatacov <- function(data.cov, names.cov, na
     return("There may be no NAs in the covariate data!")
   }
 
-  # TODO: Not required because testing that exactly equal param names??
+  # Not required because testing that exactly equal param names but be explicit that not required
   if("Id" %in% names(data.cov)){
     return(paste0("There may be no column named 'Id' in the ",name.of.covariate," covariate data!"))
   }
@@ -365,5 +365,50 @@ check_user_data_newcustomer_staticcovdatacov <- function(data.cov, names.cov, na
   if(!all(sapply(data.cov, is.numeric))){
     return(paste0("All ",name.of.covariate," covariate data needs to be of type numeric!"))
   }
+}
+
+
+
+check_user_data_newcustomer_dyncovdatacov <- function(data.cov, names.col, name.of.covariate){
+  # Check if data has basic properties
+  if(!is.data.frame(data.cov)){
+    return("Only covariate data of type data.frame or data.table can be processed!")
+  }
+
+  if(nrow(data.cov) == 0){
+    return(paste0("The ",name.of.covariate," covariate data may not empty!"))
+  }
+
+  if(anyNA(data.cov)){
+    return(paste0("There may be no NAs in the ",name.of.covariate," covariate data!"))
+  }
+
+  if("Id" %in% names(data.cov)){
+    return(paste0("There may be no column named 'Id' in the ",name.of.covariate," covariate data!"))
+  }
+
+  if(!identical(sort(colnames(data.cov)), sort(names.col))){
+    return(paste0("The ", name.of.covariate, " covariate data has to contain exactly the following columns: ", paste(names.col, collapse = ", "), "!"))
+  }
+
+  if(!all(sapply(data.cov, is.numeric))){
+    return(paste0("All ",name.of.covariate," covariate data needs to be of type numeric!"))
+  }
+
+  return(c())
+}
+
+
+check_user_data_newcustomer_t <- function(t){
+  err.msg <- .check_user_data_single_numeric(n=t, var.name='t')
+  if(length(err.msg)){
+    return(err.msg)
+  }
+
+  if(t < 0){
+    err.msg <- c(err.msg, c("Parameter t has to be positive (>=0)!"))
+  }
+
+  return(err.msg)
 }
 
