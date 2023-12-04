@@ -21,17 +21,26 @@ setMethod("predict.new.customers", signature = signature(clv.fitted="clv.fitted.
 #' @include class_clv_fitted_transactions_staticcov.R
 setMethod(f = "predict.new.customers", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted, t, data.cov.life, data.cov.trans, ...){
 
+  # Basic inputchecks ---------------------------------------------------------------------
   check_err_msg(check_user_data_emptyellipsis(...))
+  check_err_msg(check_user_data_newcustomer_staticcovdatacov(data.cov=data.cov.life, names.cov=names(clv.fitted@prediction.params.life), name.of.covariate='Lifetime'))
+  check_err_msg(check_user_data_newcustomer_staticcovdatacov(data.cov=data.cov.trans, names.cov=names(clv.fitted@prediction.params.trans), name.of.covariate='Transaction'))
 
-  # # TODO: Check that cov data contains no column 'Id'
-  data.cov.life <- copy(as.data.table(data.cov.life))
-  data.cov.trans <- copy(as.data.table(data.cov.trans))
+
+  # Convert cov data ----------------------------------------------------------------------
+  # Covariate data in SetStaticCovariates() can be given as factor/character which are then
+  # turned into numeric dummies. This was considered here as well but dismissed
+  # because it requires more than a single observation/level (ie need to
+  # know 'm' and 'f' to create dummies but only one can be given here).
+  # If the factors have more than 1 level (or contrasts) set, this would work
+  # but was also dismissed as rather niche. It also simplifies input checks to not
+  # convert the data
 
   return(drop(clv.model.predict.new.customer.unconditional.expectation(
     clv.model = clv.fitted@clv.model,
     clv.fitted = clv.fitted,
-    data.cov.life=data.cov.life,
-    data.cov.trans=data.cov.trans,
+    data.cov.life=as.data.table(data.cov.life),
+    data.cov.trans=as.data.table(data.cov.trans),
     t=t)))
 })
 

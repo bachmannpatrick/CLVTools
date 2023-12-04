@@ -337,3 +337,33 @@ check_user_data_label <- function(label, other.models){
     return(err.msg)
   }
 }
+
+
+check_user_data_newcustomer_staticcovdatacov <- function(data.cov, names.cov, name.of.covariate){
+  # Check if data has basic properties
+  if(!is.data.frame(data.cov)){
+    return("Only covariate data of type data.frame or data.table can be processed!")
+  }
+
+  if(nrow(data.cov) != 1){
+    return("Covariate data has be be given for exacly one single customer (only 1 row)!")
+  }
+
+  if(anyNA(data.cov)){
+    return("There may be no NAs in the covariate data!")
+  }
+
+  # TODO: Not required because testing that exactly equal param names??
+  if("Id" %in% names(data.cov)){
+    return(paste0("There may be no column named 'Id' in the ",name.of.covariate," covariate data!"))
+  }
+
+  if(!identical(sort(colnames(data.cov)), sort(names.cov))){
+    return(paste0("The ", name.of.covariate, " covariate data has to contain exactly the following columns: ", paste(names.cov, collapse = ", "), "!"))
+  }
+
+  if(!all(sapply(data.cov, is.numeric))){
+    return(paste0("All ",name.of.covariate," covariate data needs to be of type numeric!"))
+  }
+}
+
