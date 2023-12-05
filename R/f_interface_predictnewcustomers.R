@@ -56,28 +56,43 @@ setMethod(f = "predict.new.customers", signature = signature(clv.fitted="clv.fit
   #   stop("Have to plot at least 3 periods!", call. = FALSE)
   # }
 
+  # readability
+  clv.time <- clv.fitted@clv.data@clv.time
 
   check_err_msg(check_user_data_newcustomer_t(t))
+  check_err_msg(check_user_data_newcustomer_firsttransaction(first.transaction))
   check_err_msg(check_user_data_emptyellipsis(...))
-  check_err_msg(check_user_data_newcustomer_dyncovdatacov(data.cov=data.cov.life, names.col = c(names(clv.fitted@prediction.params.life), "Cov.Date") , name.of.covariate = "Lifetime"))
-  check_err_msg(check_user_data_newcustomer_dyncovdatacov(data.cov=data.cov.trans, names.col = c(names(clv.fitted@prediction.params.trans), "Cov.Date") , name.of.covariate = "Transaction"))
+  check_err_msg(check_user_data_newcustomer_dyncovdatacov(data.cov=data.cov.life, names.col = c(names(clv.fitted@prediction.params.life), "Cov.Date"), name.of.covariate = "Lifetime"))
+  check_err_msg(check_user_data_newcustomer_dyncovdatacov(data.cov=data.cov.trans, names.col = c(names(clv.fitted@prediction.params.trans), "Cov.Date"), name.of.covariate = "Transaction"))
+  # TODO: Check first.transaction is valid date-type input
 
 
   dt.cov.life <- as.data.table(data.cov.life)
   dt.cov.trans <- as.data.table(data.cov.trans)
+
+  # Check Cov.Date is allowed type
+  check_err_msg(check_userinput_data_date(dt.data = dt.cov.life,  name.date = 'Cov.Date', name.var="Lifetime covariate"))
+  check_err_msg(check_userinput_data_date(dt.data = dt.cov.trans, name.date = 'Cov.Date', name.var="Transaction covariate"))
+
+  # Convert Cov.Date to timepoint
+  dt.cov.life[,  Cov.Date  := clv.time.convert.user.input.to.timepoint(clv.time, user.timepoint = Cov.Date)]
+  dt.cov.trans[, Cov.Date  := clv.time.convert.user.input.to.timepoint(clv.time, user.timepoint = Cov.Date)]
+
+  setkeyv(dt.cov.life, cols = "Cov.Date")
+  setkeyv(dt.cov.trans, cols = "Cov.Date")
+
   tp.first.transaction <- clv.time.convert.user.input.to.timepoint(clv.time = clv.fitted@clv.data@clv.time, user.timepoint = first.transaction)
-  #
-  # }
-  # TODO: Check that spaced 1 period apart
-  # TODO: Check that prediction end date is within covariates
+  tp.prediction.end <- tp.first.transaction + clv.time.number.timeunits.to.timeperiod(clv.time=clv.time, user.number.periods=t)
+
+  check_err_msg(check_user_data_newcustomer_dyncovspecific(clv.time=clv.time, dt.cov.life=dt.cov.life, dt.cov.trans=dt.cov.trans, tp.first.transaction=tp.first.transaction, tp.prediction.end=tp.prediction.end))
 
 
   return(clv.model.predict.new.customer.unconditional.expectation(
     clv.model = clv.fitted@clv.model,
     clv.fitted = clv.fitted,
     t=t,
-    dt.cov.life=as.data.table(data.cov.life),
-    dt.cov.trans=as.data.table(data.cov.trans),
+    dt.cov.life=dt.cov.life,
+    dt.cov.trans=dt.cov.trans,
     tp.first.transaction=tp.first.transaction))
 })
 
