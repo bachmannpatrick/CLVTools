@@ -487,7 +487,7 @@ clv.data.plot.barplot.frequency <- function(clv.data, count.repeat.trans, count.
 
 
 
-#' @importFrom ggplot2 ggplot geom_segment geom_point geom_text geom_vline theme xlab ylim ggtitle element_blank scale_x_datetime scale_x_date
+#' @importFrom ggplot2 ggplot geom_segment geom_point geom_text geom_vline theme xlab ylab ylim ggtitle element_blank scale_x_datetime scale_x_date
 clv.data.plot.transaction.timings <- function(clv.data, Ids, annotate.ids, plot, verbose, ...){
   # cran silence
   Id <- x <- y <- i.y <- date.first.actual.trans <- xstart <- xend <- ystart <- yend <- type <- Date <- NULL
