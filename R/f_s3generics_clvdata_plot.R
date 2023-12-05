@@ -622,6 +622,9 @@ clv.data.plot.transaction.timings <- function(clv.data, Ids, annotate.ids, plot,
   g <- g + theme(axis.title.y = element_blank(), axis.line.y = element_blank(), axis.ticks.y = element_blank(), axis.text.y = element_blank(), panel.grid.major = element_blank())
   g <- g + xlab("Date")
   g <- g + ggtitle('Transaction Timings', subtitle = paste0("Estimation end: ",  clv.time.format.timepoint(clv.time=clv.data@clv.time, timepoint=clv.data@clv.time@timepoint.estimation.end)))
+  if(annotate.ids){
+    g <- g + theme(axis.title.y = element_text()) + ylab("Customer Identifier")
+  }
 
   return(g)
 }
