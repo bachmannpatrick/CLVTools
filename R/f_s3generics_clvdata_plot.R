@@ -487,7 +487,7 @@ clv.data.plot.barplot.frequency <- function(clv.data, count.repeat.trans, count.
 
 
 
-#' @importFrom ggplot2 ggplot geom_segment geom_point geom_text geom_vline theme xlab ylim ggtitle element_blank scale_x_datetime scale_x_date
+#' @importFrom ggplot2 ggplot geom_segment geom_point geom_text geom_vline theme xlab ylab ylim ggtitle element_blank scale_x_datetime scale_x_date
 clv.data.plot.transaction.timings <- function(clv.data, Ids, annotate.ids, plot, verbose, ...){
   # cran silence
   Id <- x <- y <- i.y <- date.first.actual.trans <- xstart <- xend <- ystart <- yend <- type <- Date <- NULL
@@ -622,6 +622,9 @@ clv.data.plot.transaction.timings <- function(clv.data, Ids, annotate.ids, plot,
   g <- g + theme(axis.title.y = element_blank(), axis.line.y = element_blank(), axis.ticks.y = element_blank(), axis.text.y = element_blank(), panel.grid.major = element_blank())
   g <- g + xlab("Date")
   g <- g + ggtitle('Transaction Timings', subtitle = paste0("Estimation end: ",  clv.time.format.timepoint(clv.time=clv.data@clv.time, timepoint=clv.data@clv.time@timepoint.estimation.end)))
+  if(annotate.ids){
+    g <- g + theme(axis.title.y = element_text()) + ylab("Customer Identifier")
+  }
 
   return(g)
 }
