@@ -391,7 +391,7 @@ check_user_data_newcustomer_dyncovdatacov <- function(data.cov, names.col, name.
     return(paste0("The ", name.of.covariate, " covariate data has to contain exactly the following columns: ", paste(names.col, collapse = ", "), "!"))
   }
 
-  if(!all(sapply(data.cov[, .SD, .SDcols=setdiff(names.col, "Cov.Date")], is.numeric))){
+  if(!all(sapply(data.cov[, setdiff(names.col, "Cov.Date")], is.numeric))){
     return(paste0("All ",name.of.covariate," covariate data needs to be of type numeric!"))
   }
 
@@ -464,11 +464,11 @@ check_user_data_newcustomer_dyncovspecific <- function(clv.time, dt.cov.life, dt
     tp.end   = tp.max.cov.data)
 
   err.msg.required.cov.dates <- paste0(
-    "The covariate data must be from ",
+    "The covariate data has to be spaced ",tolower(clv.time.tu.to.ly(clv.time))," and start at ",
     clv.time.format.timepoint(clv.time=clv.time,timepoint=clv.time.floor.date(clv.time=clv.time, timepoint=tp.first.transaction)),
-    " until ",
+    " (the period containing the first transaction) and end on ",
     clv.time.format.timepoint(clv.time=clv.time, timepoint=dt.required.cov.dates[, max(Cov.Date)]),
-    " (ie from the period containing the first transaction until the period containing the prediction end).")
+    " (the period containing the prediction end).")
 
   # By comparing the dates actually in the covariates with the required covariate dates, we can check
   # - no dates are missing
