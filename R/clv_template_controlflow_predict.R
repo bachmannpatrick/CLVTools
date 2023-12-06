@@ -45,7 +45,7 @@ clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, 
                                                                           dt.predictions = dt.predictions,
                                                                           verbose = verbose, ...)
 
-  if(!is.null(uncertainty)){
+  if(uncertainty == "boots"){
     dt.ci <- clv.controlflow.make.uncertainty.estimates(clv.fitted=clv.fitted, num.boots=num.boots, alpha=alpha, verbose=verbose, ...)
     dt.predictions <- dt.predictions[dt.ci, on="Id"]
   }
@@ -99,7 +99,7 @@ setMethod(
         verbose = FALSE,
         predict.spending = predict.spending,
         continuous.discount.factor = continuous.discount.factor,
-        uncertainty = NULL))
+        uncertainty = "none"))
     }
 
     l.boots <- bootstrapped.apply(
@@ -162,7 +162,7 @@ setMethod(f = "clv.controlflow.make.uncertainty.estimates",signature = signature
       return(predict(
         object = clv.boot,
         verbose = FALSE,
-        uncertainty = NULL))
+        uncertainty = "none"))
     }
 
     l.boots <- bootstrapped.apply(

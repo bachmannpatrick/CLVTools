@@ -122,9 +122,12 @@
 #' @aliases predict
 #' @export
 predict.clv.fitted.transactions <- function(object, newdata=NULL, prediction.end=NULL, predict.spending=gg,
-                                            continuous.discount.factor=0.1, uncertainty=NULL, alpha=0.1, num.boots=100, verbose=TRUE, ...){
+                                            continuous.discount.factor=0.1, uncertainty=c("none", "boots"), alpha=0.1, num.boots=100, verbose=TRUE, ...){
 
   check_err_msg(check_user_data_emptyellipsis(...))
+  check_err_msg(.check_userinput_matcharg(char=tolower(uncertainty), choices=c("none", "boots"), var.name="uncertainty"))
+  # match uncertainty to one of the allowed values
+  uncertainty <- match.arg(tolower(uncertainty), choices = c("none", "boots"), several.ok = FALSE)
 
   # If it was not explicitly passed in the call, the spending model should only be applied
   #   it there is spending data. Otherwise, predict does not work out-of-the-box for

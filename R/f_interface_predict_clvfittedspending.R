@@ -43,9 +43,12 @@
 #' @importFrom stats predict
 #' @method predict clv.fitted.spending
 #' @export
-predict.clv.fitted.spending <- function(object, newdata=NULL, uncertainty=NULL, alpha=0.1, num.boots=100, verbose=TRUE, ...){
+predict.clv.fitted.spending <- function(object, newdata=NULL, uncertainty=c("none", "boots"), alpha=0.1, num.boots=100, verbose=TRUE, ...){
 
   check_err_msg(check_user_data_emptyellipsis(...))
+  check_err_msg(.check_userinput_matcharg(char=tolower(uncertainty), choices=c("none", "boots"), var.name="uncertainty"))
+  # match uncertainty to one of the allowed values
+  uncertainty <- match.arg(tolower(uncertainty), choices=c("none", "boots"), several.ok=FALSE)
 
   return(clv.template.controlflow.predict(clv.fitted=object, verbose=verbose, user.newdata=newdata, uncertainty=uncertainty, num.boots=num.boots, alpha=alpha))
 }
