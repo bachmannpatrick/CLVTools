@@ -102,7 +102,7 @@ clv.data.select.customer.data.with.duplicates <- function(dt.data, ids){
   if(anyDuplicated(ids)){
     dt.ids <- data.table(Id=ids, key = "Id")
     dt.ids[, id_nth := seq(.N), by="Id"]
-    dt.ids[, new_Id := paste(Id, id_nth, sep = '_')]
+    dt.ids[, new_Id := paste(Id, id_nth, sep = '_BOOTSTRAP_ID_')]
     dt.ids[id_nth == 1, new_Id := Id] # only use new name if there are multiple ids
     dt.data <- dt.ids[dt.data, on="Id", nomatch=NULL, mult = "all"]
     dt.data[, Id := new_Id]

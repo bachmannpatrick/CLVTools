@@ -1,4 +1,4 @@
-clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, uncertainty, ...){
+clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, uncertainty, num.boots=10, alpha=0.1, ...){
 
   # Check if can predict -----------------------------------------------------------------------------------------
   # Cannot predict if there are any NAs in any of the prediction.params
@@ -46,7 +46,7 @@ clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, 
                                                                           verbose = verbose, ...)
 
   if(!is.null(uncertainty)){
-    dt.ci <- clv.controlflow.make.uncertainty.estimates(clv.fitted=clv.fitted, num.boots=10, verbose=verbose, ...)
+    dt.ci <- clv.controlflow.make.uncertainty.estimates(clv.fitted=clv.fitted, num.boots=num.boots, alpha=alpha, verbose=verbose, ...)
     dt.predictions <- dt.predictions[dt.ci, on="Id"]
   }
 
@@ -62,14 +62,14 @@ clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, 
 }
 
 
-setGeneric("clv.controlflow.make.uncertainty.estimates", function(clv.fitted, num.boots, verbose, ...){
+setGeneric("clv.controlflow.make.uncertainty.estimates", function(clv.fitted, num.boots, alpha, verbose, ...){
   standardGeneric("clv.controlflow.make.uncertainty.estimates")
 })
 
 setMethod(
   f = "clv.controlflow.make.uncertainty.estimates",
   signature = signature(clv.fitted="clv.fitted.transactions"),
-  definition = function(clv.fitted, num.boots, verbose, prediction.end, predict.spending, continuous.discount.factor){
+  definition = function(clv.fitted, num.boots, alpha, verbose, prediction.end, predict.spending, continuous.discount.factor){
 
     # have to explicitly give prediction.end because bootstrapping data has no holdout
     if(is.null(prediction.end)){
@@ -79,6 +79,9 @@ setMethod(
     }
 
     if(verbose){
+      # Print message before progress bar is created
+      message("Bootstrapping ",num.boots," times for uncertainty estimates...")
+
       progress.bar <- txtProgressBar(max = num.boots, style = 3)
       update.pb    <- function(n){setTxtProgressBar(pb=progress.bar, value = n)}
     }else{
@@ -99,10 +102,6 @@ setMethod(
         uncertainty = NULL))
     }
 
-    if(verbose){
-      message("Bootstrapping ",num.boots," times for uncertainty estimates...")
-    }
-
     l.boots <- bootstrapped.apply(
       object = clv.fitted,
       num.boot = num.boots,
@@ -112,30 +111,43 @@ setMethod(
       start.params.model = clv.fitted@prediction.params.model
     )
 
-    return(clv.fitted.confint.from.bootstrapped.predictions(rbindlist(l.boots)))
+    return(clv.fitted.confint.from.bootstrapped.predictions(dt.boots = rbindlist(l.boots), alpha = alpha, verbose=verbose))
 })
 
-clv.fitted.confint.from.bootstrapped.predictions <- function(dt.boots){
+clv.fitted.confint.from.bootstrapped.predictions <- function(dt.boots, alpha, verbose){
+  if(verbose){
+    message("Calculating confidence intervals...")
+  }
+
   # quantiles for each predicted quantity
+  # select only the existing ones
   cols.predictions <- c("PAlive", "CET", "DERT", "DECT", "predicted.mean.spending", "predicted.CLV")
   cols.predictions <- cols.predictions[cols.predictions %in% colnames(dt.boots)]
 
-  dt.cis <- rbindlist(lapply(cols.predictions, function(p){
-    rbindlist(lapply(c(0.1, 0.9), function(level){
+  # Customers are sampled multiple times are added to the boostrapping data with suffix _BOOTSID_i
+  # Remove this suffix again to get the original Id
+  # regex: "ends with _BOOTSTRAP_ID_<one or more digits>"
+  dt.boots[, Id := sub("_BOOTSTRAP_ID_[0-9]+$", "", Id)]
+
+  dt.CIs <- rbindlist(lapply(cols.predictions, function(p){
+    rbindlist(lapply(c(alpha, 1-alpha), function(level){
       name.level <- paste0(p, ".CI.", level*100)
-      return(dt.boots[, .(variable=name.level, value=quantile(get(p), probs=level)), by="Id"])
+      return(dt.boots[, list(variable=name.level, value=quantile(get(p), probs=level)), keyby="Id"])
     }))
   }))
 
-  return(dcast(dt.cis, formula = Id ~ variable, value.var = "value"))
+  return(dcast(dt.CIs, formula = Id ~ variable, value.var = "value"))
 }
 
-setMethod(
-  f = "clv.controlflow.make.uncertainty.estimates",
-  signature = signature(clv.fitted="clv.fitted.spending"),
-  definition = function(clv.fitted, num.boots, verbose){
+setMethod(f = "clv.controlflow.make.uncertainty.estimates",signature = signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, num.boots, alpha, verbose){
+
+  # Largely the same as for clv.fitted.transactions but with different arguments to predict()
+
 
     if(verbose){
+      # Print message before progress bar is created
+      message("Bootstrapping ",num.boots," times for uncertainty estimates...")
+
       progress.bar <- txtProgressBar(max = num.boots, style = 3)
       update.pb    <- function(n){setTxtProgressBar(pb=progress.bar, value = n)}
     }else{
@@ -153,10 +165,6 @@ setMethod(
         uncertainty = NULL))
     }
 
-    if(verbose){
-      message("Bootstrapping ",num.boots," times for uncertainty estimates...")
-    }
-
     l.boots <- bootstrapped.apply(
       object = clv.fitted,
       num.boot = num.boots,
@@ -165,5 +173,5 @@ setMethod(
       verbose = FALSE,
       start.params.model = clv.fitted@prediction.params.model
     )
-    return(clv.fitted.confint.from.bootstrapped.predictions(rbindlist(l.boots)))
+    return(clv.fitted.confint.from.bootstrapped.predictions(dt.boots = rbindlist(l.boots), alpha = alpha, verbose=verbose))
   })
