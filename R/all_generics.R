@@ -32,7 +32,7 @@ setGeneric("clv.controlflow.estimate.process.post.estimation", def=function(clv.
 
 
 # . Predict -----------------------------------------------------------------------------------------------
-setGeneric("clv.controlflow.predict.check.inputs", def = function(clv.fitted, verbose, ...)
+setGeneric("clv.controlflow.predict.check.inputs", def = function(clv.fitted, verbose, uncertainty, num.boots, alpha, ...)
   standardGeneric("clv.controlflow.predict.check.inputs"))
 
 setGeneric("clv.controlflow.predict.set.prediction.params", def = function(clv.fitted)

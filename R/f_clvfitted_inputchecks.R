@@ -212,6 +212,43 @@ check_user_data_continuousdiscountfactor <- function(continuous.discount.factor)
 }
 
 
+check_user_data_numboots <- function(num.boots){
+  if(missing(num.boots))
+    return("Parameter num.boots cannot be missing!")
+
+  err.msg <- .check_user_data_single_numeric(n = num.boots, var.name = "num.boots")
+  if(length(err.msg) > 0){
+    return(err.msg)
+  }
+
+  if(!(num.boots %% 1 == 0)){
+    err.msg <- c(err.msg, "Parameter num.boots needs to be an integer!")
+  }
+
+  if(num.boots < 1){
+    err.msg <- c(err.msg, "Parameter num.boots needs to be at least 1!")
+  }
+
+  return(err.msg)
+}
+
+check_user_data_alpha <- function(alpha){
+  if(missing(alpha)){
+    return("Parameter alpha cannot be missing!")
+  }
+
+  err.msg <- .check_user_data_single_numeric(n = alpha, var.name = "alpha")
+  if(length(err.msg) > 0){
+    return(err.msg)
+  }
+
+  if(!(alpha > 0 & alpha < 1)){
+    err.msg <- c(err.msg, "Parameter alpha needs to be in the interval (0,1)!")
+  }
+
+  return(err.msg)
+}
+
 check_user_data_startparamcorm <- function(start.param.cor, use.cor){
   err.msg <- c()
   # Null implies that start params need to be generated

@@ -50,7 +50,7 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.tran
 
 # . clv.controlflow.predict.check.inputs ------------------------------------------------------------------------
 #' @importFrom methods callNextMethod
-setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.fitted="clv.fitted.transactions.dynamic.cov"), function(clv.fitted, verbose, prediction.end, continuous.discount.factor, predict.spending, ...){
+setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.fitted="clv.fitted.transactions.dynamic.cov"), function(clv.fitted, verbose, uncertainty, num.boots, alpha, prediction.end, continuous.discount.factor, predict.spending, ...){
   # Do static cov (and hence also nocov) inputchecks first
   #   After this, newdata is basically ok
   callNextMethod()

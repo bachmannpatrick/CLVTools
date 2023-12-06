@@ -1,5 +1,5 @@
 # . clv.controlflow.predict.check.inputs ------------------------------------------------------------------------
-setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, verbose, prediction.end, continuous.discount.factor, predict.spending, ...){
+setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, verbose, uncertainty, num.boots, alpha, prediction.end, continuous.discount.factor, predict.spending, ...){
   err.msg <- c()
 
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
@@ -11,6 +11,11 @@ setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.
     err.msg <- c(err.msg, "Cannot predict without prediction.end if there is no holdout!")
 
   err.msg <- c(err.msg, check_user_data_continuousdiscountfactor(continuous.discount.factor=continuous.discount.factor))
+
+  if(uncertainty == "boots"){
+    err.msg <- c(err.msg, check_user_data_numboots(num.boots=num.boots))
+    err.msg <- c(err.msg, check_user_data_alpha(alpha=alpha))
+  }
 
   # predict.spending
   # Spending can be predicted using either a function (ie gg), a logical (ie FALSE), or an

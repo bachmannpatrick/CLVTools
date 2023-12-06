@@ -22,7 +22,7 @@ clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, 
 
   # Input checks ----------------------------------------------------------------------------------------
   #   Only after newdata replaced clv.data stored in clv.fitted because inputchecks use clv.fitted@clv.data
-  clv.controlflow.predict.check.inputs(clv.fitted=clv.fitted, verbose=verbose, ...)
+  clv.controlflow.predict.check.inputs(clv.fitted=clv.fitted, verbose=verbose, uncertainty=uncertainty, num.boots=num.boots, alpha=alpha, ...)
 
   # Prediction result table -----------------------------------------------------------------------------
   dt.predictions <- clv.controlflow.predict.build.result.table(clv.fitted=clv.fitted, verbose=verbose, ...)
