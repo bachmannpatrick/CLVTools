@@ -1,4 +1,4 @@
-clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, uncertainty, num.boots=10, alpha=0.1, ...){
+clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, uncertainty, num.boots, alpha, ...){
 
   # Check if can predict -----------------------------------------------------------------------------------------
   # Cannot predict if there are any NAs in any of the prediction.params

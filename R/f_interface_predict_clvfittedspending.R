@@ -43,11 +43,11 @@
 #' @importFrom stats predict
 #' @method predict clv.fitted.spending
 #' @export
-predict.clv.fitted.spending <- function(object, newdata=NULL, uncertainty=NULL, verbose=TRUE, ...){
+predict.clv.fitted.spending <- function(object, newdata=NULL, uncertainty=NULL, alpha=0.1, num.boots=100, verbose=TRUE, ...){
 
   check_err_msg(check_user_data_emptyellipsis(...))
 
-  return(clv.template.controlflow.predict(clv.fitted=object, verbose=verbose, user.newdata=newdata, uncertainty=uncertainty))
+  return(clv.template.controlflow.predict(clv.fitted=object, verbose=verbose, user.newdata=newdata, uncertainty=uncertainty, num.boots=num.boots, alpha=alpha))
 }
 
 
