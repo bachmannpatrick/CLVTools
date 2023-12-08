@@ -12,6 +12,9 @@
   prediction.end = NULL,
   predict.spending = gg,
   continuous.discount.factor = 0.1,
+  uncertainty = c("none", "boots"),
+  alpha = 0.1,
+  num.boots = 100,
   verbose = TRUE,
   ...
 )
@@ -22,6 +25,9 @@
   prediction.end = NULL,
   predict.spending = gg,
   continuous.discount.factor = 0.1,
+  uncertainty = c("none", "boots"),
+  alpha = 0.1,
+  num.boots = 100,
   verbose = TRUE,
   ...
 )
@@ -36,6 +42,12 @@
 \item{predict.spending}{Whether and how to predict spending and based on it also CLV, if possible. See details.}
 
 \item{continuous.discount.factor}{continuous discount factor to use to calculate \code{DERT/DECT}}
+
+\item{uncertainty}{Method to produce confidence intervals of the predictions (parameter uncertainty). Either "none" (default) or "boots".}
+
+\item{alpha}{<TODO[document]> PLACEHOLDER alpha or level, if \code{uncertainty="boots"}.}
+
+\item{num.boots}{Number of bootstrap repetitions, if \code{uncertainty="boots"}. A low number may not produce intervals for all customers if they are not sampled.}
 
 \item{verbose}{Show details about the running of the function.}
 

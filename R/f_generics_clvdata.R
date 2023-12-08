@@ -1,4 +1,6 @@
 setMethod("clv.data.create.bootstrapping.data", signature = signature(clv.data="clv.data"), definition = function(clv.data, ids){
+  Id <- NULL
+
   # For bootstrapped fitting, the estimation end has to be the same as in the
   # original clv.data in order to get the same cbs values
   #

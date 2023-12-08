@@ -3,7 +3,7 @@
 #'
 #' @param object A fitted spending model for which prediction is desired.
 #' @param newdata A clv data object for which predictions should be made with the fitted model. If none or NULL is given, predictions are made for the data on which the model was fit.
-#'
+#' @template template_params_uncertainty
 #' @template template_param_verbose
 #' @template template_param_dots
 #'
