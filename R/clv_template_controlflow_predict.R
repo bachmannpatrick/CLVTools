@@ -46,8 +46,15 @@ clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, 
                                                                           verbose = verbose, ...)
 
   if(uncertainty == "boots"){
-    dt.ci <- clv.controlflow.make.uncertainty.estimates(clv.fitted=clv.fitted, num.boots=num.boots, alpha=alpha, verbose=verbose, ...)
-    dt.predictions <- dt.predictions[dt.ci, on="Id"]
+    dt.CI <- clv.controlflow.make.uncertainty.estimates(clv.fitted=clv.fitted, num.boots=num.boots, alpha=alpha, verbose=verbose, ...)
+
+    # Add intervals to predictions, keeping all predictions also if for some customers there are no ids
+    # because they have never been sampled (fill with NA)
+    dt.predictions <- merge(x=dt.predictions, y=dt.CI, by="Id", all=TRUE)
+    # TODO: Column order is correct also with CI columns
+    # TODO[test]: All customers are kept also if not all are kept
+    # TODO: Rename clv.controlflow.make.uncertainty.estimates to clv.controlflow.predict.add.uncertainty.estimates
+    #
   }
 
 
