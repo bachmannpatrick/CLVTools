@@ -132,11 +132,14 @@ clv.fitted.confint.from.bootstrapped.predictions <- function(dt.boots, alpha, ve
   # regex: "ends with _BOOTSTRAP_ID_<one or more digits>"
   dt.boots[, Id := sub("_BOOTSTRAP_ID_[0-9]+$", "", Id)]
 
+  # set key to speed up the `by` operations
+  setkeyv(dt.boots, "Id")
+
+  # For every prediction column, calculate the naive quantiles (both ends) for each customer
   dt.CIs <- rbindlist(lapply(cols.predictions, function(p){
-    rbindlist(lapply(c(alpha, 1-alpha), function(level){
-      name.level <- paste0(p, ".CI.", level*100)
-      return(dt.boots[, list(variable=name.level, value=quantile(get(p), probs=level)), keyby="Id"])
-    }))
+    levels <- c(alpha/2, 1-alpha/2)
+    name.levels <- paste0(p, ".CI.", levels*100)
+    return(dt.boots[, list(variable=name.levels, value=quantile(get(p), probs=levels)), keyby="Id"])
   }))
 
   return(dcast(dt.CIs, formula = Id ~ variable, value.var = "value"))
