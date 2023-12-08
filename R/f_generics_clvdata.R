@@ -14,12 +14,12 @@ setMethod("clv.data.create.bootstrapping.data", signature = signature(clv.data="
     warning("Not all given Ids were found and selected into the new data.", call. = FALSE)
   }
 
-  dt.transactions <- clv.data.select.customer.data.with.duplicates(
+  dt.transactions <- clv.data.select.customer.data.duplicating.ids(
     dt.data=clv.data.get.transactions.in.estimation.period(clv.data),
     ids=ids)
 
   # Repeat transactions are required to fit GG with remove.first.transactions = TRUE
-  dt.repeat.trans <- clv.data.select.customer.data.with.duplicates(
+  dt.repeat.trans <- clv.data.select.customer.data.duplicating.ids(
     dt.data=clv.data.get.repeat.transactions.in.estimation.period(clv.data),
     ids=ids)
 

@@ -114,7 +114,10 @@ setMethod(
     return(clv.fitted.confint.from.bootstrapped.predictions(dt.boots = rbindlist(l.boots), alpha = alpha, verbose=verbose))
 })
 
+#' @importFrom stats quantile
 clv.fitted.confint.from.bootstrapped.predictions <- function(dt.boots, alpha, verbose){
+  Id <- NULL
+
   if(verbose){
     message("Calculating confidence intervals...")
   }

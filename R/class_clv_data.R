@@ -96,8 +96,8 @@ clv.data.get.transactions.in.holdout.period <- function(clv.data){
 
 # to allow for sampling with replacement, the name of ids appearing multiple times have to be changed
 # because they are otherwise aggregated in clv.data
-clv.data.select.customer.data.with.duplicates <- function(dt.data, ids){
-  # clv.data.select.customer.data.duplicating.ids
+clv.data.select.customer.data.duplicating.ids <- function(dt.data, ids){
+  .N <- id_nth <- new_id <- Id <- NULL
 
   if(anyDuplicated(ids)){
     dt.ids <- data.table(Id=ids, key = "Id")
