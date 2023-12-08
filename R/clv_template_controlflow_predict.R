@@ -46,15 +46,13 @@ clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, 
                                                                           verbose = verbose, ...)
 
   if(uncertainty == "boots"){
-    dt.CI <- clv.controlflow.make.uncertainty.estimates(clv.fitted=clv.fitted, num.boots=num.boots, alpha=alpha, verbose=verbose, ...)
+    dt.CI <- clv.controlflow.predict.add.uncertainty.estimates(clv.fitted=clv.fitted, num.boots=num.boots, alpha=alpha, verbose=verbose, ...)
 
     # Add intervals to predictions, keeping all predictions also if for some customers there are no ids
     # because they have never been sampled (fill with NA)
     dt.predictions <- merge(x=dt.predictions, y=dt.CI, by="Id", all=TRUE)
     # TODO: Column order is correct also with CI columns
     # TODO[test]: All customers are kept also if not all are kept
-    # TODO: Rename clv.controlflow.make.uncertainty.estimates to clv.controlflow.predict.add.uncertainty.estimates
-    #
   }
 
 
@@ -69,14 +67,11 @@ clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, 
 }
 
 
-setGeneric("clv.controlflow.make.uncertainty.estimates", function(clv.fitted, num.boots, alpha, verbose, ...){
-  standardGeneric("clv.controlflow.make.uncertainty.estimates")
+setGeneric("clv.controlflow.predict.add.uncertainty.estimates", function(clv.fitted, num.boots, alpha, verbose, ...){
+  standardGeneric("clv.controlflow.predict.add.uncertainty.estimates")
 })
 
-setMethod(
-  f = "clv.controlflow.make.uncertainty.estimates",
-  signature = signature(clv.fitted="clv.fitted.transactions"),
-  definition = function(clv.fitted, num.boots, alpha, verbose, prediction.end, predict.spending, continuous.discount.factor){
+setMethod(f = "clv.controlflow.predict.add.uncertainty.estimates", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, num.boots, alpha, verbose, prediction.end, predict.spending, continuous.discount.factor){
 
     # have to explicitly give prediction.end because bootstrapping data has no holdout
     if(is.null(prediction.end)){
@@ -152,7 +147,7 @@ clv.fitted.confint.from.bootstrapped.predictions <- function(dt.boots, alpha, ve
   return(dcast(dt.CIs, formula = Id ~ variable, value.var = "value"))
 }
 
-setMethod(f = "clv.controlflow.make.uncertainty.estimates",signature = signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, num.boots, alpha, verbose){
+setMethod(f = "clv.controlflow.predict.add.uncertainty.estimates",signature = signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, num.boots, alpha, verbose){
 
   # Largely the same as for clv.fitted.transactions but with different arguments to predict()
 
