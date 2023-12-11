@@ -10,7 +10,7 @@
 \alias{print.summary.clv.data.static.covariates}
 \title{Summarizing a CLV data object}
 \usage{
-\method{summary}{clv.data}(object, Id = NULL, ...)
+\method{summary}{clv.data}(object, ids = NULL, ...)
 
 \method{print}{summary.clv.data}(x, digits = max(3L, getOption("digits") - 3L), ...)
 
@@ -25,7 +25,7 @@
 \arguments{
 \item{object}{A CLV data object containing transactional data and potentially also contextual factors.}
 
-\item{Id}{A character vector of customer ids for which the transaction data is summarized. Defaults to
+\item{ids}{A character vector of customer ids for which the transaction data is summarized. Defaults to
 \code{NULL} for all customers.}
 
 \item{...}{Ignored}
@@ -56,7 +56,7 @@ possible holdout sample, and descriptive statistics of the transaction data.
 }
 \details{
 If applicable, the summary statistics are provided separately for the estimation and holdout period as well as
-for the overall time period (estimation + holdout). By using the \code{Id} argument, the summary statistics can
+for the overall time period (estimation + holdout). By using the \code{ids} argument, the summary statistics can
 be limited to a subset of customers.
 \describe{
 \item{\code{Number of customers}}{Count of individual customers.}
@@ -87,10 +87,10 @@ clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
 summary(clv.data.apparel)
 
 # transaction summary of customer "1219"
-summary(clv.data.apparel, Id="1219")
+summary(clv.data.apparel, ids="1219")
 
 # transaction summary of customers "1", "10", "100", and "1000"
-summary(clv.data.apparel, Id=c("1", "10", "100", "1000"))
+summary(clv.data.apparel, ids=c("1", "10", "100", "1000"))
 
 # add contextual factors
 data("apparelStaticCov")

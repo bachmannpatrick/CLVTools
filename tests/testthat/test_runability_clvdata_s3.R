@@ -20,25 +20,25 @@ fct.helper.test.runability.clv.data.summary <- function(clv.data){
   test_that("summary for selected customers works", {
     # single id
     id <- clv.data@data.transactions[, head(unique(Id), n=1)]
-    expect_silent(summary(clv.data, Id=id))
-    expect_silent(summary(clv.data, Id=id, sample="estimation"))
+    expect_silent(summary(clv.data, ids=id))
+    expect_silent(summary(clv.data, ids=id, sample="estimation"))
 
     # multiple ids
-    ids <- clv.data@data.transactions[, head(unique(Id), n=5)]
-    expect_silent(summary(clv.data, Id=ids))
-    expect_silent(summary(clv.data, Id=ids, sample="estimation"))
+    ids <- clv.data@data.transactions[, head(unique(ids), n=5)]
+    expect_silent(summary(clv.data, ids=ids))
+    expect_silent(summary(clv.data, ids=ids, sample="estimation"))
 
-    # warning if inexistent Id
-    expect_warning(summary(clv.data, Id=c(ids, "abczxy")), regexp = "Not all given Ids were found")
+    # warning if inexistent ids
+    expect_warning(summary(clv.data, ids=c(ids, "abczxy")), regexp = "Not all given ids were found")
 
     # id with trans in holdout
     expect_silent(id.with.holdout <- clv.data@data.transactions[Date>=clv.data@clv.time@timepoint.holdout.start, head(Id,n=1)])
-    expect_silent(summary(clv.data, Id=id.with.holdout))
+    expect_silent(summary(clv.data, ids=id.with.holdout))
 
     # id without trans in holdout
     #   any zero-repeater
     expect_silent(single.zero.rep <- clv.data@data.transactions[, .N, by="Id"][N==1][,head(Id,n=1)])
-    expect_silent(summary(clv.data, Id=single.zero.rep))
+    expect_silent(summary(clv.data, ids=single.zero.rep))
   })
 }
 
