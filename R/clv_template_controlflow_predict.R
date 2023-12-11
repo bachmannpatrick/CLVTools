@@ -46,6 +46,10 @@ clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, 
                                                                           verbose = verbose, ...)
 
   if(uncertainty == "boots"){
+    if(verbose & num.boots < 1000){
+      warning("It is recommended to run 1000 or more bootstrap repetitions.", immediate. = TRUE, call. = FALSE)
+    }
+
     dt.CI <- clv.controlflow.predict.add.uncertainty.estimates(clv.fitted=clv.fitted, num.boots=num.boots, level=level, verbose=verbose, ...)
 
     # Add intervals to predictions, keeping all predictions also if for some customers there are no ids
