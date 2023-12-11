@@ -24,7 +24,7 @@ fct.helper.test.runability.clv.data.summary <- function(clv.data){
     expect_silent(summary(clv.data, ids=id, sample="estimation"))
 
     # multiple ids
-    ids <- clv.data@data.transactions[, head(unique(ids), n=5)]
+    ids <- clv.data@data.transactions[, head(unique(Id), n=5)]
     expect_silent(summary(clv.data, ids=ids))
     expect_silent(summary(clv.data, ids=ids, sample="estimation"))
 
