@@ -232,18 +232,18 @@ check_user_data_numboots <- function(num.boots){
   return(err.msg)
 }
 
-check_user_data_alpha <- function(alpha){
-  if(missing(alpha)){
-    return("Parameter alpha cannot be missing!")
+check_user_data_level <- function(level){
+  if(missing(level)){
+    return("Parameter level cannot be missing!")
   }
 
-  err.msg <- .check_user_data_single_numeric(n = alpha, var.name = "alpha")
+  err.msg <- .check_user_data_single_numeric(n = level, var.name = "level")
   if(length(err.msg) > 0){
     return(err.msg)
   }
 
-  if(!(alpha > 0 & alpha < 1)){
-    err.msg <- c(err.msg, "Parameter alpha needs to be in the interval (0,1)!")
+  if(!(level > 0 & level < 1)){
+    err.msg <- c(err.msg, "Parameter level needs to be in the interval (0,1)!")
   }
 
   return(err.msg)

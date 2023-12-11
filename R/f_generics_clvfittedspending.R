@@ -9,14 +9,14 @@ setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitte
 
 
 # . clv.controlflow.predict.check.inputs -----------------------------------------------------------------
-setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, verbose, uncertainty, num.boots, alpha, ...){
+setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, verbose, uncertainty, num.boots, level, ...){
   err.msg <- c()
 
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
 
   if(uncertainty == "boots"){
     err.msg <- c(err.msg, check_user_data_numboots(num.boots))
-    err.msg <- c(err.msg, check_user_data_alpha(alpha))
+    err.msg <- c(err.msg, check_user_data_level(level))
   }
 
   check_err_msg(err.msg)

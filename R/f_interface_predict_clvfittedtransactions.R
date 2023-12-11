@@ -123,7 +123,7 @@
 #' @aliases predict
 #' @export
 predict.clv.fitted.transactions <- function(object, newdata=NULL, prediction.end=NULL, predict.spending=gg,
-                                            continuous.discount.factor=0.1, uncertainty=c("none", "boots"), alpha=0.1, num.boots=100, verbose=TRUE, ...){
+                                            continuous.discount.factor=0.1, uncertainty=c("none", "boots"), level=0.1, num.boots=100, verbose=TRUE, ...){
 
   check_err_msg(check_user_data_emptyellipsis(...))
   check_err_msg(.check_userinput_matcharg(char=tolower(uncertainty), choices=c("none", "boots"), var.name="uncertainty"))
@@ -143,7 +143,7 @@ predict.clv.fitted.transactions <- function(object, newdata=NULL, prediction.end
 
   return(clv.template.controlflow.predict(clv.fitted=object, prediction.end=prediction.end, predict.spending=predict.spending,
                                    continuous.discount.factor=continuous.discount.factor, verbose=verbose, user.newdata=newdata,
-                                   uncertainty=uncertainty, num.boots=num.boots, alpha=alpha))
+                                   uncertainty=uncertainty, num.boots=num.boots, level=level))
 }
 
 

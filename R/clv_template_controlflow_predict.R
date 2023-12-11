@@ -1,4 +1,4 @@
-clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, uncertainty, num.boots, alpha, ...){
+clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, uncertainty, num.boots, level, ...){
 
   # Check if can predict -----------------------------------------------------------------------------------------
   # Cannot predict if there are any NAs in any of the prediction.params
@@ -22,7 +22,7 @@ clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, 
 
   # Input checks ----------------------------------------------------------------------------------------
   #   Only after newdata replaced clv.data stored in clv.fitted because inputchecks use clv.fitted@clv.data
-  clv.controlflow.predict.check.inputs(clv.fitted=clv.fitted, verbose=verbose, uncertainty=uncertainty, num.boots=num.boots, alpha=alpha, ...)
+  clv.controlflow.predict.check.inputs(clv.fitted=clv.fitted, verbose=verbose, uncertainty=uncertainty, num.boots=num.boots, level=level, ...)
 
   # Prediction result table -----------------------------------------------------------------------------
   dt.predictions <- clv.controlflow.predict.build.result.table(clv.fitted=clv.fitted, verbose=verbose, ...)
@@ -46,7 +46,7 @@ clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, 
                                                                           verbose = verbose, ...)
 
   if(uncertainty == "boots"){
-    dt.CI <- clv.controlflow.predict.add.uncertainty.estimates(clv.fitted=clv.fitted, num.boots=num.boots, alpha=alpha, verbose=verbose, ...)
+    dt.CI <- clv.controlflow.predict.add.uncertainty.estimates(clv.fitted=clv.fitted, num.boots=num.boots, level=level, verbose=verbose, ...)
 
     # Add intervals to predictions, keeping all predictions also if for some customers there are no ids
     # because they have never been sampled (fill with NA)
@@ -67,11 +67,11 @@ clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, 
 }
 
 
-setGeneric("clv.controlflow.predict.add.uncertainty.estimates", function(clv.fitted, num.boots, alpha, verbose, ...){
+setGeneric("clv.controlflow.predict.add.uncertainty.estimates", function(clv.fitted, num.boots, level, verbose, ...){
   standardGeneric("clv.controlflow.predict.add.uncertainty.estimates")
 })
 
-setMethod(f = "clv.controlflow.predict.add.uncertainty.estimates", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, num.boots, alpha, verbose, prediction.end, predict.spending, continuous.discount.factor){
+setMethod(f = "clv.controlflow.predict.add.uncertainty.estimates", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, num.boots, level, verbose, prediction.end, predict.spending, continuous.discount.factor){
 
     # have to explicitly give prediction.end because bootstrapping data has no holdout
     if(is.null(prediction.end)){
@@ -113,11 +113,11 @@ setMethod(f = "clv.controlflow.predict.add.uncertainty.estimates", signature = s
       start.params.model = clv.fitted@prediction.params.model
     )
 
-    return(clv.fitted.confint.from.bootstrapped.predictions(dt.boots = rbindlist(l.boots), alpha = alpha, verbose=verbose))
+    return(clv.fitted.confint.from.bootstrapped.predictions(dt.boots = rbindlist(l.boots), level = level, verbose=verbose))
 })
 
 #' @importFrom stats quantile
-clv.fitted.confint.from.bootstrapped.predictions <- function(dt.boots, alpha, verbose){
+clv.fitted.confint.from.bootstrapped.predictions <- function(dt.boots, level, verbose){
   Id <- NULL
 
   if(verbose){
@@ -139,7 +139,7 @@ clv.fitted.confint.from.bootstrapped.predictions <- function(dt.boots, alpha, ve
 
   # For every prediction column, calculate the naive quantiles (both ends) for each customer
   dt.CIs <- rbindlist(lapply(cols.predictions, function(p){
-    levels <- c(alpha/2, 1-alpha/2)
+    levels <- c(level/2, 1-level/2)
     name.levels <- paste0(p, ".CI.", levels*100)
     return(dt.boots[, list(variable=name.levels, value=quantile(get(p), probs=levels)), keyby="Id"])
   }))
@@ -147,7 +147,7 @@ clv.fitted.confint.from.bootstrapped.predictions <- function(dt.boots, alpha, ve
   return(dcast(dt.CIs, formula = Id ~ variable, value.var = "value"))
 }
 
-setMethod(f = "clv.controlflow.predict.add.uncertainty.estimates",signature = signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, num.boots, alpha, verbose){
+setMethod(f = "clv.controlflow.predict.add.uncertainty.estimates",signature = signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, num.boots, level, verbose){
 
   # Largely the same as for clv.fitted.transactions but with different arguments to predict()
 
@@ -181,5 +181,5 @@ setMethod(f = "clv.controlflow.predict.add.uncertainty.estimates",signature = si
       verbose = FALSE,
       start.params.model = clv.fitted@prediction.params.model
     )
-    return(clv.fitted.confint.from.bootstrapped.predictions(dt.boots = rbindlist(l.boots), alpha = alpha, verbose=verbose))
+    return(clv.fitted.confint.from.bootstrapped.predictions(dt.boots = rbindlist(l.boots), level = level, verbose=verbose))
   })

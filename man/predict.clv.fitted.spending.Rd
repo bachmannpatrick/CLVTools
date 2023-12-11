@@ -9,7 +9,7 @@
   object,
   newdata = NULL,
   uncertainty = c("none", "boots"),
-  alpha = 0.1,
+  level = 0.1,
   num.boots = 100,
   verbose = TRUE,
   ...
@@ -19,7 +19,7 @@
   object,
   newdata = NULL,
   uncertainty = c("none", "boots"),
-  alpha = 0.1,
+  level = 0.1,
   num.boots = 100,
   verbose = TRUE,
   ...
@@ -32,7 +32,7 @@
 
 \item{uncertainty}{Method to produce confidence intervals of the predictions (parameter uncertainty). Either "none" (default) or "boots".}
 
-\item{alpha}{<TODO[document]> PLACEHOLDER alpha or level, if \code{uncertainty="boots"}.}
+\item{level}{Required confidence level, if \code{uncertainty="boots"}.}
 
 \item{num.boots}{Number of bootstrap repetitions, if \code{uncertainty="boots"}. A low number may not produce intervals for all customers if they are not sampled.}
 

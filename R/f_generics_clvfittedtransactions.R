@@ -1,5 +1,5 @@
 # . clv.controlflow.predict.check.inputs ------------------------------------------------------------------------
-setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, verbose, uncertainty, num.boots, alpha, prediction.end, continuous.discount.factor, predict.spending, ...){
+setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, verbose, uncertainty, num.boots, level, prediction.end, continuous.discount.factor, predict.spending, ...){
   err.msg <- c()
 
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
@@ -14,7 +14,7 @@ setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.
 
   if(uncertainty == "boots"){
     err.msg <- c(err.msg, check_user_data_numboots(num.boots=num.boots))
-    err.msg <- c(err.msg, check_user_data_alpha(alpha=alpha))
+    err.msg <- c(err.msg, check_user_data_level(level=level))
   }
 
   # predict.spending
