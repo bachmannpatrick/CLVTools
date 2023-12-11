@@ -71,10 +71,10 @@ test_that("Sampling with replacement creates duplicate entries with new ids", {
 
   expect_silent(clv.sampled <- clv.data.create.bootstrapping.data(clv.cdnow, ids=c("1", "1", "2", "2")))
 
-  expect_setequal(clv.sampled@data.transactions$Id, c("1", "1_2", "2", "2_2"))
+  expect_setequal(clv.sampled@data.transactions$Id, c("1", "1_BOOTSTRAP_ID_2", "2", "2_BOOTSTRAP_ID_2"))
   # Id=3 only has 3 transactions because 1 is in holdout which is cut off
   expect_equal(clv.sampled@data.transactions[, .N, keyby="Id"],
-               data.table(Id=c("1", "1_2", "2", "2_2"), N=c(3, 3, 2, 2), key = "Id"))
+               data.table(Id=c("1", "1_BOOTSTRAP_ID_2", "2", "2_BOOTSTRAP_ID_2"), N=c(3, 3, 2, 2), key = "Id"))
 })
 
 
@@ -97,8 +97,8 @@ test_that("Sampling with and without replacement selects static covariates of th
 
   # with replacement
   expect_silent(clv.sampled <- clv.data.create.bootstrapping.data(clv.apparel.cov, ids=c("1", "1", "10", "10")))
-  expect_setequal(clv.sampled@data.cov.life$Id, c("1", "1_2", "10", "10_2"))
-  expect_setequal(clv.sampled@data.cov.trans$Id, c("1", "1_2", "10", "10_2"))
+  expect_setequal(clv.sampled@data.cov.life$Id, c("1", "1_BOOTSTRAP_ID_2", "10", "10_BOOTSTRAP_ID_2"))
+  expect_setequal(clv.sampled@data.cov.trans$Id, c("1", "1_BOOTSTRAP_ID_2", "10", "10_BOOTSTRAP_ID_2"))
   expect_setequal(clv.sampled@data.cov.life$Id, clv.sampled@data.transactions$Id)
   expect_setequal(clv.sampled@data.cov.trans$Id, clv.sampled@data.transactions$Id)
   expect_setequal(colnames(clv.sampled@data.cov.trans), c("Id", "Gender", "Channel"))
@@ -124,8 +124,8 @@ test_that("Sampling selects dynamic covariates of the same ids and only in estim
 
   # with replacement
   expect_silent(clv.sampled <- clv.data.create.bootstrapping.data(clv.apparel.dyn, ids=c("1", "1", "10", "10")))
-  expect_setequal(clv.sampled@data.cov.life$Id, c("1", "1_2", "10", "10_2"))
-  expect_setequal(clv.sampled@data.cov.trans$Id, c("1", "1_2", "10", "10_2"))
+  expect_setequal(clv.sampled@data.cov.life$Id, c("1", "1_BOOTSTRAP_ID_2", "10", "10_BOOTSTRAP_ID_2"))
+  expect_setequal(clv.sampled@data.cov.trans$Id, c("1", "1_BOOTSTRAP_ID_2", "10", "10_BOOTSTRAP_ID_2"))
   expect_setequal(clv.sampled@data.cov.life$Id, clv.sampled@data.transactions$Id)
   expect_setequal(clv.sampled@data.cov.trans$Id, clv.sampled@data.transactions$Id)
   expect_setequal(colnames(clv.sampled@data.cov.trans), c(dyn.cols, "Gender", "Channel"))
