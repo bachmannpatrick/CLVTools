@@ -8,6 +8,8 @@
 #' After it is fit, \code{fn.boot.apply} is applied to it and
 #' the value it returns is collected in a list which is eventually returned.
 #'
+#' Note that the Id of customers which are sampled more than once gains a suffix "_BOOTSTRAP_ID_<number>".
+#'
 #' @param object Fitted model
 #' @param num.boot number of times to sample data and re-fit the model
 #' @param fn.sample Method sampling customer ids for creating the bootstrapped data. Receives and returns
