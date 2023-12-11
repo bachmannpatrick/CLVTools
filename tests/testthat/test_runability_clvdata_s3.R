@@ -205,24 +205,24 @@ fct.helper.test.runability.clv.data.plotinterpurchasetime <- function(clv.data){
 }
 
 fct.helper.test.runability.clv.data.plottimings <- function(clv.data){
-  test_that("plot - timings, Ids", {
+  test_that("plot - timings, ids", {
     skip_on_cran()
-    expect_silent(plot(clv.data, which="timings", Ids = 1, verbose=FALSE))
-    expect_silent(plot(clv.data, which="timings", Ids = 5, verbose=FALSE))
-    expect_silent(plot(clv.data, which="timings", Ids = c("1"), verbose=FALSE))
-    expect_silent(plot(clv.data, which="timings", Ids = c("1", "10"), verbose=FALSE))
-    expect_silent(plot(clv.data, which="timings", Ids = nobs(clv.data), verbose=FALSE))
+    expect_silent(plot(clv.data, which="timings", ids = 1, verbose=FALSE))
+    expect_silent(plot(clv.data, which="timings", ids = 5, verbose=FALSE))
+    expect_silent(plot(clv.data, which="timings", ids = c("1"), verbose=FALSE))
+    expect_silent(plot(clv.data, which="timings", ids = c("1", "10"), verbose=FALSE))
+    expect_silent(plot(clv.data, which="timings", ids = nobs(clv.data), verbose=FALSE))
   })
 
 
   test_that("plot - timings, annotate.ids", {
     skip_on_cran()
-    expect_silent(plot(clv.data, which="timings", Ids = 5, annotate.ids=TRUE, verbose=FALSE))
+    expect_silent(plot(clv.data, which="timings", ids = 5, annotate.ids=TRUE, verbose=FALSE))
   })
 
   test_that("plot - timings, plot=FALSE", {
     skip_on_cran()
-    expect_silent(dt.plot <- plot(clv.data, which="timings", Ids=c("1", "10"), plot=FALSE, verbose=FALSE))
+    expect_silent(dt.plot <- plot(clv.data, which="timings", ids=c("1", "10"), plot=FALSE, verbose=FALSE))
     expect_s3_class(dt.plot, "data.table")
     expect_setequal(colnames(dt.plot), c("Id", "type", "variable", "value"))
     expect_setequal(dt.plot$Id, c("1", "10"))

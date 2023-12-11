@@ -15,7 +15,7 @@
   label.remaining = "10+",
   mean.spending = TRUE,
   annotate.ids = FALSE,
-  Ids = c(),
+  ids = c(),
   sample = c("estimation", "full", "holdout"),
   geom = "line",
   color = "black",
@@ -47,7 +47,7 @@ value of every transaction in the data (\code{FALSE}) should be plotted.}
 
 \item{annotate.ids}{"timings": Whether timelines should be annotated with customer ids.}
 
-\item{Ids}{"timings": A character vector of customer ids or a single integer specifying the number of customers to sample.
+\item{ids}{"timings": A character vector of customer ids or a single integer specifying the number of customers to sample.
 Defaults to \code{NULL} for which 50 random customers are selected.}
 
 \item{sample}{Name of the sample for which the plot should be made, either
@@ -192,13 +192,13 @@ plot(clv.cdnow, which="interpurchasetime",
 
 ### TIMING PATTERNS
 # selected customers and annotating them
-plot(clv.cdnow, which="timings", Ids=c("123", "1041"), annotate.ids=TRUE)
+plot(clv.cdnow, which="timings", ids=c("123", "1041"), annotate.ids=TRUE)
 
 # plot 25 random customers
-plot(clv.cdnow, which="timings", Ids=25)
+plot(clv.cdnow, which="timings", ids=25)
 
 # plot all customers
-plot(clv.cdnow, which="timings", Ids=nobs(clv.cdnow))
+plot(clv.cdnow, which="timings", ids=nobs(clv.cdnow))
 }
 
 }
