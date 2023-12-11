@@ -110,16 +110,16 @@ test_that("Correct data format is returned", {
 })
 
 
-test_that("Correct Ids are returned", {
+test_that("Correct ids are returned", {
   skip_on_cran()
   clv.cdnow <- fct.helper.create.clvdata.cdnow(data.cdnow=cdnow)
   target.ids <- c("1", "2", "999")
 
-  expect_setequal(as.data.frame(clv.cdnow, Ids = target.ids)$Id, target.ids)
-  expect_setequal(as.data.table(clv.cdnow, Ids = target.ids)$Id, target.ids)
+  expect_setequal(as.data.frame(clv.cdnow, ids = target.ids)$Id, target.ids)
+  expect_setequal(as.data.table(clv.cdnow, ids = target.ids)$Id, target.ids)
 
-  expect_warning(as.data.frame(clv.cdnow, Ids=c(target.ids, "abc")))
-  expect_warning(as.data.table(clv.cdnow, Ids=c(target.ids, "abc")))
+  expect_warning(as.data.frame(clv.cdnow, ids=c(target.ids, "abc")))
+  expect_warning(as.data.table(clv.cdnow, ids=c(target.ids, "abc")))
 })
 
 test_that("Returns correct number of transactinons for given sample", {
@@ -151,18 +151,18 @@ test_that("Always returns a copy", {
   expect_false(orig.address == address(as.data.frame(clv.cdnow, sample="estimation")))
   expect_false(orig.address == address(as.data.frame(clv.cdnow, sample="holdout")))
 
-  expect_false(orig.address == address(as.data.frame(clv.cdnow, sample="full", Ids = "1")))
-  expect_false(orig.address == address(as.data.frame(clv.cdnow, sample="estimation", Ids = "1")))
-  expect_false(orig.address == address(as.data.frame(clv.cdnow, sample="holdout", Ids = "1")))
+  expect_false(orig.address == address(as.data.frame(clv.cdnow, sample="full", ids = "1")))
+  expect_false(orig.address == address(as.data.frame(clv.cdnow, sample="estimation", ids = "1")))
+  expect_false(orig.address == address(as.data.frame(clv.cdnow, sample="holdout", ids = "1")))
 
   # data.table
   expect_false(orig.address == address(as.data.table(clv.cdnow, sample="full")))
   expect_false(orig.address == address(as.data.table(clv.cdnow, sample="estimation")))
   expect_false(orig.address == address(as.data.table(clv.cdnow, sample="holdout")))
 
-  expect_false(orig.address == address(as.data.table(clv.cdnow, sample="full", Ids = "1")))
-  expect_false(orig.address == address(as.data.table(clv.cdnow, sample="estimation", Ids = "1")))
-  expect_false(orig.address == address(as.data.table(clv.cdnow, sample="holdout", Ids = "1")))
+  expect_false(orig.address == address(as.data.table(clv.cdnow, sample="full", ids = "1")))
+  expect_false(orig.address == address(as.data.table(clv.cdnow, sample="estimation", ids = "1")))
+  expect_false(orig.address == address(as.data.table(clv.cdnow, sample="holdout", ids = "1")))
 })
 
 
