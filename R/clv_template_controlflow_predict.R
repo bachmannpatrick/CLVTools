@@ -50,11 +50,7 @@ clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, 
       warning("It is recommended to run 1000 or more bootstrap repetitions.", immediate. = TRUE, call. = FALSE)
     }
 
-    dt.CI <- clv.controlflow.predict.add.uncertainty.estimates(clv.fitted=clv.fitted, num.boots=num.boots, level=level, verbose=verbose, ...)
-
-    # Add intervals to predictions, keeping all predictions also if for some customers there are no ids
-    # because they have never been sampled (fill with NA)
-    dt.predictions <- merge(x=dt.predictions, y=dt.CI, by="Id", all=TRUE)
+    dt.predictions <- clv.controlflow.predict.add.uncertainty.estimates(clv.fitted=clv.fitted, dt.predictions = dt.predictions, num.boots=num.boots, level=level, verbose=verbose, ...)
     # TODO: Column order is correct also with CI columns
     # TODO[test]: All customers are kept also if not all are kept
   }
@@ -66,16 +62,53 @@ clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, 
   #   will print. To avoid this: include a DT[] after the last := in your function."
   dt.predictions[]
 
-
   return(dt.predictions)
 }
 
+#' @importFrom stats quantile
+clv.controlflow.predict.add.uncertainty.estimates <- function(clv.fitted, dt.predictions, num.boots, level, verbose, ...){
+  Id <- NULL
 
-setGeneric("clv.controlflow.predict.add.uncertainty.estimates", function(clv.fitted, num.boots, level, verbose, ...){
-  standardGeneric("clv.controlflow.predict.add.uncertainty.estimates")
+  dt.boots <- clv.fitted.bootstrap.predictions(clv.fitted = clv.fitted, num.boots = num.boots, level = level, verbose = verbose, ...)
+
+  if(verbose){
+    message("Calculating confidence intervals...")
+  }
+
+  # Customers that are sampled multiple times are added to the boostrapping data with suffix "_BOOTSID_<i?"
+  # Remove this suffix again to get the original Id and calculate the quantiles across a single customers multiple draws
+  # regex: "ends with _BOOTSTRAP_ID_<one or more digits>"
+  dt.boots[, Id := sub("_BOOTSTRAP_ID_[0-9]+$", "", Id)]
+
+  # quantiles for each predicted quantity
+  # select only the existing ones
+  cols.predictions <- c("PAlive", "CET", "DERT", "DECT", "predicted.mean.spending", "predicted.CLV")
+  cols.predictions <- cols.predictions[cols.predictions %in% colnames(dt.boots)]
+
+  # set key to speed up the `by` operations
+  setkeyv(dt.boots, "Id")
+
+  # For every prediction column, calculate the naive quantiles (both ends) for each customer
+  dt.CI <- rbindlist(lapply(cols.predictions, function(p){
+    levels <- c(level/2, 1-level/2)
+    name.levels <- paste0(p, ".CI.", levels*100)
+    return(dt.boots[, list(variable=name.levels, value=quantile(get(p), probs=levels, names=FALSE)), keyby="Id"])
+  }))
+
+  dt.CI <- dcast(dt.CI, formula = Id ~ variable, value.var = "value")
+
+  # Add intervals to predictions, keeping all predictions also if for some customers there are no ids
+  # because they have never been sampled (fill with NA)
+  return(merge(x=dt.predictions, y=dt.CI, by="Id", all=TRUE))
+}
+
+
+
+setGeneric("clv.fitted.bootstrap.predictions", function(clv.fitted, num.boots, level, verbose, ...){
+  standardGeneric("clv.fitted.bootstrap.predictions")
 })
 
-setMethod(f = "clv.controlflow.predict.add.uncertainty.estimates", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, num.boots, level, verbose, prediction.end, predict.spending, continuous.discount.factor){
+setMethod(f = "clv.fitted.bootstrap.predictions", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, num.boots, level, verbose, prediction.end, predict.spending, continuous.discount.factor){
 
     # have to explicitly give prediction.end because bootstrapping data has no holdout
     if(is.null(prediction.end)){
@@ -117,41 +150,11 @@ setMethod(f = "clv.controlflow.predict.add.uncertainty.estimates", signature = s
       start.params.model = clv.fitted@prediction.params.model
     )
 
-    return(clv.fitted.confint.from.bootstrapped.predictions(dt.boots = rbindlist(l.boots), level = level, verbose=verbose))
+    return(rbindlist(l.boots))
 })
 
-#' @importFrom stats quantile
-clv.fitted.confint.from.bootstrapped.predictions <- function(dt.boots, level, verbose){
-  Id <- NULL
 
-  if(verbose){
-    message("Calculating confidence intervals...")
-  }
-
-  # quantiles for each predicted quantity
-  # select only the existing ones
-  cols.predictions <- c("PAlive", "CET", "DERT", "DECT", "predicted.mean.spending", "predicted.CLV")
-  cols.predictions <- cols.predictions[cols.predictions %in% colnames(dt.boots)]
-
-  # Customers are sampled multiple times are added to the boostrapping data with suffix _BOOTSID_i
-  # Remove this suffix again to get the original Id
-  # regex: "ends with _BOOTSTRAP_ID_<one or more digits>"
-  dt.boots[, Id := sub("_BOOTSTRAP_ID_[0-9]+$", "", Id)]
-
-  # set key to speed up the `by` operations
-  setkeyv(dt.boots, "Id")
-
-  # For every prediction column, calculate the naive quantiles (both ends) for each customer
-  dt.CIs <- rbindlist(lapply(cols.predictions, function(p){
-    levels <- c(level/2, 1-level/2)
-    name.levels <- paste0(p, ".CI.", levels*100)
-    return(dt.boots[, list(variable=name.levels, value=quantile(get(p), probs=levels)), keyby="Id"])
-  }))
-
-  return(dcast(dt.CIs, formula = Id ~ variable, value.var = "value"))
-}
-
-setMethod(f = "clv.controlflow.predict.add.uncertainty.estimates",signature = signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, num.boots, level, verbose){
+setMethod(f = "clv.fitted.bootstrap.predictions",signature = signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, num.boots, level, verbose){
 
   # Largely the same as for clv.fitted.transactions but with different arguments to predict()
 
@@ -185,5 +188,5 @@ setMethod(f = "clv.controlflow.predict.add.uncertainty.estimates",signature = si
       verbose = FALSE,
       start.params.model = clv.fitted@prediction.params.model
     )
-    return(clv.fitted.confint.from.bootstrapped.predictions(dt.boots = rbindlist(l.boots), level = level, verbose=verbose))
+    return(rbindlist(l.boots))
   })
