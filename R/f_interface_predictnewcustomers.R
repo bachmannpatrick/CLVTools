@@ -1,13 +1,57 @@
+#' @name predict.new.customers
+#' @title Expected number of transactions of an average new customers
+#'
+#' @description
+#' Predict the number of transactions a single, average customer is expected to make in
+#' the \code{t} periods since making the first transaction ("coming alive").
+#' For covariate models, the prediction is for an average customer with the given covariates.
+#'
+#' The unconditional expectation \code{XXXXXFORMULAXXXX} is used for making this prediction.
+#' For models without covariates, the prediction hence is the same for all customers
+#' and independent of when a customer comes alive.
+#' For models with covariates, the prediction is the same for all customers
+#' with the same covariates.
+#' For models with dynamic covariates, the time point of the first transaction is additionally
+#' required because the exact covariates active during the prediction period have to be known.
+#'
+#' @param clv.fitted A fitted transaction model for which prediction is desired.
+#' @param t A positive, numeric scalar indicating the number of periods to predict.
+#' @param data.cov.life Covariate data for the lifetime process for a single customer, \code{data.table} or \code{data.frame}. See details.
+#' @param data.cov.trans Covariate data for the lifetime process for a single customer, \code{data.table} or \code{data.frame}. See details.
+#' @param first.transaction For dynamic covariate models only: The time point of the first transaction.
+#' Has to be within the time range of the covariate data.
+#' @template template_param_dots
+#'
+#' @details
+#' The covariate data has to contain the same columns as during model fitting. Only numeric values are allowed.
+#' No customer Id is required because no data of the customers used for model fitting is used for making this prediction.
+#'
+#' The covariate data has to be of the following structure:
+#'  Static: exactly 1 row of covariate data
+#'  Dyn: exactly 1 row of covariate data for each covariate. A column Cov.Date
+#' For dynamic covariate models, the covariate data requires the following structure:
+#' there needs to be covariate data at every timepoint that marks the start of a period as defined by time.unit.
+#' If \code{Cov.Date} is of type character, the \code{date.format} given when creating the the clv.data object is used for parsing.
+#'
+#' The covariate data has to cover the time from the customer's first transaction \code{first.transaction}
+#' to the end of the prediction period given by \code{t}.
+#'
+#'
+#' @return A numeric scalar with the expected number of transactions.
+#'
+NULL
 
-# different generic per model to have different interfaces (with and w/o covariates)
 
 #' @exportMethod predict.new.customers
 setGeneric("predict.new.customers", def = function(clv.fitted, t, ...){
+  # different generic per model to have different interfaces (with and w/o covariates)
   standardGeneric("predict.new.customers")
 })
 
 
+
 #' @include class_clv_fitted_transactions.R
+#' @rdname predict.new.customers
 setMethod("predict.new.customers", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, t, ...){
   check_err_msg(check_user_data_newcustomer_t(t))
   check_err_msg(check_user_data_emptyellipsis(...))
@@ -20,6 +64,7 @@ setMethod("predict.new.customers", signature = signature(clv.fitted="clv.fitted.
 
 
 #' @include class_clv_fitted_transactions_staticcov.R
+#' @rdname predict.new.customers
 setMethod(f = "predict.new.customers", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted, t, data.cov.life, data.cov.trans, ...){
 
   # Basic inputchecks ---------------------------------------------------------------------
@@ -46,7 +91,9 @@ setMethod(f = "predict.new.customers", signature = signature(clv.fitted="clv.fit
     t=t)))
 })
 
+
 #' @include class_clv_fitted_transactions_dynamiccov.R
+#' @rdname predict.new.customers
 setMethod(f = "predict.new.customers", signature = signature(clv.fitted="clv.fitted.transactions.dynamic.cov"), definition = function(clv.fitted, t, data.cov.life, data.cov.trans, first.transaction, ...){
 
 
