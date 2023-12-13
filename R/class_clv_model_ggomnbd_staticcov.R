@@ -99,6 +99,34 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.ggomnbd.static
                        fct.expectation = fct.expectation, clv.time = clv.fitted@clv.data@clv.time))
 })
 
+# . clv.model.predict.new.customer.unconditional.expectation -----------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict.new.customer.unconditional.expectation", signature = signature(clv.model="clv.model.ggomnbd.static.cov"), definition = function(clv.model, clv.fitted, t, dt.cov.life, dt.cov.trans){
+
+  # ensure same ordering as parameters
+  #   often called with single row matrix, use drop=FALSE to not lose matrix
+  m.cov.trans <- data.matrix(dt.cov.trans)[, names(clv.fitted@prediction.params.trans), drop=FALSE]
+  m.cov.life <- data.matrix(dt.cov.life)[, names(clv.fitted@prediction.params.life), drop=FALSE]
+
+  alpha_i <- ggomnbd_staticcov_alpha_i(
+    alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+    vCovParams_trans = clv.fitted@prediction.params.trans,
+    mCov_trans       = m.cov.trans)
+
+  beta_i <- ggomnbd_staticcov_beta_i(
+    beta_0          = clv.fitted@prediction.params.model[["beta"]],
+    vCovParams_life = clv.fitted@prediction.params.life,
+    mCov_life       = m.cov.life)
+
+  return(ggomnbd_staticcov_expectation(
+    r       = clv.fitted@prediction.params.model[["r"]],
+    b       = clv.fitted@prediction.params.model[["b"]],
+    s       = clv.fitted@prediction.params.model[["s"]],
+    vAlpha_i= alpha_i,
+    vBeta_i = beta_i,
+    vT_i    = t))
+})
+
+
 # . clv.model.pmf --------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
 setMethod("clv.model.pmf", signature=(clv.model="clv.model.ggomnbd.static.cov"), function(clv.model, clv.fitted, x){
