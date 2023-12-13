@@ -68,7 +68,7 @@ clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, 
 clv.controlflow.predict.add.uncertainty.estimates <- function(clv.fitted, dt.predictions, num.boots, level, verbose, ...){
   Id <- NULL
 
-  dt.boots <- clv.fitted.bootstrap.predictions(clv.fitted = clv.fitted, num.boots = num.boots, level = level, verbose = verbose, ...)
+  dt.boots <- clv.fitted.bootstrap.predictions(clv.fitted = clv.fitted, num.boots = num.boots, verbose = verbose, ...)
 
   if(verbose){
     message("Calculating confidence intervals...")
@@ -123,11 +123,11 @@ clv.controlflow.predict.add.uncertainty.estimates <- function(clv.fitted, dt.pre
 
 
 
-setGeneric("clv.fitted.bootstrap.predictions", function(clv.fitted, num.boots, level, verbose, ...){
+setGeneric("clv.fitted.bootstrap.predictions", function(clv.fitted, num.boots, verbose, ...){
   standardGeneric("clv.fitted.bootstrap.predictions")
 })
 
-setMethod(f = "clv.fitted.bootstrap.predictions", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, num.boots, level, verbose, prediction.end, predict.spending, continuous.discount.factor){
+setMethod(f = "clv.fitted.bootstrap.predictions", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, num.boots, verbose, prediction.end, predict.spending, continuous.discount.factor){
 
     # have to explicitly give prediction.end because bootstrapping data has no holdout
     if(is.null(prediction.end)){
@@ -173,7 +173,7 @@ setMethod(f = "clv.fitted.bootstrap.predictions", signature = signature(clv.fitt
 })
 
 
-setMethod(f = "clv.fitted.bootstrap.predictions",signature = signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, num.boots, level, verbose){
+setMethod(f = "clv.fitted.bootstrap.predictions",signature = signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, num.boots, verbose){
 
   # Largely the same as for clv.fitted.transactions but with different arguments to predict()
 
