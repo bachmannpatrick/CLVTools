@@ -34,8 +34,8 @@ test_that("Summary has no NA", {
   clv.cdnow.holdout <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split = 37)
   clv.cdnow.no.holdout <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split = NULL)
 
-  fct.summary.has.no.na <- function(clv.data, Id){
-    expect_silent(res.sum <- summary(clv.data, Id=Id))
+  fct.summary.has.no.na <- function(clv.data, ids){
+    expect_silent(res.sum <- summary(clv.data, ids=ids))
     # Returns characters and cannot convert to numeric because would
     #   surely introduce NAs (converting dates and "-")
     expect_false(any(res.sum$descriptives.transactions == "NA"))
@@ -43,17 +43,17 @@ test_that("Summary has no NA", {
   }
 
   # All
-  fct.summary.has.no.na(clv.cdnow.holdout, Id=NULL)
-  fct.summary.has.no.na(clv.cdnow.no.holdout, Id=NULL)
+  fct.summary.has.no.na(clv.cdnow.holdout, ids=NULL)
+  fct.summary.has.no.na(clv.cdnow.no.holdout, ids=NULL)
   # Zero-repeater
-  fct.summary.has.no.na(clv.cdnow.holdout, Id="3")
-  fct.summary.has.no.na(clv.cdnow.no.holdout, Id="3")
+  fct.summary.has.no.na(clv.cdnow.holdout, ids="3")
+  fct.summary.has.no.na(clv.cdnow.no.holdout, ids="3")
   # Not zero-repeater
-  fct.summary.has.no.na(clv.cdnow.holdout, Id="1")
-  fct.summary.has.no.na(clv.cdnow.no.holdout, Id="1")
+  fct.summary.has.no.na(clv.cdnow.holdout, ids="1")
+  fct.summary.has.no.na(clv.cdnow.no.holdout, ids="1")
   # Mix
-  fct.summary.has.no.na(clv.cdnow.holdout, Id=c("1", "3"))
-  fct.summary.has.no.na(clv.cdnow.no.holdout, Id=c("1", "3"))
+  fct.summary.has.no.na(clv.cdnow.holdout, ids=c("1", "3"))
+  fct.summary.has.no.na(clv.cdnow.no.holdout, ids=c("1", "3"))
 
 })
 
@@ -61,8 +61,8 @@ test_that("Same transaction summary if all ids or NULL are given", {
   skip_on_cran()
   clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
 
-  expect_silent(res.sum.null <- summary(clv.cdnow, Id=NULL))
-  expect_silent(res.sum.all <- summary(clv.cdnow, Id=cdnow[, unique(Id)]))
+  expect_silent(res.sum.null <- summary(clv.cdnow, ids=NULL))
+  expect_silent(res.sum.all <- summary(clv.cdnow, ids=cdnow[, unique(Id)]))
   expect_true(isTRUE(all.equal(res.sum.null$descriptives.transactions,
                                res.sum.all$descriptives.transactions)))
 })
@@ -70,11 +70,11 @@ test_that("Same transaction summary if all ids or NULL are given", {
 test_that("Correct Ids selected", {
   skip_on_cran()
   clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
-  expect_silent(res.sum <- summary(clv.cdnow, Id=c("1", "2", "3")))
+  expect_silent(res.sum <- summary(clv.cdnow, ids=c("1", "2", "3")))
   expect_true(setequal(res.sum$selected.ids, c("1", "2", "3")))
   expect_true(length(unique(res.sum$selected.ids)) == length(res.sum$selected.ids))
   # double
-  expect_silent(res.sum <- summary(clv.cdnow, Id=c("1", "2", "3", "3", "3")))
+  expect_silent(res.sum <- summary(clv.cdnow, ids=c("1", "2", "3", "3", "3")))
   expect_true(setequal(res.sum$selected.ids, c("1", "2", "3")))
   expect_true(length(unique(res.sum$selected.ids)) == length(res.sum$selected.ids))
 })
@@ -82,8 +82,8 @@ test_that("Correct Ids selected", {
 test_that("Different output if ids given", {
   skip_on_cran()
   clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
-  expect_silent(df.desc.1 <- summary(clv.cdnow, Id="1")$descriptives.transactions)
-  expect_silent(df.desc.123 <- summary(clv.cdnow, Id=c("1", "2", "3" ,"99"))$descriptives.transactions)
+  expect_silent(df.desc.1 <- summary(clv.cdnow, ids="1")$descriptives.transactions)
+  expect_silent(df.desc.123 <- summary(clv.cdnow, ids=c("1", "2", "3" ,"99"))$descriptives.transactions)
 
   expect_false(isTRUE(all.equal(df.desc.1[, "Estimation"], df.desc.123[, "Estimation"])))
   expect_false(isTRUE(all.equal(df.desc.1[, "Holdout"], df.desc.123[, "Holdout"])))
@@ -93,7 +93,7 @@ test_that("Different output if ids given", {
 test_that("Holdout is - if customer has no transactions in holdout period", {
   skip_on_cran()
   clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
-  expect_true(all(summary(clv.cdnow, Id="2")$descriptives.transactions[, "Holdout"] == "-"))
+  expect_true(all(summary(clv.cdnow, ids="2")$descriptives.transactions[, "Holdout"] == "-"))
 })
 
 
@@ -110,16 +110,16 @@ test_that("Correct data format is returned", {
 })
 
 
-test_that("Correct Ids are returned", {
+test_that("Correct ids are returned", {
   skip_on_cran()
   clv.cdnow <- fct.helper.create.clvdata.cdnow(data.cdnow=cdnow)
   target.ids <- c("1", "2", "999")
 
-  expect_setequal(as.data.frame(clv.cdnow, Ids = target.ids)$Id, target.ids)
-  expect_setequal(as.data.table(clv.cdnow, Ids = target.ids)$Id, target.ids)
+  expect_setequal(as.data.frame(clv.cdnow, ids = target.ids)$Id, target.ids)
+  expect_setequal(as.data.table(clv.cdnow, ids = target.ids)$Id, target.ids)
 
-  expect_warning(as.data.frame(clv.cdnow, Ids=c(target.ids, "abc")))
-  expect_warning(as.data.table(clv.cdnow, Ids=c(target.ids, "abc")))
+  expect_warning(as.data.frame(clv.cdnow, ids=c(target.ids, "abc")))
+  expect_warning(as.data.table(clv.cdnow, ids=c(target.ids, "abc")))
 })
 
 test_that("Returns correct number of transactinons for given sample", {
@@ -151,18 +151,18 @@ test_that("Always returns a copy", {
   expect_false(orig.address == address(as.data.frame(clv.cdnow, sample="estimation")))
   expect_false(orig.address == address(as.data.frame(clv.cdnow, sample="holdout")))
 
-  expect_false(orig.address == address(as.data.frame(clv.cdnow, sample="full", Ids = "1")))
-  expect_false(orig.address == address(as.data.frame(clv.cdnow, sample="estimation", Ids = "1")))
-  expect_false(orig.address == address(as.data.frame(clv.cdnow, sample="holdout", Ids = "1")))
+  expect_false(orig.address == address(as.data.frame(clv.cdnow, sample="full", ids = "1")))
+  expect_false(orig.address == address(as.data.frame(clv.cdnow, sample="estimation", ids = "1")))
+  expect_false(orig.address == address(as.data.frame(clv.cdnow, sample="holdout", ids = "1")))
 
   # data.table
   expect_false(orig.address == address(as.data.table(clv.cdnow, sample="full")))
   expect_false(orig.address == address(as.data.table(clv.cdnow, sample="estimation")))
   expect_false(orig.address == address(as.data.table(clv.cdnow, sample="holdout")))
 
-  expect_false(orig.address == address(as.data.table(clv.cdnow, sample="full", Ids = "1")))
-  expect_false(orig.address == address(as.data.table(clv.cdnow, sample="estimation", Ids = "1")))
-  expect_false(orig.address == address(as.data.table(clv.cdnow, sample="holdout", Ids = "1")))
+  expect_false(orig.address == address(as.data.table(clv.cdnow, sample="full", ids = "1")))
+  expect_false(orig.address == address(as.data.table(clv.cdnow, sample="estimation", ids = "1")))
+  expect_false(orig.address == address(as.data.table(clv.cdnow, sample="holdout", ids = "1")))
 })
 
 

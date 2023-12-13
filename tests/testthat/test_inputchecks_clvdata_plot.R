@@ -99,13 +99,13 @@ test_that("timings - annotate.ids is valid", {
   expect_error(plot(clv.cdnow.nohold, which="timings", annotate.ids=c("1", "2")), regexp = "of type logical")
 })
 
-test_that("timings - Ids is valid", {
+test_that("timings - ids is valid", {
   skip_on_cran()
-  expect_error(plot(clv.cdnow.nohold, which="timings", Ids=NA), regexp = "may not contain")
-  expect_error(plot(clv.cdnow.nohold, which="timings", Ids=-1), regexp = "strictly positive")
-  expect_error(plot(clv.cdnow.nohold, which="timings", Ids=0), regexp = "strictly positive")
-  expect_error(plot(clv.cdnow.nohold, which="timings", Ids=1:10), regexp = "single number")
-  expect_error(plot(clv.cdnow.nohold, which="timings", Ids=""), regexp = "empty text")
-  expect_error(plot(clv.cdnow.nohold, which="timings", Ids=c("1", "", "2")), regexp = "empty text")
+  expect_error(plot(clv.cdnow.nohold, which="timings", ids=NA), regexp = "may not contain")
+  expect_error(plot(clv.cdnow.nohold, which="timings", ids=-1), regexp = "strictly positive")
+  expect_error(plot(clv.cdnow.nohold, which="timings", ids=0), regexp = "strictly positive")
+  expect_error(plot(clv.cdnow.nohold, which="timings", ids=1:10), regexp = "single number")
+  expect_error(plot(clv.cdnow.nohold, which="timings", ids=""), regexp = "empty text")
+  expect_error(plot(clv.cdnow.nohold, which="timings", ids=c("1", "", "2")), regexp = "empty text")
 })
 

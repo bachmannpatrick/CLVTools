@@ -63,11 +63,12 @@
 #' \item{period.last}{Last timepoint of prediction period}
 #' \item{period.length}{Number of time units covered by the period indicated by \code{period.first} and \code{period.last} (including both ends).}
 #' \item{PAlive}{Probability to be alive at the end of the estimation period}
-#' \item{CET}{The Conditional Expected Transactions}
+#' \item{CET}{The Conditional Expected Transactions: The number of transactions expected until prediction.end.}
 #' \item{DERT or DECT}{Discounted Expected Residual Transactions or Discounted Expected Conditional Transactions for dynamic covariates models}
-#' \item{actual.x}{Actual number of transactions until prediction.end. Only if there is a holdout period and the prediction ends in it, otherwise it is not reported.}
-#' \item{actual.total.spending}{Actual total spending until prediction.end. Only if there is a holdout period and the prediction ends in it, otherwise it is not reported.}
+#' \item{actual.x}{Actual number of transactions until prediction.end. Only if there is a holdout period and the prediction ends in it, otherwise not reported.}
+#' \item{actual.total.spending}{Actual total spending until prediction.end. Only if there is a holdout period and the prediction ends in it, otherwise not reported.}
 #' \item{predicted.mean.spending}{The mean spending per transactions as predicted by the spending model.}
+#' \item{predicted.total.spending}{The predicted total spending until prediction.end (\code{CET*predicted.mean.spending}).}
 #' \item{predicted.CLV}{Customer Lifetime Value based on \code{DERT/DECT} and \code{predicted.mean.spending}.}
 #'
 #' @examples

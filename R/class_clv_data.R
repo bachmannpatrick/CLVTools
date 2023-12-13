@@ -171,27 +171,27 @@ clv.data.mean.interpurchase.times <- function(clv.data, dt.transactions){
 
 #' @importFrom stats sd
 #' @importFrom lubridate time_length
-clv.data.make.descriptives <- function(clv.data, Ids){
+clv.data.make.descriptives <- function(clv.data, ids){
 
   Id <- Date <- .N <- N <- Price <- interp.time<- Name <- Holdout <- NULL
 
   # readability
   clv.time <- clv.data@clv.time
 
-  Ids <- unique(Ids)
+  ids <- unique(ids)
 
   # Make descriptives ------------------------------------------------------------------------------
   #   Do not simply overwrite all NA/NaN with "-", only where these are expected (num obs = 1).
   #     Let propagate otherwise to help find errors
   fct.make.descriptives <- function(dt.data, sample.name){
 
-    # Subset transaction data to relevant Ids
-    if(!is.null(Ids)){
-      dt.data <- dt.data[Id %in% Ids]
+    # Subset transaction data to relevant ids
+    if(!is.null(ids)){
+      dt.data <- dt.data[Id %in% ids]
 
       # print warning only once
-      if(sample.name == "Total" & dt.data[, uniqueN(Id)] != length(unique(Ids))){
-        warning("Not all given Ids were found in the transaction data.", call. = FALSE)
+      if(sample.name == "Total" & dt.data[, uniqueN(Id)] != length(unique(ids))){
+        warning("Not all given ids were found in the transaction data.", call. = FALSE)
       }
 
     }
@@ -247,9 +247,9 @@ clv.data.make.descriptives <- function(clv.data, Ids){
   dt.summary[, Holdout := "-"]
   if(clv.data.has.holdout(clv.data)){
     dt.trans.holdout <- clv.data.get.transactions.in.holdout.period(clv.data = clv.data)
-    # Need to subset to Ids here already to check if there actually are transactions in holdout period
-    if(!is.null(Ids)){
-      dt.trans.holdout <- dt.trans.holdout[Id %in% Ids]
+    # Need to subset to ids here already to check if there actually are transactions in holdout period
+    if(!is.null(ids)){
+      dt.trans.holdout <- dt.trans.holdout[Id %in% ids]
     }
     if(nrow(dt.trans.holdout) > 0){
       dt.summary[, Holdout := fct.make.descriptives(dt.data = dt.trans.holdout, sample.name="Holdout")]
