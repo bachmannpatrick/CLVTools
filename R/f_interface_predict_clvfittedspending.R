@@ -43,7 +43,7 @@
 #' @importFrom stats predict
 #' @method predict clv.fitted.spending
 #' @export
-predict.clv.fitted.spending <- function(object, newdata=NULL, uncertainty=c("none", "boots"), level=0.1, num.boots=100, verbose=TRUE, ...){
+predict.clv.fitted.spending <- function(object, newdata=NULL, uncertainty=c("none", "boots"), level=0.9, num.boots=100, verbose=TRUE, ...){
 
   check_err_msg(check_user_data_emptyellipsis(...))
   check_err_msg(.check_userinput_matcharg(char=tolower(uncertainty), choices=c("none", "boots"), var.name="uncertainty"))
