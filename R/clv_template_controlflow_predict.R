@@ -49,7 +49,6 @@ clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, 
     if(verbose & num.boots < 1000){
       warning("It is recommended to run 1000 or more bootstrap repetitions.", immediate. = TRUE, call. = FALSE)
     }
-
     dt.predictions <- clv.controlflow.predict.add.uncertainty.estimates(clv.fitted=clv.fitted, dt.predictions = dt.predictions, num.boots=num.boots, level=level, verbose=verbose, ...)
     # TODO: Column order is correct also with CI columns
     # TODO[test]: All customers are kept also if not all are kept
@@ -85,17 +84,37 @@ clv.controlflow.predict.add.uncertainty.estimates <- function(clv.fitted, dt.pre
   cols.predictions <- c("PAlive", "CET", "DERT", "DECT", "predicted.mean.spending", "predicted.CLV")
   cols.predictions <- cols.predictions[cols.predictions %in% colnames(dt.boots)]
 
-  # set key to speed up the `by` operations
-  setkeyv(dt.boots, "Id")
+  # Long-format for easier handling of different prediction columns
+  dt.boots <- melt(dt.boots, id.vars="Id", measure.vars=cols.predictions, variable.name="variable", value.name="value")
+  dt.predictions.long <- melt(dt.predictions, id.vars="Id", measure.vars=cols.predictions, variable.name="variable", value.name="value")
 
-  # For every prediction column, calculate the naive quantiles (both ends) for each customer
-  dt.CI <- rbindlist(lapply(cols.predictions, function(p){
-    levels <- c(level/2, 1-level/2)
-    name.levels <- paste0(p, ".CI.", levels*100)
-    return(dt.boots[, list(variable=name.levels, value=quantile(get(p), probs=levels, names=FALSE)), keyby="Id"])
-  }))
+  # Calculate quantiles for each customer and prediction column
+  #
+  # Reversed quantiles
+  #   [theta_star - q_upper(diff), theta_star - q_lower(diff)]
+  #   where diff = theta_boot - theta_star
+  # Note that q_upper is used for the lower boundary and q_lower for the upper boundary while subtracting in both cases.
+  # Therefore quantile(probs=) is reversed.
 
-  dt.CI <- dcast(dt.CI, formula = Id ~ variable, value.var = "value")
+  # Calculate difference between bootstrapped and regular predictions
+  dt.boots[dt.predictions.long, value.star := i.value, on=c("Id", "variable")]
+  dt.boots[, value.diff := value - value.star]
+
+  levels <- c((1-level)/2, 1-(1-level)/2)
+  name.levels <- paste0(".CI.", levels*100) # outside table to avoid doing it for each customer
+
+  dt.CI <- dt.boots[, list(
+    ci.name=name.levels,
+    # Have to use value.star[1] because there are >1 row if sampled more than once.
+    # names=FALSE is considerably faster.
+    ci.value = value.star[1] - quantile(value.diff, probs = rev(levels), names = FALSE)),
+    keyby=c("Id", "variable")]
+
+  # Presentable names
+  dt.CI[, ci.name := paste0(variable, ci.name)]
+
+  # To wide-format
+  dt.CI <- dcast(dt.CI, Id ~ ci.name, value.var="ci.value")
 
   # Add intervals to predictions, keeping all predictions also if for some customers there are no ids
   # because they have never been sampled (fill with NA)
