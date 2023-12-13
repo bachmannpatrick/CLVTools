@@ -1,7 +1,7 @@
 #' @title Summarizing a CLV data object
 #'
 #' @param object A CLV data object containing transactional data and potentially also contextual factors.
-#' @param Id A character vector of customer ids for which the transaction data is summarized. Defaults to
+#' @param ids A character vector of customer ids for which the transaction data is summarized. Defaults to
 #' \code{NULL} for all customers.
 #'
 #' @description
@@ -12,7 +12,7 @@
 #'
 #' @details
 #' If applicable, the summary statistics are provided separately for the estimation and holdout period as well as
-#' for the overall time period (estimation + holdout). By using the \code{Id} argument, the summary statistics can
+#' for the overall time period (estimation + holdout). By using the \code{ids} argument, the summary statistics can
 #' be limited to a subset of customers.
 #' \describe{
 #' \item{\code{Number of customers}}{Count of individual customers.}
@@ -63,10 +63,10 @@
 #' summary(clv.data.apparel)
 #'
 #' # transaction summary of customer "1219"
-#' summary(clv.data.apparel, Id="1219")
+#' summary(clv.data.apparel, ids="1219")
 #'
 #' # transaction summary of customers "1", "10", "100", and "1000"
-#' summary(clv.data.apparel, Id=c("1", "10", "100", "1000"))
+#' summary(clv.data.apparel, ids=c("1", "10", "100", "1000"))
 #'
 #' # add contextual factors
 #' data("apparelStaticCov")

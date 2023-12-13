@@ -278,6 +278,9 @@ setMethod("clv.controlflow.predict.post.process.prediction.table", signature = s
       dt.predictions[, predicted.CLV := DERT * predicted.mean.spending]
     if("DECT" %in% colnames(dt.predictions))
       dt.predictions[, predicted.CLV := DECT * predicted.mean.spending]
+
+    # If spending is predicted, also add predicted.total.spending
+    dt.predictions[, predicted.total.spending := predicted.mean.spending * CET]
   }
 
   # Present cols in desired order ------------------------------------------------------------
@@ -297,7 +300,7 @@ setMethod("clv.controlflow.predict.post.process.prediction.table", signature = s
     cols <- c(cols, "PAlive", "CET", "DECT")
 
   if(do.predict.spending)
-    cols <- c(cols, "predicted.mean.spending")
+    cols <- c(cols, c("predicted.mean.spending", "predicted.total.spending"))
 
   if("predicted.CLV" %in% colnames(dt.predictions))
     cols <- c(cols, "predicted.CLV")

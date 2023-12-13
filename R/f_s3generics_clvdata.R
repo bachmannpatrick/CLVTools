@@ -8,7 +8,7 @@
 #' @export
 as.data.table.clv.data <- function(x,
                                    keep.rownames = FALSE,
-                                   Ids = NULL,
+                                   ids = NULL,
                                    sample = c("full", "estimation", "holdout"),
                                    ...){
   Id <- NULL
@@ -18,14 +18,14 @@ as.data.table.clv.data <- function(x,
   dt.trans <- clv.data.select.sample.data(clv.data=x, sample=sample,
                                           choices = c("full", "estimation", "holdout"))
 
-  if(is.null(Ids)){
+  if(is.null(ids)){
     return(dt.trans)
   }else{
-    dt.trans <- dt.trans[Id %in% Ids]
+    dt.trans <- dt.trans[Id %in% ids]
 
-    # ***TODO: Should stop instead of warn if not all Ids are there?
-    if(dt.trans[, uniqueN(Id)] != length(unique(Ids))){
-      warning("Not for all of the given Ids transaction data could be found")
+    # ***TODO: Should stop instead of warn if not all ids are there?
+    if(dt.trans[, uniqueN(Id)] != length(unique(ids))){
+      warning("Not for all of the given ids transaction data could be found")
     }
     return(dt.trans)
   }
@@ -42,10 +42,10 @@ as.data.table.clv.data <- function(x,
 as.data.frame.clv.data <- function(x,
                                    row.names = NULL,
                                    optional = NULL,
-                                   Ids = NULL,
+                                   ids = NULL,
                                    sample = c("full", "estimation", "holdout"),
                                    ...){
-  return(as.data.frame(as.data.table.clv.data(x, Ids=Ids, sample=sample, ...=...)))
+  return(as.data.frame(as.data.table.clv.data(x, ids=ids, sample=sample, ...=...)))
 }
 
 
@@ -135,15 +135,15 @@ print.clv.data.dynamic.covariates <- function(x, digits = max(3L, getOption("dig
 #' @template template_summary_data
 #' @template template_param_dots
 #' @export
-summary.clv.data <- function(object, Id=NULL, ...){
+summary.clv.data <- function(object, ids=NULL, ...){
   res <- structure(list(), class="summary.clv.data")
 
   res$name             <- object@name
   res$clv.time         <- object@clv.time # needed for formatting when printing
   res$summary.clv.time <- summary(object@clv.time)
 
-  res$descriptives.transactions <- clv.data.make.descriptives(clv.data=object, Ids = Id)
-  res$selected.ids <- unique(Id)
+  res$descriptives.transactions <- clv.data.make.descriptives(clv.data=object, ids = ids)
+  res$selected.ids <- unique(ids)
 
   return(res)
 }
