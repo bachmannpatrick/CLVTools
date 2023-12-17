@@ -16,49 +16,138 @@
   t,
   data.cov.life,
   data.cov.trans,
-  first.transaction,
+  first.transaction = min(data.cov.life$Cov.Date),
   ...
 )
 }
 \arguments{
-\item{clv.fitted}{A fitted transaction model for which prediction is desired.}
+\item{clv.fitted}{A fitted transaction model for which prediction is desired. The data on which the model was fit and which is stored in it is NOT used for this prediction.}
 
 \item{t}{A positive, numeric scalar indicating the number of periods to predict.}
 
 \item{...}{Ignored}
 
-\item{data.cov.life}{Covariate data for the lifetime process for a single customer, \code{data.table} or \code{data.frame}. See details.}
+\item{data.cov.life}{Numeric-only covariate data for the lifetime process for a single customer, \code{data.table} or \code{data.frame}. See details.}
 
-\item{data.cov.trans}{Covariate data for the lifetime process for a single customer, \code{data.table} or \code{data.frame}. See details.}
+\item{data.cov.trans}{Numeric-only covariate data for the transaction process for a single customer, \code{data.table} or \code{data.frame}. See details.}
 
-\item{first.transaction}{For dynamic covariate models only: The time point of the first transaction.
+\item{first.transaction}{For dynamic covariate models only: The time point of the first transaction of the customer for which a prediction is made.
 Has to be within the time range of the covariate data.}
 }
 \value{
-A numeric scalar with the expected number of transactions.
+A numeric scalar indicating the expected number of transactions until \code{t}.
 }
 \description{
 Predict the number of transactions a single, average customer is expected to make in
 the \code{t} periods since making the first transaction ("coming alive").
 For covariate models, the prediction is for an average customer with the given covariates.
 
-The unconditional expectation \code{XXXXXFORMULAXXXX} is used for making this prediction.
+The individual-level unconditional expectation that is also used for the
+\link[CLVTools:plot.clv.fitted.transactions]{tracking plot} is used to make this prediction.
 For models without covariates, the prediction hence is the same for all customers
 and independent of when a customer comes alive.
 For models with covariates, the prediction is the same for all customers
 with the same covariates.
-For models with dynamic covariates, the time point of the first transaction is additionally
-required because the exact covariates active during the prediction period have to be known.
+For models with dynamic covariates, the time point of the first purchase (\code{first.transaction}) is
+additionally required because the exact covariates that are active during the prediction period have
+to be known.
 }
 \details{
-The covariate data has to contain the same columns as during model fitting. Only numeric values are allowed.
-No customer Id is required because no data of the customers used for model fitting is used for making this prediction.
+The covariate data has to contain one column for every covariate parameter in the fitted model. Only numeric values are allowed, no factors or characters.
+No customer Id is required because the data on which the model was fit is not used for this prediction.
 
-The covariate data has to be of the following structure:
- Static: exactly 1 row of covariate data
- Dyn: exactly 1 row of covariate data for each covariate
-For dynamic covariate models, the covariate data requires the following structure:
+For static covariates: One column for every covariate parameter in the estimated model.
+No column \code{Id}. Exactly 1 row of numeric covariate data. \cr
+For example: \code{data.frame(Gender=1, Age=30, Channel=0)}.
 
-The covariate data has to cover the time from the customer's first transaction \code{first.transaction}
-to the end of the prediction period given by \code{t}.
+For dynamic covariates: One column for every covariate parameter in the estimated model.
+No column \code{Id}. A column \code{Cov.Date} with time points that mark the start of the period defined by \code{time.unit}.
+For every \code{Cov.Date}, exactly 1 row of numeric covariate data. \cr
+For example for weekly covariates: \code{data.frame(Cov.Date=c("2000-01-03", "2000-01-10"), Gender=c(1,1), High.Season=c(0, 1), Marketing=c(-0.5,1.12))} \cr
+If \code{Cov.Date} is of type character, the \code{date.format} given when creating the the \code{clv.data} object is used to parse it.
+The data has to cover the time from the customer's first transaction \code{first.transaction}
+to the end of the prediction period given by \code{t}. It does not have to cover the same time range as when fitting the model.
+See examples.
+}
+\examples{
+\donttest{
+data("apparelTrans")
+data("apparelStaticCov")
+data("apparelDynCov")
+
+clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
+                            time.unit = "w", estimation.split = 40)
+clv.data.static.cov <-
+ SetStaticCovariates(clv.data.apparel,
+                     data.cov.life = apparelStaticCov,
+                     names.cov.life = "Gender",
+                     data.cov.trans = apparelStaticCov,
+                     names.cov.trans = c("Gender", "Channel"))
+clv.data.dyn.cov <-
+  SetDynamicCovariates(clv.data = clv.data.apparel,
+                       data.cov.life = apparelDynCov,
+                       data.cov.trans = apparelDynCov,
+                       names.cov.life = c("Marketing", "Gender"),
+                       names.cov.trans = c("Marketing", "Gender"),
+                       name.date = "Cov.Date")
+
+
+
+# No covariate model
+p.apparel <- pnbd(clv.data.apparel)
+
+# Predict the number of transactions an average new
+# customer is expected to make in the first 3.68 weeks
+predict.new.customers(
+  p.apparel,
+  t=3.68
+)
+
+
+
+# Static covariate model
+p.apparel.static <- pnbd(clv.data.static.cov)
+
+# Predict the number of transactions an average new
+# customer who is female (Gender=1) and who was acquired
+# online (Channel=1) is expected to make in the first 3.68 weeks
+predict.new.customers(
+  p.apparel.static,
+  t=3.68,
+  # For the lifetime process, only Gender was used when fitting
+  data.cov.life=data.frame(Gender=1),
+  data.cov.trans=data.frame(Gender=1, Channel=0)
+)
+
+
+\dontrun{
+# Dynamic covariate model
+
+p.apparel.dyn <- pnbd(clv.data.dyn.cov)
+
+# Predict the number of transactions an average new
+# customer who is male (Gender=0), who was contacted
+# 4, 0, and 7 times with direct marketing, and who was
+# acquired on "2005-02-16" (first.transaction) is expected
+# to make in the first 2.12 weeks.
+# Note that the time range is very different from the one used
+# when fitting the model. Cov.Date still has to match the
+# beginning of the week.
+predict.new.customers(
+  p.apparel.dyn,
+  t=2.12,
+  data.cov.life=data.frame(
+    Cov.Date=c("2051-02-12", "2051-02-19", "2051-02-26"),
+    Gender=c(0, 0, 0),
+    Marketing=c(4, 0, 7)),
+  data.cov.trans=data.frame(
+    Cov.Date=c("2051-02-12", "2051-02-19", "2051-02-26"),
+    Gender=c(0, 0, 0),
+    Marketing=c(4, 0, 7)),
+  first.transaction = "2051-02-16"
+)
+
+}
+}
+
 }
