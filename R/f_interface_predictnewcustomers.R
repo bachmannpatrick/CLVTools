@@ -1,4 +1,4 @@
-#' @name predict.new.customers
+#' @name predict.new.customer
 #' @title Expected number of transactions of an average new customers
 #'
 #' @description
@@ -74,7 +74,7 @@
 #'
 #' # Predict the number of transactions an average new
 #' # customer is expected to make in the first 3.68 weeks
-#' predict.new.customers(
+#' predict.new.customer(
 #'   p.apparel,
 #'   t=3.68
 #' )
@@ -87,7 +87,7 @@
 #' # Predict the number of transactions an average new
 #' # customer who is female (Gender=1) and who was acquired
 #' # online (Channel=1) is expected to make in the first 3.68 weeks
-#' predict.new.customers(
+#' predict.new.customer(
 #'   p.apparel.static,
 #'   t=3.68,
 #'   # For the lifetime process, only Gender was used when fitting
@@ -109,7 +109,7 @@
 #' # Note that the time range is very different from the one used
 #' # when fitting the model. Cov.Date still has to match the
 #' # beginning of the week.
-#' predict.new.customers(
+#' predict.new.customer(
 #'   p.apparel.dyn,
 #'   t=2.12,
 #'   data.cov.life=data.frame(
@@ -129,17 +129,17 @@
 NULL
 
 
-#' @exportMethod predict.new.customers
-setGeneric("predict.new.customers", def = function(clv.fitted, t, ...){
+#' @exportMethod predict.new.customer
+setGeneric("predict.new.customer", def = function(clv.fitted, t, ...){
   # different generic per model to have different interfaces (with and w/o covariates)
-  standardGeneric("predict.new.customers")
+  standardGeneric("predict.new.customer")
 })
 
 
 
 #' @include class_clv_fitted_transactions.R
-#' @rdname predict.new.customers
-setMethod("predict.new.customers", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, t, ...){
+#' @rdname predict.new.customer
+setMethod("predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, t, ...){
   check_err_msg(check_user_data_newcustomer_t(t))
   check_err_msg(check_user_data_emptyellipsis(...))
 
@@ -151,8 +151,8 @@ setMethod("predict.new.customers", signature = signature(clv.fitted="clv.fitted.
 
 
 #' @include class_clv_fitted_transactions_staticcov.R
-#' @rdname predict.new.customers
-setMethod(f = "predict.new.customers", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted, t, data.cov.life, data.cov.trans, ...){
+#' @rdname predict.new.customer
+setMethod(f = "predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted, t, data.cov.life, data.cov.trans, ...){
 
   # Basic inputchecks ---------------------------------------------------------------------
   check_err_msg(check_user_data_newcustomer_t(t))
@@ -180,8 +180,8 @@ setMethod(f = "predict.new.customers", signature = signature(clv.fitted="clv.fit
 
 
 #' @include class_clv_fitted_transactions_dynamiccov.R
-#' @rdname predict.new.customers
-setMethod(f = "predict.new.customers", signature = signature(clv.fitted="clv.fitted.transactions.dynamic.cov"), definition = function(clv.fitted, t, data.cov.life, data.cov.trans, first.transaction, ...){
+#' @rdname predict.new.customer
+setMethod(f = "predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions.dynamic.cov"), definition = function(clv.fitted, t, data.cov.life, data.cov.trans, first.transaction, ...){
 
 
 
