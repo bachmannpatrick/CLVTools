@@ -273,17 +273,17 @@ pnbd_dyncov_newcustomer_expectation <- function(clv.fitted, t, tp.first.transact
   # pnbd_dyncov_alivecovariates(): Uses date.first.transaction from cbs
   # Instead of using pnbd_dyncov_alivecovariates(), only use the relevant parts: Calculating exp.gX.P and exp.gX.L.
 
-  tp.first.cov <- CLVTools:::clv.time.floor.date(clv.time=clv.time, timepoint=tp.first.transaction)
+  tp.first.cov <- clv.time.floor.date(clv.time=clv.time, timepoint=tp.first.transaction)
   dt.cov.life  <- dt.cov.life[Cov.Date >= tp.first.cov]
   dt.cov.trans <- dt.cov.trans[Cov.Date >= tp.first.cov]
 
 
-  dt.cov.life <- CLVTools:::pnbd_dyncov_add_expgX(
+  dt.cov.life <- pnbd_dyncov_add_expgX(
     dt.cov=dt.cov.life,
     names.cov=clv.fitted@clv.data@names.cov.data.life,
     params.cov=clv.fitted@prediction.params.life)
 
-  dt.cov.trans <- CLVTools:::pnbd_dyncov_add_expgX(
+  dt.cov.trans <- pnbd_dyncov_add_expgX(
     dt.cov=dt.cov.trans,
     names.cov=clv.fitted@clv.data@names.cov.data.trans,
     params.cov=clv.fitted@prediction.params.trans)
@@ -307,7 +307,7 @@ pnbd_dyncov_newcustomer_expectation <- function(clv.fitted, t, tp.first.transact
   dt.ABCD[, i := seq.int(from = 1, to = .N)]  # remove by="Id"
 
   # d_omega: Not read from cbs but calculated from given timepoint of first transaction
-  dt.ABCD[, d_omega := CLVTools:::pnbd_dyncov_walk_d(clv.time=clv.time, tp.relevant.transaction = tp.first.transaction)]
+  dt.ABCD[, d_omega := pnbd_dyncov_walk_d(clv.time=clv.time, tp.relevant.transaction = tp.first.transaction)]
 
   # . Ai & Ci
   dt.ABCD[, Ai := exp.gX.P]
@@ -339,7 +339,7 @@ pnbd_dyncov_newcustomer_expectation <- function(clv.fitted, t, tp.first.transact
   # Cut data to maximal range as is done in the expectation loop (period.until)
   # Consider all covariates which are active before and during the period for which the expectation is
   #   calculated (incl / <= because Cov.Date is the beginning of the covariate period)
-  tp.cov.until <- tp.first.transaction + CLVTools:::clv.time.number.timeunits.to.timeperiod(clv.time = clv.time, user.number.periods = t)
+  tp.cov.until <- tp.first.transaction + clv.time.number.timeunits.to.timeperiod(clv.time = clv.time, user.number.periods = t)
   dt.ABCD <- dt.ABCD[Cov.Date <= tp.cov.until]
 
   # Calculating S and f requires a Id and num.periods.alive.expectation.date
@@ -350,7 +350,7 @@ pnbd_dyncov_newcustomer_expectation <- function(clv.fitted, t, tp.first.transact
   print(dt.ABCD)
 
   # S --------------------------------------------------------------------------------------------------------
-  dt.S <- CLVTools:::.pnbd_dyncov_unconditionalexpectation_alive_customers_S(dt.ABCD.alive = dt.ABCD, s=s, beta_0 = beta_0)
+  dt.S <- .pnbd_dyncov_unconditionalexpectation_alive_customers_S(dt.ABCD.alive = dt.ABCD, s=s, beta_0 = beta_0)
   dt.ABCD[dt.S, S := i.S, on = "Id"]
 
 
@@ -360,7 +360,7 @@ pnbd_dyncov_newcustomer_expectation <- function(clv.fitted, t, tp.first.transact
   dt.ABCD_k0t <- dt.ABCD[Cov.Date == max(Cov.Date),
                          list(Id, A_k0t=Ai, Bbar_k0t=Bbar_i, C_k0t=Ci, Dbar_k0t=Dbar_i, i, num.periods.alive.expectation.date, S)]
 
-  dt.f <- CLVTools:::.pnbd_dyncov_unconditionalexpectation_alive_customers_f(dt.alive.customers=dt.ABCD_k0t, r=r, alpha_0 = alpha_0, s=s, beta_0=beta_0)
+  dt.f <- .pnbd_dyncov_unconditionalexpectation_alive_customers_f(dt.alive.customers=dt.ABCD_k0t, r=r, alpha_0 = alpha_0, s=s, beta_0=beta_0)
 
   return(dt.f$f)
 }
