@@ -125,8 +125,8 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose, onl
 .pnbd_dyncov_unconditionalexpectation <- function(clv.fitted, dt.ABCD, period.until){
 
   # cran silence
-  i <- Ai <- Bbar_i <- Ci <- Dbar_i <- d1 <-S <- i.S <- f <- A_k0t <- Bbar_k0t <- C_k0t <- Dbar_k0t <- Id  <- NULL
-  num.periods.alive.expectation.date <- i.num.periods.alive.expectation.date <- date.first.actual.trans <- Cov.Date <- only.alive.in.1.period <- NULL
+  i <- Ai <- Bbar_i <- Ci <- Dbar_i <- S <- i.S <- f <- Id  <- NULL
+  num.periods.alive.expectation.date <- i.num.periods.alive.expectation.date <- date.first.actual.trans <- Cov.Date <- NULL
 
 
   # Read out needed params
@@ -186,6 +186,8 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose, onl
 
 
 .pnbd_dyncov_unconditionalexpectation_alive_customers_f <- function(dt.alive.customers, r, alpha_0, s, beta_0){
+  f <- only.alive.in.1.period <- NULL
+  num.periods.alive.expectation.date <- A_k0t <- C_k0t <- Dbar_k0t <- only.alive.in.1.period <- S <- NULL
 
   # Only alive for 1 period is a special case
   #   Mark who is alive for only one period
@@ -211,6 +213,7 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose, onl
 
 
 .pnbd_dyncov_unconditionalexpectation_alive_customers_S <- function(dt.ABCD.alive, s, beta_0){
+  S <- Cov.Date <- num.periods.alive.expectation.date <- Ai <- Bbar_i <- Ci <- Dbar_i <- d1 <- i <- NULL
   # S_i is relative to when alive, ie by i
   # d1 is first.purchase until ceiling_tu(first.purchase) = d_omega
   #   Already added for Bbar_i
@@ -249,6 +252,9 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose, onl
 
 
 pnbd_dyncov_newcustomer_expectation <- function(clv.fitted, t, tp.first.transaction, dt.cov.life, dt.cov.trans){
+  Cov.Date <- exp.gX <- exp.gX.P <- i.exp.gX <- i <- d_omega <- Ai <- Ci <- d1 <- Bbar_i <- Dbar_i <- NULL
+  Id <- .N <- S <- i.S <- num.periods.alive.expectation.date <- NULL
+
   # TODO[test]: If covs are static, the date of transaction should not matter (same outcome regardless of tp.first.transaction)
   # TODO[test]: Compare against dt.ABCD in expectation
   # TODO[test]: Test that covariates before first transaction are cut off

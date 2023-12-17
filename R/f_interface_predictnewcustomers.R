@@ -182,7 +182,7 @@ setMethod(f = "predict.new.customer", signature = signature(clv.fitted="clv.fitt
 #' @include class_clv_fitted_transactions_dynamiccov.R
 #' @rdname predict.new.customer
 setMethod(f = "predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions.dynamic.cov"), definition = function(clv.fitted, t, data.cov.life, data.cov.trans, first.transaction, ...){
-
+  Cov.Date <- NULL
 
 
   # TODO: Check predicting at least >2 (or min 3?) periods

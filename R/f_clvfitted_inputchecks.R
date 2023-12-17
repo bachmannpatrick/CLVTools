@@ -435,6 +435,7 @@ check_user_data_newcustomer_firsttransaction <- function(first.transaction){
 
 
 check_user_data_newcustomer_dyncovspecific <- function(clv.time, dt.cov.life, dt.cov.trans, tp.first.transaction, tp.prediction.end){
+  Cov.Date <- NULL
 
   # Required covariate dates are from first tranasction until prediction end
   #   They have to be from the period containing the first transaction until the period

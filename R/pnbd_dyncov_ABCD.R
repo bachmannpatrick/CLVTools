@@ -56,6 +56,7 @@ pnbd_dyncov_alivecovariates <- function(clv.fitted, date.upper.cov){
 }
 
 pnbd_dyncov_add_expgX <- function(dt.cov, names.cov, params.cov){
+  exp.gX <- NULL
 
   # matrix multiply per date and customer
   #   matrix multiplication by=c("date", "Id") is extremely slow, but can do cov1*g1+cov2*g2+cov3*g3+...
