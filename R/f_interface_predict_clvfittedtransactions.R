@@ -127,6 +127,11 @@ predict.clv.fitted.transactions <- function(object, newdata=NULL, prediction.end
 
   check_err_msg(check_user_data_emptyellipsis(...))
 
+  # The usual prediction unless newdata indicates a new customer prediction (ie newdata=newcustomer())
+  if(is(newdata, "clv.newcustomer.no.cov")){
+   return(clv.predict.new.customer(clv.fitted = object, t=prediction.end, clv.newcustomer = newdata))
+  }
+
   # If it was not explicitly passed in the call, the spending model should only be applied
   #   it there is spending data. Otherwise, predict does not work out-of-the-box for
   #   data object w/o spending
