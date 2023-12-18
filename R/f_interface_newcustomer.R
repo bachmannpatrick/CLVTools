@@ -1,6 +1,15 @@
-setClass("clv.newcustomer.no.cov", representation = list())
+# This class only exists proforma to have a class clv.newcustomer.no.cov with no slots
+# Classes with no slots and no parent class are virtual. In order for clv.newcustomer.no.cov to have no slots,
+# create this (virtual) base class to inherit from.
+setClass(
+  Class = "clv.newcustomer",
+  representation = list())
 
-clv.newcustomer <- function(){
+setClass(
+  Class = "clv.newcustomer.no.cov",
+  contains = "clv.newcustomer")
+
+clv.newcustomer.no.cov <- function(){
   return(new("clv.newcustomer.no.cov"))
 }
 
@@ -43,7 +52,7 @@ clv.newcustomer.dynamic.cov <- function(data.cov.life, data.cov.trans, first.tra
 
 #' @export
 newcustomer <- function(){
-  return(clv.newcustomer)
+  return(clv.newcustomer.no.cov())
 }
 
 #' @export
