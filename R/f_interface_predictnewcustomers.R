@@ -1,4 +1,4 @@
-#' @name predict.new.customer
+#' @name clv.predict.new.customer
 #' @title Expected number of transactions of an average new customers
 #'
 #' @description
@@ -129,19 +129,18 @@
 NULL
 
 
-#' @exportMethod predict.new.customer
-setGeneric("predict.new.customer", def = function(clv.fitted, t, ...){
+#' @exportMethod clv.predict.new.customer
+setGeneric("clv.predict.new.customer", def = function(clv.fitted, clv.newcustomer, t){
   # different generic per model to have different interfaces (with and w/o covariates)
-  standardGeneric("predict.new.customer")
+  standardGeneric("clv.predict.new.customer")
 })
 
 
 
 #' @include class_clv_fitted_transactions.R
-#' @rdname predict.new.customer
-setMethod("predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, t, ...){
+#' @rdname clv.predict.new.customer
+setMethod("clv.predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, clv.newcustomer, t){
   check_err_msg(check_user_data_newcustomer_t(t))
-  check_err_msg(check_user_data_emptyellipsis(...))
 
   return(drop(clv.model.predict.new.customer.unconditional.expectation(
     clv.model = clv.fitted@clv.model,
@@ -151,14 +150,13 @@ setMethod("predict.new.customer", signature = signature(clv.fitted="clv.fitted.t
 
 
 #' @include class_clv_fitted_transactions_staticcov.R
-#' @rdname predict.new.customer
-setMethod(f = "predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted, t, data.cov.life, data.cov.trans, ...){
+#' @rdname clv.predict.new.customer
+setMethod(f = "clv.predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted, clv.newcustomer, t){
 
   # Basic inputchecks ---------------------------------------------------------------------
   check_err_msg(check_user_data_newcustomer_t(t))
-  check_err_msg(check_user_data_emptyellipsis(...))
-  check_err_msg(check_user_data_newcustomer_staticcovdatacov(data.cov=data.cov.life, names.cov=names(clv.fitted@prediction.params.life), name.of.covariate='Lifetime'))
-  check_err_msg(check_user_data_newcustomer_staticcovdatacov(data.cov=data.cov.trans, names.cov=names(clv.fitted@prediction.params.trans), name.of.covariate='Transaction'))
+  check_err_msg(check_user_data_newcustomer_staticcovdatacov(data.cov=clv.newcustomer@data.cov.life, names.cov=names(clv.fitted@prediction.params.life), name.of.covariate='Lifetime'))
+  check_err_msg(check_user_data_newcustomer_staticcovdatacov(data.cov=clv.newcustomer@data.cov.trans, names.cov=names(clv.fitted@prediction.params.trans), name.of.covariate='Transaction'))
 
 
   # Convert cov data ----------------------------------------------------------------------
@@ -173,15 +171,15 @@ setMethod(f = "predict.new.customer", signature = signature(clv.fitted="clv.fitt
   return(drop(clv.model.predict.new.customer.unconditional.expectation(
     clv.model = clv.fitted@clv.model,
     clv.fitted = clv.fitted,
-    dt.cov.life=as.data.table(data.cov.life),
-    dt.cov.trans=as.data.table(data.cov.trans),
+    dt.cov.life=as.data.table(clv.newcustomer@data.cov.life),
+    dt.cov.trans=as.data.table(clv.newcustomer@data.cov.trans),
     t=t)))
 })
 
 
 #' @include class_clv_fitted_transactions_dynamiccov.R
-#' @rdname predict.new.customer
-setMethod(f = "predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions.dynamic.cov"), definition = function(clv.fitted, t, data.cov.life, data.cov.trans, first.transaction, ...){
+#' @rdname clv.predict.new.customer
+setMethod(f = "clv.predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions.dynamic.cov"), definition = function(clv.fitted, clv.newcustomer, t){
   Cov.Date <- NULL
 
 
@@ -194,15 +192,14 @@ setMethod(f = "predict.new.customer", signature = signature(clv.fitted="clv.fitt
   clv.time <- clv.fitted@clv.data@clv.time
 
   check_err_msg(check_user_data_newcustomer_t(t))
-  check_err_msg(check_user_data_newcustomer_firsttransaction(first.transaction))
-  check_err_msg(check_user_data_emptyellipsis(...))
-  check_err_msg(check_user_data_newcustomer_dyncovdatacov(data.cov=data.cov.life, names.col = c(names(clv.fitted@prediction.params.life), "Cov.Date"), name.of.covariate = "Lifetime"))
-  check_err_msg(check_user_data_newcustomer_dyncovdatacov(data.cov=data.cov.trans, names.col = c(names(clv.fitted@prediction.params.trans), "Cov.Date"), name.of.covariate = "Transaction"))
+  check_err_msg(check_user_data_newcustomer_firsttransaction(clv.newcustomer@first.transaction))
+  check_err_msg(check_user_data_newcustomer_dyncovdatacov(data.cov=clv.newcustomer@data.cov.life, names.col = c(names(clv.fitted@prediction.params.life), "Cov.Date"), name.of.covariate = "Lifetime"))
+  check_err_msg(check_user_data_newcustomer_dyncovdatacov(data.cov=clv.newcustomer@data.cov.trans, names.col = c(names(clv.fitted@prediction.params.trans), "Cov.Date"), name.of.covariate = "Transaction"))
   # TODO: Check first.transaction is valid date-type input
 
 
-  dt.cov.life <- as.data.table(data.cov.life)
-  dt.cov.trans <- as.data.table(data.cov.trans)
+  dt.cov.life <- as.data.table(clv.newcustomer@data.cov.life)
+  dt.cov.trans <- as.data.table(clv.newcustomer@data.cov.trans)
 
   # Check Cov.Date is allowed type
   check_err_msg(check_userinput_data_date(dt.data = dt.cov.life,  name.date = 'Cov.Date', name.var="Lifetime covariate"))
@@ -215,7 +212,7 @@ setMethod(f = "predict.new.customer", signature = signature(clv.fitted="clv.fitt
   setkeyv(dt.cov.life, cols = "Cov.Date")
   setkeyv(dt.cov.trans, cols = "Cov.Date")
 
-  tp.first.transaction <- clv.time.convert.user.input.to.timepoint(clv.time = clv.fitted@clv.data@clv.time, user.timepoint = first.transaction)
+  tp.first.transaction <- clv.time.convert.user.input.to.timepoint(clv.time = clv.fitted@clv.data@clv.time, user.timepoint = clv.newcustomer@first.transaction)
   tp.prediction.end <- tp.first.transaction + clv.time.number.timeunits.to.timeperiod(clv.time=clv.time, user.number.periods=t)
 
   check_err_msg(check_user_data_newcustomer_dyncovspecific(clv.time=clv.time, dt.cov.life=dt.cov.life, dt.cov.trans=dt.cov.trans, tp.first.transaction=tp.first.transaction, tp.prediction.end=tp.prediction.end))
