@@ -142,10 +142,10 @@ setGeneric("clv.predict.new.customer", def = function(clv.fitted, newdata, predi
 setMethod("clv.predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, newdata, prediction.end){
 
   if(!is(newdata, "clv.newcustomer.no.cov") | is(newdata, "clv.newcustomer.static.cov")){
-    stop("Parameter newdata has to be output from calling `newcustomer()`!")
+    check_err_msg("Parameter newdata has to be output from calling `newcustomer()`!")
   }
 
-  check_err_msg(check_user_data_newcustomer_t(prediction.end))
+  check_err_msg(check_user_data_predict_newcustomer_predictionend(prediction.end))
 
   return(drop(clv.model.predict.new.customer.unconditional.expectation(
     clv.model = clv.fitted@clv.model,
@@ -163,7 +163,7 @@ setMethod(f = "clv.predict.new.customer", signature = signature(clv.fitted="clv.
   # TODO[test]: Test that works with different life and trans covariates
 
   check_err_msg(check_user_data_predict_newcustomer_staticcov(clv.fitted=clv.fitted, newdata=newdata))
-  check_err_msg(check_user_data_newcustomer_t(prediction.end))
+  check_err_msg(check_user_data_predict_newcustomer_predictionend(prediction.end))
 
   return(drop(clv.model.predict.new.customer.unconditional.expectation(
     clv.model = clv.fitted@clv.model,
@@ -178,7 +178,7 @@ setMethod(f = "clv.predict.new.customer", signature = signature(clv.fitted="clv.
 setMethod(f = "clv.predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions.dynamic.cov"), definition = function(clv.fitted, newdata, prediction.end){
   Cov.Date <- NULL
 
-  check_err_msg(check_user_data_newcustomer_t(prediction.end))
+  check_err_msg(check_user_data_predict_newcustomer_predictionend(prediction.end))
   check_err_msg(check_user_data_predict_newcustomer_dynccov(clv.fitted=clv.fitted, newdata=newdata))
 
   # TODO: Check predicting at least >2 (or min 3?) periods

@@ -334,9 +334,6 @@ pnbd_dyncov_newcustomer_expectation <- function(clv.fitted, t, tp.first.transact
   dt.ABCD[      , Dbar_i := (Dbar_i - exp.gX.L) + exp.gX.L * (-d_omega - (i-2))]
   dt.ABCD[i == 1, Dbar_i := 0]
 
-  print("dt.ABCD prepared")
-  print(dt.ABCD)
-
   # . alive --------------------------------------------------------------------------------------------------
   # There is no need to select out customers which are alive as there is only 1 single customer
   # which by definition is alive
@@ -351,9 +348,6 @@ pnbd_dyncov_newcustomer_expectation <- function(clv.fitted, t, tp.first.transact
   # Calculating S and f requires a Id and num.periods.alive.expectation.date
   dt.ABCD[, Id := "<placeholder>"]
   dt.ABCD[, num.periods.alive.expectation.date := t]
-
-  print("dt.ABCD alive")
-  print(dt.ABCD)
 
   # S --------------------------------------------------------------------------------------------------------
   dt.S <- .pnbd_dyncov_unconditionalexpectation_alive_customers_S(dt.ABCD.alive = dt.ABCD, s=s, beta_0 = beta_0)

@@ -73,8 +73,19 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.tran
     # This also catches NULL, NA, empty vecs, and so on
     #   but allows all cov data subclasses
 
-    err.msg <- c(err.msg, paste0("The parameter newdata needs to be a clv data object of class ",
-                                 class(clv.fitted@clv.data)))
+    # need to check in order dyncov -> static cov -> no cov
+    if(is(clv.fitted, "clv.fitted.transactions.dynamic.cov")){
+      name.newcustomer <- "newcustomer.dynamic()"
+    }else{
+      if(is(clv.fitted, "clv.fitted.transactions.static.cov")){
+        name.newcustomer <- "newcustomer.static()"
+      }else{
+        # clv.fitted.transactions
+        name.newcustomer <- "newcustomer()"
+      }
+    }
+    err.msg <- c(err.msg, paste0("The parameter newdata needs to be a clv data object of class ",class(clv.fitted@clv.data),
+                                 " or the output of ", name.newcustomer, "."))
 
   }else{
     # Is actually a clv.data object Also check if it is the right type

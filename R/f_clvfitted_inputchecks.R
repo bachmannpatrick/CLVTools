@@ -340,14 +340,14 @@ check_user_data_label <- function(label, other.models){
 
 
 
-check_user_data_newcustomer_t <- function(t){
-  err.msg <- .check_user_data_single_numeric(n=t, var.name='t')
+check_user_data_predict_newcustomer_predictionend <- function(prediction.end){
+  err.msg <- .check_user_data_single_numeric(n=prediction.end, var.name='prediction.end')
   if(length(err.msg)){
     return(err.msg)
   }
 
-  if(t < 0){
-    err.msg <- c(err.msg, c("Parameter t has to be positive (>=0)!"))
+  if(prediction.end < 0){
+    err.msg <- c(err.msg, c("Parameter prediction.end has to be positive (>=0)!"))
   }
 
   return(err.msg)
