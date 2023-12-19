@@ -130,7 +130,7 @@ NULL
 
 
 #' @exportMethod clv.predict.new.customer
-setGeneric("clv.predict.new.customer", def = function(clv.fitted, newdata, t){
+setGeneric("clv.predict.new.customer", def = function(clv.fitted, newdata, prediction.end){
   # different generic per model to have different interfaces (with and w/o covariates)
   standardGeneric("clv.predict.new.customer")
 })
@@ -139,36 +139,27 @@ setGeneric("clv.predict.new.customer", def = function(clv.fitted, newdata, t){
 
 #' @include class_clv_fitted_transactions.R
 #' @rdname clv.predict.new.customer
-setMethod("clv.predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, newdata, t){
+setMethod("clv.predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, newdata, prediction.end){
 
   if(!is(newdata, "clv.newcustomer.no.cov") | is(newdata, "clv.newcustomer.static.cov")){
-    stop("Parameter newdata has to be output from calling `newcustomer()`")
+    stop("Parameter newdata has to be output from calling `newcustomer()`!")
   }
 
-  check_err_msg(check_user_data_newcustomer_t(t))
+  check_err_msg(check_user_data_newcustomer_t(prediction.end))
 
   return(drop(clv.model.predict.new.customer.unconditional.expectation(
     clv.model = clv.fitted@clv.model,
     clv.fitted = clv.fitted,
-    t=t)))
+    t=prediction.end)))
 })
 
 
 #' @include class_clv_fitted_transactions_staticcov.R
 #' @rdname clv.predict.new.customer
-setMethod(f = "clv.predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted, newdata, t){
+setMethod(f = "clv.predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted, newdata, prediction.end){
 
-  # Basic inputchecks ---------------------------------------------------------------------
-  if(!is(newdata, "clv.newcustomer.static.cov") | is(newdata, "clv.newcustomer.dynamic.cov")){
-    stop("Parameter newdata has to be output from calling `newcustomer.static()`")
-  }
-
-  check_err_msg(check_user_data_newcustomer_t(t))
-
-  # only need to check if right columns are here
-  # if(!identical(sort(colnames(data.cov)), sort(names(clv.fitted@prediction.params.life)))){
-  #   return(paste0("The Lifetime covariate data has to contain exactly the following columns: ", paste(names.cov, collapse = ", "), "!"))
-  # }
+  check_err_msg(check_user_data_predict_newcustomer_staticcov(clv.fitted=clv.fitted, newcustomer=newdata))
+  check_err_msg(check_user_data_newcustomer_t(prediction.end))
 
 
   # Convert cov data ----------------------------------------------------------------------
@@ -185,47 +176,28 @@ setMethod(f = "clv.predict.new.customer", signature = signature(clv.fitted="clv.
     clv.fitted = clv.fitted,
     dt.cov.life=as.data.table(newdata@data.cov.life),
     dt.cov.trans=as.data.table(newdata@data.cov.trans),
-    t=t)))
+    t=prediction.end)))
 })
 
 
 #' @include class_clv_fitted_transactions_dynamiccov.R
 #' @rdname clv.predict.new.customer
-setMethod(f = "clv.predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions.dynamic.cov"), definition = function(clv.fitted, newdata, t){
+setMethod(f = "clv.predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions.dynamic.cov"), definition = function(clv.fitted, newdata, prediction.end){
   Cov.Date <- NULL
 
+  check_err_msg(check_user_data_newcustomer_t(prediction.end))
+  check_err_msg(check_user_data_predict_newcustomer_dynccov(clv.fitted=clv.fitted, newcustomer=newdata))
 
   # TODO: Check predicting at least >2 (or min 3?) periods
-  # if(t <= 2){
+  # if(prediction.end <= 2){
   #   stop("Have to plot at least 3 periods!", call. = FALSE)
   # }
 
   # readability
   clv.time <- clv.fitted@clv.data@clv.time
 
-  if(!is(newdata, "clv.newcustomer.dynamic.cov")){
-    stop("Parameter newdata has to be output from calling `newcustomer.dynamic()`")
-  }
-
-  check_err_msg(check_user_data_newcustomer_t(t))
-  check_err_msg(check_user_data_newcustomer_firsttransaction(newdata@first.transaction))
-
-
-  # names.col = c(names(clv.fitted@prediction.params.life), "Cov.Date")
-  # names.col = c(names(clv.fitted@prediction.params.trans), "Cov.Date")
-  # if(!identical(sort(colnames(data.cov)), sort(names.col))){
-  #   return(paste0("The ", name.of.covariate, " covariate data has to contain exactly the following columns: ", paste(names.col, collapse = ", "), "!"))
-  # }
-
-
-  # TODO: Check first.transaction is valid date-type input
-
-  dt.cov.life <- as.data.table(newdata@data.cov.life)
-  dt.cov.trans <- as.data.table(newdata@data.cov.trans)
-
-  # Check Cov.Date is allowed type
-  check_err_msg(check_userinput_data_date(dt.data = dt.cov.life,  name.date = 'Cov.Date', name.var="Lifetime covariate"))
-  check_err_msg(check_userinput_data_date(dt.data = dt.cov.trans, name.date = 'Cov.Date', name.var="Transaction covariate"))
+  dt.cov.life <- copy(newdata@data.cov.life)
+  dt.cov.trans <- copy(newdata@data.cov.trans)
 
   # Convert Cov.Date to timepoint
   dt.cov.life[,  Cov.Date  := clv.time.convert.user.input.to.timepoint(clv.time, user.timepoint = Cov.Date)]
@@ -235,7 +207,7 @@ setMethod(f = "clv.predict.new.customer", signature = signature(clv.fitted="clv.
   setkeyv(dt.cov.trans, cols = "Cov.Date")
 
   tp.first.transaction <- clv.time.convert.user.input.to.timepoint(clv.time = clv.fitted@clv.data@clv.time, user.timepoint = newdata@first.transaction)
-  tp.prediction.end <- tp.first.transaction + clv.time.number.timeunits.to.timeperiod(clv.time=clv.time, user.number.periods=t)
+  tp.prediction.end <- tp.first.transaction + clv.time.number.timeunits.to.timeperiod(clv.time=clv.time, user.number.periods=prediction.end)
 
   check_err_msg(check_user_data_newcustomer_dyncovspecific(clv.time=clv.time, dt.cov.life=dt.cov.life, dt.cov.trans=dt.cov.trans, tp.first.transaction=tp.first.transaction, tp.prediction.end=tp.prediction.end))
 
@@ -243,7 +215,7 @@ setMethod(f = "clv.predict.new.customer", signature = signature(clv.fitted="clv.
   return(clv.model.predict.new.customer.unconditional.expectation(
     clv.model = clv.fitted@clv.model,
     clv.fitted = clv.fitted,
-    t=t,
+    t=prediction.end,
     dt.cov.life=dt.cov.life,
     dt.cov.trans=dt.cov.trans,
     tp.first.transaction=tp.first.transaction))

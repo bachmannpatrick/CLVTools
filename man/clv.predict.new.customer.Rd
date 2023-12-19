@@ -7,11 +7,11 @@
 \alias{clv.predict.new.customer,clv.fitted.transactions.dynamic.cov-method}
 \title{Expected number of transactions of an average new customers}
 \usage{
-\S4method{clv.predict.new.customer}{clv.fitted.transactions}(clv.fitted, t, clv.newcustomer)
+\S4method{clv.predict.new.customer}{clv.fitted.transactions}(clv.fitted, newdata, prediction.end)
 
-\S4method{clv.predict.new.customer}{clv.fitted.transactions.static.cov}(clv.fitted, t, clv.newcustomer)
+\S4method{clv.predict.new.customer}{clv.fitted.transactions.static.cov}(clv.fitted, newdata, prediction.end)
 
-\S4method{clv.predict.new.customer}{clv.fitted.transactions.dynamic.cov}(clv.fitted, t, clv.newcustomer)
+\S4method{clv.predict.new.customer}{clv.fitted.transactions.dynamic.cov}(clv.fitted, newdata, prediction.end)
 }
 \arguments{
 \item{clv.fitted}{A fitted transaction model for which prediction is desired. The data on which the model was fit and which is stored in it is NOT used for this prediction.}

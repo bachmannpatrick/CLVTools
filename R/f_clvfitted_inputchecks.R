@@ -354,6 +354,45 @@ check_user_data_newcustomer_t <- function(t){
 }
 
 
+check_user_data_predict_newcustomer_staticcov <- function(clv.fitted, newcustomer){
+
+  # is exactly "clv.newcustomer.static.cov"
+  if(!is(newdata, "clv.newcustomer.static.cov") | is(newdata, "clv.newcustomer.dynamic.cov")){
+    return("Parameter newdata has to be output from calling `newcustomer.static()`!")
+  }
+
+  # only need to check if right columns are here, all other things were checked when creating newcustomer
+  if(!identical(sort(colnames(newdata@data.cov.life)), sort(names(clv.fitted@prediction.params.life)))){
+    return(paste0("The Lifetime covariate data has to contain exactly the following columns: ", paste(newdata@data.cov.life, collapse = ", "), "!"))
+  }
+
+  if(!identical(sort(colnames(newdata@data.cov.trans)), sort(names(clv.fitted@prediction.params.trans)))){
+    return(paste0("The Transaction covariate data has to contain exactly the following columns: ", paste(newdata@data.cov.trans, collapse = ", "), "!"))
+  }
+
+  return(c())
+}
+
+check_user_data_predict_newcustomer_dynccov <- function(clv.fitted, newcustomer){
+
+  if(!is(newdata, "clv.newcustomer.dynamic.cov")){
+    stop("Parameter newdata has to be output from calling `newcustomer.dynamic()`")
+  }
+
+  # Has to contain exactly the same columns as the covariate data used when fitting
+  names.col <- c(names(clv.fitted@prediction.params.life), "Cov.Date")
+  if(!identical(sort(colnames(newcustomer@data.cov.life)), sort(names.col))){
+    return(paste0("The Lifetime covariate data has to contain exactly the following columns: ", paste(names.col, collapse = ", "), "!"))
+  }
+
+  names.col <- c(names(clv.fitted@prediction.params.trans), "Cov.Date")
+  if(!identical(sort(colnames(newcustomer@data.cov.trans)), sort(names.col))){
+    return(paste0("The Transaction covariate data has to contain exactly the following columns: ", paste(names.col, collapse = ", "), "!"))
+  }
+
+  return(c())
+}
+
 check_user_data_newcustomer_dyncovspecific <- function(clv.time, dt.cov.life, dt.cov.trans, tp.first.transaction, tp.prediction.end){
   Cov.Date <- NULL
 
