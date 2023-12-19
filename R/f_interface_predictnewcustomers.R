@@ -164,8 +164,11 @@ setMethod(f = "clv.predict.new.customer", signature = signature(clv.fitted="clv.
   }
 
   check_err_msg(check_user_data_newcustomer_t(t))
-  check_err_msg(check_user_data_newcustomer_staticcovdatacov(data.cov=newdata@data.cov.life, names.cov=names(clv.fitted@prediction.params.life), name.of.covariate='Lifetime'))
-  check_err_msg(check_user_data_newcustomer_staticcovdatacov(data.cov=newdata@data.cov.trans, names.cov=names(clv.fitted@prediction.params.trans), name.of.covariate='Transaction'))
+
+  # only need to check if right columns are here
+  # if(!identical(sort(colnames(data.cov)), sort(names(clv.fitted@prediction.params.life)))){
+  #   return(paste0("The Lifetime covariate data has to contain exactly the following columns: ", paste(names.cov, collapse = ", "), "!"))
+  # }
 
 
   # Convert cov data ----------------------------------------------------------------------
@@ -206,10 +209,16 @@ setMethod(f = "clv.predict.new.customer", signature = signature(clv.fitted="clv.
 
   check_err_msg(check_user_data_newcustomer_t(t))
   check_err_msg(check_user_data_newcustomer_firsttransaction(newdata@first.transaction))
-  check_err_msg(check_user_data_newcustomer_dyncovdatacov(data.cov=newdata@data.cov.life, names.col = c(names(clv.fitted@prediction.params.life), "Cov.Date"), name.of.covariate = "Lifetime"))
-  check_err_msg(check_user_data_newcustomer_dyncovdatacov(data.cov=newdata@data.cov.trans, names.col = c(names(clv.fitted@prediction.params.trans), "Cov.Date"), name.of.covariate = "Transaction"))
-  # TODO: Check first.transaction is valid date-type input
 
+
+  # names.col = c(names(clv.fitted@prediction.params.life), "Cov.Date")
+  # names.col = c(names(clv.fitted@prediction.params.trans), "Cov.Date")
+  # if(!identical(sort(colnames(data.cov)), sort(names.col))){
+  #   return(paste0("The ", name.of.covariate, " covariate data has to contain exactly the following columns: ", paste(names.col, collapse = ", "), "!"))
+  # }
+
+
+  # TODO: Check first.transaction is valid date-type input
 
   dt.cov.life <- as.data.table(newdata@data.cov.life)
   dt.cov.trans <- as.data.table(newdata@data.cov.trans)

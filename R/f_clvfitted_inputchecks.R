@@ -339,65 +339,6 @@ check_user_data_label <- function(label, other.models){
 }
 
 
-check_user_data_newcustomer_staticcovdatacov <- function(data.cov, names.cov, name.of.covariate){
-  # Check if data has basic properties
-  if(!is.data.frame(data.cov)){
-    return("Only covariate data of type data.frame or data.table can be processed!")
-  }
-
-  if(nrow(data.cov) != 1){
-    return("Covariate data has be be given for exacly one single customer (only 1 row)!")
-  }
-
-  if(anyNA(data.cov)){
-    return("There may be no NAs in the covariate data!")
-  }
-
-  # Not required because testing that exactly equal param names but be explicit that not required
-  if("Id" %in% names(data.cov)){
-    return(paste0("There may be no column named 'Id' in the ",name.of.covariate," covariate data!"))
-  }
-
-  if(!identical(sort(colnames(data.cov)), sort(names.cov))){
-    return(paste0("The ", name.of.covariate, " covariate data has to contain exactly the following columns: ", paste(names.cov, collapse = ", "), "!"))
-  }
-
-  if(!all(sapply(data.cov, is.numeric))){
-    return(paste0("All ",name.of.covariate," covariate data needs to be of type numeric!"))
-  }
-}
-
-
-
-check_user_data_newcustomer_dyncovdatacov <- function(data.cov, names.col, name.of.covariate){
-  # Check if data has basic properties
-  if(!is.data.frame(data.cov)){
-    return("Only covariate data of type data.frame or data.table can be processed!")
-  }
-
-  if(nrow(data.cov) == 0){
-    return(paste0("The ",name.of.covariate," covariate data may not empty!"))
-  }
-
-  if(anyNA(data.cov)){
-    return(paste0("There may be no NAs in the ",name.of.covariate," covariate data!"))
-  }
-
-  if("Id" %in% names(data.cov)){
-    return(paste0("There may be no column named 'Id' in the ",name.of.covariate," covariate data!"))
-  }
-
-  if(!identical(sort(colnames(data.cov)), sort(names.col))){
-    return(paste0("The ", name.of.covariate, " covariate data has to contain exactly the following columns: ", paste(names.col, collapse = ", "), "!"))
-  }
-
-  if(!all(sapply(data.cov[, setdiff(names.col, "Cov.Date")], is.numeric))){
-    return(paste0("All ",name.of.covariate," covariate data needs to be of type numeric!"))
-  }
-
-  return(c())
-}
-
 
 check_user_data_newcustomer_t <- function(t){
   err.msg <- .check_user_data_single_numeric(n=t, var.name='t')
@@ -410,27 +351,6 @@ check_user_data_newcustomer_t <- function(t){
   }
 
   return(err.msg)
-}
-
-#' @importFrom lubridate is.POSIXt
-check_user_data_newcustomer_firsttransaction <- function(first.transaction){
-  if(missing(first.transaction)){
-    return("Parameter first.transaction is required!")
-  }
-
-  if(length(first.transaction) != 1){
-    return("Parameter first.transaction has to be of length 1!")
-  }
-
-  if(anyNA(first.transaction)){
-    return("Parameter first.transaction may not contain any NAs!")
-  }
-
-  if(!is.character(first.transaction) & !is.Date(first.transaction) & !is.POSIXt(first.transaction)){
-    return("Parameter first.transaction has to be of type character, Date, POSIXct, or POSIXlt!")
-  }
-
-  return(c())
 }
 
 
