@@ -129,7 +129,7 @@ predict.clv.fitted.transactions <- function(object, newdata=NULL, prediction.end
 
   # The usual prediction unless newdata indicates a new customer prediction (ie newdata=newcustomer())
   if(is(newdata, "clv.newcustomer.no.cov")){
-   return(clv.predict.new.customer(clv.fitted = object, t=prediction.end, newdata = newdata))
+   return(clv.predict.new.customer(clv.fitted = object, prediction.end=prediction.end, newdata = newdata))
   }
 
   # If it was not explicitly passed in the call, the spending model should only be applied

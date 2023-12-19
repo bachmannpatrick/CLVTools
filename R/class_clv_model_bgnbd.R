@@ -103,7 +103,7 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.no.cov")
 })
 
 # . clv.model.predict.new.customer.unconditional.expectation --------------------------------------------------------------------------------------------------------
-setMethod("clv.model.predict.new.customer.unconditional.expectation", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, t){
+setMethod("clv.model.predict.new.customer.unconditional.expectation", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, clv.newcustomer, t){
 
   return(bgnbd_nocov_expectation(
     r = clv.fitted@prediction.params.model[["r"]],

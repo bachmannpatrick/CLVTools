@@ -150,6 +150,7 @@ setMethod("clv.predict.new.customer", signature = signature(clv.fitted="clv.fitt
   return(drop(clv.model.predict.new.customer.unconditional.expectation(
     clv.model = clv.fitted@clv.model,
     clv.fitted = clv.fitted,
+    clv.newcustomer=newdata,
     t=prediction.end)))
 })
 
@@ -157,25 +158,17 @@ setMethod("clv.predict.new.customer", signature = signature(clv.fitted="clv.fitt
 #' @include class_clv_fitted_transactions_staticcov.R
 #' @rdname clv.predict.new.customer
 setMethod(f = "clv.predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted, newdata, prediction.end){
+  # TODO[test]: Test that works with 1, 2, 3 covariates
+  # TODO[test]: Test that for all models, the order of covariate columns does not change results
+  # TODO[test]: Test that works with different life and trans covariates
 
-  check_err_msg(check_user_data_predict_newcustomer_staticcov(clv.fitted=clv.fitted, newcustomer=newdata))
+  check_err_msg(check_user_data_predict_newcustomer_staticcov(clv.fitted=clv.fitted, newdata=newdata))
   check_err_msg(check_user_data_newcustomer_t(prediction.end))
-
-
-  # Convert cov data ----------------------------------------------------------------------
-  # Covariate data in SetStaticCovariates() can be given as factor/character which are then
-  # turned into numeric dummies. This was considered here as well but dismissed
-  # because it requires more than a single observation/level (ie need to
-  # know 'm' and 'f' to create dummies but only one can be given here).
-  # If the factors have more than 1 level (or contrasts) set, this would work
-  # but was also dismissed as rather niche. It also simplifies input checks to not
-  # convert the data
 
   return(drop(clv.model.predict.new.customer.unconditional.expectation(
     clv.model = clv.fitted@clv.model,
     clv.fitted = clv.fitted,
-    dt.cov.life=as.data.table(newdata@data.cov.life),
-    dt.cov.trans=as.data.table(newdata@data.cov.trans),
+    clv.newcustomer=newdata,
     t=prediction.end)))
 })
 
@@ -186,16 +179,22 @@ setMethod(f = "clv.predict.new.customer", signature = signature(clv.fitted="clv.
   Cov.Date <- NULL
 
   check_err_msg(check_user_data_newcustomer_t(prediction.end))
-  check_err_msg(check_user_data_predict_newcustomer_dynccov(clv.fitted=clv.fitted, newcustomer=newdata))
+  check_err_msg(check_user_data_predict_newcustomer_dynccov(clv.fitted=clv.fitted, newdata=newdata))
 
   # TODO: Check predicting at least >2 (or min 3?) periods
   # if(prediction.end <= 2){
   #   stop("Have to plot at least 3 periods!", call. = FALSE)
   # }
 
+
+  # Convert time point data and verify it correctness -------------------------------------------------------------------------------
+  # This can only be done here once the clv.time object is known
+
   # readability
   clv.time <- clv.fitted@clv.data@clv.time
 
+
+  # will be changed (by ref), therefore deep copy
   dt.cov.life <- copy(newdata@data.cov.life)
   dt.cov.trans <- copy(newdata@data.cov.trans)
 
@@ -216,9 +215,11 @@ setMethod(f = "clv.predict.new.customer", signature = signature(clv.fitted="clv.
     clv.model = clv.fitted@clv.model,
     clv.fitted = clv.fitted,
     t=prediction.end,
-    dt.cov.life=dt.cov.life,
-    dt.cov.trans=dt.cov.trans,
-    tp.first.transaction=tp.first.transaction))
+    # create new object to leave original newdata unchanged
+    clv.newcustomer=clv.newcustomer.dynamic.cov(
+      data.cov.life=dt.cov.life,
+      data.cov.trans=dt.cov.trans,
+      first.transaction=tp.first.transaction)))
 })
 
 

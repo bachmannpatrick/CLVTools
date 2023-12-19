@@ -13,6 +13,14 @@ clv.newcustomer.no.cov <- function(){
   return(new("clv.newcustomer.no.cov"))
 }
 
+
+# Covariate data in SetStaticCovariates() can be given as factor/character which are then
+# turned into numeric dummies. This was considered here as well but dismissed
+# because it requires more than a single observation/level (ie need to
+# know 'm' and 'f' to create dummies but only one can be given here).
+# If the factors have more than 1 level (or contrasts) set, this would work
+# but was also dismissed as rather niche. It also simplifies input checks to not
+# convert the data
 setClass(
   Class = "clv.newcustomer.static.cov",
   contains = "clv.newcustomer.no.cov",
