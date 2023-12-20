@@ -1,3 +1,134 @@
+#' @name newcustomer
+#' @title New customer prediction data
+#'
+#' @description
+#' The methods documented here are to be used together with \link[CLVTools:predict.clv.fitted.transactions]{predict} to obtain
+#' the expected number of transactions of an average new customer.
+#' The data required for this new customer prediction is produced by the methods described here. This is mostly covariate data
+#' for static and dynamic covariate models. See details for the required format.
+#'
+#'
+#' @param data.cov.life Numeric-only covariate data for the lifetime process for a single customer, \code{data.table} or \code{data.frame}. See details.
+#' @param data.cov.trans Numeric-only covariate data for the transaction process for a single customer, \code{data.table} or \code{data.frame}. See details.
+#' @param first.transaction For dynamic covariate models only: The time point of the first transaction of the customer ("coming alive") for which a prediction is made.
+#' Has to be within the time range of the covariate data.
+#'
+#' @seealso \link[CLVTools:predict.clv.fitted.transactions]{predict} to use the output of the methods described here.
+#'
+#' @details
+#' The covariate data has to contain one column for every covariate parameter in the fitted model. Only numeric values are allowed, no factors or characters.
+#' No customer Id is required because the data on which the model was fit is not used for this prediction.
+#'
+#' For \code{newcustomer.static()}: One column for every covariate parameter in the estimated model.
+#' No column \code{Id}. Exactly 1 row of numeric covariate data. \cr
+#' For example: \code{data.frame(Gender=1, Age=30, Channel=0)}.
+#'
+#' For \code{newcustomer.dynamic()}: One column for every covariate parameter in the estimated model.
+#' No column \code{Id}. A column \code{Cov.Date} with time points that mark the start of the period defined by \code{time.unit}.
+#' For every \code{Cov.Date}, exactly 1 row of numeric covariate data. \cr
+#' For example for weekly covariates: \code{data.frame(Cov.Date=c("2000-01-03", "2000-01-10"), Gender=c(1,1), High.Season=c(0, 1), Marketing=c(-0.5,1.12))} \cr
+#' If \code{Cov.Date} is of type character, the \code{date.format} given when creating the the \code{clv.data} object is used to parse it.
+#' The data has to cover the time from the customer's first transaction \code{first.transaction}
+#' to the end of the prediction period given by \code{t}. It does not have to cover the same time range as when fitting the model.
+#' See examples.
+#'
+#' For models with dynamic covariates, the time point of the first purchase (\code{first.transaction}) is
+#' additionally required because the exact covariates that are active during the prediction period have
+#' to be known.
+#'
+#' @returns
+#' \item{newcustomer()}{An object of class \code{clv.newcustomer.no.cov}}
+#' \item{newcustomer.static()}{An object of class \code{clv.newcustomer.static.cov}}
+#' \item{newcustomer.dynamic()}{An object of class \code{clv.newcustomer.dynamic.cov}}
+#'
+#' @examples
+#' \donttest{
+#' data("apparelTrans")
+#' data("apparelStaticCov")
+#' data("apparelDynCov")
+#'
+#' clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
+#'                             time.unit = "w", estimation.split = 40)
+#' clv.data.static.cov <-
+#'  SetStaticCovariates(clv.data.apparel,
+#'                      data.cov.life = apparelStaticCov,
+#'                      names.cov.life = "Gender",
+#'                      data.cov.trans = apparelStaticCov,
+#'                      names.cov.trans = c("Gender", "Channel"))
+#' clv.data.dyn.cov <-
+#'   SetDynamicCovariates(clv.data = clv.data.apparel,
+#'                        data.cov.life = apparelDynCov,
+#'                        data.cov.trans = apparelDynCov,
+#'                        names.cov.life = c("Marketing", "Gender"),
+#'                        names.cov.trans = c("Marketing", "Gender"),
+#'                        name.date = "Cov.Date")
+#'
+#'
+#'
+#' # No covariate model
+#' p.apparel <- pnbd(clv.data.apparel)
+#'
+#' # Predict the number of transactions an average new
+#' # customer is expected to make in the first 3.68 weeks
+#' predict(
+#'   p.apparel,
+#'   prediction.end=3.68
+#'   newdata=newcustomer(),
+#' )
+#'
+#'
+#'
+#' # Static covariate model
+#' p.apparel.static <- pnbd(clv.data.static.cov)
+#'
+#' # Predict the number of transactions an average new
+#' # customer who is female (Gender=1) and who was acquired
+#' # online (Channel=1) is expected to make in the first 3.68 weeks
+#' predict(
+#'   p.apparel.static,
+#'   prediction.end=3.68,
+#'   newdata=newcustomer.static(
+#'     # For the lifetime process, only Gender was used when fitting
+#'     data.cov.life=data.frame(Gender=1),
+#'     data.cov.trans=data.frame(Gender=1, Channel=0)
+#'   )
+#' )
+#'
+#'
+#' \dontrun{
+#' # Dynamic covariate model
+#'
+#' p.apparel.dyn <- pnbd(clv.data.dyn.cov)
+#'
+#' # Predict the number of transactions an average new
+#' # customer who is male (Gender=0), who was contacted
+#' # 4, 0, and 7 times with direct marketing, and who was
+#' # acquired on "2005-02-16" (first.transaction) is expected
+#' # to make in the first 2.12 weeks.
+#' # Note that the time range is very different from the one used
+#' # when fitting the model. Cov.Date still has to match the
+#' # beginning of the week.
+#' predict(
+#'   p.apparel.dyn,
+#'   prediction.end=2.12,
+#'   newdata=newcustomer.dynamic(
+#'     data.cov.life=data.frame(
+#'       Cov.Date=c("2051-02-12", "2051-02-19", "2051-02-26"),
+#'       Gender=c(0, 0, 0),
+#'       Marketing=c(4, 0, 7)),
+#'     data.cov.trans=data.frame(
+#'       Cov.Date=c("2051-02-12", "2051-02-19", "2051-02-26"),
+#'       Gender=c(0, 0, 0),
+#'       Marketing=c(4, 0, 7)),
+#'     first.transaction = "2051-02-16"
+#'   )
+#' )
+#'
+#' }
+#' }
+#'
+NULL
+
 # This class only exists pro-forma to have a class clv.newcustomer.no.cov with no slots.
 # Classes with no slots and no parent class are virtual. In order for clv.newcustomer.no.cov to have no slots,
 # create this (virtual) base class to inherit from.
@@ -58,11 +189,13 @@ clv.newcustomer.dynamic.cov <- function(data.cov.life, data.cov.trans, first.tra
 }
 
 
+#' @rdname newcustomer
 #' @export
 newcustomer <- function(){
   return(clv.newcustomer.no.cov())
 }
 
+#' @rdname newcustomer
 #' @export
 newcustomer.static <- function(data.cov.life, data.cov.trans){
 
@@ -75,6 +208,7 @@ newcustomer.static <- function(data.cov.life, data.cov.trans){
   ))
 }
 
+#' @rdname newcustomer
 #' @export
 newcustomer.dynamic <- function(data.cov.life, data.cov.trans, first.transaction){
 
