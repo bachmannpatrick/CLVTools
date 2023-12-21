@@ -94,8 +94,7 @@ p.apparel <- pnbd(clv.data.apparel)
 # customer is expected to make in the first 3.68 weeks
 predict(
   p.apparel,
-  prediction.end=3.68,
-  newdata=newcustomer(),
+  newdata=newcustomer(num.periods=3.68)),
 )
 
 
@@ -108,8 +107,8 @@ p.apparel.static <- pnbd(clv.data.static.cov)
 # online (Channel=1) is expected to make in the first 3.68 weeks
 predict(
   p.apparel.static,
-  prediction.end=3.68,
   newdata=newcustomer.static(
+    num.periods=3.68,
     # For the lifetime process, only Gender was used when fitting
     data.cov.life=data.frame(Gender=1),
     data.cov.trans=data.frame(Gender=1, Channel=0)
@@ -132,8 +131,8 @@ p.apparel.dyn <- pnbd(clv.data.dyn.cov)
 # beginning of the week.
 predict(
   p.apparel.dyn,
-  prediction.end=2.12,
   newdata=newcustomer.dynamic(
+    num.periods=2.12,
     data.cov.life=data.frame(
       Cov.Date=c("2051-02-12", "2051-02-19", "2051-02-26"),
       Gender=c(0, 0, 0),

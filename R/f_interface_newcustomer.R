@@ -77,8 +77,7 @@
 #' # customer is expected to make in the first 3.68 weeks
 #' predict(
 #'   p.apparel,
-#'   prediction.end=3.68,
-#'   newdata=newcustomer(),
+#'   newdata=newcustomer(num.periods=3.68)),
 #' )
 #'
 #'
@@ -91,8 +90,8 @@
 #' # online (Channel=1) is expected to make in the first 3.68 weeks
 #' predict(
 #'   p.apparel.static,
-#'   prediction.end=3.68,
 #'   newdata=newcustomer.static(
+#'     num.periods=3.68,
 #'     # For the lifetime process, only Gender was used when fitting
 #'     data.cov.life=data.frame(Gender=1),
 #'     data.cov.trans=data.frame(Gender=1, Channel=0)
@@ -115,8 +114,8 @@
 #' # beginning of the week.
 #' predict(
 #'   p.apparel.dyn,
-#'   prediction.end=2.12,
 #'   newdata=newcustomer.dynamic(
+#'     num.periods=2.12,
 #'     data.cov.life=data.frame(
 #'       Cov.Date=c("2051-02-12", "2051-02-19", "2051-02-26"),
 #'       Gender=c(0, 0, 0),
@@ -193,7 +192,7 @@ clv.newcustomer.dynamic.cov <- function(num.periods, data.cov.life, data.cov.tra
 #' @rdname newcustomer
 #' @export
 newcustomer <- function(num.periods){
-  check_err_msg(check_user_data_predict_newcustomer_numperiods(num.periods))
+  check_err_msg(check_user_data_newcustomer_numperiods(num.periods))
   return(clv.newcustomer.no.cov(num.periods))
 }
 
@@ -201,7 +200,7 @@ newcustomer <- function(num.periods){
 #' @export
 newcustomer.static <- function(num.periods, data.cov.life, data.cov.trans){
 
-  check_err_msg(check_user_data_predict_newcustomer_numperiods(num.periods))
+  check_err_msg(check_user_data_newcustomer_numperiods(num.periods))
   check_err_msg(check_user_data_newcustomer_staticcovdatacov(data.cov=data.cov.life, name.of.covariate='Lifetime'))
   check_err_msg(check_user_data_newcustomer_staticcovdatacov(data.cov=data.cov.trans, name.of.covariate='Transaction'))
 
@@ -216,7 +215,7 @@ newcustomer.static <- function(num.periods, data.cov.life, data.cov.trans){
 #' @export
 newcustomer.dynamic <- function(num.periods, data.cov.life, data.cov.trans, first.transaction){
 
-  check_err_msg(check_user_data_predict_newcustomer_numperiods(num.periods))
+  check_err_msg(check_user_data_newcustomer_numperiods(num.periods))
   check_err_msg(check_user_data_newcustomer_firsttransaction(first.transaction))
   check_err_msg(check_user_data_newcustomer_dyncovdatacov(data.cov=data.cov.life, name.of.covariate = "Lifetime"))
   check_err_msg(check_user_data_newcustomer_dyncovdatacov(data.cov=data.cov.trans, name.of.covariate = "Transaction"))
