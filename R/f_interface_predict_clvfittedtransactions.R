@@ -167,7 +167,7 @@ predict.clv.fitted.transactions <- function(object, newdata=NULL, prediction.end
     }
 
 
-    return(clv.predict.new.customer(clv.fitted = object, newdata = newdata))
+    return(clv.predict.new.customer(clv.fitted = object, clv.newcustomer = newdata))
   }
 
   # If it was not explicitly passed in the call, the spending model should only be applied

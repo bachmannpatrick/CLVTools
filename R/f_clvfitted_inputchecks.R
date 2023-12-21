@@ -354,41 +354,41 @@ check_user_data_newcustomer_numperiods <- function(num.periods){
 }
 
 
-check_user_data_predict_newcustomer_staticcov <- function(clv.fitted, newdata){
+check_user_data_predict_newcustomer_staticcov <- function(clv.fitted, clv.newcustomer){
 
   # is exactly "clv.newcustomer.static.cov"
-  if(!is(newdata, "clv.newcustomer.static.cov") | is(newdata, "clv.newcustomer.dynamic.cov")){
+  if(!is(clv.newcustomer, "clv.newcustomer.static.cov") | is(clv.newcustomer, "clv.newcustomer.dynamic.cov")){
     return("Parameter newdata has to be output from calling `newcustomer.static()`!")
   }
 
   # only need to check if right columns are here, all other things were checked when creating newcustomer
   required.names.cov <- names(clv.fitted@prediction.params.life)
-  if(!identical(sort(colnames(newdata@data.cov.life)), sort(required.names.cov))){
+  if(!identical(sort(colnames(clv.newcustomer@data.cov.life)), sort(required.names.cov))){
     return(paste0("The Lifetime covariate data has to contain exactly the following columns: ", paste(required.names.cov, collapse = ", "), "!"))
   }
 
   required.names.cov <- names(clv.fitted@prediction.params.trans)
-  if(!identical(sort(colnames(newdata@data.cov.trans)), sort(required.names.cov))){
+  if(!identical(sort(colnames(clv.newcustomer@data.cov.trans)), sort(required.names.cov))){
     return(paste0("The Transaction covariate data has to contain exactly the following columns: ", paste(required.names.cov, collapse = ", "), "!"))
   }
 
   return(c())
 }
 
-check_user_data_predict_newcustomer_dynccov <- function(clv.fitted, newdata){
+check_user_data_predict_newcustomer_dyncov <- function(clv.fitted, clv.newcustomer){
 
-  if(!is(newdata, "clv.newcustomer.dynamic.cov")){
+  if(!is(clv.newcustomer, "clv.newcustomer.dynamic.cov")){
     stop("Parameter newdata has to be output from calling `newcustomer.dynamic()`")
   }
 
   # Has to contain exactly the same columns as the covariate data used when fitting
   names.col <- c(names(clv.fitted@prediction.params.life), "Cov.Date")
-  if(!identical(sort(colnames(newdata@data.cov.life)), sort(names.col))){
+  if(!identical(sort(colnames(clv.newcustomer@data.cov.life)), sort(names.col))){
     return(paste0("The Lifetime covariate data has to contain exactly the following columns: ", paste(names.col, collapse = ", "), "!"))
   }
 
   names.col <- c(names(clv.fitted@prediction.params.trans), "Cov.Date")
-  if(!identical(sort(colnames(newdata@data.cov.trans)), sort(names.col))){
+  if(!identical(sort(colnames(clv.newcustomer@data.cov.trans)), sort(names.col))){
     return(paste0("The Transaction covariate data has to contain exactly the following columns: ", paste(names.col, collapse = ", "), "!"))
   }
 
