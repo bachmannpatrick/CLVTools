@@ -51,7 +51,6 @@ setGeneric(name = "clv.controlflow.predict.post.process.prediction.table", def =
   standardGeneric("clv.controlflow.predict.post.process.prediction.table"))
 
 
-
 # .. Newdata: replace data in existing model -----------------------------------------------------------------
 # For plot and predict
 setGeneric("clv.controlflow.check.newdata", def = function(clv.fitted, user.newdata, ...)
@@ -68,7 +67,10 @@ setGeneric("clv.controlflow.check.prediction.params", def = function(clv.fitted)
 setGeneric("clv.controlflow.plot.check.inputs", def = function(obj, prediction.end, cumulative, plot, label.line, verbose)
   standardGeneric("clv.controlflow.plot.check.inputs"))
 
-
+# . Predict new customer -----------------------------------------------------------------------------------------
+setGeneric("clv.predict.new.customer", def = function(clv.fitted, clv.newcustomer){
+  standardGeneric("clv.predict.new.customer")
+})
 
 
 

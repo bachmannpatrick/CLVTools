@@ -315,3 +315,20 @@ setMethod("clv.controlflow.predict.post.process.prediction.table", signature = s
 
   return(dt.predictions)
 })
+
+
+
+# . clv.predict.new.customer ---------------------------------------------------------------------------------------
+#' @include class_clv_fitted_transactions.R
+setMethod("clv.predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, clv.newcustomer){
+
+  if(!is(clv.newcustomer, "clv.newcustomer.no.cov") | is(clv.newcustomer, "clv.newcustomer.static.cov")){
+    check_err_msg("Parameter newdata has to be output from calling `newcustomer()`!")
+  }
+
+  return(drop(clv.model.predict.new.customer.unconditional.expectation(
+    clv.model = clv.fitted@clv.model,
+    clv.fitted = clv.fitted,
+    clv.newcustomer=clv.newcustomer,
+    t=clv.newcustomer@num.periods)))
+})
