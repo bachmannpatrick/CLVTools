@@ -3,7 +3,7 @@
 
 #' @title Predict CLV from a fitted transaction model
 #' @param object A fitted clv transaction model for which prediction is desired.
-#' @param newdata A clv data object for which predictions should be made with the fitted model. If none or NULL is given, predictions are made for the data on which the model was fit.
+#' @param newdata A clv data object or data for the new customer prediction (\code{newdata()}) for which predictions should be made with the fitted model. If none or NULL is given, predictions are made for the data on which the model was fit.
 #' @param predict.spending Whether and how to predict spending and based on it also CLV, if possible. See details.
 #' @param continuous.discount.factor continuous discount factor to use to calculate \code{DERT/DECT}
 #' @templateVar prefix {}
@@ -35,6 +35,23 @@
 #' \item "CLV", the customer lifetime value. CLV is the product of DERT/DECT and predicted spending.
 #'}
 #'
+#' \subsection{New customer prediction}{
+#' The fitted model can also be used to predict the number of transactions a single, average customer is expected
+#' to make in the \code{prediction.end} periods since making the first transaction ("coming alive").
+#' For covariate models, the prediction is for an average customer with the given covariates.
+#'
+#' The individual-level unconditional expectation that is also used for the
+#' \link[CLVTools:plot.clv.fitted.transactions]{tracking plot} is used to obtain this prediction.
+#' For models without covariates, the prediction hence is the same for all customers
+#' and independent of when a customer comes alive.
+#' For models with covariates, the prediction is the same for all customers
+#' with the same covariates.
+#'
+#' The data on which the model was fit and which is stored in it is NOT used for this prediction.
+#'
+#' }
+#'
+#'
 #' @details \code{predict.spending} indicates whether to predict customers' spending and if so, the spending model to use.
 #' Accepted inputs are either a logical (\code{TRUE/FALSE}), a method to fit a spending model (i.e. \code{\link{gg}}), or
 #' an already fitted spending model. If provided \code{TRUE}, a Gamma-Gamma model is fit with default options. If argument
@@ -43,7 +60,15 @@
 #'
 #' @template template_details_newdata
 #'
+#' @details
+#' To predict for new customers, the output of \link{newcustomer} has to be given to \code{newdata}. See examples.
+#'
 #' @template template_details_predictionend
+#'
+#' @details
+#' If predicting for new customers, \code{prediction.end} has to be a positive, numeric scalar indicating the number
+#' of periods to predict.
+#'
 #'
 #' @details \code{continuous.discount.factor} is the continuous rate used to discount the expected residual
 #' transactions (\code{DERT/DECT}). An annual rate of (100 x d)\% equals a continuous rate delta = ln(1+d).
@@ -70,6 +95,9 @@
 #' \item{predicted.mean.spending}{The mean spending per transactions as predicted by the spending model.}
 #' \item{predicted.total.spending}{The predicted total spending until prediction.end (\code{CET*predicted.mean.spending}).}
 #' \item{predicted.CLV}{Customer Lifetime Value based on \code{DERT/DECT} and \code{predicted.mean.spending}.}
+#'
+#' If predicting for new customers (using \code{newcustomer()}), a numeric scalar indicating the expected
+#' number of transactions until \code{prediction.end} is returned instead.
 #'
 #' @examples
 #'
