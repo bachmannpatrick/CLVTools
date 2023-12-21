@@ -94,7 +94,7 @@ p.apparel <- pnbd(clv.data.apparel)
 # customer is expected to make in the first 3.68 weeks
 predict(
   p.apparel,
-  prediction.end=3.68
+  prediction.end=3.68,
   newdata=newcustomer(),
 )
 
