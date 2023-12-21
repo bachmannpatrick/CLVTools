@@ -3,7 +3,8 @@
 
 #' @title Predict CLV from a fitted transaction model
 #' @param object A fitted clv transaction model for which prediction is desired.
-#' @param newdata A clv data object or data for the new customer prediction (\code{newdata()}) for which predictions should be made with the fitted model. If none or NULL is given, predictions are made for the data on which the model was fit.
+#' @param newdata A clv data object or data for the new customer prediction (see \link{newcustomer}) for which predictions should
+#' be made with the fitted model. If none or NULL is given, predictions are made for the data on which the model was fit.
 #' @param predict.spending Whether and how to predict spending and based on it also CLV, if possible. See details.
 #' @param continuous.discount.factor continuous discount factor to use to calculate \code{DERT/DECT}
 #' @templateVar prefix {}
@@ -36,8 +37,8 @@
 #'}
 #'
 #' \subsection{New customer prediction}{
-#' The fitted model can also be used to predict the number of transactions a single, average customer is expected
-#' to make in the \code{prediction.end} periods since making the first transaction ("coming alive").
+#' The fitted model can also be used to predict the number of transactions a single, average
+#' newly alive customer is expected to make at the moment of the first transaction ("coming alive").
 #' For covariate models, the prediction is for an average customer with the given covariates.
 #'
 #' The individual-level unconditional expectation that is also used for the
@@ -48,6 +49,7 @@
 #' with the same covariates.
 #'
 #' The data on which the model was fit and which is stored in it is NOT used for this prediction.
+#' See examples and \link{newcustomer} for more details.
 #'
 #' }
 #'
@@ -65,17 +67,13 @@
 #'
 #' @template template_details_predictionend
 #'
-#' @details
-#' If predicting for new customers, \code{prediction.end} has to be a positive, numeric scalar indicating the number
-#' of periods to predict.
-#'
 #'
 #' @details \code{continuous.discount.factor} is the continuous rate used to discount the expected residual
 #' transactions (\code{DERT/DECT}). An annual rate of (100 x d)\% equals a continuous rate delta = ln(1+d).
 #' To account for time units which are not annual, the continuous rate has to be further adjusted
 #' to delta=ln(1+d)/k, where k are the number of time units in a year.
 #'
-#'
+#' @seealso \code{\link{newcustomer}} to create data to predict for newly alive customers.
 #' @seealso models to predict transactions: \link{pnbd}, \link{bgnbd}, \link{ggomnbd}.
 #' @seealso models to predict spending: \link{gg}.
 #' @seealso \code{\link[CLVTools:predict.clv.fitted.spending]{predict}} for spending models
@@ -97,7 +95,7 @@
 #' \item{predicted.CLV}{Customer Lifetime Value based on \code{DERT/DECT} and \code{predicted.mean.spending}.}
 #'
 #' If predicting for new customers (using \code{newcustomer()}), a numeric scalar indicating the expected
-#' number of transactions until \code{prediction.end} is returned instead.
+#' number of transactions is returned instead.
 #'
 #' @examples
 #'
@@ -157,7 +155,7 @@ predict.clv.fitted.transactions <- function(object, newdata=NULL, prediction.end
 
   # The usual prediction unless newdata indicates a new customer prediction (ie newdata=newcustomer())
   if(is(newdata, "clv.newcustomer.no.cov")){
-   return(clv.predict.new.customer(clv.fitted = object, prediction.end=prediction.end, newdata = newdata))
+   return(clv.predict.new.customer(clv.fitted = object, newdata = newdata))
   }
 
   # If it was not explicitly passed in the call, the spending model should only be applied

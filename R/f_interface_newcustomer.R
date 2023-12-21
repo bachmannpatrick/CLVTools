@@ -3,11 +3,16 @@
 #'
 #' @description
 #' The methods documented here are to be used together with \link[CLVTools:predict.clv.fitted.transactions]{predict} to obtain
-#' the expected number of transactions of an average new customer.
+#' the expected number of transactions of an average newly alive customer.
+#' It describes the number of transactions a single, average new customer is expected to make in
+#' the \code{num.periods} periods since making the first transaction ("coming alive"). This prediction is only
+#' sensible for customers who just came alive and have not had the chance to reveal any more of their behavior.
+#'
 #' The data required for this new customer prediction is produced by the methods described here. This is mostly covariate data
 #' for static and dynamic covariate models. See details for the required format.
 #'
 #'
+#' @param num.periods A positive, numeric scalar indicating the number of periods to predict.
 #' @param data.cov.life Numeric-only covariate data for the lifetime process for a single customer, \code{data.table} or \code{data.frame}. See details.
 #' @param data.cov.trans Numeric-only covariate data for the transaction process for a single customer, \code{data.table} or \code{data.frame}. See details.
 #' @param first.transaction For dynamic covariate models only: The time point of the first transaction of the customer ("coming alive") for which a prediction is made.
@@ -129,19 +134,13 @@
 #'
 NULL
 
-# This class only exists pro-forma to have a class clv.newcustomer.no.cov with no slots.
-# Classes with no slots and no parent class are virtual. In order for clv.newcustomer.no.cov to have no slots,
-# create this (virtual) base class to inherit from.
-setClass(
-  Class = "clv.newcustomer",
-  representation = list())
-
 setClass(
   Class = "clv.newcustomer.no.cov",
-  contains = "clv.newcustomer")
+  representation = list(num.periods="numeric")
+  )
 
-clv.newcustomer.no.cov <- function(){
-  return(new("clv.newcustomer.no.cov"))
+clv.newcustomer.no.cov <- function(num.periods){
+  return(new("clv.newcustomer.no.cov", num.periods=num.periods))
 }
 
 
@@ -160,9 +159,10 @@ setClass(
     data.cov.trans="data.table"
 ))
 
-clv.newcustomer.static.cov <- function(data.cov.life, data.cov.trans){
+clv.newcustomer.static.cov <- function(num.periods, data.cov.life, data.cov.trans){
   return(new(
     "clv.newcustomer.static.cov",
+    num.periods=num.periods,
     data.cov.life=copy(data.cov.life),
     data.cov.trans=copy(data.cov.trans)
     ))
@@ -179,9 +179,10 @@ setClass(
     first.transaction="ANY"
   ))
 
-clv.newcustomer.dynamic.cov <- function(data.cov.life, data.cov.trans, first.transaction){
+clv.newcustomer.dynamic.cov <- function(num.periods, data.cov.life, data.cov.trans, first.transaction){
   return(new(
     "clv.newcustomer.dynamic.cov",
+    num.periods=num.periods,
     data.cov.life=copy(data.cov.life),
     data.cov.trans=copy(data.cov.trans),
     first.transaction=first.transaction
@@ -191,18 +192,21 @@ clv.newcustomer.dynamic.cov <- function(data.cov.life, data.cov.trans, first.tra
 
 #' @rdname newcustomer
 #' @export
-newcustomer <- function(){
-  return(clv.newcustomer.no.cov())
+newcustomer <- function(num.periods){
+  check_err_msg(check_user_data_predict_newcustomer_numperiods(num.periods))
+  return(clv.newcustomer.no.cov(num.periods))
 }
 
 #' @rdname newcustomer
 #' @export
-newcustomer.static <- function(data.cov.life, data.cov.trans){
+newcustomer.static <- function(num.periods, data.cov.life, data.cov.trans){
 
+  check_err_msg(check_user_data_predict_newcustomer_numperiods(num.periods))
   check_err_msg(check_user_data_newcustomer_staticcovdatacov(data.cov=data.cov.life, name.of.covariate='Lifetime'))
   check_err_msg(check_user_data_newcustomer_staticcovdatacov(data.cov=data.cov.trans, name.of.covariate='Transaction'))
 
   return(clv.newcustomer.static.cov(
+    num.periods = num.periods,
     data.cov.life = as.data.table(data.cov.life),
     data.cov.trans = as.data.table(data.cov.trans)
   ))
@@ -210,8 +214,9 @@ newcustomer.static <- function(data.cov.life, data.cov.trans){
 
 #' @rdname newcustomer
 #' @export
-newcustomer.dynamic <- function(data.cov.life, data.cov.trans, first.transaction){
+newcustomer.dynamic <- function(num.periods, data.cov.life, data.cov.trans, first.transaction){
 
+  check_err_msg(check_user_data_predict_newcustomer_numperiods(num.periods))
   check_err_msg(check_user_data_newcustomer_firsttransaction(first.transaction))
   check_err_msg(check_user_data_newcustomer_dyncovdatacov(data.cov=data.cov.life, name.of.covariate = "Lifetime"))
   check_err_msg(check_user_data_newcustomer_dyncovdatacov(data.cov=data.cov.trans, name.of.covariate = "Transaction"))
@@ -226,6 +231,7 @@ newcustomer.dynamic <- function(data.cov.life, data.cov.trans, first.transaction
   # Cannot convert Cov.Date because dont have clv.time object
 
   return(clv.newcustomer.dynamic.cov(
+    num.periods = num.periods,
     data.cov.life = dt.cov.life,
     data.cov.trans = dt.cov.trans,
     first.transaction = first.transaction

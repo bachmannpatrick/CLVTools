@@ -6,13 +6,20 @@
 \alias{newcustomer.dynamic}
 \title{New customer prediction data}
 \usage{
-newcustomer()
+newcustomer(num.periods)
 
-newcustomer.static(data.cov.life, data.cov.trans)
+newcustomer.static(num.periods, data.cov.life, data.cov.trans)
 
-newcustomer.dynamic(data.cov.life, data.cov.trans, first.transaction)
+newcustomer.dynamic(
+  num.periods,
+  data.cov.life,
+  data.cov.trans,
+  first.transaction
+)
 }
 \arguments{
+\item{num.periods}{A positive, numeric scalar indicating the number of periods to predict.}
+
 \item{data.cov.life}{Numeric-only covariate data for the lifetime process for a single customer, \code{data.table} or \code{data.frame}. See details.}
 
 \item{data.cov.trans}{Numeric-only covariate data for the transaction process for a single customer, \code{data.table} or \code{data.frame}. See details.}
@@ -27,7 +34,11 @@ Has to be within the time range of the covariate data.}
 }
 \description{
 The methods documented here are to be used together with \link[CLVTools:predict.clv.fitted.transactions]{predict} to obtain
-the expected number of transactions of an average new customer.
+the expected number of transactions of an average newly alive customer.
+It describes the number of transactions a single, average new customer is expected to make in
+the \code{num.periods} periods since making the first transaction ("coming alive"). This prediction is only
+sensible for customers who just came alive and have not had the chance to reveal any more of their behavior.
+
 The data required for this new customer prediction is produced by the methods described here. This is mostly covariate data
 for static and dynamic covariate models. See details for the required format.
 }

@@ -29,7 +29,8 @@
 \arguments{
 \item{object}{A fitted clv transaction model for which prediction is desired.}
 
-\item{newdata}{A clv data object or data for the new customer prediction (\code{newdata()}) for which predictions should be made with the fitted model. If none or NULL is given, predictions are made for the data on which the model was fit.}
+\item{newdata}{A clv data object or data for the new customer prediction (see \link{newcustomer}) for which predictions should
+be made with the fitted model. If none or NULL is given, predictions are made for the data on which the model was fit.}
 
 \item{prediction.end}{{} Until what point in time to predict. This can be the number of periods (numeric) or a form of date/time object. See details.}
 
@@ -57,7 +58,7 @@ An object of class \code{data.table} with columns:
 \item{predicted.CLV}{Customer Lifetime Value based on \code{DERT/DECT} and \code{predicted.mean.spending}.}
 
 If predicting for new customers (using \code{newcustomer()}), a numeric scalar indicating the expected
-number of transactions until \code{prediction.end} is returned instead.
+number of transactions is returned instead.
 }
 \description{
 Probabilistic customer attrition models predict in general three expected characteristics for every customer:
@@ -82,8 +83,8 @@ In this case, the prediction additionally contains the following two columns:
 }
 
 \subsection{New customer prediction}{
-The fitted model can also be used to predict the number of transactions a single, average customer is expected
-to make in the \code{prediction.end} periods since making the first transaction ("coming alive").
+The fitted model can also be used to predict the number of transactions a single, average
+newly alive customer is expected to make at the moment of the first transaction ("coming alive").
 For covariate models, the prediction is for an average customer with the given covariates.
 
 The individual-level unconditional expectation that is also used for the
@@ -94,6 +95,7 @@ For models with covariates, the prediction is the same for all customers
 with the same covariates.
 
 The data on which the model was fit and which is stored in it is NOT used for this prediction.
+See examples and \link{newcustomer} for more details.
 
 }
 }
@@ -130,9 +132,6 @@ of the first prediction period is Monday 2019-01-02. Each prediction period incl
 the first prediction period therefore will end on, and include, Sunday 2019-01-08. Subsequent prediction periods
 again start on Mondays and end on Sundays.
 If \code{prediction.end} indicates a timepoint on which to end, this timepoint is included in the prediction period.
-
-If predicting for new customers, \code{prediction.end} has to be a positive, numeric scalar indicating the number
-of periods to predict.
 
 \code{continuous.discount.factor} is the continuous rate used to discount the expected residual
 transactions (\code{DERT/DECT}). An annual rate of (100 x d)\% equals a continuous rate delta = ln(1+d).
@@ -188,6 +187,8 @@ predict(pnc, prediction.end = 10) # ends on 2016-12-17
 
 }
 \seealso{
+\code{\link{newcustomer}} to create data to predict for newly alive customers.
+
 models to predict transactions: \link{pnbd}, \link{bgnbd}, \link{ggomnbd}.
 
 models to predict spending: \link{gg}.
