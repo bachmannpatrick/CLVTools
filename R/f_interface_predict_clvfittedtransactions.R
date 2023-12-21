@@ -144,6 +144,12 @@
 #' predict(pnc, prediction.end = 10) # ends on 2016-12-17
 #' }
 #'
+#' # Predict num transactions for a newly alive customer
+#' # in the next 3.45 weeks
+#' # See ?newcustomer() for more examples
+#' predict(apparel.pnbd, newdata = newcustomer(num.periods=3.45))
+#'
+#'
 #' @importFrom stats predict
 #' @method predict clv.fitted.transactions
 #' @aliases predict
@@ -155,7 +161,13 @@ predict.clv.fitted.transactions <- function(object, newdata=NULL, prediction.end
 
   # The usual prediction unless newdata indicates a new customer prediction (ie newdata=newcustomer())
   if(is(newdata, "clv.newcustomer.no.cov")){
-   return(clv.predict.new.customer(clv.fitted = object, newdata = newdata))
+    # not other parameters except object and newdata may be given (all others must be missing)
+    if(!all(missing(prediction.end), missing(predict.spending), missing(continuous.discount.factor))){
+      check_err_msg("Parameters prediction.end, predict.spending and continuous.discount.factor may not be specified when predicting for new customers.")
+    }
+
+
+    return(clv.predict.new.customer(clv.fitted = object, newdata = newdata))
   }
 
   # If it was not explicitly passed in the call, the spending model should only be applied

@@ -185,6 +185,12 @@ predict(pnc)
 predict(pnc, prediction.end = 10) # ends on 2016-12-17
 }
 
+# Predict num transactions for a newly alive customer
+# in the next 3.45 weeks
+# See ?newcustomer() for more examples
+predict(apparel.pnbd, newdata = newcustomer(num.periods=3.45))
+
+
 }
 \seealso{
 \code{\link{newcustomer}} to create data to predict for newly alive customers.
