@@ -193,8 +193,8 @@ setMethod("clv.controlflow.predict.add.actuals", signature(clv.fitted="clv.fitte
 
 # .clv.controlflow.predict.post.process.prediction.table ------------------------------------------------------------------------------
 setMethod("clv.controlflow.predict.post.process.prediction.table", signature = signature(clv.fitted="clv.fitted.transactions"), function(clv.fitted, dt.predictions, has.actuals, verbose, predict.spending, ...){
-  predicted.mean.spending <- i.predicted.mean.spending <- actual.total.spending <- i.actual.total.spending <- NULL
-  predicted.CLV <- DECT <- DERT <- NULL
+  predicted.mean.spending <- i.predicted.mean.spending <- actual.total.spending <- i.actual.total.spending <- predicted.total.spending <- NULL
+  predicted.CLV <- DECT <- DERT <- CET <- NULL
 
   # Predict spending ---------------------------------------------------------------------------------------
   # depends on content of predict.spending:

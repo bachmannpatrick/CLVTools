@@ -66,7 +66,7 @@ clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, 
 
 #' @importFrom stats quantile
 clv.controlflow.predict.add.uncertainty.estimates <- function(clv.fitted, dt.predictions, num.boots, level, verbose, ...){
-  Id <- NULL
+  Id <- i.value <- value.diff <- value <- value.star <- value.diff <- ci.name <- variable <- NULL
 
   dt.boots <- clv.fitted.bootstrap.predictions(clv.fitted = clv.fitted, num.boots = num.boots, verbose = verbose, ...)
 
