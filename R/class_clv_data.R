@@ -104,7 +104,9 @@ clv.data.select.customer.data.duplicating.ids <- function(dt.data, ids){
     dt.ids[, id_nth := seq(.N), by="Id"]
     dt.ids[, new_Id := paste(Id, id_nth, sep = '_BOOTSTRAP_ID_')]
     dt.ids[id_nth == 1, new_Id := Id] # only use new name if there are multiple ids
-    dt.data <- dt.ids[dt.data, on="Id", nomatch=NULL, mult = "all"]
+    # we are duplicating data which may result in more than nrow(x)+nrow(i) rows
+    # which will raise an error if allow.cartesian=FALSE (default)
+    dt.data <- dt.ids[dt.data, on="Id", nomatch=NULL, mult = "all", allow.cartesian=TRUE]
     dt.data[, Id := new_Id]
     dt.data[, new_Id := NULL]
     dt.data[, id_nth := NULL]
