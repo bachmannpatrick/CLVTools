@@ -21,6 +21,9 @@
 #' Returns a list containing the results of \code{fn.boot.apply}
 #'
 #' @seealso Models for possible inputs to \code{...}: \link{pnbd}, \link{ggomnbd}, \link{bgnbd}.
+#' @seealso Internal methods \code{clv.data.create.bootstrapping.data} to create a \code{clv.data}
+#' object of given customer ids and \code{clv.fitted.estimate.same.specification.on.new.data} to
+#' estimate a model again on new data with its original specification.
 #'
 #' @examples
 #' \donttest{

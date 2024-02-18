@@ -45,7 +45,7 @@ clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, 
                                                                           dt.predictions = dt.predictions,
                                                                           verbose = verbose, ...)
 
-  if(uncertainty == "boots"){
+  if(tolower(uncertainty) == "boots"){
     if(verbose & num.boots < 1000){
       warning("It is recommended to run 1000 or more bootstrap repetitions.", immediate. = TRUE, call. = FALSE)
     }

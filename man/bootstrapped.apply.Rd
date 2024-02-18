@@ -64,4 +64,8 @@ start.params.model=coef(pnbd.cdnow))
 }
 \seealso{
 Models for possible inputs to \code{...}: \link{pnbd}, \link{ggomnbd}, \link{bgnbd}.
+
+Internal methods \code{clv.data.create.bootstrapping.data} to create a \code{clv.data}
+object of given customer ids and \code{clv.fitted.estimate.same.specification.on.new.data} to
+estimate a model again on new data with its original specification.
 }

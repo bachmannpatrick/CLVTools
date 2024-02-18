@@ -36,6 +36,8 @@
 #' \item "CLV", the customer lifetime value. CLV is the product of DERT/DECT and predicted spending.
 #'}
 #'
+#' Uncertainty estimates are available for all predicted quantities using bootstrapping. See details.
+#'
 #' @details \code{predict.spending} indicates whether to predict customers' spending and if so, the spending model to use.
 #' Accepted inputs are either a logical (\code{TRUE/FALSE}), a method to fit a spending model (i.e. \code{\link{gg}}), or
 #' an already fitted spending model. If provided \code{TRUE}, a Gamma-Gamma model is fit with default options. If argument
@@ -51,10 +53,22 @@
 #' To account for time units which are not annual, the continuous rate has to be further adjusted
 #' to delta=ln(1+d)/k, where k are the number of time units in a year.
 #'
+#' @section Uncertainty Estimates:
+#' Bootstrapping is used to provide confidence intervals of all predicted metrics.
+#' These provide an estimate of parameter uncertainty.
+#' To create bootstrapped data, customer ids are sampled with replacement until reaching original
+#' length and all transactions of the sampled customers are used to create a new \code{clv.data} object.
+#' A new model is fit on the bootstrapped data which is then used to predict on this data.
+#' All prediction parameters, incl \code{prediction.end} and \code{continuous.discount.factor}, are forwarded
+#' to the prediction on the bootstrapped data.
+#' Per customer, confidence intervals of each predicted metric are created using a "reversed quantile" approach.
+#' See \link{bootstrapped.apply} to create a custom bootstrapping procedure.
+#'
 #'
 #' @seealso models to predict transactions: \link{pnbd}, \link{bgnbd}, \link{ggomnbd}.
 #' @seealso models to predict spending: \link{gg}.
 #' @seealso \code{\link[CLVTools:predict.clv.fitted.spending]{predict}} for spending models
+#' @seealso \link{bootstrapped.apply} for bootstrapped model estimation
 #'
 #'
 #' @return

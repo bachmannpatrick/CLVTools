@@ -9,7 +9,7 @@
   object,
   newdata = NULL,
   uncertainty = c("none", "boots"),
-  level = 0.1,
+  level = 0.9,
   num.boots = 100,
   verbose = TRUE,
   ...
@@ -19,7 +19,7 @@
   object,
   newdata = NULL,
   uncertainty = c("none", "boots"),
-  level = 0.1,
+  level = 0.9,
   num.boots = 100,
   verbose = TRUE,
   ...
