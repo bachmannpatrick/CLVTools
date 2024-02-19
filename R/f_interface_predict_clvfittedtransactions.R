@@ -36,7 +36,7 @@
 #' \item "CLV", the customer lifetime value. CLV is the product of DERT/DECT and predicted spending.
 #'}
 #'
-#' Uncertainty estimates are available for all predicted quantities using bootstrapping. See details.
+#' Uncertainty estimates are available for all predicted quantities using bootstrapping.
 #'
 #' @details \code{predict.spending} indicates whether to predict customers' spending and if so, the spending model to use.
 #' Accepted inputs are either a logical (\code{TRUE/FALSE}), a method to fit a spending model (i.e. \code{\link{gg}}), or

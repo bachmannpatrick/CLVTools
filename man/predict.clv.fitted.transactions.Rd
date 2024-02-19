@@ -90,7 +90,7 @@ In this case, the prediction additionally contains the following two columns:
 \item "CLV", the customer lifetime value. CLV is the product of DERT/DECT and predicted spending.
 }
 
-Uncertainty estimates are available for all predicted quantities using bootstrapping. See details.
+Uncertainty estimates are available for all predicted quantities using bootstrapping.
 }
 \details{
 \code{predict.spending} indicates whether to predict customers' spending and if so, the spending model to use.

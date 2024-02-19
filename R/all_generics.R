@@ -81,6 +81,12 @@ setGeneric("clv.fitted.get.model.estimation.interface.args", function(clv.fitted
   standardGeneric("clv.fitted.get.model.estimation.interface.args")
 })
 
+# Generate many predictions by re-fitting the given model on bootstrapped
+# transaction data and predicting on it
+setGeneric("clv.fitted.bootstrap.predictions", function(clv.fitted, num.boots, verbose, ...){
+  standardGeneric("clv.fitted.bootstrap.predictions")
+})
+
 
 
 

@@ -213,8 +213,9 @@ check_user_data_continuousdiscountfactor <- function(continuous.discount.factor)
 
 
 check_user_data_numboots <- function(num.boots){
-  if(missing(num.boots))
+  if(missing(num.boots)){
     return("Parameter num.boots cannot be missing!")
+  }
 
   err.msg <- .check_user_data_single_numeric(n = num.boots, var.name = "num.boots")
   if(length(err.msg) > 0){
