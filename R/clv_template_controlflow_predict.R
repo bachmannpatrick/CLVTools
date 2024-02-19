@@ -160,7 +160,7 @@ setMethod(f = "clv.fitted.bootstrap.predictions", signature = signature(clv.fitt
         uncertainty = "none"))
     }
 
-    l.boots <- bootstrapped.apply(
+    l.boots <- clv.bootstrapped.apply(
       object = clv.fitted,
       num.boot = num.boots,
       fn.boot.apply = boots.predict,
@@ -199,7 +199,7 @@ setMethod(f = "clv.fitted.bootstrap.predictions",signature = signature(clv.fitte
         uncertainty = "none"))
     }
 
-    l.boots <- bootstrapped.apply(
+    l.boots <- clv.bootstrapped.apply(
       object = clv.fitted,
       num.boot = num.boots,
       fn.boot.apply = boots.predict,

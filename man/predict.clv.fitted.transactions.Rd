@@ -139,7 +139,7 @@ A new model is fit on the bootstrapped data which is then used to predict on thi
 All prediction parameters, incl \code{prediction.end} and \code{continuous.discount.factor}, are forwarded
 to the prediction on the bootstrapped data.
 Per customer, confidence intervals of each predicted metric are created using a "reversed quantile" approach.
-See \link{bootstrapped.apply} to create a custom bootstrapping procedure.
+See \link{clv.bootstrapped.apply} to create a custom bootstrapping procedure.
 }
 
 \examples{
@@ -197,5 +197,5 @@ models to predict spending: \link{gg}.
 
 \code{\link[CLVTools:predict.clv.fitted.spending]{predict}} for spending models
 
-\link{bootstrapped.apply} for bootstrapped model estimation
+\link{clv.bootstrapped.apply} for bootstrapped model estimation
 }

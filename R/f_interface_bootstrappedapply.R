@@ -36,7 +36,7 @@
 #'
 #' # bootstrapped model coefs while sampling 50 percent
 #' # of customers without replacement
-#' bootstrapped.apply(pnbd.cdnow, num.boot=5, fn.boot.apply=coef,
+#' clv.bootstrapped.apply(pnbd.cdnow, num.boot=5, fn.boot.apply=coef,
 #' fn.sample=function(x){
 #' sample(x, size = as.integer(0.5*length(x)), replace = FALSE)})
 #'
@@ -44,12 +44,12 @@
 #' # return predictions 10 periods ahead.
 #' # prediction.end is required because the bootstrapped
 #' # data contains no holdout period
-#' bootstrapped.apply(pnbd.cdnow, num.boot=5, fn.sample=NULL,
+#' clv.bootstrapped.apply(pnbd.cdnow, num.boot=5, fn.sample=NULL,
 #' fn.boot.apply=function(x){predict(x, prediction.end=10)})
 #'
 #' # return the fitted models
 #' # forward additional arguments to the model fitting method
-#' bootstrapped.apply(pnbd.cdnow, num.boot=5, fn.sample=NULL,
+#' clv.bootstrapped.apply(pnbd.cdnow, num.boot=5, fn.sample=NULL,
 #' fn.boot.apply=return,
 #' # args for ..., forwarded to pnbd()
 #' verbose=FALSE, optimx.args=list(method="Nelder-Mead"),
@@ -57,7 +57,9 @@
 #' }
 #'
 #' @export
-bootstrapped.apply <- function(object, num.boot, fn.boot.apply, fn.sample=NULL, ...){
+clv.bootstrapped.apply <- function(object, num.boot, fn.boot.apply, fn.sample=NULL, ...){
+  # cran silence
+  Id <- NULL
 
   # TODO [test]: Test that works for transaction and spending model
   # TODO [test]: Test that works for static and dynamic covariate models

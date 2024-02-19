@@ -62,13 +62,13 @@
 #' All prediction parameters, incl \code{prediction.end} and \code{continuous.discount.factor}, are forwarded
 #' to the prediction on the bootstrapped data.
 #' Per customer, confidence intervals of each predicted metric are created using a "reversed quantile" approach.
-#' See \link{bootstrapped.apply} to create a custom bootstrapping procedure.
+#' See \link{clv.bootstrapped.apply} to create a custom bootstrapping procedure.
 #'
 #'
 #' @seealso models to predict transactions: \link{pnbd}, \link{bgnbd}, \link{ggomnbd}.
 #' @seealso models to predict spending: \link{gg}.
 #' @seealso \code{\link[CLVTools:predict.clv.fitted.spending]{predict}} for spending models
-#' @seealso \link{bootstrapped.apply} for bootstrapped model estimation
+#' @seealso \link{clv.bootstrapped.apply} for bootstrapped model estimation
 #'
 #'
 #' @return
