@@ -5,14 +5,36 @@
 \alias{predict,clv.fitted.spending-method}
 \title{Predict customers' future spending}
 \usage{
-\method{predict}{clv.fitted.spending}(object, newdata = NULL, verbose = TRUE, ...)
+\method{predict}{clv.fitted.spending}(
+  object,
+  newdata = NULL,
+  uncertainty = c("none", "boots"),
+  level = 0.9,
+  num.boots = 100,
+  verbose = TRUE,
+  ...
+)
 
-\S4method{predict}{clv.fitted.spending}(object, newdata = NULL, verbose = TRUE, ...)
+\S4method{predict}{clv.fitted.spending}(
+  object,
+  newdata = NULL,
+  uncertainty = c("none", "boots"),
+  level = 0.9,
+  num.boots = 100,
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{object}{A fitted spending model for which prediction is desired.}
 
 \item{newdata}{A clv data object for which predictions should be made with the fitted model. If none or NULL is given, predictions are made for the data on which the model was fit.}
+
+\item{uncertainty}{Method to produce confidence intervals of the predictions (parameter uncertainty). Either "none" (default) or "boots".}
+
+\item{level}{Required confidence level, if \code{uncertainty="boots"}.}
+
+\item{num.boots}{Number of bootstrap repetitions, if \code{uncertainty="boots"}. A low number may not produce intervals for all customers if they are not sampled.}
 
 \item{verbose}{Show details about the running of the function.}
 

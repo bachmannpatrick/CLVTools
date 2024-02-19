@@ -3,7 +3,7 @@
 #'
 #' @param object A fitted spending model for which prediction is desired.
 #' @param newdata A clv data object for which predictions should be made with the fitted model. If none or NULL is given, predictions are made for the data on which the model was fit.
-#'
+#' @template template_params_uncertainty
 #' @template template_param_verbose
 #' @template template_param_dots
 #'
@@ -43,11 +43,14 @@
 #' @importFrom stats predict
 #' @method predict clv.fitted.spending
 #' @export
-predict.clv.fitted.spending <- function(object, newdata=NULL, verbose=TRUE, ...){
+predict.clv.fitted.spending <- function(object, newdata=NULL, uncertainty=c("none", "boots"), level=0.9, num.boots=100, verbose=TRUE, ...){
 
   check_err_msg(check_user_data_emptyellipsis(...))
+  check_err_msg(.check_userinput_matcharg(char=tolower(uncertainty), choices=c("none", "boots"), var.name="uncertainty"))
+  # match uncertainty to one of the allowed values
+  uncertainty <- match.arg(tolower(uncertainty), choices=c("none", "boots"), several.ok=FALSE)
 
-  return(clv.template.controlflow.predict(clv.fitted=object, verbose=verbose, user.newdata=newdata))
+  return(clv.template.controlflow.predict(clv.fitted=object, verbose=verbose, user.newdata=newdata, uncertainty=uncertainty, num.boots=num.boots, level=level))
 }
 
 

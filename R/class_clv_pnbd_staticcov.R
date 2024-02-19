@@ -28,3 +28,10 @@ clv.pnbd.static.cov <- function(cl, clv.data){
              clv.fitted.transactions.static.cov(cl=cl, clv.model=clv.model, clv.data=clv.data),
              cbs = dt.cbs.pnbd))
 }
+
+setMethod("clv.fitted.get.model.estimation.interface.args", signature = "clv.pnbd.static.cov", def = function(clv.fitted){
+  args <- callNextMethod()
+  return(c(args, list(
+    use.cor=clv.fitted@clv.model@estimation.used.correlation
+  )))
+})

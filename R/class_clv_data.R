@@ -93,6 +93,32 @@ clv.data.get.transactions.in.holdout.period <- function(clv.data){
   return(clv.data@data.transactions[Date >= clv.data@clv.time@timepoint.holdout.start])
 }
 
+
+# to allow for sampling with replacement, the name of ids appearing multiple times have to be changed
+# because they are otherwise aggregated in clv.data
+clv.data.select.customer.data.duplicating.ids <- function(dt.data, ids){
+  .N <- id_nth <- new_Id <- Id <- NULL
+
+  if(anyDuplicated(ids)){
+    dt.ids <- data.table(Id=ids, key = "Id")
+    dt.ids[, id_nth := seq(.N), by="Id"]
+    dt.ids[, new_Id := paste(Id, id_nth, sep = '_BOOTSTRAP_ID_')]
+    dt.ids[id_nth == 1, new_Id := Id] # only use new name if there are multiple ids
+    # we are duplicating data which may result in more than nrow(x)+nrow(i) rows
+    # which will raise an error if allow.cartesian=FALSE (default)
+    dt.data <- dt.ids[dt.data, on="Id", nomatch=NULL, mult = "all", allow.cartesian=TRUE]
+    dt.data[, Id := new_Id]
+    dt.data[, new_Id := NULL]
+    dt.data[, id_nth := NULL]
+  }else{
+    dt.data <- dt.data[SJ(Id=ids), on="Id", nomatch=NULL]
+  }
+
+  return(dt.data)
+}
+
+
+
 clv.data.make.repeat.transactions <- function(dt.transactions){
   Date <- trans_num <- .N <- NULL
 

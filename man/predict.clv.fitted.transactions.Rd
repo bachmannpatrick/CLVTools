@@ -12,6 +12,9 @@
   prediction.end = NULL,
   predict.spending = gg,
   continuous.discount.factor = 0.1,
+  uncertainty = c("none", "boots"),
+  level = 0.9,
+  num.boots = 100,
   verbose = TRUE,
   ...
 )
@@ -22,6 +25,9 @@
   prediction.end = NULL,
   predict.spending = gg,
   continuous.discount.factor = 0.1,
+  uncertainty = c("none", "boots"),
+  level = 0.9,
+  num.boots = 100,
   verbose = TRUE,
   ...
 )
@@ -36,6 +42,12 @@
 \item{predict.spending}{Whether and how to predict spending and based on it also CLV, if possible. See details.}
 
 \item{continuous.discount.factor}{continuous discount factor to use to calculate \code{DERT/DECT}}
+
+\item{uncertainty}{Method to produce confidence intervals of the predictions (parameter uncertainty). Either "none" (default) or "boots".}
+
+\item{level}{Required confidence level, if \code{uncertainty="boots"}.}
+
+\item{num.boots}{Number of bootstrap repetitions, if \code{uncertainty="boots"}. A low number may not produce intervals for all customers if they are not sampled.}
 
 \item{verbose}{Show details about the running of the function.}
 
@@ -77,6 +89,8 @@ In this case, the prediction additionally contains the following two columns:
 \item "predicted.mean.spending", the mean spending per transactions as predicted by the spending model.
 \item "CLV", the customer lifetime value. CLV is the product of DERT/DECT and predicted spending.
 }
+
+Uncertainty estimates are available for all predicted quantities using bootstrapping.
 }
 \details{
 \code{predict.spending} indicates whether to predict customers' spending and if so, the spending model to use.
@@ -115,6 +129,19 @@ transactions (\code{DERT/DECT}). An annual rate of (100 x d)\% equals a continuo
 To account for time units which are not annual, the continuous rate has to be further adjusted
 to delta=ln(1+d)/k, where k are the number of time units in a year.
 }
+\section{Uncertainty Estimates}{
+
+Bootstrapping is used to provide confidence intervals of all predicted metrics.
+These provide an estimate of parameter uncertainty.
+To create bootstrapped data, customer ids are sampled with replacement until reaching original
+length and all transactions of the sampled customers are used to create a new \code{clv.data} object.
+A new model is fit on the bootstrapped data which is then used to predict on this data.
+All prediction parameters, incl \code{prediction.end} and \code{continuous.discount.factor}, are forwarded
+to the prediction on the bootstrapped data.
+Per customer, confidence intervals of each predicted metric are created using a "reversed quantile" approach.
+See \link{clv.bootstrapped.apply} to create a custom bootstrapping procedure.
+}
+
 \examples{
 
 \donttest{
@@ -169,4 +196,6 @@ models to predict transactions: \link{pnbd}, \link{bgnbd}, \link{ggomnbd}.
 models to predict spending: \link{gg}.
 
 \code{\link[CLVTools:predict.clv.fitted.spending]{predict}} for spending models
+
+\link{clv.bootstrapped.apply} for bootstrapped model estimation
 }

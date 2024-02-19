@@ -52,11 +52,18 @@ fct.helper.dyncov.get.optimxargs.quickfit <- function(){
 }
 
 
-fct.helper.create.clvdata.apparel.dyncov <- function(data.apparelTrans,  data.apparelDynCov, estimation.split){
+fct.helper.create.clvdata.apparel.dyncov <- function(data.apparelTrans,  data.apparelDynCov, estimation.split,
+                                                     names.cov.life = c("Marketing", "Gender", "Channel"),
+                                                     names.cov.trans = c("Marketing", "Gender", "Channel")){
+
   expect_silent(clv.dyn <- clvdata(data.apparelTrans, date.format = "ymd", time.unit = "w", estimation.split = estimation.split))
-  suppressMessages(clv.dyn <- SetDynamicCovariates(clv.dyn, data.cov.life = data.apparelDynCov, data.cov.trans = data.apparelDynCov,
-                                                 names.cov.life = c("Marketing", "Gender", "Channel"), names.cov.trans = c("Marketing", "Gender", "Channel"),
-                                                 name.date = "Cov.Date"))
+
+  suppressMessages(clv.dyn <- SetDynamicCovariates(clv.dyn,
+                                                   data.cov.life = data.apparelDynCov,
+                                                   data.cov.trans = data.apparelDynCov,
+                                                   names.cov.life = names.cov.life,
+                                                   names.cov.trans = names.cov.trans,
+                                                   name.date = "Cov.Date"))
   return(clv.dyn)
 }
 

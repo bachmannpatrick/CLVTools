@@ -82,3 +82,16 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.tran
 
   check_err_msg(err.msg)
 })
+
+
+# . clv.fitted.get.model.estimation.interface.args -------------------------------------------------------------
+setMethod("clv.fitted.get.model.estimation.interface.args", signature = "clv.fitted.transactions.static.cov", def = function(clv.fitted){
+  # TODO [Test]: returns correct args if using additional specifications (one object fit with all additional options)
+
+  # estimation args available for all (static & dyn) cov models
+  return(list(
+    names.cov.constr = if(clv.fitted@estimation.used.constraints){clv.fitted@names.original.params.constr}else{c()},
+    reg.lambdas = if(clv.fitted@estimation.used.regularization){c(trans=clv.fitted@reg.lambda.trans, life=clv.fitted@reg.lambda.life)}else{c()}
+  ))
+})
+

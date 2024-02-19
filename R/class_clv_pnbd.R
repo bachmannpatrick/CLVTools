@@ -67,3 +67,12 @@ pnbd_cbs <- function(clv.data){
 
   return(cbs)
 }
+
+
+
+setMethod("clv.fitted.get.model.estimation.interface.args", signature = "clv.pnbd", def = function(clv.fitted){
+  args <- callNextMethod()
+  return(c(args, list(
+    use.cor=clv.fitted@clv.model@estimation.used.correlation
+  )))
+})
