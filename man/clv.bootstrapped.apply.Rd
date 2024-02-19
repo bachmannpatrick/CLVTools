@@ -22,7 +22,14 @@ a vector of ids (string). If \code{NULL}, ids are sampled with replacement until
 Returns a list containing the results of \code{fn.boot.apply}
 }
 \description{
+Given a fitted model, sample new data from the \code{clv.data} stored in it and re-fit the model on it.
+Which customers are selected into the new data is determined by \code{fn.sample}.
+The model is fit on the new data with the same options with which it was originally fit,
+excluding \code{optimx.args} and \code{verbose} (if required, these can be passed as \code{...}).
+After the model is fit, \code{fn.boot.apply} is applied to it and
+the value it returns is collected in a list which is eventually returned.
 
+Note that the Id of customers which are sampled more than once gains a suffix "_BOOTSTRAP_ID_<number>".
 }
 \examples{
 \donttest{
