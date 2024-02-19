@@ -32,7 +32,7 @@ setGeneric("clv.controlflow.estimate.process.post.estimation", def=function(clv.
 
 
 # . Predict -----------------------------------------------------------------------------------------------
-setGeneric("clv.controlflow.predict.check.inputs", def = function(clv.fitted, verbose, ...)
+setGeneric("clv.controlflow.predict.check.inputs", def = function(clv.fitted, verbose, uncertainty, num.boots, level, ...)
   standardGeneric("clv.controlflow.predict.check.inputs"))
 
 setGeneric("clv.controlflow.predict.set.prediction.params", def = function(clv.fitted)
@@ -70,6 +70,25 @@ setGeneric("clv.controlflow.plot.check.inputs", def = function(obj, prediction.e
 # . Predict new customer -----------------------------------------------------------------------------------------
 setGeneric("clv.predict.new.customer", def = function(clv.fitted, clv.newcustomer){
   standardGeneric("clv.predict.new.customer")
+})
+
+# . Bootstrapping ------------------------------------------------------------------------------------------
+
+# Estimate the model again on new data with its original specification
+# pass arguments incl optimx.args and overwrite any existing settings in ...
+setGeneric("clv.fitted.estimate.same.specification.on.new.data", function(clv.fitted, newdata, ...){
+  standardGeneric("clv.fitted.estimate.same.specification.on.new.data")
+})
+
+# Method to collect the args used when estimating the model. Allows to re-estimate the model
+setGeneric("clv.fitted.get.model.estimation.interface.args", function(clv.fitted){
+  standardGeneric("clv.fitted.get.model.estimation.interface.args")
+})
+
+# Generate many predictions by re-fitting the given model on bootstrapped
+# transaction data and predicting on it
+setGeneric("clv.fitted.bootstrap.predictions", function(clv.fitted, num.boots, verbose, ...){
+  standardGeneric("clv.fitted.bootstrap.predictions")
 })
 
 
@@ -198,6 +217,13 @@ setGeneric("clv.time.ceiling.date", function(clv.time, timepoint)
 
 setGeneric("clv.time.format.timepoint", function(clv.time, timepoint)
   standardGeneric("clv.time.format.timepoint"))
+
+
+# clv.data ----------------------------------------------------------------------------------------------------
+# Create clv.data object with same config asbut only transactions and covariates of given ids
+setGeneric("clv.data.create.bootstrapping.data", def = function(clv.data, ids){
+  standardGeneric("clv.data.create.bootstrapping.data")
+})
 
 
 

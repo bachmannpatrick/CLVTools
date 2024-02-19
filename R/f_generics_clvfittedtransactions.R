@@ -1,5 +1,5 @@
 # . clv.controlflow.predict.check.inputs ------------------------------------------------------------------------
-setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, verbose, prediction.end, continuous.discount.factor, predict.spending, ...){
+setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, verbose, uncertainty, num.boots, level, prediction.end, continuous.discount.factor, predict.spending, ...){
   err.msg <- c()
 
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
@@ -11,6 +11,11 @@ setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.
     err.msg <- c(err.msg, "Cannot predict without prediction.end if there is no holdout!")
 
   err.msg <- c(err.msg, check_user_data_continuousdiscountfactor(continuous.discount.factor=continuous.discount.factor))
+
+  if(uncertainty == "boots"){
+    err.msg <- c(err.msg, check_user_data_numboots(num.boots=num.boots))
+    err.msg <- c(err.msg, check_user_data_level(level=level))
+  }
 
   # predict.spending
   # Spending can be predicted using either a function (ie gg), a logical (ie FALSE), or an
@@ -197,10 +202,10 @@ setMethod("clv.controlflow.predict.add.actuals", signature(clv.fitted="clv.fitte
 })
 
 
-# . clv.controlflow.predict.post.process.prediction.table ------------------------------------------------------------------------------
+# .clv.controlflow.predict.post.process.prediction.table ------------------------------------------------------------------------------
 setMethod("clv.controlflow.predict.post.process.prediction.table", signature = signature(clv.fitted="clv.fitted.transactions"), function(clv.fitted, dt.predictions, has.actuals, verbose, predict.spending, ...){
-  predicted.mean.spending <- i.predicted.mean.spending <- actual.total.spending <- i.actual.total.spending <- NULL
-  predicted.CLV <- CET <- DECT <- DERT <- predicted.total.spending <- NULL
+  predicted.mean.spending <- i.predicted.mean.spending <- actual.total.spending <- i.actual.total.spending <- predicted.total.spending <- NULL
+  predicted.CLV <- CET <- DECT <- DERT <- NULL
 
   # Predict spending ---------------------------------------------------------------------------------------
   # depends on content of predict.spending:
@@ -318,6 +323,7 @@ setMethod("clv.controlflow.predict.post.process.prediction.table", signature = s
 
 
 
+
 # . clv.predict.new.customer ---------------------------------------------------------------------------------------
 #' @include class_clv_fitted_transactions.R
 setMethod("clv.predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, clv.newcustomer){
@@ -331,4 +337,57 @@ setMethod("clv.predict.new.customer", signature = signature(clv.fitted="clv.fitt
     clv.fitted = clv.fitted,
     clv.newcustomer=clv.newcustomer,
     t=clv.newcustomer@num.periods)))
+})
+
+# .clv.fitted.get.model.estimation.interface.args --------------------------------------------
+setMethod("clv.fitted.get.model.estimation.interface.args", signature = "clv.fitted.transactions", def = function(clv.fitted){
+  # For many models there are no specifc args available (e.g nocov bgnbd and ggomnbd)
+  return(list())
+})
+
+
+# . clv.fitted.bootstrap.predictions --------------------------------------------
+setMethod(f = "clv.fitted.bootstrap.predictions", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, num.boots, verbose, prediction.end, predict.spending, continuous.discount.factor){
+
+  # have to explicitly give prediction.end because bootstrapping data has no holdout
+  if(is.null(prediction.end)){
+    boots.prediction.end <- clv.fitted@clv.data@clv.time@timepoint.holdout.end
+  }else{
+    boots.prediction.end <- prediction.end
+  }
+
+  if(verbose){
+    # Print message before progress bar is created
+    message("Bootstrapping ",num.boots," times for uncertainty estimates...")
+
+    progress.bar <- txtProgressBar(max = num.boots, style = 3)
+    update.pb    <- function(n){setTxtProgressBar(pb=progress.bar, value = n)}
+  }else{
+    # has to be also defined if verbose=F because used in boots.predict
+    update.pb <- function(n){}
+  }
+  pb.i <- 0
+
+  boots.predict <- function(clv.boot){
+    pb.i <<- pb.i + 1
+    update.pb(n = pb.i)
+    return(predict(
+      object = clv.boot,
+      prediction.end = boots.prediction.end,
+      verbose = FALSE,
+      predict.spending = predict.spending,
+      continuous.discount.factor = continuous.discount.factor,
+      uncertainty = "none"))
+  }
+
+  l.boots <- clv.bootstrapped.apply(
+    object = clv.fitted,
+    num.boot = num.boots,
+    fn.boot.apply = boots.predict,
+    fn.sample = NULL,
+    verbose = FALSE,
+    start.params.model = clv.fitted@prediction.params.model
+  )
+
+  return(rbindlist(l.boots))
 })

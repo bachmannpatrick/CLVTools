@@ -85,7 +85,6 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.tran
 
 
 
-
 # . clv.predict.new.customer ------------------------------------------------------------------------------
 #' @include class_clv_fitted_transactions_staticcov.R
 setMethod(f = "clv.predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted, clv.newcustomer){
@@ -100,5 +99,16 @@ setMethod(f = "clv.predict.new.customer", signature = signature(clv.fitted="clv.
     clv.fitted = clv.fitted,
     clv.newcustomer=clv.newcustomer,
     t=clv.newcustomer@num.periods)))
+})
+
+# . clv.fitted.get.model.estimation.interface.args -------------------------------------------------------------
+setMethod("clv.fitted.get.model.estimation.interface.args", signature = "clv.fitted.transactions.static.cov", def = function(clv.fitted){
+  # TODO [Test]: returns correct args if using additional specifications (one object fit with all additional options)
+
+  # estimation args available for all (static & dyn) cov models
+  return(list(
+    names.cov.constr = if(clv.fitted@estimation.used.constraints){clv.fitted@names.original.params.constr}else{c()},
+    reg.lambdas = if(clv.fitted@estimation.used.regularization){c(trans=clv.fitted@reg.lambda.trans, life=clv.fitted@reg.lambda.life)}else{c()}
+  ))
 })
 
