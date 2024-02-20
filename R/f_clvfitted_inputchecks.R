@@ -375,3 +375,116 @@ check_user_data_label <- function(label, other.models){
     return(err.msg)
   }
 }
+
+
+
+check_user_data_newcustomer_numperiods <- function(num.periods){
+  err.msg <- .check_user_data_single_numeric(n=num.periods, var.name='num.periods')
+  if(length(err.msg)){
+    return(err.msg)
+  }
+
+  if(num.periods < 0){
+    err.msg <- c(err.msg, c("Parameter num.periods has to be positive (>=0)!"))
+  }
+
+  return(err.msg)
+}
+
+
+check_user_data_predict_newcustomer_staticcov <- function(clv.fitted, clv.newcustomer){
+
+  # is exactly "clv.newcustomer.static.cov"
+  if(!is(clv.newcustomer, "clv.newcustomer.static.cov") | is(clv.newcustomer, "clv.newcustomer.dynamic.cov")){
+    return("Parameter newdata has to be output from calling `newcustomer.static()`!")
+  }
+
+  # only need to check if right columns are here, all other things were checked when creating newcustomer
+  required.names.cov <- names(clv.fitted@prediction.params.life)
+  if(!identical(sort(colnames(clv.newcustomer@data.cov.life)), sort(required.names.cov))){
+    return(paste0("The Lifetime covariate data has to contain exactly the following columns: ", paste(required.names.cov, collapse = ", "), "!"))
+  }
+
+  required.names.cov <- names(clv.fitted@prediction.params.trans)
+  if(!identical(sort(colnames(clv.newcustomer@data.cov.trans)), sort(required.names.cov))){
+    return(paste0("The Transaction covariate data has to contain exactly the following columns: ", paste(required.names.cov, collapse = ", "), "!"))
+  }
+
+  return(c())
+}
+
+check_user_data_predict_newcustomer_dyncov <- function(clv.fitted, clv.newcustomer){
+
+  if(!is(clv.newcustomer, "clv.newcustomer.dynamic.cov")){
+    stop("Parameter newdata has to be output from calling `newcustomer.dynamic()`")
+  }
+
+  # Has to contain exactly the same columns as the covariate data used when fitting
+  names.col <- c(names(clv.fitted@prediction.params.life), "Cov.Date")
+  if(!identical(sort(colnames(clv.newcustomer@data.cov.life)), sort(names.col))){
+    return(paste0("The Lifetime covariate data has to contain exactly the following columns: ", paste(names.col, collapse = ", "), "!"))
+  }
+
+  names.col <- c(names(clv.fitted@prediction.params.trans), "Cov.Date")
+  if(!identical(sort(colnames(clv.newcustomer@data.cov.trans)), sort(names.col))){
+    return(paste0("The Transaction covariate data has to contain exactly the following columns: ", paste(names.col, collapse = ", "), "!"))
+  }
+
+  return(c())
+}
+
+check_user_data_newcustomer_dyncovspecific <- function(clv.time, dt.cov.life, dt.cov.trans, tp.first.transaction, tp.prediction.end){
+  Cov.Date <- NULL
+
+  # Required covariate dates are from first tranasction until prediction end
+  #   They have to be from the period containing the first transaction until the period
+  #   containing the prediction end
+
+  # The covariates may also be longer or than the prediction end
+  # We therefore do not enforce that the required cov dates end at the prediction end
+  tp.max.cov.data <- max(
+    tp.prediction.end,
+    dt.cov.life[, max(Cov.Date)],
+    dt.cov.trans[, max(Cov.Date)]
+  )
+
+  # The covariates may also start earlier than the first transaction
+  # We therefore do not enforce that the required cov dates start at the first transaction
+  # Alternatively, could cut off the covariates before the first required cov date
+  # but then these are not compared against dt.required.cov.dates and could be wrong
+  tp.min.cov.date <- min(
+    tp.first.transaction,
+    dt.cov.life[, min(Cov.Date)],
+    dt.cov.trans[, min(Cov.Date)]
+  )
+
+  dt.required.cov.dates <- clv.time.sequence.of.covariate.timepoints(
+    clv.time = clv.time,
+    tp.start = tp.min.cov.date,
+    tp.end   = tp.max.cov.data)
+
+  err.msg.required.cov.dates <- paste0(
+    "The covariate data has to be spaced ",tolower(clv.time.tu.to.ly(clv.time))," and start at ",
+    clv.time.format.timepoint(clv.time=clv.time,timepoint=clv.time.floor.date(clv.time=clv.time, timepoint=tp.first.transaction)),
+    " (the period containing the first transaction) and end on ",
+    clv.time.format.timepoint(clv.time=clv.time, timepoint=dt.required.cov.dates[, max(Cov.Date)]),
+    " (the period containing the prediction end).")
+
+  # By comparing the dates actually in the covariates with the required covariate dates, we can check
+  # - no dates are missing
+  # - covs are spaced correctly
+  # - covs contain first transaction and prediction end
+  # - both covs have the same min(Cov.Date) and max(Cov.Date)
+
+  # Check that Cov.Date in dt.cov.life corresponds exactly to dt.required.cov.dates
+  if(!isTRUE(all.equal(dt.cov.life[order(Cov.Date), "Cov.Date"], dt.required.cov.dates[order(Cov.Date), "Cov.Date"]))){
+    return(err.msg.required.cov.dates)
+  }
+
+  if(!isTRUE(all.equal(dt.cov.trans[order(Cov.Date), "Cov.Date"], dt.required.cov.dates[order(Cov.Date), "Cov.Date"]))){
+    return(err.msg.required.cov.dates)
+  }
+
+  return(c())
+}
+

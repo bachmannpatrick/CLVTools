@@ -119,6 +119,7 @@ Collate:
     'f_interface_gg.R'
     'f_interface_ggomnbd.R'
     'f_interface_latentattrition.R'
+    'f_interface_newcustomer.R'
     'f_interface_pmf.R'
     'f_interface_pnbd.R'
     'f_interface_predict_clvfittedspending.R'

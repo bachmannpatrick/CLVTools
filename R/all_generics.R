@@ -51,7 +51,6 @@ setGeneric(name = "clv.controlflow.predict.post.process.prediction.table", def =
   standardGeneric("clv.controlflow.predict.post.process.prediction.table"))
 
 
-
 # .. Newdata: replace data in existing model -----------------------------------------------------------------
 # For plot and predict
 setGeneric("clv.controlflow.check.newdata", def = function(clv.fitted, user.newdata, ...)
@@ -67,6 +66,11 @@ setGeneric("clv.controlflow.check.prediction.params", def = function(clv.fitted)
 # clv.controlflow.plot.check.inputs is needed for fitted.dyncov models only to check dyncov length
 setGeneric("clv.controlflow.plot.check.inputs", def = function(obj, prediction.end, cumulative, plot, label.line, verbose)
   standardGeneric("clv.controlflow.plot.check.inputs"))
+
+# . Predict new customer -----------------------------------------------------------------------------------------
+setGeneric("clv.predict.new.customer", def = function(clv.fitted, clv.newcustomer){
+  standardGeneric("clv.predict.new.customer")
+})
 
 # . Bootstrapping ------------------------------------------------------------------------------------------
 
@@ -86,7 +90,6 @@ setGeneric("clv.fitted.get.model.estimation.interface.args", function(clv.fitted
 setGeneric("clv.fitted.bootstrap.predictions", function(clv.fitted, num.boots, verbose, ...){
   standardGeneric("clv.fitted.bootstrap.predictions")
 })
-
 
 
 
@@ -164,8 +167,15 @@ setGeneric(name="clv.model.vcov.jacobi.diag", def=function(clv.model, clv.fitted
 setGeneric(name="clv.model.process.newdata", def=function(clv.model, clv.fitted, user.newdata, verbose)
   standardGeneric("clv.model.process.newdata"))
 
+# .. PMF --------------------------------------------------------------------------------------------------------------------
 setGeneric(name="clv.model.pmf", def=function(clv.model, clv.fitted, x)
   standardGeneric("clv.model.pmf"))
+
+# .. New customer expectation -----------------------------------------------------------------------------------------------
+# predict unconditional expectation until individual t_i for all customers in clv.fitted@clv.data
+setGeneric("clv.model.predict.new.customer.unconditional.expectation", function(clv.model, clv.fitted, clv.newcustomer, t)
+  standardGeneric("clv.model.predict.new.customer.unconditional.expectation"))
+
 
 
 # . For covariate models -----------------------------------------------------------------------------------------------------------

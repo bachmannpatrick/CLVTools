@@ -78,8 +78,19 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.tran
     # This also catches NULL, NA, empty vecs, and so on
     #   but allows all cov data subclasses
 
-    err.msg <- c(err.msg, paste0("The parameter newdata needs to be a clv data object of class ",
-                                 class(clv.fitted@clv.data)))
+    # need to check in order dyncov -> static cov -> no cov
+    if(is(clv.fitted, "clv.fitted.transactions.dynamic.cov")){
+      name.newcustomer <- "newcustomer.dynamic()"
+    }else{
+      if(is(clv.fitted, "clv.fitted.transactions.static.cov")){
+        name.newcustomer <- "newcustomer.static()"
+      }else{
+        # clv.fitted.transactions
+        name.newcustomer <- "newcustomer()"
+      }
+    }
+    err.msg <- c(err.msg, paste0("The parameter newdata needs to be a clv data object of class ",class(clv.fitted@clv.data),
+                                 " or the output of ", name.newcustomer, "."))
 
   }else{
     # Is actually a clv.data object Also check if it is the right type
@@ -194,7 +205,7 @@ setMethod("clv.controlflow.predict.add.actuals", signature(clv.fitted="clv.fitte
 # .clv.controlflow.predict.post.process.prediction.table ------------------------------------------------------------------------------
 setMethod("clv.controlflow.predict.post.process.prediction.table", signature = signature(clv.fitted="clv.fitted.transactions"), function(clv.fitted, dt.predictions, has.actuals, verbose, predict.spending, ...){
   predicted.mean.spending <- i.predicted.mean.spending <- actual.total.spending <- i.actual.total.spending <- predicted.total.spending <- NULL
-  predicted.CLV <- DECT <- DERT <- CET <- NULL
+  predicted.CLV <- CET <- DECT <- DERT <- NULL
 
   # Predict spending ---------------------------------------------------------------------------------------
   # depends on content of predict.spending:
@@ -311,8 +322,24 @@ setMethod("clv.controlflow.predict.post.process.prediction.table", signature = s
 })
 
 
-# .clv.fitted.get.model.estimation.interface.args --------------------------------------------
 
+
+# . clv.predict.new.customer ---------------------------------------------------------------------------------------
+#' @include class_clv_fitted_transactions.R
+setMethod("clv.predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, clv.newcustomer){
+
+  if(!is(clv.newcustomer, "clv.newcustomer.no.cov") | is(clv.newcustomer, "clv.newcustomer.static.cov")){
+    check_err_msg("Parameter newdata has to be output from calling `newcustomer()`!")
+  }
+
+  return(drop(clv.model.predict.new.customer.unconditional.expectation(
+    clv.model = clv.fitted@clv.model,
+    clv.fitted = clv.fitted,
+    clv.newcustomer=clv.newcustomer,
+    t=clv.newcustomer@num.periods)))
+})
+
+# .clv.fitted.get.model.estimation.interface.args --------------------------------------------
 setMethod("clv.fitted.get.model.estimation.interface.args", signature = "clv.fitted.transactions", def = function(clv.fitted){
   # For many models there are no specifc args available (e.g nocov bgnbd and ggomnbd)
   return(list())

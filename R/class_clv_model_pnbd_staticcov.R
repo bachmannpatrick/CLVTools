@@ -211,6 +211,35 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.static.co
 })
 
 
+
+# . clv.model.predict.new.customer.unconditional.expectation -----------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict.new.customer.unconditional.expectation", signature = signature(clv.model="clv.model.pnbd.static.cov"), definition = function(clv.model, clv.fitted, clv.newcustomer, t){
+
+  # ensure same ordering as parameters
+  #   often called with single row matrix, use drop=FALSE to not lose matrix
+  m.cov.trans <- data.matrix(clv.newcustomer@data.cov.trans)[, names(clv.fitted@prediction.params.trans), drop=FALSE]
+  m.cov.life <- data.matrix(clv.newcustomer@data.cov.life)[, names(clv.fitted@prediction.params.life), drop=FALSE]
+
+  #calculate alpha_i, beta_i
+  alpha_i <- pnbd_staticcov_alpha_i(alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+                                    vCovParams_trans = clv.fitted@prediction.params.trans,
+                                    mCov_trans = m.cov.trans)
+
+  beta_i <- pnbd_staticcov_beta_i(beta_0 = clv.fitted@prediction.params.model[["beta"]],
+                                  vCovParams_life = clv.fitted@prediction.params.life,
+                                  mCov_life = m.cov.life)
+
+  return(pnbd_staticcov_expectation(
+      r        = clv.fitted@prediction.params.model[["r"]],
+      s        = clv.fitted@prediction.params.model[["s"]],
+      vAlpha_i = alpha_i,
+      vBeta_i  = beta_i,
+      vT_i     = t
+    ))
+})
+
+
+
 # . clv.model.pmf -----------------------------------------------------------------------------------------------------
 setMethod("clv.model.pmf", signature=(clv.model="clv.model.pnbd.static.cov"), function(clv.model, clv.fitted, x){
   Id <- T.cal <- pmf.x <- alpha_i <- beta_i <- i.alpha_i <- i.beta_i <- NULL
