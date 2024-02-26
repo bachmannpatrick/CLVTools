@@ -26,10 +26,10 @@
 #'
 #' @description
 #' This is a simulated dataset containing the entire purchase history of customers made their first purchase at an
-#' apparel retailer on January 3rd 2005. In total the dataset contains 250 customers who made
-#' 3648 transactions between January 2005 and mid July 2006.
+#' apparel retailer on January 2nd 2005. In total the dataset contains 400 customers who made
+#' 22388 transactions between January 2005 and mid December 2010
 #'
-#' @format A \code{data.table} with 2353 rows and 3 variables:
+#' @format A \code{data.table} with 22388 rows and 3 variables:
 #' \describe{
 #'   \item{\code{Id}}{Customer Id}
 #'   \item{\code{Date}}{Date of purchase}
@@ -45,17 +45,17 @@
 
 #' @name apparelStaticCov
 #' @title Time-invariant Covariates for the Apparel Retailer Dataset
-t
+
 #' @description
-#' This simulated data contains additional demographic information on all 250 customers in the
+#' This simulated data contains additional demographic information on all 400 customers in the
 #' "apparelTrans" dataset. This information can be used as time-invariant covariates.
 #'
-#' @format A \code{data.table} with 250 rows and 3 variables:
+#' @format A \code{data.table} with 400 rows and 3 variables:
 #'
 #' \describe{
 #'   \item{Id}{Customer Id}
-#'   \item{Gender}{0=male, 1=female}
-#'   \item{Channel}{Acquisition channel: 0=online, 1=offline}
+#'   \item{gender}{0=male, 1=female}
+#'   \item{channel}{Acquisition channel: 0=online, 1=offline}
 #' }
 #'
 #' @docType data
@@ -68,14 +68,14 @@ t
 #' @title Time-varying Covariates for the Apparel Retailer Dataset
 
 #' @description
-#' This simulated data contains direct marketing information on all 250 customers in the "apparelTrans" dataset.
+#' This simulated data contains direct marketing information on all 400 customers in the "apparelTrans" dataset.
 #' This information can be used as time-varying covariates.
 #'
-#' @format A data.table with 20500 rows and 5 variables
+#' @format A data.table with 162800 rows and 5 variables
 #' \describe{
 #'   \item{Id}{Customer Id}
 #'   \item{Cov.Date}{Date of contextual factor}
-#'   \item{Marketing}{Direct marketing variable: number of times a customer was contacted with direct marketing in this time period}
+#'   \item{High.Season}{Seasonal variable: 1 indicating a time-period that is considered "high season".}
 #'   \item{Gender}{0=male, 1=female}
 #'   \item{Channel}{Acquisition channel: 0=online, 1=offline}
 #' }

@@ -5,11 +5,11 @@
 \alias{apparelDynCov}
 \title{Time-varying Covariates for the Apparel Retailer Dataset}
 \format{
-A data.table with 20500 rows and 5 variables
+A data.table with 162800 rows and 5 variables
 \describe{
   \item{Id}{Customer Id}
   \item{Cov.Date}{Date of contextual factor}
-  \item{Marketing}{Direct marketing variable: number of times a customer was contacted with direct marketing in this time period}
+  \item{High.Season}{Seasonal variable: 1 indicating a time-period that is considered "high season".}
   \item{Gender}{0=male, 1=female}
   \item{Channel}{Acquisition channel: 0=online, 1=offline}
 }
@@ -18,7 +18,7 @@ A data.table with 20500 rows and 5 variables
 data("apparelDynCov")
 }
 \description{
-This simulated data contains direct marketing information on all 250 customers in the "apparelTrans" dataset.
+This simulated data contains direct marketing information on all 400 customers in the "apparelTrans" dataset.
 This information can be used as time-varying covariates.
 }
 \keyword{datasets}
