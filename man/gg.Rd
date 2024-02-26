@@ -44,7 +44,7 @@ Model parameters for the G/G model are \code{p, q, and gamma}. \cr
 \code{p}: shape parameter of the Gamma distribution of the spending process. \cr
 \code{q}: shape parameter of the Gamma distribution to account for customer heterogeneity. \cr
 \code{gamma}: scale parameter of the Gamma distribution to account for customer heterogeneity.\cr
-If no start parameters are given, 1.0 is used for all model parameters. All parameters are required
+If no start parameters are given, p=0.5, q=15, gamma=2 is used for all model parameters. All parameters are required
 to be > 0.
 
 The Gamma-Gamma model cannot be estimated for data that contains negative prices.

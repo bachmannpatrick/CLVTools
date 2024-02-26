@@ -32,7 +32,7 @@
 #' If covariates are included into the model additionally parameters for the
 #' covariates affecting the attrition and the purchase process are part of the model.
 #'
-#' If no start parameters are given, 1.0 is used for all model parameters and 0.1 for covariate parameters.
+#' If no start parameters are given, r=0.5, alpha=2, b=0.1, s=1, beta=0.1 is used for all model parameters and 0.1 for covariate parameters.
 #' The model start parameters are required to be > 0.
 #'
 #' \subsection{The Pareto/NBD model}{

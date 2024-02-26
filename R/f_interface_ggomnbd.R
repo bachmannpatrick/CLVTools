@@ -17,7 +17,7 @@ setGeneric("ggomnbd", def = function(clv.data, start.params.model=c(), optimx.ar
 #'
 #' @template template_details_paramsggomnbd
 #'
-#' @details If no start parameters are given, r = 1, alpha = 1, beta = 1, b = 1, s = 1 is used.
+#' @details If no start parameters are given, r=0.5, alpha=2, b=0.1, s=1, beta=0.1 is used.
 #' All model start parameters are required to be > 0. If no start values are given for the covariate parameters,
 #' 0.1 is used.
 #'
