@@ -306,7 +306,7 @@ data("apparelStaticCov")
 apparelStaticCov
 ```
 
-Data for time-varying covariates requires a time-series of covariate values for every customer. I.e. if the time-varying covariates are allowed to change every week, a value for every customer for every week is required. Note that all contextual factors are required to use the same time intervals for the time-series. In the example of the apparel retailer we use information on direct marketing (`Marekting`) as time-varying covariate. Additionally, we add gender as time-invariant contextual factors. Note that the data structure of invariant covariates needs to be aligned with the structure of time-varying covariate. Use `data("apparelDynCov")` command to load 
+Data for time-varying covariates requires a time-series of covariate values for every customer. I.e. if the time-varying covariates are allowed to change every week, a value for every customer for every week is required. Note that all contextual factors are required to use the same time intervals for the time-series. In the example of the apparel retailer we use information on seasonal patterns (`High.Season`) as time-varying covariate. Additionally, we add gender as time-invariant contextual factors. Note that the data structure of invariant covariates needs to be aligned with the structure of time-varying covariate. Use `data("apparelDynCov")` command to load 
 
 ```{r Cov-dynData}
 data("apparelDynCov")
@@ -324,14 +324,14 @@ clv.static<- SetStaticCovariates(clv.data = clv.apparel,
                                       name.id = "Id")
 ```
 
-To specify the time-varying contextual factors for seasonal patterns and direct marketing, we use the following:
+To specify the time-varying contextual factors for seasonal patterns, we use the following:
 
 ```{r Cov-setDynamic, eval=FALSE, message=FALSE, warning=TRUE}
 clv.dyn <- SetDynamicCovariates(clv.data = clv.apparel, 
                                      data.cov.life = apparelDynCov,
                                      data.cov.trans = apparelDynCov, 
-                                     names.cov.life = c("Marketing", "Gender", "Channel"), 
-                                     names.cov.trans = c("Marketing", "Gender", "Channel"), 
+                                     names.cov.life = c("High.Season", "Gender", "Channel"), 
+                                     names.cov.trans = c("High.Season", "Gender", "Channel"), 
                                      name.id = "Id",
                                      name.date = "Cov.Date")
 ```
@@ -378,8 +378,8 @@ It is not possible to alter or select covariates in the non-formula interface, b
 ```{r dyn-cov-estimate, eval=FALSE}
 est.pnbd.dyn <- pnbd(clv.dyn, 
                      start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
-                     start.params.life = c(Marketing=0.5, Gender=0.6, Channel=0.4),
-                     start.params.trans = c(Marketing=0.5, Gender=0.6, Channel=0.4),
+                     start.params.life = c(High.Season=0.5, Gender=0.6, Channel=0.4),
+                     start.params.trans = c(High.Season=0.5, Gender=0.6, Channel=0.4),
                      optimx.args = list(control=list(trace=5)))
 ```
 
