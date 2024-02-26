@@ -11,7 +11,7 @@
   newdata = NULL,
   prediction.end = NULL,
   predict.spending = gg,
-  continuous.discount.factor = 0.1,
+  continuous.discount.factor = log(1 + 0.1),
   uncertainty = c("none", "boots"),
   level = 0.9,
   num.boots = 100,
@@ -24,7 +24,7 @@
   newdata = NULL,
   prediction.end = NULL,
   predict.spending = gg,
-  continuous.discount.factor = 0.1,
+  continuous.discount.factor = log(1 + 0.1),
   uncertainty = c("none", "boots"),
   level = 0.9,
   num.boots = 100,
@@ -42,7 +42,7 @@ be made with the fitted model. If none or NULL is given, predictions are made fo
 
 \item{predict.spending}{Whether and how to predict spending and based on it also CLV, if possible. See details.}
 
-\item{continuous.discount.factor}{continuous discount factor to use to calculate \code{DERT/DECT}}
+\item{continuous.discount.factor}{continuous discount factor to use to calculate \code{DERT/DECT}. Defaults to a 10\% continuous annual rate. See details.}
 
 \item{uncertainty}{Method to produce confidence intervals of the predictions (parameter uncertainty). Either "none" (default) or "boots".}
 
