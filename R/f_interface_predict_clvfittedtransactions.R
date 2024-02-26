@@ -6,7 +6,7 @@
 #' @param newdata A clv data object or data for the new customer prediction (see \link{newcustomer}) for which predictions should
 #' be made with the fitted model. If none or NULL is given, predictions are made for the data on which the model was fit.
 #' @param predict.spending Whether and how to predict spending and based on it also CLV, if possible. See details.
-#' @param continuous.discount.factor continuous discount factor to use to calculate \code{DERT/DECT}
+#' @param continuous.discount.factor continuous discount factor to use to calculate \code{DERT/DECT}. Defaults to a 10\% continuous annual rate. See details.
 #' @template template_params_uncertainty
 #' @templateVar prefix {}
 #' @templateVar plot_or_predict predict
@@ -173,7 +173,7 @@
 #' @aliases predict
 #' @export
 predict.clv.fitted.transactions <- function(object, newdata=NULL, prediction.end=NULL, predict.spending=gg,
-                                            continuous.discount.factor=0.1, uncertainty=c("none", "boots"), level=0.9, num.boots=100, verbose=TRUE, ...){
+                                            continuous.discount.factor=log(1+0.1), uncertainty=c("none", "boots"), level=0.9, num.boots=100, verbose=TRUE, ...){
 
   check_err_msg(check_user_data_emptyellipsis(...))
   check_err_msg(.check_userinput_matcharg(char=tolower(uncertainty), choices=c("none", "boots"), var.name="uncertainty"))
