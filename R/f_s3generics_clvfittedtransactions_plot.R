@@ -234,7 +234,7 @@ setMethod("plot", signature(x="clv.fitted.transactions"), definition = plot.clv.
 
 
 #' @importFrom ggplot2 ggplot aes geom_line geom_vline labs scale_fill_manual guide_legend
-clv.controlflow.plot.tracking.base <- function(dt.plot, clv.data, color.mapping){
+clv.controlflow.plot.tracking.base <- function(dt.plot, clv.data, color.mapping, cumulative){
   # cran silence
   period.until <- value <- variable <- NULL
 
@@ -255,8 +255,11 @@ clv.controlflow.plot.tracking.base <- function(dt.plot, clv.data, color.mapping)
                              guide = guide_legend(title="Legend"))
 
   # Axis and title
-  p <- p + labs(x = "Date", y= "Number of Repeat Transactions", title= paste0(clv.time.tu.to.ly(clv.time=clv.data@clv.time), " tracking plot"),
-                subtitle = paste0("Estimation end: ",  clv.time.format.timepoint(clv.time=clv.data@clv.time, timepoint=clv.data@clv.time@timepoint.estimation.end)))
+  p <- p + labs(
+    x = "Date",
+    y= "Number of Repeat Transactions",
+    title= paste0(clv.time.tu.to.ly(clv.time=clv.data@clv.time), " tracking plot", ifelse(cumulative, " (cumulative)", "")),
+    subtitle = paste0("Estimation end: ",  clv.time.format.timepoint(clv.time=clv.data@clv.time, timepoint=clv.data@clv.time@timepoint.estimation.end)))
 
   return(clv.data.plot.add.default.theme(p))
 }
@@ -326,7 +329,7 @@ clv.fitted.transactions.plot.tracking <- function(x, other.models, newdata, pred
     dt.plot[, variable := factor(variable, levels=label, ordered = TRUE)]
 
     # Plot table with formatting, label etc
-    return(clv.controlflow.plot.tracking.base(dt.plot = dt.plot, clv.data = x@clv.data, color.mapping = setNames(colors, label)))
+    return(clv.controlflow.plot.tracking.base(dt.plot = dt.plot, clv.data = x@clv.data, color.mapping = setNames(colors, label), cumulative = cumulative))
   }
 
 }
