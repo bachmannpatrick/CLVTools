@@ -73,12 +73,12 @@ test_that("New customer prediction runs for dyncov", {
         Cov.Date=c("2051-02-12", "2051-02-19", "2051-02-26"),
         Gender=c(0, 0, 0),
         Channel=c(-12.2, 0, 2.4),
-        Marketing=c(4, 0, 7)),
+        High.Season=c(0, 0, 0)),
       data.cov.trans=data.frame(
         Cov.Date=c("2051-02-12", "2051-02-19", "2051-02-26"),
         Gender=c(0, 0, 0),
         Channel=c(0, 0, 2),
-        Marketing=c(4, 0, 7)),
+        High.Season=c(0, 0, 0)),
       first.transaction = "2051-02-16"
     ), verbose=FALSE))
 })

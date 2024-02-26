@@ -15,8 +15,8 @@ fct.helper.dyncov.quickfit.apparel.data <- function(data.apparelTrans, data.appa
   #                                             123.954642184586, -79.6231571791094, -8.32942983004706,  6.37531270788257, -0.205974188766537, -6.37531003596571, -1.27313616513791, 29.2516552513793, 79.6231520568093, 42.6967589924783,
   #                                             81.2903073168579, -49.7391927152517, -3.62426045915698, 2.4410199256767, 0.0130428435022102, -1.27313681231238, -2.44101785877623, 17.3123174944356, 42.6967589924783, 49.7391916698474),
   #                                           .Dim = c(10L, 10L),
-  #                                           .Dimnames = list(c("log.r", "log.alpha", "log.s", "log.beta", "life.Marketing", "life.Gender", "life.Channel", "trans.Marketing", "trans.Gender", "trans.Channel"),
-  #                                                            c("log.r",  "log.alpha", "log.s", "log.beta", "life.Marketing", "life.Gender", "life.Channel", "trans.Marketing", "trans.Gender", "trans.Channel")))
+  #                                           .Dimnames = list(c("log.r", "log.alpha", "log.s", "log.beta", "life.High.Season", "life.Gender", "life.Channel", "trans.High.Season", "trans.Gender", "trans.Channel"),
+  #                                                            c("log.r",  "log.alpha", "log.s", "log.beta", "life.High.Season", "life.Gender", "life.Channel", "trans.High.Season", "trans.Gender", "trans.Channel")))
 
   return(fitted.dyncov)
 }
@@ -53,8 +53,8 @@ fct.helper.dyncov.get.optimxargs.quickfit <- function(){
 
 
 fct.helper.create.clvdata.apparel.dyncov <- function(data.apparelTrans,  data.apparelDynCov, estimation.split,
-                                                     names.cov.life = c("Marketing", "Gender", "Channel"),
-                                                     names.cov.trans = c("Marketing", "Gender", "Channel")){
+                                                     names.cov.life = c("High.Season", "Gender", "Channel"),
+                                                     names.cov.trans = c("High.Season", "Gender", "Channel")){
 
   expect_silent(clv.dyn <- clvdata(data.apparelTrans, date.format = "ymd", time.unit = "w", estimation.split = estimation.split))
 
@@ -74,7 +74,7 @@ fct.helper.dyncov.create.longer.dyncov.data <- function(num.additional, data.app
                                    Cov.Date = seq(from=apparelDynCov[, max(Cov.Date)]+lubridate::weeks(1),
                                                   length.out = num.additional, by = "week"), stringsAsFactors = FALSE)
   setDT(dt.additional.cov)
-  dt.additional.cov[, Marketing := rep(c(0,1,2,3),.N/4)]
+  dt.additional.cov[, High.Season := rep(c(0,1,1,0),.N/4)]
   dt.additional.cov[, Gender    := rep(c(0,1),.N/2)]
   dt.additional.cov[, Channel   := rep(c(0,1),.N/2)]
 

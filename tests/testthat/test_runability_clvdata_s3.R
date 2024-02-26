@@ -292,15 +292,15 @@ expect_silent(apparel.no.holdout.static.cov  <- SetStaticCovariates(clv.data = a
 expect_silent(apparel.holdout.dyn.cov     <- SetDynamicCovariates(clv.data = apparel.holdout,
                                                                   data.cov.life = apparelDynCov,
                                                                   data.cov.trans = apparelDynCov,
-                                                                  names.cov.life = c("Channel", "Marketing", "Gender"),
-                                                                  names.cov.trans = c("Channel", "Marketing", "Gender"),
+                                                                  names.cov.life = c("Channel", "High.Season", "Gender"),
+                                                                  names.cov.trans = c("Channel", "High.Season", "Gender"),
                                                                   name.date = "Cov.Date"))
 
 expect_silent(apparel.no.holdout.dyn.cov     <- SetDynamicCovariates(clv.data = apparel.no.holdout,
                                                                       data.cov.life = apparelDynCov,
                                                                       data.cov.trans = apparelDynCov,
-                                                                      names.cov.life = c("Channel", "Marketing", "Gender"),
-                                                                      names.cov.trans = c("Channel", "Marketing", "Gender"),
+                                                                      names.cov.life = c("Channel", "High.Season", "Gender"),
+                                                                      names.cov.trans = c("Channel", "High.Season", "Gender"),
                                                                       name.date = "Cov.Date"))
 
 

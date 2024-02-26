@@ -265,17 +265,17 @@ test_that("Real Trans Walk correct", {
   dates.cov.realwalk <- lubridate::ymd(c("2005-01-02", "2005-01-09", "2005-01-16", "2005-01-23", "2005-01-30"))
   values.cov.realwalk <- c(0.123, 0.234, 0.345, 0.456, 0.567)
   cov.realwalk <- rbindlist(list(apparelDynCov[!(Id == "1" & Cov.Date %in% dates.cov.realwalk)],
-                                 data.table(Id="1", Cov.Date=dates.cov.realwalk, Marketing=c(0.123, 0.234, 0.345, 0.456, 0.567), Gender=0, Channel=0)))
+                                 data.table(Id="1", Cov.Date=dates.cov.realwalk, High.Season=c(0.123, 0.234, 0.345, 0.456, 0.567), Gender=0, Channel=0)))
   expect_silent(l.walks <- pnbd_dyncov_createwalks(fct.helper.create.clvdata.apparel.dyncov(apparelTrans.realwalk, cov.realwalk, estimation.split = NULL)))
 
   expect_equal(
-    l.walks$data.walks.trans.real[Id==1][order(tp.this.trans), list(tp.this.trans=as.character(tp.this.trans), Marketing)],
+    l.walks$data.walks.trans.real[Id==1][order(tp.this.trans), list(tp.this.trans=as.character(tp.this.trans), High.Season)],
     rbindlist(list(
-      data.table(tp.this.trans="2005-01-07", Marketing=0.123),
-      data.table(tp.this.trans="2005-01-10", Marketing=c(0.123, 0.234)),
-      data.table(tp.this.trans="2005-01-15", Marketing=0.234),
-      data.table(tp.this.trans="2005-01-16", Marketing=c(0.234, 0.345)),
-      data.table(tp.this.trans="2005-01-30", Marketing=c(0.345, 0.456, 0.567)))))
+      data.table(tp.this.trans="2005-01-07", High.Season=0.123),
+      data.table(tp.this.trans="2005-01-10", High.Season=c(0.123, 0.234)),
+      data.table(tp.this.trans="2005-01-15", High.Season=0.234),
+      data.table(tp.this.trans="2005-01-16", High.Season=c(0.234, 0.345)),
+      data.table(tp.this.trans="2005-01-30", High.Season=c(0.345, 0.456, 0.567)))))
 })
 
 test_that("All walks have basic correctness, estimation.split at every day of week", {
@@ -442,7 +442,7 @@ test_that("real life walk + aux life walk give original covariate data",{
     dt.original <- apparelDynCov[Id == id &
         Cov.Date >= apparelTrans[Id == id, floor_date(min(Date), unit = "week")] &
           Cov.Date <= lubridate::ymd("2005-06-30")]
-    expect_true(all(dt.plus[, .(Id, Cov.Date = tp.cov.lower, Marketing, Gender, Channel)] == dt.original))
+    expect_true(all(dt.plus[, .(Id, Cov.Date = tp.cov.lower, High.Season, Gender, Channel)] == dt.original))
   }
 
   # many are zerorep and do not have real trans walk

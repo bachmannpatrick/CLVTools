@@ -141,10 +141,10 @@ test_that("Same as std interface", {
 
 test_that("Correct cov data selected and transformations applied, data copied", {
   skip_on_cran()
-  p.lA <- .fct.latentattrition.fit.dyncov(formula=~I(Gender+1)+Channel|log(Gender+2)+Marketing)
+  p.lA <- .fct.latentattrition.fit.dyncov(formula=~I(Gender+1)+Channel|log(Gender+2)+High.Season)
 
   expect_setequal(colnames(p.lA@clv.data@data.cov.life), c(clv.dyn.common.cols, "Channel", "I.Gender...1."))
-  expect_setequal(colnames(p.lA@clv.data@data.cov.trans), c(clv.dyn.common.cols, "Marketing","log.Gender...2."))
+  expect_setequal(colnames(p.lA@clv.data@data.cov.trans), c(clv.dyn.common.cols, "High.Season","log.Gender...2."))
 
   expect_false(address(clv.apparel.dyn) == address(p.lA@clv.data))
   expect_false(address(clv.apparel.dyn@data.transactions) == address(p.lA@clv.data@data.transactions))
@@ -153,13 +153,13 @@ test_that("Correct cov data selected and transformations applied, data copied", 
 test_that("'.' selects correct cov data", {
   skip_on_cran()
   p.lA <- .fct.latentattrition.fit.dyncov(formula=~.|.+I(Gender+1))
-  expect_setequal(colnames(p.lA@clv.data@data.cov.life), c(clv.dyn.common.cols, "Channel", "Gender", "Marketing"))
-  expect_setequal(colnames(p.lA@clv.data@data.cov.trans), c(clv.dyn.common.cols, "Channel", "Gender", "Marketing", "I.Gender...1."))
+  expect_setequal(colnames(p.lA@clv.data@data.cov.life), c(clv.dyn.common.cols, "Channel", "Gender", "High.Season"))
+  expect_setequal(colnames(p.lA@clv.data@data.cov.trans), c(clv.dyn.common.cols, "Channel", "Gender", "High.Season", "I.Gender...1."))
 })
 
 test_that("Correct cov data when using interactions and all except (. -)", {
   skip_on_cran()
   p.lA <- .fct.latentattrition.fit.dyncov(formula=~Gender*Channel|.-Gender)
   expect_setequal(c("Channel", "Gender", "Gender.Channel", clv.dyn.common.cols), colnames(p.lA@clv.data@data.cov.life))
-  expect_setequal(c("Channel", "Marketing", clv.dyn.common.cols), colnames(p.lA@clv.data@data.cov.trans))
+  expect_setequal(c("Channel", "High.Season", clv.dyn.common.cols), colnames(p.lA@clv.data@data.cov.trans))
 })

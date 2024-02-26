@@ -31,7 +31,7 @@ fct.helper.dyncov.g0.with.predition.params.model <- function(p.dyncov, predictio
   # Recalculate the LL data for these fake params
   expect_silent(log.params <- setNames(log(p.dyncov@prediction.params.model[c("r", "alpha", "s", "beta")]),
                                        c("log.r", "log.alpha", "log.s", "log.beta")))
-  expect_silent(log.params[c("life.Marketing", "life.Gender", "life.Channel", "trans.Marketing", "trans.Gender", "trans.Channel")] <- 0)
+  expect_silent(log.params[c("life.High.Season", "life.Gender", "life.Channel", "trans.High.Season", "trans.Gender", "trans.Channel")] <- 0)
   expect_silent(p.dyncov@LL.data <- pnbd_dyncov_getLLdata(clv.fitted=p.dyncov, params=log.params))
   return(p.dyncov)
 }
