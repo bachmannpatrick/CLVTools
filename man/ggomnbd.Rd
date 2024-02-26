@@ -77,7 +77,7 @@ The smaller \code{r}, the stronger the heterogeneity of the purchase process.\cr
 \code{s}: shape parameter of the Gamma distribution for the lifetime process.
 The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.
 
-If no start parameters are given, r = 1, alpha = 1, beta = 1, b = 1, s = 1 is used.
+If no start parameters are given, r=0.5, alpha=2, b=0.1, s=1, beta=0.1 is used.
 All model start parameters are required to be > 0. If no start values are given for the covariate parameters,
 0.1 is used.
 
