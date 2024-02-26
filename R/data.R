@@ -68,7 +68,7 @@
 #' @title Time-varying Covariates for the Apparel Retailer Dataset
 
 #' @description
-#' This simulated data contains direct marketing information on all 400 customers in the "apparelTrans" dataset.
+#' This simulated data contains seasonal information and additional covariates on all 400 customers in the "apparelTrans" dataset.
 #' This information can be used as time-varying covariates.
 #'
 #' @format A data.table with 162800 rows and 5 variables

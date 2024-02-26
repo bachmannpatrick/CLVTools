@@ -104,8 +104,8 @@
 #'   SetDynamicCovariates(clv.data = clv.data.apparel,
 #'                        data.cov.life = apparelDynCov,
 #'                        data.cov.trans = apparelDynCov,
-#'                        names.cov.life = c("Marketing", "Gender", "Channel"),
-#'                        names.cov.trans = c("Marketing", "Gender", "Channel"),
+#'                        names.cov.life = c("High.Season", "Gender", "Channel"),
+#'                        names.cov.trans = c("High.Season", "Gender", "Channel"),
 #'                        name.date = "Cov.Date")
 #'
 #'
