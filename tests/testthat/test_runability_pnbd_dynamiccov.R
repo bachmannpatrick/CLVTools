@@ -18,7 +18,7 @@ fitted.dyncov <- fct.helper.dyncov.quickfit.apparel.data(data.apparelTrans = app
 .fct.helper.clvfitted.all.s3.except.plot.and.predict(clv.fitted=fitted.dyncov,
                                                      full.names=c("r", "alpha", "s", "beta",
                                                                   "life.High.Season",  "life.Gender", "life.Channel",
-                                                                  "life.High.Season", "trans.Gender",  "trans.Channel"))
+                                                                  "trans.High.Season", "trans.Gender",  "trans.Channel"))
 
 
 
