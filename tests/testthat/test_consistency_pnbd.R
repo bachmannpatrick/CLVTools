@@ -14,7 +14,7 @@ fct.testthat.consistency(name.model = "PNBD", method = pnbd,
 
 
 expect_silent(clv.apparel <- clvdata(data.transactions = apparelTrans, date.format = "ymd",
-                                     time.unit = "w",estimation.split = 38))
+                                     time.unit = "w",estimation.split = 52))
 expect_silent(p.nocov     <- pnbd(clv.apparel, verbose = FALSE))
 
 

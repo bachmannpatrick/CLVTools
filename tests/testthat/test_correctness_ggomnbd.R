@@ -56,7 +56,7 @@ apparelTrans.later <- copy(apparelTrans)
 apparelTrans.later[Id %in% c("1", "10", "100"), Date := Date + lubridate::weeks(10)]
 clv.apparel.static <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = apparelTrans.later,
                                                                   data.apparelStaticCov = apparelStaticCov,
-                                                                  estimation.split = 38)
+                                                                  estimation.split = 52)
 expect_silent(clv.ggomnbd <- ggomnbd(clv.data = clv.apparel.static, verbose = FALSE))
 
 r     <- clv.ggomnbd@prediction.params.model[["r"]]

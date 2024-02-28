@@ -1,5 +1,5 @@
 fct.helper.dyncov.quickfit.apparel.data <- function(data.apparelTrans, data.apparelDynCov, hessian=FALSE){
-  clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=data.apparelTrans,  data.apparelDynCov=data.apparelDynCov, estimation.split=38)
+  clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=data.apparelTrans,  data.apparelDynCov=data.apparelDynCov, estimation.split=52)
   fitted.dyncov <- fct.helper.dyncov.quickfit(clv.apparel.dyn, hessian=hessian)
 
   # Cheat and set a fake hessian as it was not estimated during optimization for speed reasons

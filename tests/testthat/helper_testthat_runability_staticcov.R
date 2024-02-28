@@ -196,14 +196,14 @@ fct.testthat.runability.staticcov.works.with.illegal.cov.names <- function(metho
       data.table::setnames(apparelStaticCov.named, old = c("Gender", "Channel"), new=new.names)
       clv.data.named <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans,
                                                                     data.apparelStaticCov = apparelStaticCov.named,
-                                                                    estimation.split = 40,
+                                                                    estimation.split = 52,
                                                                     names.cov.life = new.names, names.cov.trans = new.names)
       expect_silent(fitted <- do.call(what = method, args = list(clv.data=clv.data.named, verbose = FALSE)))
 
       # Newdata is created here because of different names
       clv.newdata.nohold <- fct.helper.create.fake.newdata.staticcov(data.trans = data.apparelTrans, estimation.split = NULL,
                                                                      names.cov = new.names)
-      clv.newdata.withhold <- fct.helper.create.fake.newdata.staticcov(data.trans = data.apparelTrans, estimation.split = 40,
+      clv.newdata.withhold <- fct.helper.create.fake.newdata.staticcov(data.trans = data.apparelTrans, estimation.split = 52,
                                                                        names.cov = new.names)
 
       fct.helper.clvfittedtransactions.all.s3(clv.fitted = fitted,  full.names = c(names.params.model,
@@ -262,12 +262,12 @@ fct.testthat.runability.staticcov <- function(name.model, method, start.params.m
   clv.data.cov.no.holdout <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
                                                                          estimation.split = NULL)
   clv.data.cov.holdout   <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
-                                                                        estimation.split = 40)
+                                                                        estimation.split = 52)
 
   clv.newdata.nohold   <- fct.helper.create.fake.newdata.staticcov(data.trans = data.apparelTrans, names.cov = c("Gender", "Channel"),
                                                                    estimation.split = NULL)
   clv.newdata.withhold <- fct.helper.create.fake.newdata.staticcov(data.trans = data.apparelTrans, names.cov = c("Gender", "Channel"),
-                                                                   estimation.split = 40)
+                                                                   estimation.split = 52)
 
   names.params.all.free <- c(names(start.params.model), "life.Gender", "life.Channel", "trans.Gender", "trans.Channel")
   l.args.test.all.s3 <- list(full.names = names.params.all.free, clv.newdata.nohold = clv.newdata.nohold,

@@ -166,7 +166,7 @@ fct.testthat.consistency <- function(name.model, method, has.dyncov, data.appare
 
   expect_silent(fitted.static.g0 <- do.call(method, list(clv.data = fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans=data.apparelTrans,
                                                                                                                 data.apparelStaticCov=data.apparelStaticCov,
-                                                                                                                estimation.split=38),
+                                                                                                                estimation.split=52),
                                                          verbose = FALSE)))
   expect_silent(fitted.static.g0@prediction.params.model[] <-fitted.nocov@prediction.params.model)
   expect_silent(fitted.static.g0@prediction.params.life[]  <- 0)
