@@ -47,6 +47,8 @@ test_that("Math for d_x is correct (Excel, tab Walk d)", {
 })
 
 test_that("d_x changes correctly on (lower) boundary", {
+  # relies on options(lubridate.week.start=NULL / 7)
+
   skip_on_cran()
 
   fct.expect.d.between.0.1 <- function(clv, d){
@@ -208,23 +210,30 @@ test_that("Aux walk is 2 periods if T is on week start and alive at T-1 one day 
     options(lubridate.week.start=(7+i-1) %% 7+1)
     # print(getOption("lubridate.week.start"))
 
+    # need covs already 1 week before because moving Cov.Date forward what leaves every customers
+    # first transaction uncovered
+    data.cov.before <- data.cov[Cov.Date == min(Cov.Date)]
+    data.cov.before[, Cov.Date := Cov.Date - lubridate::weeks(1)]
+    data.cov <- rbindlist(list(data.cov, data.cov.before))
+
     # make cov dates to be on week start
     data.cov[, Cov.Date := Cov.Date + i]
 
     # split is on start of week
-    date.estimation.split <- lubridate::ymd("2005-06-26") + i
+    date.estimation.split.original <- apparelTrans[, min(Date)] + lubridate::weeks(52)
+    date.estimation.split <- date.estimation.split.original + i
 
-    # Id==1 is zero-repeater
-    data.trans[Id==1, Date := date.estimation.split-1]
+    # Id==5 is zero-repeater
+    data.trans[Id==5, Date := date.estimation.split-1]
     clv <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=data.trans,
                                                     data.apparelDynCov=data.cov,
                                                     estimation.split=date.estimation.split)
     expect_silent(l.walks <- pnbd_dyncov_createwalks(clv))
 
     # has 2 aux walks
-    expect_true(l.walks$data.walks.life.aux[Id==1, .N] == 2)
+    expect_true(l.walks$data.walks.life.aux[Id==5, .N] == 2)
     # no real walk
-    expect_true(l.walks$data.walks.life.real[Id==1, .N] == 0)
+    expect_true(l.walks$data.walks.life.real[Id==5, .N] == 0)
 
     options(lubridate.week.start=oldval)
   }
@@ -232,13 +241,13 @@ test_that("Aux walk is 2 periods if T is on week start and alive at T-1 one day 
 
 test_that("Aux walks not lost if there are covariates only for the calibration period (see #134)", {
   skip_on_cran()
-
+  # This test passed for the refactored LL & walk-creation run with the old example data (v0.10.0)
   clv.short <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=apparelTrans[Date <= "2005-12-31"],
                                                         data.apparelDynCov=apparelDynCov[Cov.Date <= "2005-12-31"],
                                                         estimation.split=NULL)
   expect_silent(l.walks <- pnbd_dyncov_createwalks(clv.short))
-  expect_true(l.walks$data.walks.life.aux[, uniqueN(Id)] == 250)
-  expect_true(l.walks$data.walks.trans.aux[, uniqueN(Id)] == 250)
+  expect_true(l.walks$data.walks.life.aux[, uniqueN(Id)] == apparelTrans[, uniqueN(Id)])
+  expect_true(l.walks$data.walks.trans.aux[, uniqueN(Id)] == apparelTrans[, uniqueN(Id)])
 })
 
 
@@ -375,11 +384,11 @@ test_that("All walks have basic correctness, estimation.split at every day of we
 test_that("Real Trans Walk do no lose walk if transactions only 1 eps apart", {
   skip_on_cran()
   # real trans walk gives walk and not lost if transactions only 1 eps apart
-  #   Customer 1 is zero repeater. Add 8 transactions only 1 day apart for 1 week
+  #   Customer 5 is zero repeater. Add 8 transactions only 1 day apart for 1 week
   clv.dyn <- fct.helper.create.clvdata.apparel.dyncov(
     data.apparelTrans=rbind(apparelTrans,
-                            data.table(Id=1, Price = 10,
-                                       Date = seq.Date(from=apparelTrans[Id==1, min(Date)]+1,
+                            data.table(Id=5, Price = 10,
+                                       Date = seq.Date(from=apparelTrans[Id==5, min(Date)]+1,
                                                        length.out = 8, by="1 day"))),
     data.apparelDynCov=apparelDynCov,
     estimation.split=NULL)
@@ -388,12 +397,12 @@ test_that("Real Trans Walk do no lose walk if transactions only 1 eps apart", {
 
   # every repeat-transaction is in walks (not lost)
   #   unique(tp.this.trans) because has a walk longer than 1 period (when tp.this.trans on week start)
-  expect_equal(l.walks$data.walks.trans.real[Id == 1, sort(unique(tp.this.trans))],
-               sort(clv.dyn@data.transactions[Id==1, Date][-1]))
+  expect_equal(l.walks$data.walks.trans.real[Id == 5, sort(unique(tp.this.trans))],
+               sort(clv.dyn@data.transactions[Id==5, Date][-1]))
 
   # number of walks == num repeat transactions
   #   cannot check .N==8 because some walks may be longer than 1 period if second transaction on week start
-  expect_true(l.walks$data.walks.trans.real[Id == 1, uniqueN(walk_id)] == 8)
+  expect_true(l.walks$data.walks.trans.real[Id == 5, uniqueN(walk_id)] == 8)
 })
 
 
@@ -467,7 +476,7 @@ test_that("repeat buyers: life walk and first trans walk start on the same timep
   expect_silent(l.walks <- pnbd_dyncov_createwalks(clv.dyn))
   expect_true(l.walks$data.walks.life.real[Id == "10", min(tp.cov.lower)] == l.walks$data.walks.trans.real[Id == "10", min(tp.cov.lower)])
   expect_true(l.walks$data.walks.life.real[Id == "100", min(tp.cov.lower)] == l.walks$data.walks.trans.real[Id == "100", min(tp.cov.lower)])
-  expect_true(l.walks$data.walks.life.real[Id == "1000", min(tp.cov.lower)] == l.walks$data.walks.trans.real[Id == "1000", min(tp.cov.lower)])
+  expect_true(l.walks$data.walks.life.real[Id == "400", min(tp.cov.lower)] == l.walks$data.walks.trans.real[Id == "400", min(tp.cov.lower)])
 })
 
 

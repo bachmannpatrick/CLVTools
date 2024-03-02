@@ -157,7 +157,7 @@ test_that("Creates correct number of dummies - 3 categories",{
   skip_on_cran()
 
   apparelDynCov.3cat <- data.table::copy(apparelDynCov)
-  apparelDynCov.3cat[, Gender := c(rep(c("F", "M", "X"), nrow(apparelDynCov.3cat)/3))]
+  apparelDynCov.3cat[, Gender := rep_len(c("F", "M", "X"), nrow(apparelDynCov.3cat))]
 
   # Life
   expect_silent(dyn.cov <- SetDynamicCovariates(clv.data = clv.data.apparel.withhold,
