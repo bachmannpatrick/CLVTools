@@ -16,7 +16,7 @@ clv.model.pnbd.no.cov <- function(){
              name.model                  = "Pareto/NBD Standard",
              names.original.params.model = c(r="r", alpha="alpha", s="s", beta="beta"),
              names.prefixed.params.model = c("log.r","log.alpha", "log.s", "log.beta"),
-             start.params.model          = c(r=1, alpha=1, s=1, beta=1),
+             start.params.model          = c(r=0.5, alpha=15, s=0.5, beta=10),
              optimx.defaults = list(method = "L-BFGS-B",
                                     # lower   = c(log(1*10^(-5)),log(1*10^(-5)),log(1*10^(-5)),log(1*10^(-5))),
                                     # upper   = c(log(300),log(2000),log(300),log(2000)),

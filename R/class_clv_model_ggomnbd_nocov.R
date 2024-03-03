@@ -14,7 +14,7 @@ clv.model.ggomnbd.no.cov <- function(){
              name.model = "GGompertz/NBD Standard",
              names.original.params.model = c(r="r", alpha="alpha", b="b", s="s", beta="beta"),
              names.prefixed.params.model = c("log.r","log.alpha", "log.b", "log.s", "log.beta"),
-             start.params.model          = c(r=1, alpha=1, b=1, s=1, beta=1),
+             start.params.model          = c(r=0.5, alpha=2, b=0.1, s=1, beta=0.1),
              optimx.defaults = list(method = "L-BFGS-B",
                                     itnmax  = 5000,
                                     control = list(
