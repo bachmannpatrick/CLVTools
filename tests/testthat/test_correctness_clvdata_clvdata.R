@@ -2,7 +2,6 @@ data("cdnow")
 data("apparelTrans") # for years
 
 # estimation.split ---------------------------------------------------------------------
-context("Correctness - clvdata - estimation.split")
 
 
 # **clv.time: predict(, 10). regexp 10 Weeks + regexp holdout.start
@@ -126,7 +125,6 @@ test_that("No estimation.split ends on last transaction date", {
 })
 
 # time.unit ------------------------------------------------------------------------------
-context("Correctness - clvdata - time.units")
 
 test_that("Different units with same split results in same dates", {
   #skip_on_cran()
@@ -153,7 +151,6 @@ test_that("Different units with same split results in same dates", {
 
 
 # transaction.data ----------------------------------------------------------------------------
-context("Correctness - clvdata - data.transactions")
 
 test_that("Same result for differently sorted transactions", {
   skip_on_cran()
@@ -246,7 +243,6 @@ test_that("Transaction data was properly copied", {
 
 
 # aggregate.transactions ----------------------------------------------------------------------------
-context("Correctness - clvdata - aggregate.transactions")
 
 test_that("Only one transaction per timepoint and Id exits (date)", {
   skip_on_cran()
@@ -310,16 +306,13 @@ test_that("Same timepoint transactions are summed (posix)", {
 })
 
 # repeat.transactions ----------------------------------------------------------------------------
-context("Correctness - clvdata - repeat.transactions")
 
 test_that("Removes correct transaction",{
   # Correctly remove first transaction, regardless of sorting
-  expect_silent(dt.trans <- data.table(Date = c(lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-02"), lubridate::ymd("2019-01-03"),
-                                                lubridate::ymd("2019-06-01"), lubridate::ymd("2019-06-02")),
-                                       Id =   c("1", "1", "1", "2", "2")))
-  expect_silent(dt.trans.correct <- data.table(Date = c(lubridate::ymd("2019-01-02"), lubridate::ymd("2019-01-03"),
-                                                        lubridate::ymd("2019-06-02")),
-                                               Id =   c( "1", "1", "2")))
+  expect_silent(dt.trans <- data.table(Date = lubridate::ymd(c("2019-01-01", "2019-01-02", "2019-01-03", "2019-06-01", "2019-06-02")),
+                                       Id = c("1", "1", "1", "2", "2")))
+  expect_silent(dt.trans.correct <- data.table(Date = lubridate::ymd(c("2019-01-02", "2019-01-03","2019-06-02")),
+                                               Id = c( "1", "1", "2")))
 
   # Ordered by Date
   # Order one way
@@ -395,4 +388,16 @@ test_that("Aggregating first and removing after removes all first transactions",
   expect_true(fsetequal(clv.d@data.repeat.trans, dt.trans.correct))
 })
 
+
+test_that("clv.data.get.repeat.transactions.in.estimation.period() is the same as creating repeat transactions from estimation period data", {
+  skip_on_cran()
+
+  clv.cdnow <- clvdata(cdnow, date.format = "ymd", time.unit = "w", estimation.split = NULL)
+
+  dt.estimation.period   <- clv.data.get.transactions.in.estimation.period(clv.cdnow)
+  dt.self.made.repeat    <- clv.data.make.repeat.transactions(dt.estimation.period)
+
+  expect_true(fsetequal(clv.data.get.repeat.transactions.in.estimation.period(clv.cdnow),
+                        dt.self.made.repeat))
+})
 

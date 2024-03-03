@@ -9,10 +9,15 @@ setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitte
 
 
 # . clv.controlflow.predict.check.inputs -----------------------------------------------------------------
-setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, verbose, ...){
+setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, verbose, uncertainty, num.boots, level, ...){
   err.msg <- c()
 
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
+
+  if(uncertainty == "boots"){
+    err.msg <- c(err.msg, check_user_data_numboots(num.boots))
+    err.msg <- c(err.msg, check_user_data_level(level))
+  }
 
   check_err_msg(err.msg)
 })
@@ -88,4 +93,44 @@ setMethod("clv.controlflow.predict.post.process.prediction.table", signature = s
   setcolorder(dt.predictions, cols)
 
   return(dt.predictions)
+})
+
+
+
+# . clv.fitted.bootstrap.predictions ------------------------------------------------------------------------------
+setMethod(f = "clv.fitted.bootstrap.predictions",signature = signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, num.boots, verbose){
+
+  # Largely the same as for clv.fitted.transactions but with different arguments to predict()
+
+
+  if(verbose){
+    # Print message before progress bar is created
+    message("Bootstrapping ",num.boots," times for uncertainty estimates...")
+
+    progress.bar <- txtProgressBar(max = num.boots, style = 3)
+    update.pb    <- function(n){setTxtProgressBar(pb=progress.bar, value = n)}
+  }else{
+    # has to be also defined if verbose=F because used in boots.predict
+    update.pb <- function(n){}
+  }
+  pb.i <- 0
+
+  boots.predict <- function(clv.boot){
+    pb.i <<- pb.i + 1
+    update.pb(n = pb.i)
+    return(predict(
+      object = clv.boot,
+      verbose = FALSE,
+      uncertainty = "none"))
+  }
+
+  l.boots <- clv.bootstrapped.apply(
+    object = clv.fitted,
+    num.boot = num.boots,
+    fn.boot.apply = boots.predict,
+    fn.sample = NULL,
+    verbose = FALSE,
+    start.params.model = clv.fitted@prediction.params.model
+  )
+  return(rbindlist(l.boots))
 })

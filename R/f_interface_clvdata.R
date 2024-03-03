@@ -62,6 +62,8 @@
 #'
 #' @examples
 #'
+#' \donttest{
+#'
 #' data("cdnow")
 #'
 #' # create clv data object with weekly periods
@@ -82,18 +84,16 @@
 #'                           time.unit = "w",
 #'                           estimation.split = "1997-10-15")
 #'
-#' \donttest{
-#'
 #' # summary of the transaction data
 #' summary(clv.data.cdnow)
 #'
 #' # plot the total number of transactions per period
 #' plot(clv.data.cdnow)
 #'
+#' \dontrun{
 #' # create data with the weekly periods defined to
 #' #   start on Mondays
 #'
-#' \dontrun{
 #' # set start of week to Monday
 #' oldopts <- options("lubridate.week.start"=1)
 #'
@@ -134,7 +134,7 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
 
   err.msg <- c(err.msg, check_userinput_datanocov_timeunit(time.unit=time.unit))
 
-  err.msg <- c(err.msg, .check_userinput_single_character(char=date.format, var.name = "date.format"))
+  err.msg <- c(err.msg, .check_userinput_charactervec(char=date.format, var.name = "date.format", n=1))
   err.msg <- c(err.msg, check_userinput_datanocov_estimationsplit(estimation.split=estimation.split, date.format=date.format))
   check_err_msg(err.msg)
 

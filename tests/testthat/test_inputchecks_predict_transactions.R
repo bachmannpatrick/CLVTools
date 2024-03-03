@@ -61,7 +61,7 @@ fct.testthat.inputchecks.clvfittedtransactions.predict.predict.spending.wrong.ty
 
     # illegal logical
     expect_error(predict(clv.fitted.transactions, prediction.end = 6, predict.spending = NA), regexp = "cannot be NA")
-    expect_error(predict(clv.fitted.transactions, prediction.end = 6, predict.spending = c(TRUE, TRUE)), regexp = "single")
+    expect_error(predict(clv.fitted.transactions, prediction.end = 6, predict.spending = c(TRUE, TRUE)), regexp = "only contain 1 element")
 
     # other than logical
     expect_error(predict(clv.fitted.transactions, prediction.end = 6, predict.spending = NULL), regexp = "has to be either")
@@ -86,7 +86,7 @@ fct.testthat.inputchecks.clvfittedtransactions.predict.predict.spending.has.NA <
   test_that("Predict spending fails if prediction.end has NA coefs", {
     skip_on_cran()
     # fit spending model
-    expect_silent(fitted.spending <- gg(clvdata(data.cdnow, "ymd", "w"), verbose=FALSE))
+    expect_silent(fitted.spending <- gg(fct.helper.create.clvdata.cdnow(data.cdnow), verbose=FALSE))
     # set 1 coef to NA
     coef(fitted.spending@optimx.estimation.output)[1] <- NA_real_
     expect_error(predict(clv.fitted.transactions, predict.spending = fitted.spending, prediction.end = 6), regexp = "contain NA")
@@ -105,7 +105,6 @@ fct.testthat.inputchecks.clvfittedtransactions.predict.ellipsis <- function(clv.
 
 
 fct.testthat.inputchecks.clvfittedtransactions.predict <- function(data.cdnow, data.apparelTrans, data.apparelStaticCov){
-  context("Inputchecks - clv.fitted.transactions predict - newdata")
   clv.data.apparel.static.cov <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
                                                                              estimation.split = 40)
   expect_silent(fitted.apparel.static <- pnbd(clv.data.apparel.static.cov, verbose = FALSE))
@@ -132,14 +131,12 @@ fct.testthat.inputchecks.clvfittedtransactions.predict <- function(data.cdnow, d
   fct.testthat.inputchecks.clvfittedtransactions.cov.na.in.prediction.params.cov(s3method = predict, clv.fitted.cov = fitted.apparel.static,
                                                                                  l.s3method.args = list(prediction.end=6))
 
-  context("Inputchecks - clv.fitted.transactions predict - prediction.end")
   fct.testthat.inputchecks.clvfittedtransactions.prediction.end.wrong.format(fitted.transactions = fitted.cdnow.nohold)
   fct.testthat.inputchecks.clvfittedtransactions.predict.prediction.end.fails.no.holdout(clv.fitted.transactions.no.hold = fitted.cdnow.nohold)
   fct.testthat.inputchecks.clvfittedtransactions.predict.prediction.end.before.estimation.end(clv.fitted = fitted.cdnow.nohold)
   fct.testthat.inputchecks.clvfittedtransactions.predict.prediction.end.before.estimation.end(clv.fitted = fitted.apparel.static)
 
 
-  context("Inputchecks - clv.fitted.transactions predict - predict.spending")
   fct.testthat.inputchecks.clvfittedtransactions.predict.predict.spending.but.no.spending.data(method = pnbd,
                                                                                                data.cdnow = data.cdnow)
   fct.testthat.inputchecks.clvfittedtransactions.predict.predict.spending.wrong.type(clv.fitted.transactions = fitted.cdnow.nohold)
@@ -147,19 +144,16 @@ fct.testthat.inputchecks.clvfittedtransactions.predict <- function(data.cdnow, d
   fct.testthat.inputchecks.clvfittedtransactions.prediction.end.uses.newdata(s3method = predict, fitted.cdnow = fitted.cdnow.nohold, data.cdnow = data.cdnow)
 
 
-  context("Inputchecks - clv.fitted.transactions predict - continuous.discount.factor")
   # fct.helper.inputcheck.single.numeric(fct = predict, name.param="continuous.discount.factor",
   #                                      l.std.args=list(object = fitted.cdnow.nohold, prediction.end = 6))
   fct.testthat.inputchecks.clvfittedtransactions.predict.discountfactor.out.of.range(clv.fitted.transactions = fitted.cdnow.nohold)
 
 
-  context("Inputchecks - clv.fitted.transactions predict - verbose")
   l.std.args <- list(object=fitted.cdnow.nohold, prediction.end=6)
   .fct.helper.inputchecks.single.logical(fct = predict, l.std.args = l.std.args,
                                          name.param = "verbose", null.allowed=FALSE)
 
 
-  context("Inputchecks - clv.fitted.transactions predict - ...")
   fct.testthat.inputchecks.clvfittedtransactions.predict.ellipsis(clv.fitted.transactions = fitted.cdnow.nohold)
 }
 

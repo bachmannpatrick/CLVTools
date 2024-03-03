@@ -9,6 +9,7 @@
 \method{plot}{clv.fitted.transactions}(
   x,
   which = c("tracking", "pmf"),
+  other.models = list(),
   prediction.end = NULL,
   cumulative = FALSE,
   trans.bins = 0:9,
@@ -25,6 +26,7 @@
 \S4method{plot}{clv.fitted.transactions}(
   x,
   which = c("tracking", "pmf"),
+  other.models = list(),
   prediction.end = NULL,
   cumulative = FALSE,
   trans.bins = 0:9,
@@ -43,22 +45,26 @@
 
 \item{which}{Which plot to produce, either "tracking" or "pmf". May be abbreviated but only one may be selected. Defaults to "tracking".}
 
+\item{other.models}{List of fitted transaction models to plot. List names are used as colors, standard colors are chosen if unnamed (see examples).
+The \code{clv.data} object stored in each model is used if no \code{newdata} is given.}
+
 \item{prediction.end}{"tracking": Until what point in time to plot. This can be the number of periods (numeric) or a form of date/time object. See details.}
 
 \item{cumulative}{"tracking": Whether the cumulative expected (and actual) transactions should be plotted.}
 
-\item{trans.bins}{"pmf": Vector of positive integer numbers (>=0) indicating the number of repeat transactions (x axis) to plot.}
+\item{trans.bins}{"pmf": Vector of positive integer numbers (>=0) indicating the number of repeat transactions (x axis) to plot. Should contain 0 in nearly all cases as it refers to repeat-transactions.}
 
 \item{calculate.remaining}{"pmf": Whether the probability for the remaining number of transactions not in \code{trans.bins} should be calculated.}
 
 \item{label.remaining}{"pmf": Label for the last bar, if \code{calculate.remaining=TRUE}.}
 
 \item{newdata}{An object of class clv.data for which the plotting should be made with the fitted model.
-If none or NULL is given, the plot is made for the data on which the model was fit.}
+If none or NULL is given, the plot is made for the data on which the model was fit.
+If \code{other.models} was specified, the data in each model is replaced with \code{newdata}.}
 
 \item{transactions}{Whether the actual observed repeat transactions should be plotted.}
 
-\item{label}{Character string to label the model in the legend.}
+\item{label}{Character vector to label each model. If NULL, the model(s) internal name is used (see examples).}
 
 \item{plot}{Whether a plot is created or only the assembled data is returned.}
 
@@ -74,17 +80,21 @@ following columns:
 
 For the Tracking plot:
 \item{period.until}{The timepoint that marks the end (up until and including) of the period to which the data in this row refers.}
-\item{Actual}{The actual number of repeat transactions in the period that ends at \code{period.until}. Only if \code{transactions=TRUE}.}
-\item{"Name of Model" or "label"}{The value of the unconditional expectation for the period that ends on \code{period.until}.}
+\item{variable}{Type of variable that 'value' refers to. Either "model name" or "Actual" (if \code{transactions=TRUE}).}
+\item{value}{Depending on variable either (Actual) the actual number of repeat transactions in the period that ends at \code{period.until},
+or the unconditional expectation for the period that ends on \code{period.until} ("model name").}
 
 For the PMF plot:
-\item{num.transactions}{The number of observed repeat transactions in the estimation period (as ordered factor).}
-\item{actual.num.customers}{The actual number of customers which have the respective number of repeat transactions. Only if \code{transactions=TRUE}.}
-\item{expected.customers}{The number of customers which are expected to have the respective number of repeat transactions, as by the fitted model.}
+\item{num.transactions}{The number of repeat transactions in the estimation period (as ordered factor).}
+\item{variable}{Type of variable that 'value' refers to. Either "model name" or "Actual" (if \code{transactions=TRUE}).}
+\item{value}{Depending on variable either (Actual) the actual number of customers which have the respective number of repeat transactions,
+or the number of customers which are expected to have the respective number of repeat transactions, as by the fitted model ("model name").}
 }
 \description{
-Depending on the value of parameter which, one of the following plots will be produced.
+Depending on the value of parameter \code{which}, one of the following plots will be produced.
 See \code{\link[CLVTools:plot.clv.data]{plot.clv.data}} to plot more nuanced diagnostics for the transaction data only.
+For comparison, other models can be drawn into the same plot by specifying them in \code{other.models} (see examples).
+
 
 \subsection{Tracking Plot}{
 Plot the actual repeat transactions and overlay it with the repeat transaction as predicted
@@ -145,9 +155,10 @@ but the start of the first time unit after \code{prediction.end}.
 data("cdnow")
 
 # Fit ParetoNBD model on the CDnow data
-pnbd.cdnow <- pnbd(clvdata(cdnow, time.unit="w",
+clv.cdnow <- clvdata(cdnow, time.unit="w",
                            estimation.split=37,
-                           date.format="ymd"))
+                           date.format="ymd")
+pnbd.cdnow <- pnbd(clv.cdnow)
 
 ## TRACKING PLOT
 # Plot actual repeat transaction, overlayed with the
@@ -189,6 +200,20 @@ plot(pnbd.cdnow, which="pmf", trans.bins=0:15,
 plot(pnbd.cdnow, which="pmf", trans.bins=0:15,
      calculate.remaining=FALSE)
 
+## MODEL COMPARISON
+# compare vs bgnbd
+bgnbd.cdnow <- bgnbd(clv.cdnow)
+ggomnbd.cdnow <- ggomnbd(clv.cdnow)
+
+# specify colors as names of other.models
+# note that ggomnbd collapses into the pnbd on this dataset
+plot(pnbd.cdnow, cumulative=TRUE,
+     other.models=list(blue=bgnbd.cdnow, "#00ff00"=ggomnbd.cdnow))
+
+# specify names as label, using standard colors
+plot(pnbd.cdnow, which="pmf",
+     other.models=list(bgnbd.cdnow),
+     label=c("Pareto/NBD", "BG/NBD"))
 }
 
 }

@@ -59,8 +59,7 @@ gg_cbs <- function(clv.data, remove.first.transaction){
 
     # Add statistics based on repeat transactions only
     #   Cannot use clv.data@data.repeat.trans because these also include holdout
-    dt.transactions        <- clv.data.get.transactions.in.estimation.period(clv.data)
-    dt.repeat.transactions <- clv.data.make.repeat.transactions(dt.transactions)
+    dt.repeat.transactions <- clv.data.get.repeat.transactions.in.estimation.period(clv.data)
 
     dt.stats.repeat.trans <- dt.repeat.transactions[ , list(x         = .N,
                                                             Spending  = mean(Price)),

@@ -6,8 +6,6 @@ data("apparelStaticCov")
 # cutoff first as will result in "cutoff" message and not silent anymore
 apparelDynCov <- apparelDynCov[Cov.Date > "2005-01-01" ]
 
-context("Inputchecks - SetDynamicCovariates - Parameter clv.data")
-
 expect_silent(clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w"))
 
 
@@ -63,7 +61,6 @@ test_that("Fails if already has covariates", {
 
 
 # Parameter data.cov.life ---------------------------------------------------------------------------------------
-context("Inputchecks - SetDynamicCovariates - Parameter data.cov.life")
 
 # ** TODO: id type wrong?
 
@@ -85,7 +82,7 @@ test_that("Fails if missing/NULL/NA", {
                regexp = "type data.frame or data.table")
 })
 
-test_that("Fails if not dataframe/datetable", {
+test_that("Fails if not data.frame/data.table", {
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                    data.cov.life  = as.list(apparelDynCov), names.cov.life = c("Marketing", "Gender", "Channel"),
                                    data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
@@ -227,7 +224,6 @@ test_that("Fails for variable with single category", {
 
 
 # Parameter data.cov.trans ---------------------------------------------------------------------------------------
-context("Inputchecks - SetDynamicCovariates - Parameter data.cov.trans")
 
 test_that("Fails if missing/NULL/NA", {
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
@@ -391,7 +387,7 @@ test_that("Fails for variable with single category", {
 })
 
 # Parameter name.cov.life ---------------------------------------------------------------------------------------
-context("Inputchecks - SetDynamicCovariates - Parameter name.cov.life")
+
 test_that("Fails if missing/NULL/NA/empty",{
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelDynCov, names.cov.life = ,
@@ -448,37 +444,34 @@ test_that("Fails if contains NA", {
 })
 
 test_that("Fails if names not in data", {
-  # ** TODO: Check and fail properly
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "ChannelBender"),
                                    data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
-               regexp = "could not be found")
+               regexp = "could not be found in the Lifetime covariate")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
                                    data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "ChannelBender"),
                                    name.date = "Cov.Date"),
-               regexp = "could not be found")
+               regexp = "could not be found in the Transaction covariate")
 })
 
 test_that("Fails if has duplicate names", {
-  # ** TODO: Fail properly
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel", "Channel"),
                                    data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                    name.date = "Cov.Date"),
-               regexp = "duplicates")
+               regexp = "Lifetime covariate may not contain any duplicates")
 
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                     data.cov.life = apparelDynCov, names.cov.life = c("Gender", "Gender"),
                                     data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
                                     name.date = "Cov.Date"),
-               regexp = "duplicates")
+               regexp = "Lifetime covariate may not contain any duplicates")
 })
 
 
 # Parameter name.cov.trans ---------------------------------------------------------------------------------------
-context("Inputchecks - SetDynamicCovariates - Parameter name.cov.trans")
 test_that("Fails if missing/NULL/NA/empty",{
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                     data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
@@ -535,32 +528,30 @@ test_that("Fails if contains NA", {
 })
 
 test_that("Fails if names not in data", {
-  # ** TODO: Check and fail properly
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                     data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
                                     data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "GenderBender"),
                                     name.date = "Cov.Date"),
-               regexp = "could not be found")
+               regexp = "GenderBender could not be found in the Transaction covariate data")
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                     data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gend", "Channel"),
                                     data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gend", "Channel"),
                                     name.date = "Cov.Date"),
-               regexp = "could not be found")
+               regexp = "Gend could not be found")
 })
 
 test_that("Fails if has duplicate names", {
-  # ** TODO: Fail properly
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                     data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
                                     data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel", "Channel"),
                                     name.date = "Cov.Date"),
-               regexp = "duplicates")
+               regexp = "Transaction covariate may not contain any duplicates")
 
   expect_error(SetDynamicCovariates(clv.data = clv.data.apparel,
                                     data.cov.life = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
                                     data.cov.trans = apparelDynCov, names.cov.trans = c("Gender", "Gender"),
                                     name.date = "Cov.Date"),
-               regexp = "duplicates")
+               regexp = "Transaction covariate may not contain any duplicates")
 })
 
 
@@ -577,7 +568,7 @@ test_that("Fails if NA/NULL", {
   expect_error(do.call(SetDynamicCovariates, modifyList(l.std.args, list(name.id=NA_character_))),
                regexp = "any NA")
   expect_error(do.call(SetDynamicCovariates, modifyList(l.std.args, list(name.id=character(0)))),
-               regexp = "single element")
+               regexp = "exactly 1 element")
 })
 
 test_that("Fails if not character", {
@@ -591,11 +582,11 @@ test_that("Fails if not character", {
 
 test_that("Fails if multiple", {
   expect_error(do.call(SetDynamicCovariates, modifyList(l.std.args, list(name.id=c("Id", "Id")), keep.null = TRUE)),
-               regexp = "single element")
+               regexp = "exactly 1 element")
   expect_error(do.call(SetDynamicCovariates, modifyList(l.std.args, list(name.id=c("Id", "Id")), keep.null = TRUE)),
-               regexp = "single element")
+               regexp = "exactly 1 element")
   expect_error(do.call(SetDynamicCovariates, modifyList(l.std.args, list(name.id=c("Id", "Date")), keep.null = TRUE)),
-               regexp = "single element")
+               regexp = "exactly 1 element")
 })
 
 test_that("Fails if not in transaction data", {
@@ -626,7 +617,7 @@ test_that("Fails if NA/NULL", {
   expect_error(do.call(SetDynamicCovariates, modifyList(l.std.args, list(name.date=NA_character_))),
                regexp = "any NA")
   expect_error(do.call(SetDynamicCovariates, modifyList(l.std.args, list(name.date=character(0)))),
-               regexp = "single element")
+               regexp = "exactly 1 element")
 })
 
 test_that("Fails if not character", {
@@ -640,11 +631,11 @@ test_that("Fails if not character", {
 
 test_that("Fails if multiple", {
   expect_error(do.call(SetDynamicCovariates, modifyList(l.std.args, list(name.date=c("Id", "Id")), keep.null = TRUE)),
-               regexp = "single element")
+               regexp = "exactly 1 element")
   expect_error(do.call(SetDynamicCovariates, modifyList(l.std.args, list(name.date=c("Id", "Id")), keep.null = TRUE)),
-               regexp = "single element")
+               regexp = "exactly 1 element")
   expect_error(do.call(SetDynamicCovariates, modifyList(l.std.args, list(name.date=c("Id", "Date")), keep.null = TRUE)),
-               regexp = "single element")
+               regexp = "exactly 1 element")
 })
 
 test_that("Fails if not in transaction data", {

@@ -4,24 +4,25 @@
 \alias{spending}
 \title{Formula Interface for Spending Models}
 \usage{
-spending(formula, data, optimx.args = list(), verbose = TRUE)
+spending(family, data, optimx.args = list(), verbose = TRUE, ...)
 }
 \arguments{
-\item{formula}{Formula specifying the model to be fit. See Details.}
+\item{family}{A spending model (currently only \code{gg}).}
 
-\item{data}{Either a \code{clv.data} object or a \code{data.frame} containing transaction
-data on which the model specified in \code{formula} will be fit.}
+\item{data}{A \code{clv.data} object.}
 
 \item{optimx.args}{Additional arguments to control the optimization which are forwarded to \code{\link[optimx:optimx]{optimx::optimx}}.
 If multiple optimization methods are specified, only the result of the last method is further processed.}
 
 \item{verbose}{Show details about the running of the function.}
+
+\item{...}{Forwarded to model specified in \code{family}.}
 }
 \value{
 Returns an object of the respective model which was fit.
 }
 \description{
-Fit latent Gamma-Gamma model for customer spending with a formula interface
+Fit models for customer spending (currently only the Gamma-Gamma model).
 }
 \examples{
 \donttest{
@@ -31,34 +32,26 @@ clv.cdnow <- clvdata(data.transactions = cdnow, date.format="ymd",
                      time.unit = "weeks")
 
 # Fit gg
-spending(~gg(), data=clv.cdnow)
+spending(family=gg, data=clv.cdnow)
 
 # Fit gg with start params
-spending(~gg(start.params.model=c(p=0.5, q=15, gamma=2)),
-         data=clv.cdnow)
+spending(family=gg, data=clv.cdnow,
+         start.params.model=c(p=0.5, q=15, gamma=2))
 
 # Fit gg, do not remove first transaction
-spending(~gg(remove.first.transaction=FALSE), data=clv.cdnow)
-# same, abreviate parameters
-spending(~gg(remo=F), data=clv.cdnow)
+spending(family=gg, data=clv.cdnow, remove.first.transaction=FALSE)
 
-# Fit gg on given data.frame transaction data, no split
-spending(data()~gg(), data=cdnow)
 
-# Fit gg on given data.frame, split after 39 periods
-spending(data(split=39)~gg(), data=cdnow)
-# same but also give date format and period definition
-spending(data(split=39, format=ymd, unit=w)~gg(), data=cdnow)
-
-## No covariate may be selected or covariate data.frame may be
-## given because currently no spending model uses covariates
+## No formula may be given to specify covariates because currently
+## no spending model uses covariates
 
 }
 
 
 }
 \seealso{
-Spending models for inputs: \link{gg}.
+Spending models for \code{family}: \link{gg}.
 
-\link{latentAttrition} to fit latent attrition models with a formula interface
+\link{latentAttrition} to fit latent attrition models with a
+formula interface
 }

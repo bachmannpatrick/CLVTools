@@ -32,7 +32,7 @@ setGeneric("clv.controlflow.estimate.process.post.estimation", def=function(clv.
 
 
 # . Predict -----------------------------------------------------------------------------------------------
-setGeneric("clv.controlflow.predict.check.inputs", def = function(clv.fitted, verbose, ...)
+setGeneric("clv.controlflow.predict.check.inputs", def = function(clv.fitted, verbose, uncertainty, num.boots, level, ...)
   standardGeneric("clv.controlflow.predict.check.inputs"))
 
 setGeneric("clv.controlflow.predict.set.prediction.params", def = function(clv.fitted)
@@ -51,7 +51,6 @@ setGeneric(name = "clv.controlflow.predict.post.process.prediction.table", def =
   standardGeneric("clv.controlflow.predict.post.process.prediction.table"))
 
 
-
 # .. Newdata: replace data in existing model -----------------------------------------------------------------
 # For plot and predict
 setGeneric("clv.controlflow.check.newdata", def = function(clv.fitted, user.newdata, ...)
@@ -68,7 +67,29 @@ setGeneric("clv.controlflow.check.prediction.params", def = function(clv.fitted)
 setGeneric("clv.controlflow.plot.check.inputs", def = function(obj, prediction.end, cumulative, plot, label.line, verbose)
   standardGeneric("clv.controlflow.plot.check.inputs"))
 
+# . Predict new customer -----------------------------------------------------------------------------------------
+setGeneric("clv.predict.new.customer", def = function(clv.fitted, clv.newcustomer){
+  standardGeneric("clv.predict.new.customer")
+})
 
+# . Bootstrapping ------------------------------------------------------------------------------------------
+
+# Estimate the model again on new data with its original specification
+# pass arguments incl optimx.args and overwrite any existing settings in ...
+setGeneric("clv.fitted.estimate.same.specification.on.new.data", function(clv.fitted, newdata, ...){
+  standardGeneric("clv.fitted.estimate.same.specification.on.new.data")
+})
+
+# Method to collect the args used when estimating the model. Allows to re-estimate the model
+setGeneric("clv.fitted.get.model.estimation.interface.args", function(clv.fitted){
+  standardGeneric("clv.fitted.get.model.estimation.interface.args")
+})
+
+# Generate many predictions by re-fitting the given model on bootstrapped
+# transaction data and predicting on it
+setGeneric("clv.fitted.bootstrap.predictions", function(clv.fitted, num.boots, verbose, ...){
+  standardGeneric("clv.fitted.bootstrap.predictions")
+})
 
 
 
@@ -146,8 +167,15 @@ setGeneric(name="clv.model.vcov.jacobi.diag", def=function(clv.model, clv.fitted
 setGeneric(name="clv.model.process.newdata", def=function(clv.model, clv.fitted, user.newdata, verbose)
   standardGeneric("clv.model.process.newdata"))
 
+# .. PMF --------------------------------------------------------------------------------------------------------------------
 setGeneric(name="clv.model.pmf", def=function(clv.model, clv.fitted, x)
   standardGeneric("clv.model.pmf"))
+
+# .. New customer expectation -----------------------------------------------------------------------------------------------
+# predict unconditional expectation until individual t_i for all customers in clv.fitted@clv.data
+setGeneric("clv.model.predict.new.customer.unconditional.expectation", function(clv.model, clv.fitted, clv.newcustomer, t)
+  standardGeneric("clv.model.predict.new.customer.unconditional.expectation"))
+
 
 
 # . For covariate models -----------------------------------------------------------------------------------------------------------
@@ -191,6 +219,13 @@ setGeneric("clv.time.format.timepoint", function(clv.time, timepoint)
   standardGeneric("clv.time.format.timepoint"))
 
 
+# clv.data ----------------------------------------------------------------------------------------------------
+# Create clv.data object with same config asbut only transactions and covariates of given ids
+setGeneric("clv.data.create.bootstrapping.data", def = function(clv.data, ids){
+  standardGeneric("clv.data.create.bootstrapping.data")
+})
+
+
 
 # S3 Generics ---------------------------------------------------------------
 #' Coerce to clv.data object
@@ -206,11 +241,13 @@ setGeneric("clv.time.format.timepoint", function(clv.time, timepoint)
 #' See section "Details" of \link{clvdata} for more details on parameters and usage.
 #'
 #' @examples
+#' \donttest{ # dont test because ncpu=2 limit on cran (too fast)
 #' data(cdnow)
 #'
 #' # Turn data.table of transaction data into a clv.data object,
 #' #  using default date format and column names but no holdout period
 #' clv.cdnow <- as.clv.data(cdnow)
+#' }
 #'
 #' @export
 as.clv.data <- function(x,

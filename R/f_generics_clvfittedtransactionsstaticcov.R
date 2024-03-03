@@ -82,3 +82,33 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.tran
 
   check_err_msg(err.msg)
 })
+
+
+
+# . clv.predict.new.customer ------------------------------------------------------------------------------
+#' @include class_clv_fitted_transactions_staticcov.R
+setMethod(f = "clv.predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted, clv.newcustomer){
+  # TODO[test]: Test that works with 1, 2, 3 covariates
+  # TODO[test]: Test that for all models, the order of covariate columns does not change results
+  # TODO[test]: Test that works with different life and trans covariates
+
+  check_err_msg(check_user_data_predict_newcustomer_staticcov(clv.fitted=clv.fitted, clv.newcustomer=clv.newcustomer))
+
+  return(drop(clv.model.predict.new.customer.unconditional.expectation(
+    clv.model = clv.fitted@clv.model,
+    clv.fitted = clv.fitted,
+    clv.newcustomer=clv.newcustomer,
+    t=clv.newcustomer@num.periods)))
+})
+
+# . clv.fitted.get.model.estimation.interface.args -------------------------------------------------------------
+setMethod("clv.fitted.get.model.estimation.interface.args", signature = "clv.fitted.transactions.static.cov", def = function(clv.fitted){
+  # TODO [Test]: returns correct args if using additional specifications (one object fit with all additional options)
+
+  # estimation args available for all (static & dyn) cov models
+  return(list(
+    names.cov.constr = if(clv.fitted@estimation.used.constraints){clv.fitted@names.original.params.constr}else{c()},
+    reg.lambdas = if(clv.fitted@estimation.used.regularization){c(trans=clv.fitted@reg.lambda.trans, life=clv.fitted@reg.lambda.life)}else{c()}
+  ))
+})
+

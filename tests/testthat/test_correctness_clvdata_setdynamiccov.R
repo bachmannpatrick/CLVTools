@@ -11,7 +11,6 @@ apparelDynCov <- apparelDynCov[Cov.Date > "2005-01-01" ]
 apparelTrans[, Date:=as.POSIXct(Date)]
 
 # Covariate dummies ---------------------------------------------------------------------------------------
-context("Correctness - SetDynamicCovariates - Covariate dummies")
 
 expect_message(clv.data.apparel.nohold   <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w"), regexp = "ignored")
 expect_message(clv.data.apparel.withhold <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w",
@@ -20,6 +19,8 @@ expect_message(clv.data.apparel.withhold <- clvdata(apparelTrans, date.format = 
 l.std.args <- alist(data.cov.life  = apparelDynCov,  names.cov.life = c("Marketing", "Gender", "Channel"),
                     data.cov.trans = apparelDynCov,  names.cov.trans = c("Marketing", "Gender", "Channel"),
                     name.date = "Cov.Date")
+
+names.cov.id <- c("Id", "Cov.Date", "tp.cov.lower", "tp.cov.upper")
 
 test_that("Factor and char covariates result in same dummies",{
 
@@ -136,8 +137,8 @@ test_that("Creates correct number of dummies - 2 categories", {
                                                 data.cov.trans = apparelDynCov,      names.cov.trans = "Gender",
                                                 name.date = "Cov.Date"))
 
-  expect_true(ncol(dyn.cov@data.cov.life) == 3)
-  expect_true(all(colnames(dyn.cov@data.cov.life) %in% c("Id", "Cov.Date", "GenderM")))
+  expect_true(ncol(dyn.cov@data.cov.life) == length(names.cov.id)+1)
+  expect_true(all(colnames(dyn.cov@data.cov.life) %in% c(names.cov.id, "GenderM")))
   expect_true(all(dyn.cov@names.cov.data.life %in% c("GenderM")))
   expect_true(dyn.cov@data.cov.life[, all(sapply(.SD, is.numeric)), .SDcols = c("GenderM")])
 
@@ -145,8 +146,8 @@ test_that("Creates correct number of dummies - 2 categories", {
                                                 data.cov.life  = apparelDynCov,      names.cov.life = "Gender",
                                                 data.cov.trans = apparelDynCov.2cat, names.cov.trans = "Gender",
                                                 name.date = "Cov.Date"))
-  expect_true(ncol(dyn.cov@data.cov.trans) == 3)
-  expect_true(all(colnames(dyn.cov@data.cov.trans) %in% c("Id", "Cov.Date", "GenderM")))
+  expect_true(ncol(dyn.cov@data.cov.trans) == length(names.cov.id)+1)
+  expect_true(all(colnames(dyn.cov@data.cov.trans) %in% c(names.cov.id, "GenderM")))
   expect_true(all(dyn.cov@names.cov.data.trans %in% c("GenderM")))
   expect_true(dyn.cov@data.cov.trans[, all(sapply(.SD, is.numeric)), .SDcols = c("GenderM")])
 })
@@ -164,8 +165,8 @@ test_that("Creates correct number of dummies - 3 categories",{
                                                 data.cov.trans = apparelDynCov, names.cov.trans = "Gender",
                                                 name.date = "Cov.Date"))
 
-  expect_true(ncol(dyn.cov@data.cov.life) == 4)
-  expect_true(all(colnames(dyn.cov@data.cov.life) %in% c("Id", "Cov.Date", "GenderM", "GenderX")))
+  expect_true(ncol(dyn.cov@data.cov.life) == length(names.cov.id)+2)
+  expect_true(all(colnames(dyn.cov@data.cov.life) %in% c(names.cov.id, "GenderM", "GenderX")))
   expect_true(all(dyn.cov@names.cov.data.life %in% c("GenderM", "GenderX")))
   expect_true(dyn.cov@data.cov.life[, all(sapply(.SD, is.numeric)), .SDcols = c("GenderM", "GenderX")])
 
@@ -175,15 +176,14 @@ test_that("Creates correct number of dummies - 3 categories",{
                                                 data.cov.trans = apparelDynCov.3cat, names.cov.trans = "Gender",
                                                 name.date = "Cov.Date"))
 
-  expect_true(ncol(dyn.cov@data.cov.trans) == 4)
-  expect_true(all(colnames(dyn.cov@data.cov.trans) %in% c("Id", "Cov.Date", "GenderM", "GenderX")))
+  expect_true(ncol(dyn.cov@data.cov.trans) == length(names.cov.id)+2)
+  expect_true(all(colnames(dyn.cov@data.cov.trans) %in% c(names.cov.id, "GenderM", "GenderX")))
   expect_true(all(dyn.cov@names.cov.data.trans %in% c("GenderM", "GenderX")))
   expect_true(dyn.cov@data.cov.trans[, all(sapply(.SD, is.numeric)), .SDcols = c("GenderM", "GenderX")])
 })
 
 
 # Covariate datatypes ---------------------------------------------------------------------------
-context("Correctness - SetDynamicCovariates - Covariate datatypes")
 
 test_that("Converts categories to dummies - no numeric", {
   skip_on_cran()
@@ -196,9 +196,9 @@ test_that("Converts categories to dummies - no numeric", {
                                                 data.cov.trans = apparelDynCov, names.cov.trans = "Gender",
                                                 name.date = "Cov.Date"))
 
-  expect_true(ncol(dyn.cov@data.cov.life) == 3)
+  expect_true(ncol(dyn.cov@data.cov.life) == length(names.cov.id)+1)
   # expect_true(nrow(dyn.cov@data.cov.life) == nrow(apparelDynCov.dummy))
-  expect_true(all(colnames(dyn.cov@data.cov.life) %in% c("Id", "Cov.Date", "Gender.char1")))
+  expect_true(all(colnames(dyn.cov@data.cov.life) %in% c(names.cov.id, "Gender.char1")))
   expect_true(dyn.cov@data.cov.life[, all(sapply(.SD, is.numeric)), .SDcols = "Gender.char1"])
 
   # Trans
@@ -207,9 +207,9 @@ test_that("Converts categories to dummies - no numeric", {
                                                 data.cov.trans = apparelDynCov.dummy, names.cov.trans = "Gender.char",
                                                 name.date = "Cov.Date"))
 
-  expect_true(ncol(dyn.cov@data.cov.trans) == 3)
+  expect_true(ncol(dyn.cov@data.cov.trans) == length(names.cov.id)+1)
   # expect_true(nrow(dyn.cov@data.cov.trans) == nrow(apparelDynCov.dummy))
-  expect_true(all(colnames(dyn.cov@data.cov.trans) %in% c("Id", "Cov.Date", "Gender.char1")))
+  expect_true(all(colnames(dyn.cov@data.cov.trans) %in% c(names.cov.id, "Gender.char1")))
   expect_true(dyn.cov@data.cov.trans[, all(sapply(.SD, is.numeric)), .SDcols = "Gender.char1"])
 })
 
@@ -226,9 +226,9 @@ test_that("Converts categories to dummies - with numeric", {
                                                 data.cov.trans = apparelDynCov, names.cov.trans = "Gender",
                                                 name.date = "Cov.Date"))
 
-  expect_true(ncol(dyn.cov@data.cov.life) == 4)
+  expect_true(ncol(dyn.cov@data.cov.life) == length(names.cov.id)+2)
   # expect_true(nrow(dyn.cov@data.cov.life) == nrow(apparelDynCov.mixed))
-  expect_true(all(colnames(dyn.cov@data.cov.life) %in% c("Id","Cov.Date", "Gender","Gender.char1")))
+  expect_true(all(colnames(dyn.cov@data.cov.life) %in% c(names.cov.id, "Gender","Gender.char1")))
   expect_true(dyn.cov@data.cov.life[, all(sapply(.SD, is.numeric)), .SDcols = c("Gender","Gender.char1")])
 
   # Trans
@@ -237,9 +237,9 @@ test_that("Converts categories to dummies - with numeric", {
                                                 data.cov.trans = apparelDynCov.mixed, names.cov.trans = c("Gender","Gender.char"),
                                                 name.date = "Cov.Date"))
 
-  expect_true(ncol(dyn.cov@data.cov.trans) == 4)
+  expect_true(ncol(dyn.cov@data.cov.trans) == length(names.cov.id)+2)
   # expect_true(nrow(dyn.cov@data.cov.trans) == nrow(apparelDynCov.mixed))
-  expect_true(all(colnames(dyn.cov@data.cov.trans) %in% c("Id","Cov.Date", "Gender","Gender.char1")))
+  expect_true(all(colnames(dyn.cov@data.cov.trans) %in% c(names.cov.id, "Gender","Gender.char1")))
   expect_true(dyn.cov@data.cov.trans[, all(sapply(.SD, is.numeric)), .SDcols = c("Gender","Gender.char1")])
 })
 
@@ -259,9 +259,9 @@ test_that("Cov data column names are changed to syntactically valid names", {
                                                      data.cov.trans = apparelDynCov.named, names.cov.trans = new.names,
                                                      name.date = "Cov.Date"))
     expect_true(setequal(colnames(clv.dyn.cov@data.cov.life),
-                         c(c("Id", "Cov.Date"), make.names(new.names))))
+                         c(names.cov.id, make.names(new.names))))
     expect_true(setequal(colnames(clv.dyn.cov@data.cov.trans),
-                         c(c("Id", "Cov.Date"), make.names(new.names))))
+                         c(names.cov.id, make.names(new.names))))
   }
 
   # Previously failed for numeric names and spaces

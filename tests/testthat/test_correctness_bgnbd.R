@@ -12,7 +12,6 @@ fct.testthat.correctness.clvfittedtransactions(name.model = "BG/NBD", method=bgn
 
 
 
-context("Correctness - BG/NBD nocov - Recover parameters")
 # As reported in Fader, Hardie, Lee (2005)
 fct.testthat.correctness.clvfitted.correct.coefs(method = bgnbd,
                                                  cdnow = cdnow,
@@ -20,17 +19,10 @@ fct.testthat.correctness.clvfitted.correct.coefs(method = bgnbd,
                                                  params.nocov.coef = c(r = 0.243, alpha = 4.414, a = 0.793, b = 2.426),
                                                  LL.nocov = -9582.4)
 
-context("Correctness - BG/NBD nocov - Expectation")
 
 test_that("Expectation in Rcpp matches expectation in R (nocov)", {
   skip_on_cran()
-
-  expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow,
-                                     date.format = "ymd", time.unit = "W", estimation.split = 38,
-                                     name.id = "Id", name.date = "Date", name.price = "Price"))
-
-
-  expect_silent(obj.fitted <- bgnbd(clv.data = clv.cdnow, verbose = FALSE))
+  expect_silent(obj.fitted <- bgnbd(clv.data = fct.helper.create.clvdata.cdnow(cdnow), verbose = FALSE))
 
   params_i <- obj.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
 
@@ -53,7 +45,6 @@ test_that("Expectation in Rcpp matches expectation in R (nocov)", {
                                                                                obj.fitted = obj.fitted)
 })
 
-context("Correctness - BG/NBD staticcov - Expectation")
 
 test_that("Expectation in Rcpp matches expectation in R (staticcov)", {
   skip_on_cran()

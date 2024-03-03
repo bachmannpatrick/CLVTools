@@ -1,3 +1,13 @@
+# CLVTools 0.10.0
+
+### NEW FEATURES
+* We add an interface to specify models using a formula notation (`latentAttrition()` and `spending()`)
+* New method to plot customer's transaction timings (`plot.clv.data(which='timings')`)
+* Draw diagnostic plots of multiple models in single plot (`plot(other.models=list(), label=c())`)
+* MUCH faster fitting for the Pareto/NBD with time-varying covariates because we implemented the LL in Rcpp
+
+
+
 # CLVTools 0.9.0
 
 ### NEW FEATURES

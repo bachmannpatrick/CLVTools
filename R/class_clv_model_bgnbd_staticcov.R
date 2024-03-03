@@ -128,6 +128,36 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.static.c
                        fct.expectation = fct.bgnbd.expectation, clv.time = clv.fitted@clv.data@clv.time))
 })
 
+# . clv.model.predict.new.customer.unconditional.expectation -----------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict.new.customer.unconditional.expectation", signature = signature(clv.model="clv.model.bgnbd.static.cov"), definition = function(clv.model, clv.fitted, clv.newcustomer, t){
+
+  # ensure same ordering as parameters
+  #   often called with single row matrix, use drop=FALSE to not lose matrix
+  m.cov.trans <- data.matrix(clv.newcustomer@data.cov.trans)[, names(clv.fitted@prediction.params.trans), drop=FALSE]
+  m.cov.life <- data.matrix(clv.newcustomer@data.cov.life)[, names(clv.fitted@prediction.params.life), drop=FALSE]
+
+  alpha_i <- bgnbd_staticcov_alpha_i(alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+                                     vCovParams_trans = clv.fitted@prediction.params.trans,
+                                     mCov_trans = m.cov.trans)
+
+  a_i <- bgnbd_staticcov_a_i(a_0 = clv.fitted@prediction.params.model[["a"]],
+                             vCovParams_life = clv.fitted@prediction.params.life,
+                             mCov_life = m.cov.life)
+
+  b_i <- bgnbd_staticcov_b_i(b_0 = clv.fitted@prediction.params.model[["b"]],
+                             vCovParams_life = clv.fitted@prediction.params.life,
+                             mCov_life = m.cov.life)
+
+  return(bgnbd_staticcov_expectation(
+    r        = clv.fitted@prediction.params.model[["r"]],
+    vAlpha_i = alpha_i,
+    vA_i     = a_i,
+    vB_i     = b_i,
+    vT_i     = t
+  ))
+})
+
+
 # . clv.model.pmf --------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
 setMethod("clv.model.pmf", signature=(clv.model="clv.model.bgnbd.static.cov"), function(clv.model, clv.fitted, x){

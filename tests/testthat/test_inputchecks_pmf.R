@@ -1,7 +1,6 @@
 skip_on_cran()
 data("cdnow")
 
-context("Inputchecks - clv.fitted.transactions pmf - x")
 
 test_that("x is valid input (integer vector)", {
   skip_on_cran()

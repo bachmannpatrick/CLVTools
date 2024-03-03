@@ -1,6 +1,5 @@
 data("cdnow")
 skip_on_cran()
-context("Inputchecks - clvdata - plot")
 
 clv.cdnow.nohold <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split = NULL)
 
@@ -42,8 +41,8 @@ test_that("tracking - Stops for unneeded parameters", {
 test_that("frequency - label.remaining is single character", {
   expect_error(plot(clv.cdnow.nohold, which="frequency", label.remaining=NA_character_), regexp = "may not contain")
   expect_error(plot(clv.cdnow.nohold, which="frequency", label.remaining=NULL), regexp = "of type character")
-  expect_error(plot(clv.cdnow.nohold, which="frequency", label.remaining=character(0)), regexp = "single element")
-  expect_error(plot(clv.cdnow.nohold, which="frequency", label.remaining=c("10+", ">10")), regexp = "single element")
+  expect_error(plot(clv.cdnow.nohold, which="frequency", label.remaining=character(0)), regexp = "exactly 1 element")
+  expect_error(plot(clv.cdnow.nohold, which="frequency", label.remaining=c("10+", ">10")), regexp = "exactly 1 element")
 })
 
 test_that("frequency - trans.bins is valid", {
@@ -88,5 +87,25 @@ test_that("spending - cannot select holdout data if none present", {
 test_that("interpurchasetime - cannot select holdout data if none present", {
   skip_on_cran()
   expect_error(plot(clv.cdnow.nohold, which="interpurchasetime", sample="holdout"), regexp = "has no holdout data")
+})
+
+
+# . timings specific args -------------------------------------------------------------------------
+test_that("timings - annotate.ids is valid", {
+  skip_on_cran()
+  expect_error(plot(clv.cdnow.nohold, which="timings", annotate.ids=NA), regexp = "cannot be")
+  expect_error(plot(clv.cdnow.nohold, which="timings", annotate.ids=NULL), regexp = "of type logical")
+  expect_error(plot(clv.cdnow.nohold, which="timings", annotate.ids=""), regexp = "of type logical")
+  expect_error(plot(clv.cdnow.nohold, which="timings", annotate.ids=c("1", "2")), regexp = "of type logical")
+})
+
+test_that("timings - ids is valid", {
+  skip_on_cran()
+  expect_error(plot(clv.cdnow.nohold, which="timings", ids=NA), regexp = "may not contain")
+  expect_error(plot(clv.cdnow.nohold, which="timings", ids=-1), regexp = "strictly positive")
+  expect_error(plot(clv.cdnow.nohold, which="timings", ids=0), regexp = "strictly positive")
+  expect_error(plot(clv.cdnow.nohold, which="timings", ids=1:10), regexp = "single number")
+  expect_error(plot(clv.cdnow.nohold, which="timings", ids=""), regexp = "empty text")
+  expect_error(plot(clv.cdnow.nohold, which="timings", ids=c("1", "", "2")), regexp = "empty text")
 })
 

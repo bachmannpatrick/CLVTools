@@ -4,64 +4,47 @@
 \alias{latentAttrition}
 \title{Formula Interface for Latent Attrition Models}
 \usage{
-latentAttrition(formula, data, cov, optimx.args = list(), verbose = TRUE)
+latentAttrition(
+  formula,
+  family,
+  data,
+  optimx.args = list(),
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
-\item{formula}{Formula specifying the model to be fit. See Details.}
+\item{formula}{Formula to select and transform covariates in \code{data}. Has to be left empty if \code{data} contains no covariates. See Details.}
 
-\item{data}{Either a \code{clv.data} object or a \code{data.frame} containing transaction
-data on which the model specified in \code{formula} will be fit.}
+\item{family}{A latentAttrition model. One of \code{pnbd},  \code{bgnbd}, or \code{ggomnbd}.}
 
-\item{cov}{Optional \code{data.frame} or \code{data.table} of covariate data for the lifetime and transaction process. See Details.}
+\item{data}{A \code{clv.data} object.}
 
 \item{optimx.args}{Additional arguments to control the optimization which are forwarded to \code{\link[optimx:optimx]{optimx::optimx}}.
 If multiple optimization methods are specified, only the result of the last method is further processed.}
 
 \item{verbose}{Show details about the running of the function.}
+
+\item{...}{Forwarded to model specified in \code{family}.}
 }
 \description{
-Fit latent attrition models for transaction with a formula interface
+Fit latent attrition models for transaction behavior, using a formula to specify the covariates.
 }
 \details{
-\subsection{Formula}{
-A multi-part formula describing how to prepare data and fit the model.
+A two-part formula is used to select and transform the covariates stored in \code{data} before the model is estimated on it.
+May not be given if \code{data} contains no covariates.
 
-Formula left hand side (LHS) specifies the data preparation which depends on the provided argument \code{data}.
+The formula left hand side (LHS) has to remain empty and may never be specified.
+
+The formula right hand side (RHS) follows a two-part notation using \code{|} as separator.
 \itemize{
-\item{If \code{data} is \code{clvdata}: }{Nothing, LHS is required to be empty.}
-\item{If \code{data} is a \code{data.frame}: }{Data preparation using formula special \code{clvdata(time.unit, date.format, split)}. The formula is required to have a LHS.}
+\item 1st part: Which covariates to include for the lifetime process, potentially transforming them and adding interactions. The dot ('.') refers to all lifetime covariates.
+\item 2nd part: Which covariates to include for the transaction process, potentially transforming them and adding interactions. The dot ('.') refers to all transaction covariates
 }
 
-Formula right hand side (RHS) specifies the model fitting and follows a multi-part notation.
-\itemize{
-\item{1st part (required): }{The model to fit. One of either \code{\link{pnbd}}, \code{\link{bgnbd}}, or \code{\link{ggomnbd}}. Depending on the model additional arguments may be given. See the respective model functions for details.}
-}
-
-If the model is fit with covariates, further parts separated by \code{|} are required:
-\itemize{
-\item{2nd part (required): }{Which covariates to include for the lifetime process, potentially transforming them and adding interactions. The dot ('.') refers to all columns in the data except the identifier variables.}
-\item{3rd part (required): }{Which covariates to include for the transaction process, potentially transforming them and adding interactions. The dot ('.') refers to all columns in the data except the identifier variables.}
-\item{4th part (optional): }{Formula special \code{regularization(trans=, life=)} to specify the lambdas for regularization and \code{constraint(...)} to specify parameters to be equal on both processes.
-Both specials separated by \code{+} may be given.}
-}
+e.g: \code{ ~ covlife | covtrans}
 
 See the example section for illustrations on how to specify the formula parameter.
-}
-
-\subsection{Covariate Data}{
-
-For time-invariant covariates the data contains exactly one single row of covariate data for every customer appearing in the transaction data.
-Requires a column \code{Id} of customer identifiers.
-See \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}} for details.
-
-For time-varying covariates the data contains exactly 1 row for every combination of timepoint and customer.
-Requires a column \code{Id} of customer identifiers and a column \code{Cov.Date} of dates.
-For each customer appearing in the transaction data there needs to be covariate data at every timepoint that marks the start of a period as defined
-by time.unit. It has to range from the start of the estimation sample (timepoint.estimation.start) until the end of
-the period in which the end of the holdout sample (timepoint.holdout.end) falls.
-Covariates of class character or factor are converted to k-1 numeric dummies.
-See \code{\link[CLVTools:SetDynamicCovariates]{SetDynamicCovariates}} and the the provided dataset \code{\link{apparelDynCov}} for illustration.
-}
 }
 \examples{
 \donttest{
@@ -80,58 +63,50 @@ clv.staticcov  <-
                       data.cov.trans = apparelStaticCov,
                       names.cov.trans = c("Gender", "Channel"))
 
-# Fit pnbd without covariates
-latentAttrition(~pnbd(), data=clv.nocov)
-# Fit bgnbd without covariates
-latentAttrition(~bgnbd(), data=clv.nocov)
-# Fit ggomnbd without covariates
-latentAttrition(~ggomnbd(), data=clv.nocov)
+# Fit models without covariates.
+# Note that NO formula may be specified in this case
+latentAttrition(formula =, family=pnbd, data=clv.nocov)
+latentAttrition(formula =, family=bgnbd, data=clv.nocov)
+latentAttrition(formula =, family=ggomnbd, data=clv.nocov)
 
 # Fit pnbd with start parameters and correlation
-latentAttrition(~pnbd(start.params.model=c(r=1, alpha=10, s=2, beta=8),
-                      use.cor=TRUE),
-                data=clv.nocov)
+# required args are passed as part of '...'
+latentAttrition(formula =, family=pnbd, data=clv.nocov,
+                use.cor=TRUE,
+                start.params.model=c(r=1, alpha=10, s=2, beta=8))
+
 
 # Fit pnbd with all present covariates
-latentAttrition(~pnbd()|.|., clv.staticcov)
+latentAttrition(formula=~.|., family=pnbd, data=clv.staticcov)
 
 # Fit pnbd with selected covariates
-latentAttrition(~pnbd()|Gender|Channel+Gender, data=clv.staticcov)
+latentAttrition(formula=~Gender|Channel+Gender, family=pnbd,
+                data=clv.staticcov)
 
 # Fit pnbd with start parameters for covariates
-latentAttrition(~pnbd(start.params.life = c(Gender = 0.6, Channel = 0.4),
-                      start.params.trans = c(Gender = 0.6, Channel = 0.4))|.|., data=clv.staticcov)
+latentAttrition(formula=~Gender|., family=pnbd,
+                data=clv.staticcov,
+                start.params.life = c(Gender = 0.6),
+                start.params.trans = c(Gender = 0.6, Channel = 0.4))
 
 # Fit pnbd with transformed covariate data
-latentAttrition(~pnbd()|Gender|I(log(Channel+2)), data=clv.staticcov)
+latentAttrition(formula=~Gender|I(log(Channel+2)), family=pnbd,
+                data=clv.staticcov)
 
 # Fit pnbd with all covs and regularization
-latentAttrition(~pnbd()|.|.|regularization(life=3, trans=8), clv.staticcov)
+latentAttrition(formula=~.|., family=pnbd, data=clv.staticcov,
+                reg.lambdas = c(life=3, trans=8))
 
 # Fit pnbd with all covs and constraint parameters for Channel
-latentAttrition(~pnbd()|.|.|constraint(Channel), clv.staticcov)
-
-# Fit pnbd on given data.frame, no split
-latentAttrition(data()~pnbd(), data=apparelTrans)
-
-# Fit pnbd, split data after 39 periods
-latentAttrition(data(split=39)~pnbd(), data=apparelTrans)
-# Same but also give date format and period definition
-latentAttrition(data(split=39, format=ymd, unit=w)~pnbd(), data=apparelTrans)
-
-# Fit pnbd on given data.frames w/ all covariates
-latentAttrition(data()~pnbd()|.|., data=apparelTrans, cov=apparelStaticCov)
-
-# Fit pnbd on given data.frames w/ selected covariates
-latentAttrition(data()~pnbd()|Channel+Gender|Gender,
-                data=apparelTrans, cov=apparelStaticCov)
+latentAttrition(formula=~.|., family=pnbd, data=clv.staticcov,
+                names.cov.constr='Channel')
 
 }
 
 
 }
 \seealso{
-Models for inputs to: \link{pnbd}, \link{ggomnbd}, \link{bgnbd}.
+Models for inputs to family: \link{pnbd}, \link{ggomnbd}, \link{bgnbd}.
 
 \link{spending} to fit spending models with a formula interface
 }

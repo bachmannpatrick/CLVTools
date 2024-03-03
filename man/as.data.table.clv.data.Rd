@@ -7,7 +7,7 @@
 \method{as.data.table}{clv.data}(
   x,
   keep.rownames = FALSE,
-  Ids = NULL,
+  ids = NULL,
   sample = c("full", "estimation", "holdout"),
   ...
 )
@@ -17,7 +17,7 @@
 
 \item{keep.rownames}{Ignored}
 
-\item{Ids}{Character vector of customer ids for which transactions should be extracted. \code{NULL} extracts all.}
+\item{ids}{Character vector of customer ids for which transactions should be extracted. \code{NULL} extracts all.}
 
 \item{sample}{Name of sample for which transactions should be extracted,
 either "estimation", "holdout", or "full" (default).}
@@ -33,25 +33,26 @@ into a data.table.
 }
 \examples{
 library(data.table)
-
+ \donttest{
 data("cdnow")
 clv.data.cdnow <- clvdata(data.transactions = cdnow,
                           date.format="ymd",
                           time.unit = "w",
                           estimation.split = 37)
 
-# Extract all transaction data (all Ids, estimation and holdout period)
+# Extract all transaction data (all ids, estimation and holdout period)
 dt.trans <- as.data.table(clv.data.cdnow)
 
 # Extract transaction data of estimation period
 dt.trans <- as.data.table(clv.data.cdnow, sample="estimation")
 
-# Extract transaction data of Ids "1", "2", and "999"
+# Extract transaction data of ids "1", "2", and "999"
 #  (estimation and holdout period)
-dt.trans <- as.data.table(clv.data.cdnow, Ids = c("1", "2", "999"))
+dt.trans <- as.data.table(clv.data.cdnow, ids = c("1", "2", "999"))
 
-# Extract transaction data of Ids "1", "2", and "999" in estimation period
-dt.trans <- as.data.table(clv.data.cdnow, Ids = c("1", "2", "999"),
+# Extract transaction data of ids "1", "2", and "999" in estimation period
+dt.trans <- as.data.table(clv.data.cdnow, ids = c("1", "2", "999"),
                           sample="estimation")
+}
 
 }

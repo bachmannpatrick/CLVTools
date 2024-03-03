@@ -14,7 +14,7 @@ clv.model.ggomnbd.no.cov <- function(){
              name.model = "GGompertz/NBD Standard",
              names.original.params.model = c(r="r", alpha="alpha", b="b", s="s", beta="beta"),
              names.prefixed.params.model = c("log.r","log.alpha", "log.b", "log.s", "log.beta"),
-             start.params.model          = c(r=1, alpha=1, b=1, s=1, beta=1),
+             start.params.model          = c(r=0.5, alpha=2, b=0.1, s=1, beta=0.1),
              optimx.defaults = list(method = "L-BFGS-B",
                                     itnmax  = 5000,
                                     control = list(
@@ -109,6 +109,20 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.ggomnbd.no.cov
   return(DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
                        fct.expectation = fct.expectation, clv.time = clv.fitted@clv.data@clv.time))
 })
+
+
+# . clv.model.predict.new.customer.unconditional.expectation --------------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict.new.customer.unconditional.expectation", signature = signature(clv.model="clv.model.ggomnbd.no.cov"), definition = function(clv.model, clv.fitted, clv.newcustomer, t){
+
+  return(ggomnbd_nocov_expectation(
+    r       = clv.fitted@prediction.params.model[["r"]],
+    alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+    beta_0  = clv.fitted@prediction.params.model[["beta"]],
+    b       = clv.fitted@prediction.params.model[["b"]],
+    s       = clv.fitted@prediction.params.model[["s"]],
+    vT_i    = t))
+})
+
 
 # . clv.model.pmf --------------------------------------------------------------------------------------------------------
 setMethod("clv.model.pmf", signature=(clv.model="clv.model.ggomnbd.no.cov"), function(clv.model, clv.fitted, x){

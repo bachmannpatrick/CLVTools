@@ -16,7 +16,7 @@ clv.model.pnbd.no.cov <- function(){
              name.model                  = "Pareto/NBD Standard",
              names.original.params.model = c(r="r", alpha="alpha", s="s", beta="beta"),
              names.prefixed.params.model = c("log.r","log.alpha", "log.s", "log.beta"),
-             start.params.model          = c(r=1, alpha=1, s=1, beta=1),
+             start.params.model          = c(r=0.5, alpha=15, s=0.5, beta=10),
              optimx.defaults = list(method = "L-BFGS-B",
                                     # lower   = c(log(1*10^(-5)),log(1*10^(-5)),log(1*10^(-5)),log(1*10^(-5))),
                                     # upper   = c(log(300),log(2000),log(300),log(2000)),
@@ -261,6 +261,21 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.no.cov"),
   return(DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
                        fct.expectation = fct.expectation, clv.time = clv.fitted@clv.data@clv.time))
 })
+
+
+
+# . clv.model.predict.new.customer.unconditional.expectation --------------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict.new.customer.unconditional.expectation", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, clv.newcustomer, t){
+
+  return(pnbd_nocov_expectation(
+      r = clv.fitted@prediction.params.model[["r"]],
+      s = clv.fitted@prediction.params.model[["s"]],
+      alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+      beta_0 = clv.fitted@prediction.params.model[["beta"]],
+      vT_i = t))
+})
+
+
 
 
 # . clv.model.pmf --------------------------------------------------------------------------------------------------------
