@@ -233,7 +233,37 @@ fct.testthat.correctness.dyncov.CET <- function(data.apparelTrans, data.apparelD
 
 }
 
+fct.testthat.correctness.dyncov.PAlive <- function(data.apparelTrans, data.apparelDynCov){
 
+  p.dyn <- fct.helper.dyncov.quickfit.apparel.data(data.apparelTrans = data.apparelTrans, data.apparelDynCov = data.apparelDynCov)
+
+  test_that("PAlive with improved numerical stability same result as old palive", {
+
+    pnbd_dyncov_palive_old <- function (clv.fitted){
+      # Old implementation (until incl v.0.10.0)
+
+      # Params, not logparams
+      r       <- clv.fitted@prediction.params.model[["r"]]
+      alpha_0 <- clv.fitted@prediction.params.model[["alpha"]]
+      s       <- clv.fitted@prediction.params.model[["s"]]
+      beta_0  <- clv.fitted@prediction.params.model[["beta"]]
+
+      LLdata <- copy(clv.fitted@LL.data)
+      cbs    <- copy(clv.fitted@cbs)
+
+      # write to LLdata for nicer calculation
+      # Z in the notes: F.2 in LL function
+      LLdata[cbs, cbs.x := i.x, on="Id"]
+      LLdata[,    rsx   := s/(r+s+cbs.x)]
+      LLdata[, palive := 1/((Bksum+alpha_0)^(cbs.x+r) * (DkT+beta_0)^s * rsx * Z + 1)]
+      return(LLdata[, c("Id", "palive")])
+    }
+
+    expect_silent(dt.palive.old <- pnbd_dyncov_palive_old(p.dyn))
+    expect_silent(dt.palive <- pnbd_dyncov_palive(p.dyn))
+    expect_equal(dt.palive, dt.palive.old)
+  })
+}
 
 
 
@@ -246,3 +276,5 @@ fct.testthat.correctness.dyncov.expectation(data.apparelTrans = apparelTrans, da
 fct.testthat.correctness.dyncov.CET(data.apparelTrans = apparelTrans, data.apparelDynCov = apparelDynCov)
 
 fct.testthat.correctness.dyncov.LL(data.apparelTrans = apparelTrans, data.apparelDynCov = apparelDynCov)
+
+fct.testthat.correctness.dyncov.PAlive(data.apparelTrans = apparelTrans, data.apparelDynCov = apparelDynCov)
