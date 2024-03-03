@@ -70,7 +70,7 @@ data("apparelStaticCov")
 data("apparelDynCov")
 
 clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
-                            time.unit = "w", estimation.split = 40)
+                            time.unit = "w", estimation.split = 52)
 clv.data.static.cov <-
  SetStaticCovariates(clv.data.apparel,
                      data.cov.life = apparelStaticCov,

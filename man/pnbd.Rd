@@ -153,7 +153,7 @@ of less than one day (data that was built with time unit \code{hours}).
 \donttest{
 data("apparelTrans")
 clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
-                            time.unit = "w", estimation.split = 40)
+                            time.unit = "w", estimation.split = 52)
 
 # Fit standard pnbd model
 pnbd(clv.data.apparel)
