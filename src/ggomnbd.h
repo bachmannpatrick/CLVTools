@@ -77,6 +77,11 @@ struct integration_params {
 };
 
 
+struct integration_params_CET_hyp21 {
+  double s;
+  double z;
+};
+
 
 // CET ------------------------------------------------------------------------
 
