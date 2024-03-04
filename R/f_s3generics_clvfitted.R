@@ -449,7 +449,10 @@ fitted.clv.fitted <- function(object, prediction.end=NULL, verbose=FALSE, ...){
 }
 
 
+
 #' @export
+#' @importFrom methods is slot
+#' @importFrom stats nobs logLik pchisq
 lrtest.clv.fitted <- function(object, ..., name = NULL){
   # This very closely follows lmtest::lrtest.default in package version 0.9-40
   # See lmtest::lrtest() on the CRAN github repo https://github.com/cran/lmtest/blob/master/R/lrtest.R
@@ -517,7 +520,12 @@ lrtest.clv.fitted <- function(object, ..., name = NULL){
 }
 
 
-
-#' @exportMethod lrtest
+#' @rdname lrtest
+#'
+#' @param name A character vector of names to use for the models in the resulting output.
+#' If given, a name has to be provided for \code{object} and each model in \code{...}.
+#' If not given, the default model names are used.
+#'
 #' @include all_generics.R
+#' @exportMethod lrtest
 setMethod("lrtest", signature(object="clv.fitted"), definition = lrtest.clv.fitted)

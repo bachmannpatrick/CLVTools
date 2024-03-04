@@ -14,6 +14,23 @@ setGeneric(name = "predict")
 # ?Methods_for_Nongenerics: Recommends to define both methods: The S3 method and also
 # supply the identical function as the definition of the S4 method.
 # Re-define same as S3 generic `lmtest::lrtest <- function(object, ...){ UseMethod("lrtest") }`
+#' Likelihood Ratio Test of Nested Models
+#'
+#' @description
+#' \code{lrtest} carrys out likelihood ratio tests to compare nested CLV models.
+#'
+#' The method consecutively compares the first model given in \code{object} with all the
+#' other models passed in \code{...}. An asymptotic likelihood ratio test is carried out:
+#' Twice the difference in log-likelihoods is compared with a Chi-squared distribution.
+#'
+#' @param object An fitted model object inheriting from \code{clv.fitted}.
+#' @param ... Other models objects fitted on the same transaction data
+#'
+#' @returns A \code{data.frame} of class "anova" which contains the log-likelihood,
+#' degrees of freedom, the difference in degrees of freedom, likelihood ratio
+#' Chi-squared statistic and corresponding p-value.
+#'
+#'
 #' @exportMethod lrtest
 setGeneric(name = "lrtest", def=function(object, ...)
   standardGeneric("lrtest"))
