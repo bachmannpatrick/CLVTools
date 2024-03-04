@@ -484,7 +484,7 @@ lrtest.clv.fitted <- function(object, ..., name = NULL){
   }
 
   # Verify names are given for each model
-  if(length(name) != length(objects)){
+  if(!is.null(name) & (length(name) != length(objects))){
     check_err_msg("Names must be provided exactly as many as models!")
   }
 
