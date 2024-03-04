@@ -115,16 +115,6 @@ arma::vec ggomnbd_CET(const double r,
   const arma::vec vLower = b * s * (1.0 + (b * s) * clv::vec_pow(vAlpha_i + vT_cal, r + vX) % arma::pow(vExpbTpart, s) % vIntegral);
   const arma::vec vFront = (r + vX)/(vAlpha_i + vT_cal);
 
-  Rcpp::Rcout << "vFront" << vFront.head(10) << std::endl;
-  Rcpp::Rcout << "vBetaIminus1" << vBetaIminus1.head(10) << std::endl;
-  Rcpp::Rcout << "vExpbTpart" << vExpbTpart.head(10) << std::endl;
-  Rcpp::Rcout << "vExpbTTstarpart" << vExpbTTstarpart.head(10) << std::endl;
-  Rcpp::Rcout << "vHyp1" << vHyp1.head(10) << std::endl;
-  Rcpp::Rcout << "vHyp2" << vHyp2.head(10) << std::endl;
-  Rcpp::Rcout << "vUpper" << vUpper.head(10) << std::endl;
-  Rcpp::Rcout << "vLower" << vLower.head(10) << std::endl;
-  Rcpp::Rcout << "vIntegral" << vIntegral.head(10) << std::endl;
-
   return(vFront % vUpper / vLower);
 }
 
