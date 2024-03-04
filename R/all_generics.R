@@ -10,6 +10,13 @@
 #   exportMethods(fun)
 setGeneric(name = "predict")
 
+# lrtest Generics -------------------------------------------------------
+# ?Methods_for_Nongenerics: Recommends to define both methods: The S3 method and also
+# supply the identical function as the definition of the S4 method.
+# Re-define same as S3 generic `lmtest::lrtest <- function(object, ...){ UseMethod("lrtest") }`
+#' @exportMethod lrtest
+setGeneric(name = "lrtest", def=function(object, ...)
+  standardGeneric("lrtest"))
 
 # Controlflows -------------------------------------------------------------------------------------------------
 # Steps performed by all models but different between base (no cov) and covariate models

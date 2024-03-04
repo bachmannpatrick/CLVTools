@@ -517,3 +517,7 @@ lrtest.clv.fitted <- function(object, ..., name = NULL){
 }
 
 
+
+#' @exportMethod lrtest
+#' @include all_generics.R
+setMethod("lrtest", signature(object="clv.fitted"), definition = lrtest.clv.fitted)
