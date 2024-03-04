@@ -85,6 +85,11 @@ struct integration_params_CET_hyp21 {
 
 // CET ------------------------------------------------------------------------
 
+double ggomnbd_CET_hyp2f1_integrand(double t, void * p_params);
+
+arma::vec ggomnbd_CET_hyp2f1_1_s_splus1_integrate(const double s,
+                                                  const arma::vec& vZ);
+
 double ggomnbd_CET_integrand(double omega, void * p_params);
 
 arma::vec ggomnbd_CET(const double r,
