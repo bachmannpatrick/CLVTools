@@ -10,7 +10,7 @@ double ggomnbd_CET_integrand(double tau, void * p_params){
   const double beta_i = (params -> beta_i);
   const double alpha_i = (params -> alpha_i);
 
-  return(std::exp(b*tau) / (std::pow(std::exp(b*tau) + beta_i - 1.0,  s + 1.0) * std::pow(alpha_i + r, r + x)));
+  return(std::exp(b*tau) / (std::pow(std::exp(b*tau) + beta_i - 1.0,  s + 1.0) * std::pow(alpha_i + tau, r + x)));
 }
 
 
