@@ -1,11 +1,14 @@
 
-#' @export
+#' @exportS3Method lmtest::lrtest
 #' @importFrom methods is slot
 #' @importFrom stats nobs logLik pchisq
 lrtest.clv.fitted <- function(object, ..., name = NULL){
   # This very closely follows lmtest::lrtest.default in package version 0.9-40
   # See lmtest::lrtest() on the CRAN github repo https://github.com/cran/lmtest/blob/master/R/lrtest.R
   # Specifically@0.9-40: https://github.com/cran/lmtest/blob/1a5c1de8629e650226091ee3c0be33f0b8a42b33/R/lrtest.R
+
+  # Register for dispatch on a method defined in another (suggested) package by using
+  # @exportS3Method which adds `S3method(lmtest::lrtest,clv.fitted)` to NAMESPACE
 
   objects <- list(object, ...)
   nmodels <- length(objects)
