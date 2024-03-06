@@ -1,4 +1,29 @@
+#' @name lrtest
+#'
+#' @title Likelihood Ratio Test of Nested Models
+#'
+#' @param name A character vector of names to use for the models in the resulting output.
+#' If given, a name has to be provided for \code{object} and each model in \code{...}.
+#' If not given, the default model names are used.
+#'
+#' @description
+#' \code{lrtest} carrys out likelihood ratio tests to compare nested CLV models.
+#'
+#' The method consecutively compares the first model given in \code{object} with all the
+#' other models passed in \code{...}. An asymptotic likelihood ratio test is carried out:
+#' Twice the difference in log-likelihoods is compared with a Chi-squared distribution.
+#'
+#' @param object An fitted model object inheriting from \code{clv.fitted}.
+#' @param ... Other models objects fitted on the same transaction data
+#'
+#' @returns A \code{data.frame} of class "anova" which contains the log-likelihood,
+#' degrees of freedom, the difference in degrees of freedom, likelihood ratio
+#' Chi-squared statistic and corresponding p-value.
+NULL
 
+
+
+#' @rdname lrtest
 #' @exportS3Method lmtest::lrtest
 #' @importFrom methods is slot
 #' @importFrom stats nobs logLik pchisq
@@ -71,37 +96,26 @@ lrtest.clv.fitted <- function(object, ..., name = NULL){
             class = c("anova", "data.frame"))
 }
 
-# ?Methods_for_Nongenerics: Recommends to define both methods: The S3 method and also
-# supply the identical function as the definition of the S4 method.
-# Re-define same as S3 generic `lmtest::lrtest <- function(object, ...){ UseMethod("lrtest") }`
-#' Likelihood Ratio Test of Nested Models
-#'
-#' @description
-#' \code{lrtest} carrys out likelihood ratio tests to compare nested CLV models.
-#'
-#' The method consecutively compares the first model given in \code{object} with all the
-#' other models passed in \code{...}. An asymptotic likelihood ratio test is carried out:
-#' Twice the difference in log-likelihoods is compared with a Chi-squared distribution.
-#'
-#' @param object An fitted model object inheriting from \code{clv.fitted}.
-#' @param ... Other models objects fitted on the same transaction data
-#'
-#' @returns A \code{data.frame} of class "anova" which contains the log-likelihood,
-#' degrees of freedom, the difference in degrees of freedom, likelihood ratio
-#' Chi-squared statistic and corresponding p-value.
-#'
-#'
+
+# In order to be able to use `lrtest()` without having `lmtest` loaded or even installed,
+# define and export `lrtest()` as a generic in CLVTools.
+# The S4 generic is defined with the same signature as the
+# S3 generic `lmtest::lrtest <- function(object, ...){ UseMethod("lrtest") }`.
+#
+# The lmtest package exports an S3 generic `lrtest()` what masks the generic (whether S3
+# or S4) exported by CLVTools if the lmtest package is loaded after CLVTools. Therefore,
+# define and export also as a S3 method `CLVTools::lrtest.clv.fitted`.
+#
+# ?Methods_for_Nongenerics on dispatching an S4 object to S3 generics method in
+# another package: Recommends to define both methods: The S3 method and also supply
+# the identical function as the definition of the S4 method.
+#' @rdname lrtest
 #' @exportMethod lrtest
 setGeneric(name = "lrtest", def=function(object, ...)
   standardGeneric("lrtest"))
 
 
 #' @rdname lrtest
-#'
-#' @param name A character vector of names to use for the models in the resulting output.
-#' If given, a name has to be provided for \code{object} and each model in \code{...}.
-#' If not given, the default model names are used.
-#'
 #' @include all_generics.R
 #' @exportMethod lrtest
 setMethod("lrtest", signature(object="clv.fitted"), definition = lrtest.clv.fitted)

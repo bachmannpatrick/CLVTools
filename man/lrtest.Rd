@@ -2,9 +2,12 @@
 % Please edit documentation in R/f_interface_lrtest.R
 \name{lrtest}
 \alias{lrtest}
+\alias{lrtest.clv.fitted}
 \alias{lrtest,clv.fitted-method}
 \title{Likelihood Ratio Test of Nested Models}
 \usage{
+\method{lrtest}{clv.fitted}(object, ..., name = NULL)
+
 lrtest(object, ...)
 
 \S4method{lrtest}{clv.fitted}(object, ..., name = NULL)
