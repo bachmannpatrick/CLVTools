@@ -65,6 +65,8 @@ arma::vec ggomnbd_CET_hyp2f1_1_s_splus1_integrate(
     vRes(i) = res * s;
   }
 
+  gsl_integration_workspace_free(workspace);
+
   return vRes;
 }
 
