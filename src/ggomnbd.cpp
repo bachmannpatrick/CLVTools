@@ -315,9 +315,11 @@ double ggomnbd_LL_integrand(double y, void * p_params){
   const double alpha_i = (params -> alpha_i);
   const double x_i = (params -> x_i);
 
-  return  std::pow(y + alpha_i,  -(r + x_i))
-    * std::pow(beta_i + std::exp( b * y) - 1.0 , -(s + 1.0))
-    * std::exp(b * y);
+  // Rewrite integral as exp(log()) to improve numerical stability
+  // Jeff:
+  //    log(pow(y + alpha_i, -(r + x)) * pow(beta_i + exp(b * y) - 1 , -(s + 1)) * exp(b * y))
+  //     = -(r+x)*log( y + alpha_i) - (s+1)*log( beta_i + exp( b * y) - 1) +b *y
+  return std::exp(-(r + x_i) * std::log(y + alpha_i) - (s + 1.0) * std::log(beta_i + std::exp( b * y) - 1.0) + b * y);
 }
 
 
