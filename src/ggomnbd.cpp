@@ -1,15 +1,75 @@
 #include "ggomnbd.h"
 
 
-// integrand<-function(omega){omega*exp(b*omega)*(beta_i[i]+exp(b*omega)-1)^-(s+1)}
-double ggomnbd_CET_integrand(double omega, void * p_params){
+double ggomnbd_CET_integrand(double tau, void * p_params){
   struct integration_params * params = (struct integration_params*)p_params;
+  const double x = (params -> x_i);
   const double b = (params -> b);
   const double s = (params -> s);
+  const double r = (params -> r);
   const double beta_i = (params -> beta_i);
+  const double alpha_i = (params -> alpha_i);
 
-  return(omega * std::exp(b * omega) * std::pow(beta_i + std::exp(b * omega) - 1.0, -(s+1.0) ) );
+  return(std::exp(b*tau) / (std::pow(std::exp(b*tau) + beta_i - 1.0,  s + 1.0) * std::pow(alpha_i + tau, r + x)));
 }
+
+
+double ggomnbd_CET_hyp2f1_integrand(double t, void * p_params){
+  struct integration_params_CET_hyp21 * params = (struct integration_params_CET_hyp21*)p_params;
+  const double s = (params -> s);
+  const double z = (params -> z);
+
+  return(std::pow(t,  s - 1.0)/(1.0 - z*t));
+}
+
+
+
+arma::vec ggomnbd_CET_hyp2f1_1_s_splus1_integrate(
+    const double s,
+    const arma::vec& vZ
+){
+  // Calculate Hyp2F1(1, s, s+1, z) using Jeff's integral representation:
+  //        1/beta(1,s) * Integrate(f, lower=0, upper=1)
+  //          where f(t) = (t^(s-1)) / (1-z*t)
+  // Where the function is defined on the complex plane, it returns only the real part
+
+  // Alternatively, it could the problematic hyp2f1 could also be rewritten as
+  //      (1-z)^(-a) * 2F1(a, c-b, c, z/(z-1))
+  //      (1-z)^(-b) * 2F1(c-a, b, c, z/(z-1))
+  // However, it is unclear whether this can be calculated with the used Hyp2F1() for
+  // all values of z or would need additional case analysis. Therefore simply use
+  // numeric integration as this is not performance critical in CET.
+
+
+  // Do not abort in case of error
+  gsl_set_error_handler_off();
+
+  gsl_integration_workspace * workspace = gsl_integration_workspace_alloc(1000);
+
+  gsl_function integrand;
+  integrand.function = &ggomnbd_CET_hyp2f1_integrand;
+
+  const arma::uword n = vZ.n_elem;
+  arma::vec vRes(n);
+  double res, err;
+  struct integration_params_CET_hyp21 params_i;
+  for(arma::uword i = 0; i<n; i++){
+
+    params_i.s = s;
+    params_i.z = vZ(i);
+    integrand.params = &params_i;
+
+    gsl_integration_qags(&integrand, 0.0, 1.0, 1.0e-8, 1.0e-8, 1000, workspace, &res, &err);
+
+    // beta(1,s) = 1/s, therefore 1/beta(1,s) = s
+    vRes(i) = res * s;
+  }
+
+  gsl_integration_workspace_free(workspace);
+
+  return vRes;
+}
+
 
 
 //' @name ggomnbd_CET
@@ -40,25 +100,24 @@ arma::vec ggomnbd_CET(const double r,
                       const arma::vec& vAlpha_i,
                       const arma::vec& vBeta_i){
 
-  // Expectation is Formula 20: PAlive()*Expectation()
-  //
-  //  with
-  //    r *    = r + x
-  //    alpha* = alpha + Tcal
-  //    beta*  = beta + exp(b*Tcal) - 1
-  //    t_i    = dPeriods
+  // Errata by Adler (2022), https://pubsonline.informs.org/doi/10.1287/mnsc.2022.4422
+  // See https://github.com/bachmannpatrick/CLVTools/issues/206
 
+  const arma::vec vBetaIminus1 = vBeta_i - 1.0;
+  const arma::vec vExpbTpart = arma::exp(b*vT_cal) + vBetaIminus1;
+  const arma::vec vExpbTTstarpart = arma::exp(b*(vT_cal + dPeriods)) + vBetaIminus1;
 
-  const arma::vec vPAlive = ggomnbd_PAlive(r,b,s,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
+  const arma::vec vHyp1 = ggomnbd_CET_hyp2f1_1_s_splus1_integrate(s, vBetaIminus1 / vExpbTpart);
+  const arma::vec vHyp2 = ggomnbd_CET_hyp2f1_1_s_splus1_integrate(s, vBetaIminus1 / vExpbTTstarpart);
+  const arma::vec vUpper = vHyp1 - arma::pow(vExpbTpart / vExpbTTstarpart, s) % vHyp2;
 
-  const arma::vec vRStar     = r + vX;
-  const arma::vec vAlphaStar = vAlpha_i + vX;
-  const arma::vec vBetaStar  = vBeta_i + arma::exp(b * vT_cal) - 1.0;
+  const arma::vec vIntegral = ggomnbd_integrate(r, b, s, vAlpha_i, vBeta_i,vX,
+                                                &ggomnbd_CET_integrand,
+                                                vT_x, vT_cal);
+  const arma::vec vLower = b * s * (1.0 + (b * s) * clv::vec_pow(vAlpha_i + vT_cal, r + vX) % arma::pow(vExpbTpart, s) % vIntegral);
+  const arma::vec vFront = (r + vX)/(vAlpha_i + vT_cal);
 
-  const arma::vec vPeriods = clv::vec_fill(dPeriods, vX.n_elem);
-  const arma::vec vExpectation = ggomnbd_expectation(b, s, vRStar, vAlphaStar, vBetaStar, vPeriods);
-
-  return(vPAlive % vExpectation);
+  return(vFront % vUpper / vLower);
 }
 
 
@@ -199,7 +258,6 @@ arma::vec ggomnbd_staticcov_expectation(const double r,
 
 
 
-
 arma::vec ggomnbd_integrate(const double r,
                             const double b,
                             const double s,
@@ -240,6 +298,9 @@ arma::vec ggomnbd_integrate(const double r,
     vRes(i) = res;
   }
 
+  gsl_integration_workspace_free(workspace);
+
+
   return(vRes);
 }
 
@@ -254,9 +315,11 @@ double ggomnbd_LL_integrand(double y, void * p_params){
   const double alpha_i = (params -> alpha_i);
   const double x_i = (params -> x_i);
 
-  return  std::pow(y + alpha_i,  -(r + x_i))
-    * std::pow(beta_i + std::exp( b * y) - 1.0 , -(s + 1.0))
-    * std::exp(b * y);
+  // Rewrite integral as exp(log()) to improve numerical stability
+  // Jeff:
+  //    log(pow(y + alpha_i, -(r + x)) * pow(beta_i + exp(b * y) - 1 , -(s + 1)) * exp(b * y))
+  //     = -(r+x)*log( y + alpha_i) - (s+1)*log( beta_i + exp( b * y) - 1) +b *y
+  return std::exp(-(r + x_i) * std::log(y + alpha_i) - (s + 1.0) * std::log(beta_i + std::exp( b * y) - 1.0) + b * y);
 }
 
 
