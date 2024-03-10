@@ -10,7 +10,6 @@
 #   exportMethods(fun)
 setGeneric(name = "predict")
 
-
 # Controlflows -------------------------------------------------------------------------------------------------
 # Steps performed by all models but different between base (no cov) and covariate models
 
