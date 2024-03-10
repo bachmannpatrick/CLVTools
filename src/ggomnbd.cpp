@@ -298,6 +298,9 @@ arma::vec ggomnbd_integrate(const double r,
     vRes(i) = res;
   }
 
+  gsl_integration_workspace_free(workspace);
+
+
   return(vRes);
 }
 
