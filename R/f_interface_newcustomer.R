@@ -168,6 +168,17 @@ clv.newcustomer.static.cov <- function(num.periods, data.cov.life, data.cov.tran
 }
 
 
+clv.newcustomer.static.get.matrix.cov.trans <- function(clv.newcustomer, clv.fitted){
+  m <- data.matrix(clv.newcustomer@data.cov.trans)
+  return(m[, names(clv.fitted@prediction.params.trans), drop=FALSE])
+}
+
+clv.newcustomer.static.get.matrix.cov.life <- function(clv.newcustomer, clv.fitted){
+  m <- data.matrix(clv.newcustomer@data.cov.life)
+  return(m[, names(clv.fitted@prediction.params.life), drop=FALSE])
+}
+
+
 setClass(
   Class = "clv.newcustomer.dynamic.cov",
   contains = "clv.newcustomer.static.cov",

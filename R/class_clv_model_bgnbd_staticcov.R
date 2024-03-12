@@ -131,10 +131,8 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.static.c
 # . clv.model.predict.new.customer.unconditional.expectation -----------------------------------------------------------------------------------------------------
 setMethod("clv.model.predict.new.customer.unconditional.expectation", signature = signature(clv.model="clv.model.bgnbd.static.cov"), definition = function(clv.model, clv.fitted, clv.newcustomer, t){
 
-  # ensure same ordering as parameters
-  #   often called with single row matrix, use drop=FALSE to not lose matrix
-  m.cov.trans <- data.matrix(clv.newcustomer@data.cov.trans)[, names(clv.fitted@prediction.params.trans), drop=FALSE]
-  m.cov.life <- data.matrix(clv.newcustomer@data.cov.life)[, names(clv.fitted@prediction.params.life), drop=FALSE]
+  m.cov.trans <- clv.newcustomer.static.get.matrix.cov.trans(clv.newcustomer=clv.newcustomer, clv.fitted=clv.fitted)
+  m.cov.life <- clv.newcustomer.static.get.matrix.cov.life(clv.newcustomer=clv.newcustomer, clv.fitted=clv.fitted)
 
   alpha_i <- bgnbd_staticcov_alpha_i(alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
                                      vCovParams_trans = clv.fitted@prediction.params.trans,
