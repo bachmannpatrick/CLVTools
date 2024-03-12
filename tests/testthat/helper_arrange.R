@@ -165,10 +165,14 @@ fct.helper.dyncov.quickfit <- function(clv.data.dyn, hessian){
   return(p.dyncov)
 }
 
-fct.helper.dyncov.quickfit.apparel.data <- function(data.apparelTrans=NULL, data.apparelDynCov=NULL, hessian=FALSE){
+fct.helper.dyncov.quickfit.apparel.data <- function(data.apparelTrans=NULL, data.apparelDynCov=NULL, hessian=FALSE,
+                                                    names.cov.life = c("Marketing", "Gender", "Channel"),
+                                                    names.cov.trans = c("Marketing", "Gender", "Channel")){
   clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(
     data.apparelTrans=data.apparelTrans,
-    data.apparelDynCov=data.apparelDynCov)
+    data.apparelDynCov=data.apparelDynCov,
+    names.cov.life = names.cov.life,
+    names.cov.trans = names.cov.trans)
 
   fitted.dyncov <- fct.helper.dyncov.quickfit(clv.apparel.dyn, hessian=hessian)
 
