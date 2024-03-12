@@ -192,7 +192,7 @@ clv.newcustomer.dynamic.cov <- function(num.periods, data.cov.life, data.cov.tra
 #' @rdname newcustomer
 #' @export
 newcustomer <- function(num.periods){
-  check_err_msg(check_user_data_newcustomer_numperiods(num.periods))
+  check_err_msg(check_user_data_predict_newcustomer_numperiods(num.periods))
   return(clv.newcustomer.no.cov(num.periods))
 }
 
@@ -200,7 +200,7 @@ newcustomer <- function(num.periods){
 #' @export
 newcustomer.static <- function(num.periods, data.cov.life, data.cov.trans){
 
-  check_err_msg(check_user_data_newcustomer_numperiods(num.periods))
+  check_err_msg(check_user_data_predict_newcustomer_numperiods(num.periods))
   check_err_msg(check_user_data_newcustomer_staticcovdatacov(data.cov=data.cov.life, name.of.covariate='Lifetime'))
   check_err_msg(check_user_data_newcustomer_staticcovdatacov(data.cov=data.cov.trans, name.of.covariate='Transaction'))
 
@@ -215,7 +215,7 @@ newcustomer.static <- function(num.periods, data.cov.life, data.cov.trans){
 #' @export
 newcustomer.dynamic <- function(num.periods, data.cov.life, data.cov.trans, first.transaction){
 
-  check_err_msg(check_user_data_newcustomer_numperiods(num.periods))
+  check_err_msg(check_user_data_predict_newcustomer_numperiods(num.periods))
   check_err_msg(check_user_data_newcustomer_firsttransaction(first.transaction))
   check_err_msg(check_user_data_newcustomer_dyncovdatacov(data.cov=data.cov.life, name.of.covariate = "Lifetime"))
   check_err_msg(check_user_data_newcustomer_dyncovdatacov(data.cov=data.cov.trans, name.of.covariate = "Transaction"))

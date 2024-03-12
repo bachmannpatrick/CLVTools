@@ -378,7 +378,7 @@ check_user_data_label <- function(label, other.models){
 
 
 
-check_user_data_newcustomer_numperiods <- function(num.periods){
+check_user_data_predict_newcustomer_numperiods <- function(num.periods){
   err.msg <- .check_user_data_single_numeric(n=num.periods, var.name='num.periods')
   if(length(err.msg)){
     return(err.msg)
