@@ -94,19 +94,11 @@ setMethod(f = "clv.controlflow.predict.new.customer", signature = signature(clv.
   # readability
   clv.time <- clv.fitted@clv.data@clv.time
 
+  # convert time information to native date/time types
+  clv.newcustomer <- clv.newcustomer.dynamic.cov.convert.time(
+    clv.newcustomer=clv.newcustomer, clv.time=clv.time)
 
-  # will be changed (by ref), therefore deep copy
-  dt.cov.life <- copy(clv.newcustomer@data.cov.life)
-  dt.cov.trans <- copy(clv.newcustomer@data.cov.trans)
-
-  # Convert Cov.Date to timepoint
-  dt.cov.life[,  Cov.Date  := clv.time.convert.user.input.to.timepoint(clv.time, user.timepoint = Cov.Date)]
-  dt.cov.trans[, Cov.Date  := clv.time.convert.user.input.to.timepoint(clv.time, user.timepoint = Cov.Date)]
-
-  setkeyv(dt.cov.life, cols = "Cov.Date")
-  setkeyv(dt.cov.trans, cols = "Cov.Date")
-
-  tp.first.transaction <- clv.time.convert.user.input.to.timepoint(clv.time = clv.fitted@clv.data@clv.time, user.timepoint = clv.newcustomer@first.transaction)
+  tp.first.transaction <- clv.newcustomer@first.transaction
   tp.prediction.end <- tp.first.transaction + clv.time.number.timeunits.to.timeperiod(clv.time=clv.time, user.number.periods=clv.newcustomer@num.periods)
 
   check_err_msg(check_user_data_newcustomer_dyncovspecific(clv.time=clv.time, dt.cov.life=dt.cov.life, dt.cov.trans=dt.cov.trans, tp.first.transaction=tp.first.transaction, tp.prediction.end=tp.prediction.end))
@@ -116,10 +108,5 @@ setMethod(f = "clv.controlflow.predict.new.customer", signature = signature(clv.
     clv.model = clv.fitted@clv.model,
     clv.fitted = clv.fitted,
     t=clv.newcustomer@num.periods,
-    # create new object to leave original clv.newcustomer unchanged
-    clv.newcustomer=clv.newcustomer.dynamic.cov(
-      num.periods=clv.newcustomer@num.periods,
-      data.cov.life=dt.cov.life,
-      data.cov.trans=dt.cov.trans,
-      first.transaction=tp.first.transaction)))
+    clv.newcustomer=clv.newcustomer))
 })

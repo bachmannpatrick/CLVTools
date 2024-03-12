@@ -199,6 +199,33 @@ clv.newcustomer.dynamic.cov <- function(num.periods, data.cov.life, data.cov.tra
   ))
 }
 
+clv.newcustomer.dynamic.cov.convert.time <- function(clv.newcustomer, clv.time){
+  # Convert all objects containing time information to correct data type
+  # using provided clv.time
+  # will be changed (by ref), therefore deep copy
+  dt.cov.life <- copy(clv.newcustomer@data.cov.life)
+  dt.cov.trans <- copy(clv.newcustomer@data.cov.trans)
+
+  # Convert Cov.Date to timepoint
+  dt.cov.life[,  Cov.Date  := clv.time.convert.user.input.to.timepoint(clv.time, user.timepoint = Cov.Date)]
+  dt.cov.trans[, Cov.Date  := clv.time.convert.user.input.to.timepoint(clv.time, user.timepoint = Cov.Date)]
+
+  setkeyv(dt.cov.life, cols = "Cov.Date")
+  setkeyv(dt.cov.trans, cols = "Cov.Date")
+
+  tp.first.transaction <- clv.time.convert.user.input.to.timepoint(
+    clv.time = clv.time,
+    user.timepoint = clv.newcustomer@first.transaction
+  )
+
+  # Return new object with converted time information
+  return(clv.newcustomer.dynamic.cov(
+    num.periods=clv.newcustomer@num.periods,
+    data.cov.life=dt.cov.life,
+    data.cov.trans=dt.cov.trans,
+    first.transaction=tp.first.transaction))
+}
+
 
 #' @rdname newcustomer
 #' @export
