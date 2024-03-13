@@ -341,6 +341,10 @@ ggomnbd_nocov_PAlive <- function(r, alpha_0, b, s, beta_0, vX, vT_x, vT_cal) {
     .Call(`_CLVTools_ggomnbd_nocov_PAlive`, r, alpha_0, b, s, beta_0, vX, vT_x, vT_cal)
 }
 
+ggomnbd_nocov_PMF <- function(r, alpha_0, b, s, beta_0, x, vT_i) {
+    .Call(`_CLVTools_ggomnbd_nocov_PMF`, r, alpha_0, b, s, beta_0, x, vT_i)
+}
+
 #' @name pnbd_CET
 #'
 #' @templateVar name_model_full Pareto/NBD

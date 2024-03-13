@@ -559,3 +559,76 @@ arma::vec ggomnbd_nocov_PAlive(const double r,
 
   return ggomnbd_PAlive(r,b,s,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
 }
+
+
+double ggomnbd_PMF_integrand(double tau, void * p_params){
+  struct integration_params * params = (struct integration_params*)p_params;
+
+  const double r = (params -> r);
+  const double b = (params -> b);
+  const double s = (params -> s);
+  const double beta_i = (params -> beta_i);
+  const double alpha_i = (params -> alpha_i);
+  const double x_i = (params -> x_i);
+
+  return std::exp(
+    x_i * std::log(tau) + b * tau - (r + x_i) * std::log(tau + alpha_i) - (s+1.0)*std::log(std::exp(b*tau) + beta_i - 1.0)
+  );
+}
+
+
+arma::vec ggomnbd_PMF(const double r,
+                      const double b,
+                      const double s,
+                      const unsigned int x,
+                      const arma::vec& vAlpha_i,
+                      const arma::vec& vBeta_i,
+                      const arma::vec& vT_i){
+
+  // TODO: Type cast x to double
+
+  // const double dx = static_cast<double>(a);
+  // B(r, x+1) = G(r)*G(x+1)/G(r+x+1)
+  // const double B = std::tgamma(r) * std::tgamma(x + 1.0) / std::tgamma(r + x + 1.0);
+  // const arma::vec vFront = arma::pow(vAlpha_i, r) % arma::pow(vBeta_i, s) / ((r + x) * B);
+  const double Blog = std::lgamma(r) + std::lgamma(x + 1.0) - std::lgamma(r + x + 1.0);
+  const arma::vec vFront = arma::exp(
+    r*arma::log(vAlpha_i) + s * arma::log(vBeta_i) - std::log(r+x) - Blog
+  );
+
+  // inner=exp(log(inner)) for numerical stability
+  const arma::vec vInner = arma::exp(
+    x * arma::log(vT_i) - (x+r) * arma::log(vT_i + vAlpha_i) - s*arma::log(arma::exp(b*vT_i) + vBeta_i - 1.0)
+  );
+
+  // Could write dedicated integration routine but not deemed performance critical.
+  // Wastefully, two vectors are allocated for `x` and `0` when in fact these are
+  // constant scalars. Also, the scalar `x` is transported to the integrand by
+  // repurposing the `x_i` in struct `integration_params` which usually is used
+  // for the number of tranasctions of an individual customer.
+  // TODO: Uses wrong limit=0 in integration routine which is smaller than the
+  // workspace. This is a strong case to write dedicated routine.
+  const arma::vec vIntergral = ggomnbd_integrate(r, b, s, vAlpha_i, vBeta_i,
+                                                 clv::vec_fill(x, vT_i.n_elem),
+                                                 &ggomnbd_PMF_integrand,
+                                                 clv::vec_fill(0.0, vT_i.n_elem), vT_i);
+
+  return vFront % (vInner + b * s * vIntergral);
+}
+
+
+// [[Rcpp::export]]
+arma::vec ggomnbd_nocov_PMF(const double r,
+                            const double alpha_0,
+                            const double b,
+                            const double s,
+                            const double beta_0,
+                            const unsigned int x,
+                            const arma::vec& vT_i){
+
+  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vT_i.n_elem);
+  const arma::vec vBeta_i = clv::vec_fill(beta_0, vT_i.n_elem);
+
+  return(ggomnbd_PMF(r,b,s,x,vAlpha_i,vBeta_i,vT_i));
+}
+

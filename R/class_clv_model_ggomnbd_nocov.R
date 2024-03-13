@@ -126,7 +126,21 @@ setMethod("clv.model.predict.new.customer.unconditional.expectation", signature 
 
 # . clv.model.pmf --------------------------------------------------------------------------------------------------------
 setMethod("clv.model.pmf", signature=(clv.model="clv.model.ggomnbd.no.cov"), function(clv.model, clv.fitted, x){
-  stop("PMF is not available for ggomnbd!", call.=FALSE)
+  Id <- T.cal <- pmf.x <- NULL
+
+  dt.res <- clv.fitted@cbs[, list(Id, T.cal)]
+  dt.res[, pmf.x := ggomnbd_nocov_PMF(
+    r       = clv.fitted@prediction.params.model[["r"]],
+    alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+    beta_0  = clv.fitted@prediction.params.model[["beta"]],
+    b       = clv.fitted@prediction.params.model[["b"]],
+    s       = clv.fitted@prediction.params.model[["s"]],
+    vT_i = T.cal,
+    x = x)]
+
+  dt.res <- dt.res[, list(Id, pmf.x)]
+  setnames(dt.res, "pmf.x", paste0("pmf.x.", x))
+  return(dt.res)
 })
 
 # . clv.model.predict --------------------------------------------------------------------------------------------------------

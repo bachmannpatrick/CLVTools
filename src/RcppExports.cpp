@@ -491,6 +491,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// ggomnbd_nocov_PMF
+arma::vec ggomnbd_nocov_PMF(const double r, const double alpha_0, const double b, const double s, const double beta_0, const unsigned int x, const arma::vec& vT_i);
+RcppExport SEXP _CLVTools_ggomnbd_nocov_PMF(SEXP rSEXP, SEXP alpha_0SEXP, SEXP bSEXP, SEXP sSEXP, SEXP beta_0SEXP, SEXP xSEXP, SEXP vT_iSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const double >::type r(rSEXP);
+    Rcpp::traits::input_parameter< const double >::type alpha_0(alpha_0SEXP);
+    Rcpp::traits::input_parameter< const double >::type b(bSEXP);
+    Rcpp::traits::input_parameter< const double >::type s(sSEXP);
+    Rcpp::traits::input_parameter< const double >::type beta_0(beta_0SEXP);
+    Rcpp::traits::input_parameter< const unsigned int >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type vT_i(vT_iSEXP);
+    rcpp_result_gen = Rcpp::wrap(ggomnbd_nocov_PMF(r, alpha_0, b, s, beta_0, x, vT_i));
+    return rcpp_result_gen;
+END_RCPP
+}
 // pnbd_nocov_CET
 arma::vec pnbd_nocov_CET(const double r, const double alpha_0, const double s, const double beta_0, const double dPeriods, const arma::vec& vX, const arma::vec& vT_x, const arma::vec& vT_cal);
 RcppExport SEXP _CLVTools_pnbd_nocov_CET(SEXP rSEXP, SEXP alpha_0SEXP, SEXP sSEXP, SEXP beta_0SEXP, SEXP dPeriodsSEXP, SEXP vXSEXP, SEXP vT_xSEXP, SEXP vT_calSEXP) {
@@ -842,6 +859,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CLVTools_ggomnbd_staticcov_beta_i", (DL_FUNC) &_CLVTools_ggomnbd_staticcov_beta_i, 3},
     {"_CLVTools_ggomnbd_staticcov_PAlive", (DL_FUNC) &_CLVTools_ggomnbd_staticcov_PAlive, 12},
     {"_CLVTools_ggomnbd_nocov_PAlive", (DL_FUNC) &_CLVTools_ggomnbd_nocov_PAlive, 8},
+    {"_CLVTools_ggomnbd_nocov_PMF", (DL_FUNC) &_CLVTools_ggomnbd_nocov_PMF, 7},
     {"_CLVTools_pnbd_nocov_CET", (DL_FUNC) &_CLVTools_pnbd_nocov_CET, 8},
     {"_CLVTools_pnbd_staticcov_CET", (DL_FUNC) &_CLVTools_pnbd_staticcov_CET, 12},
     {"_CLVTools_pnbd_nocov_DERT", (DL_FUNC) &_CLVTools_pnbd_nocov_DERT, 8},
