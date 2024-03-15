@@ -577,6 +577,21 @@ double ggomnbd_PMF_integrand(double tau, void * p_params){
 }
 
 
+
+//' @name ggomnbd_PMF
+//' @templateVar name_model_full GGompertz/NBD
+//' @template template_pmf_titledescreturnpmfparams
+//'
+//' @template template_params_ggomnbd
+//' @template template_params_rcppvcovparams
+//' @template template_params_rcppcovmatrix
+//'
+//' @templateVar name_params_cov_life vCovParams_life
+//' @templateVar name_params_cov_trans vCovParams_trans
+//' @template template_details_rcppcovmatrix
+//'
+//' @template template_references_ggomnbd
+//'
 arma::vec ggomnbd_PMF(const double r,
                       const double b,
                       const double s,
@@ -616,7 +631,7 @@ arma::vec ggomnbd_PMF(const double r,
   return vFront % (vInner + b * s * vIntergral);
 }
 
-
+//' @rdname ggomnbd_PMF
 // [[Rcpp::export]]
 arma::vec ggomnbd_nocov_PMF(const double r,
                             const double alpha_0,
