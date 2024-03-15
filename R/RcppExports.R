@@ -362,6 +362,11 @@ ggomnbd_nocov_PMF <- function(r, alpha_0, b, s, beta_0, x, vT_i) {
     .Call(`_CLVTools_ggomnbd_nocov_PMF`, r, alpha_0, b, s, beta_0, x, vT_i)
 }
 
+#' @rdname ggomnbd_PMF
+ggomnbd_staticcov_PMF <- function(r, alpha_0, b, s, beta_0, x, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans, vT_i) {
+    .Call(`_CLVTools_ggomnbd_staticcov_PMF`, r, alpha_0, b, s, beta_0, x, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans, vT_i)
+}
+
 #' @name pnbd_CET
 #'
 #' @templateVar name_model_full Pareto/NBD

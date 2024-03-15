@@ -3,9 +3,24 @@
 \name{ggomnbd_PMF}
 \alias{ggomnbd_PMF}
 \alias{ggomnbd_nocov_PMF}
+\alias{ggomnbd_staticcov_PMF}
 \title{GGompertz/NBD: Probability Mass Function (PMF)}
 \usage{
 ggomnbd_nocov_PMF(r, alpha_0, b, s, beta_0, x, vT_i)
+
+ggomnbd_staticcov_PMF(
+  r,
+  alpha_0,
+  b,
+  s,
+  beta_0,
+  x,
+  vCovParams_trans,
+  vCovParams_life,
+  mCov_life,
+  mCov_trans,
+  vT_i
+)
 }
 \arguments{
 \item{r}{shape parameter of the Gamma distribution of the purchase process.
@@ -28,9 +43,9 @@ The smaller s, the stronger the heterogeneity of customer lifetimes.}
 
 \item{vCovParams_life}{Vector of estimated parameters for the lifetime covariates.}
 
-\item{mCov_trans}{Matrix containing the covariates data affecting the transaction process. One column for each covariate.}
-
 \item{mCov_life}{Matrix containing the covariates data affecting the lifetime process. One column for each covariate.}
+
+\item{mCov_trans}{Matrix containing the covariates data affecting the transaction process. One column for each covariate.}
 }
 \value{
 Returns a vector of probabilities.

@@ -647,3 +647,22 @@ arma::vec ggomnbd_nocov_PMF(const double r,
   return(ggomnbd_PMF(r,b,s,x,vAlpha_i,vBeta_i,vT_i));
 }
 
+//' @rdname ggomnbd_PMF
+ // [[Rcpp::export]]
+arma::vec ggomnbd_staticcov_PMF(const double r,
+                                const double alpha_0,
+                                const double b,
+                                const double s,
+                                const double beta_0,
+                                const unsigned int x,
+                                const arma::vec& vCovParams_trans,
+                                const arma::vec& vCovParams_life,
+                                const arma::mat& mCov_life,
+                                const arma::mat& mCov_trans,
+                                const arma::vec& vT_i){
+
+   const arma::vec vAlpha_i = ggomnbd_staticcov_alpha_i(alpha_0, vCovParams_trans, mCov_trans);
+   const arma::vec vBeta_i  = ggomnbd_staticcov_beta_i(beta_0, vCovParams_life, mCov_life);
+
+   return(ggomnbd_PMF(r,b,s,x,vAlpha_i,vBeta_i,vT_i));
+ }
