@@ -305,9 +305,6 @@ pnbd_dyncov_newcustomer_expectation <- function(clv.fitted, t, tp.first.transact
   # The following parts are copied from pnbd_dyncov_expectation().
   # See comments there, they are removed here to improve maintainability
 
-  # There is no cbs entry for new customers, hence no d_omega.
-  # d_omega is not known for a new customer. Assume it to be 0
-
   # . i
   setorderv(dt.ABCD, cols = "Cov.Date", order=1L)
   dt.ABCD[, i := seq.int(from = 1, to = .N)]  # remove by="Id"
