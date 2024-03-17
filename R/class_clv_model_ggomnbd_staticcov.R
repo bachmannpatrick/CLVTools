@@ -130,6 +130,7 @@ setMethod("clv.model.predict.new.customer.unconditional.expectation", signature 
 # . clv.model.pmf --------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
 setMethod("clv.model.pmf", signature=(clv.model="clv.model.ggomnbd.static.cov"), function(clv.model, clv.fitted, x){
+  Id <- T.cal <- pmf.x <- NULL
 
   dt.res <- clv.fitted@cbs[, c("Id", "T.cal")]
   data.cov.mat.life  <- clv.data.get.matrix.data.cov.life(clv.data = clv.fitted@clv.data, correct.row.names=dt.res$Id,
