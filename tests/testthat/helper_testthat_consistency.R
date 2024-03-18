@@ -128,6 +128,46 @@ fct.testthat.consistency.cov.params.0.pmf.plot.same <- function(fitted.nocov, fi
   })
 }
 
+
+fct.testthat.consistency.cov.params.0.predict.newcustomer.same <- function(fitted.nocov, fitted.cov.g0){
+
+  test_that("predict newcustomer staticcov same results for all models with gamma=0", {
+    df.cov <- fct.helper.default.newcustomer.covdata.static()
+
+    expect_silent(nc.pred.nocov <- predict(
+      fitted.nocov,
+      newdata=newcustomer(num.periods = 7.89),
+      verbose=FALSE))
+    expect_silent(nc.pred.g0 <- predict(
+      fitted.cov.g0,
+      newdata=newcustomer.static(num.periods = 7.89, data.cov.life = df.cov, data.cov.trans = df.cov),
+      verbose=FALSE))
+
+    expect_true(nc.pred.nocov == nc.pred.g0)
+  })
+}
+
+fct.testthat.consistency.cov.data.0.predict.newcustomer.same <- function(fitted.nocov, fitted.static){
+  test_that("predict newcustomer staticcov same results for all models with cov data=0",{
+    df.cov.0 <- fct.helper.default.newcustomer.covdata.static()
+    df.cov.0[] <- 0
+
+    # only if params are the same
+    fitted.static@prediction.params.model[] <- fitted.nocov@prediction.params.model
+
+    expect_silent(nc.pred.nocov <- predict(
+      fitted.nocov,
+      newdata=newcustomer(num.periods = 7.89),
+      verbose=FALSE))
+    expect_silent(nc.pred.cov0 <- predict(
+      fitted.static,
+      newdata=newcustomer.static(num.periods = 7.89, data.cov.life = df.cov.0, data.cov.trans = df.cov.0),
+      verbose=FALSE))
+
+    expect_true(nc.pred.nocov == nc.pred.cov0)
+  })
+}
+
 # Tests that models are consistent among themselves
 # Consistency = nocov vs static cov:
 #   same fit with all covs = 0
@@ -183,6 +223,13 @@ fct.testthat.consistency <- function(name.model, method, has.dyncov, data.appare
     fct.testthat.consistency.cov.params.0.pmf.same(fitted.nocov=fitted.nocov, fitted.cov.g0=fitted.static.g0)
     fct.testthat.consistency.cov.params.0.pmf.plot.same(fitted.nocov=fitted.nocov, fitted.cov.g0=fitted.static.g0)
   }
+
+  fct.testthat.consistency.cov.params.0.predict.newcustomer.same(fitted.nocov=fitted.nocov, fitted.cov.g0=fitted.static.g0)
+  fct.testthat.consistency.cov.data.0.predict.newcustomer.same(fitted.nocov=fitted.nocov, fitted.static=fitted.static.cov0)
+
+
+
+
 }
 
 
