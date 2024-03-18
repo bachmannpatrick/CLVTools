@@ -301,6 +301,30 @@ fct.testthat.correctness.dyncov.predict.newcustomer <- function(){
     expect_true(pred == pred.rev)
   })
 
+  test_that("predict newcustomer dyncov: independent of first.trans if cov data static", {
+
+    # static cov data
+    df.cov.static <- fct.helper.default.newcustomer.covdata.dyncov()
+    for(n in setdiff(colnames(df.cov.static), "Cov.Date")){
+      df.cov.static[, n] <- df.cov.static[1, n]
+    }
+    expect_silent(pred.date.first <- predict(p.dyn, newdata=newcustomer.dynamic(
+      num.periods = 7.89,
+      data.cov.life = df.cov.static,
+      data.cov.trans = df.cov.static,
+      first.transaction = "2000-01-03"
+    )))
+
+    expect_silent(pred.date.later <- predict(p.dyn, newdata=newcustomer.dynamic(
+      num.periods = 7.89,
+      data.cov.life = df.cov.static,
+      data.cov.trans = df.cov.static,
+      first.transaction = "2000-01-09"
+    )))
+
+    expect_equal(pred.date.first, pred.date.later)
+  })
+
 }
 
 

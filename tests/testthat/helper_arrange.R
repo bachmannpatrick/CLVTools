@@ -219,6 +219,6 @@ fct.helper.default.newcustomer.covdata.dyncov <- function(){
   return(data.frame(
     Cov.Date=cov.dates,
     Gender=rep_len(0, length(cov.dates)),
-    Channel=rep_len(c(0, 0, 2, 1.23, -1.23, -2), length(cov.dates)),
+    Channel=rep_len(c(-0.678, 0, 2, 1.23, -1.23, -2), length(cov.dates)),
     Marketing=rep_len(c(4, 0, 7, 2, 9, 0), length(cov.dates))))
 }
