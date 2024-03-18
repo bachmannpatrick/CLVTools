@@ -198,3 +198,27 @@ fct.helper.dyncov.quickfit.apparel.data <- function(data.apparelTrans=NULL, data
 # New method until `fct.helper.dyncov.quickfit.apparel.data` is replaced everywhere
 fit.apparel.dyncov.quick <- fct.helper.dyncov.quickfit.apparel.data
 
+
+fct.helper.default.newcustomer.covdata.static <- function(){
+  # create default cov data for newcustomer.static
+  # with same covs (columns) as created by default in
+  # fct.helper.create.clvdata.apparel.staticcov
+
+  return(data.frame(
+    Gender=1,
+    Channel=6.78
+  ))
+}
+
+
+fct.helper.default.newcustomer.covdata.dyncov <- function(){
+  # create default cov data for newcustomer.dynamic
+  # with same covs (columns) as created by default in
+  # fct.helper.create.clvdata.apparel.staticcov
+  cov.dates <- seq.Date(as.Date("2000-01-02"), length.out = 10, by = "7 day")
+  return(data.frame(
+    Cov.Date=cov.dates,
+    Gender=rep_len(0, length(cov.dates)),
+    Channel=rep_len(c(0, 0, 2, 1.23, -1.23, -2), length(cov.dates)),
+    Marketing=rep_len(c(4, 0, 7, 2, 9, 0), length(cov.dates))))
+}

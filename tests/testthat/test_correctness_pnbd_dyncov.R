@@ -266,6 +266,43 @@ fct.testthat.correctness.dyncov.PAlive <- function(data.apparelTrans, data.appar
 }
 
 
+fct.testthat.correctness.dyncov.predict.newcustomer <- function(){
+  p.dyn <- fct.helper.dyncov.quickfit.apparel.data()
+  df.cov <- fct.helper.default.newcustomer.covdata.dyncov()
+
+  test_that("dyncov: predict newcustomer 0 for t=0", {
+    expect_silent(pred <- predict(p.dyn, newdata=newcustomer.dynamic(
+      num.periods = 0,
+      data.cov.life = df.cov,
+      data.cov.trans = df.cov,
+      first.transaction = "2000-01-04"
+      )))
+    expect_true(pred == 0)
+  })
+
+
+  test_that("dyncov predict newcustomer independent of column and row sorting", {
+    df.cov.rev <- df.cov[rev(seq(nrow(df.cov))), rev(colnames(df.cov))]
+
+    expect_silent(pred <- predict(p.dyn, newdata=newcustomer.dynamic(
+      num.periods = 7.89,
+      data.cov.life = df.cov,
+      data.cov.trans = df.cov,
+      first.transaction = "2000-01-03"
+    )))
+
+    expect_silent(pred.rev <- predict(p.dyn, newdata=newcustomer.dynamic(
+      num.periods = 7.89,
+      data.cov.life = df.cov.rev,
+      data.cov.trans = df.cov.rev,
+      first.transaction = "2000-01-03"
+    )))
+
+    expect_true(pred == pred.rev)
+  })
+
+}
+
 
 # RUN  ---------------------------------------------------------------------------------------
 data("apparelTrans")
@@ -278,3 +315,5 @@ fct.testthat.correctness.dyncov.CET(data.apparelTrans = apparelTrans, data.appar
 fct.testthat.correctness.dyncov.LL(data.apparelTrans = apparelTrans, data.apparelDynCov = apparelDynCov)
 
 fct.testthat.correctness.dyncov.PAlive(data.apparelTrans = apparelTrans, data.apparelDynCov = apparelDynCov)
+
+fct.testthat.correctness.dyncov.predict.newcustomer()
