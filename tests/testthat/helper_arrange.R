@@ -25,6 +25,22 @@ fct.helper.create.clvdata.cdnow <- function(data.cdnow = NULL, estimation.split 
   return(clv.cdnow)
 }
 
+fct.helper.create.clvdata.apparel.nocov <- function(
+    data.apparelTrans = NULL,
+    estimation.split = 40) {
+
+  if (is.null(data.apparelTrans)) {
+    data.apparelTrans <- .load.data.locally("apparelTrans")
+  }
+
+  return(clvdata(
+    data.transactions = data.apparelTrans,
+    date.format = "ymd",
+    time.unit = "W",
+    estimation.split = estimation.split
+    ))
+}
+
 fct.helper.create.clvdata.apparel.staticcov <- function(
     data.apparelTrans = NULL,
     data.apparelStaticCov = NULL,
@@ -99,6 +115,32 @@ fit.cdnow <- function(
     what = model,
     args = list(
       clv.data = clv.cdnow,
+      start.params.model = start.params.model,
+      optimx.args = optimx.args,
+      verbose = verbose
+    )
+  ))
+}
+
+
+
+fit.apparel.nocov <- function(
+    data.apparelTrans = NULL,
+    estimation.split = 40,
+    model = pnbd,
+    start.params.model = c(),
+    verbose = FALSE,
+    optimx.args = list()) {
+
+  clv.data.apparel <- fct.helper.create.clvdata.apparel.nocov(
+    data.apparelTrans = data.apparelTrans,
+    estimation.split = estimation.split
+  )
+
+  return(do.call(
+    what = model,
+    args = list(
+      clv.data = clv.data.apparel,
       start.params.model = start.params.model,
       optimx.args = optimx.args,
       verbose = verbose

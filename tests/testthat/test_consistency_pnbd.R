@@ -12,10 +12,7 @@ fct.testthat.consistency(name.model = "PNBD", method = pnbd,
 # nocov vs dyncov --------------------------------------------------------------------------------------
 #   same predict with gamma=0
 
-
-expect_silent(clv.apparel <- clvdata(data.transactions = apparelTrans, date.format = "ymd",
-                                     time.unit = "w",estimation.split = 38))
-expect_silent(p.nocov     <- pnbd(clv.apparel, verbose = FALSE))
+p.nocov <- fit.apparel.nocov()
 
 
 # . Prepare dyncov: Set parameters -------------------------------------------------------------------
