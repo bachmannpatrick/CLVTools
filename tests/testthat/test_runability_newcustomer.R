@@ -1,3 +1,7 @@
+# Tests related to the creation of the `newcustomer` object
+# that is used as input to `predict(newdata=)`
+
+
 skip_on_cran()
 
 fct.expect.silent.predict.newcustomer <- function(clv.fitted, nc){
@@ -8,17 +12,17 @@ fct.expect.silent.predict.newcustomer <- function(clv.fitted, nc){
 # Load required data and fit all models --------------------------------------------------
 
 # Fit all available models
-optimx.args.fast <- list(method = "Nelder-Mead", itnmax=10, hessian=TRUE)
+optimx.args.fast <- list(method = "Nelder-Mead", itnmax=30, hessian=TRUE)
 
-p.cdnow <- fit.cdnow(model = pnbd)
+p.cdnow <- fit.cdnow(model = pnbd, optimx.args = optimx.args.fast)
 bg.cdnow <- fit.cdnow(model = bgnbd, optimx.args = optimx.args.fast)
 ggom.cdnow <- fit.cdnow(model = ggomnbd, optimx.args = optimx.args.fast)
 
 # Create cov models with differently named covariates to test that life/trans
 # are not accidentially switched at some point
-p.apparel.static <- fit.apparel.static(model = pnbd, names.cov.life = "Channel", names.cov.trans = c("Channel", "Gender"))
-bg.apparel.static <- fit.apparel.static(model = bgnbd, names.cov.life = "Channel", names.cov.trans = c("Channel", "Gender"))
-ggom.apparel.static <- fit.apparel.static(model = ggomnbd, names.cov.life = "Channel", names.cov.trans = c("Channel", "Gender"))
+p.apparel.static <- fit.apparel.static(model = pnbd, names.cov.life = "Channel", names.cov.trans = c("Channel", "Gender"), optimx.args = optimx.args.fast)
+bg.apparel.static <- fit.apparel.static(model = bgnbd, names.cov.life = "Channel", names.cov.trans = c("Channel", "Gender"), optimx.args = optimx.args.fast)
+ggom.apparel.static <- fit.apparel.static(model = ggomnbd, names.cov.life = "Channel", names.cov.trans = c("Channel", "Gender"), optimx.args = optimx.args.fast)
 
 p.apparel.dyn <- fct.helper.dyncov.quickfit.apparel.data(
   names.cov.life = c("Marketing", "Gender"),
