@@ -220,9 +220,12 @@ fct.testthat.correctness.clvfittedtransactions.nocov.predict.newcustomer.0.for.n
 # predict(newdata=newcustomer): static cov
 fct.testthat.correctness.clvfittedtransactions.staticcov.predict.newcustomer.independent.of.col.sorting <- function(m.fitted.static){
   test_that("staticcov: predict(newcustomer) results independent of cov data row sorting", {
+
     df.cov <- fct.helper.default.newcustomer.covdata.static()
+
     stopifnot(ncol(df.cov) > 1) # does not make sense otherwise
     df.cov.rev <- df.cov[, rev(colnames(df.cov))]
+
     expect_silent(pred <- predict(
       m.fitted.static,
       newdata=newcustomer.static(
@@ -236,10 +239,42 @@ fct.testthat.correctness.clvfittedtransactions.staticcov.predict.newcustomer.ind
         num.periods = 4.56,
         data.cov.life = df.cov.rev,
         data.cov.trans = df.cov.rev)))
+
     expect_true(pred == pred.rev)
   })
 }
 
+fct.testthat.correctness.clvfittedtransactions.staticcov.predict.newcustomer.different.result.for.different.covs <- function(m.fitted.static){
+  test_that("staticcov: predict(newcustomer) different results for different cov data", {
+
+    df.cov <- fct.helper.default.newcustomer.covdata.static()
+
+    expect_silent(pred.original <- predict(
+      m.fitted.static,
+      newdata=newcustomer.static(
+        num.periods = 4.56,
+        data.cov.life = df.cov,
+        data.cov.trans = df.cov)))
+
+    expect_silent(pred.life <- predict(
+      m.fitted.static,
+      newdata=newcustomer.static(
+        num.periods = 4.56,
+        data.cov.life = df.cov*10,
+        data.cov.trans = df.cov)))
+
+    expect_silent(pred.trans <- predict(
+      m.fitted.static,
+      newdata=newcustomer.static(
+        num.periods = 4.56,
+        data.cov.life = df.cov,
+        data.cov.trans = df.cov*10)))
+
+    expect_true(pred.original != pred.life)
+    expect_true(pred.original != pred.trans)
+    expect_true(pred.trans != pred.life)
+  })
+}
 
 fct.testthat.correctness.clvfittedtransactions.staticcov.predict.newcustomer.0.for.num.periods.eq.0 <- function(m.fitted.static){
   test_that("staticcov: predict(newcustomer) 0 for t=0", {
@@ -320,6 +355,8 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method, d
   fct.testthat.correctness.clvfittedtransactions.staticcov.predict.newcustomer.independent.of.col.sorting(obj.fitted.static)
 
   fct.testthat.correctness.clvfittedtransactions.staticcov.predict.newcustomer.0.for.num.periods.eq.0(obj.fitted.static)
+
+  fct.testthat.correctness.clvfittedtransactions.staticcov.predict.newcustomer.different.result.for.different.covs(obj.fitted.static)
 
 
 

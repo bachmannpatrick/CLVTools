@@ -280,6 +280,36 @@ fct.testthat.correctness.dyncov.predict.newcustomer <- function(){
     expect_true(pred == 0)
   })
 
+  test_that("dyncov predict newcustomer different results for different covs", {
+    df.cov.mult.10 <- cbind(
+      df.cov[, "Cov.Date", drop=FALSE],
+      df.cov[, colnames(df.cov) != "Cov.Date", drop=FALSE] * 10)
+
+    expect_silent(pred.original <- predict(p.dyn, newdata=newcustomer.dynamic(
+      num.periods = 3.89,
+      data.cov.life = df.cov,
+      data.cov.trans = df.cov,
+      first.transaction = "2000-01-04"
+    )))
+
+    expect_silent(pred.life <- predict(p.dyn, newdata=newcustomer.dynamic(
+      num.periods = 3.89,
+      data.cov.life = df.cov.mult.10,
+      data.cov.trans = df.cov,
+      first.transaction = "2000-01-04"
+    )))
+
+    expect_silent(pred.trans <- predict(p.dyn, newdata=newcustomer.dynamic(
+      num.periods = 3.89,
+      data.cov.life = df.cov,
+      data.cov.trans = df.cov.mult.10,
+      first.transaction = "2000-01-04"
+    )))
+    expect_true(pred.original != pred.life)
+    expect_true(pred.original != pred.trans)
+    expect_true(pred.life != pred.trans)
+  })
+
 
   test_that("dyncov predict newcustomer independent of column and row sorting", {
     df.cov.rev <- df.cov[rev(seq(nrow(df.cov))), rev(colnames(df.cov))]
