@@ -325,6 +325,35 @@ fct.testthat.correctness.dyncov.predict.newcustomer <- function(){
     expect_equal(pred.date.first, pred.date.later)
   })
 
+  test_that("newcustomer dt.ABCD: Formatted according to first.transaction and prediction end", {
+    dt.cov <- as.data.table(df.cov)
+
+    tp.first.transaction <- min(dt.cov$Cov.Date)  + days(17)
+
+    dt.ABCD <- pnbd_dyncov_newcustomer_expectation(
+      clv.fitted = p.dyn,
+      t=3,
+      tp.first.transaction = tp.first.transaction,
+      dt.cov.life = dt.cov,
+      dt.cov.trans = dt.cov,
+      only.return.ABCD=TRUE)
+
+
+    # Covs before first transaction are cut off
+    date.floor.first.trans <- clv.time.floor.date(p.dyn@clv.data@clv.time, tp.first.transaction)
+    expect_true(dt.ABCD[, min(Cov.Date)] == date.floor.first.trans)
+
+    # Covs after prediction end are cut off
+    date.floor.prediction.end <- clv.time.floor.date(p.dyn@clv.data@clv.time, tp.first.transaction + days(3*7))
+    expect_true(dt.ABCD[, max(Cov.Date)] == date.floor.prediction.end)
+
+    # i starts and i=1 in the period of the first transaction
+    expect_true(dt.ABCD[Cov.Date==min(Cov.Date), i] == 1)
+    expect_true(dt.ABCD[, min(i)] == 1)
+  })
+
+
+
 }
 
 
