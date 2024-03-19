@@ -283,6 +283,22 @@ NULL
 #'
 NULL
 
+#' @name ggomnbd_PMF
+#' @templateVar name_model_full GGompertz/NBD
+#' @template template_pmf_titledescreturnpmfparams
+#'
+#' @template template_params_ggomnbd
+#' @template template_params_rcppvcovparams
+#' @template template_params_rcppcovmatrix
+#'
+#' @templateVar name_params_cov_life vCovParams_life
+#' @templateVar name_params_cov_trans vCovParams_trans
+#' @template template_details_rcppcovmatrix
+#'
+#' @template template_references_ggomnbd
+#'
+NULL
+
 #' @rdname ggomnbd_CET
 ggomnbd_nocov_CET <- function(r, alpha_0, b, s, beta_0, dPeriods, vX, vT_x, vT_cal) {
     .Call(`_CLVTools_ggomnbd_nocov_CET`, r, alpha_0, b, s, beta_0, dPeriods, vX, vT_x, vT_cal)
@@ -339,6 +355,16 @@ ggomnbd_staticcov_PAlive <- function(r, alpha_0, b, s, beta_0, vX, vT_x, vT_cal,
 #' @rdname ggomnbd_PAlive
 ggomnbd_nocov_PAlive <- function(r, alpha_0, b, s, beta_0, vX, vT_x, vT_cal) {
     .Call(`_CLVTools_ggomnbd_nocov_PAlive`, r, alpha_0, b, s, beta_0, vX, vT_x, vT_cal)
+}
+
+#' @rdname ggomnbd_PMF
+ggomnbd_nocov_PMF <- function(r, alpha_0, b, s, beta_0, x, vT_i) {
+    .Call(`_CLVTools_ggomnbd_nocov_PMF`, r, alpha_0, b, s, beta_0, x, vT_i)
+}
+
+#' @rdname ggomnbd_PMF
+ggomnbd_staticcov_PMF <- function(r, alpha_0, b, s, beta_0, x, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans, vT_i) {
+    .Call(`_CLVTools_ggomnbd_staticcov_PMF`, r, alpha_0, b, s, beta_0, x, vCovParams_trans, vCovParams_life, mCov_life, mCov_trans, vT_i)
 }
 
 #' @name pnbd_CET
