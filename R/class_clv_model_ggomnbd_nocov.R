@@ -90,6 +90,9 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
   return(optimx.args)
 })
 
+
+# . clv.model.expectation -----------------------------------------------------------------------------------------------------------------------------------
+
 #' @include all_generics.R
 #' @importFrom stats integrate
 setMethod("clv.model.expectation", signature(clv.model="clv.model.ggomnbd.no.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
