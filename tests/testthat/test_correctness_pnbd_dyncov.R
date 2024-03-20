@@ -277,7 +277,7 @@ fct.testthat.correctness.dyncov.predict.newcustomer <- function(){
       data.cov.trans = df.cov,
       first.transaction = "2000-01-04"
       )))
-    expect_true(pred == 0)
+    expect_equal(pred, 0)
   })
 
   test_that("dyncov predict newcustomer different results for different covs", {

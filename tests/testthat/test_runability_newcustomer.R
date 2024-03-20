@@ -190,19 +190,18 @@ test_that("Works with first.transaction on first Cov.Date", {
     first.transaction = min(cov.dates.nc.dyncov)))
 })
 
-# TODO[test]: Enable when implementation is fixed
-# test_that("Works with num.periods < 1 and first.transaction & Cov.Date single period", {
-#   # < 1d
-#   fct.expect.silent.predict.newcustomer(p.apparel.dyn, default.nc.dyncov(
-#     first.transaction = "2051-02-12",
-#     cov.dates =  "2051-02-12",
-#     num.periods = 0.123))
-#   # < 1week
-#   fct.expect.silent.predict.newcustomer(p.apparel.dyn, default.nc.dyncov(
-#     first.transaction = "2051-02-12",
-#     cov.dates =  "2051-02-12",
-#     num.periods = 0.678))
-# })
+test_that("Works with num.periods < 1 and first.transaction & Cov.Date single period", {
+  # < 1d
+  fct.expect.silent.predict.newcustomer(p.apparel.dyn, default.nc.dyncov(
+    first.transaction = "2051-02-12",
+    cov.dates =  "2051-02-12",
+    num.periods = 0.123))
+  # < 1week
+  fct.expect.silent.predict.newcustomer(p.apparel.dyn, default.nc.dyncov(
+    first.transaction = "2051-02-12",
+    cov.dates =  "2051-02-12",
+    num.periods = 0.678))
+})
 
 test_that("Works with Cov.Date & first.transaction of type Date, character, POSIXct, POSIXlt", {
   char.first.trans <- as.character(min(cov.dates.nc.dyncov))

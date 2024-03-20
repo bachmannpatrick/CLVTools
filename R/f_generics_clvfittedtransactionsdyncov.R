@@ -82,13 +82,10 @@ setMethod(f = "clv.controlflow.predict.new.customer", signature = signature(clv.
 
   check_err_msg(check_user_data_predict_newcustomer_dyncov(clv.fitted=clv.fitted, clv.newcustomer=clv.newcustomer))
 
-  # TODO: Check predicting at least >2 (or min 3?) periods
-  # if(clv.newcustomer@num.periods <= 2){
-  #   stop("Have to plot at least 3 periods!", call. = FALSE)
-  # }
+  # There is no required minimum prediction period. In the tracking plot,
+  # the unconditional expectation is always used for <= 2 (or 3) periods
 
-
-  # Convert time point data and verify it correctness -------------------------------------------------------------------------------
+  # Convert time point data and verify it correctness
   # This can only be done here once the clv.time object is known
 
   # readability
@@ -99,9 +96,15 @@ setMethod(f = "clv.controlflow.predict.new.customer", signature = signature(clv.
     clv.newcustomer=clv.newcustomer, clv.time=clv.time)
 
   tp.first.transaction <- clv.newcustomer@first.transaction
-  tp.prediction.end <- tp.first.transaction + clv.time.number.timeunits.to.timeperiod(clv.time=clv.time, user.number.periods=clv.newcustomer@num.periods)
+  tp.prediction.end <- tp.first.transaction + clv.time.number.timeunits.to.timeperiod(
+    clv.time=clv.time, user.number.periods=clv.newcustomer@num.periods)
 
-  check_err_msg(check_user_data_newcustomer_dyncovspecific(clv.time=clv.time, dt.cov.life=dt.cov.life, dt.cov.trans=dt.cov.trans, tp.first.transaction=tp.first.transaction, tp.prediction.end=tp.prediction.end))
+  check_err_msg(check_user_data_newcustomer_dyncovspecific(
+    clv.time=clv.time,
+    dt.cov.life=clv.newcustomer@data.cov.life,
+    dt.cov.trans=clv.newcustomer@data.cov.trans,
+    tp.first.transaction=tp.first.transaction,
+    tp.prediction.end=tp.prediction.end))
 
 
   return(clv.model.predict.new.customer.unconditional.expectation(

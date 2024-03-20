@@ -461,7 +461,9 @@ check_user_data_newcustomer_dyncovspecific <- function(clv.time, dt.cov.life, dt
   dt.required.cov.dates <- clv.time.sequence.of.covariate.timepoints(
     clv.time = clv.time,
     tp.start = tp.min.cov.date,
-    tp.end   = tp.max.cov.data)
+    tp.end   = tp.max.cov.data,
+    require.min.3.timepoints = FALSE
+  )
 
   err.msg.required.cov.dates <- paste0(
     "The covariate data has to be spaced ",tolower(clv.time.tu.to.ly(clv.time))," and start at ",
