@@ -436,6 +436,12 @@ check_user_data_predict_newcustomer_dyncov <- function(clv.fitted, clv.newcustom
 check_user_data_newcustomer_dyncovspecific <- function(clv.time, dt.cov.life, dt.cov.trans, tp.first.transaction, tp.prediction.end){
   Cov.Date <- NULL
 
+  # It is per-se not required that life and trans covs start and end on same
+  # timepoint. Neither for the prediction nor for tp.min.cov.date/tp.max.cov.data.
+  # It is however still verified by comparing both, life and trans covs against
+  # the same sequence of cov timepoints (`dt.required.cov.dates`).
+
+
   # Required covariate dates are from first tranasction until prediction end
   #   They have to be from the period containing the first transaction until the period
   #   containing the prediction end

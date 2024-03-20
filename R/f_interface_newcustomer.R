@@ -200,6 +200,8 @@ clv.newcustomer.dynamic.cov <- function(num.periods, data.cov.life, data.cov.tra
 }
 
 clv.newcustomer.dynamic.cov.convert.time <- function(clv.newcustomer, clv.time){
+  Cov.Date <- NULL
+
   # Convert all objects containing time information to correct data type
   # using provided clv.time
   # will be changed (by ref), therefore deep copy
@@ -265,7 +267,8 @@ newcustomer.dynamic <- function(num.periods, data.cov.life, data.cov.trans, firs
   check_err_msg(check_userinput_data_date(dt.data = dt.cov.life,  name.date = 'Cov.Date', name.var="Lifetime covariate"))
   check_err_msg(check_userinput_data_date(dt.data = dt.cov.trans, name.date = 'Cov.Date', name.var="Transaction covariate"))
 
-  # Cannot convert Cov.Date because dont have clv.time object
+  # Cannot convert Cov.Date because dont have clv.time object.
+  # When predicting, use clv.newcustomer.dynamic.cov.convert.time
 
   return(clv.newcustomer.dynamic.cov(
     num.periods = num.periods,
