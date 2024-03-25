@@ -179,7 +179,7 @@ fct.testthat.correctness.clvfittedtransactions.staticcov.fitting.sample.predicti
     skip_on_cran()
 
     # Sample only
-    id.sample <- unique(apparelTrans$Id)[1:100]
+    id.sample <- unique(data.apparelTrans$Id)[1:300]
     clv.apparel.static.sample <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans[Id %in% id.sample],
                                                                              data.apparelStaticCov = data.apparelStaticCov[Id %in% id.sample],
                                                                              estimation.split = clv.apparel.staticcov@clv.time@timepoint.estimation.end)
@@ -260,7 +260,7 @@ fct.testthat.correctness.clvfittedtransactions.staticcov.predict.newcustomer.dif
       m.fitted.static,
       newdata=newcustomer.static(
         num.periods = 4.56,
-        data.cov.life = df.cov*10,
+        data.cov.life = df.cov*2,
         data.cov.trans = df.cov)))
 
     expect_silent(pred.trans <- predict(
@@ -268,7 +268,7 @@ fct.testthat.correctness.clvfittedtransactions.staticcov.predict.newcustomer.dif
       newdata=newcustomer.static(
         num.periods = 4.56,
         data.cov.life = df.cov,
-        data.cov.trans = df.cov*10)))
+        data.cov.trans = df.cov*2)))
 
     expect_true(pred.original != pred.life)
     expect_true(pred.original != pred.trans)

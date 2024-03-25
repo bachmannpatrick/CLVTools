@@ -7,7 +7,7 @@ data("apparelStaticCov")
 # Parameter clv.data ---------------------------------------------------------------------------------------
 expect_silent(clv.data.apparel.nohold   <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w"))
 expect_silent(clv.data.apparel.withhold <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w",
-                                                   estimation.split = 39))
+                                                   estimation.split = 52))
 
 
 test_that("Works with and withouth holdout period", {

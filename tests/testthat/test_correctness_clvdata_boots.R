@@ -10,9 +10,9 @@ data("apparelDynCov")
 clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split=37)
 
 # create with different covs for both processes
-clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(apparelTrans, apparelStaticCov, estimation.split = 40,
+clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(apparelTrans, apparelStaticCov, estimation.split = 52,
                                                                names.cov.life = c("Gender"), names.cov.trans = c("Gender", "Channel"))
-clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(apparelTrans, apparelDynCov, estimation.split = 40,
+clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(apparelTrans, apparelDynCov, estimation.split = 52,
                                                             names.cov.life = c("Gender"), names.cov.trans = c("Gender", "Channel"))
 
 test_that("Bootstrapping clv.time keep same information but no holdout period", {

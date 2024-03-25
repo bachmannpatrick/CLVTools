@@ -88,7 +88,7 @@ test_that("Works with . and excluding covs", {
 
 
 # dyn cov ------------------------------------------------------------------------------------
-clv.apparel.dyn.cov <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=apparelTrans,  data.apparelDynCov=apparelDynCov, estimation.split=40)
+clv.apparel.dyn.cov <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=apparelTrans,  data.apparelDynCov=apparelDynCov, estimation.split=52)
 
 test_that("Works with . and excluding covs", {
   skip_on_cran()

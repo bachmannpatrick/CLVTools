@@ -79,7 +79,7 @@ fct.testthat.runability.clvfitted.hourly.data <- function(method, data.cdnow, st
     data.cdnow[, Date.hours := min(Date) + seconds(secs.since.start/24/7)]
 
     l.args <- list(clv.data = clvdata(data.transactions = data.cdnow, date.format = "ymdHMS", time.unit = "h",
-                                      name.date = "Date.hours", estimation.split = 38), verbose = FALSE)
+                                      name.date = "Date.hours", estimation.split = 52), verbose = FALSE)
 
     expect_silent(fitted.hours <- do.call(what = method, args = l.args))
 

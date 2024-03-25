@@ -5,7 +5,7 @@ fct.testthat.correctness.dyncov.expectation <- function(data.apparelTrans, data.
 
   # For customer 1041, set all dyncov data to 0
   data.apparelDynCov <- copy(data.apparelDynCov)
-  data.apparelDynCov[Id == "1041", Marketing := 0]
+  data.apparelDynCov[Id == "1041", High.Season := 0]
   data.apparelDynCov[Id == "1041", Gender    := 0]
   data.apparelDynCov[Id == "1041", Channel   := 0]
 
@@ -13,8 +13,8 @@ fct.testthat.correctness.dyncov.expectation <- function(data.apparelTrans, data.
 
 
   # Same params for life and trans to check Bbar_i = Dbar_i
-  p.dyn@prediction.params.life  <- c(Marketing = 1.23, Gender = 0.678, Channel = 2.34)
-  p.dyn@prediction.params.trans <- c(Marketing = 1.23, Gender = 0.678, Channel = 2.34)
+  p.dyn@prediction.params.life  <- c(High.Season = 1.23, Gender = 0.678, Channel = 2.34)
+  p.dyn@prediction.params.trans <- c(High.Season = 1.23, Gender = 0.678, Channel = 2.34)
 
   expect_silent(dt.expectation.seq <- clv.time.expectation.periods(clv.time = p.dyn@clv.data@clv.time,
                                                                    user.tp.end = NULL))
@@ -64,8 +64,8 @@ fct.testthat.correctness.dyncov.expectation <- function(data.apparelTrans, data.
   })
 
   # All params = 0 to check Ai=Ci=1 and
-  p.dyn@prediction.params.life  <- c(Marketing = 0, Gender = 0, Channel = 0)
-  p.dyn@prediction.params.trans <- c(Marketing = 0, Gender = 0, Channel = 0)
+  p.dyn@prediction.params.life  <- c(High.Season = 0, Gender = 0, Channel = 0)
+  p.dyn@prediction.params.trans <- c(High.Season = 0, Gender = 0, Channel = 0)
 
   expect_silent(dt.expectation <- CLVTools:::pnbd_dyncov_expectation(clv.fitted = p.dyn,
                                                                      dt.expectation.seq = dt.expectation.seq,
@@ -120,8 +120,8 @@ fct.testthat.correctness.dyncov.LL <- function(data.apparelTrans, data.apparelDy
 
     # Gamma=0 ------------------------------------------------------------------------------------------------
     dt.LLdata.gamma.0 <- pnbd_dyncov_getLLdata(p.dyn, params = c(params.model,
-                                                                 life.Marketing  = 0, life.Gender  = 0, life.Channel  = 0,
-                                                                 trans.Marketing = 0, trans.Gender = 0, trans.Channel = 0))
+                                                                 life.High.Season  = 0, life.Gender  = 0, life.Channel  = 0,
+                                                                 trans.High.Season = 0, trans.Gender = 0, trans.Channel = 0))
 
     # dyncov intermediate results are correct
     dt.A <- data.table(Id=dt.LLdata.gamma.0$Id, A=exp(0))
@@ -138,20 +138,20 @@ fct.testthat.correctness.dyncov.LL <- function(data.apparelTrans, data.apparelDy
     apparelDynCov.static <- copy(data.apparelDynCov)
     apparelDynCov.static[, Gender    := sample(0:2, size = 1), by="Id"]
     apparelDynCov.static[, Channel   := sample(0:2, size = 1), by="Id"]
-    apparelDynCov.static[, Marketing := sample(0:2, size = 1), by="Id"]
+    apparelDynCov.static[, High.Season := sample(0:2, size = 1), by="Id"]
 
     p.dyn.static <- fct.helper.dyncov.quickfit.apparel.data(data.apparelTrans = data.apparelTrans, data.apparelDynCov = apparelDynCov.static)
     params.static.cov <- c(params.model,
-                           life.Marketing  = 0.123, life.Gender  = 0.678, life.Channel = 1.234,
-                           trans.Marketing = 0.111, trans.Gender = 2.222, trans.Channel= 1.756)
+                           life.High.Season  = 0.123, life.Gender  = 0.678, life.Channel = 1.234,
+                           trans.High.Season = 0.111, trans.Gender = 2.222, trans.Channel= 1.756)
     dt.LLdata.static.cov <- pnbd_dyncov_getLLdata(p.dyn.static, params=params.static.cov)
 
-    dt.A <- p.dyn.static@data.walks.trans.aux[, .(A=head(exp(0.111*Marketing+2.222*Gender+1.756*Channel), 1)), keyby="Id"]
-    dt.C <- p.dyn.static@data.walks.life.aux[,  .(C=head(exp(0.123*Marketing+0.678*Gender+1.234*Channel), 1)), keyby="Id"]
+    dt.A <- p.dyn.static@data.walks.trans.aux[, .(A=head(exp(0.111*High.Season+2.222*Gender+1.756*Channel), 1)), keyby="Id"]
+    dt.C <- p.dyn.static@data.walks.life.aux[,  .(C=head(exp(0.123*High.Season+0.678*Gender+1.234*Channel), 1)), keyby="Id"]
     fct.verify.LL.intermediate.results(dt.LLdata = dt.LLdata.static.cov, dt.A = dt.A, dt.C = dt.C, dt.cbs=p.dyn@cbs)
 
     # Same LL values as staticcov
-    m.cov <- data.matrix(apparelDynCov.static[, head(.SD, 1), keyby="Id"][, c("Marketing", "Gender", "Channel")])
+    m.cov <- data.matrix(apparelDynCov.static[, head(.SD, 1), keyby="Id"][, c("High.Season", "Gender", "Channel")])
     expect_equal(dt.LLdata.static.cov$LL, drop(pnbd_staticcov_LL_ind(vParams = params.static.cov,
                                                                      vX = p.dyn.static@cbs$x, vT_x = p.dyn.static@cbs$t.x, vT_cal = p.dyn.static@cbs$T.cal,
                                                                      mCov_life = m.cov, mCov_trans = m.cov)))
@@ -175,8 +175,8 @@ fct.testthat.correctness.dyncov.LL <- function(data.apparelTrans, data.apparelDy
                                                             estimation.split = "2005-12-31")
 
     params.dyncov <- c(log.r=1, log.alpha=0, log.s=1.23, log.beta = 2.344,
-                       life.Marketing  = 0.123, life.Gender  = 0.234,  life.Channel= 0.345,
-                       trans.Marketing = 0.456, trans.Gender = 0.567,  trans.Channel= 0.678)
+                       life.High.Season  = 0.123, life.Gender  = 0.234,  life.Channel= 0.345,
+                       trans.High.Season = 0.456, trans.Gender = 0.567,  trans.Channel= 0.678)
 
     expect_equal(fct.helper.dyncov.LLdata.from.clvdata(clv.data = clv.short,    params = params.dyncov),
                  fct.helper.dyncov.LLdata.from.clvdata(clv.data = clv.full.cov, params = params.dyncov))
@@ -192,15 +192,15 @@ fct.testthat.correctness.dyncov.CET <- function(data.apparelTrans, data.apparelD
   # For constant covariates (ie static)
   data.apparelDynCov <- copy(data.apparelDynCov)
   # Set static cov by Id
-  data.apparelDynCov[, Marketing := sample(x = c(0, 1), size = 1), by="Id"]
+  data.apparelDynCov[, High.Season := sample(x = c(0, 1), size = 1), by="Id"]
   data.apparelDynCov[, Gender    := sample(x = c(0, 1), size = 1), by="Id"]
   data.apparelDynCov[, Channel   := sample(x = c(0, 1), size = 1), by="Id"]
 
   p.dyn <- fct.helper.dyncov.quickfit.apparel.data(data.apparelTrans = data.apparelTrans, data.apparelDynCov = data.apparelDynCov)
   p.dyn@clv.data@data.cov.life  <- copy(data.apparelDynCov)
   p.dyn@clv.data@data.cov.trans <- copy(data.apparelDynCov)
-  p.dyn@prediction.params.life  <- c(Marketing = 1.23, Gender = 0.678, Channel = 2.34)
-  p.dyn@prediction.params.trans <- c(Marketing = 0.999, Gender = 0.111, Channel = 2.222)
+  p.dyn@prediction.params.life  <- c(High.Season = 1.23, Gender = 0.678, Channel = 2.34)
+  p.dyn@prediction.params.trans <- c(High.Season = 0.999, Gender = 0.111, Channel = 2.222)
 
 
   dt.prediction.time.table <- clv.time.get.prediction.table(clv.time = p.dyn@clv.data@clv.time,

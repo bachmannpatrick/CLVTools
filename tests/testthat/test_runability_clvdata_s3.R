@@ -278,7 +278,7 @@ fct.helper.test.runability.clv.data.others3 <- function(clv.data){
 # This all falls under the context of runability for the fitted models
 
 # Create with and withouth holdout, with and withouth static covariates
-expect_silent(apparel.holdout    <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w", estimation.split = 39))
+expect_silent(apparel.holdout    <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w", estimation.split = 52))
 expect_silent(apparel.no.holdout <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w"))
 
 expect_silent(apparel.holdout.static.cov     <- SetStaticCovariates(clv.data = apparel.holdout,
@@ -292,15 +292,15 @@ expect_silent(apparel.no.holdout.static.cov  <- SetStaticCovariates(clv.data = a
 expect_silent(apparel.holdout.dyn.cov     <- SetDynamicCovariates(clv.data = apparel.holdout,
                                                                   data.cov.life = apparelDynCov,
                                                                   data.cov.trans = apparelDynCov,
-                                                                  names.cov.life = c("Channel", "Marketing", "Gender"),
-                                                                  names.cov.trans = c("Channel", "Marketing", "Gender"),
+                                                                  names.cov.life = c("Channel", "High.Season", "Gender"),
+                                                                  names.cov.trans = c("Channel", "High.Season", "Gender"),
                                                                   name.date = "Cov.Date"))
 
 expect_silent(apparel.no.holdout.dyn.cov     <- SetDynamicCovariates(clv.data = apparel.no.holdout,
                                                                       data.cov.life = apparelDynCov,
                                                                       data.cov.trans = apparelDynCov,
-                                                                      names.cov.life = c("Channel", "Marketing", "Gender"),
-                                                                      names.cov.trans = c("Channel", "Marketing", "Gender"),
+                                                                      names.cov.life = c("Channel", "High.Season", "Gender"),
+                                                                      names.cov.trans = c("Channel", "High.Season", "Gender"),
                                                                       name.date = "Cov.Date"))
 
 

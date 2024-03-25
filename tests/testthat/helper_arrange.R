@@ -27,7 +27,7 @@ fct.helper.create.clvdata.cdnow <- function(data.cdnow = NULL, estimation.split 
 
 fct.helper.create.clvdata.apparel.nocov <- function(
     data.apparelTrans = NULL,
-    estimation.split = 40) {
+    estimation.split = 52) {
 
   if (is.null(data.apparelTrans)) {
     data.apparelTrans <- .load.data.locally("apparelTrans")
@@ -44,7 +44,7 @@ fct.helper.create.clvdata.apparel.nocov <- function(
 fct.helper.create.clvdata.apparel.staticcov <- function(
     data.apparelTrans = NULL,
     data.apparelStaticCov = NULL,
-    estimation.split = 40,
+    estimation.split = 52,
     names.cov.life = c("Gender", "Channel"),
     names.cov.trans = c("Gender", "Channel")) {
   if (is.null(data.apparelTrans)) {
@@ -69,9 +69,9 @@ fct.helper.create.clvdata.apparel.staticcov <- function(
 fct.helper.create.clvdata.apparel.dyncov <- function(
     data.apparelTrans = NULL,
     data.apparelDynCov = NULL,
-    estimation.split = 40,
-    names.cov.life = c("Marketing", "Gender", "Channel"),
-    names.cov.trans = c("Marketing", "Gender", "Channel")) {
+    estimation.split = 52,
+    names.cov.life = c("High.Season", "Gender", "Channel"),
+    names.cov.trans = c("High.Season", "Gender", "Channel")) {
 
   if (is.null(data.apparelTrans)) {
     data.apparelTrans <- .load.data.locally("apparelTrans")
@@ -126,7 +126,7 @@ fit.cdnow <- function(
 
 fit.apparel.nocov <- function(
     data.apparelTrans = NULL,
-    estimation.split = 40,
+    estimation.split = 52,
     model = pnbd,
     start.params.model = c(),
     verbose = FALSE,
@@ -151,7 +151,7 @@ fit.apparel.nocov <- function(
 fit.apparel.static <- function(
     data.apparelTrans = NULL,
     data.apparelStaticCov = NULL,
-    estimation.split = 40,
+    estimation.split = 52,
     names.cov.life = c("Gender", "Channel"),
     names.cov.trans = c("Gender", "Channel"),
     model = pnbd,
@@ -195,7 +195,7 @@ fct.helper.dyncov.quickfit <- function(clv.data.dyn, hessian){
     clv.data=clv.data.dyn,
     # start params from std model fitted before apparel dyncov
     # other start params may yield estimated params which are unsuitable for prediction/plot (NAs & Inf) which removes dates during plotting
-    start.params.model = c(r= 0.7579, alpha= 4.7419, s= 0.5432, beta=22.1892),
+    start.params.model = c(r= 0.7422, alpha= 2.1222, s= 0.9991, beta=92.0867),
     optimx.args = l.quickfit.args,
     verbose = FALSE)
 
@@ -208,8 +208,8 @@ fct.helper.dyncov.quickfit <- function(clv.data.dyn, hessian){
 }
 
 fct.helper.dyncov.quickfit.apparel.data <- function(data.apparelTrans=NULL, data.apparelDynCov=NULL, hessian=FALSE,
-                                                    names.cov.life = c("Marketing", "Gender", "Channel"),
-                                                    names.cov.trans = c("Marketing", "Gender", "Channel")){
+                                                    names.cov.life = c("High.Season", "Gender", "Channel"),
+                                                    names.cov.trans = c("High.Season", "Gender", "Channel")){
   clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(
     data.apparelTrans=data.apparelTrans,
     data.apparelDynCov=data.apparelDynCov,
@@ -231,8 +231,8 @@ fct.helper.dyncov.quickfit.apparel.data <- function(data.apparelTrans=NULL, data
   #                                             123.954642184586, -79.6231571791094, -8.32942983004706,  6.37531270788257, -0.205974188766537, -6.37531003596571, -1.27313616513791, 29.2516552513793, 79.6231520568093, 42.6967589924783,
   #                                             81.2903073168579, -49.7391927152517, -3.62426045915698, 2.4410199256767, 0.0130428435022102, -1.27313681231238, -2.44101785877623, 17.3123174944356, 42.6967589924783, 49.7391916698474),
   #                                           .Dim = c(10L, 10L),
-  #                                           .Dimnames = list(c("log.r", "log.alpha", "log.s", "log.beta", "life.Marketing", "life.Gender", "life.Channel", "trans.Marketing", "trans.Gender", "trans.Channel"),
-  #                                                            c("log.r",  "log.alpha", "log.s", "log.beta", "life.Marketing", "life.Gender", "life.Channel", "trans.Marketing", "trans.Gender", "trans.Channel")))
+  #                                           .Dimnames = list(c("log.r", "log.alpha", "log.s", "log.beta", "life.High.Season", "life.Gender", "life.Channel", "trans.High.Season", "trans.Gender", "trans.Channel"),
+  #                                                            c("log.r",  "log.alpha", "log.s", "log.beta", "life.High.Season", "life.Gender", "life.Channel", "trans.High.Season", "trans.Gender", "trans.Channel")))
 
   return(fitted.dyncov)
 }
@@ -262,5 +262,5 @@ fct.helper.default.newcustomer.covdata.dyncov <- function(){
     Cov.Date=cov.dates,
     Gender=rep_len(0, length(cov.dates)),
     Channel=rep_len(c(-0.678, 0, 2, 1.23, -1.23, -2), length(cov.dates)),
-    Marketing=rep_len(c(4, 0, 7, 2, 9, 0), length(cov.dates))))
+    High.Season=rep_len(c(4, 0, 7, 2, 9, 0), length(cov.dates))))
 }

@@ -1,7 +1,7 @@
 #' @examples \donttest{
 #' data("apparelTrans")
 #' clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
-#'                             time.unit = "w", estimation.split = 40)
+#'                             time.unit = "w", estimation.split = 52)
 #'
 #' # Fit the <%=name_model_short%> model
 #' <%=name_model_short%>(clv.data.apparel)

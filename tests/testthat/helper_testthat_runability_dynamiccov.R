@@ -71,8 +71,11 @@ fct.testthat.runability.dynamiccov.predict.longer.with.newdata <- function(clv.f
   test_that("Can predict longer with newdata than with the data used for fitting", {
     expect_error(predict(clv.fitted, prediction.end = "2018-01-01", predict.spending=FALSE),
                  regexp = "in the fitted model are not long enough")
-    expect_silent(dt.predict <- predict(clv.fitted, newdata=clv.data.extra, predict.spending=FALSE,
-                                        prediction.end = "2006-07-26",verbose=FALSE))
+    expect_silent(dt.predict <- predict(
+      clv.fitted, newdata=clv.data.extra,
+      predict.spending=FALSE,
+      prediction.end = clv.fitted@clv.data@clv.time@timepoint.holdout.end + lubridate::weeks(13),
+      verbose=FALSE))
     expect_true(dt.predict[, max(period.last)] > clv.fitted@clv.data@clv.time@timepoint.holdout.end)
   })
 
@@ -82,8 +85,14 @@ fct.testthat.runability.dynamiccov.plot.longer.with.newdata <- function(clv.fitt
   test_that("Can plot longer with newdata than with the data used for fitting", {
     expect_error(plot(clv.fitted, prediction.end = "2018-01-01"),
                  regexp = "in the fitted model are not long enough")
-    expect_silent(dt.plot <- plot(clv.fitted, newdata=clv.data.extra, plot=FALSE,
-                                  prediction.end = "2006-07-26",verbose=FALSE))
+
+    expect_silent(dt.plot <- plot(
+      clv.fitted,
+      newdata=clv.data.extra,
+      plot=FALSE,
+      prediction.end=clv.fitted@clv.data@clv.time@timepoint.holdout.end + lubridate::weeks(13),
+      verbose=FALSE))
+
     expect_true(dt.plot[, max(period.until)] > clv.fitted@clv.data@clv.time@timepoint.holdout.end)
   })
 }

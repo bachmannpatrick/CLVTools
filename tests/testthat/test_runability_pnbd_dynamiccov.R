@@ -17,8 +17,8 @@ fitted.dyncov <- fct.helper.dyncov.quickfit.apparel.data(data.apparelTrans = app
 #   also plot() produces all NAs if quickfit is used
 .fct.helper.clvfitted.all.s3.except.plot.and.predict(clv.fitted=fitted.dyncov,
                                                      full.names=c("r", "alpha", "s", "beta",
-                                                                  "life.Marketing",  "life.Gender", "life.Channel",
-                                                                  "trans.Marketing", "trans.Gender",  "trans.Channel"))
+                                                                  "life.High.Season",  "life.Gender", "life.Channel",
+                                                                  "trans.High.Season", "trans.Gender",  "trans.Channel"))
 
 
 
@@ -44,7 +44,7 @@ apparelDynCov.extra <- fct.helper.dyncov.create.longer.dyncov.data(num.additiona
                                                                    data.apparelDynCov = apparelDynCov)
 clv.data.extra <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=apparelTrans,
                                                            data.apparelDynCov=apparelDynCov.extra,
-                                                           estimation.split=38)
+                                                           estimation.split=52)
 
 fct.testthat.runability.dynamiccov.predict.longer.with.newdata(clv.fitted = fitted.dyncov, clv.data.extra = clv.data.extra)
 

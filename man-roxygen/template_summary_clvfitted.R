@@ -60,7 +60,7 @@
 #'
 #' # Fit pnbd standard model, no covariates
 #' clv.data.apparel <- clvdata(apparelTrans, time.unit="w",
-#'                                 estimation.split=40, date.format="ymd")
+#'                                 estimation.split=52, date.format="ymd")
 #' pnbd.apparel <- pnbd(clv.data.apparel)
 #'
 #' # summary about model fit

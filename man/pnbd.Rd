@@ -153,7 +153,7 @@ of less than one day (data that was built with time unit \code{hours}).
 \donttest{
 data("apparelTrans")
 clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
-                            time.unit = "w", estimation.split = 40)
+                            time.unit = "w", estimation.split = 52)
 
 # Fit standard pnbd model
 pnbd(clv.data.apparel)
@@ -224,8 +224,8 @@ clv.data.dyn.cov <-
   SetDynamicCovariates(clv.data = clv.data.apparel,
                        data.cov.life = apparelDynCov,
                        data.cov.trans = apparelDynCov,
-                       names.cov.life = c("Marketing", "Gender", "Channel"),
-                       names.cov.trans = c("Marketing", "Gender", "Channel"),
+                       names.cov.life = c("High.Season", "Gender", "Channel"),
+                       names.cov.trans = c("High.Season", "Gender", "Channel"),
                        name.date = "Cov.Date")
 
 

@@ -3,7 +3,7 @@ fct.testthat.runability.nocov.without.spending.data <- function(method, data.tra
     skip_on_cran()
     skip_on_ci()
     skip_on_covr()
-    l.args <- list(clvdata(data.transactions = data.transactions, name.price = NULL, date.format = "ymd", time.unit = "w", estimation.split = 37),
+    l.args <- list(clvdata(data.transactions = data.transactions, name.price = NULL, date.format = "ymd", time.unit = "w", estimation.split = 52),
                    verbose = FALSE)
     expect_silent(clv.nospending <- do.call(what = method, args = l.args))
     # predict still works out of the box
@@ -18,12 +18,12 @@ fct.testthat.runability.nocov.predict.fit.no.spending.but.newdata.spending <- fu
     skip_on_cran()
     skip_on_ci()
     skip_on_covr()
-    l.args <- list(clvdata(data.transactions = data.transactions, name.price = NULL, date.format = "ymd", time.unit = "w", estimation.split = 37),
+    l.args <- list(clvdata(data.transactions = data.transactions, name.price = NULL, date.format = "ymd", time.unit = "w", estimation.split = 52),
                    verbose = FALSE)
     # No spending fit
     expect_silent(clv.nospending <- do.call(what = method, args = l.args))
     # Data with spending
-    expect_silent(clv.cdnow.spending <- clvdata(data.transactions, name.price = "Price", date.format = "ymd", time.unit = "w", estimation.split = 37))
+    expect_silent(clv.cdnow.spending <- clvdata(data.transactions, name.price = "Price", date.format = "ymd", time.unit = "w", estimation.split = 52))
     expect_silent(dt.pred <- predict(clv.nospending, newdata=clv.cdnow.spending, verbose=FALSE, predict.spending=TRUE))
     expect_true(all(c("predicted.mean.spending") %in% colnames(dt.pred)))
   })

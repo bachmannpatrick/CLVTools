@@ -119,7 +119,7 @@
 #' data("apparelTrans")
 #' # Fit pnbd standard model on data, WITH holdout
 #' apparel.holdout <- clvdata(apparelTrans, time.unit="w",
-#'                            estimation.split=37, date.format="ymd")
+#'                            estimation.split=52, date.format="ymd")
 #' apparel.pnbd <- pnbd(apparel.holdout)
 #'
 #' # Predict until the end of the holdout period

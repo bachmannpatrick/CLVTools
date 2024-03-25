@@ -110,7 +110,7 @@ and data for the lifetime process to be equal (g2=g3 and z2=z3).
 \donttest{
 data("apparelTrans")
 clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
-                            time.unit = "w", estimation.split = 40)
+                            time.unit = "w", estimation.split = 52)
 
 # Fit standard bgnbd model
 bgnbd(clv.data.apparel)
