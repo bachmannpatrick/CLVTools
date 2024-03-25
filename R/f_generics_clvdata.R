@@ -4,10 +4,16 @@ setMethod("clv.data.create.bootstrapping.data", signature = signature(clv.data="
   # For bootstrapped fitting, the estimation end has to be the same as in the
   # original clv.data in order to get the same cbs values
   #
-  # Create without holdout data as it is not required for bootstrapped fitting and could lead to
-  # clvdata with too small holdout period
+  # Create with holdout if clv.data has holdout.
+  # While it is not required for bootstrapped fitting, it is required for
+  # evaluating holdout performance and for plotting (CIs).
+  # To create an object with holdout period, preserve the periods of original
+  # clv.time in order to a) make predictions by default to same end and b) not
+  # accidentally have not enough data in holdout period. Hence, keep the last
+  # and first transaction the same as in original data, even if the actuals
+  # in dt.transactions are different.
   #
-  # For efficiency the object is created without verifiying the content of the data
+  # For efficiency the object is created without verifying the content of the data
 
   cl <- match.call(expand.dots = TRUE)
 
@@ -17,28 +23,18 @@ setMethod("clv.data.create.bootstrapping.data", signature = signature(clv.data="
   }
 
   dt.transactions <- clv.data.select.customer.data.duplicating.ids(
-    dt.data=clv.data.get.transactions.in.estimation.period(clv.data),
+    dt.data=clv.data@data.transactions,
     ids=ids)
 
   # Repeat transactions are required to fit GG with remove.first.transactions = TRUE
   dt.repeat.trans <- clv.data.select.customer.data.duplicating.ids(
-    dt.data=clv.data.get.repeat.transactions.in.estimation.period(clv.data),
+    dt.data=clv.data@data.repeat.trans,
     ids=ids)
-
-
-  # Set properties as if no holdout
-  # keep last and first transaction the same as in original data, even
-  # if the actuals in dt.transactions are different
-  clv.t <- clv.time.set.sample.periods(
-    clv.time = clv.data@clv.time,
-    tp.first.transaction = clv.data@clv.time@timepoint.estimation.start,
-    tp.last.transaction = clv.data@clv.time@timepoint.estimation.end,
-    user.estimation.end = NULL)
 
   return(clv.data(
     call = cl,
     data.transactions = dt.transactions,
     data.repeat.trans = dt.repeat.trans,
     has.spending = clv.data.has.spending(clv.data),
-    clv.time = clv.t))
+    clv.time = copy(clv.data@clv.time)))
 })

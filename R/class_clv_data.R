@@ -99,6 +99,11 @@ clv.data.get.transactions.in.holdout.period <- function(clv.data){
 clv.data.select.customer.data.duplicating.ids <- function(dt.data, ids){
   .N <- id_nth <- new_Id <- Id <- NULL
 
+  # Because this method is used to select transactions as well as covariate data,
+  # it is paramount that the ordering of ids is preserved to ensure the
+  # <Id> <=> <new_Id> mapping remains the same whenever this method is called.
+  # Otherwise, customers receive the wrong covariate data.
+
   if(anyDuplicated(ids)){
     dt.ids <- data.table(Id=ids, key = "Id")
     dt.ids[, id_nth := seq(.N), by="Id"]
