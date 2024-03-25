@@ -54,8 +54,14 @@ fct.ggomnbd.expectation.R <- function(params_i.t){
 # To test expectation correctly, fake that some customers only come alive later
 apparelTrans.later <- copy(apparelTrans)
 apparelTrans.later[Id %in% c("1", "10", "100"), Date := Date + lubridate::weeks(10)]
+
+# drop customers with very high number of transactions (x) which cannot be handled
+# by the matlab code
+ids.high.x <- apparelTrans.later[, .N, by='Id'][N>50, Id]
+apparelTrans.later <- apparelTrans.later[!(Id %in% ids.high.x)]
+
 clv.apparel.static <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = apparelTrans.later,
-                                                                  data.apparelStaticCov = apparelStaticCov,
+                                                                  data.apparelStaticCov = apparelStaticCov[Id %in% apparelTrans.later$Id],
                                                                   estimation.split = 52)
 expect_silent(clv.ggomnbd <- ggomnbd(clv.data = clv.apparel.static, verbose = FALSE))
 
