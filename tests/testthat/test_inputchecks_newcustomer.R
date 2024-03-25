@@ -108,7 +108,7 @@ test_that("newcustomer dyncov cov data has right dates", {
   # default.correct.dyn.cov <- function(Cov.Date){
   #  return(data.frame(
   #    Cov.Date=Cov.Date,
-  #    Marketing=c(0, 1),
+  #    High.Season=c(0, 1),
   #    Gender=c(1, 1),
   #    Channel=c(1.23, 0.67)))
   # }
@@ -116,7 +116,7 @@ test_that("newcustomer dyncov cov data has right dates", {
 
     df.cov <- data.frame(
       Cov.Date=Cov.Date,
-      Marketing=c(0, 1, 0),
+      High.Season=c(0, 1, 0),
       Gender=c(1, 1, 1),
       Channel=c(1.23, 0.67, 7.23))
 
