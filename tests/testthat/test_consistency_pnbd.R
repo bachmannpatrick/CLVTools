@@ -12,10 +12,7 @@ fct.testthat.consistency(name.model = "PNBD", method = pnbd,
 # nocov vs dyncov --------------------------------------------------------------------------------------
 #   same predict with gamma=0
 
-
-expect_silent(clv.apparel <- clvdata(data.transactions = apparelTrans, date.format = "ymd",
-                                     time.unit = "w",estimation.split = 52))
-expect_silent(p.nocov     <- pnbd(clv.apparel, verbose = FALSE))
+p.nocov <- fit.apparel.nocov()
 
 
 # . Prepare dyncov: Set parameters -------------------------------------------------------------------
@@ -40,13 +37,34 @@ p.dyncov.g0 <- fct.helper.dyncov.quickfit.apparel.data(data.apparelTrans = appar
 p.dyncov.g0 <- fct.helper.dyncov.g0.with.predition.params.model(p.dyncov = p.dyncov.g0, prediction.params.model = p.nocov@prediction.params.model[c("r", "alpha", "s", "beta")])
 
 
-# . Dyncov: Compare nocov vs dyncov LL, prediction & plot -------------------------------------------------------
+# . Dyncov: Compare nocov vs dyncov LL ---------------------------------------------------------------
 fct.testthat.consistency.cov.params.0.predict.same(fitted.nocov = p.nocov,
                                                    fitted.cov.g0 = p.dyncov.g0,
                                                    is.dyncov = TRUE)
 
 fct.testthat.consistency.cov.params.0.plot.same(fitted.nocov = p.nocov,
                                                 fitted.cov.g0 = p.dyncov.g0)
+
+test_that("predict newcustomer dyncov same results for all models with gamma=0", {
+  # requires newcustomer.dynamic() while `fct.testthat.consistency.cov.params.0.predict.newcustomer.same()`
+  # uses newcustomer.static()
+  df.cov <- fct.helper.default.newcustomer.covdata.dyncov()
+
+  expect_silent(nc.pred.nocov <- predict(
+    p.nocov,
+    newdata=newcustomer(num.periods = 7.89),
+    verbose=FALSE))
+  expect_silent(nc.pred.g0 <- predict(
+    p.dyncov.g0,
+    newdata=newcustomer.dynamic(
+      num.periods = 7.89,
+      data.cov.life = df.cov,
+      data.cov.trans = df.cov,
+      first.transaction = '2000-01-13'),
+    verbose=FALSE))
+
+  expect_equal(nc.pred.nocov, nc.pred.g0)
+})
 
 
 # compare LL

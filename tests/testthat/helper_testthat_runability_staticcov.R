@@ -243,16 +243,6 @@ fct.helper.create.fake.newdata.staticcov <- function(data.trans, estimation.spli
   return(clv.newdata)
 }
 
-fct.helper.create.clvdata.apparel.staticcov <- function(data.apparelTrans, data.apparelStaticCov, estimation.split,
-                                                        names.cov.life = c("Gender", "Channel"), names.cov.trans = c("Gender", "Channel")){
-
-  return(SetStaticCovariates(clvdata(data.transactions = data.apparelTrans, date.format = "ymd", time.unit = "W",
-                                     estimation.split = estimation.split),
-                             data.cov.life = data.apparelStaticCov, data.cov.trans = data.apparelStaticCov,
-                             names.cov.life = names.cov.life, names.cov.trans = names.cov.trans))
-}
-
-
 
 fct.testthat.runability.staticcov <- function(name.model, method, start.params.model, has.cor,
                                               data.apparelTrans, data.apparelStaticCov,

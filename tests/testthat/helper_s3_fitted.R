@@ -1,6 +1,5 @@
 fct.helper.has.pmf <- function(clv.fitted.transactions){
   return(is(clv.fitted.transactions, "clv.fitted.transactions") &
-           !is(clv.fitted.transactions, "clv.ggomnbd") & !is(clv.fitted.transactions, "clv.ggomnbd.static.cov") &
            !is(clv.fitted.transactions, "clv.pnbd.dynamic.cov"))
 }
 

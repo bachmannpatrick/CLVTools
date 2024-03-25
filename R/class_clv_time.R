@@ -400,7 +400,7 @@ clv.time.get.prediction.table <- function(clv.time, user.prediction.end){
 
 
 
-clv.time.sequence.of.covariate.timepoints <- function(clv.time, tp.start, tp.end){
+clv.time.sequence.of.covariate.timepoints <- function(clv.time, tp.start, tp.end, require.min.3.timepoints=TRUE){
 
   Cov.Date <- period.offset <- NULL
   # Marks all timepoints for which covariates are required if dyncov models should work between start and end.
@@ -418,7 +418,15 @@ clv.time.sequence.of.covariate.timepoints <- function(clv.time, tp.start, tp.end
   # If the num.offsets falls inbetween, but this should not happen
   num.offsets <- ceiling(num.offsets)
 
-  if(num.offsets <= 1) # Offset of 1 is 2 periods only
+  # It is unclear to me (pschil) why more than 2 periods are required for all covariates.
+  # This might be related to the LL or the prediction parts.
+  # For the newcustomer prediction (unconditional expectation) this certainly should not
+  # be required because the tracking plot always requires this same expression
+  # to be calculated for <= 2 periods.
+  # For the newcustomer prediction (and potentially other applications in the
+  # future), a flag is added to not require num.offsets > 1.
+
+  if(num.offsets <= 1 & require.min.3.timepoints) # Offset of 1 is 2 periods only
     stop("Cannot create covariate date sequence for 2 or less periods!")
 
   dt.cov.seq <- data.table(period.offset = seq.int(from=0, to=num.offsets, by = 1))

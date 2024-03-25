@@ -67,8 +67,8 @@ setGeneric("clv.controlflow.plot.check.inputs", def = function(obj, prediction.e
   standardGeneric("clv.controlflow.plot.check.inputs"))
 
 # . Predict new customer -----------------------------------------------------------------------------------------
-setGeneric("clv.predict.new.customer", def = function(clv.fitted, clv.newcustomer){
-  standardGeneric("clv.predict.new.customer")
+setGeneric("clv.controlflow.predict.new.customer", def = function(clv.fitted, clv.newcustomer){
+  standardGeneric("clv.controlflow.predict.new.customer")
 })
 
 # . Bootstrapping ------------------------------------------------------------------------------------------

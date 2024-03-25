@@ -30,12 +30,6 @@ fct.testthat.runability.nocov.predict.fit.no.spending.but.newdata.spending <- fu
 }
 
 
-fct.helper.create.clvdata.cdnow <- function(data.cdnow, estimation.split = 37){
-  expect_silent(clv.cdnow <- clvdata(data.transactions = data.cdnow, date.format = "ymd", time.unit = "w",
-                                     estimation.split = estimation.split))
-  return(clv.cdnow)
-}
-
 fct.helper.create.fake.transdata <- function(data){
   set.seed(0xcaffe) # hipster seed
   expect_silent(dt.newdata.trans <- rbindlist(lapply(LETTERS, function(cid){

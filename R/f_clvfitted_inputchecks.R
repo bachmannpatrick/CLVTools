@@ -378,7 +378,7 @@ check_user_data_label <- function(label, other.models){
 
 
 
-check_user_data_newcustomer_numperiods <- function(num.periods){
+check_user_data_predict_newcustomer_numperiods <- function(num.periods){
   err.msg <- .check_user_data_single_numeric(n=num.periods, var.name='num.periods')
   if(length(err.msg)){
     return(err.msg)
@@ -436,6 +436,12 @@ check_user_data_predict_newcustomer_dyncov <- function(clv.fitted, clv.newcustom
 check_user_data_newcustomer_dyncovspecific <- function(clv.time, dt.cov.life, dt.cov.trans, tp.first.transaction, tp.prediction.end){
   Cov.Date <- NULL
 
+  # It is per-se not required that life and trans covs start and end on same
+  # timepoint. Neither for the prediction nor for tp.min.cov.date/tp.max.cov.data.
+  # It is however still verified by comparing both, life and trans covs against
+  # the same sequence of cov timepoints (`dt.required.cov.dates`).
+
+
   # Required covariate dates are from first tranasction until prediction end
   #   They have to be from the period containing the first transaction until the period
   #   containing the prediction end
@@ -461,7 +467,9 @@ check_user_data_newcustomer_dyncovspecific <- function(clv.time, dt.cov.life, dt
   dt.required.cov.dates <- clv.time.sequence.of.covariate.timepoints(
     clv.time = clv.time,
     tp.start = tp.min.cov.date,
-    tp.end   = tp.max.cov.data)
+    tp.end   = tp.max.cov.data,
+    require.min.3.timepoints = FALSE
+  )
 
   err.msg.required.cov.dates <- paste0(
     "The covariate data has to be spaced ",tolower(clv.time.tu.to.ly(clv.time))," and start at ",
