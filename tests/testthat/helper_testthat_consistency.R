@@ -7,7 +7,7 @@ fct.testthat.consistency.cov.data.0.cov.params.insignificant <- function(fitted.
 fct.testthat.consistency.cov.data.0.model.params.nearly.same <- function(fitted.nocov, fitted.static.cov0){
   test_that("Model parameters are nearly the same", {
     params.nocov <- coef(fitted.nocov)
-    expect_true(all.equal(params.nocov, coef(fitted.static.cov0)[names(params.nocov)], tolerance = 0.05))
+    expect_equal(params.nocov, coef(fitted.static.cov0)[names(params.nocov)], tolerance = 0.05)
   })
 }
 

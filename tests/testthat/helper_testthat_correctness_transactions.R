@@ -260,7 +260,7 @@ fct.testthat.correctness.clvfittedtransactions.staticcov.predict.newcustomer.dif
       m.fitted.static,
       newdata=newcustomer.static(
         num.periods = 4.56,
-        data.cov.life = df.cov*10,
+        data.cov.life = df.cov*2,
         data.cov.trans = df.cov)))
 
     expect_silent(pred.trans <- predict(
@@ -268,7 +268,7 @@ fct.testthat.correctness.clvfittedtransactions.staticcov.predict.newcustomer.dif
       newdata=newcustomer.static(
         num.periods = 4.56,
         data.cov.life = df.cov,
-        data.cov.trans = df.cov*10)))
+        data.cov.trans = df.cov*2)))
 
     expect_true(pred.original != pred.life)
     expect_true(pred.original != pred.trans)
