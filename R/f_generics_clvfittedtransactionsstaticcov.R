@@ -85,9 +85,9 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.tran
 
 
 
-# . clv.predict.new.customer ------------------------------------------------------------------------------
+# . clv.controlflow.predict.new.customer ------------------------------------------------------------------------------
 #' @include class_clv_fitted_transactions_staticcov.R
-setMethod(f = "clv.predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted, clv.newcustomer){
+setMethod(f = "clv.controlflow.predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted, clv.newcustomer){
 
   check_err_msg(check_user_data_predict_newcustomer_staticcov(clv.fitted=clv.fitted, clv.newcustomer=clv.newcustomer))
 

@@ -672,6 +672,46 @@ fct.testthat.correctness.clvtime.sequence.of.covariate.tp.start.end.correct.star
   })
 }
 
+fct.testthat.correctness.clvtime.sequence.of.covariate.tp.single.and.two.periods <- function(clv.t.weeks){
+  test_that("Correctly works for single or two periods", {
+
+    # Single
+    expect_equal(
+      clv.time.sequence.of.covariate.timepoints(
+        clv.time = clv.t.weeks,
+        tp.start = lubridate::ymd("2018-01-01"),
+        tp.end = lubridate::ymd("2018-01-01"),
+        require.min.3.timepoints = FALSE)$Cov.Date,
+      as.Date("2017-12-31")
+    )
+
+    expect_equal(
+      clv.time.sequence.of.covariate.timepoints(
+        clv.time = clv.t.weeks,
+        tp.start = lubridate::ymd("2018-01-01"),
+        tp.end = lubridate::ymd("2018-01-06"),
+        require.min.3.timepoints = FALSE)$Cov.Date,
+      as.Date("2017-12-31")
+    )
+
+    expect_equal(
+      clv.time.sequence.of.covariate.timepoints(
+        clv.time = clv.t.weeks,
+        tp.start = lubridate::ymd("2018-01-01"),
+        tp.end = lubridate::ymd("2018-01-07"),
+        require.min.3.timepoints = FALSE)$Cov.Date,
+      as.Date(c("2017-12-31", "2018-01-07"))
+    )
+    expect_equal(
+      clv.time.sequence.of.covariate.timepoints(
+        clv.time = clv.t.weeks,
+        tp.start = lubridate::ymd("2018-01-01"),
+        tp.end = lubridate::ymd("2018-01-07"),
+        require.min.3.timepoints = FALSE)$Cov.Date,
+      as.Date(c("2017-12-31", "2018-01-07"))
+    )
+  })
+}
 
 
 # prediction.table ---------------------------------------------------------------------------------------------

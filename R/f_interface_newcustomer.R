@@ -168,6 +168,17 @@ clv.newcustomer.static.cov <- function(num.periods, data.cov.life, data.cov.tran
 }
 
 
+clv.newcustomer.static.get.matrix.cov.trans <- function(clv.newcustomer, clv.fitted){
+  m <- data.matrix(clv.newcustomer@data.cov.trans)
+  return(m[, names(clv.fitted@prediction.params.trans), drop=FALSE])
+}
+
+clv.newcustomer.static.get.matrix.cov.life <- function(clv.newcustomer, clv.fitted){
+  m <- data.matrix(clv.newcustomer@data.cov.life)
+  return(m[, names(clv.fitted@prediction.params.life), drop=FALSE])
+}
+
+
 setClass(
   Class = "clv.newcustomer.dynamic.cov",
   contains = "clv.newcustomer.static.cov",
@@ -188,11 +199,40 @@ clv.newcustomer.dynamic.cov <- function(num.periods, data.cov.life, data.cov.tra
   ))
 }
 
+clv.newcustomer.dynamic.cov.convert.time <- function(clv.newcustomer, clv.time){
+  Cov.Date <- NULL
+
+  # Convert all objects containing time information to correct data type
+  # using provided clv.time
+  # will be changed (by ref), therefore deep copy
+  dt.cov.life <- copy(clv.newcustomer@data.cov.life)
+  dt.cov.trans <- copy(clv.newcustomer@data.cov.trans)
+
+  # Convert Cov.Date to timepoint
+  dt.cov.life[,  Cov.Date  := clv.time.convert.user.input.to.timepoint(clv.time, user.timepoint = Cov.Date)]
+  dt.cov.trans[, Cov.Date  := clv.time.convert.user.input.to.timepoint(clv.time, user.timepoint = Cov.Date)]
+
+  setkeyv(dt.cov.life, cols = "Cov.Date")
+  setkeyv(dt.cov.trans, cols = "Cov.Date")
+
+  tp.first.transaction <- clv.time.convert.user.input.to.timepoint(
+    clv.time = clv.time,
+    user.timepoint = clv.newcustomer@first.transaction
+  )
+
+  # Return new object with converted time information
+  return(clv.newcustomer.dynamic.cov(
+    num.periods=clv.newcustomer@num.periods,
+    data.cov.life=dt.cov.life,
+    data.cov.trans=dt.cov.trans,
+    first.transaction=tp.first.transaction))
+}
+
 
 #' @rdname newcustomer
 #' @export
 newcustomer <- function(num.periods){
-  check_err_msg(check_user_data_newcustomer_numperiods(num.periods))
+  check_err_msg(check_user_data_predict_newcustomer_numperiods(num.periods))
   return(clv.newcustomer.no.cov(num.periods))
 }
 
@@ -200,7 +240,7 @@ newcustomer <- function(num.periods){
 #' @export
 newcustomer.static <- function(num.periods, data.cov.life, data.cov.trans){
 
-  check_err_msg(check_user_data_newcustomer_numperiods(num.periods))
+  check_err_msg(check_user_data_predict_newcustomer_numperiods(num.periods))
   check_err_msg(check_user_data_newcustomer_staticcovdatacov(data.cov=data.cov.life, name.of.covariate='Lifetime'))
   check_err_msg(check_user_data_newcustomer_staticcovdatacov(data.cov=data.cov.trans, name.of.covariate='Transaction'))
 
@@ -215,7 +255,7 @@ newcustomer.static <- function(num.periods, data.cov.life, data.cov.trans){
 #' @export
 newcustomer.dynamic <- function(num.periods, data.cov.life, data.cov.trans, first.transaction){
 
-  check_err_msg(check_user_data_newcustomer_numperiods(num.periods))
+  check_err_msg(check_user_data_predict_newcustomer_numperiods(num.periods))
   check_err_msg(check_user_data_newcustomer_firsttransaction(first.transaction))
   check_err_msg(check_user_data_newcustomer_dyncovdatacov(data.cov=data.cov.life, name.of.covariate = "Lifetime"))
   check_err_msg(check_user_data_newcustomer_dyncovdatacov(data.cov=data.cov.trans, name.of.covariate = "Transaction"))
@@ -227,7 +267,8 @@ newcustomer.dynamic <- function(num.periods, data.cov.life, data.cov.trans, firs
   check_err_msg(check_userinput_data_date(dt.data = dt.cov.life,  name.date = 'Cov.Date', name.var="Lifetime covariate"))
   check_err_msg(check_userinput_data_date(dt.data = dt.cov.trans, name.date = 'Cov.Date', name.var="Transaction covariate"))
 
-  # Cannot convert Cov.Date because dont have clv.time object
+  # Cannot convert Cov.Date because dont have clv.time object.
+  # When predicting, use clv.newcustomer.dynamic.cov.convert.time
 
   return(clv.newcustomer.dynamic.cov(
     num.periods = num.periods,
