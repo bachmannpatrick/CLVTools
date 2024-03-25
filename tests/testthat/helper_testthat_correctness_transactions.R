@@ -179,7 +179,7 @@ fct.testthat.correctness.clvfittedtransactions.staticcov.fitting.sample.predicti
     skip_on_cran()
 
     # Sample only
-    id.sample <- unique(apparelTrans$Id)[1:100]
+    id.sample <- unique(data.apparelTrans$Id)[1:300]
     clv.apparel.static.sample <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans[Id %in% id.sample],
                                                                              data.apparelStaticCov = data.apparelStaticCov[Id %in% id.sample],
                                                                              estimation.split = clv.apparel.staticcov@clv.time@timepoint.estimation.end)
