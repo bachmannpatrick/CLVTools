@@ -6,6 +6,8 @@ data("apparelDynCov")
 
 
 
+optimx.args.fast <- list(method='Nelder-Mead', itnmax=10, hessian=FALSE)
+
 # create with estimation.split
 clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split=37)
 
@@ -14,6 +16,9 @@ clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(apparelTrans, app
                                                                names.cov.life = c("Gender"), names.cov.trans = c("Gender", "Channel"))
 clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(apparelTrans, apparelDynCov, estimation.split = 40,
                                                             names.cov.life = c("Gender"), names.cov.trans = c("Gender", "Channel"))
+
+
+# clv.data.create.bootstrapping.data -------------------------------------------------------------------------------------------
 
 test_that("Sampling all customers (nocov, static, dyn) results in same clv.data object", {
   # nocov
@@ -159,5 +164,184 @@ test_that("Sampling selects correct dynamic covariates", {
   full.length.dates <- clv.apparel.dyn@data.cov.life[, unique(Cov.Date)]
   expect_true(all(clv.sampled@data.cov.life[, list(same=setequal(Cov.Date, full.length.dates)), by="Id"][, all(same)]))
   expect_true(all(clv.sampled@data.cov.trans[, list(same=setequal(Cov.Date, full.length.dates)), by="Id"][, all(same)]))
+})
+
+
+# model.specification.args -------------------------------------------------------------------------------------------
+
+test_that("Correct model specification args for nocov models", {
+  # start.params.model, optimx.args, verbose
+  # use.cor, start.param.cor
+
+  # No args
+  p.cdnow <- pnbd(clv.cdnow)
+
+  expect_equal(
+    p.cdnow@model.specification.args,
+    list(
+      start.params.model = c(),
+      use.cor=FALSE,
+      start.param.cor = c(),
+      optimx.args = list(),
+      verbose=TRUE
+    )
+  )
+
+
+  # With args
+  p.cdnow <- pnbd(
+    clv.cdnow,
+    start.params.model = c(alpha=1.23, r=2.34, beta=12.23, s=0.67),
+    use.cor=TRUE,
+    start.param.cor = c(cor=0.2),
+    optimx.args = optimx.args.fast,
+    verbose=FALSE)
+
+  expect_equal(
+    p.cdnow@model.specification.args,
+    list(
+      start.params.model = c(alpha=1.23, r=2.34, beta=12.23, s=0.67),
+      use.cor=TRUE,
+      start.param.cor = c(cor=0.2),
+      optimx.args = optimx.args.fast,
+      verbose=FALSE
+    )
+  )
+})
+
+
+test_that("Correct interface args for static covariate models", {
+  # need to test correlation because not part of standard controlflow but
+  # specific to pnbd static
+
+  # No options
+  p.apparel.static <- pnbd(clv.apparel.cov)
+
+  expect_equal(
+    p.apparel.static@model.specification.args,
+    list(
+      start.params.model = c(),
+      use.cor = FALSE,
+      start.param.cor = c(),
+      optimx.args = list(),
+      verbose = TRUE,
+      names.cov.life = c(),
+      names.cov.trans = c(),
+      start.params.life = c(),
+      start.params.trans = c(),
+      names.cov.constr = c(),
+      start.params.constr = c(),
+      reg.lambdas = c())
+  )
+
+
+  # With options
+  p.apparel.static <- pnbd(
+    clv.apparel.cov,
+    start.params.model = c(alpha=1.23, r=2.34, beta=12.23, s=0.67),
+    use.cor=TRUE,
+    start.param.cor = c(cor=0.1),
+    optimx.args = optimx.args.fast,
+    verbose=FALSE,
+    names.cov.life="Gender",
+    names.cov.trans=c("Gender", "Channel"),
+    start.params.life = c(),
+    start.params.trans = c(Channel=-0.345),
+    names.cov.constr = "Gender",
+    start.params.constr=c(Gender=0.23),
+    reg.lambdas=c(life=8, trans=10)
+    )
+
+  expect_equal(
+    p.apparel.static@model.specification.args,
+    list(
+      start.params.model = c(alpha=1.23, r=2.34, beta=12.23, s=0.67),
+      use.cor = TRUE,
+      start.param.cor = c(cor=0.1),
+      optimx.args = optimx.args.fast,
+      verbose = FALSE,
+      names.cov.life="Gender",
+      names.cov.trans=c("Gender", "Channel"),
+      start.params.life = c(),
+      start.params.trans = c(Channel=-0.345),
+      names.cov.constr =  "Gender",
+      start.params.constr=c(Gender=0.23),
+      reg.lambdas = c(life=8, trans=10))
+  )
+
+})
+
+
+test_that("Correct interface args for dynamic covariate models", {
+  # only additional thing to test vs static cov is correlation
+
+  p.dyn <- pnbd(
+    clv.apparel.dyn,
+    optimx.args = optimx.args.fast,
+    verbose = FALSE,
+    start.params.model = c(alpha=1.23, r=2.34, beta=12.23, s=0.67),
+    use.cor = TRUE,
+    start.param.cor = c(cor=0.2),
+    names.cov.life="Gender",
+    names.cov.trans=c("Gender", "Channel"),
+    start.params.life = c(),
+    start.params.trans = c(Channel=-0.345),
+    names.cov.constr = "Gender",
+    start.params.constr=c(Gender=0.23),
+    reg.lambdas=c(life=8, trans=10)
+  )
+
+  expect_equal(
+    p.dyn@model.specification.args,
+    list(
+      optimx.args = optimx.args.fast,
+      verbose = FALSE,
+      start.params.model = c(alpha=1.23, r=2.34, beta=12.23, s=0.67),
+      use.cor = TRUE,
+      start.param.cor = c(cor=0.1),
+      names.cov.life="Gender",
+      names.cov.trans=c("Gender", "Channel"),
+      start.params.life = c(),
+      start.params.trans = c(Channel=-0.345),
+      names.cov.constr =  "Gender",
+      start.params.constr=c(Gender=0.23),
+      reg.lambdas = c(life=8, trans=10))
+  )
+
+
+})
+
+test_that("Correct args for spending models", {
+
+  # no args
+  g.cdnow <- gg(clv.cdnow)
+
+  expect_equal(
+    g.cdnow@model.specification.args,
+    list(
+      start.params.model=NULL,
+      remove.first.transaction=TRUE,
+      optimx.args = list(),
+      verbose = TRUE
+    ))
+
+  # with args
+  g.cdnow <- gg(
+    clv.cdnow,
+    start.params.model = c(p=1.23, q=2.34, gamma=3.45),
+    remove.first.transaction = FALSE,
+    optimx.args = optimx.args.fast,
+    verbose = FALSE
+    )
+
+  expect_equal(
+    g.cdnow@model.specification.args,
+    list(
+      start.params.model=c(p=1.23, q=2.34, gamma=3.45),
+      remove.first.transaction=FALSE,
+      optimx.args = optimx.args.fast,
+      verbose = FALSE
+    ))
+
 })
 
