@@ -69,10 +69,15 @@ pnbd_cbs <- function(clv.data){
 }
 
 
+setMethod("clv.controlflow.estimate.put.inputs", signature =  signature(clv.fitted="clv.pnbd"), definition = function(clv.fitted, start.params.model, optimx.args, verbose, use.cor, start.param.cor, ...){
+  # For PNBD models, need to also store args related to correlation which no other model has.
+  # This is required for all PNBD classes as they do not inherit from each other.
+  clv.fitted <- callNextMethod()
 
-setMethod("clv.fitted.get.model.estimation.interface.args", signature = "clv.pnbd", def = function(clv.fitted){
-  args <- callNextMethod()
-  return(c(args, list(
-    use.cor=clv.fitted@clv.model@estimation.used.correlation
-  )))
+  clv.fitted@model.specification.args <- c(clv.fitted@model.specification.args, list(
+    use.cor=use.cor,
+    start.param.cor=start.param.cor
+  ))
+
+  return(clv.fitted)
 })

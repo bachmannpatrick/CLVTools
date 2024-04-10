@@ -16,6 +16,7 @@ setOldClass("optimx")
 #' @slot call Single language of the call used to create the object
 #' @slot clv.model Single object of (sub-) class \code{clv.model} that determines model-specific behavior.
 #' @slot clv.data Single object of (sub-) class \code{clv.data} that contains the data and temporal information to fit the model to.
+#' @slot model.specification.args Model specification given by the user with which the model was fit. Used to re-fit the model on new data (bootstrapping).
 #' @slot prediction.params.model Numeric vector of the model parameters, set and used solely when predicting. Named after model parameters in original scale and derived from \code{coef()}.
 #' @slot optimx.estimation.output A single object of class \code{optimx} as returned from method \code{optimx::optimx} after optimizing the log-likelihood fitting the model.
 #' @slot optimx.hessian Single matrix that is the hessian extracted from the last row of the optimization output stored in the slot \code{optimx.estimation.output}.
@@ -30,6 +31,7 @@ setClass(Class = "clv.fitted", contains = "VIRTUAL",
            call      = "language",
            clv.model = "clv.model",
            clv.data  = "clv.data",
+           model.specification.args = "list",
 
            prediction.params.model = "numeric",
 
@@ -40,6 +42,7 @@ setClass(Class = "clv.fitted", contains = "VIRTUAL",
 
          # Prototype is labeled not useful anymore, but still recommended by Hadley / Bioc
          prototype = list(
+           model.specification.args = list(),
            prediction.params.model = numeric(0),
 
            optimx.estimation.output = structure(data.frame(), class="optimx"),
