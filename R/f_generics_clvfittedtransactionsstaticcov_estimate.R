@@ -50,7 +50,7 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv
 
 # . clv.controlflow.estimate.put.inputs ------------------------------------------------------------------------------
 #' @importFrom methods callNextMethod
-setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted, verbose, reg.lambdas, names.cov.constr, names.cov.life, names.cov.trans, ...){
+setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted, start.params.model, optimx.args, verbose, reg.lambdas, names.cov.constr, names.cov.life, names.cov.trans, start.params.constr, start.params.life, start.params.trans, ...){
 
   # clv.fitted put inputs
   clv.fitted <- callNextMethod()
@@ -58,6 +58,18 @@ setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitte
   # Reduce to user's desired covariates only -----------------------------------------------------------
   clv.fitted@clv.data <- clv.data.reduce.covariates(clv.data=clv.fitted@clv.data, names.cov.life=names.cov.life,
                                                     names.cov.trans=names.cov.trans)
+
+  # store model specification ------------------------------------------------------------------------
+  # only related to static covs
+  clv.fitted@model.specification.args <- c(clv.fitted@model.specification.args, list(
+    names.cov.life=names.cov.life,
+    names.cov.trans=names.cov.trans,
+    start.params.life=start.params.life,
+    start.params.trans=start.params.trans,
+    names.cov.constr=names.cov.constr,
+    start.params.constr=start.params.constr,
+    reg.lambdas=reg.lambdas
+  ))
 
   # is regularization used? ---------------------------------------------------------------------------
   #   Yes:  Indicate and store lambdas

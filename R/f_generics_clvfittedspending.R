@@ -1,6 +1,8 @@
 # . clv.controlflow.estimate.put.inputs -----------------------------------------------------------------
-setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, verbose, remove.first.transaction, ...){
+setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, start.params.model, optimx.args, verbose, remove.first.transaction, ...){
   clv.fitted <- callNextMethod()
+
+  clv.fitted@model.specification.args[["remove.first.transaction"]] <- remove.first.transaction
 
   clv.fitted@estimation.removed.first.transaction <- remove.first.transaction
   return(clv.fitted)

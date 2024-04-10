@@ -35,3 +35,17 @@ setMethod("clv.fitted.get.model.estimation.interface.args", signature = "clv.pnb
     use.cor=clv.fitted@clv.model@estimation.used.correlation
   )))
 })
+
+
+
+setMethod("clv.controlflow.estimate.put.inputs", signature =  signature(clv.fitted="clv.pnbd.static.cov"), definition = function(clv.fitted, start.params.model, optimx.args, verbose, use.cor, start.param.cor, ...){
+
+  clv.fitted <- callNextMethod()
+
+  clv.fitted@model.specification.args <- c(clv.fitted@model.specification.args, list(
+    use.cor=use.cor,
+    start.param.cor=start.param.cor
+  ))
+
+  return(clv.fitted)
+})
