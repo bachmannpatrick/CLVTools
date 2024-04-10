@@ -6,7 +6,7 @@ data("apparelDynCov")
 
 
 
-optimx.args.fast <- list(method='Nelder-Mead', itnmax=10, hessian=FALSE)
+optimx.args.fast <- list(method='Nelder-Mead', itnmax=25, hessian=FALSE)
 
 # create with estimation.split
 clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split=37)
@@ -176,35 +176,37 @@ test_that("Correct model specification args for nocov models", {
   # No args
   p.cdnow <- pnbd(clv.cdnow)
 
-  expect_equal(
+  expect_mapequal(
     p.cdnow@model.specification.args,
     list(
       start.params.model = c(),
-      use.cor=FALSE,
-      start.param.cor = c(),
       optimx.args = list(),
-      verbose=TRUE
+      verbose=TRUE,
+      use.cor=FALSE,
+      start.param.cor = c()
     )
   )
 
 
   # With args
-  p.cdnow <- pnbd(
+  # double expect_warning() because there are two exceptions but only one is
+  # caught while the other will bubble up/out
+  expect_warning(expect_warning(p.cdnow <- pnbd(
     clv.cdnow,
     start.params.model = c(alpha=1.23, r=2.34, beta=12.23, s=0.67),
     use.cor=TRUE,
     start.param.cor = c(cor=0.2),
     optimx.args = optimx.args.fast,
-    verbose=FALSE)
+    verbose=FALSE), regexp = "Hessian"), regexp = "NA coefficients")
 
-  expect_equal(
+  expect_mapequal(
     p.cdnow@model.specification.args,
     list(
       start.params.model = c(alpha=1.23, r=2.34, beta=12.23, s=0.67),
-      use.cor=TRUE,
-      start.param.cor = c(cor=0.2),
       optimx.args = optimx.args.fast,
-      verbose=FALSE
+      verbose=FALSE,
+      use.cor=TRUE,
+      start.param.cor = c(cor=0.2)
     )
   )
 })
@@ -217,12 +219,10 @@ test_that("Correct interface args for static covariate models", {
   # No options
   p.apparel.static <- pnbd(clv.apparel.cov)
 
-  expect_equal(
+  expect_mapequal(
     p.apparel.static@model.specification.args,
     list(
       start.params.model = c(),
-      use.cor = FALSE,
-      start.param.cor = c(),
       optimx.args = list(),
       verbose = TRUE,
       names.cov.life = c(),
@@ -231,12 +231,14 @@ test_that("Correct interface args for static covariate models", {
       start.params.trans = c(),
       names.cov.constr = c(),
       start.params.constr = c(),
-      reg.lambdas = c())
+      reg.lambdas = c(),
+      use.cor = FALSE,
+      start.param.cor = c())
   )
 
 
   # With options
-  p.apparel.static <- pnbd(
+  expect_warning(expect_warning(p.apparel.static <- pnbd(
     clv.apparel.cov,
     start.params.model = c(alpha=1.23, r=2.34, beta=12.23, s=0.67),
     use.cor=TRUE,
@@ -250,14 +252,12 @@ test_that("Correct interface args for static covariate models", {
     names.cov.constr = "Gender",
     start.params.constr=c(Gender=0.23),
     reg.lambdas=c(life=8, trans=10)
-    )
+    ), regexp = "Hessian"), regexp = "NA coefficients")
 
-  expect_equal(
+  expect_mapequal(
     p.apparel.static@model.specification.args,
     list(
       start.params.model = c(alpha=1.23, r=2.34, beta=12.23, s=0.67),
-      use.cor = TRUE,
-      start.param.cor = c(cor=0.1),
       optimx.args = optimx.args.fast,
       verbose = FALSE,
       names.cov.life="Gender",
@@ -266,7 +266,9 @@ test_that("Correct interface args for static covariate models", {
       start.params.trans = c(Channel=-0.345),
       names.cov.constr =  "Gender",
       start.params.constr=c(Gender=0.23),
-      reg.lambdas = c(life=8, trans=10))
+      reg.lambdas = c(life=8, trans=10),
+      use.cor = TRUE,
+      start.param.cor = c(cor=0.1))
   )
 
 })
@@ -275,7 +277,8 @@ test_that("Correct interface args for static covariate models", {
 test_that("Correct interface args for dynamic covariate models", {
   # only additional thing to test vs static cov is correlation
 
-  p.dyn <- pnbd(
+  # 3 warnings: c("Hessian", "NA coefficients", "cannot predict and plot")
+  suppressWarnings(p.dyn <- pnbd(
     clv.apparel.dyn,
     optimx.args = optimx.args.fast,
     verbose = FALSE,
@@ -289,16 +292,16 @@ test_that("Correct interface args for dynamic covariate models", {
     names.cov.constr = "Gender",
     start.params.constr=c(Gender=0.23),
     reg.lambdas=c(life=8, trans=10)
-  )
+  ))
 
-  expect_equal(
+  expect_mapequal(
     p.dyn@model.specification.args,
     list(
       optimx.args = optimx.args.fast,
       verbose = FALSE,
       start.params.model = c(alpha=1.23, r=2.34, beta=12.23, s=0.67),
       use.cor = TRUE,
-      start.param.cor = c(cor=0.1),
+      start.param.cor = c(cor=0.2),
       names.cov.life="Gender",
       names.cov.trans=c("Gender", "Channel"),
       start.params.life = c(),
@@ -316,13 +319,13 @@ test_that("Correct args for spending models", {
   # no args
   g.cdnow <- gg(clv.cdnow)
 
-  expect_equal(
+  expect_mapequal(
     g.cdnow@model.specification.args,
     list(
       start.params.model=NULL,
-      remove.first.transaction=TRUE,
       optimx.args = list(),
-      verbose = TRUE
+      verbose = TRUE,
+      remove.first.transaction=TRUE
     ))
 
   # with args
@@ -334,13 +337,13 @@ test_that("Correct args for spending models", {
     verbose = FALSE
     )
 
-  expect_equal(
+  expect_mapequal(
     g.cdnow@model.specification.args,
     list(
       start.params.model=c(p=1.23, q=2.34, gamma=3.45),
-      remove.first.transaction=FALSE,
       optimx.args = optimx.args.fast,
-      verbose = FALSE
+      verbose = FALSE,
+      remove.first.transaction=FALSE
     ))
 
 })
