@@ -40,6 +40,3 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv
   check_err_msg(err.msg)
 })
 
-setMethod("clv.fitted.get.model.estimation.interface.args", signature = "clv.fitted.spending", def = function(clv.fitted){
-  return(list(remove.first.transaction=clv.fitted@estimation.removed.first.transaction))
-})

@@ -25,6 +25,8 @@ Created with an existing clv.data and clv.model object (or subclasses thereof).
 
 \item{\code{clv.data}}{Single object of (sub-) class \code{clv.data} that contains the data and temporal information to fit the model to.}
 
+\item{\code{model.specification.args}}{Model specification given by the user with which the model was fit. Used to re-fit the model on new data (bootstrapping).}
+
 \item{\code{prediction.params.model}}{Numeric vector of the model parameters, set and used solely when predicting. Named after model parameters in original scale and derived from \code{coef()}.}
 
 \item{\code{optimx.estimation.output}}{A single object of class \code{optimx} as returned from method \code{optimx::optimx} after optimizing the log-likelihood fitting the model.}

@@ -14,7 +14,7 @@ clv.template.controlflow.estimate <- function(clv.fitted,
 
 
   # Store user input for estimation ----------------------------------------------------------------------------
-  clv.fitted           <- clv.controlflow.estimate.put.inputs(clv.fitted=clv.fitted, verbose=verbose, ...)
+  clv.fitted           <- clv.controlflow.estimate.put.inputs(clv.fitted=clv.fitted, start.params.model=start.params.model, optimx.args=optimx.args, verbose=verbose, ...)
   clv.fitted@clv.model <- clv.model.put.estimation.input(clv.model=clv.fitted@clv.model, ...)
 
 
