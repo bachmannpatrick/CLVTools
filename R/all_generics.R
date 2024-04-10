@@ -79,11 +79,6 @@ setGeneric("clv.fitted.estimate.same.specification.on.new.data", function(clv.fi
   standardGeneric("clv.fitted.estimate.same.specification.on.new.data")
 })
 
-# Method to collect the args used when estimating the model. Allows to re-estimate the model
-setGeneric("clv.fitted.get.model.estimation.interface.args", function(clv.fitted){
-  standardGeneric("clv.fitted.get.model.estimation.interface.args")
-})
-
 # Generate many predictions by re-fitting the given model on bootstrapped
 # transaction data and predicting on it
 setGeneric("clv.fitted.bootstrap.predictions", function(clv.fitted, num.boots, verbose, ...){

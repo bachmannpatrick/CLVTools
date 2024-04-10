@@ -81,11 +81,3 @@ setMethod("clv.controlflow.estimate.put.inputs", signature =  signature(clv.fitt
 
   return(clv.fitted)
 })
-
-
-setMethod("clv.fitted.get.model.estimation.interface.args", signature = "clv.pnbd", def = function(clv.fitted){
-  args <- callNextMethod()
-  return(c(args, list(
-    use.cor=clv.fitted@clv.model@estimation.used.correlation
-  )))
-})
