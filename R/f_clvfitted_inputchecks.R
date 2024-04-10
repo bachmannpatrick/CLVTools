@@ -72,6 +72,9 @@ check_user_data_startparams <- function(start.params, vector.names, param.names)
   if(is.null(start.params))
     return(err.msg)
 
+  if(length(vector.names) == 0 & length(start.params) > 0)
+    return(paste0("There may be no ", param.names, "!"))
+
   if(anyNA(start.params))
     err.msg <- c(err.msg, paste0("There may be no NAs in the ", param.names,"s!"))
 
