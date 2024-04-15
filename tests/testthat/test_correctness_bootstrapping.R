@@ -8,7 +8,7 @@ data("apparelDynCov")
 
 optimx.args.fast <- list(method='Nelder-Mead', itnmax=25, hessian=FALSE)
 
-# create with estimation.split
+# create with holdout
 clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split=37)
 
 # create with different covs for both processes
@@ -16,6 +16,7 @@ clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(apparelTrans, app
                                                                names.cov.life = c("Gender"), names.cov.trans = c("Gender", "Channel"))
 clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(apparelTrans, apparelDynCov, estimation.split = 40,
                                                             names.cov.life = c("Gender"), names.cov.trans = c("Gender", "Channel"))
+
 
 
 # clv.data.create.bootstrapping.data -------------------------------------------------------------------------------------------
@@ -348,3 +349,59 @@ test_that("Correct args for spending models", {
 
 })
 
+
+# clv.bootstrapped.apply ---------------------------------------------------------
+
+# with holdout
+bg.cdnow <- fit.cdnow(cdnow, estimation.split = 37, model=bgnbd, optimx.args = optimx.args.fast)
+bg.apparel.static <- fit.apparel.static(model = bgnbd, optimx.args = optimx.args.fast)
+p.apparel.dyn <- fit.apparel.dyncov.quick()
+gg.cdnow <- fit.cdnow(cdnow, estimation.split = 37, model=gg, optimx.args = optimx.args.fast)
+
+test_that("Sampling all customers leads to same model estimate (nocov, static cov, dyncov, spending)", {
+
+  for(clv.fitted in list(bg.cdnow, bg.apparel.static, p.apparel.dyn, gg.cdnow)){
+    expect_equal(
+      coef(clv.fitted),
+      clv.bootstrapped.apply(clv.fitted, num.boot = 1, fn.boot.apply = coef, fn.sample = function(ids){return(ids)})[[1]]
+    )
+  }
+})
+
+
+test_that("Predict to same prediction end if given num periods even if sampled transactions would not define same estimation end", {
+  dt.pred.boot <- clv.bootstrapped.apply(
+    bg.cdnow,
+    num.boot = 1,
+    fn.boot.apply = function(clv.fitted){
+      return(predict(clv.fitted, prediction.end=99, predict.spending=FALSE, verbose=FALSE))
+      },
+    # No Id which has the last transaction on the last date (1998-06-30)
+    fn.sample = function(ids){return(as.character(1:10))})[[1]]
+
+
+  # cannot simply compare content of predictions because not all customers are present
+  expect_equal(
+    unique(predict(bg.cdnow, prediction.end=99, predict.spending=FALSE, verbose=FALSE)[, c("period.first", "period.last", "period.length")]),
+    unique(dt.pred.boot[, c("period.first", "period.last", "period.length")]))
+
+})
+
+
+# predict -----------------------------------------------------------------------------
+
+test_that("Bootstrapped predictions have correct format", {
+  # test_that("Remains silent (no progress bar) with verbose=FALSE")
+  expect_warning(
+    dt.pred.boots.1 <- predict(bg.cdnow, verbose=FALSE, uncertainty="boots", num.boots=1, predict.spending=FALSE),
+    regexp = "1000 or more"
+  )
+  # test_that("No Id in prediction contains _BOOTSTRAP_ID_ anymore")
+  expect_length(dt.pred.boots.1[, grep(pattern = "BOOTSTRAP_ID", x = Id)], n = 1)
+
+  # test_that("Customers which are not sampled are still present in the predictions")
+  # There is no guarantee that not all customers are sampled but its very, very unlikely that all customers are sampled
+  expect_setequal(dt.pred.boots.1$Id, bg.cdnow@cbs$Id)
+  # some are not sampled and have NAs in the CI columns (also relevant to make sure some were indeed not sampled and then not lost)
+  expect_true(anyNA(dt.pred.boots.1[, "CET.CI.5"]))
+})
