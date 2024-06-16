@@ -458,13 +458,14 @@ double ggomnbd_staticcov_LL_sum(const arma::vec& vParams,
                                 const arma::vec& vX,
                                 const arma::vec& vT_x,
                                 const arma::vec& vT_cal,
+                                const arma::vec& vN,
                                 const arma::mat& mCov_life,
                                 const arma::mat& mCov_trans){
 
   // vParams has to be single vector because used by optimizer
   const arma::vec vLL = ggomnbd_staticcov_LL_ind(vParams,vX,vT_x,vT_cal,mCov_life,mCov_trans);
 
-  return(-arma::sum(vLL));
+  return(-arma::sum(vLL % vN));
 }
 
 

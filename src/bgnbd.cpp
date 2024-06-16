@@ -343,6 +343,7 @@ double bgnbd_staticcov_LL_sum(const arma::vec& vParams,
                               const arma::vec& vX,
                               const arma::vec& vT_x,
                               const arma::vec& vT_cal,
+                              const arma::vec& vN,
                               const arma::mat& mCov_life,
                               const arma::mat& mCov_trans){
   const arma::vec vLL = bgnbd_staticcov_LL_ind(vParams,
@@ -352,7 +353,7 @@ double bgnbd_staticcov_LL_sum(const arma::vec& vParams,
                                                mCov_life,
                                                mCov_trans);
 
-  return(-arma::sum(vLL));
+  return(-arma::sum(vLL % vN));
 }
 
 

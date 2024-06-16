@@ -56,6 +56,7 @@ double ggomnbd_staticcov_LL_sum(const arma::vec& vParams,
                                 const arma::vec& vX,
                                 const arma::vec& vT_x,
                                 const arma::vec& vT_cal,
+                                const arma::vec& vN,
                                 const arma::mat& mCov_life,
                                 const arma::mat& mCov_trans);
 
