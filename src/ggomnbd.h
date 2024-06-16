@@ -42,7 +42,8 @@ arma::vec ggomnbd_nocov_LL_ind(const arma::vec& vLogparams,
 double ggomnbd_nocov_LL_sum(const arma::vec& vLogparams,
                             const arma::vec& vX,
                             const arma::vec& vT_x,
-                            const arma::vec& vT_cal);
+                            const arma::vec& vT_cal,
+                            const arma::vec& vN);
 
 arma::vec ggomnbd_staticcov_LL_ind(const arma::vec& vParams,
                                    const arma::vec& vX,

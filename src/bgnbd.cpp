@@ -292,14 +292,15 @@ arma::vec bgnbd_nocov_LL_ind(const arma::vec& vLogparams,
 double bgnbd_nocov_LL_sum(const arma::vec& vLogparams,
                           const arma::vec& vX,
                           const arma::vec& vT_x,
-                          const arma::vec& vT_cal){
+                          const arma::vec& vT_cal,
+                          const arma::vec& vN){
 
   const arma::vec vLL = bgnbd_nocov_LL_ind(vLogparams,
                                            vX,
                                            vT_x,
                                            vT_cal);
 
-  return(-arma::sum(vLL));
+  return(-arma::sum(vLL % vN));
 }
 
 //' @rdname bgnbd_LL
