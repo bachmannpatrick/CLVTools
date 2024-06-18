@@ -96,17 +96,19 @@ pnbd_dyncov_getLLcallargs_LLsum <- function(clv.fitted){
   # This includes "compressing" the input data (incl walks) across customers and it
   # only returns the compressed data.
   #
-  # Data of customers which have a unique pattern is returned together with `vN`.
+  # Data of customers which have a unique pattern is returned, together with `vN`.
   # This reduces the number of observations ("customers") for which the LL is calculated.
-  # However, the full walkinfo and the full walk data still have to be used in
-  # order for the position references to remain correct.
-  # This has the negative consequence that the matrix multiplications for
-  # `adj_covdata_*` remain the same.
-  #
-  # As alternative, the walk tables could be re-created for only the selected
-  # customers.
+  # The returned walk data is reduced to contain only data of these customers. It
+  # has different position information than the full walk tables.
+  # Using only the walk data of these customers also reduces the matrix
+  # multiplications done for `adj_covdata_*`.
+
+
 
   pnbd_dyncov_assert_walk_assumptions(clv.fitted)
+
+
+  # Compress CBS ------------------------------------------------------------------
 
   # Add hashs to cbs to find customers with unique (LL input) data combinations
   #   use first() because the hashs in the walk table are all the same per customer
@@ -118,31 +120,61 @@ pnbd_dyncov_getLLcallargs_LLsum <- function(clv.fitted){
   dt.cbs[unique(clv.fitted@data.walks.trans.real[, c("Id", "hash")]), hash_trans_real := i.hash, on="Id"]
   dt.cbs[unique(clv.fitted@data.walks.trans.aux[, c("Id", "hash")]), hash_trans_aux := i.hash, on="Id"]
 
-  # compressed data
+  # Compress
   dt.compressed <- dt.cbs[
-    ,.(n=.N, Id_first = first(Id)),
+    ,.(n=.N, Id = first(Id)),
     by=c("x", "t.x", "T.cal", "d_omega", "hash_life_real", "hash_life_aux", "hash_trans_real", "hash_trans_aux")
     ]
-  setkeyv(dt.compressed, "Id_first")
 
-  ll.args <- .pnbd_dyncov_getLLcallargs_for_customers(clv.fitted, ids = dt.compressed$Id_first)
+  # Create walks of compressed customers ------------------------------------------
 
-  # Add vN. This requires that the data (vX, VTcal, etc) has the same ordering as dt.compressed!
-  ll.args[['vN']] <- dt.compressed$n
+  # Select walks of customers with unique pattern
+  dt.walks.life.real <- copy(clv.fitted@data.walks.life.real[Id %in% dt.compressed$Id])
+  dt.walks.life.aux <- copy(clv.fitted@data.walks.life.aux[Id %in% dt.compressed$Id])
+  dt.walks.trans.real <- copy(clv.fitted@data.walks.trans.real[Id %in% dt.compressed$Id])
+  dt.walks.trans.aux <- copy(clv.fitted@data.walks.trans.aux[Id %in% dt.compressed$Id])
+
+  # Update walk core elements, especially abs_pos, walk_from/to which are relevant
+  # for reading the data in the LL
+  dt.walks.life.real <- pnbd_dyncov_createwalks_add_corelements(dt.walks.life.real)
+  dt.walks.life.aux <- pnbd_dyncov_createwalks_add_corelements(dt.walks.life.aux)
+  dt.walks.trans.real <- pnbd_dyncov_createwalks_add_corelements(dt.walks.trans.real)
+  dt.walks.trans.aux <- pnbd_dyncov_createwalks_add_corelements(dt.walks.trans.aux)
+
+
+  # Add vN to call args --------------------------------------------------------
+  ll.args <- .pnbd_dyncov_getLLcallargs_from_walks(
+    dt.cbs = dt.compressed,
+    dt.walks.life.aux=dt.walks.life.aux,
+    dt.walks.life.real=dt.walks.life.real,
+    dt.walks.trans.aux=dt.walks.trans.aux,
+    dt.walks.trans.real=dt.walks.trans.real,
+    names.cov.data.life = clv.fitted@clv.data@names.cov.data.life,
+    names.cov.data.trans = clv.fitted@clv.data@names.cov.data.trans
+  )
+
+  # This requires that the data in the call args has the same order as dt.compressed!
+  # Hence, dt.cbs may not be re-ordered in .pnbd_dyncov_getLLcallargs_from_walks!
+  ll.args$vN <- dt.compressed$n
 
   return(ll.args)
 }
 
-.pnbd_dyncov_getLLcallargs_for_customers <- function(clv.fitted, ids){
+.pnbd_dyncov_getLLcallargs_from_walks <- function(dt.cbs, dt.walks.life.aux, dt.walks.life.real, dt.walks.trans.aux, dt.walks.trans.real, names.cov.data.life, names.cov.data.trans){
+  # Create args to pass to Rcpp LL functions pnbd_dyncov_LL_negsum and pnbd_dyncov_LL_ind
+  #
+  # dt.cbs has to retain its order (Id)!
+
   i.walk_from <- i.walk_to <- i.d <- i.tjk <- NULL
   walkinfo_trans_real_from <- walkinfo_trans_real_to <- i.id_from <- i.id_to <- NULL
 
-  # Only for given customer Ids. Use join to keep same order as ids
-  dt.cbs <- copy(clv.fitted@cbs[ids, on='Id'])
+  dt.cbs <- copy(dt.cbs)
 
   pnbd_dyncov_addwalkinfo_single <- function(dt.cbs, dt.walk, name, cols.walkinfo){
+    # Get walkinfo from walk table
     dt.walkinfo <- unique(dt.walk[, .SD, .SDcols=cols.walkinfo])
 
+    # Merge with suffix (but using update-join)
     for(wi in setdiff(cols.walkinfo, "Id")){
       col.name <- paste0("walk_",name,"_", gsub("_", "", gsub("walk", "", wi)))
       dt.cbs[dt.walkinfo, (col.name) := get(paste0("i.", wi)), on="Id"]
@@ -151,24 +183,29 @@ pnbd_dyncov_getLLcallargs_LLsum <- function(clv.fitted){
     return(dt.cbs)
   }
 
-  # Add where to find customer's walk info
+  # Add walkinfo to CBS ----------------------------------------------------------------------
+  # walkinfo: Where (index) to find customer's walk data & per-customer walk data
   cols.wi.life <- c("Id", "walk_from", "walk_to")
   cols.wi.trans <- c(cols.wi.life, "tjk", "d1")
 
-  dt.cbs <- pnbd_dyncov_addwalkinfo_single(dt.cbs, dt.walk=clv.fitted@data.walks.life.aux,  name="aux_life", cols.walkinfo = cols.wi.life)
-  dt.cbs <- pnbd_dyncov_addwalkinfo_single(dt.cbs, dt.walk=clv.fitted@data.walks.life.real, name="real_life", cols.walkinfo = cols.wi.life)
-  dt.cbs <- pnbd_dyncov_addwalkinfo_single(dt.cbs, dt.walk=clv.fitted@data.walks.trans.aux, name="aux_trans", cols.walkinfo = cols.wi.trans)
+  dt.cbs <- pnbd_dyncov_addwalkinfo_single(dt.cbs, dt.walk=dt.walks.life.aux,  name="aux_life", cols.walkinfo = cols.wi.life)
+  dt.cbs <- pnbd_dyncov_addwalkinfo_single(dt.cbs, dt.walk=dt.walks.life.real, name="real_life", cols.walkinfo = cols.wi.life)
+  dt.cbs <- pnbd_dyncov_addwalkinfo_single(dt.cbs, dt.walk=dt.walks.trans.aux, name="aux_trans", cols.walkinfo = cols.wi.trans)
 
-  # Add to cbs
-  #   zero-repeaters have no real trans walks and will have NA in walkinfo_trans_real_from/to
-  #   which are skipped in the cpp implementation
-  #   dt.customerinfo: where in walkinfo matrix to find customer's walk info
-  dt.walkinfo.real.trans <- pnbd_dyncov_getrealtranswalks_walkinfo(clv.fitted@data.walks.trans.real)
+  # walkinfo for real trans walks
+  #   - Customers can have multiple real trans walks. Therefore walkinfo here is a matrix per customer, where each row contains a walkinfo
+  #   - dt.walkinfo.real.trans: Walkinfo matrix with all walks info.
+  #   - dt.customerinfo.real.trans: Where in dt.walkinfo.real.trans to find customer's walk info
+  #   - zero-repeaters have no real trans walks and will have NA in walkinfo_trans_real_from/to
+  #     which are skipped in the cpp implementation
+  dt.walkinfo.real.trans <- pnbd_dyncov_getrealtranswalks_walkinfo(dt.walks.trans.real)
   dt.customerinfo.real.trans <- unique(dt.walkinfo.real.trans[, c("Id", "id_from", "id_to")])
   dt.cbs[dt.customerinfo.real.trans, walkinfo_trans_real_from := i.id_from, on="Id"]
   dt.cbs[dt.customerinfo.real.trans, walkinfo_trans_real_to   := i.id_to,   on="Id"]
 
+  # Convert all data to vectors & matrices -------------------------------------------------
   # IN SAME ORDER AS READ OUT IN WALK constructor
+
   cols.walk.ordered.life  <- c("from", "to")
   cols.walk.ordered.trans <- c(cols.walk.ordered.life, "d1", "tjk")
   m.walkinfo.aux.life   <- data.matrix(dt.cbs[, .SD, .SDcols=paste0("walk_aux_life_",  cols.walk.ordered.life, sep="")])
@@ -176,44 +213,53 @@ pnbd_dyncov_getLLcallargs_LLsum <- function(clv.fitted){
   m.walkinfo.aux.trans  <- data.matrix(dt.cbs[, .SD, .SDcols=paste0("walk_aux_trans_", cols.walk.ordered.trans, sep="")])
   m.walkinfo.real.trans <- data.matrix(dt.walkinfo.real.trans[, c("walk_from", "walk_to", "d1", "tjk")])
 
-  # check col sorting is same as parameters!
-  stopifnot(names(clv.fitted@prediction.params.life) == clv.fitted@clv.data@names.cov.data.life)
-  stopifnot(names(clv.fitted@prediction.params.trans) == clv.fitted@clv.data@names.cov.data.trans)
-  m.cov.data.aux.life    <- data.matrix(clv.fitted@data.walks.life.aux[,   .SD, .SDcols=clv.fitted@clv.data@names.cov.data.life])
-  m.cov.data.real.life   <- data.matrix(clv.fitted@data.walks.life.real[,  .SD, .SDcols=clv.fitted@clv.data@names.cov.data.life])
-  m.cov.data.aux.trans   <- data.matrix(clv.fitted@data.walks.trans.aux[,  .SD, .SDcols=clv.fitted@clv.data@names.cov.data.trans])
-  m.cov.data.real.trans  <- data.matrix(clv.fitted@data.walks.trans.real[, .SD, .SDcols=clv.fitted@clv.data@names.cov.data.trans])
+  # Verify col sorting is same as parameters!
+  # TODO: What?? Are prediction.params.life available when optimizing? Move to walk verification?
+  # stopifnot(names(clv.fitted@prediction.params.life) == clv.fitted@clv.data@names.cov.data.life)
+  # stopifnot(names(clv.fitted@prediction.params.trans) == clv.fitted@clv.data@names.cov.data.trans)
 
-  # cbs is required to keep same ordering as passed ids because
-  # vN needs to be added from compressed cbs
-  stopifnot(dt.cbs[, all(Id == ids)])
+  m.cov.data.aux.life    <- data.matrix(dt.walks.life.aux[, .SD, .SDcols=names.cov.data.life])
+  m.cov.data.real.life   <- data.matrix(dt.walks.life.real[,  .SD, .SDcols=names.cov.data.life])
+  m.cov.data.aux.trans   <- data.matrix(dt.walks.trans.aux[,  .SD, .SDcols=names.cov.data.trans])
+  m.cov.data.real.trans  <- data.matrix(dt.walks.trans.real[, .SD, .SDcols=names.cov.data.trans])
 
-  return(list(X = dt.cbs$x,
-              t_x = dt.cbs$t.x,
-              T_cal = dt.cbs$T.cal,
-              d_omega = dt.cbs$d_omega,
+  # Assemble LL call args ------------------------------------------------------------------
 
-              walkinfo_aux_life = m.walkinfo.aux.life,
-              walkinfo_real_life = m.walkinfo.real.life,
-              walkinfo_aux_trans = m.walkinfo.aux.trans,
+  return(list(
+      X = dt.cbs$x,
+      t_x = dt.cbs$t.x,
+      T_cal = dt.cbs$T.cal,
+      d_omega = dt.cbs$d_omega,
 
-              walkinfo_trans_real_from = dt.cbs$walkinfo_trans_real_from,
-              walkinfo_trans_real_to = dt.cbs$walkinfo_trans_real_to,
-              walkinfo_real_trans = m.walkinfo.real.trans,
+      walkinfo_aux_life = m.walkinfo.aux.life,
+      walkinfo_real_life = m.walkinfo.real.life,
+      walkinfo_aux_trans = m.walkinfo.aux.trans,
 
-              covdata_aux_life = m.cov.data.aux.life,
-              covdata_real_life = m.cov.data.real.life,
-              covdata_aux_trans = m.cov.data.aux.trans,
-              covdata_real_trans = m.cov.data.real.trans))
+      walkinfo_trans_real_from = dt.cbs$walkinfo_trans_real_from,
+      walkinfo_trans_real_to = dt.cbs$walkinfo_trans_real_to,
+      walkinfo_real_trans = m.walkinfo.real.trans,
 
+      covdata_aux_life = m.cov.data.aux.life,
+      covdata_real_life = m.cov.data.real.life,
+      covdata_aux_trans = m.cov.data.aux.trans,
+      covdata_real_trans = m.cov.data.real.trans
+  ))
 }
-
 
 pnbd_dyncov_getLLcallargs_ind <-function(clv.fitted){
 
   pnbd_dyncov_assert_walk_assumptions(clv.fitted)
 
-  return(.pnbd_dyncov_getLLcallargs_for_customers(clv.fitted = clv.fitted, ids = clv.fitted@cbs$Id))
+  return(
+    .pnbd_dyncov_getLLcallargs_from_walks(
+      dt.cbs = clv.fitted@cbs,
+      dt.walks.life.real = clv.fitted@data.walks.life.real,
+      dt.walks.life.aux = clv.fitted@data.walks.life.aux,
+      dt.walks.trans.real = clv.fitted@data.walks.trans.real,
+      dt.walks.trans.aux = clv.fitted@data.walks.trans.aux,
+      names.cov.data.life = clv.fitted@clv.data@names.cov.data.life,
+      names.cov.data.trans = clv.fitted@clv.data@names.cov.data.trans
+  ))
 }
 
 
