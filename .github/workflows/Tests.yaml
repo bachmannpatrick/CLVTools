@@ -40,14 +40,6 @@ jobs:
         run: |
           brew install gsl
 
-      - name: Debug makevars
-        run: |
-          print("RcppGSL:::CFlags()")
-          print(RcppGSL:::CFlags())
-          print("RcppGSL:::LdFlags()")
-          print(RcppGSL:::LdFlags())
-        shell: Rscript {0}
-
       - name: Diag output Num CPUS
         run: sysctl hw.logicalcpu
 

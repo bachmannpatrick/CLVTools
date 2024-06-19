@@ -16,8 +16,4 @@
 
 PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS)
 PKG_LIBS = $(SHLIB_OPENMP_CXXFLAGS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS) `$(R_HOME)/bin/Rscript -e "RcppGSL:::LdFlags()"`
-
-# From RcppGSL examples
-# combine with standard arguments for R
-PKG_CPPFLAGS = $(GSL_CFLAGS) `$(R_HOME)/bin/Rscript -e "RcppGSL:::CFlags()"`
-#PKG_LIBS += $(GSL_LIBS)
+PKG_CPPFLAGS = `$(R_HOME)/bin/Rscript -e "RcppGSL:::CFlags()"`
