@@ -114,7 +114,7 @@ arma::vec ggomnbd_CET(const double r,
   const arma::vec vIntegral = ggomnbd_integrate(r, b, s, vAlpha_i, vBeta_i,vX,
                                                 &ggomnbd_CET_integrand,
                                                 vT_x, vT_cal);
-  const arma::vec vLower = b * s * (1.0 + (b * s) * clv::vec_pow(vAlpha_i + vT_cal, r + vX) % arma::pow(vExpbTpart, s) % vIntegral);
+  const arma::vec vLower = b * s * (1.0 + (b * s) * arma::pow(vAlpha_i + vT_cal, r + vX) % arma::pow(vExpbTpart, s) % vIntegral);
   const arma::vec vFront = (r + vX)/(vAlpha_i + vT_cal);
 
   return(vFront % vUpper / vLower);

@@ -28,8 +28,8 @@ arma::vec bgnbd_CET(const double r,
                     const arma::vec& vT_cal){
 
   const arma::vec term1 = ((vA_i + vB_i + vX - 1) / (vA_i - 1));
-  const arma::vec term2 = 1 - clv::vec_pow((vAlpha_i + vT_cal)/(vAlpha_i + vT_cal + dPeriods), (r + vX)) % clv::vec_hyp2F1((r + vX), (vB_i + vX), (vA_i + vB_i + vX - 1), dPeriods / (vAlpha_i + vT_cal + dPeriods));
-  const arma::vec term3 = 1 + (vX > 0) % (vA_i /(vB_i + vX - 1)) % clv::vec_pow((vAlpha_i + vT_cal)/(vAlpha_i + vT_x), (r + vX));
+  const arma::vec term2 = 1 - arma::pow((vAlpha_i + vT_cal)/(vAlpha_i + vT_cal + dPeriods), (r + vX)) % clv::vec_hyp2F1((r + vX), (vB_i + vX), (vA_i + vB_i + vX - 1), dPeriods / (vAlpha_i + vT_cal + dPeriods));
+  const arma::vec term3 = 1 + (vX > 0) % (vA_i /(vB_i + vX - 1)) % arma::pow((vAlpha_i + vT_cal)/(vAlpha_i + vT_x), (r + vX));
 
   return term1 % term2 / term3;
 }
@@ -171,7 +171,7 @@ arma::vec bgnbd_PAlive(const double r,
                        const arma::vec& vX,
                        const arma::vec& vT_x,
                        const arma::vec& vT_cal){
-  const arma::vec n_term1 = (vA_i/(vB_i + vX - 1)) % clv::vec_pow((vAlpha_i + vT_cal)/(vAlpha_i + vT_x), (r+vX));
+  const arma::vec n_term1 = (vA_i/(vB_i + vX - 1)) % arma::pow((vAlpha_i + vT_cal)/(vAlpha_i + vT_x), (r+vX));
 
   return (1 / (1 + (vX > 0) % n_term1));
 }
@@ -258,7 +258,7 @@ arma::vec bgnbd_LL_ind(const double r,
 
   const arma::vec vPart1 = r * arma::log(vAlpha_i) + arma::lgamma(r + vX) - std::lgamma(r) - (r + vX) % arma::log(vAlpha_i + vT_x);
 
-  const arma::vec vPart2 = beta_ratio(vA_i, (vB_i+vX), vA_i, vB_i) % clv::vec_pow((vAlpha_i + vT_x)/(vAlpha_i + vT_cal), (r + vX)) + ((vX > 0)) % beta_ratio(vA_i + 1 , (vB_i + vX - 1), vA_i, vB_i);
+  const arma::vec vPart2 = beta_ratio(vA_i, (vB_i+vX), vA_i, vB_i) % arma::pow((vAlpha_i + vT_x)/(vAlpha_i + vT_cal), (r + vX)) + ((vX > 0)) % beta_ratio(vA_i + 1 , (vB_i + vX - 1), vA_i, vB_i);
 
   const arma::vec vLL = vPart1 + arma::log(vPart2);
 
