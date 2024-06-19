@@ -50,8 +50,8 @@ arma::vec pnbd_nocov_CET(const double r,
 
   // Build alpha and beta --------------------------------------------------------
   //    No covariates: Same alphas, betas for every customer
-  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vX.n_elem);
-  const arma::vec vBeta_i = clv::vec_fill(beta_0, vX.n_elem);
+  const arma::vec vAlpha_i = arma::vec(vX.n_elem, arma::fill::value(alpha_0));
+  const arma::vec vBeta_i = arma::vec(vX.n_elem, arma::fill::value(beta_0));
 
 
   // Calculate PAlive -------------------------------------------------------------
@@ -185,8 +185,8 @@ arma::vec pnbd_nocov_DERT(const double r,
 
   // Build alpha and beta -------------------------------------------
   //    No covariates: Same alphas, betas for every customer
-  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vX.n_elem);
-  const arma::vec vBeta_i = clv::vec_fill(beta_0, vX.n_elem);
+  const arma::vec vAlpha_i = arma::vec(vX.n_elem, arma::fill::value(alpha_0));
+  const arma::vec vBeta_i = arma::vec(vX.n_elem, arma::fill::value(beta_0));
 
   // Calculate DERT -------------------------------------------------
   return pnbd_DERT_ind(r, s,
@@ -261,8 +261,8 @@ arma::vec pnbd_nocov_expectation(const double r,
                                  const arma::vec& vT_i){
 
   // Build alpha and beta --------------------------------------------------------
-  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vT_i.n_elem);
-  const arma::vec vBeta_i = clv::vec_fill(beta_0, vT_i.n_elem);
+  const arma::vec vAlpha_i = arma::vec(vT_i.n_elem, arma::fill::value(alpha_0));
+  const arma::vec vBeta_i = arma::vec(vT_i.n_elem, arma::fill::value(beta_0));
 
   return(pnbd_expectation(r,
                           s,
@@ -361,7 +361,7 @@ arma::vec pnbd_LL_ind(const double r,
   //    2F1 4th param z: Use larger, subtract smaller
   //      use Max(alpha, beta) and abs(alpha-beta)
 
-  arma::vec vHyp2f1ParamB = clv::vec_fill(s + 1.0, n);
+  arma::vec vHyp2f1ParamB = arma::vec(n, arma::fill::value(s + 1.0));
   arma::uvec uvAlphaSmallerBeta = find(vAlpha_i < vBeta_i);
   vHyp2f1ParamB(uvAlphaSmallerBeta) = (r + vX(uvAlphaSmallerBeta));
 
@@ -441,8 +441,8 @@ arma::vec pnbd_nocov_LL_ind(const arma::vec& vLogparams,
 
   // Build alpha and beta --------------------------------------------
   //    No covariates: Same alphas, betas for every customer
-  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vX.n_elem);
-  const arma::vec vBeta_i = clv::vec_fill(beta_0, vX.n_elem);
+  const arma::vec vAlpha_i = arma::vec(vX.n_elem, arma::fill::value(alpha_0));
+  const arma::vec vBeta_i = arma::vec(vX.n_elem, arma::fill::value(beta_0));
 
   arma::vec vLL = pnbd_LL_ind(r, s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal);
   return(vLL);
@@ -590,8 +590,8 @@ arma::vec pnbd_nocov_PAlive(const double r,
 
   // Build alpha and beta --------------------------------------------------------
   //    No covariates: Same alphas, betas for every customer
-  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vX.n_elem);
-  const arma::vec vBeta_i = clv::vec_fill(beta_0, vX.n_elem);
+  const arma::vec vAlpha_i = arma::vec(vX.n_elem, arma::fill::value(alpha_0));
+  const arma::vec vBeta_i = arma::vec(vX.n_elem, arma::fill::value(beta_0));
 
 
   // Calculate PAlive -------------------------------------------------------------
@@ -666,10 +666,10 @@ arma::vec pnbd_PMF(const double r,
 
   const arma::vec vAbsAB = arma::abs(vAlpha_i - vBeta_i);
   const arma::vec vMaxAB = arma::max(vAlpha_i, vBeta_i);
-  const arma::vec vRS = clv::vec_fill(r+s, vAlpha_i.n_elem);
+  const arma::vec vRS = arma::vec(vAlpha_i.n_elem, arma::fill::value(r+s));
   const arma::vec vRSX1 = vRS + x + 1.0;
 
-  arma::vec vHypArgB = clv::vec_fill(r + x, vAlpha_i.n_elem);
+  arma::vec vHypArgB = arma::vec(vAlpha_i.n_elem, arma::fill::value(r + x));
   vHypArgB(find(vAlpha_i >= vBeta_i)).fill(s + 1);
 
   const arma::vec vB1 = clv::vec_hyp2F1(vRS, vHypArgB, vRSX1, vAbsAB/vMaxAB) / arma::pow(vMaxAB, r+s);
@@ -699,8 +699,8 @@ arma::vec pnbd_nocov_PMF(const double r,
                          const unsigned int x,
                          const arma::vec& vT_i){
 
-    const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vT_i.n_elem);
-    const arma::vec vBeta_i = clv::vec_fill(beta_0, vT_i.n_elem);
+    const arma::vec vAlpha_i = arma::vec(vT_i.n_elem, arma::fill::value(alpha_0));
+    const arma::vec vBeta_i = arma::vec(vT_i.n_elem, arma::fill::value(beta_0));
 
     return(pnbd_PMF(r, s, x, vT_i, vAlpha_i, vBeta_i));
 }

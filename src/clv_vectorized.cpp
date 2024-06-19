@@ -105,14 +105,6 @@ arma::vec vec_x_kummerU(const double a, const double b, const arma::vec& vX){
   return(vRes);
 }
 
-
-arma::vec vec_fill(const double d, const arma::uword n){
-  arma::vec vResult(n);
-  vResult.fill(d);
-  return vResult;
-}
-
-
 // lbeta := lgamma(a) + lgamma(b) - lgamma(a+b)
 arma::vec vec_lbeta(const arma::vec& a, const double b){
   return (arma::lgamma(a) + std::lgamma(b) - arma::lgamma(a+b));
