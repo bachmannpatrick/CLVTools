@@ -17,7 +17,7 @@ name: testthat-tests
 permissions: read-all
 
 jobs:
-  tests-ubuntu-latest:
+  tests-macos-latest:
     runs-on: macOS-latest # run on mac for parallel testing
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
