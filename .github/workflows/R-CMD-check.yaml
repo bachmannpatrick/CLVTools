@@ -48,6 +48,9 @@ jobs:
             extra-packages: any::rcmdcheck
             needs: check
 
+        # required to build the vignette
+        - uses: r-lib/actions/setup-tinytex@v2
+
         - uses: r-lib/actions/check-r-package@v2
           with:
             upload-snapshots: true
