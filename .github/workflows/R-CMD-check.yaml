@@ -43,6 +43,7 @@ jobs:
             http-user-agent: ${{ matrix.config.http-user-agent }}
             use-public-rspm: true
 
+        # Unfortunately still needed, despite setup-r-dependencies
         - name: Install mac system dependencies
           if: runner.os == 'macOS'
           run: |

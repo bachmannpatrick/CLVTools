@@ -34,9 +34,18 @@ jobs:
         with:
           extra-packages: devtools, testthat
 
+      # Unfortunately still needed, despite setup-r-dependencies
+      - name: Install mac system dependencies
+        if: runner.os == 'macOS'
+        run: |
+          brew install gsl
+
       - name: Debug makevars
         run: |
+          print("RcppGSL:::CFlags()"")
           print(RcppGSL:::CFlags())
+          print("RcppGSL:::LdFlags()")
+          print(RcppGSL:::LdFlags())
         shell: Rscript {0}
 
       - name: Diag output Num CPUS
