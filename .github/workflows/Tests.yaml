@@ -34,6 +34,11 @@ jobs:
         with:
           extra-packages: devtools, testthat
 
+      - name: Debug makevars
+        run: |
+          print(RcppGSL:::CFlags())
+        shell: Rscript {0}
+
       - name: Diag output Num CPUS
         run: sysctl hw.logicalcpu
 
