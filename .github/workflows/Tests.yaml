@@ -42,7 +42,7 @@ jobs:
 
       - name: Debug makevars
         run: |
-          print("RcppGSL:::CFlags()"")
+          print("RcppGSL:::CFlags()")
           print(RcppGSL:::CFlags())
           print("RcppGSL:::LdFlags()")
           print(RcppGSL:::LdFlags())
