@@ -5,11 +5,20 @@
 #' Given a fitted model, sample new data from the \code{clv.data} stored in it and re-fit the model on it.
 #' Which customers are selected into the new data is determined by \code{fn.sample}.
 #' The model is fit on the new data with the same options with which it was originally fit,
-#' excluding \code{optimx.args} and \code{verbose} (if required, these can be passed as \code{...}).
+#' including \code{optimx.args}, \code{verbose} and start parameters. If required,
+#' any option can be changed by passing it as \code{...}.
 #' After the model is fit, \code{fn.boot.apply} is applied to it and
 #' the value it returns is collected in a list which is eventually returned.
 #'
+#' The estimation and holdout periods are preserved exactly as in the original data.
+#' This is regardless of how the actually sampled transactions would define these periods.
+#' This way, each customer's model summary data (\code{cbs}) generated from the
+#' sampled data remains the same as on the original data.
+#' This makes sampling from the \code{clv.data} object equivalent to sampling
+#' directly from the model summary data.
+#'
 #' Note that the Id of customers which are sampled more than once gains a suffix "_BOOTSTRAP_ID_<number>".
+#'
 #'
 #' @param object Fitted model
 #' @param num.boot number of times to sample data and re-fit the model
@@ -31,7 +40,7 @@
 #' data("cdnow")
 #'
 #' clv.cdnow <- clvdata(data.transactions = cdnow, date.format="ymd",
-#'                      time.unit = "weeks")
+#'                      time.unit = "weeks", estimation.split=37)
 #'
 #' pnbd.cdnow <- pnbd(clv.cdnow)
 #'
@@ -42,11 +51,14 @@
 #' sample(x, size = as.integer(0.5*length(x)), replace = FALSE)})
 #'
 #' # sample customers with built-in standard logic and
-#' # return predictions 10 periods ahead.
-#' # prediction.end is required because the bootstrapped
-#' # data contains no holdout period
+#' # return predictions until end of holdout period in original
+#' # data.
+#' # prediction.end is not required because the bootstrapped
+#' # data contains the same estimation and holdout periods
+#' # as the original data, even if the transactions of the sampled
+#' # customers .
 #' clv.bootstrapped.apply(pnbd.cdnow, num.boot=5, fn.sample=NULL,
-#' fn.boot.apply=function(x){predict(x, prediction.end=10)})
+#' fn.boot.apply=function(x){predict(x)})
 #'
 #' # return the fitted models
 #' # forward additional arguments to the model fitting method

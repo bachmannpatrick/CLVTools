@@ -339,12 +339,6 @@ setMethod("clv.controlflow.predict.new.customer", signature = signature(clv.fitt
     t=clv.newcustomer@num.periods)))
 })
 
-# .clv.fitted.get.model.estimation.interface.args --------------------------------------------
-setMethod("clv.fitted.get.model.estimation.interface.args", signature = "clv.fitted.transactions", def = function(clv.fitted){
-  # For many models there are no specifc args available (e.g nocov bgnbd and ggomnbd)
-  return(list())
-})
-
 
 # . clv.fitted.bootstrap.predictions --------------------------------------------
 setMethod(f = "clv.fitted.bootstrap.predictions", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, num.boots, verbose, prediction.end, predict.spending, continuous.discount.factor){

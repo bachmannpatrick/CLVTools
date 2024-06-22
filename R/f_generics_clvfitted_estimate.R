@@ -20,9 +20,11 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv
 })
 
 # . clv.controlflow.estimate.put.inputs ------------------------------------------------------------------------
-setMethod("clv.controlflow.estimate.put.inputs", signature =  signature(clv.fitted="clv.fitted"), definition = function(clv.fitted, verbose, ...){
+setMethod("clv.controlflow.estimate.put.inputs", signature =  signature(clv.fitted="clv.fitted"), definition = function(clv.fitted, start.params.model, optimx.args, verbose, ...){
+  clv.fitted@model.specification.args <- list(start.params.model=start.params.model, optimx.args=optimx.args, verbose=verbose)
   return(clv.fitted)
 })
+
 
 
 # . clv.controlflow.estimate.generate.start.params ------------------------------------------------------------------------
