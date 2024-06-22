@@ -114,7 +114,7 @@ arma::vec ggomnbd_CET(const double r,
   const arma::vec vIntegral = ggomnbd_integrate(r, b, s, vAlpha_i, vBeta_i,vX,
                                                 &ggomnbd_CET_integrand,
                                                 vT_x, vT_cal);
-  const arma::vec vLower = b * s * (1.0 + (b * s) * clv::vec_pow(vAlpha_i + vT_cal, r + vX) % arma::pow(vExpbTpart, s) % vIntegral);
+  const arma::vec vLower = b * s * (1.0 + (b * s) * arma::pow(vAlpha_i + vT_cal, r + vX) % arma::pow(vExpbTpart, s) % vIntegral);
   const arma::vec vFront = (r + vX)/(vAlpha_i + vT_cal);
 
   return(vFront % vUpper / vLower);
@@ -133,8 +133,8 @@ arma::vec ggomnbd_nocov_CET(const double r,
                             const arma::vec& vT_x,
                             const arma::vec& vT_cal){
 
-  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vX.n_elem);
-  const arma::vec vBeta_i = clv::vec_fill(beta_0, vX.n_elem);
+  const arma::vec vAlpha_i = arma::vec(vX.n_elem, arma::fill::value(alpha_0));
+  const arma::vec vBeta_i = arma::vec(vX.n_elem, arma::fill::value(beta_0));
 
   return(ggomnbd_CET(r,b,s,dPeriods,vX,vT_x,vT_cal,vAlpha_i, vBeta_i));
 }
@@ -225,9 +225,9 @@ arma::vec ggomnbd_nocov_expectation(const double r,
                                     const double beta_0,
                                     const arma::vec& vT_i){
 
-  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vT_i.n_elem);
-  const arma::vec vBeta_i = clv::vec_fill(beta_0, vT_i.n_elem);
-  const arma::vec vR = clv::vec_fill(r, vT_i.n_elem);
+  const arma::vec vAlpha_i = arma::vec(vT_i.n_elem, arma::fill::value(alpha_0));
+  const arma::vec vBeta_i = arma::vec(vT_i.n_elem, arma::fill::value(beta_0));
+  const arma::vec vR = arma::vec(vT_i.n_elem, arma::fill::value(r));
 
   return(ggomnbd_expectation(b,
                              s,
@@ -245,7 +245,7 @@ arma::vec ggomnbd_staticcov_expectation(const double r,
                                         const arma::vec& vAlpha_i,
                                         const arma::vec& vBeta_i,
                                         const arma::vec& vT_i){
-  const arma::vec vR = clv::vec_fill(r, vT_i.n_elem);
+  const arma::vec vR = arma::vec(vT_i.n_elem, arma::fill::value(r));
 
   return(ggomnbd_expectation(b,
                              s,
@@ -386,8 +386,8 @@ arma::vec ggomnbd_nocov_LL_ind(const arma::vec& vLogparams,
   const double s       = std::exp(vLogparams(3));
   const double beta_0  = std::exp(vLogparams(4));
 
-  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vX.n_elem);
-  const arma::vec vBeta_i = clv::vec_fill(beta_0, vX.n_elem);
+  const arma::vec vAlpha_i = arma::vec(vX.n_elem, arma::fill::value(alpha_0));
+  const arma::vec vBeta_i = arma::vec(vX.n_elem, arma::fill::value(beta_0));
 
   return(ggomnbd_LL_ind(r, b, s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal));
 }
@@ -556,8 +556,8 @@ arma::vec ggomnbd_nocov_PAlive(const double r,
                                const arma::vec& vT_x,
                                const arma::vec& vT_cal){
 
-  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vX.n_elem);
-  const arma::vec vBeta_i = clv::vec_fill(beta_0, vX.n_elem);
+  const arma::vec vAlpha_i = arma::vec(vX.n_elem, arma::fill::value(alpha_0));
+  const arma::vec vBeta_i = arma::vec(vX.n_elem, arma::fill::value(beta_0));
 
   return ggomnbd_PAlive(r,b,s,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
 }
@@ -626,9 +626,9 @@ arma::vec ggomnbd_PMF(const double r,
   // TODO: Uses wrong limit=0 in integration routine which is smaller than the
   // workspace. This is a strong case to write dedicated routine.
   const arma::vec vIntergral = ggomnbd_integrate(r, b, s, vAlpha_i, vBeta_i,
-                                                 clv::vec_fill(x, vT_i.n_elem),
+                                                 arma::vec(vT_i.n_elem, arma::fill::value(x)),
                                                  &ggomnbd_PMF_integrand,
-                                                 clv::vec_fill(0.0, vT_i.n_elem), vT_i);
+                                                 arma::vec(vT_i.n_elem, arma::fill::zeros), vT_i);
 
   return vFront % (vInner + b * s * vIntergral);
 }
@@ -643,8 +643,8 @@ arma::vec ggomnbd_nocov_PMF(const double r,
                             const unsigned int x,
                             const arma::vec& vT_i){
 
-  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vT_i.n_elem);
-  const arma::vec vBeta_i = clv::vec_fill(beta_0, vT_i.n_elem);
+  const arma::vec vAlpha_i = arma::vec(vT_i.n_elem, arma::fill::value(alpha_0));
+  const arma::vec vBeta_i = arma::vec(vT_i.n_elem, arma::fill::value(beta_0));
 
   return(ggomnbd_PMF(r,b,s,x,vAlpha_i,vBeta_i,vT_i));
 }
