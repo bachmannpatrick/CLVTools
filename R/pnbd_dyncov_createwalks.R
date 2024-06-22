@@ -104,6 +104,8 @@ pnbd_dyncov_getLLcallargs_LLsum <- function(clv.fitted){
   # multiplications done for `adj_covdata_*`.
 
 
+  hash_life_real <- hash_life_aux <- hash_trans_real <- hash_trans_aux <- i.hash <- NULL
+  .N <- Id <- NULL
 
   pnbd_dyncov_assert_walk_assumptions(clv.fitted)
 
@@ -122,7 +124,7 @@ pnbd_dyncov_getLLcallargs_LLsum <- function(clv.fitted){
 
   # Compress
   dt.compressed <- dt.cbs[
-    ,.(n=.N, Id = first(Id)),
+    ,list(n=.N, Id = first(Id)),
     by=c("x", "t.x", "T.cal", "d_omega", "hash_life_real", "hash_life_aux", "hash_trans_real", "hash_trans_aux")
     ]
 
@@ -523,7 +525,7 @@ pnbd_dyncov_createwalks_auxwalk <- function(dt.cov, dt.tp.first.last, names.cov,
 
 #' @importFrom digest digest
 pnbd_dyncov_createwalks <- function(clv.data){
-  walk_id <- walk_from <- walk_to <- .N <- abs_pos <- Date <- tp.cov.lower <- NULL
+  walk_id <- walk_from <- walk_to <- .N <- abs_pos <- Date <- tp.cov.lower <- hash <- NULL
 
   # Walk info, per walk
   #   - from, to: where to find walk data

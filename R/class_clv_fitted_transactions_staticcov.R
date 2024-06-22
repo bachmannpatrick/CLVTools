@@ -103,7 +103,7 @@ clv.fitted.transactions.static.cov.compressed.ll.data <- function(clv.fitted){
   dt.compressed.cbs[, (names.compressed.cov.trans) := as.data.table(m.cov.trans, keep.rownames = FALSE)]
 
   # compress cbs: unique also across covariate data
-  dt.compressed.cbs <- dt.compressed.cbs[, .(n = .N), by=c("x", "t.x", "T.cal", names.compressed.cov.life, names.compressed.cov.trans)]
+  dt.compressed.cbs <- dt.compressed.cbs[, list(n = .N), by=c("x", "t.x", "T.cal", names.compressed.cov.life, names.compressed.cov.trans)]
 
   return(list(
     cbs = dt.compressed.cbs[, c("x", "t.x", "T.cal","n")],

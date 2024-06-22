@@ -240,6 +240,7 @@ arma::vec bgnbd_staticcov_PAlive(const double r,
 //' @template template_titleparamsdescriptionreturndetails_LL
 //'
 //' @template template_params_rcppxtxtcal
+//' @template template_param_rcppvn
 //' @template template_params_rcppcovmatrix
 //'
 //' @templateVar name_params_cov_life vLogparams

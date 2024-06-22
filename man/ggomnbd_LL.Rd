@@ -10,11 +10,11 @@
 \usage{
 ggomnbd_nocov_LL_ind(vLogparams, vX, vT_x, vT_cal)
 
-ggomnbd_nocov_LL_sum(vLogparams, vX, vT_x, vT_cal)
+ggomnbd_nocov_LL_sum(vLogparams, vX, vT_x, vT_cal, vN)
 
 ggomnbd_staticcov_LL_ind(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 
-ggomnbd_staticcov_LL_sum(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
+ggomnbd_staticcov_LL_sum(vParams, vX, vT_x, vT_cal, vN, mCov_life, mCov_trans)
 }
 \arguments{
 \item{vLogparams}{vector with the GGompertz/NBD model parameters at log scale. See Details.}
@@ -24,6 +24,8 @@ ggomnbd_staticcov_LL_sum(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
 \item{vT_x}{Recency vector of length n.}
 
 \item{vT_cal}{Vector of length n indicating the total number of periods of observation.}
+
+\item{vN}{The value ("number of times observed") with which the LL value of this observation is multiplied before summing across customers.}
 
 \item{vParams}{vector with the parameters for the GGompertz/NBD model at log scale and the static covariates at original scale. See Details.}
 
