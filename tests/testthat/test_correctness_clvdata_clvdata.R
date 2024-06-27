@@ -401,3 +401,27 @@ test_that("clv.data.get.repeat.transactions.in.estimation.period() is the same a
                         dt.self.made.repeat))
 })
 
+
+# mean.interpurchase.times ----------------------------------------------------------------------------
+test_that("New faster mean.interpurchase.times same result as original implementation", {
+
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(data.cdnow=cdnow)
+
+  fct.old.interp.time <- function(clv.data, dt.transactions){
+    return(rbindlist(list(
+      # 1 Transaction = NA
+      dt.transactions[Id %in% num.transactions[num.trans == 1,Id], list(interp.time = NA_real_, Id)],
+      dt.transactions[Id %in% num.transactions[num.trans >  1,Id],
+                      list(interp.time = mean(clv.time.interval.in.number.tu(clv.time = clv.data@clv.time,
+                                                                             interv = lubridate::int_diff(Date)))),
+                      by="Id"]
+    ), use.names = TRUE))
+  }
+
+  dt.old <- fct.old.interp.time(clv.data = clv.cdnow, dt.transactions = clv.cdnow@data.transactions)
+
+  dt.new <- clv.data.mean.interpurchase.times(clv.data = clv.cdnow, dt.transactions = clv.cdnow@data.transactions)
+
+  expect_equal(object = dt.new, expected = dt.old, tolerance = testthat_tolerance())
+
+})
