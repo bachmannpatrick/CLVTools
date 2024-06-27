@@ -4,7 +4,7 @@
 \alias{gg_LL}
 \title{Gamma-Gamma: Log-Likelihood Function}
 \usage{
-gg_LL(vLogparams, vX, vM_x)
+gg_LL(vLogparams, vX, vM_x, vN)
 }
 \arguments{
 \item{vLogparams}{a vector containing the log of the parameters p, q, gamma}
@@ -12,6 +12,8 @@ gg_LL(vLogparams, vX, vM_x)
 \item{vX}{frequency vector of length n counting the numbers of purchases}
 
 \item{vM_x}{the observed average spending for every customer during the calibration time.}
+
+\item{vN}{The value ("number of times observed") with which the LL value of this observation is multiplied before summing across customers.}
 }
 \value{
 Returns the Log-Likelihood value for the Gamma-Gamma model.

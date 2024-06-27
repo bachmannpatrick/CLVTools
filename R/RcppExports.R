@@ -194,6 +194,7 @@ vec_gsl_hyp2f1_e <- function(vA, vB, vC, vZ) {
 #' @param vLogparams a vector containing the log of the parameters p, q, gamma
 #' @param vX frequency vector of length n counting the numbers of purchases
 #' @param vM_x the observed average spending for every customer during the calibration time.
+#' @template template_param_rcppvn
 #'
 #' @details
 #' \code{vLogparams} is a vector with the parameters for the Gamma-Gamma model.
@@ -207,8 +208,8 @@ vec_gsl_hyp2f1_e <- function(vA, vB, vC, vZ) {
 #' @template template_references_gg
 #'
 #'
-gg_LL <- function(vLogparams, vX, vM_x) {
-    .Call(`_CLVTools_gg_LL`, vLogparams, vX, vM_x)
+gg_LL <- function(vLogparams, vX, vM_x, vN) {
+    .Call(`_CLVTools_gg_LL`, vLogparams, vX, vM_x, vN)
 }
 
 #' @name ggomnbd_CET

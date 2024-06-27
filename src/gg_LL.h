@@ -7,6 +7,7 @@
 
 double gg_LL(const arma::vec& vLogparams,
              const arma::vec& vX,
-             const arma::vec& vM_x);
+             const arma::vec& vM_x,
+             const arma::vec& vN);
 
 #endif

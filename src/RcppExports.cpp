@@ -281,15 +281,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // gg_LL
-double gg_LL(const arma::vec& vLogparams, const arma::vec& vX, const arma::vec& vM_x);
-RcppExport SEXP _CLVTools_gg_LL(SEXP vLogparamsSEXP, SEXP vXSEXP, SEXP vM_xSEXP) {
+double gg_LL(const arma::vec& vLogparams, const arma::vec& vX, const arma::vec& vM_x, const arma::vec& vN);
+RcppExport SEXP _CLVTools_gg_LL(SEXP vLogparamsSEXP, SEXP vXSEXP, SEXP vM_xSEXP, SEXP vNSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec& >::type vLogparams(vLogparamsSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vX(vXSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type vM_x(vM_xSEXP);
-    rcpp_result_gen = Rcpp::wrap(gg_LL(vLogparams, vX, vM_x));
+    Rcpp::traits::input_parameter< const arma::vec& >::type vN(vNSEXP);
+    rcpp_result_gen = Rcpp::wrap(gg_LL(vLogparams, vX, vM_x, vN));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -874,7 +875,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CLVTools_bgnbd_staticcov_b_i", (DL_FUNC) &_CLVTools_bgnbd_staticcov_b_i, 3},
     {"_CLVTools_vec_gsl_hyp2f0_e", (DL_FUNC) &_CLVTools_vec_gsl_hyp2f0_e, 3},
     {"_CLVTools_vec_gsl_hyp2f1_e", (DL_FUNC) &_CLVTools_vec_gsl_hyp2f1_e, 4},
-    {"_CLVTools_gg_LL", (DL_FUNC) &_CLVTools_gg_LL, 3},
+    {"_CLVTools_gg_LL", (DL_FUNC) &_CLVTools_gg_LL, 4},
     {"_CLVTools_ggomnbd_nocov_CET", (DL_FUNC) &_CLVTools_ggomnbd_nocov_CET, 9},
     {"_CLVTools_ggomnbd_staticcov_CET", (DL_FUNC) &_CLVTools_ggomnbd_staticcov_CET, 13},
     {"_CLVTools_ggomnbd_nocov_expectation", (DL_FUNC) &_CLVTools_ggomnbd_nocov_expectation, 6},
