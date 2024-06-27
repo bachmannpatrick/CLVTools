@@ -408,6 +408,9 @@ test_that("New faster mean.interpurchase.times same result as original implement
   clv.cdnow <- fct.helper.create.clvdata.cdnow(data.cdnow=cdnow)
 
   fct.old.interp.time <- function(clv.data, dt.transactions){
+
+    num.transactions <- dt.transactions[, list(num.trans = .N), by="Id"]
+
     return(rbindlist(list(
       # 1 Transaction = NA
       dt.transactions[Id %in% num.transactions[num.trans == 1,Id], list(interp.time = NA_real_, Id)],
