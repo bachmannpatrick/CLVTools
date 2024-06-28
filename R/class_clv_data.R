@@ -197,6 +197,9 @@ clv.data.mean.interpurchase.times <- function(clv.data, dt.transactions){
   # copy because manipulating in-place with `:=`
   # do mem-heavy ops (shift) not in `by='Id'` but in single step
   dt.interp <- copy(dt.transactions[Id %in% num.transactions[num.trans >  1,Id]])
+  # needs to be sorted by Id and Date for shift() to produce correct results.
+  # Most of the times, the input is already keyed on exactly these.
+  setkeyv(dt.interp, c('Id', 'Date'))
   dt.interp[, next.date := shift(Date, type = 'lead'), by='Id']
   dt.interp[, interp.time := clv.time.interval.in.number.tu(clv.time = clv.data@clv.time, interv=interval(start=Date, end = next.date))]
   dt.interp <- dt.interp[, list(interp.time = mean(interp.time, na.rm=TRUE)), by='Id']
