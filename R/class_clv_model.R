@@ -25,6 +25,7 @@ setClass(Class = "clv.model", contains = "VIRTUAL",
            # Anything that will be used from main execution code.
            #  Enforce it through slots instead of relying on setting it in model generics
            name.model                  = "character",
+           fn.model.generic            = "standardGeneric",
 
            names.original.params.model = "character",
            names.prefixed.params.model = "character",

@@ -13,6 +13,7 @@ clv.model.gg <- function(){
 
   return(new("clv.model.gg",
              name.model                  = "Gamma-Gamma",
+             fn.model.generic            = gg,
              names.original.params.model = c(p="p", q="q", gamma="gamma"),
              names.prefixed.params.model = c(log.p="log.p", log.q="log.q", log.gamma="log.gamma"),
              start.params.model          = c(p=1, q=1, gamma=1),
