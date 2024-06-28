@@ -355,16 +355,21 @@ test_that("Correct args for spending models", {
 # with holdout
 bg.cdnow <- fit.cdnow(cdnow, estimation.split = 37, model=bgnbd, optimx.args = optimx.args.fast)
 bg.apparel.static <- fit.apparel.static(model = bgnbd, optimx.args = optimx.args.fast)
-p.apparel.dyn <- fit.apparel.dyncov.quick()
+p.apparel.dyn <- fit.apparel.dyncov.quick(hessian=FALSE)
 gg.cdnow <- fit.cdnow(cdnow, estimation.split = 37, model=gg, optimx.args = optimx.args.fast)
 
 test_that("Sampling all customers leads to same model estimate (nocov, static cov, dyncov, spending)", {
 
-  for(clv.fitted in list(bg.cdnow, bg.apparel.static, p.apparel.dyn, gg.cdnow)){
-    expect_equal(
-      coef(clv.fitted),
-      clv.bootstrapped.apply(clv.fitted, num.boot = 1, fn.boot.apply = coef, fn.sample = function(ids){return(ids)})[[1]]
-    )
+  for(clv.fitted in list(bg.cdnow, bg.apparel.static, gg.cdnow)){
+    if(is(clv.fitted, "clv.pnbd.dynamic.cov")){
+      # re-uses optimx.args which does not calculate hessian
+      fn.expect <- function(fn){expect_warning(fn, regexp = 'Hessian')}
+    }else{
+      fn.expect <- expect_silent
+    }
+
+    boots.coef <- fn.expect(clv.bootstrapped.apply(clv.fitted, num.boot = 1, fn.boot.apply = coef, fn.sample = function(ids){return(ids)})[[1]])
+    expect_equal(coef(clv.fitted), boots.coef)
   }
 })
 
@@ -391,13 +396,15 @@ test_that("Predict to same prediction end if given num periods even if sampled t
 # predict -----------------------------------------------------------------------------
 
 test_that("Bootstrapped predictions have correct format", {
+
   # test_that("Remains silent (no progress bar) with verbose=FALSE")
   expect_warning(
     dt.pred.boots.1 <- predict(bg.cdnow, verbose=FALSE, uncertainty="boots", num.boots=1, predict.spending=FALSE),
     regexp = "1000 or more"
   )
+
   # test_that("No Id in prediction contains _BOOTSTRAP_ID_ anymore")
-  expect_length(dt.pred.boots.1[, grep(pattern = "BOOTSTRAP_ID", x = Id)], n = 1)
+  expect_length(dt.pred.boots.1[, grep(pattern = "BOOTSTRAP_ID", x = Id)], n = 0)
 
   # test_that("Customers which are not sampled are still present in the predictions")
   # There is no guarantee that not all customers are sampled but its very, very unlikely that all customers are sampled
