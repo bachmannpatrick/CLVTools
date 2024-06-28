@@ -391,11 +391,29 @@ fct.testthat.correctness.clvtime.convert.user.input.date.to.posixct <- function(
   })
 }
 
+fct.testthat.correctness.clvtime.convert.user.input.IDate.to.posixct <- function(clv.t.datetime){
+  stopifnot(is(clv.t.datetime, "clv.time.datetime"))
+  test_that("IDates convert to correct POSIX", {
+    expect_equal(lubridate::ymd_hms("2019-01-01 00:00:00", tz="UTC"),
+                 clv.time.convert.user.input.to.timepoint(clv.t.datetime, user.timepoint = data.table::as.IDate("2019-01-01")))
+    expect_equal(lubridate::ymd_hms("2019-12-18 00:00:00", tz="UTC"),
+                 clv.time.convert.user.input.to.timepoint(clv.t.datetime, user.timepoint = data.table::as.IDate("2019-12-18")))
+  })
+}
+
 fct.testthat.correctness.clvtime.convert.user.input.date.to.date <- function(clv.t.date){
   stopifnot(is(clv.t.date, "clv.time.date"))
   test_that("Dates convert to correct Dates", {
     expect_equal(lubridate::ymd("2019-01-01"), clv.time.convert.user.input.to.timepoint(clv.t.date, user.timepoint = lubridate::ymd("2019-01-01")))
     expect_equal(lubridate::ymd("2019-12-18"), clv.time.convert.user.input.to.timepoint(clv.t.date, user.timepoint = lubridate::ymd("2019-12-18")))
+  })
+}
+
+fct.testthat.correctness.clvtime.convert.user.input.IDate.to.date <- function(clv.t.date){
+  stopifnot(is(clv.t.date, "clv.time.date"))
+  test_that("IDates convert to correct Dates", {
+    expect_equal(lubridate::ymd("2019-01-01"), clv.time.convert.user.input.to.timepoint(clv.t.date, user.timepoint = data.table::as.IDate("2019-01-01")))
+    expect_equal(lubridate::ymd("2019-12-18"), clv.time.convert.user.input.to.timepoint(clv.t.date, user.timepoint = data.table::as.IDate("2019-12-18")))
   })
 }
 
