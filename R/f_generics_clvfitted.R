@@ -28,13 +28,7 @@ setMethod("clv.fitted.estimate.same.specification.on.new.data", signature = "clv
   # overwrite with what was passed
   args <- modifyList(args, val = list(...), keep.null = TRUE)
 
-  new.fitted <- do.call(
-    what = switch (class(clv.fitted@clv.model),
-                   "clv.model.pnbd.no.cov"= pnbd,
-                   "clv.model.bgnbd.no.cov" = bgnbd,
-                   "clv.model.ggomnbd.no.cov" = ggomnbd,
-                   "clv.model.gg" = gg),
-    args=args)
+  new.fitted <- do.call(what = clv.fitted@clv.model@fn.model.generic, args=args)
 
   new.fitted@call <- cl
   return(new.fitted)

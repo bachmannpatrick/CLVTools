@@ -105,31 +105,6 @@ arma::vec vec_x_kummerU(const double a, const double b, const arma::vec& vX){
   return(vRes);
 }
 
-
-// vec_pow --------------------------------------------------------
-//    element-by-element pow of the two given vectors
-arma::vec vec_pow(const arma::vec& vA, const arma::vec& vP){
-  arma::vec vRes(vA);
-  arma::vec::const_iterator it_a = vA.begin(), it_p = vP.begin(), it_a_end = vA.end();
-  arma::vec::iterator it_res = vRes.begin();
-
-  while(it_a != it_a_end){
-    (*it_res) = std::pow(*it_a, *it_p);
-    it_a++;
-    it_p++;
-    it_res++;
-  }
-
-  return(vRes);
-}
-
-arma::vec vec_fill(const double d, const arma::uword n){
-  arma::vec vResult(n);
-  vResult.fill(d);
-  return vResult;
-}
-
-
 // lbeta := lgamma(a) + lgamma(b) - lgamma(a+b)
 arma::vec vec_lbeta(const arma::vec& a, const double b){
   return (arma::lgamma(a) + std::lgamma(b) - arma::lgamma(a+b));

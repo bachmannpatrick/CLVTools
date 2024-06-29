@@ -17,6 +17,8 @@ to obtain a functional \code{clv.fitted} object.
 \describe{
 \item{\code{name.model}}{Name of the model as it should be displayed}
 
+\item{\code{fn.model.generic}}{Method (generic) to apply on (sub-class of) clv.data in order to fit the model.}
+
 \item{\code{names.original.params.model}}{character vector that defines the names of the model parameters as they should be reported}
 
 \item{\code{names.prefixed.params.model}}{character vector that defines the names of the model parameters as they are named during LL optimization}
