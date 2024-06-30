@@ -401,3 +401,45 @@ test_that("clv.data.get.repeat.transactions.in.estimation.period() is the same a
                         dt.self.made.repeat))
 })
 
+
+# mean.interpurchase.times ----------------------------------------------------------------------------
+test_that("New faster mean.interpurchase.times same result as original implementation", {
+
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(data.cdnow=cdnow)
+
+  fct.old.interp.time <- function(clv.data, dt.transactions){
+
+    num.transactions <- dt.transactions[, list(num.trans = .N), by="Id"]
+
+    return(rbindlist(list(
+      # 1 Transaction = NA
+      dt.transactions[Id %in% num.transactions[num.trans == 1,Id], list(interp.time = NA_real_, Id)],
+      dt.transactions[Id %in% num.transactions[num.trans >  1,Id],
+                      list(interp.time = mean(clv.time.interval.in.number.tu(clv.time = clv.data@clv.time,
+                                                                             interv = lubridate::int_diff(Date)))),
+                      by="Id"]
+    ), use.names = TRUE))
+  }
+
+  # Old method implicitly depended on input data being sorted by (Id, Date)
+  dt.old <- fct.old.interp.time(
+    clv.data = clv.cdnow,
+    dt.transactions = clv.cdnow@data.transactions
+    )
+
+  # Sort by Price instead for new to show it is also correct if input is not
+  # ordered by Id, Date
+  dt.new <- clv.data.mean.interpurchase.times(
+    clv.data = clv.cdnow,
+    dt.transactions = clv.cdnow@data.transactions[order(Price)]
+    )
+  # Need to sort by Id because result order depends on order of input data
+  expect_equal(
+    object = dt.new[order(Id)],
+    expected = dt.old[order(Id)],
+    tolerance = testthat_tolerance()
+    )
+
+
+
+})
