@@ -414,7 +414,7 @@ test_that("Real Trans Walk: None if there are no repeat transactions", {
   expect_silent(l.walks <- pnbd_dyncov_createwalks(fct.helper.create.clvdata.apparel.dyncov(apparelTrans.norepeat, apparelDynCov, estimation.split = NULL)))
 
   expect_true(nrow(l.walks$data.walks.trans.real) == 0)
-  expect_true(ncol(l.walks$data.walks.trans.real) == 13)
+  expect_true(ncol(l.walks$data.walks.trans.real) == 14)
   expect_true(all(colnames(l.walks$data.walks.trans.real) == colnames(l.walks$data.walks.trans.aux)))
 
 })
