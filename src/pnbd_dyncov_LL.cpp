@@ -909,6 +909,7 @@ double pnbd_dyncov_LL_negsum(const arma::vec& params,
                              const arma::vec& t_x,
                              const arma::vec& T_cal,
                              const arma::vec& d_omega,
+                             const Rcpp::NumericVector& vN,
 
                              const arma::mat& walkinfo_aux_life,
                              const arma::mat& walkinfo_real_life,
@@ -923,26 +924,26 @@ double pnbd_dyncov_LL_negsum(const arma::vec& params,
                              const arma::mat& covdata_aux_trans,
                              const arma::mat& covdata_real_trans){
 
-  return(-Rcpp::sum(pnbd_dyncov_LL_ind(params,
-                                       X,
-                                       t_x,
-                                       T_cal,
-                                       d_omega,
+  return(-Rcpp::sum(vN * pnbd_dyncov_LL_ind(params,
+                                             X,
+                                             t_x,
+                                             T_cal,
+                                             d_omega,
 
-                                       walkinfo_aux_life,
-                                       walkinfo_real_life,
-                                       walkinfo_aux_trans,
-                                       walkinfo_real_trans,
+                                             walkinfo_aux_life,
+                                             walkinfo_real_life,
+                                             walkinfo_aux_trans,
+                                             walkinfo_real_trans,
 
-                                       walkinfo_trans_real_from,
-                                       walkinfo_trans_real_to,
+                                             walkinfo_trans_real_from,
+                                             walkinfo_trans_real_to,
 
-                                       covdata_aux_life,
-                                       covdata_real_life,
-                                       covdata_aux_trans,
-                                       covdata_real_trans,
+                                             covdata_aux_life,
+                                             covdata_real_life,
+                                             covdata_aux_trans,
+                                             covdata_real_trans,
 
-                                       false)));
+                                             false)));
 }
 
 // [[Rcpp::export]]

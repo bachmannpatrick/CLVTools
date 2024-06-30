@@ -65,6 +65,7 @@ NULL
 #' @template template_titleparamsdescriptionreturndetails_LL
 #'
 #' @template template_params_rcppxtxtcal
+#' @template template_param_rcppvn
 #' @template template_params_rcppcovmatrix
 #'
 #' @templateVar name_params_cov_life vLogparams
@@ -122,8 +123,8 @@ bgnbd_nocov_LL_ind <- function(vLogparams, vX, vT_x, vT_cal) {
 }
 
 #' @rdname bgnbd_LL
-bgnbd_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal) {
-    .Call(`_CLVTools_bgnbd_nocov_LL_sum`, vLogparams, vX, vT_x, vT_cal)
+bgnbd_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal, vN) {
+    .Call(`_CLVTools_bgnbd_nocov_LL_sum`, vLogparams, vX, vT_x, vT_cal, vN)
 }
 
 #' @rdname bgnbd_LL
@@ -132,8 +133,8 @@ bgnbd_staticcov_LL_ind <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_tr
 }
 
 #' @rdname bgnbd_LL
-bgnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans) {
-    .Call(`_CLVTools_bgnbd_staticcov_LL_sum`, vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
+bgnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, vN, mCov_life, mCov_trans) {
+    .Call(`_CLVTools_bgnbd_staticcov_LL_sum`, vParams, vX, vT_x, vT_cal, vN, mCov_life, mCov_trans)
 }
 
 #' @rdname bgnbd_pmf
@@ -193,6 +194,7 @@ vec_gsl_hyp2f1_e <- function(vA, vB, vC, vZ) {
 #' @param vLogparams a vector containing the log of the parameters p, q, gamma
 #' @param vX frequency vector of length n counting the numbers of purchases
 #' @param vM_x the observed average spending for every customer during the calibration time.
+#' @template template_param_rcppvn
 #'
 #' @details
 #' \code{vLogparams} is a vector with the parameters for the Gamma-Gamma model.
@@ -206,8 +208,8 @@ vec_gsl_hyp2f1_e <- function(vA, vB, vC, vZ) {
 #' @template template_references_gg
 #'
 #'
-gg_LL <- function(vLogparams, vX, vM_x) {
-    .Call(`_CLVTools_gg_LL`, vLogparams, vX, vM_x)
+gg_LL <- function(vLogparams, vX, vM_x, vN) {
+    .Call(`_CLVTools_gg_LL`, vLogparams, vX, vM_x, vN)
 }
 
 #' @name ggomnbd_CET
@@ -254,6 +256,7 @@ NULL
 #' @template template_titleparamsdescriptionreturndetails_LL
 #'
 #' @template template_params_rcppxtxtcal
+#' @template template_param_rcppvn
 #' @template template_params_rcppcovmatrix
 #'
 #' @templateVar name_params_cov_life vParams
@@ -325,8 +328,8 @@ ggomnbd_nocov_LL_ind <- function(vLogparams, vX, vT_x, vT_cal) {
 }
 
 #' @rdname ggomnbd_LL
-ggomnbd_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal) {
-    .Call(`_CLVTools_ggomnbd_nocov_LL_sum`, vLogparams, vX, vT_x, vT_cal)
+ggomnbd_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal, vN) {
+    .Call(`_CLVTools_ggomnbd_nocov_LL_sum`, vLogparams, vX, vT_x, vT_cal, vN)
 }
 
 #' @rdname ggomnbd_LL
@@ -335,8 +338,8 @@ ggomnbd_staticcov_LL_ind <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_
 }
 
 #' @rdname ggomnbd_LL
-ggomnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans) {
-    .Call(`_CLVTools_ggomnbd_staticcov_LL_sum`, vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
+ggomnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, vN, mCov_life, mCov_trans) {
+    .Call(`_CLVTools_ggomnbd_staticcov_LL_sum`, vParams, vX, vT_x, vT_cal, vN, mCov_life, mCov_trans)
 }
 
 ggomnbd_staticcov_alpha_i <- function(alpha_0, vCovParams_trans, mCov_trans) {
@@ -443,6 +446,7 @@ NULL
 #' @template template_titleparamsdescriptionreturndetails_LL
 #'
 #' @template template_params_rcppxtxtcal
+#' @template template_param_rcppvn
 #' @template template_params_rcppcovmatrix
 #'
 #' @templateVar name_params_cov_life vParams
@@ -518,8 +522,8 @@ pnbd_nocov_LL_ind <- function(vLogparams, vX, vT_x, vT_cal) {
 }
 
 #' @rdname pnbd_LL
-pnbd_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal) {
-    .Call(`_CLVTools_pnbd_nocov_LL_sum`, vLogparams, vX, vT_x, vT_cal)
+pnbd_nocov_LL_sum <- function(vLogparams, vX, vT_x, vT_cal, vN) {
+    .Call(`_CLVTools_pnbd_nocov_LL_sum`, vLogparams, vX, vT_x, vT_cal, vN)
 }
 
 #' @rdname pnbd_LL
@@ -528,8 +532,8 @@ pnbd_staticcov_LL_ind <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_tra
 }
 
 #' @rdname pnbd_LL
-pnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans) {
-    .Call(`_CLVTools_pnbd_staticcov_LL_sum`, vParams, vX, vT_x, vT_cal, mCov_life, mCov_trans)
+pnbd_staticcov_LL_sum <- function(vParams, vX, vT_x, vT_cal, vN, mCov_life, mCov_trans) {
+    .Call(`_CLVTools_pnbd_staticcov_LL_sum`, vParams, vX, vT_x, vT_cal, vN, mCov_life, mCov_trans)
 }
 
 pnbd_staticcov_alpha_i <- function(alpha_0, vCovParams_trans, mCov_trans) {
@@ -560,8 +564,8 @@ pnbd_staticcov_PMF <- function(r, s, x, vAlpha_i, vBeta_i, vT_i) {
     .Call(`_CLVTools_pnbd_staticcov_PMF`, r, s, x, vAlpha_i, vBeta_i, vT_i)
 }
 
-pnbd_dyncov_LL_negsum <- function(params, X, t_x, T_cal, d_omega, walkinfo_aux_life, walkinfo_real_life, walkinfo_aux_trans, walkinfo_real_trans, walkinfo_trans_real_from, walkinfo_trans_real_to, covdata_aux_life, covdata_real_life, covdata_aux_trans, covdata_real_trans) {
-    .Call(`_CLVTools_pnbd_dyncov_LL_negsum`, params, X, t_x, T_cal, d_omega, walkinfo_aux_life, walkinfo_real_life, walkinfo_aux_trans, walkinfo_real_trans, walkinfo_trans_real_from, walkinfo_trans_real_to, covdata_aux_life, covdata_real_life, covdata_aux_trans, covdata_real_trans)
+pnbd_dyncov_LL_negsum <- function(params, X, t_x, T_cal, d_omega, vN, walkinfo_aux_life, walkinfo_real_life, walkinfo_aux_trans, walkinfo_real_trans, walkinfo_trans_real_from, walkinfo_trans_real_to, covdata_aux_life, covdata_real_life, covdata_aux_trans, covdata_real_trans) {
+    .Call(`_CLVTools_pnbd_dyncov_LL_negsum`, params, X, t_x, T_cal, d_omega, vN, walkinfo_aux_life, walkinfo_real_life, walkinfo_aux_trans, walkinfo_real_trans, walkinfo_trans_real_from, walkinfo_trans_real_to, covdata_aux_life, covdata_real_life, covdata_aux_trans, covdata_real_trans)
 }
 
 pnbd_dyncov_LL_ind <- function(params, X, t_x, T_cal, d_omega, walkinfo_aux_life, walkinfo_real_life, walkinfo_aux_trans, walkinfo_real_trans, walkinfo_trans_real_from, walkinfo_trans_real_to, covdata_aux_life, covdata_real_life, covdata_aux_trans, covdata_real_trans, return_intermediate_results = FALSE) {

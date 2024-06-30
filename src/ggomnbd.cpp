@@ -331,6 +331,7 @@ double ggomnbd_LL_integrand(double y, void * p_params){
 //' @template template_titleparamsdescriptionreturndetails_LL
 //'
 //' @template template_params_rcppxtxtcal
+//' @template template_param_rcppvn
 //' @template template_params_rcppcovmatrix
 //'
 //' @templateVar name_params_cov_life vParams
@@ -398,7 +399,8 @@ arma::vec ggomnbd_nocov_LL_ind(const arma::vec& vLogparams,
 double ggomnbd_nocov_LL_sum(const arma::vec& vLogparams,
                             const arma::vec& vX,
                             const arma::vec& vT_x,
-                            const arma::vec& vT_cal){
+                            const arma::vec& vT_cal,
+                            const arma::vec& vN){
 
 
   const arma::vec vLL = ggomnbd_nocov_LL_ind(vLogparams,
@@ -407,7 +409,7 @@ double ggomnbd_nocov_LL_sum(const arma::vec& vLogparams,
                                              vT_cal);
 
   // accu sums all elements
-  return(-arma::sum(vLL));
+  return(-arma::sum(vLL % vN));
 }
 
 
@@ -457,13 +459,14 @@ double ggomnbd_staticcov_LL_sum(const arma::vec& vParams,
                                 const arma::vec& vX,
                                 const arma::vec& vT_x,
                                 const arma::vec& vT_cal,
+                                const arma::vec& vN,
                                 const arma::mat& mCov_life,
                                 const arma::mat& mCov_trans){
 
   // vParams has to be single vector because used by optimizer
   const arma::vec vLL = ggomnbd_staticcov_LL_ind(vParams,vX,vT_x,vT_cal,mCov_life,mCov_trans);
 
-  return(-arma::sum(vLL));
+  return(-arma::sum(vLL % vN));
 }
 
 

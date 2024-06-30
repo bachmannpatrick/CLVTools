@@ -71,14 +71,17 @@ setMethod("clv.model.backtransform.estimated.params.model", signature = signatur
 #' @importFrom utils modifyList
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args){
 
+  dt.compressed.cbs <- clv.fitted@cbs[, list(n = .N), by=c('x', 't.x', 'T.cal')]
+
   # Only add LL function args, everything else is prepared already, incl. start parameters
   optimx.args <- modifyList(prepared.optimx.args,
                             list(LL.function.sum = pnbd_nocov_LL_sum,
                                  LL.function.ind = pnbd_nocov_LL_ind, # if doing correlation
                                  obj    = clv.fitted,
-                                 vX     = clv.fitted@cbs$x,
-                                 vT_x   = clv.fitted@cbs$t.x,
-                                 vT_cal = clv.fitted@cbs$T.cal,
+                                 vX     = dt.compressed.cbs$x,
+                                 vT_x   = dt.compressed.cbs$t.x,
+                                 vT_cal = dt.compressed.cbs$T.cal,
+                                 vN = dt.compressed.cbs$n,
 
                                  # parameter ordering for the callLL interlayer
                                  LL.params.names.ordered = c(log.r="log.r", log.alpha="log.alpha",

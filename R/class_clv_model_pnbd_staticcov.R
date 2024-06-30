@@ -75,7 +75,7 @@ setMethod(f = "clv.model.backtransform.estimated.params.cov", signature = signat
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.pnbd.static.cov"),
           definition = function(clv.model, clv.fitted, prepared.optimx.args){
 
-            # Do not call the no.cov function as the LL is different
+            l.LL.call.data <- clv.fitted.transactions.static.cov.compressed.ll.data(clv.fitted)
 
             # Everything to call the LL function
             optimx.args <- modifyList(prepared.optimx.args,
@@ -88,14 +88,13 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
                                         LL.params.names.ordered = c(clv.model@names.prefixed.params.model,
                                                                     clv.fitted@names.prefixed.params.after.constr.life,
                                                                     clv.fitted@names.prefixed.params.after.constr.trans),
-                                        vX      = clv.fitted@cbs$x,
-                                        vT_x    = clv.fitted@cbs$t.x,
-                                        vT_cal  = clv.fitted@cbs$T.cal,
+                                        vX      = l.LL.call.data$cbs$x,
+                                        vT_x    = l.LL.call.data$cbs$t.x,
+                                        vT_cal  = l.LL.call.data$cbs$T.cal,
+                                        vN  = l.LL.call.data$cbs$n,
 
-                                        mCov_life  = clv.data.get.matrix.data.cov.life(clv.data = clv.fitted@clv.data, correct.row.names=clv.fitted@cbs$Id,
-                                                                                       correct.col.names=clv.data.get.names.cov.life(clv.fitted@clv.data)),
-                                        mCov_trans = clv.data.get.matrix.data.cov.trans(clv.data = clv.fitted@clv.data, correct.row.names=clv.fitted@cbs$Id,
-                                                                                        correct.col.names=clv.data.get.names.cov.trans(clv.fitted@clv.data))),
+                                        mCov_life  = l.LL.call.data$m.cov.life,
+                                        mCov_trans = l.LL.call.data$m.cov.trans),
                                       keep.null = TRUE)
             return(optimx.args)
           })
