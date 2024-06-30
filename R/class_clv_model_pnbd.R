@@ -14,6 +14,8 @@ clv.model.pnbd.no.cov <- function(){
 
   return(new("clv.model.pnbd.no.cov",
              name.model                  = "Pareto/NBD Standard",
+             fn.model.generic            = pnbd,
+
              names.original.params.model = c(r="r", alpha="alpha", s="s", beta="beta"),
              names.prefixed.params.model = c("log.r","log.alpha", "log.s", "log.beta"),
              start.params.model          = c(r=0.5, alpha=15, s=0.5, beta=10),

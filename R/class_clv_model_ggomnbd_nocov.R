@@ -12,6 +12,7 @@ setClass(Class = "clv.model.ggomnbd.no.cov", contains = "clv.model.no.correlatio
 clv.model.ggomnbd.no.cov <- function(){
   return(new("clv.model.ggomnbd.no.cov",
              name.model = "GGompertz/NBD Standard",
+             fn.model.generic = ggomnbd,
              names.original.params.model = c(r="r", alpha="alpha", b="b", s="s", beta="beta"),
              names.prefixed.params.model = c("log.r","log.alpha", "log.b", "log.s", "log.beta"),
              start.params.model          = c(r=0.5, alpha=2, b=0.1, s=1, beta=0.1),

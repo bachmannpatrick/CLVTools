@@ -184,20 +184,44 @@ clv.data.aggregate.transactions <- function(dt.transactions, has.spending){
 # Interpurchase time, for repeaters only
 #   Time between consecutive purchases of each customer - convert to intervals then time units
 #   If zero-repeaters (only 1 trans) set NA to ignore it in mean / sd calculations
-#' @importFrom lubridate int_diff
+#' @importFrom lubridate interval
 clv.data.mean.interpurchase.times <- function(clv.data, dt.transactions){
-  Id <- num.trans <- Date <- NULL
+  Id <- num.trans <- Date <- next.date <- interp.time <- NULL
 
   num.transactions <- dt.transactions[, list(num.trans = .N), by="Id"]
 
-  return(rbindlist(list(
-    # 1 Transaction = NA
-    dt.transactions[Id %in% num.transactions[num.trans == 1,Id], list(interp.time = NA_real_, Id)],
-    dt.transactions[Id %in% num.transactions[num.trans >  1,Id],
-                    list(interp.time = mean(clv.time.interval.in.number.tu(clv.time = clv.data@clv.time,
-                                                                        interv = int_diff(Date)))),
-                    by="Id"]
-  ), use.names = TRUE))
+  # Single Transaction = NA
+  dt.interp.zrep <- dt.transactions[Id %in% num.transactions[num.trans == 1,Id], list(interp.time = NA_real_, Id)]
+
+  # For > 1 transaction, calculate interpurchase time
+  # copy because manipulating in-place with `:=`
+  # do mem-heavy ops (shift) not in `by='Id'` but in single step
+  dt.interp <- copy(dt.transactions[Id %in% num.transactions[num.trans >  1,Id]])
+  # needs to be sorted by Id and Date for shift() to produce correct results.
+  # Most of the times, the input is already keyed on exactly these.
+  setkeyv(dt.interp, c('Id', 'Date'))
+
+
+
+  # Replace: dt.interp[, next.date := shift(Date, type = 'lead'), by='Id']
+  # Markus' idea: Avoid doing shift() `by=Id` by shift()ing across whole table and
+  # correcting last transaction for each customer which is wrong. It now
+  # contains transaction date of next customer but should be NA instead.
+  # This was benchmarked to be about 4-5x faster.
+  dt.interp[, next.date := shift(Date, type = 'lead')]
+
+  # Find position (index) of last transaction of each customer by num of transactions.
+  idx.last.trans <- cumsum(dt.interp[, .N, keyby='Id']$N)
+  dt.interp[idx.last.trans, next.date := NA]
+
+
+  dt.interp[, interp.time := clv.time.interval.in.number.tu(clv.time = clv.data@clv.time, interv=interval(start=Date, end = next.date))]
+  dt.interp <- dt.interp[, list(interp.time = mean(interp.time, na.rm=TRUE)), by='Id']
+
+  # Using this single-liner would as intermediate results also require to allocate the same memory (Id, Date, next.Date)
+  # dt.transactions[Id%in% num.transactions[num.trans >  1,Id], .(Id, Date, next.date = shift(Date, type = 'lead')), by='Id'][, .(Id, interp = time_length(interval(start=Date, end = next.date), 'week'))][, mean(interp, na.rm=T), by='Id']
+
+  return(rbindlist(list(dt.interp.zrep, dt.interp), use.names = TRUE))
 }
 
 #' @importFrom stats sd

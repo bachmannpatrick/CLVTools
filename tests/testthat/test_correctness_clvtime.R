@@ -40,9 +40,11 @@ for(clv.t in c(fct.helper.clv.time.create.test.objects(with.holdout = FALSE),
     fct.testthat.correctness.clvtime.convert.user.input.chars.to.date(clv.t)
     fct.testthat.correctness.clvtime.convert.user.input.posixct.to.date(clv.t)
     fct.testthat.correctness.clvtime.convert.user.input.date.to.date(clv.t)
+    fct.testthat.correctness.clvtime.convert.user.input.IDate.to.date(clv.t)
   }else{
     fct.testthat.correctness.clvtime.convert.user.input.chars.to.posixct(clv.t)
     fct.testthat.correctness.clvtime.convert.user.input.date.to.posixct(clv.t)
+    fct.testthat.correctness.clvtime.convert.user.input.IDate.to.posixct(clv.t)
     fct.testthat.correctness.clvtime.convert.user.input.posixct.to.posixct(clv.t)
   }
 }

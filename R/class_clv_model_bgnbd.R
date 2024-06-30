@@ -13,6 +13,7 @@ setClass(Class = "clv.model.bgnbd.no.cov", contains = "clv.model.no.correlation"
 clv.model.bgnbd.no.cov <- function(){
   return(new("clv.model.bgnbd.no.cov",
              name.model = "BG/NBD Standard",
+             fn.model.generic = bgnbd,
              names.original.params.model = c(r="r", alpha="alpha", a="a", b="b"),
              names.prefixed.params.model = c("log.r", "log.alpha", "log.a", "log.b"),
              start.params.model = c(r=1, alpha = 3, a = 1, b = 3)))
