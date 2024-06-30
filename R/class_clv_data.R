@@ -186,7 +186,7 @@ clv.data.aggregate.transactions <- function(dt.transactions, has.spending){
 #   If zero-repeaters (only 1 trans) set NA to ignore it in mean / sd calculations
 #' @importFrom lubridate interval
 clv.data.mean.interpurchase.times <- function(clv.data, dt.transactions){
-  Id <- num.trans <- Date <- NULL
+  Id <- num.trans <- Date <- next.date <- interp.time <- NULL
 
   num.transactions <- dt.transactions[, list(num.trans = .N), by="Id"]
 
