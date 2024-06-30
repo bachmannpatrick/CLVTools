@@ -421,10 +421,25 @@ test_that("New faster mean.interpurchase.times same result as original implement
     ), use.names = TRUE))
   }
 
-  dt.old <- fct.old.interp.time(clv.data = clv.cdnow, dt.transactions = clv.cdnow@data.transactions)
+  # Old method implicitly depended on input data being sorted by (Id, Date)
+  dt.old <- fct.old.interp.time(
+    clv.data = clv.cdnow,
+    dt.transactions = clv.cdnow@data.transactions
+    )
 
-  dt.new <- clv.data.mean.interpurchase.times(clv.data = clv.cdnow, dt.transactions = clv.cdnow@data.transactions)
+  # Sort by Price instead for new to show it is also correct if input is not
+  # ordered by Id, Date
+  dt.new <- clv.data.mean.interpurchase.times(
+    clv.data = clv.cdnow,
+    dt.transactions = clv.cdnow@data.transactions[order(Price)]
+    )
+  # Need to sort by Id because result order depends on order of input data
+  expect_equal(
+    object = dt.new[order(Id)],
+    expected = dt.old[order(Id)],
+    tolerance = testthat_tolerance()
+    )
 
-  expect_equal(object = dt.new, expected = dt.old, tolerance = testthat_tolerance())
+
 
 })
