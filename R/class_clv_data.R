@@ -200,7 +200,21 @@ clv.data.mean.interpurchase.times <- function(clv.data, dt.transactions){
   # needs to be sorted by Id and Date for shift() to produce correct results.
   # Most of the times, the input is already keyed on exactly these.
   setkeyv(dt.interp, c('Id', 'Date'))
-  dt.interp[, next.date := shift(Date, type = 'lead'), by='Id']
+
+
+
+  # Replace: dt.interp[, next.date := shift(Date, type = 'lead'), by='Id']
+  # Markus' idea: Avoid doing shift() `by=Id` by shift()ing across whole table and
+  # correcting last transaction for each customer which is wrong. It now
+  # contains transaction date of next customer but should be NA instead.
+  # This was benchmarked to be about 4-5x faster.
+  dt.interp[, next.date := shift(Date, type = 'lead')]
+
+  # Find position (index) of last transaction of each customer by num of transactions.
+  idx.last.trans <- cumsum(dt.interp[, .N, keyby='Id']$N)
+  dt.interp[idx.last.trans, next.date := NA]
+
+
   dt.interp[, interp.time := clv.time.interval.in.number.tu(clv.time = clv.data@clv.time, interv=interval(start=Date, end = next.date))]
   dt.interp <- dt.interp[, list(interp.time = mean(interp.time, na.rm=TRUE)), by='Id']
 
