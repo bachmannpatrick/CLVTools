@@ -51,7 +51,10 @@ test_that("Sampling keeps holdout (repeat) transactions", {
 
   # customers which make holdout transactions
   expect_silent(clv.sampled <- clv.data.create.bootstrapping.data(clv.cdnow, ids=c("1000", "990")))
-  expect_true(clv.sampled@data.transactions[Date >= clv.cdnow@clv.time@timepoint.estimation.end, .N] == 8)
+
+  dt.original.holdout <- clv.data.get.transactions.in.holdout.period(clv.cdnow)
+  dt.sampled.holdout <- clv.data.get.transactions.in.holdout.period(clv.sampled)
+  expect_equal(dt.sampled.holdout, dt.original.holdout[c("1000", "990"), on="Id"])
 })
 
 test_that("Passing non-existent Ids does not create them in the transcation data", {
@@ -360,15 +363,19 @@ gg.cdnow <- fit.cdnow(cdnow, estimation.split = 37, model=gg, optimx.args = opti
 
 test_that("Sampling all customers leads to same model estimate (nocov, static cov, dyncov, spending)", {
 
-  for(clv.fitted in list(bg.cdnow, bg.apparel.static, gg.cdnow)){
-    if(is(clv.fitted, "clv.pnbd.dynamic.cov")){
-      # re-uses optimx.args which does not calculate hessian
-      fn.expect <- function(fn){expect_warning(fn, regexp = 'Hessian')}
-    }else{
-      fn.expect <- expect_silent
+  for(clv.fitted in list(bg.cdnow, bg.apparel.static, p.apparel.dyn, gg.cdnow)){
+
+    fn.sample.all <- function(){
+      return(clv.bootstrapped.apply(clv.fitted, num.boot = 1, fn.boot.apply = coef, fn.sample = function(ids){return(ids)})[[1]])
     }
 
-    boots.coef <- fn.expect(clv.bootstrapped.apply(clv.fitted, num.boot = 1, fn.boot.apply = coef, fn.sample = function(ids){return(ids)})[[1]])
+    if(is(clv.fitted, "clv.pnbd.dynamic.cov")){
+      # re-uses optimx.args which does not calculate hessian
+      expect_warning(boots.coef <- fn.sample.all(), regexp = 'Hessian')
+    }else{
+      expect_silent(boots.coef <- fn.sample.all())
+    }
+
     expect_equal(coef(clv.fitted), boots.coef)
   }
 })
