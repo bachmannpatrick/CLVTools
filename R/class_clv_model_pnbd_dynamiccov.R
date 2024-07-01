@@ -49,7 +49,7 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
                                                                     clv.fitted@names.prefixed.params.after.constr.life,
                                                                     clv.fitted@names.prefixed.params.after.constr.trans)))
 
-            l.dyncov.args <- pnbd_dyncov_getLLcallargs(clv.fitted)
+            l.dyncov.args <- pnbd_dyncov_getLLcallargs_LLsum(clv.fitted)
             optimx.args <- modifyList(optimx.args, l.dyncov.args)
 
 

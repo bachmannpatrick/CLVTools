@@ -35,6 +35,9 @@ interlayer_regularization <- function(next.interlayers, LL.params, LL.function.s
   reg.term <- reg.lambda.trans*t(params.cov.trans)%*%params.cov.trans + reg.lambda.life*t(params.cov.life)%*%params.cov.life
   reg.term <- as.vector(reg.term)
 
+  # Although we use the compressed CBS and only calculate the LL for unique data,
+  # num.observations is the real number of all customers and LL.value is already
+  # multiplied with vN. Therefore, nothing needs to be adapted here.
   avg.LL.value <- LL.value / num.observations
 
   # Return sum of LL and regterm

@@ -297,6 +297,7 @@ arma::vec pnbd_staticcov_expectation(const double r,
 //' @template template_titleparamsdescriptionreturndetails_LL
 //'
 //' @template template_params_rcppxtxtcal
+//' @template template_param_rcppvn
 //' @template template_params_rcppcovmatrix
 //'
 //' @templateVar name_params_cov_life vParams
@@ -454,13 +455,14 @@ arma::vec pnbd_nocov_LL_ind(const arma::vec& vLogparams,
 double pnbd_nocov_LL_sum(const arma::vec& vLogparams,
                          const arma::vec& vX,
                          const arma::vec& vT_x,
-                         const arma::vec& vT_cal){
+                         const arma::vec& vT_cal,
+                         const arma::vec& vN){
 
   const arma::vec vLL = pnbd_nocov_LL_ind(vLogparams,
                                           vX,
                                           vT_x,
                                           vT_cal);
-  return(-arma::sum(vLL));
+  return(-arma::sum(vLL % vN));
 }
 
 
@@ -503,6 +505,7 @@ double pnbd_staticcov_LL_sum(const arma::vec& vParams,
                              const arma::vec& vX,
                              const arma::vec& vT_x,
                              const arma::vec& vT_cal,
+                             const arma::vec& vN,
                              const arma::mat& mCov_life,
                              const arma::mat& mCov_trans){
 
@@ -515,7 +518,7 @@ double pnbd_staticcov_LL_sum(const arma::vec& vParams,
                                               mCov_life,
                                               mCov_trans);
 
-  return(-arma::sum(vLL));
+  return(-arma::sum(vLL % vN));
 }
 
 // [[Rcpp::export]]

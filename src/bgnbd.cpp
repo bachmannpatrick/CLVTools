@@ -240,6 +240,7 @@ arma::vec bgnbd_staticcov_PAlive(const double r,
 //' @template template_titleparamsdescriptionreturndetails_LL
 //'
 //' @template template_params_rcppxtxtcal
+//' @template template_param_rcppvn
 //' @template template_params_rcppcovmatrix
 //'
 //' @templateVar name_params_cov_life vLogparams
@@ -292,14 +293,15 @@ arma::vec bgnbd_nocov_LL_ind(const arma::vec& vLogparams,
 double bgnbd_nocov_LL_sum(const arma::vec& vLogparams,
                           const arma::vec& vX,
                           const arma::vec& vT_x,
-                          const arma::vec& vT_cal){
+                          const arma::vec& vT_cal,
+                          const arma::vec& vN){
 
   const arma::vec vLL = bgnbd_nocov_LL_ind(vLogparams,
                                            vX,
                                            vT_x,
                                            vT_cal);
 
-  return(-arma::sum(vLL));
+  return(-arma::sum(vLL % vN));
 }
 
 //' @rdname bgnbd_LL
@@ -342,6 +344,7 @@ double bgnbd_staticcov_LL_sum(const arma::vec& vParams,
                               const arma::vec& vX,
                               const arma::vec& vT_x,
                               const arma::vec& vT_cal,
+                              const arma::vec& vN,
                               const arma::mat& mCov_life,
                               const arma::mat& mCov_trans){
   const arma::vec vLL = bgnbd_staticcov_LL_ind(vParams,
@@ -351,7 +354,7 @@ double bgnbd_staticcov_LL_sum(const arma::vec& vParams,
                                                mCov_life,
                                                mCov_trans);
 
-  return(-arma::sum(vLL));
+  return(-arma::sum(vLL % vN));
 }
 
 
