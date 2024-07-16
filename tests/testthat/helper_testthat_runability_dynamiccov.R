@@ -41,6 +41,8 @@ fct.testthat.runability.dynamiccov.predict.newdata.works <- function(clv.fitted,
   clv.dyncov.sample <- fct.helper.create.clvdata.apparel.dyncov(
     data.apparelTrans=data.apparelTrans[Id %in% sample.ids],
     data.apparelDynCov=data.apparelDynCov[Id %in% sample.ids],
+    names.cov.life=names(clv.fitted@prediction.params.life),
+    names.cov.trans=names(clv.fitted@prediction.params.trans),
     # Estimation split exactly the same as the one for fitting
     estimation.split = clv.fitted@clv.data@clv.time@timepoint.estimation.end)
 
@@ -111,5 +113,67 @@ fct.testthat.runability.dynamiccov.can.predict.plot.beyond.holdout <- function(d
     expect_true(dt.predict[, max(period.last)] > fitted.dyncov@clv.data@clv.time@timepoint.holdout.end)
   })
 
+}
+
+
+
+fct.helper.runability.dyncov.all.downstream <- function(fitted.dyncov, names.params){
+
+  apparelTrans <- fct.helper.load.apparelTrans()
+  apparelDynCov <- fct.helper.load.apparelDynCov()
+
+  # Standard S3 tests ---------------------------------------------------------------
+
+  # Run the standard S3 tests on the fitted model,
+  #   but not plot() and predict() which takes too long.
+  #   also plot() produces all NAs if quickfit is used
+  .fct.helper.clvfitted.all.s3.except.plot.and.predict(
+    clv.fitted=fitted.dyncov,
+    full.names=names.params
+  )
+
+  # Cannot check if LLsum is correct because may be called with regularization
+  # and then is not expected to be same as LLdata[, sum(LL)]
+
+
+  # Plot ------------------------------------------------------------------
+  fct.testthat.runability.dynamiccov.plot.works(clv.fitted = fitted.dyncov)
+
+  fct.testthat.runability.dynamiccov.plot.has.0.repeat.transactions.expectations(clv.fitted = fitted.dyncov)
+
+
+  # Predict ----------------------------------------------------------------
+  fct.testthat.runability.dynamiccov.predict.works(clv.fitted = fitted.dyncov)
+
+  fct.testthat.runability.dynamiccov.predict.newdata.works(
+    clv.fitted = fitted.dyncov,
+    data.apparelTrans = apparelTrans,
+    data.apparelDynCov = apparelDynCov
+  )
+
+
+  # Newdata ----------------------------------------------------------------------------------------------------------
+  apparelDynCov.extra <- fct.helper.dyncov.create.longer.dyncov.data(
+    num.additional = 100,
+    data.apparelDynCov = apparelDynCov
+  )
+  clv.data.extra <- fct.helper.create.clvdata.apparel.dyncov(
+    data.apparelTrans=apparelTrans,
+    data.apparelDynCov=apparelDynCov.extra,
+    names.cov.life=names(fitted.dyncov@prediction.params.life),
+    names.cov.trans=names(fitted.dyncov@prediction.params.trans),
+    estimation.split=38
+  )
+
+  fct.testthat.runability.dynamiccov.predict.longer.with.newdata(clv.fitted = fitted.dyncov, clv.data.extra = clv.data.extra)
+
+  fct.testthat.runability.dynamiccov.plot.longer.with.newdata(clv.fitted = fitted.dyncov, clv.data.extra = clv.data.extra)
+
+
+
+  # Overlong data ------------------------------------------------------------------------------
+  # Cannot do without holdout because takes too long to estimate
+  fct.testthat.runability.dynamiccov.can.predict.plot.beyond.holdout(data.apparelTrans=apparelTrans,
+                                                                     apparelDynCov.extra=apparelDynCov.extra)
 }
 
