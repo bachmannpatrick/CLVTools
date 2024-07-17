@@ -74,8 +74,9 @@ clv.bootstrapped.apply <- function(object, num.boot, fn.boot.apply, fn.sample=NU
   # cran silence
   Id <- NULL
 
-  # TODO [test]: Test that works for transaction and spending model
-  # TODO [test]: Test that works for static and dynamic covariate models
+  check_err_msg(check_user_data_numboots(num.boots=num.boot))
+  check_err_msg(check_user_data_fnbootapply(fn.boot.apply=fn.boot.apply))
+  check_err_msg(check_user_data_fnsample(fn.sample=fn.sample))
 
   if(is.null(fn.sample)){
     fn.sample <- function(x){
@@ -85,7 +86,7 @@ clv.bootstrapped.apply <- function(object, num.boot, fn.boot.apply, fn.sample=NU
 
   ids <- object@cbs[, unique(Id)]
 
-  l.boots <- lapply(seq(num.boot), function(i){
+  l.boots <- lapply(seq_len(num.boot), function(i){
 
     clv.data.boot <- clv.data.create.bootstrapping.data(
       clv.data = object@clv.data,

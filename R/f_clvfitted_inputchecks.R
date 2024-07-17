@@ -236,6 +236,36 @@ check_user_data_numboots <- function(num.boots){
   return(err.msg)
 }
 
+check_user_data_fnbootapply <- function(fn.boot.apply){
+  if(missing(fn.boot.apply)){
+    return("Parameter fn.boot.apply cannot be missing!")
+  }
+
+  if(!is.function(fn.boot.apply)){
+    return("Parameter fn.boot.apply has to be a function!")
+  }
+  return(c())
+}
+
+
+check_user_data_fnsample <- function(fn.sample){
+  # may be NULL
+  if(is.null(fn.sample)){
+    return()
+  }
+
+  if(missing(fn.sample)){
+    return("Parameter fn.sample cannot be missing!")
+  }
+
+  if(!is.function(fn.sample)){
+    return("Parameter fn.sample has to be a function!")
+  }
+  return(c())
+}
+
+
+
 check_user_data_level <- function(level){
   if(missing(level)){
     return("Parameter level cannot be missing!")
