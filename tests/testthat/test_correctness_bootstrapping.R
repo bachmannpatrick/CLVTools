@@ -9,13 +9,19 @@ data("apparelDynCov")
 optimx.args.fast <- list(method='Nelder-Mead', itnmax=25, hessian=FALSE)
 
 # create with holdout
-clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split=37)
+clv.cdnow <- fct.helper.create.clvdata.cdnow(estimation.split=37)
 
 # create with different covs for both processes
-clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(apparelTrans, apparelStaticCov, estimation.split = 40,
-                                                               names.cov.life = c("Gender"), names.cov.trans = c("Gender", "Channel"))
-clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(apparelTrans, apparelDynCov, estimation.split = 40,
-                                                            names.cov.life = c("Gender"), names.cov.trans = c("Gender", "Channel"))
+clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(
+  estimation.split = 40,
+  names.cov.life = c("Gender"),
+  names.cov.trans = c("Gender", "Channel")
+)
+clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(
+  estimation.split = 40,
+  names.cov.life = c("Gender"),
+  names.cov.trans = c("Gender", "Channel")
+)
 
 
 
@@ -373,6 +379,7 @@ test_that("Correct args for spending models", {
 # clv.bootstrapped.apply ---------------------------------------------------------
 
 # with holdout
+p.cdnow <- fit.cdnow(cdnow, estimation.split = 37, model=pnbd, optimx.args = optimx.args.fast)
 bg.cdnow <- fit.cdnow(cdnow, estimation.split = 37, model=bgnbd, optimx.args = optimx.args.fast)
 bg.apparel.static <- fit.apparel.static(model = bgnbd, optimx.args = optimx.args.fast)
 p.apparel.dyn <- fit.apparel.dyncov.quick(hessian=FALSE)
@@ -420,19 +427,68 @@ test_that("Predict to same prediction end if given num periods even if sampled t
 # predict -----------------------------------------------------------------------------
 
 test_that("Bootstrapped predictions have correct format", {
+  set.seed(42)
 
-  # test_that("Remains silent (no progress bar) with verbose=FALSE")
+  # Remains silent (no progress bar) with verbose=FALSE
   expect_warning(
-    dt.pred.boots.1 <- predict(bg.cdnow, verbose=FALSE, uncertainty="boots", num.boots=1, predict.spending=FALSE),
+    dt.pred.boots.1 <- predict(
+      p.cdnow, # requires pnbd because dert not available for bgnbd
+      verbose=FALSE,
+      uncertainty="boots",
+      num.boots=1,
+      predict.spending=TRUE,
+      level=0.7
+    ),
     regexp = "1000 or more"
   )
 
-  # test_that("No Id in prediction contains _BOOTSTRAP_ID_ anymore")
+  # No Id in prediction contains _BOOTSTRAP_ID_ anymore
   expect_length(dt.pred.boots.1[, grep(pattern = "BOOTSTRAP_ID", x = Id)], n = 0)
 
-  # test_that("Customers which are not sampled are still present in the predictions")
-  # There is no guarantee that not all customers are sampled but its very, very unlikely that all customers are sampled
+  # correct CI labels: Names based on level and for all predicted metrics
+  ci.cols <- c('DERT', 'CET', "PAlive", "predicted.CLV", "predicted.mean.spending")
+  ci.cols <- unlist(lapply(ci.cols, function(x){paste0(x, ".CI.", c(15, 85))}))
+  expect_contains(colnames(dt.pred.boots.1), ci.cols)
+
+  # Customers which are not sampled are still present in the predictions
+  # There is no guarantee that not all customers are sampled but its very, very
+  # unlikely that all customers are sampled (fixed with set.seed)
   expect_setequal(dt.pred.boots.1$Id, bg.cdnow@cbs$Id)
-  # some are not sampled and have NAs in the CI columns (also relevant to make sure some were indeed not sampled and then not lost)
-  expect_true(anyNA(dt.pred.boots.1[, "CET.CI.5"]))
+  # some are not sampled and have NAs in the CI columns (also relevant to make
+  # sure some were indeed not sampled and then not lost)
+  expect_true(anyNA(dt.pred.boots.1[, "CET.CI.15"]))
+
+
 })
+
+test_that("Bootstrapped predictions lower CI < upper CI", {
+  set.seed(42)
+
+  expect_warning(
+    dt.pred.boots.5 <- predict(
+      p.cdnow, # requires pnbd because dert not available for bgnbd
+      verbose=FALSE,
+      uncertainty="boots",
+      num.boots=5,
+      predict.spending=TRUE,
+      level=0.7
+    ),
+    regexp = "1000 or more"
+  )
+
+  # only such where there are predictions
+  dt.pred.boots.5 <- dt.pred.boots.5[rowSums(is.na(dt.pred.boots.5), na.rm = FALSE) == 0]
+
+  # exclude ids which were sampled only once
+  dt.pred.boots.5 <- dt.pred.boots.5[CET.CI.15 != CET.CI.85]
+
+  # Cannot check PAlive because for zero repeaters (x=0) there are no repeat
+  # transactions to sample and their PAlive will always be the same
+  ci.cols <- c('DERT', 'CET', "predicted.CLV", "predicted.mean.spending")
+  for(col in ci.cols){
+    expect_true(all(
+      dt.pred.boots.5[[paste0(col, ".CI.15")]] < dt.pred.boots.5[[paste0(col, ".CI.85")]]
+    ))
+  }
+})
+
