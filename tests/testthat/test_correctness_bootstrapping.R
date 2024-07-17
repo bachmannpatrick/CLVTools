@@ -132,6 +132,23 @@ test_that("Sampling with and without replacement selects static covariates of th
 })
 
 
+test_that("Static covariates are sorted same as cbs", {
+  # this went undetected for some time
+
+  all.ids <- unique(clv.apparel.cov@data.transactions[, Id])
+  expect_silent(
+    clv.sampled <- clv.data.create.bootstrapping.data(
+      clv.apparel.cov,
+      ids=c(all.ids, all.ids) # duplicate ids to also have `1_BOOTS...`
+  ))
+
+  dt.cbs <- pnbd_cbs(clv.sampled)
+
+  expect_true(all(dt.cbs$Id == clv.sampled@data.cov.life$Id))
+  expect_true(all(dt.cbs$Id == clv.sampled@data.cov.trans$Id))
+})
+
+
 test_that("Sampling selects correct dynamic covariates", {
   skip_on_cran()
 
