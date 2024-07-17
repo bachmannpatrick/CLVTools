@@ -84,11 +84,11 @@ test_that("Dyncov works with additional model specifications", {
   fn.fit.dyncov.spec(names.cov.constr = "Gender")
 
   # correlation ----------------------------------------------------------------
-  # fn.fit.dyncov.spec(use.cor=TRUE)
+  fn.fit.dyncov.spec(use.cor=TRUE)
   #
   # # combination ----------------------------------------------------------------
-  # fn.fit.dyncov.spec(
-  #   use.cor=TRUE,
-  #   names.cov.constr = "Gender",
-  #   reg.lambda = c(trans=10, life=20))
+  fn.fit.dyncov.spec(
+    use.cor=TRUE,
+    names.cov.constr = "Gender",
+    reg.lambda = c(trans=10, life=20))
 })
