@@ -45,6 +45,7 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
                                       list(
                                         LL.function.sum = pnbd_dyncov_LL_negsum,
                                         LL.function.ind = pnbd_dyncov_LL_ind, # if doing correlation
+                                        obj = clv.fitted, # the full object is required for the correlation interlayer
                                         LL.params.names.ordered = c(clv.model@names.prefixed.params.model,
                                                                     clv.fitted@names.prefixed.params.after.constr.life,
                                                                     clv.fitted@names.prefixed.params.after.constr.trans)))
