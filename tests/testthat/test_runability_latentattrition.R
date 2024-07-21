@@ -92,6 +92,6 @@ clv.apparel.dyn.cov <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTran
 
 test_that("Works with . and excluding covs", {
   skip_on_cran()
-  expect_warning(latentAttrition(formula=~.-Gender|., family=pnbd, data=clv.apparel.dyn.cov, verbose=FALSE, optimx.args = fct.helper.dyncov.get.optimxargs.quickfit()), "Hessian")
-  expect_warning(latentAttrition(formula=~Channel|.-Gender, family=pnbd, data=clv.apparel.dyn.cov, verbose=FALSE, optimx.args = fct.helper.dyncov.get.optimxargs.quickfit()), "Hessian")
+  expect_warning(latentAttrition(formula=~.-Gender|., family=pnbd, data=clv.apparel.dyn.cov, verbose=FALSE, optimx.args = fct.helper.dyncov.get.optimxargs.quickfit(hessian=FALSE)), "Hessian")
+  expect_warning(latentAttrition(formula=~Channel|.-Gender, family=pnbd, data=clv.apparel.dyn.cov, verbose=FALSE, optimx.args = fct.helper.dyncov.get.optimxargs.quickfit(hessian=FALSE)), "Hessian")
 })
