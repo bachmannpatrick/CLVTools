@@ -2,7 +2,7 @@ skip_on_cran()
 
 # for bootstrapping, seed is important. Otherwise, may yield unfortunate samples
 # for which the estimation fails
-set.seed(123)
+set.seed(124)
 
 
 
@@ -22,6 +22,24 @@ fct.testthat.downstream.methods.work.on.boots <- function(clv.fitted, newdata.no
       )
       return(NULL)
     })
+  })
+}
+
+fct.testthat.clv.bootstrapped.apply.ellipsis.works <- function(clv.fitted){
+
+  test_that("Can pass additional args to the optimization through ellipsis arg", {
+
+    # use an optimization method not used anywhere else
+    # the optimx.args used during the original optimization are kept (overwritten with `modifyList`)
+
+    expect_warning(l.boots <- clv.bootstrapped.apply(
+      clv.fitted,
+      num.boot=1,
+      fn.boot.apply=function(o){return(o)},
+      optimx.args=list(method='CG', itnmax=5, hessian=FALSE, control=list(kkt=FALSE))
+    ), regexp = 'Hessian')
+
+    expect_true(rownames(l.boots[[1]]@optimx.estimation.output) == 'CG')
   })
 }
 
@@ -76,11 +94,15 @@ for(clv.fitted in list(
   )){
 
   # . clv.bootstrapped.apply ----------------------------------------------------
-  # fct.testthat.downstream.methods.work.on.boots(
-  #   clv.fitted = clv.fitted,
-  #   newdata.nohold = clv.apparel.nocov.no.holdout,
-  #   newdata.withhold = clv.apparel.nocov.holdout
-  # )
+  fct.testthat.downstream.methods.work.on.boots(
+    clv.fitted = clv.fitted,
+    newdata.nohold = clv.apparel.nocov.no.holdout,
+    newdata.withhold = clv.apparel.nocov.holdout
+  )
+
+  fct.testthat.clv.bootstrapped.apply.ellipsis.works(
+    clv.fitted = clv.fitted
+  )
 
 
   # . predict -----------------------------------------------------------------
@@ -107,12 +129,15 @@ for(clv.fitted in list(
   )){
 
   # . clv.bootstrapped.apply ----------------------------------------------------
-  # fct.testthat.downstream.methods.work.on.boots(
-  #   clv.fitted = clv.fitted,
-  #   newdata.nohold = clv.apparel.static.no.holdout,
-  #   newdata.withhold = clv.apparel.static.holdout
-  # )
+  fct.testthat.downstream.methods.work.on.boots(
+    clv.fitted = clv.fitted,
+    newdata.nohold = clv.apparel.static.no.holdout,
+    newdata.withhold = clv.apparel.static.holdout
+  )
 
+  fct.testthat.clv.bootstrapped.apply.ellipsis.works(
+    clv.fitted = clv.fitted
+  )
 
   # . predict -----------------------------------------------------------------
   test_that("predict bootstrapping works for static cov models", {
@@ -179,6 +204,10 @@ for(clv.fitted in list(
   }), regexp = "Hessian could not")
 
 
+  fct.testthat.clv.bootstrapped.apply.ellipsis.works(
+    clv.fitted = clv.fitted
+  )
+
   # . predict -----------------------------------------------------------------
 
   if(clv.data.has.holdout(clv.fitted@clv.data)){
@@ -217,6 +246,10 @@ for(clv.fitted in list(
     return(NULL)
   })
 
+  fct.testthat.clv.bootstrapped.apply.ellipsis.works(
+    clv.fitted = clv.fitted
+  )
+
 
   # . predict -----------------------------------------------------------------
   expect_warning(predict(clv.fitted, uncertainty='boots', num.boots=2, verbose=FALSE), regexp = "It is recommended")
@@ -230,7 +263,7 @@ for(clv.fitted in list(
 # - regularization
 # - combinations
 
-test_that("", {
+test_that("predict(boots) works on all model specifications", {
   fn.predict.boots <- function(clv.fitted){
     expect_warning(predict(clv.fitted, uncertainty='boots', num.boots=2, verbose=FALSE), regexp = 'recommended to run')
   }
@@ -248,7 +281,7 @@ test_that("", {
     model=pnbd,
     use.cor=TRUE,
     names.cov.constr = "Gender",
-    reg.lambdas = c(trans=10, life=20),
+    reg.lambdas = c(trans=20, life=30),
     verbose=FALSE)
   fn.predict.boots(p.combo)
 
