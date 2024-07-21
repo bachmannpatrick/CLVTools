@@ -1,6 +1,8 @@
 # clv.bootstrapped.apply -------------------------------------------------------
 
-bg.cdnow <- fit.cdnow(model=bgnbd)
+# with holdout to not require `prediction.end` and can use same call to `predict`
+# also for spending model
+bg.cdnow <- fit.cdnow(model=bgnbd, estimation.split=37)
 
 test_that("clv.bootstrapped.apply(num.boot) may only be an integer > 0", {
   fn.expect.num.boot.greater0 <- function(n){
@@ -57,3 +59,70 @@ test_that("clv.bootstrapped.apply(fn.sample) may only be a function", {
 
 
 # predict ----------------------------------------------------------------------
+
+# . transaction model ----------------------------------------------------------
+
+test_that("predict(uncertainty) one of allowed inputs", {
+  fn.expect.predict.uncertainty <- function(clv.fitted, u){
+    expect_error(predict(
+      clv.fitted,
+      uncertainty=u,
+    ), regexp = "uncertainty")
+  }
+
+  for(clv.fitted in list(bg.cdnow, gg.cdnow)){
+    fn.expect.predict.uncertainty(clv.fitted, NULL)
+    fn.expect.predict.uncertainty(clv.fitted, NA)
+    fn.expect.predict.uncertainty(clv.fitted, FALSE)
+    fn.expect.predict.uncertainty(clv.fitted, TRUE)
+    fn.expect.predict.uncertainty(clv.fitted, "yes")
+    fn.expect.predict.uncertainty(clv.fitted, "bootstrapping")
+  }
+})
+
+
+test_that("predict(level) is single numeric in range [0, 1]", {
+  fn.expect.predict.level <- function(clv.fitted, l){
+    expect_error(predict(
+      clv.fitted,
+      uncertainty='boots',
+      level=l
+    ), regexp = "level")
+  }
+
+  for(clv.fitted in list(bg.cdnow, gg.cdnow)){
+    fn.expect.predict.level(clv.fitted, l=)
+    fn.expect.predict.level(clv.fitted, NULL)
+    fn.expect.predict.level(clv.fitted, NA)
+    fn.expect.predict.level(clv.fitted, NA_real_)
+    fn.expect.predict.level(clv.fitted, -1)
+    fn.expect.predict.level(clv.fitted, -0.4)
+    fn.expect.predict.level(clv.fitted, 1.1)
+  }
+
+})
+
+test_that("predict(num.boots) is single positive integer", {
+  fn.expect.predict.num.boots <- function(clv.fitted, n){
+    expect_error(predict(
+      clv.fitted,
+      uncertainty='boots',
+      num.boots=n
+    ), regexp = "num.boots")
+  }
+
+  for(clv.fitted in list(bg.cdnow, gg.cdnow)){
+    fn.expect.predict.num.boots(clv.fitted)
+    fn.expect.predict.num.boots(clv.fitted, NULL)
+    fn.expect.predict.num.boots(clv.fitted, NA)
+    fn.expect.predict.num.boots(clv.fitted, NA_integer_)
+    fn.expect.predict.num.boots(clv.fitted, 0)
+    fn.expect.predict.num.boots(clv.fitted, -1)
+    fn.expect.predict.num.boots(clv.fitted, 1.23)
+    fn.expect.predict.num.boots(clv.fitted, 0.23)
+  }
+})
+
+
+
+

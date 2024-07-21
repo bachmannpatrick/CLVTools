@@ -177,7 +177,7 @@ predict.clv.fitted.transactions <- function(object, newdata=NULL, prediction.end
                                             continuous.discount.factor=log(1+0.1), uncertainty=c("none", "boots"), level=0.9, num.boots=100, verbose=TRUE, ...){
 
   check_err_msg(check_user_data_emptyellipsis(...))
-  check_err_msg(.check_userinput_matcharg(char=tolower(uncertainty), choices=c("none", "boots"), var.name="uncertainty"))
+  check_err_msg(check_user_data_uncertainty(uncertainty=uncertainty))
   # match uncertainty to one of the allowed values
   uncertainty <- match.arg(tolower(uncertainty), choices = c("none", "boots"), several.ok = FALSE)
 

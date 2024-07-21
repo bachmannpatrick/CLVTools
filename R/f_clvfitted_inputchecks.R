@@ -283,6 +283,15 @@ check_user_data_level <- function(level){
   return(err.msg)
 }
 
+
+check_user_data_uncertainty <- function(uncertainty){
+  if(missing(uncertainty)){
+    return("Parameter uncertainty cannot be missing!")
+  }
+
+  return(.check_userinput_matcharg(char=uncertainty, choices=c("none", "boots"), var.name="uncertainty"))
+}
+
 check_user_data_startparamcorm <- function(start.param.cor, use.cor){
   err.msg <- c()
   # Null implies that start params need to be generated
