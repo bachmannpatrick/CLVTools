@@ -59,6 +59,7 @@ test_that("clv.bootstrapped.apply(fn.sample) may only be a function", {
 
 
 # predict ----------------------------------------------------------------------
+gg.cdnow <- fit.cdnow(model=gg, estimation.split=37)
 
 # . transaction model ----------------------------------------------------------
 

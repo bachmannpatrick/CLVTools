@@ -293,7 +293,7 @@ test_that("predict(boots) works on all model specifications", {
     names.cov.constr = "Gender",
     reg.lambdas = c(trans=10, life=20),
     verbose=FALSE,
-    optimx.args = fct.helper.dyncov.get.optimxargs.quickfit()
+    optimx.args = fct.helper.dyncov.get.optimxargs.quickfit(hessian=FALSE)
     ))
   # need to catch every warning about hessian in boots with separate expect_warning
   expect_warning(expect_warning(fn.predict.boots(p.dyn.combo), regexp = "Hessian"), regexp = "Hessian")
