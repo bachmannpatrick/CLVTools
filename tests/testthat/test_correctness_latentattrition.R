@@ -121,7 +121,7 @@ clv.dyn.common.cols <- c("Id", "Cov.Date","tp.cov.lower","tp.cov.upper")
 
 .fct.latentattrition.fit.dyncov <- function(formula){
   expect_warning(p.lA <- latentAttrition(formula = formula, family=pnbd, data=clv.apparel.dyn, verbose = FALSE,
-                                         optimx.args = fct.helper.dyncov.get.optimxargs.quickfit()),
+                                         optimx.args = fct.helper.dyncov.get.optimxargs.quickfit(hessian=FALSE)),
     regexp="Hessian")
   return(p.lA)
 }
@@ -129,7 +129,7 @@ clv.dyn.common.cols <- c("Id", "Cov.Date","tp.cov.lower","tp.cov.upper")
 test_that("Same as std interface", {
   skip_on_cran()
 
-  expect_warning(p.std <- pnbd(clv.apparel.dyn, verbose = FALSE, optimx.args=fct.helper.dyncov.get.optimxargs.quickfit()), "Hessian")
+  expect_warning(p.std <- pnbd(clv.apparel.dyn, verbose = FALSE, optimx.args=fct.helper.dyncov.get.optimxargs.quickfit(hessian=FALSE)), "Hessian")
   p.lA <- .fct.latentattrition.fit.dyncov(formula=~.|.)
 
   # all equal but call and runtime

@@ -1,58 +1,95 @@
-# Load Data ------------------------------------------------------------------------------------------------------------------
+# Load Data --------------------------------------------------------------------
 data("apparelTrans")
 data("apparelDynCov")
 
 skip_on_cran()
 
 
-# Basic runability ---------------------------------------------------------------------------------
+# Basic runability of standard specification -----------------------------------
 
-fitted.dyncov <- fct.helper.dyncov.quickfit.apparel.data(data.apparelTrans = apparelTrans,
-                                                         data.apparelDynCov = apparelDynCov,
-                                                         hessian=TRUE)
-
-# Standard S3 tests ---------------------------------------------------------------
-# Run the standard S3 tests on the fitted model,
-#   but not plot() and predict() which takes too long.
-#   also plot() produces all NAs if quickfit is used
-.fct.helper.clvfitted.all.s3.except.plot.and.predict(clv.fitted=fitted.dyncov,
-                                                     full.names=c("r", "alpha", "s", "beta",
-                                                                  "life.High.Season",  "life.Gender", "life.Channel",
-                                                                  "trans.High.Season", "trans.Gender",  "trans.Channel"))
+fitted.dyncov <- fct.helper.dyncov.quickfit.apparel.data(
+  hessian=TRUE,
+  names.cov.life = c("Marketing", "Gender"),
+  names.cov.trans = c("Marketing", "Gender", "Channel")
+)
 
 
+fct.helper.runability.dyncov.all.downstream(
+  fitted.dyncov=fitted.dyncov,
+  names.params=
+    c("r", "alpha", "s", "beta",
+      "life.Marketing",  "life.Gender",
+      "trans.Marketing", "trans.Gender",  "trans.Channel")
+)
 
-# LL.data ---------------------------------------------------------------
-fct.testthat.runability.dynamiccov.LL.is.correct(clv.fitted = fitted.dyncov)
-
-# Plot ------------------------------------------------------------------
-fct.testthat.runability.dynamiccov.plot.works(clv.fitted = fitted.dyncov)
-
-fct.testthat.runability.dynamiccov.plot.has.0.repeat.transactions.expectations(clv.fitted = fitted.dyncov)
-
-# Predict ----------------------------------------------------------------
-fct.testthat.runability.dynamiccov.predict.works(clv.fitted = fitted.dyncov)
-
-fct.testthat.runability.dynamiccov.predict.newdata.works(clv.fitted = fitted.dyncov,
-                                                         data.apparelTrans = apparelTrans,
-                                                         data.apparelDynCov = apparelDynCov)
+fct.testthat.runability.dynamiccov.LL.is.correct(
+  clv.fitted = fitted.dyncov
+)
 
 
+# Additional specifications ----------------------------------------------------
+test_that("Dyncov works with additional model specifications", {
 
-# Newdata ----------------------------------------------------------------------------------------------------------
-apparelDynCov.extra <- fct.helper.dyncov.create.longer.dyncov.data(num.additional = 100,
-                                                                   data.apparelDynCov = apparelDynCov)
-clv.data.extra <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=apparelTrans,
-                                                           data.apparelDynCov=apparelDynCov.extra,
-                                                           estimation.split=104)
+  clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov()
 
-fct.testthat.runability.dynamiccov.predict.longer.with.newdata(clv.fitted = fitted.dyncov, clv.data.extra = clv.data.extra)
+  fn.fit.dyncov.spec <- function(...){
+    covs.life <- c("Marketing", "Gender")
+    covs.trans <- c("Marketing", "Gender", "Channel")
 
-fct.testthat.runability.dynamiccov.plot.longer.with.newdata(clv.fitted = fitted.dyncov, clv.data.extra = clv.data.extra)
+    expect_silent(fitted.dyncov <- fit.apparel.dyncov(
+      names.cov.life = covs.life,
+      names.cov.trans = covs.trans,
+      optimx.args=fct.helper.dyncov.get.optimxargs.quickfit(hessian=TRUE),
+      ...
+    ))
 
-# Overlong data ------------------------------------------------------------------------------
+    # downstream usage of additional specification works
+    names.params <- c('r', 'alpha', 's', 'beta')
+    if(fitted.dyncov@clv.model@estimation.used.correlation){
+      names.params <- c(names.params, 'Cor(life,trans)')
+    }
+    if(fitted.dyncov@estimation.used.constraints){
+      covs.constr <- list(...)['names.cov.constr']
+      names.params <- c(names.params, paste0('constr.', covs.constr))
+      # all others which are not constrained
+      names.params <- c(
+        names.params,
+        paste0('life.', setdiff(covs.life, covs.constr)),
+        paste0('trans.', setdiff(covs.trans, covs.constr))
+      )
+    }else{
+      names.params <- c(
+        names.params,
+        paste0('life.', covs.life),
+        paste0('trans.', covs.trans)
+      )
+    }
 
-# Cannot do without holdout because takes too long to estimate
-fct.testthat.runability.dynamiccov.can.predict.plot.beyond.holdout(data.apparelTrans=apparelTrans,
-                                                                   apparelDynCov.extra=apparelDynCov.extra)
+    fct.helper.runability.dyncov.all.downstream(
+      fitted.dyncov=fitted.dyncov,
+      names.params=names.params
+    )
 
+    # LLsum is not expected to match logLik if regularization was used
+    if(!fitted.dyncov@estimation.used.regularization){
+      fct.testthat.runability.dynamiccov.LL.is.correct(
+        clv.fitted = fitted.dyncov
+      )
+    }
+  }
+
+  # regularization -------------------------------------------------------------
+  fn.fit.dyncov.spec(reg.lambdas = c(trans=10, life=20))
+
+  # constrained covs -----------------------------------------------------------
+  fn.fit.dyncov.spec(names.cov.constr = "Gender")
+
+  # correlation ----------------------------------------------------------------
+  fn.fit.dyncov.spec(use.cor=TRUE)
+  #
+  # # combination ----------------------------------------------------------------
+  fn.fit.dyncov.spec(
+    use.cor=TRUE,
+    names.cov.constr = "Gender",
+    reg.lambda = c(trans=10, life=20))
+})

@@ -12,9 +12,16 @@
   return(e[[d]])
 }
 
+fct.helper.load.cdnow <- function(){.load.data.locally("cdnow")}
+fct.helper.load.apparelTrans <- function(){.load.data.locally("apparelTrans")}
+fct.helper.load.apparelStaticCov <- function(){.load.data.locally("apparelStaticCov")}
+fct.helper.load.apparelDynCov <- function(){.load.data.locally("apparelDynCov")}
+
+
+
 fct.helper.create.clvdata.cdnow <- function(data.cdnow = NULL, estimation.split = 37) {
   if (is.null(data.cdnow)) {
-    data.cdnow <- .load.data.locally("cdnow")
+    data.cdnow <- fct.helper.load.cdnow()
   }
   clv.cdnow <- clvdata(
     data.transactions = data.cdnow,
@@ -30,7 +37,7 @@ fct.helper.create.clvdata.apparel.nocov <- function(
     estimation.split = 104) {
 
   if (is.null(data.apparelTrans)) {
-    data.apparelTrans <- .load.data.locally("apparelTrans")
+    data.apparelTrans <- fct.helper.load.apparelTrans()
   }
 
   return(clvdata(
@@ -48,10 +55,10 @@ fct.helper.create.clvdata.apparel.staticcov <- function(
     names.cov.life = c("Gender", "Channel"),
     names.cov.trans = c("Gender", "Channel")) {
   if (is.null(data.apparelTrans)) {
-    data.apparelTrans <- .load.data.locally("apparelTrans")
+    data.apparelTrans <- fct.helper.load.apparelTrans()
   }
   if (is.null(data.apparelStaticCov)) {
-    data.apparelStaticCov <- .load.data.locally("apparelStaticCov")
+    data.apparelStaticCov <- fct.helper.load.apparelStaticCov()
   }
 
   return(SetStaticCovariates(
@@ -74,10 +81,10 @@ fct.helper.create.clvdata.apparel.dyncov <- function(
     names.cov.trans = c("High.Season", "Gender", "Channel")) {
 
   if (is.null(data.apparelTrans)) {
-    data.apparelTrans <- .load.data.locally("apparelTrans")
+    data.apparelTrans <- fct.helper.load.apparelTrans()
   }
   if (is.null(data.apparelDynCov)) {
-    data.apparelDynCov <- .load.data.locally("apparelDynCov")
+    data.apparelDynCov <- fct.helper.load.apparelDynCov()
   }
 
   expect_silent(clv.dyn <- clvdata(
@@ -178,18 +185,51 @@ fit.apparel.static <- function(
 }
 
 
-fct.helper.dyncov.get.optimxargs.quickfit <- function(){
-  return(list(method="Nelder-Mead", # NelderMead verifies nothing = faster
-              itnmax = 2,
-              hessian=FALSE, # no hessian
-              control=list(kkt = FALSE, # kkt takes forever because requires hessian
-                           reltol = 1000))) # anything counts as converged
+fit.apparel.dyncov <- function(
+    data.apparelTrans = NULL,
+    data.apparelDynCov = NULL,
+    estimation.split = 40,
+    names.cov.life = c("Marketing", "Gender", "Channel"),
+    names.cov.trans = c("Marketing", "Gender", "Channel"),
+    model = pnbd,
+    verbose=FALSE,
+    ...
+) {
+  clv.data.apparel.dyncov <- fct.helper.create.clvdata.apparel.dyncov(
+    data.apparelTrans = data.apparelTrans,
+    data.apparelDynCov = data.apparelDynCov,
+    estimation.split = estimation.split,
+    names.cov.life = names.cov.life,
+    names.cov.trans = names.cov.trans
+  )
+
+  return(do.call(
+    what = model,
+    args = list(
+      clv.data = clv.data.apparel.dyncov,
+      verbose=verbose,
+      ...
+    )
+  ))
+}
+
+
+fct.helper.dyncov.get.optimxargs.quickfit <- function(hessian){
+  optimx.args <- list(
+    method="Nelder-Mead", # NelderMead verifies nothing = faster
+    itnmax = 10,
+    hessian=hessian,
+    control=list(
+      reltol = 1000, # anything counts as converged
+      kkt=hessian # also disable kkt if `hessian==FALSE` because it requires the hessian and overrules 'hessian' param
+    )
+  )
+  return(optimx.args)
 }
 
 
 fct.helper.dyncov.quickfit <- function(clv.data.dyn, hessian){
-  l.quickfit.args <- fct.helper.dyncov.get.optimxargs.quickfit()
-  l.quickfit.args['hessian'] <- hessian
+  l.quickfit.args <- fct.helper.dyncov.get.optimxargs.quickfit(hessian=hessian)
 
   l.args <- list(
     clv.data=clv.data.dyn,
