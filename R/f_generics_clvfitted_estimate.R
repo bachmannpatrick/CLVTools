@@ -152,6 +152,18 @@ setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(
     # eventually be used in `fn.no.check.hess`
     optimx.args$fn.to.call.from.hess <- optimx.args$fn
 
+
+    fn.no.check.grad <- function(x, fn.to.call.from.grad, ...){
+      all.other.args <- list(...)
+      all.other.args$check.param.m.bounds <- FALSE
+      return(do.call(
+        what=numDeriv::grad,
+        args = c(alist(x = x, func = fn.to.call.from.grad), all.other.args)
+      ))
+    }
+
+    optimx.args$gr <- fn.no.check.grad
+    optimx.args$fn.to.call.from.grad <- optimx.args$fn
   }
 
   return(optimx.args)
