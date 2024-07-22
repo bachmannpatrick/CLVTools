@@ -95,7 +95,7 @@ Through the argument `data.transactions` a `data.frame` or `data.table` which co
 clv.apparel <- clvdata(apparelTrans,  
                        date.format="ymd", 
                        time.unit = "week",
-                       estimation.split = 40,
+                       estimation.split = 104,
                        name.id = "Id",
                        name.date = "Date",
                        name.price = "Price")
@@ -204,7 +204,7 @@ To execute the model estimation you have the choice between a formula-based inte
 ### **Estimating the model using formula interface:**
 ```{r estimate-ggomnbd-formula, eval=FALSE}
   est.ggomnbd <- latentAttrition(formula = , family = ggomnbd, data=clv.apparel, 
-                                 optimx.args = list(method="Nelder-Mead")
+                                 optimx.args = list(method="Nelder-Mead"),
                                  start.params.model=c(r=0.7, alpha=5, b=0.005,  s=0.02, beta=0.001))
 ```
 
