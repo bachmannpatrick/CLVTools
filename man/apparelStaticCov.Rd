@@ -5,19 +5,19 @@
 \alias{apparelStaticCov}
 \title{Time-invariant Covariates for the Apparel Retailer Dataset}
 \format{
-A \code{data.table} with 400 rows and 3 variables:
+A \code{data.table} with 600 rows and 3 variables:
 
 \describe{
   \item{Id}{Customer Id}
-  \item{gender}{0=male, 1=female}
-  \item{channel}{Acquisition channel: 0=online, 1=offline}
+  \item{Gender}{0=male, 1=female}
+  \item{Channel}{Acquisition channel: 0=online, 1=offline}
 }
 }
 \usage{
 data("apparelStaticCov")
 }
 \description{
-This simulated data contains additional demographic information on all 400 customers in the
+This simulated data contains additional demographic information on all 600 customers in the
 "apparelTrans" dataset. This information can be used as time-invariant covariates.
 }
 \keyword{datasets}
