@@ -26,10 +26,10 @@
 #'
 #' @description
 #' This is a simulated dataset containing the entire purchase history of customers made their first purchase at an
-#' apparel retailer on January 2nd 2005. In total the dataset contains 400 customers who made
-#' 22388 transactions between January 2005 and mid December 2010
+#' apparel retailer on January 2nd 2005. In total the dataset contains 600 customers who made
+#' 2,847 transactions between January 2005 and end December 2011
 #'
-#' @format A \code{data.table} with 22388 rows and 3 variables:
+#' @format A \code{data.table} with 2847 rows and 3 variables:
 #' \describe{
 #'   \item{\code{Id}}{Customer Id}
 #'   \item{\code{Date}}{Date of purchase}
@@ -47,15 +47,15 @@
 #' @title Time-invariant Covariates for the Apparel Retailer Dataset
 
 #' @description
-#' This simulated data contains additional demographic information on all 400 customers in the
+#' This simulated data contains additional demographic information on all 600 customers in the
 #' "apparelTrans" dataset. This information can be used as time-invariant covariates.
 #'
-#' @format A \code{data.table} with 400 rows and 3 variables:
+#' @format A \code{data.table} with 600 rows and 3 variables:
 #'
 #' \describe{
 #'   \item{Id}{Customer Id}
-#'   \item{gender}{0=male, 1=female}
-#'   \item{channel}{Acquisition channel: 0=online, 1=offline}
+#'   \item{Gender}{0=male, 1=female}
+#'   \item{Channel}{Acquisition channel: 0=online, 1=offline}
 #' }
 #'
 #' @docType data
@@ -71,7 +71,7 @@
 #' This simulated data contains seasonal information and additional covariates on all 400 customers in the "apparelTrans" dataset.
 #' This information can be used as time-varying covariates.
 #'
-#' @format A data.table with 162800 rows and 5 variables
+#' @format A data.table with 244,200 rows and 5 variables
 #' \describe{
 #'   \item{Id}{Customer Id}
 #'   \item{Cov.Date}{Date of contextual factor}
