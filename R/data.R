@@ -27,9 +27,9 @@
 #' @description
 #' This is a simulated dataset containing the entire purchase history of customers made their first purchase at an
 #' apparel retailer on January 2nd 2005. In total the dataset contains 600 customers who made
-#' 2,847 transactions between January 2005 and end December 2011
+#' 2,647 transactions between January 2005 and end December 2010
 #'
-#' @format A \code{data.table} with 2847 rows and 3 variables:
+#' @format A \code{data.table} with 2,647 rows and 3 variables:
 #' \describe{
 #'   \item{\code{Id}}{Customer Id}
 #'   \item{\code{Date}}{Date of purchase}
@@ -71,7 +71,7 @@
 #' This simulated data contains seasonal information and additional covariates on all 400 customers in the "apparelTrans" dataset.
 #' This information can be used as time-varying covariates.
 #'
-#' @format A data.table with 244,200 rows and 5 variables
+#' @format A data.table with 187,800 rows and 5 variables
 #' \describe{
 #'   \item{Id}{Customer Id}
 #'   \item{Cov.Date}{Date of contextual factor}
@@ -84,3 +84,24 @@
 #' @usage data("apparelDynCov")
 #' @docType data
 "apparelDynCov"
+
+#' @name apparelDynCovFuture
+#' @title Future Time-varying Covariates for the Apparel Retailer Dataset
+
+#' @description
+#' This simulated data contains seasonal information and additional covariates on all 400 customers in the "apparelTrans" after the last transaction in the dataset.
+#' This information can be used as time-varying covariates for prediction future customer behavior.
+#'
+#' @format A data.table with 56,400 rows and 5 variables
+#' \describe{
+#'   \item{Id}{Customer Id}
+#'   \item{Cov.Date}{Date of contextual factor}
+#'   \item{High.Season}{Seasonal variable: 1 indicating a time-period that is considered "high season".}
+#'   \item{Gender}{0=male, 1=female}
+#'   \item{Channel}{Acquisition channel: 0=online, 1=offline}
+#' }
+#'
+#' @keywords datasets
+#' @usage data("apparelDynCovFuture")
+#' @docType data
+"apparelDynCovFuture"
