@@ -291,7 +291,7 @@ test_that("predict(boots) works on all model specifications", {
     model=pnbd,
     use.cor=TRUE,
     names.cov.constr = "Gender",
-    reg.lambdas = c(trans=10, life=20),
+    reg.lambdas = c(trans=20, life=30),
     verbose=FALSE,
     optimx.args = fct.helper.dyncov.get.optimxargs.quickfit(hessian=FALSE)
     ))
