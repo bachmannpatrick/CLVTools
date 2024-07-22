@@ -62,7 +62,7 @@ apparelTrans.later <- apparelTrans.later[!(Id %in% ids.high.x)]
 
 clv.apparel.static <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = apparelTrans.later,
                                                                   data.apparelStaticCov = apparelStaticCov[Id %in% apparelTrans.later$Id],
-                                                                  estimation.split = 52)
+                                                                  estimation.split = 104)
 expect_silent(clv.ggomnbd <- ggomnbd(clv.data = clv.apparel.static, verbose = FALSE))
 
 r     <- clv.ggomnbd@prediction.params.model[["r"]]

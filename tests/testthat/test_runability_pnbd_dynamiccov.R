@@ -44,7 +44,7 @@ apparelDynCov.extra <- fct.helper.dyncov.create.longer.dyncov.data(num.additiona
                                                                    data.apparelDynCov = apparelDynCov)
 clv.data.extra <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=apparelTrans,
                                                            data.apparelDynCov=apparelDynCov.extra,
-                                                           estimation.split=52)
+                                                           estimation.split=104)
 
 fct.testthat.runability.dynamiccov.predict.longer.with.newdata(clv.fitted = fitted.dyncov, clv.data.extra = clv.data.extra)
 

@@ -8,13 +8,13 @@ expect_silent(clv.apparel <- clvdata(
   apparelTrans,
   date.format = "ymd",
   time.unit = "w",
-  estimation.split = 52
+  estimation.split = 104
 ))
 
 clv.apparel.static <- fct.helper.create.clvdata.apparel.staticcov(
   data.apparelTrans = apparelTrans,
   data.apparelStaticCov = apparelStaticCov,
-  estimation.split = 52
+  estimation.split = 104
 )
 
 expect_silent(p.apparel.nocov <- pnbd(clv.apparel, verbose=FALSE))

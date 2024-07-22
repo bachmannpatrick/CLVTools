@@ -324,7 +324,7 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method, d
 
   # Static cov data --------------------------------------------------------------------------------------------
   clv.apparel.staticcov <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
-                                                                       estimation.split = 52)
+                                                                       estimation.split = 104)
   clv.apparel.nocov <- as(clv.apparel.staticcov, "clv.data")
 
   expect_silent(obj.fitted.static <- do.call(method, list(clv.data=clv.apparel.staticcov, verbose=FALSE)))

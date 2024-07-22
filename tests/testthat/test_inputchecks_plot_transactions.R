@@ -124,7 +124,7 @@ fct.testthat.inputchecks.clvfittedtransactions.plot.common <- function(which, l.
   # Prepare
   clv.data.apparel.static.cov <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans,
                                                                              data.apparelStaticCov = data.apparelStaticCov,
-                                                                             estimation.split = 52)
+                                                                             estimation.split = 104)
   expect_silent(fitted.apparel.static <- pnbd(clv.data.apparel.static.cov, verbose = FALSE))
   clv.data.cdnow.nohold <- fct.helper.create.clvdata.cdnow(data.cdnow, estimation.split=NULL)
   expect_silent(fitted.cdnow.nohold   <- pnbd(clv.data.cdnow.nohold, verbose = FALSE))

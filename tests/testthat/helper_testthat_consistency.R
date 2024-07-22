@@ -178,7 +178,7 @@ fct.testthat.consistency <- function(name.model, method, has.dyncov, data.appare
   # Fit object on cov data with all 0
   #   Cannot set all to 0 as requires at least 2 distinct values per cov
   expect_silent(clv.apparel <- clvdata(data.transactions = data.apparelTrans, date.format = "ymd",
-                                       time.unit = "w", estimation.split = 52))
+                                       time.unit = "w", estimation.split = 104))
 
   apparelStaticCov.0 <- copy(data.apparelStaticCov)
   expect_silent(apparelStaticCov.0[,  Gender  := 0])
@@ -186,7 +186,7 @@ fct.testthat.consistency <- function(name.model, method, has.dyncov, data.appare
   expect_silent(apparelStaticCov.0[,  Channel := 0])
   expect_silent(apparelStaticCov.0[1, Channel := 1])
 
-  clv.apparel.static.cov0 <- fct.helper.create.clvdata.apparel.staticcov(estimation.split=52,
+  clv.apparel.static.cov0 <- fct.helper.create.clvdata.apparel.staticcov(estimation.split=104,
                                                                          data.apparelTrans=data.apparelTrans,
                                                                          data.apparelStaticCov=apparelStaticCov.0)
 
@@ -206,7 +206,7 @@ fct.testthat.consistency <- function(name.model, method, has.dyncov, data.appare
 
   expect_silent(fitted.static.g0 <- do.call(method, list(clv.data = fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans=data.apparelTrans,
                                                                                                                 data.apparelStaticCov=data.apparelStaticCov,
-                                                                                                                estimation.split=52),
+                                                                                                                estimation.split=104),
                                                          verbose = FALSE)))
   expect_silent(fitted.static.g0@prediction.params.model[] <-fitted.nocov@prediction.params.model)
   expect_silent(fitted.static.g0@prediction.params.life[]  <- 0)

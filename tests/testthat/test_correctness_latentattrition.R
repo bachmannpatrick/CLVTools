@@ -116,7 +116,7 @@ test_that("Correct cov data when using interactions and all except (. -)", {
 
 
 # dynamic cov ---------------------------------------------------------------------------------------------------
-clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(apparelTrans, apparelDynCov, estimation.split = 52)
+clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(apparelTrans, apparelDynCov, estimation.split = 104)
 clv.dyn.common.cols <- c("Id", "Cov.Date","tp.cov.lower","tp.cov.upper")
 
 .fct.latentattrition.fit.dyncov <- function(formula){

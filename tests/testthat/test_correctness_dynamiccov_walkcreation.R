@@ -124,7 +124,7 @@ test_that("d_omega is actually correct in cbs", {
   for(i in 1:7){
     apparelTrans.spaced[Id == ids[i] & first.trans == TRUE, Date := tp.first.trans+days(i-1)]
   }
-  clv.dyn.spaced <- fct.helper.create.clvdata.apparel.dyncov(apparelTrans.spaced, apparelDynCov, estimation.split = 52)
+  clv.dyn.spaced <- fct.helper.create.clvdata.apparel.dyncov(apparelTrans.spaced, apparelDynCov, estimation.split = 104)
   dt.cbs <- pnbd_dyncov_cbs(clv.dyn.spaced)
 
   # We assume Sunday (7) to be start
@@ -220,7 +220,7 @@ test_that("Aux walk is 2 periods if T is on week start and alive at T-1 one day 
     data.cov[, Cov.Date := Cov.Date + i]
 
     # split is on start of week
-    date.estimation.split.original <- apparelTrans[, min(Date)] + lubridate::weeks(52)
+    date.estimation.split.original <- apparelTrans[, min(Date)] + lubridate::weeks(104)
     date.estimation.split <- date.estimation.split.original + i
 
     # Id==5 is zero-repeater
@@ -386,7 +386,7 @@ test_that("Real Trans Walk do no lose walk if transactions only 1 eps apart", {
   # real trans walk gives walk and not lost if transactions only 1 eps apart
   #   Customer 5 is zero repeater. Add 8 transactions only 1 day apart for 1 week
   clv.dyn <- fct.helper.create.clvdata.apparel.dyncov(
-    data.apparelTrans=rbind(apparelTrans,
+    data.apparelTrans=rbind(apparelTrans[!Id == 5],
                             data.table(Id=5, Price = 10,
                                        Date = seq.Date(from=apparelTrans[Id==5, min(Date)]+1,
                                                        length.out = 8, by="1 day"))),

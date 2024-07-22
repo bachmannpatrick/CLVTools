@@ -43,11 +43,11 @@ fct.testthat.runability.clvfittedspending <- function(name.model, method,
   clv.data.cov.no.holdout <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
                                                                          estimation.split = NULL)
   clv.data.cov.holdout   <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
-                                                                        estimation.split = 52)
+                                                                        estimation.split = 104)
   clv.newdata.cov.nohold   <- fct.helper.create.fake.newdata.staticcov(data.trans = data.apparelTrans, names.cov = c("Gender", "Channel"),
                                                                        estimation.split = NULL)
   clv.newdata.cov.withhold <- fct.helper.create.fake.newdata.staticcov(data.trans = data.apparelTrans, names.cov = c("Gender", "Channel"),
-                                                                       estimation.split = 52)
+                                                                       estimation.split = 104)
 
   l.args.test.all.s3.cov <- list(full.names = param.names, clv.newdata.nohold = clv.newdata.cov.nohold,
                                  clv.newdata.withhold = clv.newdata.cov.withhold)

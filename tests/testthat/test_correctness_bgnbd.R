@@ -54,7 +54,7 @@ test_that("Expectation in Rcpp matches expectation in R (staticcov)", {
   apparelTrans.later[Id %in% c("1", "10", "100"), Date := Date + lubridate::weeks(10)]
   clv.apparel.static <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = apparelTrans.later,
                                                                     data.apparelStaticCov = apparelStaticCov,
-                                                                    estimation.split = 52)
+                                                                    estimation.split = 104)
 
   expect_silent(obj.fitted <- bgnbd(clv.data = clv.apparel.static, verbose = FALSE))
 

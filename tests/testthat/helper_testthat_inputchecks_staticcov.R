@@ -218,7 +218,7 @@ fct.testthat.inputchecks.staticcov <- function(name.method, method, start.params
 
   l.std.args.noholdout   <- list(clv.data=fct.helper.create.clvdata.apparel.staticcov(estimation.split=NULL, data.apparelTrans=data.apparelTrans, data.apparelStaticCov=data.apparelStaticCov,
                                                                                       names.cov.life="Gender", names.cov.trans="Gender"))
-  clv.data.apparel.with.holdout <- fct.helper.create.clvdata.apparel.staticcov(estimation.split=52, data.apparelTrans=data.apparelTrans, data.apparelStaticCov=data.apparelStaticCov,
+  clv.data.apparel.with.holdout <- fct.helper.create.clvdata.apparel.staticcov(estimation.split=104, data.apparelTrans=data.apparelTrans, data.apparelStaticCov=data.apparelStaticCov,
                                                                                names.cov.life="Gender", names.cov.trans="Gender")
   l.std.args.withholdout <- list(clv.data=clv.data.apparel.with.holdout)
 

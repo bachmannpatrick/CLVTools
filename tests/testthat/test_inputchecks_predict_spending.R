@@ -20,7 +20,7 @@ fct.testthat.inputchecks.clvfittedspending.predict.ellipsis <- function(fitted.s
 
 fct.testthat.inputchecks.clvfittedspending.predict <- function(data.cdnow, data.apparelTrans, data.apparelStaticCov){
   clv.data.apparel.static.cov <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
-                                                                             estimation.split = 52)
+                                                                             estimation.split = 104)
   expect_silent(fitted.spending <- gg(clv.data.apparel.static.cov, verbose = FALSE))
 
   # General

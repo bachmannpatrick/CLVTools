@@ -27,7 +27,7 @@ fct.helper.create.clvdata.cdnow <- function(data.cdnow = NULL, estimation.split 
 
 fct.helper.create.clvdata.apparel.nocov <- function(
     data.apparelTrans = NULL,
-    estimation.split = 52) {
+    estimation.split = 104) {
 
   if (is.null(data.apparelTrans)) {
     data.apparelTrans <- .load.data.locally("apparelTrans")
@@ -44,7 +44,7 @@ fct.helper.create.clvdata.apparel.nocov <- function(
 fct.helper.create.clvdata.apparel.staticcov <- function(
     data.apparelTrans = NULL,
     data.apparelStaticCov = NULL,
-    estimation.split = 52,
+    estimation.split = 104,
     names.cov.life = c("Gender", "Channel"),
     names.cov.trans = c("Gender", "Channel")) {
   if (is.null(data.apparelTrans)) {
@@ -69,7 +69,7 @@ fct.helper.create.clvdata.apparel.staticcov <- function(
 fct.helper.create.clvdata.apparel.dyncov <- function(
     data.apparelTrans = NULL,
     data.apparelDynCov = NULL,
-    estimation.split = 52,
+    estimation.split = 104,
     names.cov.life = c("High.Season", "Gender", "Channel"),
     names.cov.trans = c("High.Season", "Gender", "Channel")) {
 
@@ -126,7 +126,7 @@ fit.cdnow <- function(
 
 fit.apparel.nocov <- function(
     data.apparelTrans = NULL,
-    estimation.split = 52,
+    estimation.split = 104,
     model = pnbd,
     start.params.model = c(),
     verbose = FALSE,
@@ -151,7 +151,7 @@ fit.apparel.nocov <- function(
 fit.apparel.static <- function(
     data.apparelTrans = NULL,
     data.apparelStaticCov = NULL,
-    estimation.split = 52,
+    estimation.split = 104,
     names.cov.life = c("Gender", "Channel"),
     names.cov.trans = c("Gender", "Channel"),
     model = pnbd,

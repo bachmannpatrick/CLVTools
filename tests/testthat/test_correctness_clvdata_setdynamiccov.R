@@ -14,7 +14,7 @@ apparelTrans[, Date:=as.POSIXct(Date)]
 
 expect_message(clv.data.apparel.nohold   <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w"), regexp = "ignored")
 expect_message(clv.data.apparel.withhold <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w",
-                                                    estimation.split = 52), regexp = "ignored")
+                                                    estimation.split = 104), regexp = "ignored")
 
 l.std.args <- alist(data.cov.life  = apparelDynCov,  names.cov.life = c("High.Season", "Gender", "Channel"),
                     data.cov.trans = apparelDynCov,  names.cov.trans = c("High.Season", "Gender", "Channel"),
