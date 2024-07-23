@@ -5,7 +5,7 @@
 \alias{apparelDynCovFuture}
 \title{Future Time-varying Covariates for the Apparel Retailer Dataset}
 \format{
-A data.table with 56,400 rows and 5 variables
+A data.table with 1,045,000 rows and 5 variables
 \describe{
   \item{Id}{Customer Id}
   \item{Cov.Date}{Date of contextual factor}

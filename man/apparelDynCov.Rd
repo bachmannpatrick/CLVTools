@@ -5,7 +5,7 @@
 \alias{apparelDynCov}
 \title{Time-varying Covariates for the Apparel Retailer Dataset}
 \format{
-A data.table with 187,800 rows and 5 variables
+A data.table with 3,432,000 rows and 5 variables
 \describe{
   \item{Id}{Customer Id}
   \item{Cov.Date}{Date of contextual factor}
@@ -18,7 +18,7 @@ A data.table with 187,800 rows and 5 variables
 data("apparelDynCov")
 }
 \description{
-This simulated data contains seasonal information and additional covariates on all 400 customers in the "apparelTrans" dataset.
+This simulated data contains seasonal information and additional covariates on all 600 customers in the "apparelTrans" dataset.
 This information can be used as time-varying covariates.
 }
 \keyword{datasets}
