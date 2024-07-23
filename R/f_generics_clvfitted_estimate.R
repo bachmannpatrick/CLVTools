@@ -107,6 +107,7 @@ setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(
     optimx.args <- modifyList(optimx.args, list(method = "Nelder-Mead"))
 
 
+    # . Custom hessian to set `check.param.m.bounds=FALSE` ---------------------
     # When calculating the hessian for a model with correlation, we do not want
     # to check the boundaries of param m that happen in the correlation
     # interlayer (`interlayer_correlation`). The Hessian otherways may contain
@@ -151,6 +152,30 @@ setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(
     # `fn.no.check.hess`. Pass it as additional arg to optimx and it will
     # eventually be used in `fn.no.check.hess`
     optimx.args$fn.to.call.from.hess <- optimx.args$fn
+
+
+    # . Custom gradient to set `check.param.m.bounds=FALSE` --------------------
+    # Similarly as for the hessian, also a custom function for the gradient has
+    # to be passed to optimx in order to set `check.param.m.bounds=FALSE` when
+    # optimx calculates the gradient at the end of the optimization for hessian
+    # and KKT.
+    # For explanations how this works, see the comments for `fn.no.check.hess`.
+    fn.no.check.grad <- function(x, fn.to.call.from.grad, ...){
+      all.other.args <- list(...)
+      all.other.args$check.param.m.bounds <- FALSE
+      # optimx (2023-10.21) uses `numDeriv::grad()` if no gradient is given by
+      # the user
+      return(do.call(
+        what=numDeriv::grad,
+        args = c(alist(x = x, func = fn.to.call.from.grad), all.other.args)
+      ))
+    }
+
+    # use `fn.no.check.grad` to calculate the gradient
+    optimx.args$gr <- fn.no.check.grad
+    # the actual loss function (LL interlayers) to call inside
+    # `fn.no.check.hess` to calculate the gradient
+    optimx.args$fn.to.call.from.grad <- optimx.args$fn
 
   }
 
