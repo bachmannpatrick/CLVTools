@@ -166,13 +166,13 @@ fct.testthat.correctness.dyncov.LL <- function(data.apparelTrans, data.apparelDy
                                                           estimation.split = NULL)
 
     # Short transaction data but full dyncov covariate data
-    clv.full.cov <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans = data.apparelTrans[Date <= "2005-12-31"],
+    clv.full.cov <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans = data.apparelTrans[Date <= "2006-12-31"],
                                                              data.apparelDynCov = data.apparelDynCov,
                                                              estimation.split = NULL)
     # Full data but estimation period only same as short
     clv.holdout <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans = data.apparelTrans,
                                                             data.apparelDynCov = data.apparelDynCov,
-                                                            estimation.split = "2005-12-31")
+                                                            estimation.split = "2006-12-31")
 
     params.dyncov <- c(log.r=1, log.alpha=0, log.s=1.23, log.beta = 2.344,
                        life.High.Season  = 0.123, life.Gender  = 0.234,  life.Channel= 0.345,

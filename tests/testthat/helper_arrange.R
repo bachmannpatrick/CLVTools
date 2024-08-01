@@ -288,7 +288,7 @@ fct.helper.default.newcustomer.covdata.static <- function(){
 
   return(data.frame(
     Gender=1,
-    Channel=6.78
+    Channel=2
   ))
 }
 
