@@ -77,7 +77,7 @@ The smaller \code{r}, the stronger the heterogeneity of the purchase process.\cr
 \code{s}: shape parameter of the Gamma distribution for the lifetime process.
 The smaller \code{s}, the stronger the heterogeneity of customer lifetimes.
 
-If no start parameters are given, r = 1, alpha = 1, beta = 1, b = 1, s = 1 is used.
+If no start parameters are given, r=0.5, alpha=2, b=0.1, s=1, beta=0.1 is used.
 All model start parameters are required to be > 0. If no start values are given for the covariate parameters,
 0.1 is used.
 
@@ -158,6 +158,11 @@ ggomnbd(clv.data.static.cov, names.cov.life = c("Channel"))
 \references{
 Bemmaor AC, Glady N (2012). \dQuote{Modeling Purchasing Behavior with Sudden \dQuote{Death}: A Flexible Customer
 Lifetime Model} Management Science, 58(5), 1012-1021.
+
+Adler J (2022).  \dQuote{Comment on “Modeling Purchasing Behavior with Sudden \dQuote{Death}: A Flexible Customer
+Lifetime Model} Management Science 69(3):1929-1930.
+
+The expression for the PMF was derived by Adler J (2024). (unpublished)
 }
 \seealso{
 \code{\link[CLVTools:clvdata]{clvdata}} to create a clv data object, \code{\link[CLVTools:SetStaticCovariates]{SetStaticCovariates}}
@@ -170,6 +175,8 @@ to add static covariates to an existing clv data object.
 \code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} to plot the unconditional expectation as predicted by the fitted model
 
 \code{\link[CLVTools:pmf]{pmf}} for the probability to make exactly x transactions in the estimation period, given by the probability mass function (PMF).
+
+\code{\link[CLVTools:newcustomer]{newcustomer}} to predict the expected number of transactions for an average new customer.
 
 The generic functions \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:summary.clv.fitted]{summary}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
 }

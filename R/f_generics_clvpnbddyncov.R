@@ -26,7 +26,7 @@ setMethod("clv.controlflow.estimate.generate.start.params", signature = signatur
 
     # Do optimization
     nocov.coefs <- tryCatch(coef(pnbd(clv.data = as(object = clv.fitted@clv.data, Class = "clv.data", strict = TRUE),
-                                      start.params.model = c(r=1, s=1, alpha=1, beta=1),
+                                      start.params.model = c(r=0.5, alpha=15, s=0.5, beta=10),
                                       verbose = FALSE)),
                             error = function(e){stop(paste0("Failed to estimate a pnbd no covariate model: ",
                                                             e$message), call. = FALSE)})
@@ -50,20 +50,27 @@ setMethod("clv.controlflow.estimate.generate.start.params", signature = signatur
 
 # . clv.model.put.estimation.input ------------------------------------------------------------------------------------------------
 
-setMethod(f = "clv.controlflow.estimate.put.inputs", signature = signature(clv.fitted="clv.pnbd.dynamic.cov"), definition = function(clv.fitted, verbose, ...){
+setMethod(f = "clv.controlflow.estimate.put.inputs", signature = signature(clv.fitted="clv.pnbd.dynamic.cov"), definition = function(clv.fitted, start.params.model, optimx.args, verbose, use.cor, start.param.cor, ...){
   # Create walks - they are specific to the pnbd dyncov model
   clv.fitted <- callNextMethod()
+
+  clv.fitted@model.specification.args <- c(clv.fitted@model.specification.args, list(
+    use.cor=use.cor,
+    start.param.cor=start.param.cor
+  ))
 
   if(verbose)
     message("Creating walks...")
 
-  l.walks <- pnbd_dyncov_makewalks(clv.data = clv.fitted@clv.data)
+  l.walks <- pnbd_dyncov_createwalks(clv.data = clv.fitted@clv.data)
+
+  clv.fitted@data.walks.life.aux    <- l.walks[["data.walks.life.aux"]]
+  clv.fitted@data.walks.life.real   <- l.walks[["data.walks.life.real"]]
+  clv.fitted@data.walks.trans.aux   <- l.walks[["data.walks.trans.aux"]]
+  clv.fitted@data.walks.trans.real  <- l.walks[["data.walks.trans.real"]]
 
   if(verbose)
     message("Walks created.")
-
-  clv.fitted@data.walks.life  = l.walks[["data.walks.life"]]
-  clv.fitted@data.walks.trans = l.walks[["data.walks.trans"]]
 
   return(clv.fitted)
 })

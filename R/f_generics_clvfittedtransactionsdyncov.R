@@ -50,7 +50,7 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.tran
 
 # . clv.controlflow.predict.check.inputs ------------------------------------------------------------------------
 #' @importFrom methods callNextMethod
-setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.fitted="clv.fitted.transactions.dynamic.cov"), function(clv.fitted, verbose, prediction.end, continuous.discount.factor, predict.spending, ...){
+setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.fitted="clv.fitted.transactions.dynamic.cov"), function(clv.fitted, verbose, uncertainty, num.boots, level, prediction.end, continuous.discount.factor, predict.spending, ...){
   # Do static cov (and hence also nocov) inputchecks first
   #   After this, newdata is basically ok
   callNextMethod()
@@ -71,4 +71,45 @@ setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.
     err.msg <- c(err.msg, "The dynamic covariates in the fitted model are not long enough for the given parameter prediction.end!")
 
   check_err_msg(err.msg)
+})
+
+
+
+# . clv.controlflow.predict.new.customer ------------------------------------------------------------------------
+#' @include class_clv_fitted_transactions_dynamiccov.R
+setMethod(f = "clv.controlflow.predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions.dynamic.cov"), definition = function(clv.fitted, clv.newcustomer){
+  Cov.Date <- NULL
+
+  check_err_msg(check_user_data_predict_newcustomer_dyncov(clv.fitted=clv.fitted, clv.newcustomer=clv.newcustomer))
+
+  # There is no required minimum prediction period. In the tracking plot,
+  # the unconditional expectation is always used for <= 2 (or 3) periods
+
+  # Convert time point data and verify it correctness
+  # This can only be done here once the clv.time object is known
+
+  # readability
+  clv.time <- clv.fitted@clv.data@clv.time
+
+  # convert time information to native date/time types
+  clv.newcustomer <- clv.newcustomer.dynamic.cov.convert.time(
+    clv.newcustomer=clv.newcustomer, clv.time=clv.time)
+
+  tp.first.transaction <- clv.newcustomer@first.transaction
+  tp.prediction.end <- tp.first.transaction + clv.time.number.timeunits.to.timeperiod(
+    clv.time=clv.time, user.number.periods=clv.newcustomer@num.periods)
+
+  check_err_msg(check_user_data_newcustomer_dyncovspecific(
+    clv.time=clv.time,
+    dt.cov.life=clv.newcustomer@data.cov.life,
+    dt.cov.trans=clv.newcustomer@data.cov.trans,
+    tp.first.transaction=tp.first.transaction,
+    tp.prediction.end=tp.prediction.end))
+
+
+  return(clv.model.predict.new.customer.unconditional.expectation(
+    clv.model = clv.fitted@clv.model,
+    clv.fitted = clv.fitted,
+    t=clv.newcustomer@num.periods,
+    clv.newcustomer=clv.newcustomer))
 })

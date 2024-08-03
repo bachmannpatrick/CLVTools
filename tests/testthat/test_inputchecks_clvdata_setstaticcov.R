@@ -2,7 +2,6 @@
 data("apparelTrans")
 data("apparelStaticCov")
 
-context("Inputchecks - SetStaticCovariates - Parameter clv.data")
 expect_silent(clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w"))
 
 
@@ -46,7 +45,6 @@ test_that("Fails if already has covariates", {
 
 
 # Parameter data.cov.life ---------------------------------------------------------------------------------------
-context("Inputchecks - SetStaticCovariates - Parameter data.cov.life")
 # ** TODO: id type wrong?
 
 test_that("Fails if missing/NULL/NA", {
@@ -113,8 +111,6 @@ test_that("Fails for variable with single category", {
 
 
 # Parameter data.cov.trans ---------------------------------------------------------------------------------------
-context("Inputchecks - SetStaticCovariates - Parameter data.cov.trans")
-
 test_that("Fails if missing/NULL/NA", {
   expect_error(SetStaticCovariates(clv.data = clv.data.apparel,
                                    data.cov.life  = apparelStaticCov, names.cov.life = "Gender",
@@ -180,7 +176,6 @@ test_that("Fails for variable with single category", {
 
 
 # Parameter name.cov.life ---------------------------------------------------------------------------------------
-context("Inputchecks - SetStaticCovariates - Parameter name.cov.life")
 test_that("Fails if missing/NULL/NA/empty",{
   expect_error(SetStaticCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelStaticCov, names.cov.life = ,
@@ -228,28 +223,25 @@ test_that("Fails if contains NA", {
 })
 
 test_that("Fails if names not in data", {
-  # ** TODO: Check and fail properly
   expect_error(SetStaticCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelStaticCov, names.cov.life = "GenderBender",
                                    data.cov.trans = apparelStaticCov, names.cov.trans = "Gender"),
-               regexp = "could not be found")
+               regexp = "GenderBender could not be found in the Lifetime covariate data")
   expect_error(SetStaticCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelStaticCov, names.cov.life = "gender",
                                    data.cov.trans = apparelStaticCov, names.cov.trans = "Gender"),
-               regexp = "could not be found")
+               regexp = "gender could not be found in the Lifetime covariate data")
 })
 
 test_that("Fails if has duplicate names", {
-  # ** TODO: Fail properly
   expect_error(SetStaticCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelStaticCov, names.cov.life = c("Gender", "Gender"),
                                    data.cov.trans = apparelStaticCov, names.cov.trans = "Gender"),
-               regexp = "duplicates")
+               regexp = "Lifetime covariate may not contain any duplicates")
 })
 
 
 # Parameter name.cov.trans ---------------------------------------------------------------------------------------
-context("Inputchecks - SetStaticCovariates - Parameter name.cov.trans")
 test_that("Fails if missing/NULL/NA/empty",{
   expect_error(SetStaticCovariates(clv.data = clv.data.apparel,
                                    data.cov.life = apparelStaticCov, names.cov.life = "Gender",
@@ -326,7 +318,7 @@ test_that("Fails if NA/NULL", {
   expect_error(do.call(SetStaticCovariates, modifyList(l.std.args, list(name.id=NA_character_))),
                regexp = "any NA")
   expect_error(do.call(SetStaticCovariates, modifyList(l.std.args, list(name.id=character(0)))),
-               regexp = "single element")
+               regexp = "exactly 1 element")
 })
 
 test_that("Fails if not character", {
@@ -340,11 +332,11 @@ test_that("Fails if not character", {
 
 test_that("Fails if multiple", {
   expect_error(do.call(SetStaticCovariates, modifyList(l.std.args, list(name.id=c("Id", "Id")), keep.null = TRUE)),
-               regexp = "single element")
+               regexp = "exactly 1 element")
   expect_error(do.call(SetStaticCovariates, modifyList(l.std.args, list(name.id=c("Id", "Id")), keep.null = TRUE)),
-               regexp = "single element")
+               regexp = "exactly 1 element")
   expect_error(do.call(SetStaticCovariates, modifyList(l.std.args, list(name.id=c("Id", "Date")), keep.null = TRUE)),
-               regexp = "single element")
+               regexp = "exactly 1 element")
 })
 
 test_that("Fails if not in transaction data", {

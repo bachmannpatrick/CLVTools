@@ -447,3 +447,4 @@ fitted.clv.fitted <- function(object, prediction.end=NULL, verbose=FALSE, ...){
   dt.model.expectation[]
   return(dt.model.expectation)
 }
+

@@ -20,8 +20,10 @@ setClass(Class = "clv.pnbd.dynamic.cov", contains = "clv.fitted.transactions.dyn
          slots = c(
            cbs = "data.table",
 
-           data.walks.life  = "list",
-           data.walks.trans = "list",
+           data.walks.life.aux    = "data.table",
+           data.walks.life.real   = "data.table",
+           data.walks.trans.aux   = "data.table",
+           data.walks.trans.real  = "data.table",
 
            LL.data          = "data.table"),
 
@@ -29,8 +31,10 @@ setClass(Class = "clv.pnbd.dynamic.cov", contains = "clv.fitted.transactions.dyn
          prototype = list(
            cbs = data.table(),
 
-           data.walks.life  = list(),
-           data.walks.trans = list(),
+           data.walks.life.aux   = data.table(),
+           data.walks.life.real  = data.table(),
+           data.walks.trans.aux  = data.table(),
+           data.walks.trans.real = data.table(),
 
            LL.data          = data.table()))
 
@@ -57,10 +61,8 @@ pnbd_dyncov_cbs <- function(clv.data){
   # The CBS for pnbd dyncov additinoally contains d_omega for every customer
   # d_omega: "= Time difference between the very first purchase (start of the observation period)
   #   and the end of the interval the first purchase is contained in."
-  dt.cbs[, d_omega := clv.time.interval.in.number.tu(clv.time=clv.data@clv.time,
-                                                     interv = interval(start = date.first.actual.trans,
-                                                                       end = clv.time.ceiling.date(clv.time=clv.data@clv.time,
-                                                                                                   date.first.actual.trans)))]
+  dt.cbs[, d_omega := pnbd_dyncov_walk_d(clv.time=clv.data@clv.time, tp.relevant.transaction = date.first.actual.trans)]
 
   return(dt.cbs)
 }
+

@@ -1,5 +1,5 @@
 # . clv.controlflow.predict.check.inputs ------------------------------------------------------------------------
-setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, verbose, prediction.end, continuous.discount.factor, predict.spending, ...){
+setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, verbose, uncertainty, num.boots, level, prediction.end, continuous.discount.factor, predict.spending, ...){
   err.msg <- c()
 
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=verbose, var.name="verbose"))
@@ -11,6 +11,11 @@ setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.
     err.msg <- c(err.msg, "Cannot predict without prediction.end if there is no holdout!")
 
   err.msg <- c(err.msg, check_user_data_continuousdiscountfactor(continuous.discount.factor=continuous.discount.factor))
+
+  if(uncertainty == "boots"){
+    err.msg <- c(err.msg, check_user_data_numboots(num.boots=num.boots))
+    err.msg <- c(err.msg, check_user_data_level(level=level))
+  }
 
   # predict.spending
   # Spending can be predicted using either a function (ie gg), a logical (ie FALSE), or an
@@ -37,7 +42,7 @@ setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.
       }else{
         # Is logical
         if(length(predict.spending)>1)
-          err.msg <- c(err.msg, paste0("The parameter predict.spending can only contain a single element!"))
+          err.msg <- c(err.msg, paste0("The parameter predict.spending can only contain 1 element!"))
         if(anyNA(predict.spending))
           err.msg <- c(err.msg, paste0("The parameter predict.spending cannot be NA!"))
       }
@@ -73,8 +78,19 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.tran
     # This also catches NULL, NA, empty vecs, and so on
     #   but allows all cov data subclasses
 
-    err.msg <- c(err.msg, paste0("The parameter newdata needs to be a clv data object of class ",
-                                 class(clv.fitted@clv.data)))
+    # need to check in order dyncov -> static cov -> no cov
+    if(is(clv.fitted, "clv.fitted.transactions.dynamic.cov")){
+      name.newcustomer <- "newcustomer.dynamic()"
+    }else{
+      if(is(clv.fitted, "clv.fitted.transactions.static.cov")){
+        name.newcustomer <- "newcustomer.static()"
+      }else{
+        # clv.fitted.transactions
+        name.newcustomer <- "newcustomer()"
+      }
+    }
+    err.msg <- c(err.msg, paste0("The parameter newdata needs to be a clv data object of class ",class(clv.fitted@clv.data),
+                                 " or the output of ", name.newcustomer, "."))
 
   }else{
     # Is actually a clv.data object Also check if it is the right type
@@ -186,10 +202,10 @@ setMethod("clv.controlflow.predict.add.actuals", signature(clv.fitted="clv.fitte
 })
 
 
-# . clv.controlflow.predict.post.process.prediction.table ------------------------------------------------------------------------------
+# .clv.controlflow.predict.post.process.prediction.table ------------------------------------------------------------------------------
 setMethod("clv.controlflow.predict.post.process.prediction.table", signature = signature(clv.fitted="clv.fitted.transactions"), function(clv.fitted, dt.predictions, has.actuals, verbose, predict.spending, ...){
-  predicted.mean.spending <- i.predicted.mean.spending <- actual.total.spending <- i.actual.total.spending <- NULL
-  predicted.CLV <- DECT <- DERT <- NULL
+  predicted.mean.spending <- i.predicted.mean.spending <- actual.total.spending <- i.actual.total.spending <- predicted.total.spending <- NULL
+  predicted.CLV <- CET <- DECT <- DERT <- NULL
 
   # Predict spending ---------------------------------------------------------------------------------------
   # depends on content of predict.spending:
@@ -273,6 +289,9 @@ setMethod("clv.controlflow.predict.post.process.prediction.table", signature = s
       dt.predictions[, predicted.CLV := DERT * predicted.mean.spending]
     if("DECT" %in% colnames(dt.predictions))
       dt.predictions[, predicted.CLV := DECT * predicted.mean.spending]
+
+    # If spending is predicted, also add predicted.total.spending
+    dt.predictions[, predicted.total.spending := predicted.mean.spending * CET]
   }
 
   # Present cols in desired order ------------------------------------------------------------
@@ -292,7 +311,7 @@ setMethod("clv.controlflow.predict.post.process.prediction.table", signature = s
     cols <- c(cols, "PAlive", "CET", "DECT")
 
   if(do.predict.spending)
-    cols <- c(cols, "predicted.mean.spending")
+    cols <- c(cols, c("predicted.mean.spending", "predicted.total.spending"))
 
   if("predicted.CLV" %in% colnames(dt.predictions))
     cols <- c(cols, "predicted.CLV")
@@ -300,4 +319,69 @@ setMethod("clv.controlflow.predict.post.process.prediction.table", signature = s
   setcolorder(dt.predictions, cols)
 
   return(dt.predictions)
+})
+
+
+
+
+# . clv.controlflow.predict.new.customer ---------------------------------------------------------------------------------------
+#' @include class_clv_fitted_transactions.R
+setMethod("clv.controlflow.predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, clv.newcustomer){
+
+  if(!is(clv.newcustomer, "clv.newcustomer.no.cov") | is(clv.newcustomer, "clv.newcustomer.static.cov")){
+    check_err_msg("Parameter newdata has to be output from calling `newcustomer()`!")
+  }
+
+  return(drop(clv.model.predict.new.customer.unconditional.expectation(
+    clv.model = clv.fitted@clv.model,
+    clv.fitted = clv.fitted,
+    clv.newcustomer=clv.newcustomer,
+    t=clv.newcustomer@num.periods)))
+})
+
+
+# . clv.fitted.bootstrap.predictions --------------------------------------------
+setMethod(f = "clv.fitted.bootstrap.predictions", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, num.boots, verbose, prediction.end, predict.spending, continuous.discount.factor){
+
+  # have to explicitly give prediction.end because bootstrapping data has no holdout
+  if(is.null(prediction.end)){
+    boots.prediction.end <- clv.fitted@clv.data@clv.time@timepoint.holdout.end
+  }else{
+    boots.prediction.end <- prediction.end
+  }
+
+  if(verbose){
+    # Print message before progress bar is created
+    message("Bootstrapping ",num.boots," times for uncertainty estimates...")
+
+    progress.bar <- txtProgressBar(max = num.boots, style = 3)
+    update.pb    <- function(n){setTxtProgressBar(pb=progress.bar, value = n)}
+  }else{
+    # has to be also defined if verbose=F because used in boots.predict
+    update.pb <- function(n){}
+  }
+  pb.i <- 0
+
+  boots.predict <- function(clv.boot){
+    pb.i <<- pb.i + 1
+    update.pb(n = pb.i)
+    return(predict(
+      object = clv.boot,
+      prediction.end = boots.prediction.end,
+      verbose = FALSE,
+      predict.spending = predict.spending,
+      continuous.discount.factor = continuous.discount.factor,
+      uncertainty = "none"))
+  }
+
+  l.boots <- clv.bootstrapped.apply(
+    object = clv.fitted,
+    num.boot = num.boots,
+    fn.boot.apply = boots.predict,
+    fn.sample = NULL,
+    verbose = FALSE,
+    start.params.model = clv.fitted@prediction.params.model
+  )
+
+  return(rbindlist(l.boots))
 })

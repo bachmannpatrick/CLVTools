@@ -42,7 +42,8 @@ arma::vec ggomnbd_nocov_LL_ind(const arma::vec& vLogparams,
 double ggomnbd_nocov_LL_sum(const arma::vec& vLogparams,
                             const arma::vec& vX,
                             const arma::vec& vT_x,
-                            const arma::vec& vT_cal);
+                            const arma::vec& vT_cal,
+                            const arma::vec& vN);
 
 arma::vec ggomnbd_staticcov_LL_ind(const arma::vec& vParams,
                                    const arma::vec& vX,
@@ -55,6 +56,7 @@ double ggomnbd_staticcov_LL_sum(const arma::vec& vParams,
                                 const arma::vec& vX,
                                 const arma::vec& vT_x,
                                 const arma::vec& vT_cal,
+                                const arma::vec& vN,
                                 const arma::mat& mCov_life,
                                 const arma::mat& mCov_trans);
 
@@ -77,8 +79,18 @@ struct integration_params {
 };
 
 
+struct integration_params_CET_hyp21 {
+  double s;
+  double z;
+};
+
 
 // CET ------------------------------------------------------------------------
+
+double ggomnbd_CET_hyp2f1_integrand(double t, void * p_params);
+
+arma::vec ggomnbd_CET_hyp2f1_1_s_splus1_integrate(const double s,
+                                                  const arma::vec& vZ);
 
 double ggomnbd_CET_integrand(double omega, void * p_params);
 

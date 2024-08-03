@@ -166,10 +166,17 @@ SetDynamicCovariates <- function(clv.data, data.cov.life, data.cov.trans, names.
   names.cov.life  <- l.covs.life$final.names.cov
   names.cov.trans <- l.covs.trans$final.names.cov
 
-  setkeyv(data.cov.life,  cols = c("Id", "Cov.Date"))
-  setkeyv(data.cov.trans, cols = c("Id", "Cov.Date"))
+  # Add upper and lower covariate interval bounds --------------------------------------------------------
+  data.cov.life <- pnbd_dyncov_covariate_add_interval_bounds(dt.cov = data.cov.life, clv.time = clv.data@clv.time)
+  data.cov.trans <- pnbd_dyncov_covariate_add_interval_bounds(dt.cov = data.cov.trans, clv.time = clv.data@clv.time)
 
   # Create and return dyncov data object -----------------------------------------------------------------
+  setcolorder(data.cov.life,  c("Id", "Cov.Date", "tp.cov.lower", "tp.cov.upper", names.cov.life))
+  setcolorder(data.cov.trans, c("Id", "Cov.Date", "tp.cov.lower", "tp.cov.upper", names.cov.trans))
+
+  setkeyv(data.cov.life,  cols = c("Id", "Cov.Date", "tp.cov.lower", "tp.cov.upper"))
+  setkeyv(data.cov.trans, cols = c("Id", "Cov.Date", "tp.cov.lower", "tp.cov.upper"))
+
   return(clv.data.dynamic.covariates(no.cov.obj = clv.data,
                                      data.cov.life = data.cov.life,
                                      data.cov.trans = data.cov.trans,

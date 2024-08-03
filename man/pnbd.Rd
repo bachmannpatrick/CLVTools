@@ -109,7 +109,7 @@ concerning the heterogeneity of customers in their buy and die rate.
 If covariates are included into the model additionally parameters for the
 covariates affecting the attrition and the purchase process are part of the model.
 
-If no start parameters are given, 1.0 is used for all model parameters and 0.1 for covariate parameters.
+If no start parameters are given, r=0.5, alpha=2, b=0.1, s=1, beta=0.1 is used for all model parameters and 0.1 for covariate parameters.
 The model start parameters are required to be > 0.
 
 \subsection{The Pareto/NBD model}{
@@ -269,6 +269,8 @@ to add static covariates to an existing clv data object.
 \code{\link[CLVTools:plot.clv.fitted.transactions]{plot}} to plot the unconditional expectation as predicted by the fitted model
 
 \code{\link[CLVTools:pmf]{pmf}} for the probability to make exactly x transactions in the estimation period, given by the probability mass function (PMF).
+
+\code{\link[CLVTools:newcustomer]{newcustomer}} to predict the expected number of transactions for an average new customer.
 
 The generic functions \code{\link[CLVTools:vcov.clv.fitted]{vcov}}, \code{\link[CLVTools:summary.clv.fitted]{summary}}, \code{\link[CLVTools:fitted.clv.fitted]{fitted}}.
 

@@ -20,9 +20,11 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv
 })
 
 # . clv.controlflow.estimate.put.inputs ------------------------------------------------------------------------
-setMethod("clv.controlflow.estimate.put.inputs", signature =  signature(clv.fitted="clv.fitted"), definition = function(clv.fitted, verbose, ...){
+setMethod("clv.controlflow.estimate.put.inputs", signature =  signature(clv.fitted="clv.fitted"), definition = function(clv.fitted, start.params.model, optimx.args, verbose, ...){
+  clv.fitted@model.specification.args <- list(start.params.model=start.params.model, optimx.args=optimx.args, verbose=verbose)
   return(clv.fitted)
 })
+
 
 
 # . clv.controlflow.estimate.generate.start.params ------------------------------------------------------------------------
@@ -52,6 +54,7 @@ setMethod("clv.controlflow.estimate.generate.start.params", signature = signatur
 # Put together the individual parts needed to call optimx
 #   Adding the variables needed to call the LL function is left to the model-specific optimizeLL functions as they are unknonwn at this point
 #' @importFrom utils modifyList
+#' @importFrom numDeriv hessian
 setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(clv.fitted="clv.fitted"), def=function(clv.fitted, start.params.all){
 
   # Start with model defaults
@@ -103,35 +106,78 @@ setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(
     #   if the params are out-of-bound
     optimx.args <- modifyList(optimx.args, list(method = "Nelder-Mead"))
 
-    # Use a custom gradient function that signals the correlation layer to
-    #   not check the boundaries of param m
-    # Otherwise, the Hessian likely contains NAs because numDeriv often,
-    #   also with small stepsizes, wanders accross the boundaries
-    # Not checking the boundaries of param m is no issue for the gradient and hessian only,
-    #   the bound checks are enforced for the param during regular optimization evaluations
 
-    # Custom Gradient function
-    # Use optixm::grad because also used in optimx::optimx.setup:
-    #   "ugr <- function(par, userfn = ufn, ...) { tryg <- grad(userfn, par, ...)}"
-    fct.no.check.grad <- function(x, fn.to.call.from.gr, ...){
-      # ... contains all the other arguments given to interlayer(s) and LL function
-      # fn.to.call.from.gr is what optimx(fn) calls (ie the interlayer manager)
+    # . Custom hessian to set `check.param.m.bounds=FALSE` ---------------------
+    # When calculating the hessian for a model with correlation, we do not want
+    # to check the boundaries of param m that happen in the correlation
+    # interlayer (`interlayer_correlation`). The Hessian otherways may contain
+    # NAs because numDeriv often also with small stepsizes, wanders across the
+    # boundaries. Therefore, the interlayer has to be called with
+    # `check.param.m.bounds=FALSE` during the calculating of the hessian while
+    # it has to be called with `check.param.m.bounds=TRUE` during the normal
+    # optimization procedure.
+    # To set `check.param.m.bounds=FALSE` during the calculation of the hessian,
+    # we pass our own function for calculating the hessian. It should call the
+    # same procedure as optimx with the same arguments except for setting
+    # `check.param.m.bounds=FALSE`.
+    # optimx (2023-10.21) internally uses `numDeriv::hessian` to derive the
+    # hessian if only the objective function is supplied. We have no analytical
+    # expression of the hessian or the gradient and hence for all models without
+    # correlation `numDeriv::hessian` is used by optimx. This was numerically
+    # verified. We therefore also use `numDeriv::hessian` here.
+    # Earlier, we used optimx::grnd and passed it to optimx(gr=) because it is
+    # what is used in optimx::optimx.setup.
+
+    fn.no.check.hess <- function(x, fn.to.call.from.hess, ...){
+      # This method is passed to optimx(hess=) and is called to calculate the
+      # hessian. For this method `fn.no.check.hess` to know the actual target
+      # function it has to be given as parameter to `fn.no.check.hess`.
+      # param `...` contains all the other arguments to be given to the original
+      # target function (the LL).
+
       all.other.args <- list(...)
-      all.other.args <- modifyList(all.other.args,
-                                   # dont check boundaries during gradient
-                                   alist(check.param.m.bounds = FALSE))
-      do.call(what=grnd, c(alist(par = x,
-                                 userfn = fn.to.call.from.gr),
-                           all.other.args))
+      # This is the actual only change we want to make: Dont check boundaries
+      # when calculating the hessian
+      all.other.args$check.param.m.bounds <- FALSE
+
+      return(do.call(
+        what=numDeriv::hessian,
+        args = c(alist(x = x, func = fn.to.call.from.hess), all.other.args)
+      ))
     }
 
-    # For the gradient, call the wrapper around optmix::grnd
-    optimx.args <- modifyList(optimx.args,
-                              list(gr= fct.no.check.grad,
-                                   # function to call when doing numerical grad. Do whatever is done for optimx
-                                   fn.to.call.from.gr = optimx.args$fn))
-  }
+    # use `fn.no.check.hess` to calculate the hessian
+    optimx.args$hess <- fn.no.check.hess
+    # the actual loss function (LL interlayers) which should be called inside
+    # `fn.no.check.hess`. Pass it as additional arg to optimx and it will
+    # eventually be used in `fn.no.check.hess`
+    optimx.args$fn.to.call.from.hess <- optimx.args$fn
 
+
+    # . Custom gradient to set `check.param.m.bounds=FALSE` --------------------
+    # Similarly as for the hessian, also a custom function for the gradient has
+    # to be passed to optimx in order to set `check.param.m.bounds=FALSE` when
+    # optimx calculates the gradient at the end of the optimization for hessian
+    # and KKT.
+    # For explanations how this works, see the comments for `fn.no.check.hess`.
+    fn.no.check.grad <- function(x, fn.to.call.from.grad, ...){
+      all.other.args <- list(...)
+      all.other.args$check.param.m.bounds <- FALSE
+      # optimx (2023-10.21) uses `numDeriv::grad()` if no gradient is given by
+      # the user
+      return(do.call(
+        what=numDeriv::grad,
+        args = c(alist(x = x, func = fn.to.call.from.grad), all.other.args)
+      ))
+    }
+
+    # use `fn.no.check.grad` to calculate the gradient
+    optimx.args$gr <- fn.no.check.grad
+    # the actual loss function (LL interlayers) to call inside
+    # `fn.no.check.hess` to calculate the gradient
+    optimx.args$fn.to.call.from.grad <- optimx.args$fn
+
+  }
 
   return(optimx.args)
 })

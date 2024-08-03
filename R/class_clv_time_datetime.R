@@ -85,6 +85,16 @@ definition = function(clv.time, user.timepoint){
   return(as.POSIXct.POSIXlt(tp.lt.midnight, tz = clv.time@timezone))
 })
 
+setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.time="clv.time.datetime",
+                                                                            user.timepoint="IDate"),
+definition = function(clv.time, user.timepoint){
+
+  # Data read with data.table::fread by default stores dates as data.table::IDate.
+  # Do not attempt own conversion but convert to super class base::Date and
+  # re-use existing method.
+  return(clv.time.convert.user.input.to.timepoint(clv.time=clv.time, user.timepoint=as.Date(user.timepoint)))
+})
+
 
 setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.time="clv.time.datetime",
                                                                             user.timepoint="POSIXlt"),
@@ -128,5 +138,5 @@ setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.
                                                                             user.timepoint="ANY"),
 definition = function(clv.time, user.timepoint){
   # None of these cases
-  stop("The provided data is in an unknown format! Only Date, POSIXct/lt, and character are accepted!", call. = FALSE)
+  stop("The provided data is in an unknown format! Only Date, data.table::IDate, POSIXct/lt, and character are accepted!", call. = FALSE)
 })

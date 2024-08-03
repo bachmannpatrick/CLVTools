@@ -38,6 +38,6 @@ setMethod("clv.time.floor.date",  signature = signature(clv.time="clv.time.hours
 
 #' @importFrom lubridate ceiling_date
 setMethod("clv.time.ceiling.date",  signature = signature(clv.time="clv.time.hours"), function(clv.time,timepoint){
-  return(ceiling_date(x=timepoint, unit="hours", change_on_boundary = FALSE))
+  return(ceiling_date(x=timepoint, unit="hours", change_on_boundary = TRUE))
 })
 

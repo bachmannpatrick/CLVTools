@@ -39,3 +39,4 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv
 
   check_err_msg(err.msg)
 })
+

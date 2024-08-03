@@ -2,7 +2,6 @@ data("cdnow")
 data("apparelTrans") # for years
 
 # estimation.split ---------------------------------------------------------------------
-context("Correctness - clvdata - estimation.split")
 
 
 # **clv.time: predict(, 10). regexp 10 Weeks + regexp holdout.start
@@ -126,7 +125,6 @@ test_that("No estimation.split ends on last transaction date", {
 })
 
 # time.unit ------------------------------------------------------------------------------
-context("Correctness - clvdata - time.units")
 
 test_that("Different units with same split results in same dates", {
   #skip_on_cran()
@@ -153,7 +151,6 @@ test_that("Different units with same split results in same dates", {
 
 
 # transaction.data ----------------------------------------------------------------------------
-context("Correctness - clvdata - data.transactions")
 
 test_that("Same result for differently sorted transactions", {
   skip_on_cran()
@@ -246,7 +243,6 @@ test_that("Transaction data was properly copied", {
 
 
 # aggregate.transactions ----------------------------------------------------------------------------
-context("Correctness - clvdata - aggregate.transactions")
 
 test_that("Only one transaction per timepoint and Id exits (date)", {
   skip_on_cran()
@@ -310,16 +306,13 @@ test_that("Same timepoint transactions are summed (posix)", {
 })
 
 # repeat.transactions ----------------------------------------------------------------------------
-context("Correctness - clvdata - repeat.transactions")
 
 test_that("Removes correct transaction",{
   # Correctly remove first transaction, regardless of sorting
-  expect_silent(dt.trans <- data.table(Date = c(lubridate::ymd("2019-01-01"), lubridate::ymd("2019-01-02"), lubridate::ymd("2019-01-03"),
-                                                lubridate::ymd("2019-06-01"), lubridate::ymd("2019-06-02")),
-                                       Id =   c("1", "1", "1", "2", "2")))
-  expect_silent(dt.trans.correct <- data.table(Date = c(lubridate::ymd("2019-01-02"), lubridate::ymd("2019-01-03"),
-                                                        lubridate::ymd("2019-06-02")),
-                                               Id =   c( "1", "1", "2")))
+  expect_silent(dt.trans <- data.table(Date = lubridate::ymd(c("2019-01-01", "2019-01-02", "2019-01-03", "2019-06-01", "2019-06-02")),
+                                       Id = c("1", "1", "1", "2", "2")))
+  expect_silent(dt.trans.correct <- data.table(Date = lubridate::ymd(c("2019-01-02", "2019-01-03","2019-06-02")),
+                                               Id = c( "1", "1", "2")))
 
   # Ordered by Date
   # Order one way
@@ -396,3 +389,57 @@ test_that("Aggregating first and removing after removes all first transactions",
 })
 
 
+test_that("clv.data.get.repeat.transactions.in.estimation.period() is the same as creating repeat transactions from estimation period data", {
+  skip_on_cran()
+
+  clv.cdnow <- clvdata(cdnow, date.format = "ymd", time.unit = "w", estimation.split = NULL)
+
+  dt.estimation.period   <- clv.data.get.transactions.in.estimation.period(clv.cdnow)
+  dt.self.made.repeat    <- clv.data.make.repeat.transactions(dt.estimation.period)
+
+  expect_true(fsetequal(clv.data.get.repeat.transactions.in.estimation.period(clv.cdnow),
+                        dt.self.made.repeat))
+})
+
+
+# mean.interpurchase.times ----------------------------------------------------------------------------
+test_that("New faster mean.interpurchase.times same result as original implementation", {
+
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(data.cdnow=cdnow)
+
+  fct.old.interp.time <- function(clv.data, dt.transactions){
+
+    num.transactions <- dt.transactions[, list(num.trans = .N), by="Id"]
+
+    return(rbindlist(list(
+      # 1 Transaction = NA
+      dt.transactions[Id %in% num.transactions[num.trans == 1,Id], list(interp.time = NA_real_, Id)],
+      dt.transactions[Id %in% num.transactions[num.trans >  1,Id],
+                      list(interp.time = mean(clv.time.interval.in.number.tu(clv.time = clv.data@clv.time,
+                                                                             interv = lubridate::int_diff(Date)))),
+                      by="Id"]
+    ), use.names = TRUE))
+  }
+
+  # Old method implicitly depended on input data being sorted by (Id, Date)
+  dt.old <- fct.old.interp.time(
+    clv.data = clv.cdnow,
+    dt.transactions = clv.cdnow@data.transactions
+    )
+
+  # Sort by Price instead for new to show it is also correct if input is not
+  # ordered by Id, Date
+  dt.new <- clv.data.mean.interpurchase.times(
+    clv.data = clv.cdnow,
+    dt.transactions = clv.cdnow@data.transactions[order(Price)]
+    )
+  # Need to sort by Id because result order depends on order of input data
+  expect_equal(
+    object = dt.new[order(Id)],
+    expected = dt.old[order(Id)],
+    tolerance = testthat_tolerance()
+    )
+
+
+
+})

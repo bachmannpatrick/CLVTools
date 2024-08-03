@@ -1,15 +1,75 @@
 #include "ggomnbd.h"
 
 
-// integrand<-function(omega){omega*exp(b*omega)*(beta_i[i]+exp(b*omega)-1)^-(s+1)}
-double ggomnbd_CET_integrand(double omega, void * p_params){
+double ggomnbd_CET_integrand(double tau, void * p_params){
   struct integration_params * params = (struct integration_params*)p_params;
+  const double x = (params -> x_i);
   const double b = (params -> b);
   const double s = (params -> s);
+  const double r = (params -> r);
   const double beta_i = (params -> beta_i);
+  const double alpha_i = (params -> alpha_i);
 
-  return(omega * std::exp(b * omega) * std::pow(beta_i + std::exp(b * omega) - 1.0, -(s+1.0) ) );
+  return(std::exp(b*tau) / (std::pow(std::exp(b*tau) + beta_i - 1.0,  s + 1.0) * std::pow(alpha_i + tau, r + x)));
 }
+
+
+double ggomnbd_CET_hyp2f1_integrand(double t, void * p_params){
+  struct integration_params_CET_hyp21 * params = (struct integration_params_CET_hyp21*)p_params;
+  const double s = (params -> s);
+  const double z = (params -> z);
+
+  return(std::pow(t,  s - 1.0)/(1.0 - z*t));
+}
+
+
+
+arma::vec ggomnbd_CET_hyp2f1_1_s_splus1_integrate(
+    const double s,
+    const arma::vec& vZ
+){
+  // Calculate Hyp2F1(1, s, s+1, z) using Jeff's integral representation:
+  //        1/beta(1,s) * Integrate(f, lower=0, upper=1)
+  //          where f(t) = (t^(s-1)) / (1-z*t)
+  // Where the function is defined on the complex plane, it returns only the real part
+
+  // Alternatively, it could the problematic hyp2f1 could also be rewritten as
+  //      (1-z)^(-a) * 2F1(a, c-b, c, z/(z-1))
+  //      (1-z)^(-b) * 2F1(c-a, b, c, z/(z-1))
+  // However, it is unclear whether this can be calculated with the used Hyp2F1() for
+  // all values of z or would need additional case analysis. Therefore simply use
+  // numeric integration as this is not performance critical in CET.
+
+
+  // Do not abort in case of error
+  gsl_set_error_handler_off();
+
+  gsl_integration_workspace * workspace = gsl_integration_workspace_alloc(1000);
+
+  gsl_function integrand;
+  integrand.function = &ggomnbd_CET_hyp2f1_integrand;
+
+  const arma::uword n = vZ.n_elem;
+  arma::vec vRes(n);
+  double res, err;
+  struct integration_params_CET_hyp21 params_i;
+  for(arma::uword i = 0; i<n; i++){
+
+    params_i.s = s;
+    params_i.z = vZ(i);
+    integrand.params = &params_i;
+
+    gsl_integration_qags(&integrand, 0.0, 1.0, 1.0e-8, 1.0e-8, 1000, workspace, &res, &err);
+
+    // beta(1,s) = 1/s, therefore 1/beta(1,s) = s
+    vRes(i) = res * s;
+  }
+
+  gsl_integration_workspace_free(workspace);
+
+  return vRes;
+}
+
 
 
 //' @name ggomnbd_CET
@@ -40,25 +100,24 @@ arma::vec ggomnbd_CET(const double r,
                       const arma::vec& vAlpha_i,
                       const arma::vec& vBeta_i){
 
-  // Expectation is Formula 20: PAlive()*Expectation()
-  //
-  //  with
-  //    r *    = r + x
-  //    alpha* = alpha + Tcal
-  //    beta*  = beta + exp(b*Tcal) - 1
-  //    t_i    = dPeriods
+  // Errata by Adler (2022), https://pubsonline.informs.org/doi/10.1287/mnsc.2022.4422
+  // See https://github.com/bachmannpatrick/CLVTools/issues/206
 
+  const arma::vec vBetaIminus1 = vBeta_i - 1.0;
+  const arma::vec vExpbTpart = arma::exp(b*vT_cal) + vBetaIminus1;
+  const arma::vec vExpbTTstarpart = arma::exp(b*(vT_cal + dPeriods)) + vBetaIminus1;
 
-  const arma::vec vPAlive = ggomnbd_PAlive(r,b,s,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
+  const arma::vec vHyp1 = ggomnbd_CET_hyp2f1_1_s_splus1_integrate(s, vBetaIminus1 / vExpbTpart);
+  const arma::vec vHyp2 = ggomnbd_CET_hyp2f1_1_s_splus1_integrate(s, vBetaIminus1 / vExpbTTstarpart);
+  const arma::vec vUpper = vHyp1 - arma::pow(vExpbTpart / vExpbTTstarpart, s) % vHyp2;
 
-  const arma::vec vRStar     = r + vX;
-  const arma::vec vAlphaStar = vAlpha_i + vX;
-  const arma::vec vBetaStar  = vBeta_i + arma::exp(b * vT_cal) - 1.0;
+  const arma::vec vIntegral = ggomnbd_integrate(r, b, s, vAlpha_i, vBeta_i,vX,
+                                                &ggomnbd_CET_integrand,
+                                                vT_x, vT_cal);
+  const arma::vec vLower = b * s * (1.0 + (b * s) * arma::pow(vAlpha_i + vT_cal, r + vX) % arma::pow(vExpbTpart, s) % vIntegral);
+  const arma::vec vFront = (r + vX)/(vAlpha_i + vT_cal);
 
-  const arma::vec vPeriods = clv::vec_fill(dPeriods, vX.n_elem);
-  const arma::vec vExpectation = ggomnbd_expectation(b, s, vRStar, vAlphaStar, vBetaStar, vPeriods);
-
-  return(vPAlive % vExpectation);
+  return(vFront % vUpper / vLower);
 }
 
 
@@ -74,8 +133,8 @@ arma::vec ggomnbd_nocov_CET(const double r,
                             const arma::vec& vT_x,
                             const arma::vec& vT_cal){
 
-  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vX.n_elem);
-  const arma::vec vBeta_i = clv::vec_fill(beta_0, vX.n_elem);
+  const arma::vec vAlpha_i = arma::vec(vX.n_elem, arma::fill::value(alpha_0));
+  const arma::vec vBeta_i = arma::vec(vX.n_elem, arma::fill::value(beta_0));
 
   return(ggomnbd_CET(r,b,s,dPeriods,vX,vT_x,vT_cal,vAlpha_i, vBeta_i));
 }
@@ -166,9 +225,9 @@ arma::vec ggomnbd_nocov_expectation(const double r,
                                     const double beta_0,
                                     const arma::vec& vT_i){
 
-  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vT_i.n_elem);
-  const arma::vec vBeta_i = clv::vec_fill(beta_0, vT_i.n_elem);
-  const arma::vec vR = clv::vec_fill(r, vT_i.n_elem);
+  const arma::vec vAlpha_i = arma::vec(vT_i.n_elem, arma::fill::value(alpha_0));
+  const arma::vec vBeta_i = arma::vec(vT_i.n_elem, arma::fill::value(beta_0));
+  const arma::vec vR = arma::vec(vT_i.n_elem, arma::fill::value(r));
 
   return(ggomnbd_expectation(b,
                              s,
@@ -186,7 +245,7 @@ arma::vec ggomnbd_staticcov_expectation(const double r,
                                         const arma::vec& vAlpha_i,
                                         const arma::vec& vBeta_i,
                                         const arma::vec& vT_i){
-  const arma::vec vR = clv::vec_fill(r, vT_i.n_elem);
+  const arma::vec vR = arma::vec(vT_i.n_elem, arma::fill::value(r));
 
   return(ggomnbd_expectation(b,
                              s,
@@ -195,7 +254,6 @@ arma::vec ggomnbd_staticcov_expectation(const double r,
                              vBeta_i,
                              vT_i));
 }
-
 
 
 
@@ -240,6 +298,9 @@ arma::vec ggomnbd_integrate(const double r,
     vRes(i) = res;
   }
 
+  gsl_integration_workspace_free(workspace);
+
+
   return(vRes);
 }
 
@@ -254,9 +315,11 @@ double ggomnbd_LL_integrand(double y, void * p_params){
   const double alpha_i = (params -> alpha_i);
   const double x_i = (params -> x_i);
 
-  return  std::pow(y + alpha_i,  -(r + x_i))
-    * std::pow(beta_i + std::exp( b * y) - 1.0 , -(s + 1.0))
-    * std::exp(b * y);
+  // Rewrite integral as exp(log()) to improve numerical stability
+  // Jeff:
+  //    log(pow(y + alpha_i, -(r + x)) * pow(beta_i + exp(b * y) - 1 , -(s + 1)) * exp(b * y))
+  //     = -(r+x)*log( y + alpha_i) - (s+1)*log( beta_i + exp( b * y) - 1) +b *y
+  return std::exp(-(r + x_i) * std::log(y + alpha_i) - (s + 1.0) * std::log(beta_i + std::exp( b * y) - 1.0) + b * y);
 }
 
 
@@ -268,6 +331,7 @@ double ggomnbd_LL_integrand(double y, void * p_params){
 //' @template template_titleparamsdescriptionreturndetails_LL
 //'
 //' @template template_params_rcppxtxtcal
+//' @template template_param_rcppvn
 //' @template template_params_rcppcovmatrix
 //'
 //' @templateVar name_params_cov_life vParams
@@ -323,8 +387,8 @@ arma::vec ggomnbd_nocov_LL_ind(const arma::vec& vLogparams,
   const double s       = std::exp(vLogparams(3));
   const double beta_0  = std::exp(vLogparams(4));
 
-  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vX.n_elem);
-  const arma::vec vBeta_i = clv::vec_fill(beta_0, vX.n_elem);
+  const arma::vec vAlpha_i = arma::vec(vX.n_elem, arma::fill::value(alpha_0));
+  const arma::vec vBeta_i = arma::vec(vX.n_elem, arma::fill::value(beta_0));
 
   return(ggomnbd_LL_ind(r, b, s, vAlpha_i, vBeta_i, vX, vT_x, vT_cal));
 }
@@ -335,7 +399,8 @@ arma::vec ggomnbd_nocov_LL_ind(const arma::vec& vLogparams,
 double ggomnbd_nocov_LL_sum(const arma::vec& vLogparams,
                             const arma::vec& vX,
                             const arma::vec& vT_x,
-                            const arma::vec& vT_cal){
+                            const arma::vec& vT_cal,
+                            const arma::vec& vN){
 
 
   const arma::vec vLL = ggomnbd_nocov_LL_ind(vLogparams,
@@ -344,7 +409,7 @@ double ggomnbd_nocov_LL_sum(const arma::vec& vLogparams,
                                              vT_cal);
 
   // accu sums all elements
-  return(-arma::sum(vLL));
+  return(-arma::sum(vLL % vN));
 }
 
 
@@ -394,13 +459,14 @@ double ggomnbd_staticcov_LL_sum(const arma::vec& vParams,
                                 const arma::vec& vX,
                                 const arma::vec& vT_x,
                                 const arma::vec& vT_cal,
+                                const arma::vec& vN,
                                 const arma::mat& mCov_life,
                                 const arma::mat& mCov_trans){
 
   // vParams has to be single vector because used by optimizer
   const arma::vec vLL = ggomnbd_staticcov_LL_ind(vParams,vX,vT_x,vT_cal,mCov_life,mCov_trans);
 
-  return(-arma::sum(vLL));
+  return(-arma::sum(vLL % vN));
 }
 
 
@@ -491,8 +557,115 @@ arma::vec ggomnbd_nocov_PAlive(const double r,
                                const arma::vec& vT_x,
                                const arma::vec& vT_cal){
 
-  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vX.n_elem);
-  const arma::vec vBeta_i = clv::vec_fill(beta_0, vX.n_elem);
+  const arma::vec vAlpha_i = arma::vec(vX.n_elem, arma::fill::value(alpha_0));
+  const arma::vec vBeta_i = arma::vec(vX.n_elem, arma::fill::value(beta_0));
 
   return ggomnbd_PAlive(r,b,s,vX,vT_x,vT_cal,vAlpha_i,vBeta_i);
 }
+
+
+double ggomnbd_PMF_integrand(double tau, void * p_params){
+  struct integration_params * params = (struct integration_params*)p_params;
+
+  const double r = (params -> r);
+  const double b = (params -> b);
+  const double s = (params -> s);
+  const double beta_i = (params -> beta_i);
+  const double alpha_i = (params -> alpha_i);
+  const double x_i = (params -> x_i);
+
+  return std::exp(
+    x_i * std::log(tau) + b * tau - (r + x_i) * std::log(tau + alpha_i) - (s+1.0)*std::log(std::exp(b*tau) + beta_i - 1.0)
+  );
+}
+
+
+
+//' @name ggomnbd_PMF
+//' @templateVar name_model_full GGompertz/NBD
+//' @template template_pmf_titledescreturnpmfparams
+//'
+//' @template template_params_ggomnbd
+//' @template template_params_rcppvcovparams
+//' @template template_params_rcppcovmatrix
+//'
+//' @templateVar name_params_cov_life vCovParams_life
+//' @templateVar name_params_cov_trans vCovParams_trans
+//' @template template_details_rcppcovmatrix
+//'
+//' @template template_references_ggomnbd
+//'
+arma::vec ggomnbd_PMF(const double r,
+                      const double b,
+                      const double s,
+                      const unsigned int x,
+                      const arma::vec& vAlpha_i,
+                      const arma::vec& vBeta_i,
+                      const arma::vec& vT_i){
+
+  // TODO: Type cast x to double
+
+  // const double dx = static_cast<double>(a);
+  // B(r, x+1) = G(r)*G(x+1)/G(r+x+1)
+  // const double B = std::tgamma(r) * std::tgamma(x + 1.0) / std::tgamma(r + x + 1.0);
+  // const arma::vec vFront = arma::pow(vAlpha_i, r) % arma::pow(vBeta_i, s) / ((r + x) * B);
+  const double Blog = std::lgamma(r) + std::lgamma(x + 1.0) - std::lgamma(r + x + 1.0);
+  const arma::vec vFront = arma::exp(
+    r*arma::log(vAlpha_i) + s * arma::log(vBeta_i) - std::log(r+x) - Blog
+  );
+
+  // inner=exp(log(inner)) for numerical stability
+  const arma::vec vInner = arma::exp(
+    x * arma::log(vT_i) - (x+r) * arma::log(vT_i + vAlpha_i) - s*arma::log(arma::exp(b*vT_i) + vBeta_i - 1.0)
+  );
+
+  // Could write dedicated integration routine but not deemed performance critical.
+  // Wastefully, two vectors are allocated for `x` and `0` when in fact these are
+  // constant scalars. Also, the scalar `x` is transported to the integrand by
+  // repurposing the `x_i` in struct `integration_params` which usually is used
+  // for the number of tranasctions of an individual customer.
+  // TODO: Uses wrong limit=0 in integration routine which is smaller than the
+  // workspace. This is a strong case to write dedicated routine.
+  const arma::vec vIntergral = ggomnbd_integrate(r, b, s, vAlpha_i, vBeta_i,
+                                                 arma::vec(vT_i.n_elem, arma::fill::value(x)),
+                                                 &ggomnbd_PMF_integrand,
+                                                 arma::vec(vT_i.n_elem, arma::fill::zeros), vT_i);
+
+  return vFront % (vInner + b * s * vIntergral);
+}
+
+//' @rdname ggomnbd_PMF
+// [[Rcpp::export]]
+arma::vec ggomnbd_nocov_PMF(const double r,
+                            const double alpha_0,
+                            const double b,
+                            const double s,
+                            const double beta_0,
+                            const unsigned int x,
+                            const arma::vec& vT_i){
+
+  const arma::vec vAlpha_i = arma::vec(vT_i.n_elem, arma::fill::value(alpha_0));
+  const arma::vec vBeta_i = arma::vec(vT_i.n_elem, arma::fill::value(beta_0));
+
+  return(ggomnbd_PMF(r,b,s,x,vAlpha_i,vBeta_i,vT_i));
+}
+
+//' @rdname ggomnbd_PMF
+ // [[Rcpp::export]]
+arma::vec ggomnbd_staticcov_PMF(const double r,
+                                const double alpha_0,
+                                const double b,
+                                const double s,
+                                const double beta_0,
+                                const unsigned int x,
+                                const arma::vec& vCovParams_trans,
+                                const arma::vec& vCovParams_life,
+                                const arma::mat& mCov_life,
+                                const arma::mat& mCov_trans,
+                                const arma::vec& vT_i){
+
+   const arma::vec vAlpha_i = ggomnbd_staticcov_alpha_i(alpha_0, vCovParams_trans, mCov_trans);
+   const arma::vec vBeta_i  = ggomnbd_staticcov_beta_i(beta_0, vCovParams_life, mCov_life);
+
+   return(ggomnbd_PMF(r,b,s,x,vAlpha_i,vBeta_i,vT_i));
+ }

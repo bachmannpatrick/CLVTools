@@ -3,6 +3,7 @@
 #' @title Gamma/Gamma Spending model
 #'
 #' @template template_params_estimate
+#' @template template_param_optimxargs
 #' @template template_param_verbose
 #' @template template_param_dots
 #' @param remove.first.transaction Whether customer's first transaction are removed. If \code{TRUE} all zero-repeaters are excluded from model fitting.
@@ -16,7 +17,7 @@
 #' \code{p}: shape parameter of the Gamma distribution of the spending process. \cr
 #' \code{q}: shape parameter of the Gamma distribution to account for customer heterogeneity. \cr
 #' \code{gamma}: scale parameter of the Gamma distribution to account for customer heterogeneity.\cr
-#' If no start parameters are given, 1.0 is used for all model parameters. All parameters are required
+#' If no start parameters are given, p=0.5, q=15, gamma=2 is used for all model parameters. All parameters are required
 #' to be > 0.
 #'
 #' The Gamma-Gamma model cannot be estimated for data that contains negative prices.
@@ -48,7 +49,7 @@ NULL
 
 
 #' @exportMethod gg
-setGeneric("gg", def = function(clv.data, start.params.model=c(), optimx.args=list(), remove.first.transaction = TRUE, verbose=TRUE, ...)
+setGeneric("gg", def = function(clv.data, start.params.model=c(), remove.first.transaction = TRUE, optimx.args=list(), verbose=TRUE, ...)
   standardGeneric("gg"))
 
 
@@ -57,8 +58,8 @@ setGeneric("gg", def = function(clv.data, start.params.model=c(), optimx.args=li
 #' @rdname gg
 setMethod("gg", signature = signature(clv.data="clv.data"), definition = function(clv.data,
                                                                                   start.params.model=c(),
-                                                                                  optimx.args=list(),
                                                                                   remove.first.transaction = TRUE,
+                                                                                  optimx.args=list(),
                                                                                   verbose=TRUE,
                                                                                   ...){
 

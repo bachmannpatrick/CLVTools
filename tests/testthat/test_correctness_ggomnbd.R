@@ -12,8 +12,6 @@ fct.testthat.correctness.clvfittedtransactions(name.model = "GGompertz/NBD", met
                                                kkt2.true = FALSE)
 
 
-context("Correctness - GGompertz/NBD nocov - Recover parameters")
-
 # Bemmaor and Glady (2012)
 #   Table 2, p. 1018
 fct.testthat.correctness.clvfitted.correct.coefs(method = ggomnbd,
@@ -80,14 +78,11 @@ expect_silent(beta_i  <- beta  * exp( -m.cov.data.life  %*% clv.ggomnbd@predicti
 
 
 # . Expectation -----------------------------------------------------------------------------------------
-context("Correctness - GGompertz/NBD nocov - Expectation")
 
 test_that("Expectation in Rcpp matches expectation in R (nocov)", {
   skip_on_cran()
 
-  expect_silent(clv.cdnow <- clvdata(data.transactions = cdnow,
-                                     date.format = "ymd", time.unit = "W", estimation.split = 38))
-  expect_silent(fitted.cdnow <- ggomnbd(clv.data = clv.cdnow, verbose = FALSE))
+  expect_silent(fitted.cdnow <- ggomnbd(clv.data = fct.helper.create.clvdata.cdnow(cdnow), verbose = FALSE))
 
   params_i <- fitted.cdnow@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
   params_i[, r       := fitted.cdnow@prediction.params.model[["r"]]]
@@ -125,75 +120,11 @@ test_that("Expectation in Rcpp matches expectation in R (staticcov)", {
 
 
 # .CET ------------------------------------------------------------------------------------------
-context("Correctness - GGompertz/NBD nocov - CET")
-test_that("Same result for CET as previous implementation based on matlab code",{
-
-  # Basically, PALive * Expectation but explicitely formulated
-
-  fct.ggomnbd.CET <- function(r, b, s, alpha_i, beta_i, x, t.x, Tcal, periods, palive){
-    alpha_i <- alpha_i + x
-    beta_i <- beta_i + exp(b * Tcal) - 1
-
-    # From Matlab code:
-    # gg_xt_cum_up(i)=p_i(i).*rstar./astar.*  (((betastar./(betastar+exp(bg*t)-1)).^sg).*t+bg.*sg.*betastar.^sg.*intgup_h(i));
-    P1 <- palive * ((r+x) / (alpha_i));
-    P2 <- (beta_i / (beta_i + exp(b* periods) - 1.0))^s * periods;
-
-    integrals <- integrate(f = function(tau){tau * exp(b*tau) * ((beta_i + exp(b*tau) - 1)^(-(s+1)))},
-                           lower = 0, upper = periods,
-                           rel.tol = 1e-8, abs.tol = 1e-8)$value
-    P3 <- b * s * (beta_i^s) * integrals;
-
-    return(P1 * (P2 + P3))
-  }
-
-
-
-  # Nocov
-  palive_nocov <- ggomnbd_nocov_PAlive(r = r, alpha_0 = alpha, b = b, s = s, beta_0 = beta,
-                                       vX = vX, vT_x = vT_x, vT_cal = vT_cal)
-
-  for(periods in c(0, 0.24, 0.99, 1, 1.23, 2, 3, 5, 10, 50)){
-    expect_silent(CET_R <- sapply(seq_along(vX), FUN = function(i){
-      fct.ggomnbd.CET(r = r, alpha_i = alpha, b = b, s = s, beta_i = beta,
-                      x = vX[i], t.x = vT_x[i], Tcal = vT_cal[i],
-                      palive = palive_nocov[i], periods = periods)
-    }))
-
-    expect_silent(CET_Rcpp <- ggomnbd_nocov_CET(r = r, alpha_0 = alpha, b = b, s = s, beta_0 = beta,
-                                                vX = vX, vT_x = vT_x, vT_cal = vT_cal,
-                                                dPeriods = periods))
-    expect_equal(CET_R, drop(CET_Rcpp))
-  }
-
-  # Static cov
-  palive_staticcov <- ggomnbd_staticcov_PAlive(r = r, alpha_0 = alpha, b = b, s = s, beta_0 = beta,
-                                               vX = vX, vT_x = vT_x, vT_cal = vT_cal,
-                                               vCovParams_trans = clv.ggomnbd@prediction.params.trans,
-                                               vCovParams_life  = clv.ggomnbd@prediction.params.life,
-                                               mCov_life = m.cov.data.life,
-                                               mCov_trans = m.cov.data.trans)
-  for(periods in c(0, 0.24, 0.99, 1, 1.23, 2, 3, 5, 10, 50)){
-    expect_silent(CET_R <- sapply(seq_along(vX), FUN = function(i){
-      fct.ggomnbd.CET(r = r, alpha_i = alpha_i[i], b = b, s = s, beta_i = beta_i[i],
-                      x = vX[i], t.x = vT_x[i], Tcal = vT_cal[i],
-                      palive = palive_staticcov[i], periods = periods)
-    }))
-
-    expect_silent(CET_Rcpp <- ggomnbd_staticcov_CET(r = r, alpha_0 = alpha, b = b, s = s, beta_0 = beta,
-                                                    vX = vX, vT_x = vT_x, vT_cal = vT_cal,
-                                                    vCovParams_trans = clv.ggomnbd@prediction.params.trans,
-                                                    vCovParams_life  = clv.ggomnbd@prediction.params.life,
-                                                    mCov_life = m.cov.data.life,
-                                                    mCov_trans = m.cov.data.trans,
-                                                    dPeriods = periods))
-    expect_equal(CET_R, drop(CET_Rcpp))
-  }
-})
+# CET no lonver the same as previous implementation based on matlab code
+# because CET is different after Adler's Erratum (see #206)
 
 
 # .LL ------------------------------------------------------------------------------------------
-context("Correctness - GGompertz/NBD nocov - LL")
 test_that("Same LL as in matlab code", {
 
   fct.ggomnbd.LL.ind <- function(r, b, s, alpha, beta, x, t.x, tcal){
@@ -238,12 +169,11 @@ test_that("Same LL as in matlab code", {
                                                     vX = vX, vT_x = vT_x, vT_cal = vT_cal,
                                                     mCov_life = m.cov.data.life, mCov_trans = m.cov.data.trans))
   # Difference are verified to stem from numerical integration
-  expect_equal(drop(LL_R), drop(LL_Rcpp), check.attributes=FALSE, tolerance = 1e-4)
+  expect_equal(unname(drop(LL_R)), drop(LL_Rcpp), tolerance = 1e-4)
 })
 
 
 # .PAlive ------------------------------------------------------------------------------------------
-context("Correctness - GGompertz/NBD nocov - PAlive")
 test_that("Same PAlive as in matlab code", {
 
   fct.ggomnbd.PAlive <- function(r, b, s, alpha, beta, x, t.x, tcal){
@@ -295,7 +225,7 @@ test_that("Same PAlive as in matlab code", {
                                                                vX = vX, vT_x = vT_x, vT_cal = vT_cal,
                                                                mCov_life = m.cov.data.life, mCov_trans = m.cov.data.trans))
   # Difference are verified to stem from numerical integration
-  expect_equal(drop(LL_R), drop(LL_Rcpp), check.attributes=FALSE, tolerance = 1e-4)
+  expect_equal(unname(drop(LL_R)), drop(LL_Rcpp), tolerance = 1e-4)
 
 
 })

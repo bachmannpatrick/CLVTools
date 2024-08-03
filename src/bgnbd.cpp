@@ -28,8 +28,8 @@ arma::vec bgnbd_CET(const double r,
                     const arma::vec& vT_cal){
 
   const arma::vec term1 = ((vA_i + vB_i + vX - 1) / (vA_i - 1));
-  const arma::vec term2 = 1 - clv::vec_pow((vAlpha_i + vT_cal)/(vAlpha_i + vT_cal + dPeriods), (r + vX)) % clv::vec_hyp2F1((r + vX), (vB_i + vX), (vA_i + vB_i + vX - 1), dPeriods / (vAlpha_i + vT_cal + dPeriods));
-  const arma::vec term3 = 1 + (vX > 0) % (vA_i /(vB_i + vX - 1)) % clv::vec_pow((vAlpha_i + vT_cal)/(vAlpha_i + vT_x), (r + vX));
+  const arma::vec term2 = 1 - arma::pow((vAlpha_i + vT_cal)/(vAlpha_i + vT_cal + dPeriods), (r + vX)) % clv::vec_hyp2F1((r + vX), (vB_i + vX), (vA_i + vB_i + vX - 1), dPeriods / (vAlpha_i + vT_cal + dPeriods));
+  const arma::vec term3 = 1 + (vX > 0) % (vA_i /(vB_i + vX - 1)) % arma::pow((vAlpha_i + vT_cal)/(vAlpha_i + vT_x), (r + vX));
 
   return term1 % term2 / term3;
 }
@@ -47,9 +47,9 @@ arma::vec bgnbd_nocov_CET(const double r,
 
   // Build alpha and beta --------------------------------------------------------
   //    No covariates: Same alphas, betas for every customer
-  const arma::vec vA_i = clv::vec_fill(a, vX.n_elem);
-  const arma::vec vB_i = clv::vec_fill(b, vX.n_elem);
-  const arma::vec vAlpha_i = clv::vec_fill(alpha, vX.n_elem);
+  const arma::vec vA_i = arma::vec(vX.n_elem, arma::fill::value(a));
+  const arma::vec vB_i = arma::vec(vX.n_elem, arma::fill::value(b));
+  const arma::vec vAlpha_i = arma::vec(vX.n_elem, arma::fill::value(alpha));
 
   return bgnbd_CET(r, vAlpha_i, vA_i, vB_i, dPeriods, vX, vT_x, vT_cal);
 }
@@ -99,7 +99,7 @@ arma::vec bgnbd_expectation(const double r,
                             const arma::vec& vA_i,
                             const arma::vec& vB_i,
                             const arma::vec& vT_i){
-  const arma::vec vR = clv::vec_fill(r, vAlpha_i.n_elem);
+  const arma::vec vR = arma::vec(vAlpha_i.n_elem, arma::fill::value(r));
 
   const arma::vec term1 = (vA_i + vB_i - 1)/(vA_i - 1);
   const arma::vec term2 = arma::pow((vAlpha_i / (vAlpha_i + vT_i)),r);
@@ -117,9 +117,9 @@ arma::vec bgnbd_nocov_expectation(const double r,
                                   const arma::vec& vT_i){
 
   // Build alpha and beta --------------------------------------------------------
-  const arma::vec vA_i = clv::vec_fill(a, vT_i.n_elem);
-  const arma::vec vB_i = clv::vec_fill(b, vT_i.n_elem);
-  const arma::vec vAlpha_i = clv::vec_fill(alpha, vT_i.n_elem);
+  const arma::vec vA_i = arma::vec(vT_i.n_elem, arma::fill::value(a));
+  const arma::vec vB_i = arma::vec(vT_i.n_elem, arma::fill::value(b));
+  const arma::vec vAlpha_i = arma::vec(vT_i.n_elem, arma::fill::value(alpha));
 
   return bgnbd_expectation(r,
                            vAlpha_i,
@@ -171,7 +171,7 @@ arma::vec bgnbd_PAlive(const double r,
                        const arma::vec& vX,
                        const arma::vec& vT_x,
                        const arma::vec& vT_cal){
-  const arma::vec n_term1 = (vA_i/(vB_i + vX - 1)) % clv::vec_pow((vAlpha_i + vT_cal)/(vAlpha_i + vT_x), (r+vX));
+  const arma::vec n_term1 = (vA_i/(vB_i + vX - 1)) % arma::pow((vAlpha_i + vT_cal)/(vAlpha_i + vT_x), (r+vX));
 
   return (1 / (1 + (vX > 0) % n_term1));
 }
@@ -188,9 +188,9 @@ arma::vec bgnbd_nocov_PAlive(const double r,
 
   // Build alpha, a and b --------------------------------------------------------
   //    No covariates: Same alpha, a and b for every customer
-  const arma::vec vA_i = clv::vec_fill(a, vX.n_elem);
-  const arma::vec vB_i = clv::vec_fill(b, vX.n_elem);
-  const arma::vec vAlpha_i = clv::vec_fill(alpha, vX.n_elem);
+  const arma::vec vA_i = arma::vec(vX.n_elem, arma::fill::value(a));
+  const arma::vec vB_i = arma::vec(vX.n_elem, arma::fill::value(b));
+  const arma::vec vAlpha_i = arma::vec(vX.n_elem, arma::fill::value(alpha));
 
   return bgnbd_PAlive(r,
                       vAlpha_i,
@@ -240,6 +240,7 @@ arma::vec bgnbd_staticcov_PAlive(const double r,
 //' @template template_titleparamsdescriptionreturndetails_LL
 //'
 //' @template template_params_rcppxtxtcal
+//' @template template_param_rcppvn
 //' @template template_params_rcppcovmatrix
 //'
 //' @templateVar name_params_cov_life vLogparams
@@ -258,7 +259,7 @@ arma::vec bgnbd_LL_ind(const double r,
 
   const arma::vec vPart1 = r * arma::log(vAlpha_i) + arma::lgamma(r + vX) - std::lgamma(r) - (r + vX) % arma::log(vAlpha_i + vT_x);
 
-  const arma::vec vPart2 = beta_ratio(vA_i, (vB_i+vX), vA_i, vB_i) % clv::vec_pow((vAlpha_i + vT_x)/(vAlpha_i + vT_cal), (r + vX)) + ((vX > 0)) % beta_ratio(vA_i + 1 , (vB_i + vX - 1), vA_i, vB_i);
+  const arma::vec vPart2 = beta_ratio(vA_i, (vB_i+vX), vA_i, vB_i) % arma::pow((vAlpha_i + vT_x)/(vAlpha_i + vT_cal), (r + vX)) + ((vX > 0)) % beta_ratio(vA_i + 1 , (vB_i + vX - 1), vA_i, vB_i);
 
   const arma::vec vLL = vPart1 + arma::log(vPart2);
 
@@ -277,9 +278,9 @@ arma::vec bgnbd_nocov_LL_ind(const arma::vec& vLogparams,
   const double a_0       = std::exp(vLogparams(2));
   const double b_0       = std::exp(vLogparams(3));
 
-  const arma::vec vA_i = clv::vec_fill(a_0, vX.n_elem);
-  const arma::vec vB_i = clv::vec_fill(b_0, vX.n_elem);
-  const arma::vec vAlpha_i = clv::vec_fill(alpha_0, vX.n_elem);
+  const arma::vec vA_i = arma::vec(vX.n_elem, arma::fill::value(a_0));
+  const arma::vec vB_i = arma::vec(vX.n_elem, arma::fill::value(b_0));
+  const arma::vec vAlpha_i = arma::vec(vX.n_elem, arma::fill::value(alpha_0));
 
   arma::vec vLL = bgnbd_LL_ind(r, vAlpha_i, vA_i, vB_i, vX, vT_x, vT_cal);
 
@@ -292,14 +293,15 @@ arma::vec bgnbd_nocov_LL_ind(const arma::vec& vLogparams,
 double bgnbd_nocov_LL_sum(const arma::vec& vLogparams,
                           const arma::vec& vX,
                           const arma::vec& vT_x,
-                          const arma::vec& vT_cal){
+                          const arma::vec& vT_cal,
+                          const arma::vec& vN){
 
   const arma::vec vLL = bgnbd_nocov_LL_ind(vLogparams,
                                            vX,
                                            vT_x,
                                            vT_cal);
 
-  return(-arma::sum(vLL));
+  return(-arma::sum(vLL % vN));
 }
 
 //' @rdname bgnbd_LL
@@ -342,6 +344,7 @@ double bgnbd_staticcov_LL_sum(const arma::vec& vParams,
                               const arma::vec& vX,
                               const arma::vec& vT_x,
                               const arma::vec& vT_cal,
+                              const arma::vec& vN,
                               const arma::mat& mCov_life,
                               const arma::mat& mCov_trans){
   const arma::vec vLL = bgnbd_staticcov_LL_ind(vParams,
@@ -351,7 +354,7 @@ double bgnbd_staticcov_LL_sum(const arma::vec& vParams,
                                                mCov_life,
                                                mCov_trans);
 
-  return(-arma::sum(vLL));
+  return(-arma::sum(vLL % vN));
 }
 
 
@@ -407,9 +410,9 @@ arma::vec bgnbd_nocov_PMF(const double r,
                           const unsigned int x,
                           const arma::vec& vT_i){
 
-  const arma::vec vA_i = clv::vec_fill(a, vT_i.n_elem);
-  const arma::vec vB_i = clv::vec_fill(b, vT_i.n_elem);
-  const arma::vec vAlpha_i = clv::vec_fill(alpha, vT_i.n_elem);
+  const arma::vec vA_i = arma::vec(vT_i.n_elem, arma::fill::value(a));
+  const arma::vec vB_i = arma::vec(vT_i.n_elem, arma::fill::value(b));
+  const arma::vec vAlpha_i = arma::vec(vT_i.n_elem, arma::fill::value(alpha));
 
   return(bgnbd_PMF(r, x,
                    vAlpha_i,vA_i,vB_i,

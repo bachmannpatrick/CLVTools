@@ -125,8 +125,8 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose, onl
 .pnbd_dyncov_unconditionalexpectation <- function(clv.fitted, dt.ABCD, period.until){
 
   # cran silence
-  i <- Ai <- Bbar_i <- Ci <- Dbar_i <- d1 <-S <- i.S <- f <- A_k0t <- Bbar_k0t <- C_k0t <- Dbar_k0t <- Id  <- NULL
-  num.periods.alive.expectation.date <- i.num.periods.alive.expectation.date <- date.first.actual.trans <- Cov.Date <- only.alive.in.1.period <- NULL
+  i <- Ai <- Bbar_i <- Ci <- Dbar_i <- S <- i.S <- f <- Id  <- NULL
+  num.periods.alive.expectation.date <- i.num.periods.alive.expectation.date <- date.first.actual.trans <- Cov.Date <- NULL
 
 
   # Read out needed params
@@ -166,6 +166,54 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose, onl
 
 
   # S --------------------------------------------------------------------------------------------------------
+  dt.S <- .pnbd_dyncov_unconditionalexpectation_alive_customers_S(dt.ABCD.alive = dt.ABCD.alive, s=s, beta_0 = beta_0)
+
+
+  # F --------------------------------------------------------------------------------------------------------
+
+  # Add everything else needed
+  #   For all customers Ak0t/Bk0t/Ck0t/Dk0t is the last ABCD value (with max(i) where max(Cov.Date))
+  dt.ABCD_k0t <- dt.ABCD.alive[Cov.Date == max(Cov.Date),
+                               list(Id, A_k0t=Ai, Bbar_k0t=Bbar_i, C_k0t=Ci, Dbar_k0t=Dbar_i, i)]
+  dt.alive.customers <- dt.alive.customers[dt.ABCD_k0t, on = "Id"]
+  dt.alive.customers[dt.S, S := i.S, on = "Id"]
+
+
+  dt.f <- .pnbd_dyncov_unconditionalexpectation_alive_customers_f(dt.alive.customers=dt.alive.customers, r=r, alpha_0 = alpha_0, s=s, beta_0=beta_0)
+
+  return(dt.f[, sum(f)])
+}
+
+
+.pnbd_dyncov_unconditionalexpectation_alive_customers_f <- function(dt.alive.customers, r, alpha_0, s, beta_0){
+  f <- only.alive.in.1.period <- i <- Id <- NULL
+  num.periods.alive.expectation.date <- A_k0t <- Bbar_k0t <- C_k0t <- Dbar_k0t <- only.alive.in.1.period <- S <- NULL
+
+  # Only alive for 1 period is a special case
+  #   Mark who is alive for only one period
+  #     dt.alive.customers is at max(Cov.Date) for every customer and hence i == max(i) and only one entry per customer
+  dt.alive.customers[, only.alive.in.1.period := i == 1]
+  # dt.alive.customers[, only.alive.in.1.period := num.periods.alive.expectation.date <= 1]
+
+  # F value
+  #   t is exact (partial) time from alive until expectation end
+  #   (Bk0tbar + t.customer*Ak0t) == (Bbar_i + t.customer*Ai) == Bi, which is needed, and not Bbar_i
+  #   analogously for Di
+  dt.alive.customers[, f := ((beta_0)^s * r )/ ((s-1) * alpha_0)]
+  dt.alive.customers[only.alive.in.1.period == TRUE,
+                     f := f * ((A_k0t*num.periods.alive.expectation.date*(s-1)) / (beta_0+C_k0t*num.periods.alive.expectation.date)^s + (A_k0t/C_k0t)/beta_0^(s-1) -
+                                 (A_k0t*(num.periods.alive.expectation.date*s + 1/C_k0t*beta_0))/(beta_0+C_k0t*num.periods.alive.expectation.date)^s)]
+  dt.alive.customers[only.alive.in.1.period == FALSE,
+                     # f * (. +S)
+                     f := f * ( (((A_k0t*num.periods.alive.expectation.date+Bbar_k0t) *(s-1)) /
+                                   (beta_0 + (C_k0t*num.periods.alive.expectation.date + Dbar_k0t))^s) + S)]
+
+  return(dt.alive.customers[, list(Id, f)])
+}
+
+
+.pnbd_dyncov_unconditionalexpectation_alive_customers_S <- function(dt.ABCD.alive, s, beta_0){
+  S <- Cov.Date <- num.periods.alive.expectation.date <- Ai <- Bbar_i <- Ci <- Dbar_i <- d1 <- i <- NULL
   # S_i is relative to when alive, ie by i
   # d1 is first.purchase until ceiling_tu(first.purchase) = d_omega
   #   Already added for Bbar_i
@@ -198,35 +246,116 @@ pnbd_dyncov_expectation <- function(clv.fitted, dt.expectation.seq, verbose, onl
   #   Their f value is calculated without S then
   dt.S <- dt.ABCD.alive[, list(S = sum(S)), keyby="Id"]
 
+  return(dt.S)
+}
+
+
+
+pnbd_dyncov_newcustomer_expectation <- function(clv.fitted, t, tp.first.transaction, dt.cov.life, dt.cov.trans, only.return.ABCD=FALSE){
+  Cov.Date <- exp.gX <- exp.gX.P <- exp.gX.L <- i.exp.gX <- i <- d_omega <- Ai <- Ci <- d1 <- Bbar_i <- Dbar_i <- NULL
+  Id <- .N <- S <- i.S <- num.periods.alive.expectation.date <- NULL
+
+  r       <- clv.fitted@prediction.params.model[["r"]]
+  alpha_0 <- clv.fitted@prediction.params.model[["alpha"]]
+  s       <- clv.fitted@prediction.params.model[["s"]]
+  beta_0  <- clv.fitted@prediction.params.model[["beta"]]
+
+  # readability
+  clv.time <- clv.fitted@clv.data@clv.time
+
+
+  # We cannot use the preparation from the ordinary expectation because too many things
+  # are relying on clv.data and the cbs. Therefore, re-implement (copy paste) and adapt were necessary
+
+
+
+  # Create ABCD ---------------------------------------------------------------------------------------------
+  # pnbd_dyncov_alivecovariates(): Uses date.first.transaction from cbs
+  # Instead of using pnbd_dyncov_alivecovariates(), only use the relevant parts: Calculating exp.gX.P and exp.gX.L.
+
+  tp.first.cov <- clv.time.floor.date(clv.time=clv.time, timepoint=tp.first.transaction)
+  dt.cov.life  <- dt.cov.life[Cov.Date >= tp.first.cov]
+  dt.cov.trans <- dt.cov.trans[Cov.Date >= tp.first.cov]
+
+
+  dt.cov.life <- pnbd_dyncov_add_expgX(
+    dt.cov=dt.cov.life,
+    names.cov=clv.fitted@clv.data@names.cov.data.life,
+    params.cov=clv.fitted@prediction.params.life)
+
+  dt.cov.trans <- pnbd_dyncov_add_expgX(
+    dt.cov=dt.cov.trans,
+    names.cov=clv.fitted@clv.data@names.cov.data.trans,
+    params.cov=clv.fitted@prediction.params.trans)
+
+  # Merge into single table
+  #   there are no Ids
+  dt.ABCD <- dt.cov.life[, list(Cov.Date, exp.gX.L=exp.gX)]
+  dt.ABCD[dt.cov.trans, exp.gX.P := i.exp.gX, on = "Cov.Date"]
+
+
+
+  # . copied ----------------------------------------------------------------------------------------------
+  # The following parts are copied from pnbd_dyncov_expectation().
+  # See comments there, they are removed here to improve maintainability
+
+  # . i
+  setorderv(dt.ABCD, cols = "Cov.Date", order=1L)
+  dt.ABCD[, i := seq.int(from = 1, to = .N)]  # remove by="Id"
+
+  # d_omega: Not read from cbs but calculated from given timepoint of first transaction
+  dt.ABCD[, d_omega := pnbd_dyncov_walk_d(clv.time=clv.time, tp.relevant.transaction = tp.first.transaction)]
+
+  # . Ai & Ci
+  dt.ABCD[, Ai := exp.gX.P]
+  dt.ABCD[, Ci := exp.gX.L]
+
+  # . Bbar_i
+  dt.ABCD[, d1 := d_omega]
+  dt.ABCD[,       Bbar_i := exp.gX.P]
+  dt.ABCD[i == 1, Bbar_i := exp.gX.P * d1]
+  dt.ABCD[,  Bbar_i := cumsum(Bbar_i)]
+  dt.ABCD[, Bbar_i := (Bbar_i - exp.gX.P) + exp.gX.P * (-d1 - (i-2))]
+  dt.ABCD[i == 1, Bbar_i := 0]
+
+  # . Dbar_i
+  dt.ABCD[,       Dbar_i := exp.gX.L]
+  dt.ABCD[i == 1, Dbar_i := exp.gX.L*d_omega]
+  dt.ABCD[, Dbar_i := cumsum(Dbar_i)]
+  dt.ABCD[      , Dbar_i := (Dbar_i - exp.gX.L) + exp.gX.L * (-d_omega - (i-2))]
+  dt.ABCD[i == 1, Dbar_i := 0]
+
+  # . alive --------------------------------------------------------------------------------------------------
+  # There is no need to select out customers which are alive as there is only 1 single customer
+  # which by definition is alive
+
+
+  # Cut data to maximal range as is done in the expectation loop (period.until)
+  # Consider all covariates which are active before and during the period for which the expectation is
+  #   calculated (incl / <= because Cov.Date is the beginning of the covariate period)
+  tp.cov.until <- tp.first.transaction + clv.time.number.timeunits.to.timeperiod(clv.time = clv.time, user.number.periods = t)
+  dt.ABCD <- dt.ABCD[Cov.Date <= tp.cov.until]
+
+  # Calculating S and f requires a Id and num.periods.alive.expectation.date
+  dt.ABCD[, Id := "<placeholder>"]
+  dt.ABCD[, num.periods.alive.expectation.date := t]
+
+  # S --------------------------------------------------------------------------------------------------------
+  dt.S <- .pnbd_dyncov_unconditionalexpectation_alive_customers_S(dt.ABCD.alive = dt.ABCD, s=s, beta_0 = beta_0)
+  dt.ABCD[dt.S, S := i.S, on = "Id"]
+
+  if(only.return.ABCD){
+    return(dt.ABCD)
+  }
+
 
   # F --------------------------------------------------------------------------------------------------------
-
   # Add everything else needed
   #   For all customers Ak0t/Bk0t/Ck0t/Dk0t is the last ABCD value (with max(i) where max(Cov.Date))
-  dt.ABCD_k0t <- dt.ABCD.alive[Cov.Date == max(Cov.Date),
-                               list(Id, A_k0t=Ai, Bbar_k0t=Bbar_i, C_k0t=Ci, Dbar_k0t=Dbar_i, i)]
-  dt.alive.customers <- dt.alive.customers[dt.ABCD_k0t, on = "Id"]
-  dt.alive.customers[dt.S, S := i.S, on = "Id"]
+  dt.ABCD_k0t <- dt.ABCD[Cov.Date == max(Cov.Date),
+                         list(Id, A_k0t=Ai, Bbar_k0t=Bbar_i, C_k0t=Ci, Dbar_k0t=Dbar_i, i, num.periods.alive.expectation.date, S)]
 
+  dt.f <- .pnbd_dyncov_unconditionalexpectation_alive_customers_f(dt.alive.customers=dt.ABCD_k0t, r=r, alpha_0 = alpha_0, s=s, beta_0=beta_0)
 
-  # Only alive for 1 period is a special case
-  #   Mark who is alive for only one period
-  #     dt.alive.customers is at max(Cov.Date) for every customer and hence i == max(i) and only one entry per customer
-  dt.alive.customers[, only.alive.in.1.period := i == 1]
-  # dt.alive.customers[, only.alive.in.1.period := num.periods.alive.expectation.date <= 1]
-
-  # F value
-  #   t is exact (partial) time from alive until expectation end
-  #   (Bk0tbar + t.customer*Ak0t) == (Bbar_i + t.customer*Ai) == Bi, which is needed, and not Bbar_i
-  #   analogously for Di
-  dt.alive.customers[, f := ((beta_0)^s * r )/ ((s-1) * alpha_0)]
-  dt.alive.customers[only.alive.in.1.period == TRUE,
-                     f := f * ((A_k0t*num.periods.alive.expectation.date*(s-1)) / (beta_0+C_k0t*num.periods.alive.expectation.date)^s + (A_k0t/C_k0t)/beta_0^(s-1) -
-                                 (A_k0t*(num.periods.alive.expectation.date*s + 1/C_k0t*beta_0))/(beta_0+C_k0t*num.periods.alive.expectation.date)^s)]
-  dt.alive.customers[only.alive.in.1.period == FALSE,
-                     # f * (. +S)
-                     f := f * ( (((A_k0t*num.periods.alive.expectation.date+Bbar_k0t) *(s-1)) /
-                                   (beta_0 + (C_k0t*num.periods.alive.expectation.date + Dbar_k0t))^s) + S)]
-
-  return(dt.alive.customers[, sum(f)])
+  return(dt.f$f)
 }

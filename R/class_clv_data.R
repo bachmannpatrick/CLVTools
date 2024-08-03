@@ -82,22 +82,76 @@ clv.data.get.transactions.in.estimation.period <- function(clv.data){
   return(clv.data@data.transactions[Date <= clv.data@clv.time@timepoint.estimation.end])
 }
 
+clv.data.get.repeat.transactions.in.estimation.period <- function(clv.data){
+  Date <- NULL
+  return(clv.data@data.repeat.trans[Date <= clv.data@clv.time@timepoint.estimation.end])
+}
+
 clv.data.get.transactions.in.holdout.period <- function(clv.data){
   Date <- NULL
   stopifnot(clv.data.has.holdout(clv.data))
   return(clv.data@data.transactions[Date >= clv.data@clv.time@timepoint.holdout.start])
 }
 
-clv.data.make.repeat.transactions <- function(dt.transactions){
-  Date <- previous <- NULL
 
-  # Copy because alters table
+# to allow for sampling with replacement, the name of ids appearing multiple times have to be changed
+# because they are otherwise aggregated in clv.data
+clv.data.select.customer.data.duplicating.ids <- function(dt.data, ids){
+  .N <- id_nth <- new_Id <- Id <- NULL
+
+  # Because this method is used to select transactions as well as covariate data,
+  # it is paramount that the ordering of ids is preserved to ensure the
+  # <Id> <=> <new_Id> mapping remains the same whenever this method is called.
+  # Otherwise, customers receive the wrong covariate data.
+
+  if(anyDuplicated(ids)){
+    dt.ids <- data.table(Id=ids, key = "Id")
+    dt.ids[, id_nth := seq(.N), by="Id"]
+    dt.ids[, new_Id := paste(Id, id_nth, sep = '_BOOTSTRAP_ID_')]
+    dt.ids[id_nth == 1, new_Id := Id] # only use new name if there are multiple ids
+    # we are duplicating data which may result in more than nrow(x)+nrow(i) rows
+    # which will raise an error if allow.cartesian=FALSE (default)
+    dt.data <- dt.ids[dt.data, on="Id", nomatch=NULL, mult = "all", allow.cartesian=TRUE]
+    dt.data[, Id := new_Id]
+    dt.data[, new_Id := NULL]
+    dt.data[, id_nth := NULL]
+  }else{
+    dt.data <- dt.data[SJ(Id=ids), on="Id", nomatch=NULL]
+  }
+
+  return(dt.data)
+}
+
+
+
+clv.data.make.repeat.transactions <- function(dt.transactions){
+  Date <- trans_num <- .N <- NULL
+
+  # Copy because alters table by temporarily adding a column
   dt.repeat.transactions <- copy(dt.transactions)
 
-  dt.repeat.transactions[order(Date), previous := shift(x=Date, n = 1L, type = "lag"), by="Id"]
-  # Remove first transaction: Have no previous (ie is NA)
-  dt.repeat.transactions <- dt.repeat.transactions[!is.na(previous)]
-  dt.repeat.transactions[, previous := NULL]
+  # Mark for drop approach
+  # profiled to be faster & more memory efficient than alternatives
+  # Do not have to sort if table is already (physically) sorted by Date
+  if("Date" %in% key(dt.repeat.transactions)){
+    dt.repeat.transactions[,            trans_num := seq(.N), by="Id"]
+  }else{
+    dt.repeat.transactions[order(Date), trans_num := seq(.N), by="Id"]
+  }
+  dt.repeat.transactions <- dt.repeat.transactions[trans_num > 1]
+  dt.repeat.transactions[, trans_num := NULL]
+
+  # Previous implementation: Shift/lag approach
+  # dt.repeat.transactions[order(Date), previous := shift(x=Date, n = 1L, type = "lag"), by="Id"]
+  # # Remove first transaction: Have no previous (ie is NA)
+  # dt.repeat.transactions <- dt.repeat.transactions[!is.na(previous)]
+  # dt.repeat.transactions[, previous := NULL]
+
+  # Alternative
+  # More understandable but uses more memory and takes longer, probably
+  # because allocates many small data.table for each group
+  # dt.repeat.transactions <- dt.transactions[order(Date), tail(.SD, n=.N-1), by="Id"]
+  # using .SD[-1L] inplace of tail() is slower
 
   # Alternative:
   #   Works only because all on same Date were aggregated. Otherwise, there could be more than one removed
@@ -130,45 +184,69 @@ clv.data.aggregate.transactions <- function(dt.transactions, has.spending){
 # Interpurchase time, for repeaters only
 #   Time between consecutive purchases of each customer - convert to intervals then time units
 #   If zero-repeaters (only 1 trans) set NA to ignore it in mean / sd calculations
-#' @importFrom lubridate int_diff
+#' @importFrom lubridate interval
 clv.data.mean.interpurchase.times <- function(clv.data, dt.transactions){
-  Id <- num.trans <- Date <- NULL
+  Id <- num.trans <- Date <- next.date <- interp.time <- NULL
 
   num.transactions <- dt.transactions[, list(num.trans = .N), by="Id"]
 
-  return(rbindlist(list(
-    # 1 Transaction = NA
-    dt.transactions[Id %in% num.transactions[num.trans == 1,Id], list(interp.time = NA_real_, Id)],
-    dt.transactions[Id %in% num.transactions[num.trans >  1,Id],
-                    list(interp.time = mean(clv.time.interval.in.number.tu(clv.time = clv.data@clv.time,
-                                                                        interv = int_diff(Date)))),
-                    by="Id"]
-  ), use.names = TRUE))
+  # Single Transaction = NA
+  dt.interp.zrep <- dt.transactions[Id %in% num.transactions[num.trans == 1,Id], list(interp.time = NA_real_, Id)]
+
+  # For > 1 transaction, calculate interpurchase time
+  # copy because manipulating in-place with `:=`
+  # do mem-heavy ops (shift) not in `by='Id'` but in single step
+  dt.interp <- copy(dt.transactions[Id %in% num.transactions[num.trans >  1,Id]])
+  # needs to be sorted by Id and Date for shift() to produce correct results.
+  # Most of the times, the input is already keyed on exactly these.
+  setkeyv(dt.interp, c('Id', 'Date'))
+
+
+
+  # Replace: dt.interp[, next.date := shift(Date, type = 'lead'), by='Id']
+  # Markus' idea: Avoid doing shift() `by=Id` by shift()ing across whole table and
+  # correcting last transaction for each customer which is wrong. It now
+  # contains transaction date of next customer but should be NA instead.
+  # This was benchmarked to be about 4-5x faster.
+  dt.interp[, next.date := shift(Date, type = 'lead')]
+
+  # Find position (index) of last transaction of each customer by num of transactions.
+  idx.last.trans <- cumsum(dt.interp[, .N, keyby='Id']$N)
+  dt.interp[idx.last.trans, next.date := NA]
+
+
+  dt.interp[, interp.time := clv.time.interval.in.number.tu(clv.time = clv.data@clv.time, interv=interval(start=Date, end = next.date))]
+  dt.interp <- dt.interp[, list(interp.time = mean(interp.time, na.rm=TRUE)), by='Id']
+
+  # Using this single-liner would as intermediate results also require to allocate the same memory (Id, Date, next.Date)
+  # dt.transactions[Id%in% num.transactions[num.trans >  1,Id], .(Id, Date, next.date = shift(Date, type = 'lead')), by='Id'][, .(Id, interp = time_length(interval(start=Date, end = next.date), 'week'))][, mean(interp, na.rm=T), by='Id']
+
+  return(rbindlist(list(dt.interp.zrep, dt.interp), use.names = TRUE))
 }
 
 #' @importFrom stats sd
 #' @importFrom lubridate time_length
-clv.data.make.descriptives <- function(clv.data, Ids){
+clv.data.make.descriptives <- function(clv.data, ids){
 
   Id <- Date <- .N <- N <- Price <- interp.time<- Name <- Holdout <- NULL
 
   # readability
   clv.time <- clv.data@clv.time
 
-  Ids <- unique(Ids)
+  ids <- unique(ids)
 
   # Make descriptives ------------------------------------------------------------------------------
   #   Do not simply overwrite all NA/NaN with "-", only where these are expected (num obs = 1).
   #     Let propagate otherwise to help find errors
   fct.make.descriptives <- function(dt.data, sample.name){
 
-    # Subset transaction data to relevant Ids
-    if(!is.null(Ids)){
-      dt.data <- dt.data[Id %in% Ids]
+    # Subset transaction data to relevant ids
+    if(!is.null(ids)){
+      dt.data <- dt.data[Id %in% ids]
 
       # print warning only once
-      if(sample.name == "Total" & dt.data[, uniqueN(Id)] != length(unique(Ids))){
-        warning("Not all given Ids were found in the transaction data.", call. = FALSE)
+      if(sample.name == "Total" & dt.data[, uniqueN(Id)] != length(unique(ids))){
+        warning("Not all given ids were found in the transaction data.", call. = FALSE)
       }
 
     }
@@ -224,9 +302,9 @@ clv.data.make.descriptives <- function(clv.data, Ids){
   dt.summary[, Holdout := "-"]
   if(clv.data.has.holdout(clv.data)){
     dt.trans.holdout <- clv.data.get.transactions.in.holdout.period(clv.data = clv.data)
-    # Need to subset to Ids here already to check if there actually are transactions in holdout period
-    if(!is.null(Ids)){
-      dt.trans.holdout <- dt.trans.holdout[Id %in% Ids]
+    # Need to subset to ids here already to check if there actually are transactions in holdout period
+    if(!is.null(ids)){
+      dt.trans.holdout <- dt.trans.holdout[Id %in% ids]
     }
     if(nrow(dt.trans.holdout) > 0){
       dt.summary[, Holdout := fct.make.descriptives(dt.data = dt.trans.holdout, sample.name="Holdout")]

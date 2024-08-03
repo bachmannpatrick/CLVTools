@@ -1,6 +1,5 @@
 fct.helper.has.pmf <- function(clv.fitted.transactions){
   return(is(clv.fitted.transactions, "clv.fitted.transactions") &
-           !is(clv.fitted.transactions, "clv.ggomnbd") & !is(clv.fitted.transactions, "clv.ggomnbd.static.cov") &
            !is(clv.fitted.transactions, "clv.pnbd.dynamic.cov"))
 }
 
@@ -14,6 +13,17 @@ fct.helper.has.DERT <- function(clv.fitted.transactions){
     return(FALSE)
   }
 }
+
+# has.cor NEVER HAS FITTED MODEL :(
+# fct.helper.has.cor <- function(clv.fitted.transactions){
+#   # pnbd nocov and staticcov have, all other do not
+#   if((is(clv.fitted.transactions, "clv.pnbd") | is(clv.fitted.transactions, "clv.pnbd.static.cov"))
+#      & !is(clv.fitted.transactions, "clv.pnbd.dynamic.cov")){
+#     return(TRUE)
+#   }else{
+#     return(FALSE)
+#   }
+# }
 
 .fct.helper.s3.fitted.coef <- function(clv.fitted, full.names){
 
@@ -65,8 +75,8 @@ fct.helper.has.DERT <- function(clv.fitted.transactions){
   })
   test_that("Names same order as coef(summary())", {
     skip_on_cran()
-    expect_equal(rownames(coef(summary(clv.fitted))), rownames(res.vcov), ignore.case = FALSE, ignore.order = FALSE)
-    expect_equal(rownames(coef(summary(clv.fitted))), colnames(res.vcov), ignore.case = FALSE, ignore.order = FALSE)
+    expect_equal(rownames(coef(summary(clv.fitted))), rownames(res.vcov))
+    expect_equal(rownames(coef(summary(clv.fitted))), colnames(res.vcov))
   })
   test_that("No NAs",{
     expect_false(anyNA(res.vcov))
@@ -231,7 +241,8 @@ fct.helper.has.DERT <- function(clv.fitted.transactions){
   })
 }
 
-.fct.helper.clvfitted.all.s3 <- function(clv.fitted, full.names){
+.fct.helper.clvfitted.all.s3.except.plot.and.predict <- function(clv.fitted, full.names){
+
   .fct.helper.s3.fitted.coef(clv.fitted = clv.fitted, full.names = full.names)
 
   .fct.helper.s3.fitted.vcov(clv.fitted = clv.fitted, full.names = full.names)
@@ -251,7 +262,7 @@ fct.helper.has.DERT <- function(clv.fitted.transactions){
 fct.helper.clvfittedtransactions.all.s3 <- function(clv.fitted, full.names,
                                                     clv.newdata.nohold, clv.newdata.withhold){
 
-  .fct.helper.clvfitted.all.s3(clv.fitted = clv.fitted, full.names = full.names)
+  .fct.helper.clvfitted.all.s3.except.plot.and.predict(clv.fitted = clv.fitted, full.names = full.names)
 
   fct.testthat.runability.clvfittedtransactions.plot(clv.fitted = clv.fitted, clv.newdata.nohold=clv.newdata.nohold,
                                                      clv.newdata.withhold=clv.newdata.withhold)
@@ -268,7 +279,7 @@ fct.helper.clvfittedtransactions.all.s3 <- function(clv.fitted, full.names,
 fct.helper.clvfittedspending.all.s3 <- function(clv.fitted, full.names,
                                                 clv.newdata.nohold, clv.newdata.withhold){
 
-  .fct.helper.clvfitted.all.s3(clv.fitted = clv.fitted, full.names = full.names)
+  .fct.helper.clvfitted.all.s3.except.plot.and.predict(clv.fitted = clv.fitted, full.names = full.names)
 
   fct.testthat.runability.clvfittedspending.plot(fitted.spending = clv.fitted)
 

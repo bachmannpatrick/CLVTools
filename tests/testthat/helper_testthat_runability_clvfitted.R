@@ -72,19 +72,23 @@ fct.testthat.runability.clvfitted.multiple.optimization.methods <- function(meth
 fct.testthat.runability.clvfitted.hourly.data <- function(method, data.cdnow, start.params.model, fct.test.all.s3, l.args.test.all.s3){
   test_that("Works with hourly data", {
     skip_on_cran()
-    # Filter out suitable range
-    cdnow.early <- data.cdnow[Id %in% data.cdnow[, .(last.trans = max(Date)), by="Id"][last.trans <= "1997-03-01"]$Id]
-    cdnow.early <- cdnow.early[Id %in% data.cdnow[, .(first.trans = min(Date)), by="Id"][first.trans <= "1997-02-01"]$Id]
-    l.args <- list(clv.data = clvdata(data.transactions = cdnow.early, date.format = "ymd", time.unit = "h",
-                                      estimation.split = 1000), verbose = FALSE)
+
+    # scale down by spacing same as in weeks
+    data.cdnow <- copy(data.cdnow)
+    data.cdnow[, secs.since.start := as.numeric(Date- min(Date), unit='secs')]
+    data.cdnow[, Date.hours := min(Date) + seconds(secs.since.start/24/7)]
+
+    l.args <- list(clv.data = clvdata(data.transactions = data.cdnow, date.format = "ymdHMS", time.unit = "h",
+                                      name.date = "Date.hours", estimation.split = 38), verbose = FALSE)
 
     expect_silent(fitted.hours <- do.call(what = method, args = l.args))
+
     l.args.test.all.s3 <- modifyList(l.args.test.all.s3, list(clv.fitted = fitted.hours))
     do.call(fct.test.all.s3, l.args.test.all.s3)
 
-    # # can predict
-    # expect_silent(predict(hours, verbose=FALSE, predict.spending=TRUE))
-    # # can plot
-    # expect_silent(plot(hours, verbose=FALSE))
+    # can predict
+    expect_silent(predict(fitted.hours, verbose=FALSE, predict.spending=TRUE))
+    # can plot
+    expect_silent(plot(fitted.hours, verbose=FALSE))
   })
 }

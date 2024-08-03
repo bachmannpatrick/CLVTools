@@ -1,14 +1,19 @@
-name: R-CMD-check
+# Following https://github.com/r-lib/actions/blob/v2-branch/examples/check-standard.yaml
 on:
   push:
     branches:
       - '*'
       - '!master' # run on every branch except master (fails because same as on cran)
 
+name: R-CMD-check
+
+permissions: read-all
+
 # CMD checks on win, mac, ubuntu
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
+
     name: R-CMD-check-${{ matrix.config.os }} (${{ matrix.config.r }})
 
     strategy:
@@ -22,54 +27,38 @@ jobs:
           - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
           - {os: ubuntu-latest,   r: 'oldrel-1'}
+
     env:
-        GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-        R_KEEP_PKG_SOURCE: yes
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
 
     steps:
-        - uses: actions/checkout@v2
+        - uses: actions/checkout@v4
 
-        - uses: r-lib/actions/setup-pandoc@v1
+        - uses: r-lib/actions/setup-pandoc@v2
 
-        - uses: r-lib/actions/setup-r@v1
+        - uses: r-lib/actions/setup-r@v2
           with:
             r-version: ${{ matrix.config.r }}
             http-user-agent: ${{ matrix.config.http-user-agent }}
             use-public-rspm: true
 
-        - name: Install linux system dependencies
-          if: runner.os == 'Linux'
-          env:
-            RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
-          run: |
-            sudo apt-get update
-            sudo apt-get install -y qpdf texlive-xetex ghostscript
-
+        # Unfortunately still needed, despite setup-r-dependencies
         - name: Install mac system dependencies
           if: runner.os == 'macOS'
           run: |
-            brew install gsl openssl ghostscript
+            brew install gsl
 
-        - name: Install Windows system dependencies
-          if: runner.os == 'Windows'
-          run: |
-            pacman -Sy # Update repo index
-            pacman -S --noconfirm mingw-w64-x86_64-gsl mingw-w64-i686-gsl mingw-w64-ucrt-x86_64-gsl
-            # pacman -S --noconfirm mingw-w64-{i686,x86_64}-gsl
-
-        - uses: r-lib/actions/setup-r-dependencies@v1
+        - uses: r-lib/actions/setup-r-dependencies@v2
           with:
-            extra-packages: rcmdcheck
+            extra-packages: any::rcmdcheck
+            needs: check
 
-        - uses: r-lib/actions/setup-tinytex@v1
+        # required to build the vignette
+        - uses: r-lib/actions/setup-tinytex@v2
 
-        - uses: r-lib/actions/check-r-package@v1
+        - uses: r-lib/actions/check-r-package@v2
           with:
-            args: '"--no-manual", "--as-cran", "--no-tests"'
-
-        - name: Upload check results
-          if: failure()
-          uses: actions/upload-artifact@main
-          with:
-            name: ${{ runner.os }}-r${{ matrix.config.r }}-results
-            path: check
+            upload-snapshots: true
+            args: 'c("--no-manual", "--as-cran", "--no-tests")'
+            build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'

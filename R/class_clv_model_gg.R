@@ -13,6 +13,7 @@ clv.model.gg <- function(){
 
   return(new("clv.model.gg",
              name.model                  = "Gamma-Gamma",
+             fn.model.generic            = gg,
              names.original.params.model = c(p="p", q="q", gamma="gamma"),
              names.prefixed.params.model = c(log.p="log.p", log.q="log.q", log.gamma="log.gamma"),
              start.params.model          = c(p=1, q=1, gamma=1),
@@ -59,11 +60,14 @@ setMethod("clv.model.backtransform.estimated.params.model", signature = signatur
 #' @importFrom utils modifyList
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.gg"), definition = function(clv.model, clv.fitted, prepared.optimx.args){
 
+  dt.compressed.cbs <- clv.fitted@cbs[, .(n = .N), by=c('x', 'Spending')]
+
   optimx.args <- modifyList(prepared.optimx.args,
                             list(LL.function.sum = gg_LL,
                                  LL.function.ind = NULL,
-                                 vX     = clv.fitted@cbs$x,
-                                 vM_x   = clv.fitted@cbs$Spending,
+                                 vX     = dt.compressed.cbs$x,
+                                 vM_x   = dt.compressed.cbs$Spending,
+                                 vN     = dt.compressed.cbs$n,
 
                                  # parameter ordering for the callLL interlayer
                                  LL.params.names.ordered = c(log.p="log.p", log.q="log.q",

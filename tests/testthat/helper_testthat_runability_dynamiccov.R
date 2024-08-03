@@ -19,8 +19,7 @@ fct.testthat.runability.dynamiccov.plot.has.0.repeat.transactions.expectations <
   test_that("Plot always has 0 on repeat transactions and expectations", {
     expect_warning(dt.plot <- plot(clv.fitted, prediction.end = 5, verbose=FALSE, plot=FALSE),
                    regexp = "Not plotting full holdout period")
-    expect_true(isTRUE(all.equal(unlist(dt.plot[period.until == min(period.until), c(2,3)]),
-                                 c(0,0), check.attributes = FALSE)))
+    expect_true(isTRUE(all.equal(dt.plot[period.until == min(period.until), value], c(0,0))))
   })
 }
 
@@ -35,105 +34,146 @@ fct.testthat.runability.dynamiccov.predict.works <- function(clv.fitted){
   })
 }
 
-fct.testthat.runability.dynamiccov.predict.newdata.works <- function(clv.fitted, apparelTrans, apparelDynCov){
-  test_that("Predict newdata works by predicting on another sample", {
-    # Full fails for whatever reason
+fct.testthat.runability.dynamiccov.predict.newdata.works <- function(clv.fitted, data.apparelTrans, data.apparelDynCov){
 
-    # expect_output(dt.pred.mini <- predict(clv.fitted))
-    # expect_output(dt.pred.full <- predict(clv.fitted, newdata=clv.data.full.dyncov))
-    #
-    # expect_true(nrow(dt.pred.mini) == length(unique(mini.apparelTrans$Id)))
-    # expect_true(nrow(dt.pred.full) == length(unique(apparelTrans$Id)))
-    # expect_true(all.equal(dt.pred.mini,
-    #                       dt.pred.full[Id %in% dt.pred.mini$Id]))
+  sample.ids <- unique(apparelTrans$Id)[101:200]
 
-    # The next 200 Ids
-    mini2.apparelTrans <- apparelTrans[Id %in% unique(apparelTrans$Id)[101:200]]
-    mini2.apparelDynCov <- apparelDynCov[Id %in% mini2.apparelTrans$Id]
-
+  clv.dyncov.sample <- fct.helper.create.clvdata.apparel.dyncov(
+    data.apparelTrans=data.apparelTrans[Id %in% sample.ids],
+    data.apparelDynCov=data.apparelDynCov[Id %in% sample.ids],
+    names.cov.life=names(clv.fitted@prediction.params.life),
+    names.cov.trans=names(clv.fitted@prediction.params.trans),
     # Estimation split exactly the same as the one for fitting
-    clv.data.trans.mini2 <- clvdata(data.transactions = mini2.apparelTrans, date.format = "ymd",
-                                    time.unit = "W",
-                                    estimation.split = clv.fitted@clv.data@clv.time@timepoint.estimation.end)
+    estimation.split = clv.fitted@clv.data@clv.time@timepoint.estimation.end)
 
-    clv.data.mini2.dyncov <-
-      SetDynamicCovariates(clv.data = clv.data.trans.mini2,
-                           data.cov.life = mini2.apparelDynCov,
-                           data.cov.trans = mini2.apparelDynCov,
-                           names.cov.life = "Gender",
-                           names.cov.trans = "Gender",
-                           name.date = "Cov.Date")
+  test_that("Predict newdata works to predict orginal data", {
+    expect_silent(dt.pred <- predict(clv.fitted, predict.spending=FALSE, verbose=FALSE))
+    expect_silent(dt.pred.newdata <- predict(clv.fitted, newdata=clv.fitted@clv.data, predict.spending=FALSE, verbose=FALSE))
+    expect_equal(dt.pred, dt.pred.newdata)
+  })
 
-    bck.fittted.dyncov <- data.table::copy(clv.fitted)
+  test_that("Predict newdata works by predicting on sample of orginal data", {
+    # deep copy of whole object
+    backup.fittted.dyncov <- data.table::copy(clv.fitted)
 
-    # Use model fitted on first sample to predict for another 2nd sample
-    expect_silent(predict(clv.fitted, newdata=clv.data.mini2.dyncov, verbose=FALSE))
+    expect_silent(predict(clv.fitted, newdata=clv.dyncov.sample, predict.spending=FALSE, verbose=FALSE))
 
     # Check that the fitted model is left unchanged
-    expect_true(isTRUE(all.equal(bck.fittted.dyncov, clv.fitted)))
+    expect_true(isTRUE(all.equal(backup.fittted.dyncov, clv.fitted)))
+  })
+
+  test_that("Predict with newdata and <=2 periods works (issue #128)", {
+    expect_silent(predict(clv.fitted, newdata=clv.dyncov.sample, prediction.end=2, predict.spending=FALSE, verbose=FALSE))
+    expect_silent(predict(clv.fitted, newdata=clv.dyncov.sample, prediction.end=1, predict.spending=FALSE, verbose=FALSE))
+    expect_silent(predict(clv.fitted, newdata=clv.dyncov.sample, prediction.end=0, predict.spending=FALSE, verbose=FALSE))
   })
 }
 
-fct.testthat.runability.dynamiccov.predict.longer.with.newdata <- function(clv.fitted, clv.data.mini.extra, clv.data.trans){
+fct.testthat.runability.dynamiccov.predict.longer.with.newdata <- function(clv.fitted, clv.data.extra){
   test_that("Can predict longer with newdata than with the data used for fitting", {
-    expect_error(predict(clv.fitted, prediction.end = "2018-01-01"),
+    expect_error(predict(clv.fitted, prediction.end = "2018-01-01", predict.spending=FALSE),
                  regexp = "in the fitted model are not long enough")
-    expect_silent(dt.predict <- predict(clv.fitted, newdata=clv.data.mini.extra,
+    expect_silent(dt.predict <- predict(clv.fitted, newdata=clv.data.extra, predict.spending=FALSE,
                                         prediction.end = "2006-07-26",verbose=FALSE))
-    expect_true(dt.predict[, max(period.last)] > clv.data.trans@clv.time@timepoint.holdout.end)
+    expect_true(dt.predict[, max(period.last)] > clv.fitted@clv.data@clv.time@timepoint.holdout.end)
   })
 
 }
 
-fct.testthat.runability.dynamiccov.plot.longer.with.newdata <- function(clv.fitted, clv.data.mini.extra, clv.data.trans){
+fct.testthat.runability.dynamiccov.plot.longer.with.newdata <- function(clv.fitted, clv.data.extra){
   test_that("Can plot longer with newdata than with the data used for fitting", {
     expect_error(plot(clv.fitted, prediction.end = "2018-01-01"),
                  regexp = "in the fitted model are not long enough")
-    expect_silent(dt.plot <- plot(clv.fitted, newdata=clv.data.mini.extra, plot=FALSE,
+    expect_silent(dt.plot <- plot(clv.fitted, newdata=clv.data.extra, plot=FALSE,
                                   prediction.end = "2006-07-26",verbose=FALSE))
-    expect_true(dt.plot[, max(period.until)] > clv.data.trans@clv.time@timepoint.holdout.end)
+    expect_true(dt.plot[, max(period.until)] > clv.fitted@clv.data@clv.time@timepoint.holdout.end)
   })
 }
 
-fct.testthat.runability.dynamiccov.can.predict.plot.beyond.holdout <- function(method, clv.data.trans, mini.apparelDynCov.long, start.params.model){
+fct.testthat.runability.dynamiccov.can.predict.plot.beyond.holdout <- function(data.apparelTrans, apparelDynCov.extra){
+
   test_that("Can predict/plot beyond holdout if there is more covs in the data than used for holdout",{
 
-    expect_silent(clv.data.mini.extra <- SetDynamicCovariates(clv.data.trans,
-                                                              data.cov.life = mini.apparelDynCov.long,
-                                                              data.cov.trans = mini.apparelDynCov.long,
-                                                              names.cov.life = c("Marketing", "Gender","Channel"),
-                                                              names.cov.trans = c("Marketing", "Gender","Channel"),
-                                                              name.date = "Cov.Date"))
+    fitted.dyncov <- fct.helper.dyncov.quickfit.apparel.data(data.apparelTrans=data.apparelTrans,
+                                                             data.apparelDynCov=apparelDynCov.extra,
+                                                             hessian=FALSE)
 
-
-    l.args <- list(clv.data.mini.extra,
-                   start.params.model = start.params.model,
-                   start.params.life = c(Marketing=0.5, Gender = 0.8, Channel=0.9304636),
-                   start.params.trans = c(Marketing=1.1, Gender = 1.33, Channel=0.9304636),
-                   optimx.args = list(method="Nelder-Mead", # NelderMead verifies nothing = faster
-                                      hessian=FALSE, # no hessian
-                                      control=list(kkt=FALSE, # kkt takes forever
-                                                   reltol = 1000)))
-
-    # Fit model until estimation.end only (end of estimation.end, 2016-10-08)
-    #   high tolerance to converge quickly
-    #   no hessian to avoid additional evaluations after convergence
-    expect_warning(fitted.dyncov <- do.call(what = method, args = l.args), regexp = "Hessian could not be derived.")
-
-    # Only predict & plots until transaction data end / holdout end
+    # Only predict & plots until transaction data end / holdout end....
     expect_silent(dt.plot <- plot(fitted.dyncov, plot=FALSE, verbose=FALSE))
-    expect_silent(dt.predict <- predict(fitted.dyncov, verbose=FALSE))
-    expect_true(dt.plot[, max(period.until)] <= ceiling_date(clv.data.trans@clv.time@timepoint.holdout.end, unit="week"))
-    expect_true(dt.predict[, max(period.last)] <= clv.data.trans@clv.time@timepoint.holdout.end)
+    expect_silent(dt.predict <- predict(fitted.dyncov, verbose=FALSE, predict.spending=FALSE))
+    expect_true(dt.plot[, max(period.until)] <= ceiling_date(fitted.dyncov@clv.data@clv.time@timepoint.holdout.end, unit="week"))
+    expect_true(dt.predict[, max(period.last)] <= fitted.dyncov@clv.data@clv.time@timepoint.holdout.end)
 
-    # Can also predict & plot further
-    prediction.end.over <-  clv.data.trans@clv.time@timepoint.holdout.end + lubridate::period(10, "weeks")
+    # ...but: Can also predict & plot further because there are more covariates present
+    prediction.end.over <-  fitted.dyncov@clv.data@clv.time@timepoint.holdout.end + lubridate::period(10, "weeks")
     expect_silent(dt.plot <- plot(fitted.dyncov, plot=FALSE, verbose=FALSE, prediction.end = prediction.end.over))
-    expect_silent(dt.predict <- predict(fitted.dyncov, verbose=FALSE, prediction.end = prediction.end.over))
+    expect_silent(dt.predict <- predict(fitted.dyncov, verbose=FALSE, prediction.end = prediction.end.over, predict.spending=FALSE))
 
-    expect_true(dt.plot[, max(period.until)] > clv.data.trans@clv.time@timepoint.holdout.end)
-    expect_true(dt.predict[, max(period.last)] > clv.data.trans@clv.time@timepoint.holdout.end)
+    expect_true(dt.plot[, max(period.until)] > fitted.dyncov@clv.data@clv.time@timepoint.holdout.end)
+    expect_true(dt.predict[, max(period.last)] > fitted.dyncov@clv.data@clv.time@timepoint.holdout.end)
   })
 
+}
+
+
+
+fct.helper.runability.dyncov.all.downstream <- function(fitted.dyncov, names.params){
+
+  apparelTrans <- fct.helper.load.apparelTrans()
+  apparelDynCov <- fct.helper.load.apparelDynCov()
+
+  # Standard S3 tests ---------------------------------------------------------------
+
+  # Run the standard S3 tests on the fitted model,
+  #   but not plot() and predict() which takes too long.
+  #   also plot() produces all NAs if quickfit is used
+  .fct.helper.clvfitted.all.s3.except.plot.and.predict(
+    clv.fitted=fitted.dyncov,
+    full.names=names.params
+  )
+
+  # Cannot check if LLsum is correct because may be called with regularization
+  # and then is not expected to be same as LLdata[, sum(LL)]
+
+
+  # Plot ------------------------------------------------------------------
+  fct.testthat.runability.dynamiccov.plot.works(clv.fitted = fitted.dyncov)
+
+  fct.testthat.runability.dynamiccov.plot.has.0.repeat.transactions.expectations(clv.fitted = fitted.dyncov)
+
+
+  # Predict ----------------------------------------------------------------
+  fct.testthat.runability.dynamiccov.predict.works(clv.fitted = fitted.dyncov)
+
+  fct.testthat.runability.dynamiccov.predict.newdata.works(
+    clv.fitted = fitted.dyncov,
+    data.apparelTrans = apparelTrans,
+    data.apparelDynCov = apparelDynCov
+  )
+
+
+  # Newdata ----------------------------------------------------------------------------------------------------------
+  apparelDynCov.extra <- fct.helper.dyncov.create.longer.dyncov.data(
+    num.additional = 100,
+    data.apparelDynCov = apparelDynCov
+  )
+  clv.data.extra <- fct.helper.create.clvdata.apparel.dyncov(
+    data.apparelTrans=apparelTrans,
+    data.apparelDynCov=apparelDynCov.extra,
+    names.cov.life=names(fitted.dyncov@prediction.params.life),
+    names.cov.trans=names(fitted.dyncov@prediction.params.trans),
+    estimation.split=38
+  )
+
+  fct.testthat.runability.dynamiccov.predict.longer.with.newdata(clv.fitted = fitted.dyncov, clv.data.extra = clv.data.extra)
+
+  fct.testthat.runability.dynamiccov.plot.longer.with.newdata(clv.fitted = fitted.dyncov, clv.data.extra = clv.data.extra)
+
+
+
+  # Overlong data ------------------------------------------------------------------------------
+  # Cannot do without holdout because takes too long to estimate
+  fct.testthat.runability.dynamiccov.can.predict.plot.beyond.holdout(data.apparelTrans=apparelTrans,
+                                                                     apparelDynCov.extra=apparelDynCov.extra)
 }
 

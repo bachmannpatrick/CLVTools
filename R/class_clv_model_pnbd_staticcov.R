@@ -75,7 +75,7 @@ setMethod(f = "clv.model.backtransform.estimated.params.cov", signature = signat
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.pnbd.static.cov"),
           definition = function(clv.model, clv.fitted, prepared.optimx.args){
 
-            # Do not call the no.cov function as the LL is different
+            l.LL.call.data <- clv.fitted.transactions.static.cov.compressed.ll.data(clv.fitted)
 
             # Everything to call the LL function
             optimx.args <- modifyList(prepared.optimx.args,
@@ -88,14 +88,13 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
                                         LL.params.names.ordered = c(clv.model@names.prefixed.params.model,
                                                                     clv.fitted@names.prefixed.params.after.constr.life,
                                                                     clv.fitted@names.prefixed.params.after.constr.trans),
-                                        vX      = clv.fitted@cbs$x,
-                                        vT_x    = clv.fitted@cbs$t.x,
-                                        vT_cal  = clv.fitted@cbs$T.cal,
+                                        vX      = l.LL.call.data$cbs$x,
+                                        vT_x    = l.LL.call.data$cbs$t.x,
+                                        vT_cal  = l.LL.call.data$cbs$T.cal,
+                                        vN  = l.LL.call.data$cbs$n,
 
-                                        mCov_life  = clv.data.get.matrix.data.cov.life(clv.data = clv.fitted@clv.data, correct.row.names=clv.fitted@cbs$Id,
-                                                                                       correct.col.names=clv.data.get.names.cov.life(clv.fitted@clv.data)),
-                                        mCov_trans = clv.data.get.matrix.data.cov.trans(clv.data = clv.fitted@clv.data, correct.row.names=clv.fitted@cbs$Id,
-                                                                                        correct.col.names=clv.data.get.names.cov.trans(clv.fitted@clv.data))),
+                                        mCov_life  = l.LL.call.data$m.cov.life,
+                                        mCov_trans = l.LL.call.data$m.cov.trans),
                                       keep.null = TRUE)
             return(optimx.args)
           })
@@ -209,6 +208,34 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.static.co
   return(DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
                        fct.expectation = fct.expectation, clv.time = clv.fitted@clv.data@clv.time))
 })
+
+
+
+# . clv.model.predict.new.customer.unconditional.expectation -----------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict.new.customer.unconditional.expectation", signature = signature(clv.model="clv.model.pnbd.static.cov"), definition = function(clv.model, clv.fitted, clv.newcustomer, t){
+
+
+  m.cov.trans <- clv.newcustomer.static.get.matrix.cov.trans(clv.newcustomer=clv.newcustomer, clv.fitted=clv.fitted)
+  m.cov.life <- clv.newcustomer.static.get.matrix.cov.life(clv.newcustomer=clv.newcustomer, clv.fitted=clv.fitted)
+
+  #calculate alpha_i, beta_i
+  alpha_i <- pnbd_staticcov_alpha_i(alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+                                    vCovParams_trans = clv.fitted@prediction.params.trans,
+                                    mCov_trans = m.cov.trans)
+
+  beta_i <- pnbd_staticcov_beta_i(beta_0 = clv.fitted@prediction.params.model[["beta"]],
+                                  vCovParams_life = clv.fitted@prediction.params.life,
+                                  mCov_life = m.cov.life)
+
+  return(pnbd_staticcov_expectation(
+      r        = clv.fitted@prediction.params.model[["r"]],
+      s        = clv.fitted@prediction.params.model[["s"]],
+      vAlpha_i = alpha_i,
+      vBeta_i  = beta_i,
+      vT_i     = t
+    ))
+})
+
 
 
 # . clv.model.pmf -----------------------------------------------------------------------------------------------------

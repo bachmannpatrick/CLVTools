@@ -1,25 +1,30 @@
-name: coverage
+# Following https://github.com/r-lib/actions/blob/v2-branch/examples/test-coverage.yaml
+
 on: pull_request # default to types [opened, synchronize, reopened]
+
+name: coverage
+
+permissions: read-all
+
 jobs:
   coverage-ubuntu-latest:
     runs-on: ubuntu-latest
     env:
-      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - uses: r-lib/actions/setup-r@v1
+      - uses: r-lib/actions/setup-r@v2
         with:
           use-public-rspm: true
 
-      - uses: r-lib/actions/setup-r-dependencies@v1
+      - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: covr
+          extra-packages: any::covr, any::xml2
+          needs: coverage
 
       - name: Test coverage
-        # run: covr::codecov() # uploads to codecov.io
         run: |
           # If on a release branch (name starts with 'release'),
           #   run all tests, including lengthy ones marked with skip_on_ci/skip_on_covr()
@@ -30,5 +35,34 @@ jobs:
             print("Not on release branch: Dont run all tests (skip_on_covr())")
           }
 
-          covr::package_coverage(type = "tests", quiet = FALSE)
+          cov <- covr::package_coverage(
+            type = "tests",
+            quiet = FALSE,
+            clean = FALSE,
+            install_path = file.path(normalizePath(Sys.getenv("RUNNER_TEMP"), winslash = "/"), "package")
+          )
+          print(cov)
+          covr::to_cobertura(cov)
         shell: Rscript {0}
+
+      - uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: ${{ github.event_name != 'pull_request' && true || false }}
+          file: ./cobertura.xml
+          plugin: noop
+          disable_search: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Show testthat output
+        if: always()
+        run: |
+          ## --------------------------------------------------------------------
+          find '${{ runner.temp }}/package' -name 'testthat.Rout*' -exec cat '{}' \; || true
+        shell: bash
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-test-failures
+          path: ${{ runner.temp }}/package
