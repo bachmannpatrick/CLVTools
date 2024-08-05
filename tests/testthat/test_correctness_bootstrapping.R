@@ -390,7 +390,7 @@ test_that("Sampling all customers leads to same model estimate (nocov, static co
   for(clv.fitted in list(bg.cdnow, bg.apparel.static, p.apparel.dyn, gg.cdnow)){
 
     fn.sample.all <- function(){
-      return(clv.bootstrapped.apply(clv.fitted, num.boot = 1, fn.boot.apply = coef, fn.sample = function(ids){return(ids)})[[1]])
+      return(clv.bootstrapped.apply(clv.fitted, num.boots = 1, fn.boot.apply = coef, fn.sample = function(ids){return(ids)})[[1]])
     }
 
     if(is(clv.fitted, "clv.pnbd.dynamic.cov")){
@@ -408,7 +408,7 @@ test_that("Sampling all customers leads to same model estimate (nocov, static co
 test_that("Predict to same prediction end if given num periods even if sampled transactions would not define same estimation end", {
   dt.pred.boot <- clv.bootstrapped.apply(
     bg.cdnow,
-    num.boot = 1,
+    num.boots = 1,
     fn.boot.apply = function(clv.fitted){
       return(predict(clv.fitted, prediction.end=99, predict.spending=FALSE, verbose=FALSE))
       },

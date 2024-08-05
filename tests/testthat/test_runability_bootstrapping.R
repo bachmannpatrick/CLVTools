@@ -12,7 +12,7 @@ set.seed(124)
 
 fct.testthat.clv.boostrapped.apply.downstream.methods.work.on.boots <- function(clv.fitted, newdata.nohold, newdata.withhold){
   test_that("Downstream methods work on all transaction models fitted on bootstrapped data", {
-    clv.bootstrapped.apply(clv.fitted, num.boot=1, fn.boot.apply=function(boots.fitted){
+    clv.bootstrapped.apply(clv.fitted, num.boots=1, fn.boot.apply=function(boots.fitted){
 
       fct.helper.clvfittedtransactions.all.s3(
         clv.fitted=boots.fitted,
@@ -35,7 +35,7 @@ fct.testthat.clv.bootstrapped.apply.ellipsis.works <- function(clv.fitted){
 
     expect_warning(l.boots <- clv.bootstrapped.apply(
       clv.fitted,
-      num.boot=1,
+      num.boots=1,
       fn.boot.apply=function(o){return(o)},
       optimx.args=list(method='CG', itnmax=5, hessian=FALSE, control=list(kkt=FALSE))
     ), regexp = 'Hessian')
@@ -159,7 +159,7 @@ for(clv.fitted in list(
   # . clv.bootstrapped.apply ----------------------------------------------------
 
   # Expect warning because again fitted without hessian
-  expect_warning(clv.bootstrapped.apply(clv.fitted, num.boot=1, fn.boot.apply=function(boots.fitted){
+  expect_warning(clv.bootstrapped.apply(clv.fitted, num.boots=1, fn.boot.apply=function(boots.fitted){
 
 
     # Basic S3
@@ -233,7 +233,7 @@ for(clv.fitted in list(
 )){
 
   # . clv.bootstrapped.apply ---------------------------------------------------
-  clv.bootstrapped.apply(clv.fitted, num.boot=1, fn.boot.apply=function(boots.fitted){
+  clv.bootstrapped.apply(clv.fitted, num.boots=1, fn.boot.apply=function(boots.fitted){
 
     # Basic S3
     expect_silent(coef(boots.fitted))

@@ -21,7 +21,7 @@
 #'
 #'
 #' @param object Fitted model
-#' @param num.boot number of times to sample data and re-fit the model
+#' @param num.boots number of times to sample data and re-fit the model
 #' @param fn.sample Method sampling customer ids for creating the bootstrapped data. Receives and returns
 #'  a vector of ids (string). If \code{NULL}, ids are sampled with replacement until reaching original length. See examples.
 #' @param fn.boot.apply Method to apply on each model estimated on the sampled data. See examples.
@@ -46,7 +46,7 @@
 #'
 #' # bootstrapped model coefs while sampling 50 percent
 #' # of customers without replacement
-#' clv.bootstrapped.apply(pnbd.cdnow, num.boot=5, fn.boot.apply=coef,
+#' clv.bootstrapped.apply(pnbd.cdnow, num.boots=5, fn.boot.apply=coef,
 #' fn.sample=function(x){
 #' sample(x, size = as.integer(0.5*length(x)), replace = FALSE)})
 #'
@@ -57,12 +57,12 @@
 #' # data contains the same estimation and holdout periods
 #' # as the original data, even if the transactions of the sampled
 #' # customers .
-#' clv.bootstrapped.apply(pnbd.cdnow, num.boot=5, fn.sample=NULL,
+#' clv.bootstrapped.apply(pnbd.cdnow, num.boots=5, fn.sample=NULL,
 #' fn.boot.apply=function(x){predict(x)})
 #'
 #' # return the fitted models
 #' # forward additional arguments to the model fitting method
-#' clv.bootstrapped.apply(pnbd.cdnow, num.boot=5, fn.sample=NULL,
+#' clv.bootstrapped.apply(pnbd.cdnow, num.boots=5, fn.sample=NULL,
 #' fn.boot.apply=return,
 #' # args for ..., forwarded to pnbd()
 #' verbose=FALSE, optimx.args=list(method="Nelder-Mead"),
@@ -70,7 +70,7 @@
 #' }
 #'
 #' @export
-clv.bootstrapped.apply <- function(object, num.boot, fn.boot.apply, fn.sample=NULL, ...){
+clv.bootstrapped.apply <- function(object, num.boots, fn.boot.apply, fn.sample=NULL, ...){
   # cran silence
   Id <- NULL
 
