@@ -74,7 +74,7 @@ clv.bootstrapped.apply <- function(object, num.boots, fn.boot.apply, fn.sample=N
   # cran silence
   Id <- NULL
 
-  check_err_msg(check_user_data_numboots(num.boots=num.boot))
+  check_err_msg(check_user_data_numboots(num.boots=num.boots))
   check_err_msg(check_user_data_fnbootapply(fn.boot.apply=fn.boot.apply))
   check_err_msg(check_user_data_fnsample(fn.sample=fn.sample))
 
@@ -86,7 +86,7 @@ clv.bootstrapped.apply <- function(object, num.boots, fn.boot.apply, fn.sample=N
 
   ids <- object@cbs[, unique(Id)]
 
-  l.boots <- lapply(seq_len(num.boot), function(i){
+  l.boots <- lapply(seq_len(num.boots), function(i){
 
     clv.data.boot <- clv.data.create.bootstrapping.data(
       clv.data = object@clv.data,
