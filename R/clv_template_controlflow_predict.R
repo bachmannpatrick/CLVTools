@@ -82,7 +82,7 @@ clv.controlflow.predict.add.uncertainty.estimates <- function(clv.fitted, dt.pre
 
   # quantiles for each predicted quantity
   # select only the existing ones
-  cols.predictions <- c("PAlive", "CET", "DERT", "DECT", "predicted.mean.spending", "predicted.CLV")
+  cols.predictions <- c("PAlive", "CET", "DERT", "DECT", "predicted.mean.spending", "predicted.total.spending", "predicted.CLV")
   cols.predictions <- cols.predictions[cols.predictions %in% colnames(dt.boots)]
 
   # Long-format for easier handling of different prediction columns
