@@ -193,8 +193,8 @@ fit.apparel.dyncov <- function(
     data.apparelTrans = NULL,
     data.apparelDynCov = NULL,
     estimation.split = 40,
-    names.cov.life = c("Marketing", "Gender", "Channel"),
-    names.cov.trans = c("Marketing", "Gender", "Channel"),
+    names.cov.life = c("High.Season", "Gender", "Channel"),
+    names.cov.trans = c("High.Season", "Gender", "Channel"),
     model = pnbd,
     verbose=FALSE,
     ...
@@ -222,8 +222,8 @@ fit.apparel.dyncov <- function(
     data.apparelTrans = NULL,
     data.apparelDynCov = NULL,
     estimation.split = 40,
-    names.cov.life = c("Marketing", "Gender", "Channel"),
-    names.cov.trans = c("Marketing", "Gender", "Channel"),
+    names.cov.life = c("High.Season", "Gender", "Channel"),
+    names.cov.trans = c("High.Season", "Gender", "Channel"),
     model = pnbd,
     verbose=FALSE,
     ...

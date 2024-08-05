@@ -9,8 +9,8 @@ skip_on_cran()
 
 fitted.dyncov <- fct.helper.dyncov.quickfit.apparel.data(
   hessian=TRUE,
-  names.cov.life = c("Marketing", "Gender"),
-  names.cov.trans = c("Marketing", "Gender", "Channel")
+  names.cov.life = c("High.Season", "Gender"),
+  names.cov.trans = c("High.Season", "Gender", "Channel")
 )
 
 
@@ -18,8 +18,8 @@ fct.helper.runability.dyncov.all.downstream(
   fitted.dyncov=fitted.dyncov,
   names.params=
     c("r", "alpha", "s", "beta",
-      "life.Marketing",  "life.Gender",
-      "trans.Marketing", "trans.Gender",  "trans.Channel")
+      "life.High.Season",  "life.Gender",
+      "trans.High.Season", "trans.Gender",  "trans.Channel")
 )
 
 fct.testthat.runability.dynamiccov.LL.is.correct(
@@ -33,8 +33,8 @@ test_that("Dyncov works with additional model specifications", {
   clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov()
 
   fn.fit.dyncov.spec <- function(...){
-    covs.life <- c("Marketing", "Gender")
-    covs.trans <- c("Marketing", "Gender", "Channel")
+    covs.life <- c("High.Season", "Gender")
+    covs.trans <- c("High.Season", "Gender", "Channel")
 
     expect_silent(fitted.dyncov <- fit.apparel.dyncov(
       names.cov.life = covs.life,
