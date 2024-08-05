@@ -10,7 +10,7 @@ set.seed(124)
 # - That clv.bootstrapped.apply can be applied on many different models (nocov, static cov, dyncov)
 # - That the model fitted on bootstrapped data works correctly and can be used (all S3 methods)
 
-fct.testthat.downstream.methods.work.on.boots <- function(clv.fitted, newdata.nohold, newdata.withhold){
+fct.testthat.clv.boostrapped.apply.downstream.methods.work.on.boots <- function(clv.fitted, newdata.nohold, newdata.withhold){
   test_that("Downstream methods work on all transaction models fitted on bootstrapped data", {
     clv.bootstrapped.apply(clv.fitted, num.boot=1, fn.boot.apply=function(boots.fitted){
 
@@ -24,6 +24,7 @@ fct.testthat.downstream.methods.work.on.boots <- function(clv.fitted, newdata.no
     })
   })
 }
+
 
 fct.testthat.clv.bootstrapped.apply.ellipsis.works <- function(clv.fitted){
 
@@ -45,7 +46,7 @@ fct.testthat.clv.bootstrapped.apply.ellipsis.works <- function(clv.fitted){
 
 
 
-# bootstrapped clv.data --------------------------------------------------------
+# clv.data: bootstrapped clv.data ----------------------------------------------
 # all sorts of plotting etc work
 
 test_that("All clv.data methods work on bootstrapped clv.data", {
@@ -94,7 +95,7 @@ for(clv.fitted in list(
   )){
 
   # . clv.bootstrapped.apply ----------------------------------------------------
-  fct.testthat.downstream.methods.work.on.boots(
+  fct.testthat.clv.boostrapped.apply.downstream.methods.work.on.boots(
     clv.fitted = clv.fitted,
     newdata.nohold = clv.apparel.nocov.no.holdout,
     newdata.withhold = clv.apparel.nocov.holdout
@@ -107,7 +108,7 @@ for(clv.fitted in list(
 
   # . predict -----------------------------------------------------------------
   test_that("predict bootstrapping works for no cov models", {
-    expect_warning(predict(clv.fitted, uncertainty='boots', num.boots=2, prediction.end=5, verbose=FALSE), regexp = "It is recommended")
+    expect_warning(predict(clv.fitted, uncertainty='boots', num.boots=2, prediction.end=5, predict.spending=TRUE, verbose=FALSE), regexp = "It is recommended")
   })
 }
 
@@ -129,7 +130,7 @@ for(clv.fitted in list(
   )){
 
   # . clv.bootstrapped.apply ----------------------------------------------------
-  fct.testthat.downstream.methods.work.on.boots(
+  fct.testthat.clv.boostrapped.apply.downstream.methods.work.on.boots(
     clv.fitted = clv.fitted,
     newdata.nohold = clv.apparel.static.no.holdout,
     newdata.withhold = clv.apparel.static.holdout
@@ -265,7 +266,7 @@ for(clv.fitted in list(
 
 test_that("predict(boots) works on all model specifications", {
   fn.predict.boots <- function(clv.fitted){
-    expect_warning(predict(clv.fitted, uncertainty='boots', num.boots=2, verbose=FALSE), regexp = 'recommended to run')
+    expect_warning(predict(clv.fitted, uncertainty='boots', num.boots=2, predict.spending=TRUE, verbose=FALSE), regexp = 'recommended to run')
   }
 
   p.cor <- fit.apparel.nocov(use.cor=TRUE, verbose=FALSE)
