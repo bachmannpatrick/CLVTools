@@ -78,15 +78,15 @@ fct.testthat.inputchecks.namescovconstr <- function(method, l.std.args){
   test_that("Fails if want to give start params for constraint params as free covariates", {
     expect_error(do.call(method, modifyList(l.std.args, list(names.cov.constr=c("Gender"),
                                                                 start.params.life = c(Gender=1)))),
-                 regexp = "for the constraint parameters in")
+                 regexp = "There may be no Lifetime covariate start parameter")
     expect_error(do.call(method, modifyList(l.std.args, list(names.cov.constr=c("Gender"),
                                                                 start.params.trans = c(Gender=1)))),
-                 regexp = "for the constraint parameters in")
+                 regexp = "There may be no Transaction covariate start parameter")
 
     expect_error(do.call(method, modifyList(l.std.args, list(names.cov.constr=c("Gender"),
                                                                 start.params.trans = c(Gender=1),
                                                                 start.params.life  = c(Gender=1)))),
-                 regexp = "for the constraint parameters in")
+                 regexp = "There may be no")
   })
 }
 

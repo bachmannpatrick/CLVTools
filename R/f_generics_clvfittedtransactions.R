@@ -7,8 +7,9 @@ setMethod(f = "clv.controlflow.predict.check.inputs", signature = signature(clv.
   err.msg <- c(err.msg, check_user_data_predictionend(clv.fitted=clv.fitted, prediction.end=prediction.end))
 
   # Cannot predict if no prediction.end (=null) and no holdout
-  if(is.null(prediction.end) & clv.data.has.holdout(clv.fitted@clv.data) == FALSE)
+  if(is.null(prediction.end) & clv.data.has.holdout(clv.fitted@clv.data) == FALSE){
     err.msg <- c(err.msg, "Cannot predict without prediction.end if there is no holdout!")
+  }
 
   err.msg <- c(err.msg, check_user_data_continuousdiscountfactor(continuous.discount.factor=continuous.discount.factor))
 

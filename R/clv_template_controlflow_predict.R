@@ -51,7 +51,7 @@ clv.template.controlflow.predict <- function(clv.fitted, verbose, user.newdata, 
       warning("It is recommended to run 1000 or more bootstrap repetitions.", immediate. = TRUE, call. = FALSE)
     }
     dt.predictions <- clv.controlflow.predict.add.uncertainty.estimates(clv.fitted=clv.fitted, dt.predictions = dt.predictions, num.boots=num.boots, level=level, verbose=verbose, ...)
-    # TODO: Column order is correct also with CI columns
+    # TODO[test]: Column order is correct also with CI columns
     # TODO[test]: All customers are kept also if not all are kept
   }
 
@@ -82,7 +82,7 @@ clv.controlflow.predict.add.uncertainty.estimates <- function(clv.fitted, dt.pre
 
   # quantiles for each predicted quantity
   # select only the existing ones
-  cols.predictions <- c("PAlive", "CET", "DERT", "DECT", "predicted.mean.spending", "predicted.CLV")
+  cols.predictions <- c("PAlive", "CET", "DERT", "DECT", "predicted.mean.spending", "predicted.total.spending", "predicted.CLV")
   cols.predictions <- cols.predictions[cols.predictions %in% colnames(dt.boots)]
 
   # Long-format for easier handling of different prediction columns

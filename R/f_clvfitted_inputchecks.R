@@ -72,6 +72,9 @@ check_user_data_startparams <- function(start.params, vector.names, param.names)
   if(is.null(start.params))
     return(err.msg)
 
+  if(length(vector.names) == 0 & length(start.params) > 0)
+    return(paste0("There may be no ", param.names, "!"))
+
   if(anyNA(start.params))
     err.msg <- c(err.msg, paste0("There may be no NAs in the ", param.names,"s!"))
 
@@ -233,6 +236,36 @@ check_user_data_numboots <- function(num.boots){
   return(err.msg)
 }
 
+check_user_data_fnbootapply <- function(fn.boot.apply){
+  if(missing(fn.boot.apply)){
+    return("Parameter fn.boot.apply cannot be missing!")
+  }
+
+  if(!is.function(fn.boot.apply)){
+    return("Parameter fn.boot.apply has to be a function!")
+  }
+  return(c())
+}
+
+
+check_user_data_fnsample <- function(fn.sample){
+  # may be NULL
+  if(is.null(fn.sample)){
+    return()
+  }
+
+  if(missing(fn.sample)){
+    return("Parameter fn.sample cannot be missing!")
+  }
+
+  if(!is.function(fn.sample)){
+    return("Parameter fn.sample has to be a function!")
+  }
+  return(c())
+}
+
+
+
 check_user_data_level <- function(level){
   if(missing(level)){
     return("Parameter level cannot be missing!")
@@ -248,6 +281,15 @@ check_user_data_level <- function(level){
   }
 
   return(err.msg)
+}
+
+
+check_user_data_uncertainty <- function(uncertainty){
+  if(missing(uncertainty)){
+    return("Parameter uncertainty cannot be missing!")
+  }
+
+  return(.check_userinput_matcharg(char=uncertainty, choices=c("none", "boots"), var.name="uncertainty"))
 }
 
 check_user_data_startparamcorm <- function(start.param.cor, use.cor){

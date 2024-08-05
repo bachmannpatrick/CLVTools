@@ -15,12 +15,17 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv
   check_err_msg(err.msg)
 
   # Get names as needed for startparams
-  #   no name was provided / NULL:  use all covariate names
-  #   some name provided:           use this name(s)
-  if(length(names.cov.life)==0)
+  #   no name was provided / NULL:  use all covariate names, except the ones constrained
+  #   some name provided:           use this name(s), except the ones constrained
+  if(length(names.cov.life)==0){
     names.cov.life  <- clv.data.get.names.cov.life(clv.fitted@clv.data)
-  if(length(names.cov.trans)==0)
+  }
+  names.cov.life <- setdiff(names.cov.life, names.cov.constr)
+
+  if(length(names.cov.trans)==0){
     names.cov.trans <- clv.data.get.names.cov.trans(clv.fitted@clv.data)
+  }
+  names.cov.trans <- setdiff(names.cov.trans, names.cov.constr)
 
   # Check first - if names are wrong they will be wrong as in put to check_startparams as well
   err.msg <- c(err.msg, check_user_data_startparamscov(start.params.cov=start.params.life,  names.params.cov = names.cov.life,  name.of.cov="Lifetime"))
