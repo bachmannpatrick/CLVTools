@@ -135,9 +135,12 @@ fit.apparel.nocov <- function(
     data.apparelTrans = NULL,
     estimation.split = 40,
     model = pnbd,
-    start.params.model = c(),
-    verbose = FALSE,
-    optimx.args = list()) {
+    verbose=FALSE,
+    # start.params.model = c(),
+    # verbose = FALSE,
+    # optimx.args = list()
+    ...
+    ) {
 
   clv.data.apparel <- fct.helper.create.clvdata.apparel.nocov(
     data.apparelTrans = data.apparelTrans,
@@ -148,9 +151,8 @@ fit.apparel.nocov <- function(
     what = model,
     args = list(
       clv.data = clv.data.apparel,
-      start.params.model = start.params.model,
-      optimx.args = optimx.args,
-      verbose = verbose
+      verbose=verbose,
+      ...
     )
   ))
 }
@@ -162,9 +164,12 @@ fit.apparel.static <- function(
     names.cov.life = c("Gender", "Channel"),
     names.cov.trans = c("Gender", "Channel"),
     model = pnbd,
-    start.params.model = c(),
-    verbose = FALSE,
-    optimx.args = list()) {
+    verbose=FALSE,
+    # start.params.model = c(),
+    # verbose = FALSE,
+    # optimx.args = list(),
+    ...
+    ) {
   clv.data.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(
     data.apparelTrans = data.apparelTrans,
     data.apparelStaticCov = data.apparelStaticCov,
@@ -177,9 +182,37 @@ fit.apparel.static <- function(
     what = model,
     args = list(
       clv.data = clv.data.apparel.cov,
-      start.params.model = start.params.model,
-      optimx.args = optimx.args,
-      verbose = verbose
+      verbose=verbose,
+      ...
+    )
+  ))
+}
+
+
+fit.apparel.dyncov <- function(
+    data.apparelTrans = NULL,
+    data.apparelDynCov = NULL,
+    estimation.split = 40,
+    names.cov.life = c("Marketing", "Gender", "Channel"),
+    names.cov.trans = c("Marketing", "Gender", "Channel"),
+    model = pnbd,
+    verbose=FALSE,
+    ...
+) {
+  clv.data.apparel.dyncov <- fct.helper.create.clvdata.apparel.dyncov(
+    data.apparelTrans = data.apparelTrans,
+    data.apparelDynCov = data.apparelDynCov,
+    estimation.split = estimation.split,
+    names.cov.life = names.cov.life,
+    names.cov.trans = names.cov.trans
+  )
+
+  return(do.call(
+    what = model,
+    args = list(
+      clv.data = clv.data.apparel.dyncov,
+      verbose=verbose,
+      ...
     )
   ))
 }
@@ -248,11 +281,13 @@ fct.helper.dyncov.quickfit <- function(clv.data.dyn, hessian){
 }
 
 fct.helper.dyncov.quickfit.apparel.data <- function(data.apparelTrans=NULL, data.apparelDynCov=NULL, hessian=FALSE,
+                                                    estimation.split=40,
                                                     names.cov.life = c("Marketing", "Gender", "Channel"),
                                                     names.cov.trans = c("Marketing", "Gender", "Channel")){
   clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(
     data.apparelTrans=data.apparelTrans,
     data.apparelDynCov=data.apparelDynCov,
+    estimation.split = estimation.split,
     names.cov.life = names.cov.life,
     names.cov.trans = names.cov.trans)
 
