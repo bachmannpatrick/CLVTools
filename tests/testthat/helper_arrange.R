@@ -192,7 +192,7 @@ fit.apparel.static <- function(
 fit.apparel.dyncov <- function(
     data.apparelTrans = NULL,
     data.apparelDynCov = NULL,
-    estimation.split = 40,
+    estimation.split = 104,
     names.cov.life = c("High.Season", "Gender", "Channel"),
     names.cov.trans = c("High.Season", "Gender", "Channel"),
     model = pnbd,
@@ -281,7 +281,7 @@ fct.helper.dyncov.quickfit <- function(clv.data.dyn, hessian){
 }
 
 fct.helper.dyncov.quickfit.apparel.data <- function(data.apparelTrans=NULL, data.apparelDynCov=NULL, hessian=FALSE,
-                                                    estimation.split=40,
+                                                    estimation.split=104,
                                                     names.cov.life = c("High.Season", "Gender", "Channel"),
                                                     names.cov.trans = c("High.Season", "Gender", "Channel")){
   clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(
