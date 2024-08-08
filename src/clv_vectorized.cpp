@@ -13,8 +13,9 @@
 // [[Rcpp::export]]
 Rcpp::List vec_gsl_hyp2f0_e(const RcppGSL::Vector& vA, const RcppGSL::Vector& vB, const RcppGSL::Vector& vZ){
 
-  if((vA->size != vB->size) || (vB->size != vZ->size))
-    throw std::runtime_error(std::string("Not all vectors are of the same length!"));
+  if((vA->size != vB->size) || (vB->size != vZ->size)){
+    throw Rcpp::exception("Not all vectors are of the same length!");
+  }
 
   // Do not abort in case of error
   gsl_set_error_handler_off();
@@ -48,8 +49,9 @@ Rcpp::List vec_gsl_hyp2f0_e(const RcppGSL::Vector& vA, const RcppGSL::Vector& vB
 // [[Rcpp::export]]
 Rcpp::List vec_gsl_hyp2f1_e(const RcppGSL::Vector& vA, const RcppGSL::Vector& vB, const RcppGSL::Vector& vC, const RcppGSL::Vector& vZ){
 
-  if((vA->size != vB->size) || (vB->size != vC->size) || (vC->size != vZ->size))
-    throw std::runtime_error(std::string("Not all vectors are of the same length!"));
+  if((vA->size != vB->size) || (vB->size != vC->size) || (vC->size != vZ->size)){
+    throw Rcpp::exception("Not all vectors are of the same length!");
+  }
 
   // Do not abort in case of error
   gsl_set_error_handler_off();
