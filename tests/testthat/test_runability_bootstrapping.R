@@ -114,19 +114,19 @@ for(clv.fitted in list(
 
 
 # Static cov models -----------------------------------------------------------
-clv.apparel.static.holdout <- fct.helper.create.clvdata.apparel.staticcov(estimation.split=104)
+clv.apparel.static.holdout <- fct.helper.create.clvdata.apparel.staticcov(estimation.split=100)
 clv.apparel.static.no.holdout <- fct.helper.create.clvdata.apparel.staticcov(estimation.split=NULL)
 
 
 for(clv.fitted in list(
   fit.apparel.static(model=pnbd, estimation.split=NULL),
-  fit.apparel.static(model=pnbd, estimation.split=104),
+  fit.apparel.static(model=pnbd, estimation.split=100),
 
   fit.apparel.static(model=bgnbd, estimation.split=NULL),
-  fit.apparel.static(model=bgnbd, estimation.split=104),
+  fit.apparel.static(model=bgnbd, estimation.split=100),
 
   fit.apparel.static(model=ggomnbd, estimation.split=NULL),
-  fit.apparel.static(model=ggomnbd, estimation.split=104)
+  fit.apparel.static(model=ggomnbd, estimation.split=100)
   )){
 
   # . clv.bootstrapped.apply ----------------------------------------------------
