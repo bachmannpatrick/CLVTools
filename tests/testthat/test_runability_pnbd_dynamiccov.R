@@ -79,10 +79,10 @@ test_that("Dyncov works with additional model specifications", {
   }
 
   # regularization -------------------------------------------------------------
-  fn.fit.dyncov.spec(reg.lambdas = c(trans=10, life=20))
+  fn.fit.dyncov.spec(reg.lambdas = c(trans=10, life=10))
 
   # constrained covs -----------------------------------------------------------
-  fn.fit.dyncov.spec(names.cov.constr = "Gender")
+  fn.fit.dyncov.spec(names.cov.constr = "High.Season")
 
   # correlation ----------------------------------------------------------------
   fn.fit.dyncov.spec(use.cor=TRUE)
@@ -91,5 +91,5 @@ test_that("Dyncov works with additional model specifications", {
   fn.fit.dyncov.spec(
     use.cor=TRUE,
     names.cov.constr = "Gender",
-    reg.lambda = c(trans=10, life=20))
+    reg.lambda = c(trans=10, life=10))
 })

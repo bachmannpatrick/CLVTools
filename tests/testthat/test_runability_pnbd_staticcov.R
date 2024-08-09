@@ -3,7 +3,7 @@ data("apparelTrans")
 data("apparelStaticCov")
 
 fct.testthat.runability.staticcov(name.model = "PNBD", method=pnbd,
-                                  start.params.model=c(r=1.23, alpha=0.678, s = 0.111, beta=2.345),
+                                  start.params.model=c(r=0.5, alpha=15, s = 0.5, beta=10),
                                   has.cor=TRUE,
                                   data.apparelTrans = apparelTrans, data.apparelStaticCov = apparelStaticCov,
                                   failed.optimization.methods.expected.message =

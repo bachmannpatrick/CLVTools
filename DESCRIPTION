@@ -153,7 +153,7 @@ Collate:
     'pnbd_dyncov_createwalks.R'
     'pnbd_dyncov_expectation.R'
     'pnbd_dyncov_palive.R'
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 VignetteBuilder: knitr
 Config/testthat/parallel: false
 Config/testthat/edition: 3

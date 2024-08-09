@@ -45,7 +45,7 @@ fct.helper.create.clvdata.apparel.nocov <- function(
     date.format = "ymd",
     time.unit = "W",
     estimation.split = estimation.split
-    ))
+  ))
 }
 
 fct.helper.create.clvdata.apparel.staticcov <- function(
@@ -140,7 +140,7 @@ fit.apparel.nocov <- function(
     # verbose = FALSE,
     # optimx.args = list()
     ...
-    ) {
+) {
 
   clv.data.apparel <- fct.helper.create.clvdata.apparel.nocov(
     data.apparelTrans = data.apparelTrans,
@@ -169,7 +169,7 @@ fit.apparel.static <- function(
     # verbose = FALSE,
     # optimx.args = list(),
     ...
-    ) {
+) {
   clv.data.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(
     data.apparelTrans = data.apparelTrans,
     data.apparelStaticCov = data.apparelStaticCov,
@@ -218,35 +218,6 @@ fit.apparel.dyncov <- function(
 }
 
 
-fit.apparel.dyncov <- function(
-    data.apparelTrans = NULL,
-    data.apparelDynCov = NULL,
-    estimation.split = 40,
-    names.cov.life = c("High.Season", "Gender", "Channel"),
-    names.cov.trans = c("High.Season", "Gender", "Channel"),
-    model = pnbd,
-    verbose=FALSE,
-    ...
-) {
-  clv.data.apparel.dyncov <- fct.helper.create.clvdata.apparel.dyncov(
-    data.apparelTrans = data.apparelTrans,
-    data.apparelDynCov = data.apparelDynCov,
-    estimation.split = estimation.split,
-    names.cov.life = names.cov.life,
-    names.cov.trans = names.cov.trans
-  )
-
-  return(do.call(
-    what = model,
-    args = list(
-      clv.data = clv.data.apparel.dyncov,
-      verbose=verbose,
-      ...
-    )
-  ))
-}
-
-
 fct.helper.dyncov.get.optimxargs.quickfit <- function(hessian){
   optimx.args <- list(
     method="Nelder-Mead", # NelderMead verifies nothing = faster
@@ -268,7 +239,7 @@ fct.helper.dyncov.quickfit <- function(clv.data.dyn, hessian){
     clv.data=clv.data.dyn,
     # start params from std model fitted before apparel dyncov
     # other start params may yield estimated params which are unsuitable for prediction/plot (NAs & Inf) which removes dates during plotting
-    start.params.model = c(r= 0.7422, alpha= 2.1222, s= 0.9991, beta=92.0867),
+    #start.params.model = c(r= 0.7422, alpha= 2.1222, s= 0.9991, beta=92.0867),
     optimx.args = l.quickfit.args,
     verbose = FALSE)
 
