@@ -27,7 +27,7 @@
 #' @description
 #' This is a simulated dataset containing the entire purchase history of customers made their first purchase at an
 #' apparel retailer on January 2nd 2005. In total the dataset contains 600 customers who made
-#' 2,647 transactions between January 2005 and end of December 2010.
+#' 3,187 transactions between January 2005 and end of December 2010.
 #'
 #' @format A \code{data.table} with 3,187 rows and 3 variables:
 #' \describe{
@@ -71,7 +71,7 @@
 #' This simulated data contains seasonal information and additional covariates on all 600 customers in the "apparelTrans" dataset.
 #' This information can be used as time-varying covariates.
 #'
-#' @format A data.table with 3,433,000 rows and 5 variables
+#' @format A data.table with 187,800 rows and 5 variables
 #' \describe{
 #'   \item{Id}{Customer Id}
 #'   \item{Cov.Date}{Date of contextual factor}
@@ -89,10 +89,10 @@
 #' @title Future Time-varying Covariates for the Apparel Retailer Dataset
 
 #' @description
-#' This simulated data contains seasonal information and additional covariates on all 400 customers in the "apparelTrans" after the last transaction in the dataset.
+#' This simulated data contains seasonal information and additional covariates on all 600 customers in the "apparelTrans" after the last transaction in the dataset.
 #' This information can be used as time-varying covariates for prediction future customer behavior.
 #'
-#' @format A data.table with 1,034,000 rows and 5 variables
+#' @format A data.table with 56,400 rows and 5 variables
 #' \describe{
 #'   \item{Id}{Customer Id}
 #'   \item{Cov.Date}{Date of contextual factor}
