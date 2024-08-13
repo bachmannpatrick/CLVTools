@@ -128,7 +128,7 @@ setMethod(f = "clv.fitted.bootstrap.predictions",signature = signature(clv.fitte
 
   l.boots <- clv.bootstrapped.apply(
     object = clv.fitted,
-    num.boot = num.boots,
+    num.boots = num.boots,
     fn.boot.apply = boots.predict,
     fn.sample = NULL,
     verbose = FALSE,

@@ -254,28 +254,28 @@ BEGIN_RCPP
 END_RCPP
 }
 // vec_gsl_hyp2f0_e
-Rcpp::List vec_gsl_hyp2f0_e(const RcppGSL::Vector& vA, const RcppGSL::Vector& vB, const RcppGSL::Vector& vZ);
+Rcpp::List vec_gsl_hyp2f0_e(const arma::vec& vA, const arma::vec& vB, const arma::vec& vZ);
 RcppExport SEXP _CLVTools_vec_gsl_hyp2f0_e(SEXP vASEXP, SEXP vBSEXP, SEXP vZSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const RcppGSL::Vector& >::type vA(vASEXP);
-    Rcpp::traits::input_parameter< const RcppGSL::Vector& >::type vB(vBSEXP);
-    Rcpp::traits::input_parameter< const RcppGSL::Vector& >::type vZ(vZSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type vA(vASEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type vB(vBSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type vZ(vZSEXP);
     rcpp_result_gen = Rcpp::wrap(vec_gsl_hyp2f0_e(vA, vB, vZ));
     return rcpp_result_gen;
 END_RCPP
 }
 // vec_gsl_hyp2f1_e
-Rcpp::List vec_gsl_hyp2f1_e(const RcppGSL::Vector& vA, const RcppGSL::Vector& vB, const RcppGSL::Vector& vC, const RcppGSL::Vector& vZ);
+Rcpp::List vec_gsl_hyp2f1_e(const arma::vec& vA, const arma::vec& vB, const arma::vec& vC, const arma::vec& vZ);
 RcppExport SEXP _CLVTools_vec_gsl_hyp2f1_e(SEXP vASEXP, SEXP vBSEXP, SEXP vCSEXP, SEXP vZSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const RcppGSL::Vector& >::type vA(vASEXP);
-    Rcpp::traits::input_parameter< const RcppGSL::Vector& >::type vB(vBSEXP);
-    Rcpp::traits::input_parameter< const RcppGSL::Vector& >::type vC(vCSEXP);
-    Rcpp::traits::input_parameter< const RcppGSL::Vector& >::type vZ(vZSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type vA(vASEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type vB(vBSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type vC(vCSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type vZ(vZSEXP);
     rcpp_result_gen = Rcpp::wrap(vec_gsl_hyp2f1_e(vA, vB, vC, vZ));
     return rcpp_result_gen;
 END_RCPP
