@@ -13,8 +13,9 @@
 // [[Rcpp::export]]
 Rcpp::List vec_gsl_hyp2f0_e(const arma::vec& vA, const arma::vec& vB, const arma::vec& vZ){
 
-  if((vA.n_elem != vB.n_elem) || (vB.n_elem != vZ.n_elem))
-    throw std::runtime_error(std::string("Not all vectors are of the same length!"));
+  if((vA.n_elem != vB.n_elem) || (vB.n_elem != vZ.n_elem)){
+    throw Rcpp::exception("Not all vectors are of the same length!");
+  }
 
   // Do not abort in case of error
   gsl_set_error_handler_off();
@@ -48,8 +49,9 @@ Rcpp::List vec_gsl_hyp2f0_e(const arma::vec& vA, const arma::vec& vB, const arma
 // [[Rcpp::export]]
 Rcpp::List vec_gsl_hyp2f1_e(const arma::vec& vA, const arma::vec& vB, const arma::vec& vC, const arma::vec& vZ){
 
-  if((vA.n_elem != vB.n_elem) || (vB.n_elem != vC.n_elem) || (vC.n_elem != vZ.n_elem))
-    throw std::runtime_error(std::string("Not all vectors are of the same length!"));
+  if((vA.n_elem != vB.n_elem) || (vB.n_elem != vC.n_elem) || (vC.n_elem != vZ.n_elem)){
+    throw Rcpp::exception("Not all vectors are of the same length!");
+  }
 
   // Do not abort in case of error
   gsl_set_error_handler_off();
