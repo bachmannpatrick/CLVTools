@@ -7,9 +7,9 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_sf_result.h>
 
-Rcpp::List vec_gsl_hyp2f0_e(const RcppGSL::Vector& vA, const RcppGSL::Vector& vB, const RcppGSL::Vector& vZ);
+Rcpp::List vec_gsl_hyp2f0_e(const arma::vec& vA, const arma::vec& vB, const arma::vec& vZ);
 
-Rcpp::List vec_gsl_hyp2f1_e(const RcppGSL::Vector& vA, const RcppGSL::Vector& vB, const RcppGSL::Vector& vC, const RcppGSL::Vector& vZ);
+Rcpp::List vec_gsl_hyp2f1_e(const arma::vec& vA, const arma::vec& vB, const arma::vec& vC, const arma::vec& vZ);
 
 namespace clv{
 
