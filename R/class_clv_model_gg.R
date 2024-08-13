@@ -60,7 +60,7 @@ setMethod("clv.model.backtransform.estimated.params.model", signature = signatur
 #' @importFrom utils modifyList
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.gg"), definition = function(clv.model, clv.fitted, prepared.optimx.args){
 
-  dt.compressed.cbs <- clv.fitted@cbs[, .(n = .N), by=c('x', 'Spending')]
+  dt.compressed.cbs <- clv.fitted@cbs[, list(n = .N), by=c('x', 'Spending')]
 
   optimx.args <- modifyList(prepared.optimx.args,
                             list(LL.function.sum = gg_LL,
