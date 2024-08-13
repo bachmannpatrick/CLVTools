@@ -10,10 +10,14 @@
 #' @description
 #' Predict customer's future mean spending per transaction and compare it to the actual mean spending in the holdout period.
 #'
+#' Uncertainty estimates are available for all predicted quantities using bootstrapping.
+#'
 #' @details
 #' If \code{newdata} is provided, the individual customer statistics underlying the model are calculated
 #' the same way as when the model was fit initially. Hence, if \code{remove.first.transaction} was \code{TRUE},
 #' this will be applied to \code{newdata} as well.
+#'
+#' @template template_predict_bootsuncertainty
 #'
 #' @seealso models to predict spending: \link{gg}.
 #' @seealso models to predict transactions: \link{pnbd}, \link{bgnbd}, \link{ggomnbd}.
