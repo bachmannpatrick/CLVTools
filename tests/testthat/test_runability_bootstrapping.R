@@ -80,18 +80,23 @@ test_that("All clv.data methods work on bootstrapped clv.data", {
 
 # No cov models ---------------------------------------------------------------
 
+# Optimx args:
+#  - use Nelder-Mead which is less prone to lead failed estimation on bootstrapped data
+#  - restrict max iterations to reduce runtime as NelderMead takes longer to converge
+optimx.args.NM <- list(method='Nelder-Mead', itnmax=100)
+
 clv.apparel.nocov.holdout <- fct.helper.create.clvdata.apparel.nocov()
 clv.apparel.nocov.no.holdout <- fct.helper.create.clvdata.apparel.nocov(estimation.split=NULL)
 
 for(clv.fitted in list(
-  fit.apparel.nocov(model=pnbd, estimation.split=40),
-  fit.apparel.nocov(model=pnbd, estimation.split=NULL),
+  fit.apparel.nocov(model=pnbd, estimation.split=40, optimx.args=optimx.args.NM),
+  fit.apparel.nocov(model=pnbd, estimation.split=NULL, optimx.args=optimx.args.NM),
 
-  fit.apparel.nocov(model=bgnbd, estimation.split=40),
-  fit.apparel.nocov(model=bgnbd, estimation.split=NULL),
+  fit.apparel.nocov(model=bgnbd, estimation.split=40, optimx.args=optimx.args.NM),
+  fit.apparel.nocov(model=bgnbd, estimation.split=NULL, optimx.args=optimx.args.NM),
 
-  fit.apparel.nocov(model=ggomnbd, estimation.split=40),
-  fit.apparel.nocov(model=ggomnbd, estimation.split=NULL)
+  fit.apparel.nocov(model=ggomnbd, estimation.split=40, optimx.args=optimx.args.NM),
+  fit.apparel.nocov(model=ggomnbd, estimation.split=NULL, optimx.args=optimx.args.NM)
   )){
 
   # . clv.bootstrapped.apply ----------------------------------------------------
@@ -119,14 +124,14 @@ clv.apparel.static.no.holdout <- fct.helper.create.clvdata.apparel.staticcov(est
 
 
 for(clv.fitted in list(
-  fit.apparel.static(model=pnbd, estimation.split=NULL),
-  fit.apparel.static(model=pnbd, estimation.split=40),
+  fit.apparel.static(model=pnbd, estimation.split=NULL, optimx.args=optimx.args.NM),
+  fit.apparel.static(model=pnbd, estimation.split=40, optimx.args=optimx.args.NM),
 
-  fit.apparel.static(model=bgnbd, estimation.split=NULL),
-  fit.apparel.static(model=bgnbd, estimation.split=40),
+  fit.apparel.static(model=bgnbd, estimation.split=NULL, optimx.args=optimx.args.NM),
+  fit.apparel.static(model=bgnbd, estimation.split=40, optimx.args=optimx.args.NM),
 
-  fit.apparel.static(model=ggomnbd, estimation.split=NULL),
-  fit.apparel.static(model=ggomnbd, estimation.split=40)
+  fit.apparel.static(model=ggomnbd, estimation.split=NULL, optimx.args=optimx.args.NM),
+  fit.apparel.static(model=ggomnbd, estimation.split=40, optimx.args=optimx.args.NM)
   )){
 
   # . clv.bootstrapped.apply ----------------------------------------------------
