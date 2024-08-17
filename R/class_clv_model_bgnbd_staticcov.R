@@ -80,20 +80,22 @@ setMethod(f = "clv.model.backtransform.estimated.params.cov", signature = signat
 
 # . clv.model.prepare.optimx.args -----------------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.bgnbd.static.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args){
-  # Do not call the no.cov function as the LL is different
+
+  l.LL.call.data <- clv.fitted.transactions.static.cov.compressed.ll.data(clv.fitted)
 
   # Everything to call the LL function
   optimx.args <- modifyList(prepared.optimx.args,
                             list(LL.function.sum = bgnbd_staticcov_LL_sum,
                                  LL.function.ind = bgnbd_staticcov_LL_ind, # if doing correlation
                                  obj    = clv.fitted,
-                                 vX     = clv.fitted@cbs$x,
-                                 vT_x   = clv.fitted@cbs$t.x,
-                                 vT_cal = clv.fitted@cbs$T.cal,
-                                 mCov_life  = clv.data.get.matrix.data.cov.life(clv.data = clv.fitted@clv.data, correct.row.names=clv.fitted@cbs$Id,
-                                                                                correct.col.names=clv.data.get.names.cov.life(clv.fitted@clv.data)),
-                                 mCov_trans = clv.data.get.matrix.data.cov.trans(clv.data = clv.fitted@clv.data, correct.row.names=clv.fitted@cbs$Id,
-                                                                                 correct.col.names=clv.data.get.names.cov.trans(clv.fitted@clv.data)),
+                                 vX      = l.LL.call.data$cbs$x,
+                                 vT_x    = l.LL.call.data$cbs$t.x,
+                                 vT_cal  = l.LL.call.data$cbs$T.cal,
+                                 vN  = l.LL.call.data$cbs$n,
+
+                                 mCov_life  = l.LL.call.data$m.cov.life,
+                                 mCov_trans = l.LL.call.data$m.cov.trans,
+
                                  # parameter ordering for the callLL interlayer
                                  LL.params.names.ordered = c(clv.model@names.prefixed.params.model,
                                                              clv.fitted@names.prefixed.params.after.constr.life,
@@ -127,6 +129,34 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.static.c
   return(DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
                        fct.expectation = fct.bgnbd.expectation, clv.time = clv.fitted@clv.data@clv.time))
 })
+
+# . clv.model.predict.new.customer.unconditional.expectation -----------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict.new.customer.unconditional.expectation", signature = signature(clv.model="clv.model.bgnbd.static.cov"), definition = function(clv.model, clv.fitted, clv.newcustomer, t){
+
+  m.cov.trans <- clv.newcustomer.static.get.matrix.cov.trans(clv.newcustomer=clv.newcustomer, clv.fitted=clv.fitted)
+  m.cov.life <- clv.newcustomer.static.get.matrix.cov.life(clv.newcustomer=clv.newcustomer, clv.fitted=clv.fitted)
+
+  alpha_i <- bgnbd_staticcov_alpha_i(alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+                                     vCovParams_trans = clv.fitted@prediction.params.trans,
+                                     mCov_trans = m.cov.trans)
+
+  a_i <- bgnbd_staticcov_a_i(a_0 = clv.fitted@prediction.params.model[["a"]],
+                             vCovParams_life = clv.fitted@prediction.params.life,
+                             mCov_life = m.cov.life)
+
+  b_i <- bgnbd_staticcov_b_i(b_0 = clv.fitted@prediction.params.model[["b"]],
+                             vCovParams_life = clv.fitted@prediction.params.life,
+                             mCov_life = m.cov.life)
+
+  return(bgnbd_staticcov_expectation(
+    r        = clv.fitted@prediction.params.model[["r"]],
+    vAlpha_i = alpha_i,
+    vA_i     = a_i,
+    vB_i     = b_i,
+    vT_i     = t
+  ))
+})
+
 
 # . clv.model.pmf --------------------------------------------------------------------------------------------------------
 #' @include all_generics.R

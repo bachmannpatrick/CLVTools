@@ -210,6 +210,84 @@ fct.testthat.correctness.clvfittedtransactions.staticcov.regularization.lambda.0
   })
 }
 
+fct.testthat.correctness.clvfittedtransactions.nocov.predict.newcustomer.0.for.num.periods.eq.0 <- function(clv.fitted){
+  test_that("nocov: predict newcustomer 0 for t=0", {
+    expect_silent(pred <- predict(clv.fitted, newdata=newcustomer(num.periods = 0)))
+    expect_true(pred == 0)
+  })
+}
+
+# predict(newdata=newcustomer): static cov
+fct.testthat.correctness.clvfittedtransactions.staticcov.predict.newcustomer.independent.of.col.sorting <- function(m.fitted.static){
+  test_that("staticcov: predict(newcustomer) results independent of cov data row sorting", {
+
+    df.cov <- fct.helper.default.newcustomer.covdata.static()
+
+    stopifnot(ncol(df.cov) > 1) # does not make sense otherwise
+    df.cov.rev <- df.cov[, rev(colnames(df.cov))]
+
+    expect_silent(pred <- predict(
+      m.fitted.static,
+      newdata=newcustomer.static(
+        num.periods = 4.56,
+        data.cov.life = df.cov,
+        data.cov.trans = df.cov)))
+
+    expect_silent(pred.rev <- predict(
+      m.fitted.static,
+      newdata=newcustomer.static(
+        num.periods = 4.56,
+        data.cov.life = df.cov.rev,
+        data.cov.trans = df.cov.rev)))
+
+    expect_true(pred == pred.rev)
+  })
+}
+
+fct.testthat.correctness.clvfittedtransactions.staticcov.predict.newcustomer.different.result.for.different.covs <- function(m.fitted.static){
+  test_that("staticcov: predict(newcustomer) different results for different cov data", {
+
+    df.cov <- fct.helper.default.newcustomer.covdata.static()
+
+    expect_silent(pred.original <- predict(
+      m.fitted.static,
+      newdata=newcustomer.static(
+        num.periods = 4.56,
+        data.cov.life = df.cov,
+        data.cov.trans = df.cov)))
+
+    expect_silent(pred.life <- predict(
+      m.fitted.static,
+      newdata=newcustomer.static(
+        num.periods = 4.56,
+        data.cov.life = df.cov*10,
+        data.cov.trans = df.cov)))
+
+    expect_silent(pred.trans <- predict(
+      m.fitted.static,
+      newdata=newcustomer.static(
+        num.periods = 4.56,
+        data.cov.life = df.cov,
+        data.cov.trans = df.cov*10)))
+
+    expect_true(pred.original != pred.life)
+    expect_true(pred.original != pred.trans)
+    expect_true(pred.trans != pred.life)
+  })
+}
+
+fct.testthat.correctness.clvfittedtransactions.staticcov.predict.newcustomer.0.for.num.periods.eq.0 <- function(m.fitted.static){
+  test_that("staticcov: predict(newcustomer) 0 for t=0", {
+    df.cov <- fct.helper.default.newcustomer.covdata.static()
+    expect_silent(pred <- predict(
+      m.fitted.static,
+      newdata=newcustomer.static(
+        num.periods = 0,
+        data.cov.life = df.cov,
+        data.cov.trans = df.cov)))
+    expect_true(pred == 0)
+  })
+}
 
 fct.testthat.correctness.clvfittedtransactions <- function(name.model, method, data.cdnow, data.apparelTrans, data.apparelStaticCov,
                                                            correct.start.params.model, correct.params.nocov.coef, correct.LL.nocov,
@@ -241,8 +319,10 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method, d
     fct.testthat.correctness.clvfittedtransactions.pmf.smaller.p.the.larger.Tcal.for.x0(clv.fitted = obj.fitted)
   }
 
+  # predict(newdata=newcustomer): no cov
+  fct.testthat.correctness.clvfittedtransactions.nocov.predict.newcustomer.0.for.num.periods.eq.0(obj.fitted)
 
-  # Static cov ------------------------------------------------------------------------------------------------
+  # Static cov data --------------------------------------------------------------------------------------------
   clv.apparel.staticcov <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
                                                                        estimation.split = 52)
   clv.apparel.nocov <- as(clv.apparel.staticcov, "clv.data")
@@ -270,6 +350,16 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method, d
 
   fct.testthat.correctness.clvfittedtransactions.staticcov.regularization.lambda.0.no.regularization(method = method, clv.apparel.staticcov = clv.apparel.staticcov,
                                                                                                      m.fitted.static = obj.fitted.static)
+
+  # predict(newdata=newcustomer): static cov
+  fct.testthat.correctness.clvfittedtransactions.staticcov.predict.newcustomer.independent.of.col.sorting(obj.fitted.static)
+
+  fct.testthat.correctness.clvfittedtransactions.staticcov.predict.newcustomer.0.for.num.periods.eq.0(obj.fitted.static)
+
+  fct.testthat.correctness.clvfittedtransactions.staticcov.predict.newcustomer.different.result.for.different.covs(obj.fitted.static)
+
+
+
 }
 
 fct.testthat.correctness.clvfittedtransactions.same.expectation.in.R.and.Cpp <- function(fct.expectation.R, params_i, obj.fitted, tolerance=testthat_tolerance()){

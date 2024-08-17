@@ -45,21 +45,22 @@ setMethod(f = "clv.model.backtransform.estimated.params.cov", signature = signat
 
 # . clv.model.prepare.optimx.args -----------------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.ggomnbd.static.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args){
-  # Do not call the no.cov function because the LL is different
+
+  l.LL.call.data <- clv.fitted.transactions.static.cov.compressed.ll.data(clv.fitted)
 
   # Everything to call the LL function
   optimx.args <- modifyList(prepared.optimx.args,
                             list(LL.function.sum = ggomnbd_staticcov_LL_sum,
                                  LL.function.ind = ggomnbd_staticcov_LL_ind, # if doing correlation
                                  obj    = clv.fitted,
-                                 vX     = clv.fitted@cbs$x,
-                                 vT_x   = clv.fitted@cbs$t.x,
-                                 vT_cal = clv.fitted@cbs$T.cal,
-                                 # Covariate data, as matrix!
-                                 mCov_life  = clv.data.get.matrix.data.cov.life(clv.data = clv.fitted@clv.data, correct.row.names=clv.fitted@cbs$Id,
-                                                                                correct.col.names=clv.data.get.names.cov.life(clv.fitted@clv.data)),
-                                 mCov_trans = clv.data.get.matrix.data.cov.trans(clv.data = clv.fitted@clv.data, correct.row.names=clv.fitted@cbs$Id,
-                                                                                 correct.col.names=clv.data.get.names.cov.trans(clv.fitted@clv.data)),
+                                 vX      = l.LL.call.data$cbs$x,
+                                 vT_x    = l.LL.call.data$cbs$t.x,
+                                 vT_cal  = l.LL.call.data$cbs$T.cal,
+                                 vN  = l.LL.call.data$cbs$n,
+
+                                 mCov_life  = l.LL.call.data$m.cov.life,
+                                 mCov_trans = l.LL.call.data$m.cov.trans,
+
                                  # parameter ordering for the callLL interlayer
                                  LL.params.names.ordered = c(c(log.r = "log.r",log.alpha =  "log.alpha", log.b = "log.b", log.s = "log.s", log.beta = "log.beta"),
                                                              clv.fitted@names.prefixed.params.after.constr.life,
@@ -99,10 +100,59 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.ggomnbd.static
                        fct.expectation = fct.expectation, clv.time = clv.fitted@clv.data@clv.time))
 })
 
+# . clv.model.predict.new.customer.unconditional.expectation -----------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict.new.customer.unconditional.expectation", signature = signature(clv.model="clv.model.ggomnbd.static.cov"), definition = function(clv.model, clv.fitted, clv.newcustomer, t){
+
+  m.cov.trans <- clv.newcustomer.static.get.matrix.cov.trans(clv.newcustomer=clv.newcustomer, clv.fitted=clv.fitted)
+  m.cov.life <- clv.newcustomer.static.get.matrix.cov.life(clv.newcustomer=clv.newcustomer, clv.fitted=clv.fitted)
+
+  alpha_i <- ggomnbd_staticcov_alpha_i(
+    alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+    vCovParams_trans = clv.fitted@prediction.params.trans,
+    mCov_trans       = m.cov.trans)
+
+  beta_i <- ggomnbd_staticcov_beta_i(
+    beta_0          = clv.fitted@prediction.params.model[["beta"]],
+    vCovParams_life = clv.fitted@prediction.params.life,
+    mCov_life       = m.cov.life)
+
+  return(ggomnbd_staticcov_expectation(
+    r       = clv.fitted@prediction.params.model[["r"]],
+    b       = clv.fitted@prediction.params.model[["b"]],
+    s       = clv.fitted@prediction.params.model[["s"]],
+    vAlpha_i= alpha_i,
+    vBeta_i = beta_i,
+    vT_i    = t))
+})
+
+
 # . clv.model.pmf --------------------------------------------------------------------------------------------------------
 #' @include all_generics.R
 setMethod("clv.model.pmf", signature=(clv.model="clv.model.ggomnbd.static.cov"), function(clv.model, clv.fitted, x){
-  stop("PMF is not available for ggomnbd!", call.=FALSE)
+  Id <- T.cal <- pmf.x <- NULL
+
+  dt.res <- clv.fitted@cbs[, c("Id", "T.cal")]
+  data.cov.mat.life  <- clv.data.get.matrix.data.cov.life(clv.data = clv.fitted@clv.data, correct.row.names=dt.res$Id,
+                                                          correct.col.names=names(clv.fitted@prediction.params.life))
+  data.cov.mat.trans <- clv.data.get.matrix.data.cov.trans(clv.data = clv.fitted@clv.data, correct.row.names=dt.res$Id,
+                                                           correct.col.names=names(clv.fitted@prediction.params.trans))
+
+  dt.res[, pmf.x :=  ggomnbd_staticcov_PMF(
+            r       = clv.fitted@prediction.params.model[["r"]],
+            alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+            b       = clv.fitted@prediction.params.model[["b"]],
+            s       = clv.fitted@prediction.params.model[["s"]],
+            beta_0  = clv.fitted@prediction.params.model[["beta"]],
+            x       = x,
+            vT_i    = T.cal,
+            vCovParams_trans = clv.fitted@prediction.params.trans,
+            vCovParams_life  = clv.fitted@prediction.params.life,
+            mCov_life  = data.cov.mat.life,
+            mCov_trans = data.cov.mat.trans)]
+
+  dt.res <- dt.res[, list(Id, pmf.x)]
+  setnames(dt.res, "pmf.x", paste0("pmf.x.", x))
+  return(dt.res)
 })
 
 # . clv.model.predict --------------------------------------------------------------------------------------------------------

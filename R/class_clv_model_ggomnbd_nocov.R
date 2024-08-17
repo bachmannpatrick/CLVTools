@@ -12,9 +12,10 @@ setClass(Class = "clv.model.ggomnbd.no.cov", contains = "clv.model.no.correlatio
 clv.model.ggomnbd.no.cov <- function(){
   return(new("clv.model.ggomnbd.no.cov",
              name.model = "GGompertz/NBD Standard",
+             fn.model.generic = ggomnbd,
              names.original.params.model = c(r="r", alpha="alpha", b="b", s="s", beta="beta"),
              names.prefixed.params.model = c("log.r","log.alpha", "log.b", "log.s", "log.beta"),
-             start.params.model          = c(r=1, alpha=1, b=1, s=1, beta=1),
+             start.params.model          = c(r=0.5, alpha=2, b=0.1, s=1, beta=0.1),
              optimx.defaults = list(method = "L-BFGS-B",
                                     itnmax  = 5000,
                                     control = list(
@@ -76,19 +77,25 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
 
   # Only add LL function args, everything else is prepared already, incl. start parameters
 
+  dt.compressed.cbs <- clv.fitted@cbs[, list(n = .N), by=c('x', 't.x', 'T.cal')]
+
   optimx.args <- modifyList(prepared.optimx.args,
                             list(LL.function.sum = ggomnbd_nocov_LL_sum,
                                  LL.function.ind = ggomnbd_nocov_LL_ind, # if doing correlation
                                  obj    = clv.fitted,
-                                 vX     = clv.fitted@cbs$x,
-                                 vT_x   = clv.fitted@cbs$t.x,
-                                 vT_cal = clv.fitted@cbs$T.cal,
+                                 vX     = dt.compressed.cbs$x,
+                                 vT_x   = dt.compressed.cbs$t.x,
+                                 vT_cal = dt.compressed.cbs$T.cal,
+                                 vN = dt.compressed.cbs$n,
 
                                  # parameter ordering for the callLL interlayer
                                  LL.params.names.ordered = c(log.r = "log.r",log.alpha =  "log.alpha", log.b = "log.b", log.s = "log.s", log.beta = "log.beta")),
                             keep.null = TRUE)
   return(optimx.args)
 })
+
+
+# . clv.model.expectation -----------------------------------------------------------------------------------------------------------------------------------
 
 #' @include all_generics.R
 #' @importFrom stats integrate
@@ -110,9 +117,37 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.ggomnbd.no.cov
                        fct.expectation = fct.expectation, clv.time = clv.fitted@clv.data@clv.time))
 })
 
+
+# . clv.model.predict.new.customer.unconditional.expectation --------------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict.new.customer.unconditional.expectation", signature = signature(clv.model="clv.model.ggomnbd.no.cov"), definition = function(clv.model, clv.fitted, clv.newcustomer, t){
+
+  return(ggomnbd_nocov_expectation(
+    r       = clv.fitted@prediction.params.model[["r"]],
+    alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+    beta_0  = clv.fitted@prediction.params.model[["beta"]],
+    b       = clv.fitted@prediction.params.model[["b"]],
+    s       = clv.fitted@prediction.params.model[["s"]],
+    vT_i    = t))
+})
+
+
 # . clv.model.pmf --------------------------------------------------------------------------------------------------------
 setMethod("clv.model.pmf", signature=(clv.model="clv.model.ggomnbd.no.cov"), function(clv.model, clv.fitted, x){
-  stop("PMF is not available for ggomnbd!", call.=FALSE)
+  Id <- T.cal <- pmf.x <- NULL
+
+  dt.res <- clv.fitted@cbs[, list(Id, T.cal)]
+  dt.res[, pmf.x := ggomnbd_nocov_PMF(
+    r       = clv.fitted@prediction.params.model[["r"]],
+    alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+    beta_0  = clv.fitted@prediction.params.model[["beta"]],
+    b       = clv.fitted@prediction.params.model[["b"]],
+    s       = clv.fitted@prediction.params.model[["s"]],
+    vT_i = T.cal,
+    x = x)]
+
+  dt.res <- dt.res[, list(Id, pmf.x)]
+  setnames(dt.res, "pmf.x", paste0("pmf.x.", x))
+  return(dt.res)
 })
 
 # . clv.model.predict --------------------------------------------------------------------------------------------------------

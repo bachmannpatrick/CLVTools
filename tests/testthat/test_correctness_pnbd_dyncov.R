@@ -233,8 +233,158 @@ fct.testthat.correctness.dyncov.CET <- function(data.apparelTrans, data.apparelD
 
 }
 
+fct.testthat.correctness.dyncov.PAlive <- function(data.apparelTrans, data.apparelDynCov){
+
+  p.dyn <- fct.helper.dyncov.quickfit.apparel.data(data.apparelTrans = data.apparelTrans, data.apparelDynCov = data.apparelDynCov)
+
+  test_that("PAlive with improved numerical stability same result as old palive", {
+
+    pnbd_dyncov_palive_old <- function (clv.fitted){
+      # Old implementation (until incl v.0.10.0)
+
+      # Params, not logparams
+      r       <- clv.fitted@prediction.params.model[["r"]]
+      alpha_0 <- clv.fitted@prediction.params.model[["alpha"]]
+      s       <- clv.fitted@prediction.params.model[["s"]]
+      beta_0  <- clv.fitted@prediction.params.model[["beta"]]
+
+      LLdata <- copy(clv.fitted@LL.data)
+      cbs    <- copy(clv.fitted@cbs)
+
+      # write to LLdata for nicer calculation
+      # Z in the notes: F.2 in LL function
+      LLdata[cbs, cbs.x := i.x, on="Id"]
+      LLdata[,    rsx   := s/(r+s+cbs.x)]
+      LLdata[, palive := 1/((Bksum+alpha_0)^(cbs.x+r) * (DkT+beta_0)^s * rsx * Z + 1)]
+      return(LLdata[, c("Id", "palive")])
+    }
+
+    expect_silent(dt.palive.old <- pnbd_dyncov_palive_old(p.dyn))
+    expect_silent(dt.palive <- pnbd_dyncov_palive(p.dyn))
+    expect_equal(dt.palive, dt.palive.old)
+  })
+}
 
 
+fct.testthat.correctness.dyncov.predict.newcustomer <- function(){
+  p.dyn <- fct.helper.dyncov.quickfit.apparel.data()
+  df.cov <- fct.helper.default.newcustomer.covdata.dyncov()
+
+  test_that("dyncov: predict newcustomer 0 for t=0", {
+    expect_silent(pred <- predict(p.dyn, newdata=newcustomer.dynamic(
+      num.periods = 0,
+      data.cov.life = df.cov,
+      data.cov.trans = df.cov,
+      first.transaction = "2000-01-04"
+      )))
+    expect_equal(pred, 0)
+  })
+
+  test_that("dyncov predict newcustomer different results for different covs", {
+    df.cov.mult.10 <- cbind(
+      df.cov[, "Cov.Date", drop=FALSE],
+      df.cov[, colnames(df.cov) != "Cov.Date", drop=FALSE] * 10)
+
+    expect_silent(pred.original <- predict(p.dyn, newdata=newcustomer.dynamic(
+      num.periods = 3.89,
+      data.cov.life = df.cov,
+      data.cov.trans = df.cov,
+      first.transaction = "2000-01-04"
+    )))
+
+    expect_silent(pred.life <- predict(p.dyn, newdata=newcustomer.dynamic(
+      num.periods = 3.89,
+      data.cov.life = df.cov.mult.10,
+      data.cov.trans = df.cov,
+      first.transaction = "2000-01-04"
+    )))
+
+    expect_silent(pred.trans <- predict(p.dyn, newdata=newcustomer.dynamic(
+      num.periods = 3.89,
+      data.cov.life = df.cov,
+      data.cov.trans = df.cov.mult.10,
+      first.transaction = "2000-01-04"
+    )))
+    expect_true(pred.original != pred.life)
+    expect_true(pred.original != pred.trans)
+    expect_true(pred.life != pred.trans)
+  })
+
+
+  test_that("dyncov predict newcustomer independent of column and row sorting", {
+    df.cov.rev <- df.cov[rev(seq(nrow(df.cov))), rev(colnames(df.cov))]
+
+    expect_silent(pred <- predict(p.dyn, newdata=newcustomer.dynamic(
+      num.periods = 7.89,
+      data.cov.life = df.cov,
+      data.cov.trans = df.cov,
+      first.transaction = "2000-01-03"
+    )))
+
+    expect_silent(pred.rev <- predict(p.dyn, newdata=newcustomer.dynamic(
+      num.periods = 7.89,
+      data.cov.life = df.cov.rev,
+      data.cov.trans = df.cov.rev,
+      first.transaction = "2000-01-03"
+    )))
+
+    expect_true(pred == pred.rev)
+  })
+
+  test_that("predict newcustomer dyncov: independent of first.trans if cov data static", {
+
+    # static cov data
+    df.cov.static <- fct.helper.default.newcustomer.covdata.dyncov()
+    for(n in setdiff(colnames(df.cov.static), "Cov.Date")){
+      df.cov.static[, n] <- df.cov.static[1, n]
+    }
+    expect_silent(pred.date.first <- predict(p.dyn, newdata=newcustomer.dynamic(
+      num.periods = 7.89,
+      data.cov.life = df.cov.static,
+      data.cov.trans = df.cov.static,
+      first.transaction = "2000-01-03"
+    )))
+
+    expect_silent(pred.date.later <- predict(p.dyn, newdata=newcustomer.dynamic(
+      num.periods = 7.89,
+      data.cov.life = df.cov.static,
+      data.cov.trans = df.cov.static,
+      first.transaction = "2000-01-09"
+    )))
+
+    expect_equal(pred.date.first, pred.date.later)
+  })
+
+  test_that("newcustomer dt.ABCD: Formatted according to first.transaction and prediction end", {
+    dt.cov <- as.data.table(df.cov)
+
+    tp.first.transaction <- min(dt.cov$Cov.Date)  + days(17)
+
+    dt.ABCD <- pnbd_dyncov_newcustomer_expectation(
+      clv.fitted = p.dyn,
+      t=3,
+      tp.first.transaction = tp.first.transaction,
+      dt.cov.life = dt.cov,
+      dt.cov.trans = dt.cov,
+      only.return.ABCD=TRUE)
+
+
+    # Covs before first transaction are cut off
+    date.floor.first.trans <- clv.time.floor.date(p.dyn@clv.data@clv.time, tp.first.transaction)
+    expect_true(dt.ABCD[, min(Cov.Date)] == date.floor.first.trans)
+
+    # Covs after prediction end are cut off
+    date.floor.prediction.end <- clv.time.floor.date(p.dyn@clv.data@clv.time, tp.first.transaction + days(3*7))
+    expect_true(dt.ABCD[, max(Cov.Date)] == date.floor.prediction.end)
+
+    # i starts and i=1 in the period of the first transaction
+    expect_true(dt.ABCD[Cov.Date==min(Cov.Date), i] == 1)
+    expect_true(dt.ABCD[, min(i)] == 1)
+  })
+
+
+
+}
 
 
 # RUN  ---------------------------------------------------------------------------------------
@@ -246,3 +396,7 @@ fct.testthat.correctness.dyncov.expectation(data.apparelTrans = apparelTrans, da
 fct.testthat.correctness.dyncov.CET(data.apparelTrans = apparelTrans, data.apparelDynCov = apparelDynCov)
 
 fct.testthat.correctness.dyncov.LL(data.apparelTrans = apparelTrans, data.apparelDynCov = apparelDynCov)
+
+fct.testthat.correctness.dyncov.PAlive(data.apparelTrans = apparelTrans, data.apparelDynCov = apparelDynCov)
+
+fct.testthat.correctness.dyncov.predict.newcustomer()

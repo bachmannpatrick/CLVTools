@@ -45,11 +45,12 @@ setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="
                                       list(
                                         LL.function.sum = pnbd_dyncov_LL_negsum,
                                         LL.function.ind = pnbd_dyncov_LL_ind, # if doing correlation
+                                        obj = clv.fitted, # the full object is required for the correlation interlayer
                                         LL.params.names.ordered = c(clv.model@names.prefixed.params.model,
                                                                     clv.fitted@names.prefixed.params.after.constr.life,
                                                                     clv.fitted@names.prefixed.params.after.constr.trans)))
 
-            l.dyncov.args <- pnbd_dyncov_getLLcallargs(clv.fitted)
+            l.dyncov.args <- pnbd_dyncov_getLLcallargs_LLsum(clv.fitted)
             optimx.args <- modifyList(optimx.args, l.dyncov.args)
 
 
@@ -171,6 +172,17 @@ setMethod("clv.model.predict", signature(clv.model="clv.model.pnbd.dynamic.cov")
 # . clv.model.expectation ------------------------------------------------------------------------------------------------
 setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.dynamic.cov"), function(clv.model, clv.fitted, dt.expectation.seq, verbose){
   return(pnbd_dyncov_expectation(clv.fitted=clv.fitted, dt.expectation.seq=dt.expectation.seq, verbose=verbose))
+})
+
+
+# . clv.model.predict.new.customer.unconditional.expectation -----------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict.new.customer.unconditional.expectation", signature = signature(clv.model="clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, clv.newcustomer, t){
+  return(pnbd_dyncov_newcustomer_expectation(
+    clv.fitted=clv.fitted,
+    t=t,
+    tp.first.transaction=clv.newcustomer@first.transaction,
+    dt.cov.life=clv.newcustomer@data.cov.life,
+    dt.cov.trans=clv.newcustomer@data.cov.trans))
 })
 
 # . clv.model.pmf --------------------------------------------------------------------------------------------------------

@@ -391,11 +391,29 @@ fct.testthat.correctness.clvtime.convert.user.input.date.to.posixct <- function(
   })
 }
 
+fct.testthat.correctness.clvtime.convert.user.input.IDate.to.posixct <- function(clv.t.datetime){
+  stopifnot(is(clv.t.datetime, "clv.time.datetime"))
+  test_that("IDates convert to correct POSIX", {
+    expect_equal(lubridate::ymd_hms("2019-01-01 00:00:00", tz="UTC"),
+                 clv.time.convert.user.input.to.timepoint(clv.t.datetime, user.timepoint = data.table::as.IDate("2019-01-01")))
+    expect_equal(lubridate::ymd_hms("2019-12-18 00:00:00", tz="UTC"),
+                 clv.time.convert.user.input.to.timepoint(clv.t.datetime, user.timepoint = data.table::as.IDate("2019-12-18")))
+  })
+}
+
 fct.testthat.correctness.clvtime.convert.user.input.date.to.date <- function(clv.t.date){
   stopifnot(is(clv.t.date, "clv.time.date"))
   test_that("Dates convert to correct Dates", {
     expect_equal(lubridate::ymd("2019-01-01"), clv.time.convert.user.input.to.timepoint(clv.t.date, user.timepoint = lubridate::ymd("2019-01-01")))
     expect_equal(lubridate::ymd("2019-12-18"), clv.time.convert.user.input.to.timepoint(clv.t.date, user.timepoint = lubridate::ymd("2019-12-18")))
+  })
+}
+
+fct.testthat.correctness.clvtime.convert.user.input.IDate.to.date <- function(clv.t.date){
+  stopifnot(is(clv.t.date, "clv.time.date"))
+  test_that("IDates convert to correct Dates", {
+    expect_equal(lubridate::ymd("2019-01-01"), clv.time.convert.user.input.to.timepoint(clv.t.date, user.timepoint = data.table::as.IDate("2019-01-01")))
+    expect_equal(lubridate::ymd("2019-12-18"), clv.time.convert.user.input.to.timepoint(clv.t.date, user.timepoint = data.table::as.IDate("2019-12-18")))
   })
 }
 
@@ -672,6 +690,46 @@ fct.testthat.correctness.clvtime.sequence.of.covariate.tp.start.end.correct.star
   })
 }
 
+fct.testthat.correctness.clvtime.sequence.of.covariate.tp.single.and.two.periods <- function(clv.t.weeks){
+  test_that("Correctly works for single or two periods", {
+
+    # Single
+    expect_equal(
+      clv.time.sequence.of.covariate.timepoints(
+        clv.time = clv.t.weeks,
+        tp.start = lubridate::ymd("2018-01-01"),
+        tp.end = lubridate::ymd("2018-01-01"),
+        require.min.3.timepoints = FALSE)$Cov.Date,
+      as.Date("2017-12-31")
+    )
+
+    expect_equal(
+      clv.time.sequence.of.covariate.timepoints(
+        clv.time = clv.t.weeks,
+        tp.start = lubridate::ymd("2018-01-01"),
+        tp.end = lubridate::ymd("2018-01-06"),
+        require.min.3.timepoints = FALSE)$Cov.Date,
+      as.Date("2017-12-31")
+    )
+
+    expect_equal(
+      clv.time.sequence.of.covariate.timepoints(
+        clv.time = clv.t.weeks,
+        tp.start = lubridate::ymd("2018-01-01"),
+        tp.end = lubridate::ymd("2018-01-07"),
+        require.min.3.timepoints = FALSE)$Cov.Date,
+      as.Date(c("2017-12-31", "2018-01-07"))
+    )
+    expect_equal(
+      clv.time.sequence.of.covariate.timepoints(
+        clv.time = clv.t.weeks,
+        tp.start = lubridate::ymd("2018-01-01"),
+        tp.end = lubridate::ymd("2018-01-07"),
+        require.min.3.timepoints = FALSE)$Cov.Date,
+      as.Date(c("2017-12-31", "2018-01-07"))
+    )
+  })
+}
 
 
 # prediction.table ---------------------------------------------------------------------------------------------

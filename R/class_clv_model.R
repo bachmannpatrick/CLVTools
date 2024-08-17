@@ -9,6 +9,7 @@
 #' to obtain a functional \code{clv.fitted} object.
 #'
 #' @slot name.model Name of the model as it should be displayed
+#' @slot fn.model.generic Method (generic) to apply on (sub-class of) clv.data in order to fit the model.
 #' @slot names.original.params.model character vector that defines the names of the model parameters as they should be reported
 #' @slot names.prefixed.params.model character vector that defines the names of the model parameters as they are named during LL optimization
 #' @slot start.params.model numeric vector of default values at original scale that should be used for the LL optimization if the user does not provide start parameters. Named with \code{names.original.params.model}.
@@ -25,6 +26,7 @@ setClass(Class = "clv.model", contains = "VIRTUAL",
            # Anything that will be used from main execution code.
            #  Enforce it through slots instead of relying on setting it in model generics
            name.model                  = "character",
+           fn.model.generic            = "standardGeneric",
 
            names.original.params.model = "character",
            names.prefixed.params.model = "character",

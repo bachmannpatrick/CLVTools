@@ -66,5 +66,8 @@ interlayer_correlation <- function(next.interlayers, LL.params, LL.function.sum,
   vLL <- exp(LL.00) + param.m*LA*LB * (exp(LL.00) + exp(LL.11) - exp(LL.10) - exp(LL.01))
   vLL <- log(vLL)
 
-  return(-sum(vLL))
+  # Since all models use compressed CBS, the individual LL values have to be multiplying
+  # with N (the number of occurrences) to obtain the correct sum(LL) across all customers
+  vN <- all.other.args[["vN"]]
+  return(-sum(vLL*vN))
 }

@@ -40,9 +40,11 @@ for(clv.t in c(fct.helper.clv.time.create.test.objects(with.holdout = FALSE),
     fct.testthat.correctness.clvtime.convert.user.input.chars.to.date(clv.t)
     fct.testthat.correctness.clvtime.convert.user.input.posixct.to.date(clv.t)
     fct.testthat.correctness.clvtime.convert.user.input.date.to.date(clv.t)
+    fct.testthat.correctness.clvtime.convert.user.input.IDate.to.date(clv.t)
   }else{
     fct.testthat.correctness.clvtime.convert.user.input.chars.to.posixct(clv.t)
     fct.testthat.correctness.clvtime.convert.user.input.date.to.posixct(clv.t)
+    fct.testthat.correctness.clvtime.convert.user.input.IDate.to.posixct(clv.t)
     fct.testthat.correctness.clvtime.convert.user.input.posixct.to.posixct(clv.t)
   }
 }
@@ -85,15 +87,11 @@ for(holdout in c(TRUE, FALSE)){
   fct.testthat.correctness.clvtime.sequence.of.covariate.tp.start.end.correct.start.on.end.on.period(clv.t.days=clv.t.days, clv.t.weeks=clv.t.weeks, clv.t.years=clv.t.years)
 }
 
-# test_that("Correctly works for single period", {
-#   # days
-#   dt.cov.seq.d <- clv.time.sequence.of.covariate.timepoints(clv.time = clv.t.days,
-#                                                             tp.start = lubridate::ymd("2018-01-1"),
-#                                                             tp.end = lubridate::ymd("2019-12-26"))
-#   expect_true(all(dt.cov.seq.d$Cov.Date == seq.Date(from=lubridate::ymd("2018-01-10"),
-#                                                      to=lubridate::ymd("2019-12-26"),
-#                                                      by="1 day")))
-# })
+
+clv.t.weeks <- fct.helper.clv.time.create.test.objects(with.holdout = TRUE)[["clv.t.weeks"]]
+fct.testthat.correctness.clvtime.sequence.of.covariate.tp.single.and.two.periods(clv.t.weeks)
+
+
 
 
 # clv.time.get.prediction.table --------------------------------------------------------------------------------

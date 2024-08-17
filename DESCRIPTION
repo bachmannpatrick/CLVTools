@@ -1,7 +1,7 @@
 Package: CLVTools
 Title: Tools for Customer Lifetime Value Estimation
-Version: 0.10.0
-Date: 2023-10-23
+Version: 0.11.0
+Date: 2024-08-15
 Authors@R: c(
     person(given="Patrick", family="Bachmann",    email = "pbachma@ethz.ch", role = c("cre","aut")),
     person(given="Niels",   family="Kuebler",     email = "niels.kuebler@uzh.ch", role = "aut"),
@@ -33,9 +33,11 @@ Description:
     Further, we provide an implementation of the Gamma/Gamma model to model the spending process of individuals.
 Imports:
     data.table (>= 1.12.0),
+    digest (>= 0.6.0),
     Formula (>= 1.2-4),
     ggplot2 (>= 3.2.0),
     lubridate (>= 1.7.8),
+    numDeriv (>= 2016.8-1.1),
     Matrix (>= 1.2-17),
     MASS,
     optimx (>= 2019-12.02),
@@ -47,12 +49,14 @@ Suggests:
     knitr,
     rmarkdown,
     xml2,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    lmtest
 License: GPL-3
 URL: https://github.com/bachmannpatrick/CLVTools
 BugReports: https://github.com/bachmannpatrick/CLVTools/issues
 NeedsCompilation: yes
-LinkingTo: Rcpp, RcppArmadillo (>= 0.9.500.2.0), RcppGSL (>= 0.3.7), testthat
+LinkingTo: Rcpp, RcppArmadillo (>= 0.11.4.0.1), RcppGSL (>= 0.3.7), testthat
+SystemRequirements: GNU GSL
 LazyLoad: yes
 Encoding: UTF-8
 Collate: 
@@ -101,6 +105,9 @@ Collate:
     'f_DoExpectation.R'
     'f_clvdata_inputchecks.R'
     'f_clvfitted_inputchecks.R'
+    'f_generics_clvdata.R'
+    'f_generics_clvdatadyncov.R'
+    'f_generics_clvdatastaticcov.R'
     'f_generics_clvfitted.R'
     'f_generics_clvfitted_estimate.R'
     'f_generics_clvfittedspending.R'
@@ -111,10 +118,13 @@ Collate:
     'f_generics_clvpnbddyncov.R'
     'f_interface_bgbb.R'
     'f_interface_bgnbd.R'
+    'f_interface_bootstrappedapply.R'
     'f_interface_clvdata.R'
     'f_interface_gg.R'
     'f_interface_ggomnbd.R'
     'f_interface_latentattrition.R'
+    'f_interface_lrtest.R'
+    'f_interface_newcustomer.R'
     'f_interface_pmf.R'
     'f_interface_pnbd.R'
     'f_interface_predict_clvfittedspending.R'
@@ -144,7 +154,7 @@ Collate:
     'pnbd_dyncov_createwalks.R'
     'pnbd_dyncov_expectation.R'
     'pnbd_dyncov_palive.R'
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 VignetteBuilder: knitr
 Config/testthat/parallel: false
 Config/testthat/edition: 3

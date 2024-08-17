@@ -15,12 +15,17 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv
   check_err_msg(err.msg)
 
   # Get names as needed for startparams
-  #   no name was provided / NULL:  use all covariate names
-  #   some name provided:           use this name(s)
-  if(length(names.cov.life)==0)
+  #   no name was provided / NULL:  use all covariate names, except the ones constrained
+  #   some name provided:           use this name(s), except the ones constrained
+  if(length(names.cov.life)==0){
     names.cov.life  <- clv.data.get.names.cov.life(clv.fitted@clv.data)
-  if(length(names.cov.trans)==0)
+  }
+  names.cov.life <- setdiff(names.cov.life, names.cov.constr)
+
+  if(length(names.cov.trans)==0){
     names.cov.trans <- clv.data.get.names.cov.trans(clv.fitted@clv.data)
+  }
+  names.cov.trans <- setdiff(names.cov.trans, names.cov.constr)
 
   # Check first - if names are wrong they will be wrong as in put to check_startparams as well
   err.msg <- c(err.msg, check_user_data_startparamscov(start.params.cov=start.params.life,  names.params.cov = names.cov.life,  name.of.cov="Lifetime"))
@@ -50,7 +55,7 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv
 
 # . clv.controlflow.estimate.put.inputs ------------------------------------------------------------------------------
 #' @importFrom methods callNextMethod
-setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted, verbose, reg.lambdas, names.cov.constr, names.cov.life, names.cov.trans, ...){
+setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted, start.params.model, optimx.args, verbose, reg.lambdas, names.cov.constr, names.cov.life, names.cov.trans, start.params.constr, start.params.life, start.params.trans, ...){
 
   # clv.fitted put inputs
   clv.fitted <- callNextMethod()
@@ -58,6 +63,18 @@ setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitte
   # Reduce to user's desired covariates only -----------------------------------------------------------
   clv.fitted@clv.data <- clv.data.reduce.covariates(clv.data=clv.fitted@clv.data, names.cov.life=names.cov.life,
                                                     names.cov.trans=names.cov.trans)
+
+  # store model specification ------------------------------------------------------------------------
+  # only related to static covs
+  clv.fitted@model.specification.args <- c(clv.fitted@model.specification.args, list(
+    names.cov.life=names.cov.life,
+    names.cov.trans=names.cov.trans,
+    start.params.life=start.params.life,
+    start.params.trans=start.params.trans,
+    names.cov.constr=names.cov.constr,
+    start.params.constr=start.params.constr,
+    reg.lambdas=reg.lambdas
+  ))
 
   # is regularization used? ---------------------------------------------------------------------------
   #   Yes:  Indicate and store lambdas

@@ -11,23 +11,24 @@
 //' @return List with vector of values and vector of gsl status codes
 //' @keywords internal
 // [[Rcpp::export]]
-Rcpp::List vec_gsl_hyp2f0_e(const RcppGSL::Vector& vA, const RcppGSL::Vector& vB, const RcppGSL::Vector& vZ){
+Rcpp::List vec_gsl_hyp2f0_e(const arma::vec& vA, const arma::vec& vB, const arma::vec& vZ){
 
-  if((vA->size != vB->size) || (vB->size != vZ->size))
-    throw std::runtime_error(std::string("Not all vectors are of the same length!"));
+  if((vA.n_elem != vB.n_elem) || (vB.n_elem != vZ.n_elem)){
+    throw Rcpp::exception("Not all vectors are of the same length!");
+  }
 
   // Do not abort in case of error
   gsl_set_error_handler_off();
 
-  const size_t n = vA->size;
+  const arma::uword n = vA.n_elem;
 
-  RcppGSL::Vector vRes(n);
-  RcppGSL::IntVector vStatus(n);
+  arma::vec vRes(n);
+  arma::ivec vStatus(n);
   gsl_sf_result gsl_res;
 
-  for(size_t i = 0; i<n; i++){
-    vStatus[i] = gsl_sf_hyperg_2F0_e(vA[i], vB[i], vZ[i], &gsl_res);
-    vRes[i] = gsl_res.val;
+  for(arma::uword i = 0; i<n; i++){
+    vStatus(i) = gsl_sf_hyperg_2F0_e(vA(i), vB(i), vZ(i), &gsl_res);
+    vRes(i) = gsl_res.val;
     // gsl_res.err
   }
 
@@ -46,23 +47,24 @@ Rcpp::List vec_gsl_hyp2f0_e(const RcppGSL::Vector& vA, const RcppGSL::Vector& vB
 //' @return List with vector of values and vector of gsl status codes
 //' @keywords internal
 // [[Rcpp::export]]
-Rcpp::List vec_gsl_hyp2f1_e(const RcppGSL::Vector& vA, const RcppGSL::Vector& vB, const RcppGSL::Vector& vC, const RcppGSL::Vector& vZ){
+Rcpp::List vec_gsl_hyp2f1_e(const arma::vec& vA, const arma::vec& vB, const arma::vec& vC, const arma::vec& vZ){
 
-  if((vA->size != vB->size) || (vB->size != vC->size) || (vC->size != vZ->size))
-    throw std::runtime_error(std::string("Not all vectors are of the same length!"));
+  if((vA.n_elem != vB.n_elem) || (vB.n_elem != vC.n_elem) || (vC.n_elem != vZ.n_elem)){
+    throw Rcpp::exception("Not all vectors are of the same length!");
+  }
 
   // Do not abort in case of error
   gsl_set_error_handler_off();
 
-  const size_t n = vA->size;
+  const arma::uword n = vA.n_elem;
 
-  RcppGSL::Vector vRes(n);
-  RcppGSL::IntVector vStatus(n);
+  arma::vec vRes(n);
+  arma::ivec vStatus(n);
   gsl_sf_result gsl_res;
 
-  for(size_t i = 0; i<n; i++){
-    vStatus[i] = gsl_sf_hyperg_2F1_e(vA[i], vB[i], vC[i], vZ[i], &gsl_res);
-    vRes[i] = gsl_res.val;
+  for(arma::uword i = 0; i<n; i++){
+    vStatus(i) = gsl_sf_hyperg_2F1_e(vA(i), vB(i), vC(i), vZ(i), &gsl_res);
+    vRes(i) = gsl_res.val;
   }
 
   return Rcpp::List::create(Rcpp::Named("value") = Rcpp::wrap(vRes),
@@ -104,31 +106,6 @@ arma::vec vec_x_kummerU(const double a, const double b, const arma::vec& vX){
 
   return(vRes);
 }
-
-
-// vec_pow --------------------------------------------------------
-//    element-by-element pow of the two given vectors
-arma::vec vec_pow(const arma::vec& vA, const arma::vec& vP){
-  arma::vec vRes(vA);
-  arma::vec::const_iterator it_a = vA.begin(), it_p = vP.begin(), it_a_end = vA.end();
-  arma::vec::iterator it_res = vRes.begin();
-
-  while(it_a != it_a_end){
-    (*it_res) = std::pow(*it_a, *it_p);
-    it_a++;
-    it_p++;
-    it_res++;
-  }
-
-  return(vRes);
-}
-
-arma::vec vec_fill(const double d, const arma::uword n){
-  arma::vec vResult(n);
-  vResult.fill(d);
-  return vResult;
-}
-
 
 // lbeta := lgamma(a) + lgamma(b) - lgamma(a+b)
 arma::vec vec_lbeta(const arma::vec& a, const double b){

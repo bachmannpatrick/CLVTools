@@ -20,7 +20,7 @@
 #' @param mean.spending "spending": Whether customer's mean spending per transaction (\code{TRUE}, default) or the
 #' value of every transaction in the data (\code{FALSE}) should be plotted.
 #'
-#' @param Ids "timings": A character vector of customer ids or a single integer specifying the number of customers to sample.
+#' @param ids "timings": A character vector of customer ids or a single integer specifying the number of customers to sample.
 #' Defaults to \code{NULL} for which 50 random customers are selected.
 #' @param annotate.ids "timings": Whether timelines should be annotated with customer ids.
 #'
@@ -155,13 +155,13 @@
 #'
 #' ### TIMING PATTERNS
 #' # selected customers and annotating them
-#' plot(clv.cdnow, which="timings", Ids=c("123", "1041"), annotate.ids=TRUE)
+#' plot(clv.cdnow, which="timings", ids=c("123", "1041"), annotate.ids=TRUE)
 #'
 #' # plot 25 random customers
-#' plot(clv.cdnow, which="timings", Ids=25)
+#' plot(clv.cdnow, which="timings", ids=25)
 #'
 #' # plot all customers
-#' plot(clv.cdnow, which="timings", Ids=nobs(clv.cdnow))
+#' plot(clv.cdnow, which="timings", ids=nobs(clv.cdnow))
 #' }
 #'
 #' @importFrom graphics plot
@@ -178,7 +178,7 @@ plot.clv.data <- function(x, which=c("tracking", "frequency", "spending", "inter
                           mean.spending=TRUE,
                           # timings
                           annotate.ids=FALSE,
-                          Ids=c(),
+                          ids=c(),
                           # all density
                           sample=c("estimation", "full", "holdout"),
                           geom="line", color="black",
@@ -216,7 +216,7 @@ plot.clv.data <- function(x, which=c("tracking", "frequency", "spending", "inter
                                           plot=plot, verbose=verbose,
                                           color=color, ...),
          "timings" =
-           clv.data.plot.transaction.timings(clv.data = x, Ids = Ids,
+           clv.data.plot.transaction.timings(clv.data = x, ids = ids,
                                              annotate.ids = annotate.ids,
                                              plot = plot, verbose = verbose,
                                              ...)
@@ -325,8 +325,12 @@ clv.data.plot.tracking <- function(x, prediction.end, cumulative, plot, verbose,
   }
 
   # Plot table with formatting, label etc
-  p <- clv.controlflow.plot.tracking.base(dt.plot = dt.plot, clv.data = x,
-                                          color.mapping = setNames(object = "black", nm = label.transactions))
+  p <- clv.controlflow.plot.tracking.base(
+    dt.plot = dt.plot,
+    clv.data = x,
+    color.mapping = setNames(object = "black", nm = label.transactions),
+    cumulative=cumulative
+    )
   p <- p + theme(legend.position = "none")
   return(p)
 }
@@ -487,14 +491,14 @@ clv.data.plot.barplot.frequency <- function(clv.data, count.repeat.trans, count.
 
 
 
-#' @importFrom ggplot2 ggplot geom_segment geom_point geom_text geom_vline theme xlab ylim ggtitle element_blank scale_x_datetime scale_x_date
-clv.data.plot.transaction.timings <- function(clv.data, Ids, annotate.ids, plot, verbose, ...){
+#' @importFrom ggplot2 ggplot geom_segment geom_point geom_text geom_vline theme xlab ylab ylim ggtitle element_blank scale_x_datetime scale_x_date
+clv.data.plot.transaction.timings <- function(clv.data, ids, annotate.ids, plot, verbose, ...){
   # cran silence
   Id <- x <- y <- i.y <- date.first.actual.trans <- xstart <- xend <- ystart <- yend <- type <- Date <- NULL
 
   err.msg <- c()
   err.msg <- c(err.msg, .check_user_data_single_boolean(b=annotate.ids, var.name="annotate.ids"))
-  err.msg <- c(err.msg, check_userinput_datanocov_ids(Ids=Ids))
+  err.msg <- c(err.msg, check_userinput_datanocov_ids(ids=ids))
   err.msg <- c(err.msg, check_user_data_emptyellipsis(...))
   check_err_msg(err.msg)
 
@@ -511,22 +515,22 @@ clv.data.plot.transaction.timings <- function(clv.data, Ids, annotate.ids, plot,
   # Select first transaction of all ids, sample if ids not given
   dt.customer.y <- pnbd_cbs(clv.data)
 
-  Ids <- unique(Ids)
-  if(is.null(Ids) | (length(Ids) == 1 & is.numeric(Ids))){
+  ids <- unique(ids)
+  if(is.null(ids) | (length(ids) == 1 & is.numeric(ids))){
     # sample given number of random customers (50 if none given)
-    if(is.null(Ids)){
-      Ids <- 50
+    if(is.null(ids)){
+      ids <- 50
     }
-    if(Ids > nobs(clv.data)){
-      Ids <- nobs(clv.data)
+    if(ids > nobs(clv.data)){
+      ids <- nobs(clv.data)
       warning(paste0("Id may not be larger than the number of customers and is set to ", nobs(clv.data), "."))
     }
-    Ids <- dt.customer.y[, sample(x = Id, size = Ids, replace = FALSE)]
+    ids <- dt.customer.y[, sample(x = Id, size = ids, replace = FALSE)]
   }
-  if(!all(Ids %in% dt.customer.y[, unique(Id)])){
-    warning("Not all given Ids were found in the transaction data.", call. = FALSE)
+  if(!all(ids %in% dt.customer.y[, unique(Id)])){
+    warning("Not all given ids were found in the transaction data.", call. = FALSE)
   }
-  dt.customer.y <- dt.customer.y[Id %in% Ids, c("Id", "date.first.actual.trans")]
+  dt.customer.y <- dt.customer.y[Id %in% ids, c("Id", "date.first.actual.trans")]
 
   # Determine y position based on date of first transaction
   #   shortest on top, ordered by Id if same timepoint
@@ -542,14 +546,14 @@ clv.data.plot.transaction.timings <- function(clv.data, Ids, annotate.ids, plot,
   # x: transaction
   # y: per customer y
   dt.calibration <- clv.data.get.transactions.in.estimation.period(clv.data)
-  dt.calibration <- dt.calibration[Id %in% Ids]
+  dt.calibration <- dt.calibration[Id %in% ids]
   dt.calibration[, x := Date]
   dt.calibration[dt.customer.y, y := i.y, on="Id"]
 
   # Points in holdout period
   if(clv.data.has.holdout(clv.data)){
     dt.holdout <- clv.data.get.transactions.in.holdout.period(clv.data)
-    dt.holdout <- dt.holdout[Id %in% Ids]
+    dt.holdout <- dt.holdout[Id %in% ids]
     dt.holdout[, x := Date]
     dt.holdout[dt.customer.y, y := i.y, on="Id"]
   }
@@ -622,6 +626,9 @@ clv.data.plot.transaction.timings <- function(clv.data, Ids, annotate.ids, plot,
   g <- g + theme(axis.title.y = element_blank(), axis.line.y = element_blank(), axis.ticks.y = element_blank(), axis.text.y = element_blank(), panel.grid.major = element_blank())
   g <- g + xlab("Date")
   g <- g + ggtitle('Transaction Timings', subtitle = paste0("Estimation end: ",  clv.time.format.timepoint(clv.time=clv.data@clv.time, timepoint=clv.data@clv.time@timepoint.estimation.end)))
+  if(annotate.ids){
+    g <- g + theme(axis.title.y = element_text()) + ylab("Customer Identifier")
+  }
 
   return(g)
 }

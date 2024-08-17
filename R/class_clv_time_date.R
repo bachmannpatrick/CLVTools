@@ -58,6 +58,17 @@ setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.
   return(user.timepoint)
 })
 
+
+setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.time="clv.time.date",
+                                                                            user.timepoint="IDate"), definition = function(clv.time, user.timepoint){
+  # data read with data.table::fread by default stores dates as data.table::IDate.
+  # data.table::IDate inherits from base::Date but still convert to base::Date
+  # to consistently return base::Date
+  return(as.Date(user.timepoint))
+})
+
+
+
 #' @importFrom lubridate floor_date
 setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.time="clv.time.date",
                                                                             user.timepoint="POSIXlt"), definition = function(clv.time, user.timepoint){
@@ -94,7 +105,7 @@ setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.
 setMethod("clv.time.convert.user.input.to.timepoint", signature = signature(clv.time="clv.time.date",
                                                                             user.timepoint="ANY"), definition = function(clv.time, user.timepoint){
   # None of these cases
-  stop("The provided data is in an unknown format! Only Date, POSIXct/lt, and character are accepted!", call. = FALSE)
+  stop("The provided data is in an unknown format! Only Date, data.table::IDate, POSIXct/lt, and character are accepted!", call. = FALSE)
 })
 
 

@@ -13,6 +13,7 @@ setClass(Class = "clv.model.bgnbd.no.cov", contains = "clv.model.no.correlation"
 clv.model.bgnbd.no.cov <- function(){
   return(new("clv.model.bgnbd.no.cov",
              name.model = "BG/NBD Standard",
+             fn.model.generic = bgnbd,
              names.original.params.model = c(r="r", alpha="alpha", a="a", b="b"),
              names.prefixed.params.model = c("log.r", "log.alpha", "log.a", "log.b"),
              start.params.model = c(r=1, alpha = 3, a = 1, b = 3)))
@@ -53,14 +54,17 @@ setMethod("clv.model.backtransform.estimated.params.model", signature = signatur
 # .clv.model.prepare.optimx.args --------------------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args){
 
+  dt.compressed.cbs <- clv.fitted@cbs[, list(n = .N), by=c('x', 't.x', 'T.cal')]
+
   # Only add LL function args, everything else is prepared already, incl. start parameters
   optimx.args <- modifyList(prepared.optimx.args,
                             list(LL.function.sum = bgnbd_nocov_LL_sum,
                                  LL.function.ind = bgnbd_nocov_LL_ind, # if doing correlation
                                  obj    = clv.fitted,
-                                 vX     = clv.fitted@cbs$x,
-                                 vT_x   = clv.fitted@cbs$t.x,
-                                 vT_cal = clv.fitted@cbs$T.cal,
+                                 vX     = dt.compressed.cbs$x,
+                                 vT_x   = dt.compressed.cbs$t.x,
+                                 vT_cal = dt.compressed.cbs$T.cal,
+                                 vN = dt.compressed.cbs$n,
 
                                  # parameter ordering for the callLL interlayer
                                  LL.params.names.ordered = c(log.r = "log.r",log.alpha =  "log.alpha", log.a = "log.a", log.b = "log.b")),
@@ -100,6 +104,17 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.no.cov")
 
   return(DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
                        fct.expectation = fct.bgnbd.expectation, clv.time = clv.fitted@clv.data@clv.time))
+})
+
+# . clv.model.predict.new.customer.unconditional.expectation --------------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict.new.customer.unconditional.expectation", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, clv.newcustomer, t){
+
+  return(bgnbd_nocov_expectation(
+    r = clv.fitted@prediction.params.model[["r"]],
+    alpha = clv.fitted@prediction.params.model[["alpha"]],
+    a = clv.fitted@prediction.params.model[["a"]],
+    b = clv.fitted@prediction.params.model[["b"]],
+    vT_i = t))
 })
 
 

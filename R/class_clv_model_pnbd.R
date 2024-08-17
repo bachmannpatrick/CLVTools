@@ -14,9 +14,11 @@ clv.model.pnbd.no.cov <- function(){
 
   return(new("clv.model.pnbd.no.cov",
              name.model                  = "Pareto/NBD Standard",
+             fn.model.generic            = pnbd,
+
              names.original.params.model = c(r="r", alpha="alpha", s="s", beta="beta"),
              names.prefixed.params.model = c("log.r","log.alpha", "log.s", "log.beta"),
-             start.params.model          = c(r=1, alpha=1, s=1, beta=1),
+             start.params.model          = c(r=0.5, alpha=15, s=0.5, beta=10),
              optimx.defaults = list(method = "L-BFGS-B",
                                     # lower   = c(log(1*10^(-5)),log(1*10^(-5)),log(1*10^(-5)),log(1*10^(-5))),
                                     # upper   = c(log(300),log(2000),log(300),log(2000)),
@@ -69,14 +71,17 @@ setMethod("clv.model.backtransform.estimated.params.model", signature = signatur
 #' @importFrom utils modifyList
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, prepared.optimx.args){
 
+  dt.compressed.cbs <- clv.fitted@cbs[, list(n = .N), by=c('x', 't.x', 'T.cal')]
+
   # Only add LL function args, everything else is prepared already, incl. start parameters
   optimx.args <- modifyList(prepared.optimx.args,
                             list(LL.function.sum = pnbd_nocov_LL_sum,
                                  LL.function.ind = pnbd_nocov_LL_ind, # if doing correlation
                                  obj    = clv.fitted,
-                                 vX     = clv.fitted@cbs$x,
-                                 vT_x   = clv.fitted@cbs$t.x,
-                                 vT_cal = clv.fitted@cbs$T.cal,
+                                 vX     = dt.compressed.cbs$x,
+                                 vT_x   = dt.compressed.cbs$t.x,
+                                 vT_cal = dt.compressed.cbs$T.cal,
+                                 vN = dt.compressed.cbs$n,
 
                                  # parameter ordering for the callLL interlayer
                                  LL.params.names.ordered = c(log.r="log.r", log.alpha="log.alpha",
@@ -261,6 +266,21 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.no.cov"),
   return(DoExpectation(dt.expectation.seq = dt.expectation.seq, params_i = params_i,
                        fct.expectation = fct.expectation, clv.time = clv.fitted@clv.data@clv.time))
 })
+
+
+
+# . clv.model.predict.new.customer.unconditional.expectation --------------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict.new.customer.unconditional.expectation", signature = signature(clv.model="clv.model.pnbd.no.cov"), definition = function(clv.model, clv.fitted, clv.newcustomer, t){
+
+  return(pnbd_nocov_expectation(
+      r = clv.fitted@prediction.params.model[["r"]],
+      s = clv.fitted@prediction.params.model[["s"]],
+      alpha_0 = clv.fitted@prediction.params.model[["alpha"]],
+      beta_0 = clv.fitted@prediction.params.model[["beta"]],
+      vT_i = t))
+})
+
+
 
 
 # . clv.model.pmf --------------------------------------------------------------------------------------------------------

@@ -84,3 +84,31 @@ clv.fitted.transactions.static.cov <- function(cl, clv.model, clv.data){
 
 
 
+clv.fitted.transactions.static.cov.compressed.ll.data <- function(clv.fitted){
+  # Add cov data to cbs
+  #   prefix data with "trans." and "life." to distinguish them
+  dt.compressed.cbs <- copy(clv.fitted@cbs)
+
+  m.cov.life <- clv.data.get.matrix.data.cov.life(clv.data = clv.fitted@clv.data, correct.row.names=clv.fitted@cbs$Id,
+                                                  correct.col.names=clv.data.get.names.cov.life(clv.fitted@clv.data))
+  m.cov.trans <- clv.data.get.matrix.data.cov.trans(clv.data = clv.fitted@clv.data, correct.row.names=clv.fitted@cbs$Id,
+                                                    correct.col.names=clv.data.get.names.cov.trans(clv.fitted@clv.data))
+
+  names.compressed.cov.life <- paste0("life.", colnames(m.cov.life))
+  colnames(m.cov.life) <- names.compressed.cov.life
+  dt.compressed.cbs[, (names.compressed.cov.life) := as.data.table(m.cov.life, keep.rownames = FALSE)]
+
+  names.compressed.cov.trans <- paste0("trans.", colnames(m.cov.trans))
+  colnames(m.cov.trans) <- names.compressed.cov.trans
+  dt.compressed.cbs[, (names.compressed.cov.trans) := as.data.table(m.cov.trans, keep.rownames = FALSE)]
+
+  # compress cbs: unique also across covariate data
+  dt.compressed.cbs <- dt.compressed.cbs[, list(n = .N), by=c("x", "t.x", "T.cal", names.compressed.cov.life, names.compressed.cov.trans)]
+
+  return(list(
+    cbs = dt.compressed.cbs[, c("x", "t.x", "T.cal","n")],
+    m.cov.life = data.matrix(dt.compressed.cbs[, .SD, .SDcols=names.compressed.cov.life]),
+    m.cov.trans = data.matrix(dt.compressed.cbs[, .SD, .SDcols=names.compressed.cov.trans])
+  ))
+}
+

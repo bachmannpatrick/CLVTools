@@ -98,41 +98,41 @@ check_userinput_datanocov_transbins <- function(trans.bins, count.repeat.trans){
   return(c())
 }
 
-check_userinput_datanocov_ids <- function(Ids){
+check_userinput_datanocov_ids <- function(ids){
   err.msg <- c()
 
-  if(is.null(Ids)){
+  if(is.null(ids)){
     return(err.msg)
   }
 
-  if(anyNA(Ids)){
-    return("Ids may not contain any NA!")
+  if(anyNA(ids)){
+    return("Parameter 'ids' may not contain any NA!")
   }
 
-  if(!is.numeric(Ids) & !is.character(Ids)){
-    return("Ids has to be a single numeric value or a character vector!")
+  if(!is.numeric(ids) & !is.character(ids)){
+    return("Parameter 'ids' has to be a single numeric value or a character vector!")
   }
 
 
-  if(is.numeric(Ids)){
-    err.msg <- c(err.msg, .check_user_data_single_numeric(Ids, var.name = 'Ids'))
-    # if(any(!is.finite(Ids))){
-    #   return("Ids may not contain any non-finite elements if numeric!")
+  if(is.numeric(ids)){
+    err.msg <- c(err.msg, .check_user_data_single_numeric(ids, var.name = 'ids'))
+    # if(any(!is.finite(ids))){
+    #   return("ids may not contain any non-finite elements if numeric!")
     # }
-    # if(length(Ids) != 1){
-    #   return("Ids has to be of length 1 if numeric!")
+    # if(length(ids) != 1){
+    #   return("ids has to be of length 1 if numeric!")
     # }
-    if(!all(Ids > 0)){
-      err.msg <- c(err.msg, "Ids has to be strictly positive (>0)")
+    if(!all(ids > 0)){
+      err.msg <- c(err.msg, "Parameter 'ids' has to be strictly positive (>0)")
     }
   }
 
-  if(is.character(Ids)){
-    if(length(Ids) == 0){
-      err.msg <- c(err.msg, "Ids has to contain at least 1 element if character vector")
+  if(is.character(ids)){
+    if(length(ids) == 0){
+      err.msg <- c(err.msg, "Parameter 'ids' has to contain at least 1 element if character vector")
     }else{
-      if(any(nchar(Ids) == 0)){
-        err.msg <- c(err.msg, "Ids may not be empty text")
+      if(any(nchar(ids) == 0)){
+        err.msg <- c(err.msg, "Parameter 'ids' may not be empty text")
       }
     }
 
@@ -356,8 +356,13 @@ check_userinput_datadyncov_datadyncovspecific <- function(dt.data.dyn.cov, dt.re
   # Id checks ------------------------------------------------------------------------------------
 
   # every Id needs to be in covariate Id
-  if(nrow(fsetdiff(dt.required.ids, dt.data.dyn.cov[, "Id"])) > 0)
-    err.msg <- c(err.msg, paste0("Every Id in the transaction data needs to be in the ",name.of.covariate," covariate data as well!"))
+  if(!fsetequal(
+    x = dt.required.ids,
+    y = dt.data.dyn.cov[, "Id"],
+    all = FALSE # exact same count not required
+    )){
+    err.msg <- c(err.msg, paste0("Every Id in the transaction data needs to be in the ",name.of.covariate," covariate data and vice versa!"))
+  }
 
 
   # Date checks -----------------------------------------------------------------------------------
