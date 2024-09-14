@@ -8,7 +8,7 @@ test_that("clv.bootstrapped.apply(num.boot) may only be an integer > 0", {
   fn.expect.num.boot.greater0 <- function(n){
     expect_error(clv.bootstrapped.apply(
       object = bg.cdnow,
-      num.boot = n,
+      num.boots = n,
       fn.boot.apply = function(x){x},
       fn.sample = NULL
     ), 'num.boots')
@@ -26,7 +26,7 @@ test_that("clv.bootstrapped.apply(fn.boot.apply) may only be a function", {
   fn.expect.fn.apply <- function(fn.apply){
     expect_error(clv.bootstrapped.apply(
       object = bg.cdnow,
-      num.boot = 1000,
+      num.boots = 1000,
       fn.boot.apply = fn.apply,
       fn.sample = NULL
     ), 'fn.boot.apply')
@@ -44,7 +44,7 @@ test_that("clv.bootstrapped.apply(fn.sample) may only be a function", {
   fn.expect.fn.sample <- function(fn.sample){
     expect_error(clv.bootstrapped.apply(
       object = bg.cdnow,
-      num.boot = 1000,
+      num.boots = 1000,
       fn.boot.apply = function(x){x},
       fn.sample = fn.sample
     ), 'fn.sample')

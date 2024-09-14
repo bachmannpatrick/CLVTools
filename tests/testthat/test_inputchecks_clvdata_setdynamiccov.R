@@ -115,6 +115,26 @@ test_that("Fails if covariate data is to short for all customers",{
                regexp = "covariate data exactly from")
 })
 
+test_that("Fails if there are Ids in the covariates that are not in the transaction data", {
+  dt.cov.1additional <- data.table::copy(apparelDynCov[Id == "1"])
+  dt.cov.1additional[, Id := "ABC"]
+
+  apparelDynCov.1additional <- rbindlist(list(
+    data.table::copy(apparelDynCov),
+    dt.cov.1additional
+  ))
+
+  expect_error(
+    SetDynamicCovariates(
+      clv.data = clv.data.apparel,
+      data.cov.life  = apparelDynCov.1additional,
+      names.cov.life = c("Marketing", "Gender", "Channel"),
+      data.cov.trans = apparelDynCov,
+      names.cov.trans = c("Marketing", "Gender", "Channel"),
+      name.date = "Cov.Date"),
+    regexp = "Every Id")
+})
+
 test_that("Fails if does not have covariates for all customers", {
   apparelDynCov.1missing <- data.table::copy(apparelDynCov)
   first.customer <- apparelDynCov.1missing[1,]$Id
@@ -279,6 +299,25 @@ test_that("Fails if covariate data is to short for all customers",{
                regexp = "covariate data exactly from")
 })
 
+test_that("Fails if there are Ids in the covariates that are not in the transaction data", {
+  dt.cov.1additional <- data.table::copy(apparelDynCov[Id == "1"])
+  dt.cov.1additional[, Id := "ABC"]
+
+  apparelDynCov.1additional <- rbindlist(list(
+    data.table::copy(apparelDynCov),
+    dt.cov.1additional
+  ))
+
+  expect_error(
+    SetDynamicCovariates(
+      clv.data = clv.data.apparel,
+      data.cov.life  = apparelDynCov,
+      names.cov.life = c("Marketing", "Gender", "Channel"),
+      data.cov.trans = apparelDynCov.1additional,
+      names.cov.trans = c("Marketing", "Gender", "Channel"),
+      name.date = "Cov.Date"),
+    regexp = "Every Id")
+})
 
 test_that("Fails if does not have covariates for all customers", {
   apparelDemo.1missing <- data.table::copy(apparelDynCov)

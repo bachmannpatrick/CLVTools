@@ -294,7 +294,7 @@ arma::vec ggomnbd_integrate(const double r,
 
     integrand.params = &params_i;
 
-    gsl_integration_qags(&integrand, vLower(i), vUpper(i), 1.0e-8, 1.0e-8, 0, workspace, &res, &err);
+    gsl_integration_qags(&integrand, vLower(i), vUpper(i), 1.0e-8, 1.0e-8, 1000, workspace, &res, &err);
     vRes(i) = res;
   }
 

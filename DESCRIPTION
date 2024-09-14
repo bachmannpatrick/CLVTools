@@ -1,7 +1,7 @@
 Package: CLVTools
 Title: Tools for Customer Lifetime Value Estimation
-Version: 0.10.1
-Date: 2023-10-23
+Version: 0.11.1
+Date: 2024-08-15
 Authors@R: c(
     person(given="Patrick", family="Bachmann",    email = "pbachma@ethz.ch", role = c("cre","aut")),
     person(given="Niels",   family="Kuebler",     email = "niels.kuebler@uzh.ch", role = "aut"),
@@ -56,6 +56,7 @@ URL: https://github.com/bachmannpatrick/CLVTools
 BugReports: https://github.com/bachmannpatrick/CLVTools/issues
 NeedsCompilation: yes
 LinkingTo: Rcpp, RcppArmadillo (>= 0.11.4.0.1), RcppGSL (>= 0.3.7), testthat
+SystemRequirements: GNU GSL
 LazyLoad: yes
 Encoding: UTF-8
 Collate: 
