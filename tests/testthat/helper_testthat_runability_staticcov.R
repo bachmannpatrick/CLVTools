@@ -184,26 +184,27 @@ fct.testthat.runability.staticcov.works.with.combined.interlayers.with.cor <- fu
 }
 
 
-fct.testthat.runability.staticcov.works.with.illegal.cov.names <- function(method, data.apparelTrans, data.apparelStaticCov,
-                                                                           clv.data.holdout, clv.data.no.holdout,
-                                                                           names.params.model){
+fct.testthat.runability.staticcov.works.with.illegal.cov.names <- function(
+    method,
+    clv.data.holdout,
+    clv.data.no.holdout,
+    names.params.model
+){
 
   test_that("Works with static covs that have syntactically illegal names", {
     skip_on_cran()
     # skip_on_ci()
     fct.run.with.renamed.cov <- function(new.names){
-      apparelStaticCov.named <- data.table::copy(data.apparelStaticCov)
+      apparelStaticCov.named <- data.table::copy(fct.helper.load.apparelStaticCov())
       data.table::setnames(apparelStaticCov.named, old = c("Gender", "Channel"), new=new.names)
-      clv.data.named <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans,
-                                                                    data.apparelStaticCov = apparelStaticCov.named,
-                                                                    estimation.split = 104,
+      clv.data.named <- fct.helper.create.clvdata.apparel.staticcov(data.apparelStaticCov = apparelStaticCov.named,
                                                                     names.cov.life = new.names, names.cov.trans = new.names)
       expect_silent(fitted <- do.call(what = method, args = list(clv.data=clv.data.named, verbose = FALSE)))
 
       # Newdata is created here because of different names
-      clv.newdata.nohold <- fct.helper.create.fake.newdata.staticcov(data.trans = data.apparelTrans, estimation.split = NULL,
+      clv.newdata.nohold <- fct.helper.create.fake.newdata.staticcov(data.trans = fct.helper.load.apparelTrans(), estimation.split = NULL,
                                                                      names.cov = new.names)
-      clv.newdata.withhold <- fct.helper.create.fake.newdata.staticcov(data.trans = data.apparelTrans, estimation.split = 104,
+      clv.newdata.withhold <- fct.helper.create.fake.newdata.staticcov(data.trans = fct.helper.load.apparelTrans(), estimation.split = 104,
                                                                        names.cov = new.names)
 
       fct.helper.clvfittedtransactions.all.s3(clv.fitted = fitted,  full.names = c(names.params.model,
@@ -245,18 +246,15 @@ fct.helper.create.fake.newdata.staticcov <- function(data.trans, estimation.spli
 
 
 fct.testthat.runability.staticcov <- function(name.model, method, start.params.model, has.cor,
-                                              data.apparelTrans, data.apparelStaticCov,
                                               failed.optimization.methods.expected.message){
 
   # Data objects: normal data
-  clv.data.cov.no.holdout <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
-                                                                         estimation.split = NULL)
-  clv.data.cov.holdout   <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
-                                                                        estimation.split = 104)
+  clv.data.cov.no.holdout <- fct.helper.create.clvdata.apparel.staticcov(estimation.split = NULL)
+  clv.data.cov.holdout   <- fct.helper.create.clvdata.apparel.staticcov()
 
-  clv.newdata.nohold   <- fct.helper.create.fake.newdata.staticcov(data.trans = data.apparelTrans, names.cov = c("Gender", "Channel"),
+  clv.newdata.nohold   <- fct.helper.create.fake.newdata.staticcov(data.trans = fct.helper.load.apparelTrans(), names.cov = c("Gender", "Channel"),
                                                                    estimation.split = NULL)
-  clv.newdata.withhold <- fct.helper.create.fake.newdata.staticcov(data.trans = data.apparelTrans, names.cov = c("Gender", "Channel"),
+  clv.newdata.withhold <- fct.helper.create.fake.newdata.staticcov(data.trans = fct.helper.load.apparelTrans(), names.cov = c("Gender", "Channel"),
                                                                    estimation.split = 104)
 
   names.params.all.free <- c(names(start.params.model), "life.Gender", "life.Channel", "trans.Gender", "trans.Channel")
@@ -288,7 +286,7 @@ fct.testthat.runability.staticcov <- function(name.model, method, start.params.m
 
   fct.testthat.runability.staticcov.reduce.relevant.covariates.estimation(method = method, clv.data.holdout = clv.data.cov.holdout)
 
-  fct.testthat.runability.staticcov.works.with.illegal.cov.names(method = method, data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
+  fct.testthat.runability.staticcov.works.with.illegal.cov.names(method = method,
                                                                  clv.data.holdout = clv.data.cov.holdout,
                                                                  names.params.model = names(start.params.model))
 

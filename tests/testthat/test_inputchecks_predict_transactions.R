@@ -31,13 +31,13 @@ fct.testthat.inputchecks.clvfittedtransactions.predict.prediction.end.before.est
 
 
 
-fct.testthat.inputchecks.clvfittedtransactions.predict.predict.spending.but.no.spending.data <- function(method, data.cdnow){
+fct.testthat.inputchecks.clvfittedtransactions.predict.predict.spending.but.no.spending.data <- function(method){
   test_that("Predict with spending fails if not spending data", {
     skip_on_cran()
 
     # Fit on data without spending, with holdout
-    clv.data.no.spending   <- clvdata(data.cdnow, "ymd", "w", estimation.split = 37, name.price = NULL)
-    clv.data.with.spending <- clvdata(data.cdnow, "ymd", "w", estimation.split = 37, name.price = "Price")
+    clv.data.no.spending   <- fct.helper.create.clvdata.cdnow(name.price=NULL)
+    clv.data.with.spending <- fct.helper.create.clvdata.cdnow()
     expect_silent(fitted.no.spending   <- do.call(method, list(clv.data = clv.data.no.spending,   verbose=FALSE)))
     expect_silent(fitted.with.spending <- do.call(method, list(clv.data = clv.data.with.spending, verbose=FALSE)))
     expect_silent(fitted.spending.model <- gg(clv.data.with.spending, verbose=FALSE))
@@ -82,11 +82,11 @@ fct.testthat.inputchecks.clvfittedtransactions.predict.predict.spending.wrong.ty
 
 
 
-fct.testthat.inputchecks.clvfittedtransactions.predict.predict.spending.has.NA <- function(clv.fitted.transactions, data.cdnow){
+fct.testthat.inputchecks.clvfittedtransactions.predict.predict.spending.has.NA <- function(clv.fitted.transactions){
   test_that("Predict spending fails if prediction.end has NA coefs", {
     skip_on_cran()
     # fit spending model
-    expect_silent(fitted.spending <- gg(fct.helper.create.clvdata.cdnow(data.cdnow), verbose=FALSE))
+    expect_silent(fitted.spending <- gg(fct.helper.create.clvdata.cdnow(), verbose=FALSE))
     # set 1 coef to NA
     coef(fitted.spending@optimx.estimation.output)[1] <- NA_real_
     expect_error(predict(clv.fitted.transactions, predict.spending = fitted.spending, prediction.end = 6), regexp = "contain NA")
@@ -104,19 +104,17 @@ fct.testthat.inputchecks.clvfittedtransactions.predict.ellipsis <- function(clv.
 
 
 
-fct.testthat.inputchecks.clvfittedtransactions.predict <- function(data.cdnow, data.apparelTrans, data.apparelStaticCov){
-  clv.data.apparel.static.cov <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
-                                                                             estimation.split = 104)
+fct.testthat.inputchecks.clvfittedtransactions.predict <- function(){
+  clv.data.apparel.static.cov <- fct.helper.create.clvdata.apparel.staticcov()
   expect_silent(fitted.apparel.static <- pnbd(clv.data.apparel.static.cov, verbose = FALSE))
-  clv.data.cdnow.nohold <- fct.helper.create.clvdata.cdnow(data.cdnow, estimation.split=NULL)
+
+  clv.data.cdnow.nohold <- fct.helper.create.clvdata.cdnow(estimation.split=NULL)
   expect_silent(fitted.cdnow.nohold   <- pnbd(clv.data.cdnow.nohold, verbose = FALSE))
 
-
-  fct.testthat.inputchecks.clvfitted.newdata.not.clvdata(s3method=predict, l.std.args=list(fitted.cdnow.nohold, prediction.end=6), data.cdnow = data.cdnow)
+  fct.testthat.inputchecks.clvfitted.newdata.not.clvdata(s3method=predict, l.std.args=list(fitted.cdnow.nohold, prediction.end=6))
   fct.testthat.inputchecks.clvfittedtransactions.newdata.has.different.covs(s3method = predict,
                                                                             l.s3method.args=list(prediction.end=6),
-                                                                            clv.fitted.apparel.cov = fitted.apparel.static,
-                                                                            data.apparelStaticCov = data.apparelStaticCov)
+                                                                            clv.fitted.apparel.cov = fitted.apparel.static)
   fct.testthat.inputchecks.clvfittedtransactions.newdata.is.different.class(s3method = predict,
                                                                             l.s3method.args = list(prediction.end=6),
                                                                             clv.fitted.transactions.nocov = fitted.cdnow.nohold,
@@ -137,11 +135,10 @@ fct.testthat.inputchecks.clvfittedtransactions.predict <- function(data.cdnow, d
   fct.testthat.inputchecks.clvfittedtransactions.predict.prediction.end.before.estimation.end(clv.fitted = fitted.apparel.static)
 
 
-  fct.testthat.inputchecks.clvfittedtransactions.predict.predict.spending.but.no.spending.data(method = pnbd,
-                                                                                               data.cdnow = data.cdnow)
+  fct.testthat.inputchecks.clvfittedtransactions.predict.predict.spending.but.no.spending.data(method = pnbd)
   fct.testthat.inputchecks.clvfittedtransactions.predict.predict.spending.wrong.type(clv.fitted.transactions = fitted.cdnow.nohold)
-  fct.testthat.inputchecks.clvfittedtransactions.predict.predict.spending.has.NA(clv.fitted.transactions = fitted.cdnow.nohold, data.cdnow = data.cdnow)
-  fct.testthat.inputchecks.clvfittedtransactions.prediction.end.uses.newdata(s3method = predict, fitted.cdnow = fitted.cdnow.nohold, data.cdnow = data.cdnow)
+  fct.testthat.inputchecks.clvfittedtransactions.predict.predict.spending.has.NA(clv.fitted.transactions = fitted.cdnow.nohold)
+  fct.testthat.inputchecks.clvfittedtransactions.prediction.end.uses.newdata(s3method = predict, fitted.cdnow = fitted.cdnow.nohold)
 
 
   # fct.helper.inputcheck.single.numeric(fct = predict, name.param="continuous.discount.factor",
@@ -158,7 +155,4 @@ fct.testthat.inputchecks.clvfittedtransactions.predict <- function(data.cdnow, d
 }
 
 
-data("cdnow")
-data("apparelTrans")
-data("apparelStaticCov")
-fct.testthat.inputchecks.clvfittedtransactions.predict(data.cdnow = cdnow, data.apparelTrans = apparelTrans, data.apparelStaticCov = apparelStaticCov)
+fct.testthat.inputchecks.clvfittedtransactions.predict()

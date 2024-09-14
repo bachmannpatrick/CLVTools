@@ -124,7 +124,7 @@ test_that("d_omega is actually correct in cbs", {
   for(i in 1:7){
     apparelTrans.spaced[Id == ids[i] & first.trans == TRUE, Date := tp.first.trans+days(i-1)]
   }
-  clv.dyn.spaced <- fct.helper.create.clvdata.apparel.dyncov(apparelTrans.spaced, apparelDynCov, estimation.split = 104)
+  clv.dyn.spaced <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=apparelTrans.spaced)
   dt.cbs <- pnbd_dyncov_cbs(clv.dyn.spaced)
 
   # We assume Sunday (7) to be start

@@ -5,9 +5,12 @@ data("apparelTrans")
 data("apparelStaticCov")
 data("apparelDynCov")
 
-fct.testthat.consistency(name.model = "PNBD", method = pnbd,
-                         data.apparelTrans = apparelTrans, data.apparelStaticCov=apparelStaticCov,
-                         fct.LL.ind.nocov = pnbd_nocov_LL_ind, fct.LL.ind.static.cov = pnbd_staticcov_LL_ind)
+fct.testthat.consistency(
+  name.model = "PNBD",
+  method = pnbd,
+  fct.LL.ind.nocov = pnbd_nocov_LL_ind,
+  fct.LL.ind.static.cov = pnbd_staticcov_LL_ind
+)
 
 # nocov vs dyncov --------------------------------------------------------------------------------------
 #   same predict with gamma=0

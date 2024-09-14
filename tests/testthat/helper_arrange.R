@@ -19,7 +19,7 @@ fct.helper.load.apparelDynCov <- function(){.load.data.locally("apparelDynCov")}
 
 
 
-fct.helper.create.clvdata.cdnow <- function(data.cdnow = NULL, estimation.split = 37) {
+fct.helper.create.clvdata.cdnow <- function(data.cdnow = NULL, estimation.split = 37, name.price = "Price") {
   if (is.null(data.cdnow)) {
     data.cdnow <- fct.helper.load.cdnow()
   }
@@ -27,7 +27,8 @@ fct.helper.create.clvdata.cdnow <- function(data.cdnow = NULL, estimation.split 
     data.transactions = data.cdnow,
     date.format = "ymd",
     time.unit = "w",
-    estimation.split = estimation.split
+    estimation.split = estimation.split,
+    name.price = name.price
   )
   return(clv.cdnow)
 }
@@ -110,12 +111,16 @@ fct.helper.create.clvdata.apparel.dyncov <- function(
 fit.cdnow <- function(
     data.cdnow = NULL,
     estimation.split = 37,
+    name.price = 'Price',
     model = pnbd,
     start.params.model = c(),
     verbose = FALSE,
     optimx.args = list()) {
+
   clv.cdnow <- fct.helper.create.clvdata.cdnow(
-    data.cdnow = data.cdnow, estimation.split = estimation.split
+    data.cdnow = data.cdnow,
+    estimation.split = estimation.split,
+    name.price=name.price
   )
 
   return(do.call(

@@ -1,11 +1,11 @@
-fct.testthat.runability.nocov.without.spending.data <- function(method, data.transactions){
+fct.testthat.runability.nocov.without.spending.data <- function(method){
   test_that("Fit works without spending data",{
     skip_on_cran()
     skip_on_ci()
     skip_on_covr()
-    l.args <- list(clvdata(data.transactions = data.transactions, name.price = NULL, date.format = "ymd", time.unit = "w", estimation.split = 60),
-                   verbose = FALSE)
-    expect_silent(clv.nospending <- do.call(what = method, args = l.args))
+
+    expect_silent(clv.nospending <- method(clv.data=fct.helper.create.clvdata.cdnow(name.price=NULL), verbose=FALSE))
+
     # predict still works out of the box
     expect_silent(predict(clv.nospending, verbose=FALSE))
     # predict fails if spending should sill be predicted
@@ -13,17 +13,19 @@ fct.testthat.runability.nocov.without.spending.data <- function(method, data.tra
   })
 }
 
-fct.testthat.runability.nocov.predict.fit.no.spending.but.newdata.spending <- function(method, data.transactions){
+fct.testthat.runability.nocov.predict.fit.no.spending.but.newdata.spending <- function(method){
   test_that("Fit without spending can predict on newdata that has spending", {
     skip_on_cran()
     skip_on_ci()
     skip_on_covr()
-    l.args <- list(clvdata(data.transactions = data.transactions, name.price = NULL, date.format = "ymd", time.unit = "w", estimation.split = 60),
-                   verbose = FALSE)
+
     # No spending fit
-    expect_silent(clv.nospending <- do.call(what = method, args = l.args))
+    clv.nospending <- fit.cdnow(model = method, name.price=NULL)
+
     # Data with spending
-    expect_silent(clv.cdnow.spending <- clvdata(data.transactions, name.price = "Price", date.format = "ymd", time.unit = "w", estimation.split = 60))
+    expect_silent(clv.cdnow.spending <- fct.helper.create.clvdata.cdnow())
+
+    # predict with data that has spending
     expect_silent(dt.pred <- predict(clv.nospending, newdata=clv.cdnow.spending, verbose=FALSE, predict.spending=TRUE))
     expect_true(all(c("predicted.mean.spending") %in% colnames(dt.pred)))
   })
@@ -53,17 +55,17 @@ fct.helper.create.fake.newdata.nocov <- function(data, estimation.split){
 }
 
 
-fct.testthat.runability.nocov <- function(name.model, method, cdnow,
+fct.testthat.runability.nocov <- function(name.model, method,
                                           has.cor,
                                           start.params.model,
                                           failed.optimization.methods.expected.message){
 
 
-  expect_silent(clv.data.cdnow.noholdout   <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "W"))
-  expect_silent(clv.data.cdnow.withholdout <- clvdata(data.transactions = cdnow, date.format = "ymd", time.unit = "W",
-                                                      estimation.split = 37))
-  clv.newdata.nohold   <- fct.helper.create.fake.newdata.nocov(data = cdnow, estimation.split = NULL)
-  clv.newdata.withhold <- fct.helper.create.fake.newdata.nocov(data = cdnow, estimation.split = 37)
+  expect_silent(clv.data.cdnow.noholdout   <- fct.helper.create.clvdata.cdnow(estimation.split = NULL))
+  expect_silent(clv.data.cdnow.withholdout <- fct.helper.create.clvdata.cdnow())
+
+  clv.newdata.nohold   <- fct.helper.create.fake.newdata.nocov(data = fct.helper.load.cdnow(), estimation.split = NULL)
+  clv.newdata.withhold <- fct.helper.create.fake.newdata.nocov(data = fct.helper.load.cdnow(), estimation.split = 37)
 
   # S3 are tested in .testthat. functions using l.args.test.all.s3 args
   param.names <- names(start.params.model)
@@ -87,16 +89,16 @@ fct.testthat.runability.nocov <- function(name.model, method, cdnow,
   fct.testthat.runability.clvfitted.multiple.optimization.methods(method = method, clv.data= clv.data.cdnow.noholdout,
                                                                   l.args.test.all.s3 = l.args.test.all.s3, fct.test.all.s3=fct.helper.clvfittedtransactions.all.s3)
 
-  # fct.testthat.runability.clvfitted.hourly.data(method = method, data.cdnow = cdnow, start.params.model=start.params.model,
+  # fct.testthat.runability.clvfitted.hourly.data(method = method, start.params.model=start.params.model,
   #                                               fct.test.all.s3=fct.helper.clvfittedtransactions.all.s3, l.args.test.all.s3=l.args.test.all.s3)
 
 
   # Nocov tests ------------------------------------------------------------------------------------------------------------
   fct.testthat.runability.clvfitted.custom.optimx.args(method = method, clv.data = clv.data.cdnow.noholdout)
 
-  fct.testthat.runability.nocov.without.spending.data(method = method, data.transactions = cdnow)
+  fct.testthat.runability.nocov.without.spending.data(method = method)
 
-  fct.testthat.runability.nocov.predict.fit.no.spending.but.newdata.spending(method = method, data.transactions = cdnow)
+  fct.testthat.runability.nocov.predict.fit.no.spending.but.newdata.spending(method = method)
 
 
   if(has.cor){

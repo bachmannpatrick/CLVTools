@@ -1,20 +1,20 @@
 data("cdnow")
 data("apparelTrans")
-data("apparelStaticCov")
 
 # Correct coefs are our estimates
-fct.testthat.correctness.clvfittedtransactions(name.model = "BG/NBD", method=bgnbd, data.cdnow=cdnow,
-                                               data.apparelTrans=apparelTrans, data.apparelStaticCov=apparelStaticCov,
-                                               correct.start.params.model = c(r=1, alpha = 3, a = 1, b = 3),
-                                               correct.params.nocov.coef = c(r = 0.2425945, alpha = 4.4136019, a = 0.7929199, b = 2.4258881),
-                                               correct.LL.nocov = -9582.429,
-                                               kkt2.true = TRUE)
+fct.testthat.correctness.clvfittedtransactions(
+  name.model = "BG/NBD",
+  method=bgnbd,
+  correct.start.params.model = c(r=1, alpha = 3, a = 1, b = 3),
+  correct.params.nocov.coef = c(r = 0.2425945, alpha = 4.4136019, a = 0.7929199, b = 2.4258881),
+  correct.LL.nocov = -9582.429,
+  kkt2.true = TRUE
+)
 
 
 
 # As reported in Fader, Hardie, Lee (2005)
 fct.testthat.correctness.clvfitted.correct.coefs(method = bgnbd,
-                                                 cdnow = cdnow,
                                                  start.params.model = c(r=1, alpha = 3, a = 1, b = 3),
                                                  params.nocov.coef = c(r = 0.243, alpha = 4.414, a = 0.793, b = 2.426),
                                                  LL.nocov = -9582.4)
@@ -52,9 +52,7 @@ test_that("Expectation in Rcpp matches expectation in R (staticcov)", {
   # To test correctly, fake that some customers only come alive later
   apparelTrans.later <- copy(apparelTrans)
   apparelTrans.later[Id %in% c("1", "10", "100"), Date := Date + lubridate::weeks(10)]
-  clv.apparel.static <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = apparelTrans.later,
-                                                                    data.apparelStaticCov = apparelStaticCov,
-                                                                    estimation.split = 104)
+  clv.apparel.static <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = apparelTrans.later)
 
   expect_silent(obj.fitted <- bgnbd(clv.data = clv.apparel.static, verbose = FALSE))
 

@@ -1,6 +1,7 @@
-fct.testthat.inputchecks.clvfitted.newdata.not.clvdata <- function(s3method, l.std.args, data.cdnow){
+fct.testthat.inputchecks.clvfitted.newdata.not.clvdata <- function(s3method, l.std.args){
   test_that("Fails if newdata not a clv.data object", {
     skip_on_cran()
+    data.cdnow <- fct.helper.load.cdnow()
     expect_error(do.call(s3method, c(l.std.args, list(newdata = NA_character_))), regexp = "needs to be a clv data object")
     expect_error(do.call(s3method, c(l.std.args, list(newdata = character()))), regexp = "needs to be a clv data object")
     expect_error(do.call(s3method, c(l.std.args, list(newdata = "abc"))), regexp = "needs to be a clv data object")
@@ -26,8 +27,7 @@ fct.testthat.inputchecks.clvfitted.na.in.prediction.params.model <- function(s3m
 
 fct.testthat.inputchecks.clvfittedtransactions.newdata.has.different.covs <- function(s3method,
                                                                                       l.s3method.args,
-                                                                                      clv.fitted.apparel.cov,
-                                                                                      data.apparelStaticCov){
+                                                                                      clv.fitted.apparel.cov){
   test_that("Fails if newdata has different covariates (names)", {
     skip_on_cran()
 
@@ -35,7 +35,7 @@ fct.testthat.inputchecks.clvfittedtransactions.newdata.has.different.covs <- fun
 
     # newdata should be exactly same except for the cov names
     clv.apparel.nocov <- as(clv.fitted.apparel.cov@clv.data, "clv.data")
-    data.apparelStaticCov.additional <- data.table::copy(data.apparelStaticCov)
+    data.apparelStaticCov.additional <- data.table::copy(fct.helper.load.apparelStaticCov())
     data.apparelStaticCov.additional[, Haircolor := "red"]
     data.apparelStaticCov.additional[sample.int(.N, size = .N/4), Haircolor := "black"]
 
@@ -136,14 +136,14 @@ fct.testthat.inputchecks.clvfittedtransactions.prediction.end.wrong.format <- fu
 }
 
 
-fct.testthat.inputchecks.clvfittedtransactions.prediction.end.uses.newdata <- function(s3method, fitted.cdnow, data.cdnow){
+fct.testthat.inputchecks.clvfittedtransactions.prediction.end.uses.newdata <- function(s3method, fitted.cdnow){
 
   test_that("prediction.end relates to newdata", {
     skip_on_cran()
 
     # can predict.end before cdnow[ min(date)] if in newdata they are earlier
 
-    data.cdnow.earlier <- copy(data.cdnow)
+    data.cdnow.earlier <- copy(fct.helper.load.cdnow())
     data.cdnow.earlier[, Date := as.Date(Date)]
     data.cdnow.earlier[, Date := Date - 1000] # 1000days back -> 1994-04-07 is first
     clv.newdata <- fct.helper.create.clvdata.cdnow(data.cdnow.earlier, estimation.split=37)

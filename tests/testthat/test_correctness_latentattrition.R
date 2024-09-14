@@ -1,12 +1,8 @@
 skip_on_cran()
-data("cdnow")
-data("apparelTrans")
-data("apparelStaticCov")
-data("apparelDynCov")
 
 
 # no cov ---------------------------------------------------------------------------------------------------
-clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+clv.cdnow <- fct.helper.create.clvdata.cdnow()
 
 test_that("No cov: Same as std interface", {
   skip_on_cran()
@@ -26,7 +22,7 @@ test_that("No cov: Same as std interface", {
 
 # static cov ---------------------------------------------------------------------------------------------------
 
-clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(apparelTrans, apparelStaticCov, estimation.split = NULL)
+clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(estimation.split = NULL)
 
 .fct.test.latentattrition.selects.correct.covs <- function(formula, covs.life, covs.trans){
   expect_silent(p.lA <- latentAttrition(formula = formula, family=pnbd, data = clv.apparel.cov, verbose=FALSE))
@@ -116,7 +112,7 @@ test_that("Correct cov data when using interactions and all except (. -)", {
 
 
 # dynamic cov ---------------------------------------------------------------------------------------------------
-clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(apparelTrans, apparelDynCov, estimation.split = 104)
+clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(estimation.split = 104)
 clv.dyn.common.cols <- c("Id", "Cov.Date","tp.cov.lower","tp.cov.upper")
 
 .fct.latentattrition.fit.dyncov <- function(formula){

@@ -69,17 +69,17 @@ fct.testthat.runability.clvfitted.multiple.optimization.methods <- function(meth
 }
 
 
-fct.testthat.runability.clvfitted.hourly.data <- function(method, data.cdnow, start.params.model, fct.test.all.s3, l.args.test.all.s3){
+fct.testthat.runability.clvfitted.hourly.data <- function(method, start.params.model, fct.test.all.s3, l.args.test.all.s3){
   test_that("Works with hourly data", {
     skip_on_cran()
 
     # scale down by spacing same as in weeks
-    data.cdnow <- copy(data.cdnow)
+    data.cdnow <- copy(fct.helper.load.cdnow())
     data.cdnow[, secs.since.start := as.numeric(Date- min(Date), unit='secs')]
     data.cdnow[, Date.hours := min(Date) + seconds(secs.since.start/24/7)]
 
     l.args <- list(clv.data = clvdata(data.transactions = data.cdnow, date.format = "ymdHMS", time.unit = "h",
-                                      name.date = "Date.hours", estimation.split = 104), verbose = FALSE)
+                                      name.date = "Date.hours", estimation.split = 52), verbose = FALSE)
 
     expect_silent(fitted.hours <- do.call(what = method, args = l.args))
 
