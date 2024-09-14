@@ -1,10 +1,8 @@
 skip_on_cran()
 data("cdnow")
-data("apparelTrans")
-data("apparelStaticCov")
 
 # nocov, clv.data -----------------------------------------------------------------------------------------------
-clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+clv.cdnow <- fct.helper.create.clvdata.cdnow()
 
 # .data -----------------------------------------------------------------------------------------------
 test_that("Fails if data is not clv.data", {
@@ -49,8 +47,7 @@ test_that("Fails if additional args in dots are not allowed for family", {
 
 
 # static cov, clv.data -----------------------------------------------------------------------------------------------
-clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = apparelTrans, data.apparelStaticCov = apparelStaticCov,
-                                                               estimation.split = NULL)
+clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(estimation.split = NULL)
 # .formula -----------------------------------------------------------------------------------------------
 test_that("Fails if no formula",{
   expect_error(latentAttrition(formula=, family=pnbd, data=clv.apparel.cov), "provide a valid formula object")

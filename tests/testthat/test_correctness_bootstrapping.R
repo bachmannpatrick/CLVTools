@@ -9,16 +9,14 @@ data("apparelDynCov")
 optimx.args.fast <- list(method='Nelder-Mead', itnmax=25, hessian=FALSE)
 
 # create with holdout
-clv.cdnow <- fct.helper.create.clvdata.cdnow(estimation.split=37)
+clv.cdnow <- fct.helper.create.clvdata.cdnow()
 
 # create with different covs for both processes
 clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(
-  estimation.split = 104,
   names.cov.life = c("Gender"),
   names.cov.trans = c("Gender", "Channel")
 )
 clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(
-  estimation.split = 104,
   names.cov.life = c("Gender"),
   names.cov.trans = c("Gender", "Channel")
 )
@@ -379,11 +377,11 @@ test_that("Correct args for spending models", {
 # clv.bootstrapped.apply ---------------------------------------------------------
 
 # with holdout
-p.cdnow <- fit.cdnow(cdnow, estimation.split = 37, model=pnbd, optimx.args = optimx.args.fast)
-bg.cdnow <- fit.cdnow(cdnow, estimation.split = 37, model=bgnbd, optimx.args = optimx.args.fast)
-bg.apparel.static <- fit.apparel.static(model = bgnbd, estimation.split = 104, optimx.args = optimx.args.fast)
-p.apparel.dyn <- fit.apparel.dyncov.quick(estimation.split = 104, hessian=FALSE)
-gg.cdnow <- fit.cdnow(cdnow, estimation.split = 37, model=gg, optimx.args = optimx.args.fast)
+p.cdnow <- fit.cdnow(cdnow, model=pnbd, optimx.args = optimx.args.fast)
+bg.cdnow <- fit.cdnow(cdnow, model=bgnbd, optimx.args = optimx.args.fast)
+bg.apparel.static <- fit.apparel.static(model = bgnbd, optimx.args = optimx.args.fast)
+p.apparel.dyn <- fit.apparel.dyncov.quick(hessian=FALSE)
+gg.cdnow <- fit.cdnow(cdnow, model=gg, optimx.args = optimx.args.fast)
 
 test_that("Sampling all customers leads to same model estimate (nocov, static cov, dyncov, spending)", {
 

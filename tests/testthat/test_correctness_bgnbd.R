@@ -22,7 +22,8 @@ fct.testthat.correctness.clvfitted.correct.coefs(method = bgnbd,
 
 test_that("Expectation in Rcpp matches expectation in R (nocov)", {
   skip_on_cran()
-  expect_silent(obj.fitted <- bgnbd(clv.data = fct.helper.create.clvdata.cdnow(cdnow), verbose = FALSE))
+
+  obj.fitted <- fit.cdnow(model=bgnbd)
 
   params_i <- obj.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
 

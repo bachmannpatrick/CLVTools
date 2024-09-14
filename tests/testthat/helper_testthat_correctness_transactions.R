@@ -55,8 +55,10 @@ fct.testthat.correctness.clvfittedtransactions.staticcov.covariate.row.sorting <
     apparelStaticCov <- fct.helper.load.apparelStaticCov()
 
     # shuffled
-    clv.apparel.shuffle <- fct.helper.create.clvdata.apparel.staticcov(estimation.split=m.fitted.static@clv.data@clv.time@timepoint.estimation.end,
-                                                                       data.apparelStaticCov=apparelStaticCov[sample.int(n = nrow(apparelStaticCov), replace = FALSE),])
+    clv.apparel.shuffle <- fct.helper.create.clvdata.apparel.staticcov(
+      estimation.split = m.fitted.static@clv.data@clv.time@timepoint.estimation.end,
+      data.apparelStaticCov = apparelStaticCov[sample.int(n = nrow(apparelStaticCov), replace = FALSE),]
+    )
 
     expect_silent(m.static.shuffle <- do.call(what = method, args = list(clv.data=clv.apparel.shuffle, verbose=FALSE)))
 

@@ -1,5 +1,4 @@
-data("apparelTrans")
-data("apparelStaticCov")
+skip_on_cran()
 
 fct.testthat.inputchecks.staticcov(
   name.method = "GGompertz/NBD",

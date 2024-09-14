@@ -31,8 +31,8 @@ fct.testthat.correctness.clvfittedspending.cbs.same.as.pnbd <- function(method, 
 
 fct.testthat.correctness.clvfittedspending <- function(name.model, method, correct.start.params.model, correct.params.coef, correct.LL){
 
-  clv.cdnow.hold   <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split=37)
-  clv.cdnow.nohold <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split=NULL)
+  clv.cdnow.hold   <- fct.helper.create.clvdata.cdnow(estimation.split=37)
+  clv.cdnow.nohold <- fct.helper.create.clvdata.cdnow(estimation.split=NULL)
   clv.apparel.staticcov <- fct.helper.create.clvdata.apparel.staticcov()
   clv.apparel.nocov <- as(clv.apparel.staticcov, "clv.data")
   expect_silent(obj.fitted <- do.call(method, list(clv.data = clv.cdnow.hold, verbose=FALSE)))
