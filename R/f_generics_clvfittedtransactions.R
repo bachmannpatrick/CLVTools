@@ -366,13 +366,36 @@ setMethod(f = "clv.fitted.bootstrap.predictions", signature = signature(clv.fitt
   boots.predict <- function(clv.boot){
     pb.i <<- pb.i + 1
     update.pb(n = pb.i)
-    return(predict(
-      object = clv.boot,
-      prediction.end = boots.prediction.end,
-      verbose = FALSE,
-      predict.spending = predict.spending,
-      continuous.discount.factor = continuous.discount.factor,
-      uncertainty = "none"))
+
+    prediction <- tryCatch(
+      # Call prediction on bootstrapped data with same args as this `predict`
+      # was called (except uncertainty which would lead to infinite recursion)
+      # The exception is verbose=FALSE is any case because the progressbar + output
+      # from predict are mixed/interfering with each other
+      predict(
+        object = clv.boot,
+        prediction.end = prediction.end,
+        verbose = FALSE,
+        predict.spending = predict.spending,
+        continuous.discount.factor = continuous.discount.factor,
+        uncertainty = "none"),
+
+      # Catch and return error if one is produced. For example if there are NAs
+      # in the prediction parameters and prediction is not possible
+      error = function(e){e}
+      # dont catch and re-signal warnings, let them bubble up directly
+    )
+
+    # If there is an error during the prediction, do not abort but signal it as a warning.
+    # Return NULL which is skipped in `rbindlist()`.
+    # Could warn with an error because warnings and error are both of type `condition` but
+    # this does not respect parameter `immediate.`. Therefore recreate as warning.
+    if(inherits(prediction, 'simpleError')){
+      warning(conditionMessage(prediction), call. = FALSE, immediate. = FALSE)
+      return(NULL)
+    }
+
+    return(prediction)
   }
 
   l.boots <- clv.bootstrapped.apply(

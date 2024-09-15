@@ -70,13 +70,26 @@
 #' }
 #'
 #' @export
-clv.bootstrapped.apply <- function(object, num.boots, fn.boot.apply, fn.sample=NULL, ...){
+clv.bootstrapped.apply <- function(
+    object,
+    num.boots,
+    fn.boot.apply,
+    fn.sample=NULL,
+    # how errors and warnings during the model estimation on the bootstrapped data should be handled
+    on.errors = c('warn', 'error', 'ignore'),
+    # on.warnings = c('warn', 'error', 'ignore'),
+    ...
+){
   # cran silence
   Id <- NULL
 
   check_err_msg(check_user_data_numboots(num.boots=num.boots))
   check_err_msg(check_user_data_fnbootapply(fn.boot.apply=fn.boot.apply))
   check_err_msg(check_user_data_fnsample(fn.sample=fn.sample))
+
+  # check_err_msg(check_user_data_warnerrorignore(uncertainty = uncertainty))
+  on.errors <- match.arg(tolower(on.errors), choices=c('warn', 'error', 'ignore'), several.ok=FALSE)
+  # on.warnings <- match.arg(tolower(on.warnings), choices=c('warn', 'error', 'ignore'), several.ok=FALSE)
 
   if(is.null(fn.sample)){
     fn.sample <- function(x){
@@ -92,10 +105,30 @@ clv.bootstrapped.apply <- function(object, num.boots, fn.boot.apply, fn.sample=N
       clv.data = object@clv.data,
       ids=fn.sample(ids))
 
-    clv.fitted.boot <- clv.fitted.estimate.same.specification.on.new.data(
-      clv.fitted = object,
-      newdata = clv.data.boot,
-      ...)
+    clv.fitted.boot <- tryCatch(
+      clv.fitted.estimate.same.specification.on.new.data(
+        clv.fitted = object,
+        newdata = clv.data.boot,
+        ...),
+      error = function(e){e}
+      # warning = function(w){w}
+    )
+
+    if(inherits(clv.fitted.boot, 'simpleError')){
+      if(on.errors == 'warn'){
+        warning(conditionMessage(clv.fitted.boot), immediate. = FALSE, call. = FALSE)
+      }
+      if(on.errors == 'error'){
+        stop(clv.fitted.boot)
+      }
+      if(on.errors == 'ignore'){
+        return(NULL)
+      }
+    }
+
+    if(inherits(clv.fitted.boot, 'simpleWarning')){
+
+    }
 
     return(fn.boot.apply(clv.fitted.boot))
   })
