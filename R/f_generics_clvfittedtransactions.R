@@ -344,13 +344,6 @@ setMethod("clv.controlflow.predict.new.customer", signature = signature(clv.fitt
 # . clv.fitted.bootstrap.predictions --------------------------------------------
 setMethod(f = "clv.fitted.bootstrap.predictions", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, num.boots, verbose, prediction.end, predict.spending, continuous.discount.factor){
 
-  # have to explicitly give prediction.end because bootstrapping data has no holdout
-  if(is.null(prediction.end)){
-    boots.prediction.end <- clv.fitted@clv.data@clv.time@timepoint.holdout.end
-  }else{
-    boots.prediction.end <- prediction.end
-  }
-
   if(verbose){
     # Print message before progress bar is created
     message("Bootstrapping ",num.boots," times for uncertainty estimates...")
@@ -358,17 +351,18 @@ setMethod(f = "clv.fitted.bootstrap.predictions", signature = signature(clv.fitt
     progress.bar <- txtProgressBar(max = num.boots, style = 3)
     update.pb    <- function(n){setTxtProgressBar(pb=progress.bar, value = n)}
   }else{
-    # has to be also defined if verbose=F because used in boots.predict
+    # also has to be defined if verbose=F because used in boots.predict
     update.pb <- function(n){}
   }
   pb.i <- 0
 
+  # Method that is called on the bootstrapped data
   boots.predict <- function(clv.boot){
     pb.i <<- pb.i + 1
     update.pb(n = pb.i)
     return(predict(
       object = clv.boot,
-      prediction.end = boots.prediction.end,
+      prediction.end = prediction.end,
       verbose = FALSE,
       predict.spending = predict.spending,
       continuous.discount.factor = continuous.discount.factor,
