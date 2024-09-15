@@ -371,11 +371,12 @@ setMethod(f = "clv.fitted.bootstrap.predictions", signature = signature(clv.fitt
 
   l.boots <- clv.bootstrapped.apply(
     object = clv.fitted,
+    fn.sample = NULL,
     num.boots = num.boots,
     fn.boot.apply = boots.predict,
-    fn.sample = NULL,
-    verbose = FALSE,
-    start.params.model = clv.fitted@prediction.params.model
+    # Fitting on bootstrapped data: Never verbose because does not mix well
+    # with status bar shown when verbose=TRUE
+    verbose = FALSE
   )
 
   return(rbindlist(l.boots))

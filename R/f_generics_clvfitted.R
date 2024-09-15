@@ -23,9 +23,11 @@ setMethod(f = "clv.controlflow.predict.set.prediction.params", signature = signa
 setMethod("clv.fitted.estimate.same.specification.on.new.data", signature = "clv.fitted", def = function(clv.fitted, newdata, ...){
   cl <- match.call(expand.dots = TRUE)
 
+  # args to model function are the original specification args + `newdata` as
+  # actual data arg
   args <- c(clv.fitted@model.specification.args, list(clv.data=newdata))
 
-  # overwrite with what was passed
+  # overwrite call args with what was passed
   args <- modifyList(args, val = list(...), keep.null = TRUE)
 
   new.fitted <- do.call(what = clv.fitted@clv.model@fn.model.generic, args=args)
