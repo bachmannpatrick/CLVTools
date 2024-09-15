@@ -57,7 +57,7 @@
 #' data("apparelTrans")
 #' clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
 #'                             time.unit = "w",
-#'                             estimation.split = 40)
+#'                             estimation.split = 52)
 #'
 #' # summary of transaction data and split
 #' summary(clv.data.apparel)

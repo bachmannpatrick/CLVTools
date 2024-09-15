@@ -96,7 +96,7 @@ The GGompertz/NBD tends to be appropriate when firms are reputed and their offer
 \donttest{
 data("apparelTrans")
 clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
-                            time.unit = "w", estimation.split = 40)
+                            time.unit = "w", estimation.split = 52)
 
 # Fit standard ggomnbd model
 ggomnbd(clv.data.apparel)

@@ -1,16 +1,15 @@
 fct.testthat.runability.clvfittedspending <- function(name.model, method,
-                                                      data.cdnow, data.apparelTrans, data.apparelStaticCov, data.apparelDynCov,
                                                       start.params.model,
                                                       failed.optimization.methods.expected.message){
 
   # Data objects: normal data
 
 
-  clv.data.cdnow.noholdout   <- fct.helper.create.clvdata.cdnow(data.cdnow, estimation.split=NULL)
-  clv.data.cdnow.withholdout <- fct.helper.create.clvdata.cdnow(data.cdnow, estimation.split=37)
+  clv.data.cdnow.noholdout   <- fct.helper.create.clvdata.cdnow(estimation.split=NULL)
+  clv.data.cdnow.withholdout <- fct.helper.create.clvdata.cdnow(estimation.split=37)
 
-  clv.newdata.nohold   <- fct.helper.create.fake.newdata.nocov(data = data.cdnow, estimation.split = NULL)
-  clv.newdata.withhold <- fct.helper.create.fake.newdata.nocov(data = data.cdnow, estimation.split = 37)
+  clv.newdata.nohold   <- fct.helper.create.fake.newdata.nocov(data = fct.helper.load.cdnow(), estimation.split = NULL)
+  clv.newdata.withhold <- fct.helper.create.fake.newdata.nocov(data = fct.helper.load.cdnow(), estimation.split = 37)
 
   param.names <- names(start.params.model)
   l.args.test.all.s3 <- list(full.names = param.names,
@@ -34,20 +33,18 @@ fct.testthat.runability.clvfittedspending <- function(name.model, method,
   fct.testthat.runability.clvfitted.multiple.optimization.methods(method = method, clv.data = clv.data.cdnow.withholdout,
                                                                   l.args.test.all.s3= l.args.test.all.s3, fct.test.all.s3=fct.helper.clvfittedspending.all.s3)
 
-  # fct.testthat.runability.clvfitted.hourly.data(method = method, data.cdnow = data.cdnow,
+  # fct.testthat.runability.clvfitted.hourly.data(method = method,
   #                                               fct.test.all.s3 = fct.helper.clvfittedspending.all.s3, l.args.test.all.s3 = l.args.test.all.s3)
 
 
   # Also works with covariate data ------------------------------------------------------------------------------------
   # only check basic workings
-  clv.data.cov.no.holdout <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
-                                                                         estimation.split = NULL)
-  clv.data.cov.holdout   <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans, data.apparelStaticCov = data.apparelStaticCov,
-                                                                        estimation.split = 40)
-  clv.newdata.cov.nohold   <- fct.helper.create.fake.newdata.staticcov(data.trans = data.apparelTrans, names.cov = c("Gender", "Channel"),
+  clv.data.cov.no.holdout <- fct.helper.create.clvdata.apparel.staticcov(estimation.split = NULL)
+  clv.data.cov.holdout   <- fct.helper.create.clvdata.apparel.staticcov(estimation.split = 104)
+  clv.newdata.cov.nohold   <- fct.helper.create.fake.newdata.staticcov(data.trans = fct.helper.load.apparelTrans(), names.cov = c("Gender", "Channel"),
                                                                        estimation.split = NULL)
-  clv.newdata.cov.withhold <- fct.helper.create.fake.newdata.staticcov(data.trans = data.apparelTrans, names.cov = c("Gender", "Channel"),
-                                                                       estimation.split = 40)
+  clv.newdata.cov.withhold <- fct.helper.create.fake.newdata.staticcov(data.trans = fct.helper.load.apparelTrans(), names.cov = c("Gender", "Channel"),
+                                                                       estimation.split = 104)
 
   l.args.test.all.s3.cov <- list(full.names = param.names, clv.newdata.nohold = clv.newdata.cov.nohold,
                                  clv.newdata.withhold = clv.newdata.cov.withhold)
@@ -60,7 +57,7 @@ fct.testthat.runability.clvfittedspending <- function(name.model, method,
                                                              l.args.test.all.s3 = l.args.test.all.s3.cov)
 
   # And dyncov data as well (has holdout, but can use eith way)
-  fitted.dyncov    <- fct.helper.dyncov.quickfit.apparel.data(data.apparelTrans=data.apparelTrans, data.apparelDynCov=data.apparelDynCov)
+  fitted.dyncov    <- fct.helper.dyncov.quickfit.apparel.data()
   clv.data.dyn.cov <- fitted.dyncov@clv.data
 
   l.args.test.all.s3.dyncov <- list(full.names = param.names, clv.newdata.nohold = clv.data.dyn.cov,

@@ -1,10 +1,8 @@
 skip_on_cran()
 data("cdnow")
-data("apparelTrans")
-data("apparelStaticCov")
 
 # nocov, clv.data -----------------------------------------------------------------------------------------------
-clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+clv.cdnow <- fct.helper.create.clvdata.cdnow()
 
 # .data -----------------------------------------------------------------------------------------------
 test_that("Fails if data is not clv.data", {
@@ -49,14 +47,13 @@ test_that("Fails if additional args in dots are not allowed for family", {
 
 
 # static cov, clv.data -----------------------------------------------------------------------------------------------
-clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = apparelTrans, data.apparelStaticCov = apparelStaticCov,
-                                                               estimation.split = NULL)
+clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(estimation.split = NULL)
 # .formula -----------------------------------------------------------------------------------------------
 test_that("Fails if no formula",{
   expect_error(latentAttrition(formula=, family=pnbd, data=clv.apparel.cov), "provide a valid formula object")
 })
 test_that("Fails if no RHS2",{
-  expect_error(latentAttrition(formula=~Marketing, family=pnbd, data=clv.apparel.cov), "using a two-part notation")
+  expect_error(latentAttrition(formula=~High.Season, family=pnbd, data=clv.apparel.cov), "using a two-part notation")
   expect_error(latentAttrition(formula=~., family=pnbd, data=clv.apparel.cov), "using a two-part notation")
   expect_error(latentAttrition(formula=~1, family=pnbd, data=clv.apparel.cov), "using a two-part notation")
   expect_error(latentAttrition(formula=~-1, family=pnbd, data=clv.apparel.cov), "using a two-part notation")
@@ -75,8 +72,8 @@ test_that("Fails if has LHS",{
   expect_error(latentAttrition(pnbd()~1, family=pnbd, data=clv.apparel.cov), "no dependent variable")
   expect_error(latentAttrition(1~-1, family=pnbd, data=clv.apparel.cov), "no dependent variable")
   expect_error(latentAttrition(Gender~-1, family=pnbd, data=clv.apparel.cov), "no dependent variable")
-  expect_error(latentAttrition(Gender|.~Marketing, family=pnbd, data=clv.apparel.cov), "no dependent variable")
-  expect_error(latentAttrition(Gender~Marketing, family=pnbd, data=clv.apparel.cov), "no dependent variable")
+  expect_error(latentAttrition(Gender|.~High.Season, family=pnbd, data=clv.apparel.cov), "no dependent variable")
+  expect_error(latentAttrition(Gender~High.Season, family=pnbd, data=clv.apparel.cov), "no dependent variable")
 })
 
 test_that("Fails if RHS2/3 not in cov data",{

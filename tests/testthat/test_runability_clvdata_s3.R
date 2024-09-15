@@ -1,11 +1,5 @@
 skip_on_cran()
 
-# Load required data -----------------------------------------------------------------------------------
-data("apparelTrans")
-data("apparelStaticCov")
-data("apparelDynCov")
-apparelDynCov[, Cov.Date := as.Date(Cov.Date)] # otherwise warnings when setting dyncov
-apparelDynCov <- apparelDynCov[Cov.Date > "2005-01-01" ] # otherwise warnings when setting dyncov
 
 fct.helper.test.runability.clv.data.summary <- function(clv.data){
   test_that("summary works",{
@@ -275,33 +269,19 @@ fct.helper.test.runability.clv.data.others3 <- function(clv.data){
 
 }
 
-# This all falls under the context of runability for the fitted models
-
-# Create with and withouth holdout, with and withouth static covariates
-expect_silent(apparel.holdout    <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w", estimation.split = 39))
-expect_silent(apparel.no.holdout <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w"))
-
-expect_silent(apparel.holdout.static.cov     <- SetStaticCovariates(clv.data = apparel.holdout,
-                                                                    data.cov.life = apparelStaticCov,  names.cov.life = "Gender",
-                                                                    data.cov.trans = apparelStaticCov, names.cov.trans = "Gender"))
-expect_silent(apparel.no.holdout.static.cov  <- SetStaticCovariates(clv.data = apparel.no.holdout,
-                                                             data.cov.life = apparelStaticCov,  names.cov.life = "Gender",
-                                                             data.cov.trans = apparelStaticCov, names.cov.trans = "Gender"))
 
 
-expect_silent(apparel.holdout.dyn.cov     <- SetDynamicCovariates(clv.data = apparel.holdout,
-                                                                  data.cov.life = apparelDynCov,
-                                                                  data.cov.trans = apparelDynCov,
-                                                                  names.cov.life = c("Channel", "Marketing", "Gender"),
-                                                                  names.cov.trans = c("Channel", "Marketing", "Gender"),
-                                                                  name.date = "Cov.Date"))
 
-expect_silent(apparel.no.holdout.dyn.cov     <- SetDynamicCovariates(clv.data = apparel.no.holdout,
-                                                                      data.cov.life = apparelDynCov,
-                                                                      data.cov.trans = apparelDynCov,
-                                                                      names.cov.life = c("Channel", "Marketing", "Gender"),
-                                                                      names.cov.trans = c("Channel", "Marketing", "Gender"),
-                                                                      name.date = "Cov.Date"))
+# Create all combos: {w/, w/o} holdout, {w/, w/o}  {static, dynamic} covs
+
+apparel.holdout    <- fct.helper.create.clvdata.apparel.nocov()
+apparel.no.holdout <- fct.helper.create.clvdata.apparel.nocov(estimation.split = NULL)
+
+apparel.holdout.static.cov <- fct.helper.create.clvdata.apparel.staticcov()
+apparel.no.holdout.static.cov <- fct.helper.create.clvdata.apparel.staticcov(estimation.split = NULL)
+
+apparel.holdout.dyn.cov <- fct.helper.create.clvdata.apparel.dyncov()
+apparel.no.holdout.dyn.cov <- fct.helper.create.clvdata.apparel.dyncov(estimation.split = NULL)
 
 
 fct.helper.test.runability.clv.data.runall <- function(clv.data){

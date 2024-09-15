@@ -172,24 +172,17 @@ fct.testthat.consistency.cov.data.0.predict.newcustomer.same <- function(fitted.
 # Consistency = nocov vs static cov:
 #   same fit with all covs = 0
 #   same predict with gamma = 0
-fct.testthat.consistency <- function(name.model, method, has.dyncov, data.apparelTrans, data.apparelStaticCov,
-                                     fct.LL.ind.nocov, fct.LL.ind.static.cov){
+fct.testthat.consistency <- function(name.model, method, has.dyncov, fct.LL.ind.nocov, fct.LL.ind.static.cov){
 
 
   # Fit nocov object
-  expect_silent(clv.apparel <- clvdata(data.transactions = data.apparelTrans, date.format = "ymd",
-                                       time.unit = "w", estimation.split = 38))
-  expect_silent(fitted.nocov       <- do.call(method, list(clv.data = clv.apparel, verbose = FALSE)))
+  fitted.nocov <- fit.apparel.nocov(model=method)
 
   # Fit object on cov data with all 0
   # Cannot set all covs to 0 before creating clv.data object as requires at
   # least 2 distinct values per cov. Therefore create static cov object and then
   # set the covs to 0
-  clv.apparel.static.cov0 <- fct.helper.create.clvdata.apparel.staticcov(
-    estimation.split=38,
-    data.apparelTrans=data.apparelTrans,
-    data.apparelStaticCov=data.apparelStaticCov
-  )
+  clv.apparel.static.cov0 <- fct.helper.create.clvdata.apparel.staticcov()
   clv.apparel.static.cov0@data.cov.life[, (clv.apparel.static.cov0@names.cov.data.life) := 0]
   clv.apparel.static.cov0@data.cov.trans[, (clv.apparel.static.cov0@names.cov.data.trans) := 0]
 
@@ -205,10 +198,7 @@ fct.testthat.consistency <- function(name.model, method, has.dyncov, data.appare
 
   # Fake the parameters to be exactly the same and 0 for covariates
   #   Replace model coefs with that from nocov
-  expect_silent(fitted.static.g0 <- do.call(method, list(clv.data = fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans=data.apparelTrans,
-                                                                                                                data.apparelStaticCov=data.apparelStaticCov,
-                                                                                                                estimation.split=38),
-                                                         verbose = FALSE)))
+  fitted.static.g0 <- fit.apparel.static(model = method)
   expect_silent(fitted.static.g0@prediction.params.model[] <-fitted.nocov@prediction.params.model)
   expect_silent(fitted.static.g0@prediction.params.life[]  <- 0)
   expect_silent(fitted.static.g0@prediction.params.trans[] <- 0)

@@ -1,7 +1,8 @@
-data("cdnow")
 skip_on_cran()
 
-clv.cdnow.nohold <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split = NULL)
+data("cdnow")
+
+clv.cdnow.nohold <- fct.helper.create.clvdata.cdnow(estimation.split = NULL)
 
 # . shared args ------------------------------------------------------------------------------------
 # shared args

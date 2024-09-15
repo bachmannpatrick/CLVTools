@@ -1,18 +1,14 @@
-
 skip_on_cran()
 
 # Load data ---------------------------------------------------------------------------------------
-data("apparelTrans")
 data("apparelDynCov")
-apparelDynCov <- apparelDynCov[Cov.Date > "2005-01-01" ] #otherwise "cutoff" message
 
 # Parameter clv.data ---------------------------------------------------------------------------------------
-expect_silent(clv.data.apparel.nohold   <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w"))
-expect_silent(clv.data.apparel.withhold <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w",
-                                                    estimation.split = 39))
+clv.data.apparel.nohold <- fct.helper.create.clvdata.apparel.nocov(estimation.split = NULL)
+clv.data.apparel.withhold <- fct.helper.create.clvdata.apparel.nocov()
 
-l.std.args <- alist(data.cov.life  = apparelDynCov,  names.cov.life = c("Marketing", "Gender", "Channel"),
-                    data.cov.trans = apparelDynCov,  names.cov.trans = c("Marketing", "Gender", "Channel"),
+l.std.args <- alist(data.cov.life  = apparelDynCov,  names.cov.life = c("High.Season", "Gender", "Channel"),
+                    data.cov.trans = apparelDynCov,  names.cov.trans = c("High.Season", "Gender", "Channel"),
                     name.date = "Cov.Date")
 
 test_that("Works with and withouth holdout period", {

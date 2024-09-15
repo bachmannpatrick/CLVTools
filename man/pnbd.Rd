@@ -93,7 +93,7 @@ The generic accessor functions \code{coefficients}, \code{\link[CLVTools:vcov.cl
 Fits Pareto/NBD models on transactional data with and without covariates.
 }
 \details{
-Model parameters for the Pareto/NBD model are \code{alpha, r, beta, and s}. \cr
+Model parameters for the Pareto/NBD model are \code{r, alpha, s, and beta}. \cr
 \code{s}: shape parameter of the Gamma distribution for the lifetime process.
 The smaller s, the stronger the heterogeneity of customer lifetimes. \cr
 \code{beta}: rate parameter for the Gamma distribution for the lifetime process. \cr
@@ -153,7 +153,7 @@ of less than one day (data that was built with time unit \code{hours}).
 \donttest{
 data("apparelTrans")
 clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
-                            time.unit = "w", estimation.split = 40)
+                            time.unit = "w", estimation.split = 52)
 
 # Fit standard pnbd model
 pnbd(clv.data.apparel)
@@ -224,8 +224,8 @@ clv.data.dyn.cov <-
   SetDynamicCovariates(clv.data = clv.data.apparel,
                        data.cov.life = apparelDynCov,
                        data.cov.trans = apparelDynCov,
-                       names.cov.life = c("Marketing", "Gender", "Channel"),
-                       names.cov.trans = c("Marketing", "Gender", "Channel"),
+                       names.cov.life = c("High.Season", "Gender", "Channel"),
+                       names.cov.trans = c("High.Season", "Gender", "Channel"),
                        name.date = "Cov.Date")
 
 

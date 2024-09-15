@@ -1,27 +1,25 @@
-data("cdnow")
 data("apparelTrans")
 data("apparelStaticCov")
-data("apparelDynCov")
 
 # Correct coefs are our estimates
-fct.testthat.correctness.clvfittedtransactions(name.model = "PNBD", method=pnbd, data.cdnow=cdnow,
-                                               data.apparelTrans=apparelTrans, data.apparelStaticCov=apparelStaticCov,
-                                               correct.start.params.model = c(r=1, alpha = 1, s = 1, beta = 1),
-                                               correct.params.nocov.coef = c(r=0.55315,   alpha=10.57633,  s=0.60625,   beta=11.67150),
-                                               correct.LL.nocov = -9594.976,
-                                               kkt2.true = TRUE)
+fct.testthat.correctness.clvfittedtransactions(
+  name.model = "PNBD",
+  method=pnbd,
+  correct.start.params.model = c(r=1, alpha = 1, s = 1, beta = 1),
+  correct.params.nocov.coef = c(r=0.55315,   alpha=10.57633,  s=0.60625,   beta=11.67150),
+  correct.LL.nocov = -9594.976,
+  kkt2.true = TRUE
+)
 
 
 # Recover parameters ---------------------------------------------------------------------------------
 
 # As also reported to compare against bgnbd in Fader, Hardie, Lee (2005)
 fct.testthat.correctness.clvfitted.correct.coefs(method = pnbd,
-                                                 cdnow = cdnow,
                                                  start.params.model = c(r=1, alpha = 1, s = 1, beta = 1),
                                                  params.nocov.coef = c(r=0.553,   alpha=10.578,  s=0.606,   beta=11.669),
                                                  LL.nocov = -9595.0)
 fct.testthat.correctness.clvfitted.nocov.correct.se(method = pnbd,
-                                                    cdnow = cdnow,
                                                     start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
                                                     params.nocov.se = c(r=0.0476264, alpha=0.8427222, s=0.1872594, beta=6.2105448))
 
@@ -45,7 +43,7 @@ test_that("Can calculate numerically stable PAlive that produced NaNs in previou
 
 test_that("Higher discount factor leads to smaller DERT", {
   skip_on_cran()
-  expect_silent(p.cdnow <- pnbd(fct.helper.create.clvdata.cdnow(cdnow), verbose = FALSE))
+  expect_silent(p.cdnow <- pnbd(fct.helper.create.clvdata.cdnow(), verbose = FALSE))
   expect_silent(dt.pred.1 <- predict(p.cdnow, continuous.discount.factor = 0.001,prediction.end = 6, verbose=FALSE))
   expect_silent(dt.pred.2 <- predict(p.cdnow, continuous.discount.factor = 0.06, prediction.end = 6, verbose=FALSE))
   expect_silent(dt.pred.3 <- predict(p.cdnow, continuous.discount.factor = 0.99, prediction.end = 6, verbose=FALSE))
@@ -60,7 +58,7 @@ test_that("Higher discount factor leads to smaller DERT", {
 test_that("Expectation in Rcpp matches expectation in R (nocov)", {
 
   skip_on_cran()
-  expect_silent(obj.fitted <- pnbd(fct.helper.create.clvdata.cdnow(cdnow), verbose = FALSE))
+  expect_silent(obj.fitted <- pnbd(fct.helper.create.clvdata.cdnow(), verbose = FALSE))
 
   params_i <- obj.fitted@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
 
@@ -86,9 +84,7 @@ test_that("Expectation in Rcpp matches expectation in R (staticcov)", {
   # To test correctly, fake that some customers only come alive later
   apparelTrans.later <- copy(apparelTrans)
   apparelTrans.later[Id %in% c("1", "10", "100"), Date := Date + lubridate::weeks(10)]
-  clv.apparel.static <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = apparelTrans.later,
-                                                                    data.apparelStaticCov = apparelStaticCov,
-                                                                    estimation.split = 38)
+  clv.apparel.static <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = apparelTrans.later)
 
   expect_silent(obj.fitted <- pnbd(clv.data = clv.apparel.static, verbose = FALSE))
 
