@@ -103,6 +103,7 @@ setMethod("clv.controlflow.predict.post.process.prediction.table", signature = s
 setMethod(f = "clv.fitted.bootstrap.predictions",signature = signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, num.boots, verbose){
 
   # Largely the same as for clv.fitted.transactions but with different arguments to predict()
+  # See there for more in-depth comments
 
 
   if(verbose){
@@ -117,9 +118,11 @@ setMethod(f = "clv.fitted.bootstrap.predictions",signature = signature(clv.fitte
   }
   pb.i <- 0
 
+
   boots.predict <- function(clv.boot){
     pb.i <<- pb.i + 1
     update.pb(n = pb.i)
+
     return(predict(
       object = clv.boot,
       verbose = FALSE,
@@ -130,9 +133,9 @@ setMethod(f = "clv.fitted.bootstrap.predictions",signature = signature(clv.fitte
     object = clv.fitted,
     num.boots = num.boots,
     fn.boot.apply = boots.predict,
-    fn.sample = NULL,
     verbose = FALSE,
-    start.params.model = clv.fitted@prediction.params.model
+    fn.sample = NULL
   )
+
   return(rbindlist(l.boots))
 })
