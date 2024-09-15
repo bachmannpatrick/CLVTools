@@ -1,3 +1,31 @@
+# CLVTools 0.11.0
+
+### NEW FEATURES
+* More memory efficient and faster creation of repeat transactions in `clv.data`
+* Use existing repeat transactions when calling `gg` with `remove.first.transaction = TRUE`
+* Simplify the formula interfaces `latentAttrition()` and `spending()`
+* Add `predicted.total.spending` to predictions
+* Harmonize parameter names used in various S3 methods
+* Bootstrapping: Add facilities to estimate parameter uncertainty for all models
+* Ability to predict future transactions of customers with no existing transaction history
+* New start parameters for all latent attrition models
+* Pareto/NBD dyncov: Improved numeric stability of PAlive
+* GGomNBD: Implement erratum by Jost Adler to predict CET correctly
+* GGomNBD: Improve numerical stability and runtime of LL integral
+* GGomNBD: Implement PMF as derived by Jost Adler
+* lrtest(): Likelihood ratio testing for latent attrition models
+* Accept `data.table::IDate` as data inputs to `clvdata`
+* `summary.clv.data`:Much faster by improving the calculation of the mean inter-purchase time
+* Reduced fitting times for all models by using a compressed CBS as input to the LL sum
+* Faster hessian calculation if a model was using correlation
+
+### BUG FIXES
+* Estimating the Pareto/NBD dyncov with correlation was not possible
+* GGomNBD: Free workspace after it is not used anymore to avoid memory-leak
+* `SetDynamicCovariates`: Verify there is no covariate data for nonexistent customers
+
+
+
 # CLVTools 0.10.0
 
 ### NEW FEATURES

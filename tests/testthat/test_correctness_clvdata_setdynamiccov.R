@@ -14,10 +14,10 @@ apparelTrans[, Date:=as.POSIXct(Date)]
 
 expect_message(clv.data.apparel.nohold   <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w"), regexp = "ignored")
 expect_message(clv.data.apparel.withhold <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w",
-                                                    estimation.split = 40), regexp = "ignored")
+                                                    estimation.split = 104), regexp = "ignored")
 
-l.std.args <- alist(data.cov.life  = apparelDynCov,  names.cov.life = c("Marketing", "Gender", "Channel"),
-                    data.cov.trans = apparelDynCov,  names.cov.trans = c("Marketing", "Gender", "Channel"),
+l.std.args <- alist(data.cov.life  = apparelDynCov,  names.cov.life = c("High.Season", "Gender", "Channel"),
+                    data.cov.trans = apparelDynCov,  names.cov.trans = c("High.Season", "Gender", "Channel"),
                     name.date = "Cov.Date")
 
 names.cov.id <- c("Id", "Cov.Date", "tp.cov.lower", "tp.cov.upper")
@@ -26,7 +26,7 @@ test_that("Factor and char covariates result in same dummies",{
 
   apparelDynCov.char <- data.table::copy(apparelDynCov)
   apparelDynCov.char[, Channel := as.character(Channel)]
-  apparelDynCov.char[, Marketing     := as.character(Marketing)]
+  apparelDynCov.char[, High.Season     := as.character(High.Season)]
   apparelDynCov.char[Gender == 1, Gender.char := "Y"]
   apparelDynCov.char[Gender == 0, Gender.char := "N"]
   apparelDynCov.char[, Gender := Gender.char]
@@ -34,7 +34,7 @@ test_that("Factor and char covariates result in same dummies",{
 
   apparelDynCov.factor <- data.table::copy(apparelDynCov.char)
   apparelDynCov.factor[, Channel := as.factor(Channel)]
-  apparelDynCov.factor[, Marketing     := as.factor(Marketing)]
+  apparelDynCov.factor[, High.Season     := as.factor(High.Season)]
   apparelDynCov.factor[, Gender := as.factor(Gender)]
 
   fct.char.vs.factor <- function(clv.data){
@@ -68,7 +68,7 @@ test_that("Cuts to correct range if more cov data before estimation start than n
     data.table::rbindlist(list(apparelDynCov,
                                data.table::data.table(Id=1, Cov.Date = seq(from=apparelDynCov[, min(Cov.Date)]-lubridate::weeks(1),
                                                                            by="-1 weeks",length.out = 10),
-                                                      Marketing=1, Gender=0, Channel=1)), use.names = TRUE)
+                                                      High.Season=1, Gender=0, Channel=1)), use.names = TRUE)
 
 
   fct.longer.lower.cov <- function(clv.data, dt.cov){
@@ -107,7 +107,7 @@ test_that("Single cov data longer than other data requires all data to be this l
     data.table::rbindlist(list(apparelDynCov,
                                data.table::data.table(Id=1, Cov.Date = seq(from=apparelDynCov[, max(Cov.Date)]+lubridate::weeks(1),
                                                                            length.out = 100, by = "week"),
-                                                      Marketing=1, Gender=0, Channel=1)), use.names = TRUE)
+                                                      High.Season=1, Gender=0, Channel=1)), use.names = TRUE)
   fct.longer.upper.cov <- function(clv.data, dt.cov){
     expect_error(dyn.longer.life  <- do.call(SetDynamicCovariates, modifyList(l.data, alist(data.cov.life=dt.cov))),
                  regexp = "covariate data need to have the same number of Dates")
@@ -157,7 +157,7 @@ test_that("Creates correct number of dummies - 3 categories",{
   skip_on_cran()
 
   apparelDynCov.3cat <- data.table::copy(apparelDynCov)
-  apparelDynCov.3cat[, Gender := c(rep(c("F", "M", "X"), nrow(apparelDynCov.3cat)/3))]
+  apparelDynCov.3cat[, Gender := rep_len(c("F", "M", "X"), nrow(apparelDynCov.3cat))]
 
   # Life
   expect_silent(dyn.cov <- SetDynamicCovariates(clv.data = clv.data.apparel.withhold,
@@ -253,7 +253,7 @@ test_that("Cov data column names are changed to syntactically valid names", {
   fct.test.data.cols.renamed <- function(new.names){
     apparelDynCov.named <- data.table::copy(apparelDynCov)
     data.table::setnames(apparelDynCov.named,
-                         old = c("Marketing", "Gender", "Channel"), new=new.names)
+                         old = c("High.Season", "Gender", "Channel"), new=new.names)
     expect_silent(clv.dyn.cov <- SetDynamicCovariates(clv.data = clv.data.apparel.withhold,
                                                      data.cov.life  = apparelDynCov.named, names.cov.life = new.names,
                                                      data.cov.trans = apparelDynCov.named, names.cov.trans = new.names,
@@ -268,7 +268,7 @@ test_that("Cov data column names are changed to syntactically valid names", {
   fct.test.data.cols.renamed(c("1", "2", "33"))
   fct.test.data.cols.renamed(c("1abc", "2xyz", ".3jik"))
   fct.test.data.cols.renamed(c("1Marketin g", "Gender ", "Chan nel"))
-  fct.test.data.cols.renamed(c("Marketing ", " Gender", "Channe l"))
+  fct.test.data.cols.renamed(c("High.Season ", " Gender", "Channe l"))
 
 })
 
@@ -278,8 +278,8 @@ test_that("Cov data was properly copied", {
   skip_on_cran()
 
   expect_silent(dyn.cov <- SetDynamicCovariates(clv.data = clv.data.apparel.withhold,
-                                                data.cov.life  = apparelDynCov, names.cov.life = c("Marketing", "Gender", "Channel"),
-                                                data.cov.trans = apparelDynCov, names.cov.trans = c("Marketing", "Gender", "Channel"),
+                                                data.cov.life  = apparelDynCov, names.cov.life = c("High.Season", "Gender", "Channel"),
+                                                data.cov.trans = apparelDynCov, names.cov.trans = c("High.Season", "Gender", "Channel"),
                                                 name.date = "Cov.Date"))
 
   # Cov data

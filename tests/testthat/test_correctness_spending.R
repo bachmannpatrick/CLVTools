@@ -4,7 +4,7 @@ data("apparelTrans")
 data("apparelStaticCov")
 
 
-clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split=37)
+clv.cdnow <- fct.helper.create.clvdata.cdnow()
 
 test_that("Same as standard interface", {
   skip_on_cran()

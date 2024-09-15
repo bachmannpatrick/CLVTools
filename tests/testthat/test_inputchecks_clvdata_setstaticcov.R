@@ -80,6 +80,19 @@ test_that("Fails if empty", {
                regexp = "empty")
 })
 
+test_that("Fails if has covariates for customers not in the transaction data", {
+  dt.cov.1additional <- data.table::copy(apparelStaticCov[1, ])
+  dt.cov.1additional[, Id := "ABC"]
+  apparelDemo.1additional <- rbindlist(list(
+    apparelStaticCov,
+    dt.cov.1additional
+  ))
+
+  expect_error(SetStaticCovariates(clv.data = clv.data.apparel,
+                                   data.cov.life  = apparelDemo.1additional, names.cov.life = "Gender",
+                                   data.cov.trans = apparelStaticCov, names.cov.trans = "Gender"),
+               regexp = "Every Id")
+})
 
 test_that("Fails if does not have covariates for all customers", {
   apparelDemo.1missing <- data.table::copy(apparelStaticCov)
@@ -144,6 +157,19 @@ test_that("Fails if empty", {
                regexp = "empty")
 })
 
+test_that("Fails if has covariates for customers not in the transaction data", {
+  dt.cov.1additional <- data.table::copy(apparelStaticCov[1, ])
+  dt.cov.1additional[, Id := "ABC"]
+  apparelDemo.1additional <- rbindlist(list(
+    apparelStaticCov,
+    dt.cov.1additional
+  ))
+
+  expect_error(SetStaticCovariates(clv.data = clv.data.apparel,
+                                   data.cov.life  = apparelStaticCov, names.cov.life = "Gender",
+                                   data.cov.trans = apparelDemo.1additional, names.cov.trans = "Gender"),
+               regexp = "Every Id")
+})
 
 test_that("Fails if does not have covariates for all customers", {
   apparelDemo.1missing <- data.table::copy(apparelStaticCov)

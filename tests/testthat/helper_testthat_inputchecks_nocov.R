@@ -187,27 +187,24 @@ fct.testthat.inputchecks.fails.for.start.params.subzero <- function(method, l.st
   })
 }
 
-fct.testthat.inputchecks.cannot.fit.without.spending <- function(method, data.cdnow){
+fct.testthat.inputchecks.cannot.fit.without.spending <- function(method){
   test_that("Cannot fit without spending data", {
     skip_on_cran()
-    expect_silent(clv.cdnow.no.spending <- clvdata(data.cdnow, name.price = NULL, date.format = "ymd", time.unit = "w",
-                                                   estimation.split = 37))
+    clv.cdnow.no.spending <- fct.helper.create.clvdata.cdnow(name.price = NULL)
     expect_error(do.call(method, list(clv.data = clv.cdnow.no.spending, verbose=FALSE)),
                  regexp = "spending data")
   })
 }
 
-fct.testthat.inputchecks.cannot.predict.without.spending <- function(method, data.cdnow, is.spending.model){
+fct.testthat.inputchecks.cannot.predict.without.spending <- function(method, is.spending.model){
   test_that("Spending fit cannot predict on newdata that has no spending", {
     skip_on_cran()
 
     # Fit with spending
-    l.args <- list(clv.data = clvdata(data.cdnow, name.price = "Price", date.format = "ymd", time.unit = "w", estimation.split = 37),
-                   verbose = FALSE)
-    expect_silent(clv.spending <- do.call(what = method, args = l.args))
+    clv.spending <- fit.cdnow(model = method)
 
     # Data without spending
-    expect_silent(clv.cdnow.nospending <- clvdata(data.cdnow, name.price = NULL, date.format = "ymd", time.unit = "w", estimation.split = 37))
+    clv.cdnow.nospending <- fct.helper.create.clvdata.cdnow(name.price = NULL)
 
     if(is.spending.model){
       expect_error(predict(clv.spending, newdata=clv.cdnow.nospending, verbose=FALSE),
@@ -233,7 +230,7 @@ fct.testthat.inputchecks.remove.first.transaction <- function(method, l.std.args
 
 .fct.testthat.inputchecks.clvfitted <- function(name.method, method,
                                                 l.std.args.noholdout, l.std.args.withholdout,
-                                                start.params.model, l.illegal.start.params.model, data.cdnow){
+                                                start.params.model, l.illegal.start.params.model){
 
 
   fct.testthat.inputchecks.startparamsmodel(method = method,
@@ -261,19 +258,19 @@ fct.testthat.inputchecks.remove.first.transaction <- function(method, l.std.args
 
 
 fct.testthat.inputchecks.clvfittedtransactions.nocov <- function(name.method, method, start.params.model, l.illegal.start.params.model,
-                                                                 has.cor, data.cdnow){
-  clv.data.cdnow.no.holdout   <- fct.helper.create.clvdata.cdnow(data.cdnow, estimation.split=NULL)
-  clv.data.cdnow.with.holdout <- fct.helper.create.clvdata.cdnow(data.cdnow, estimation.split=37)
+                                                                 has.cor){
+  clv.data.cdnow.no.holdout   <- fct.helper.create.clvdata.cdnow(estimation.split=NULL)
+  clv.data.cdnow.with.holdout <- fct.helper.create.clvdata.cdnow()
 
   l.std.args.noholdout   <- list(clv.data=clv.data.cdnow.no.holdout)
   l.std.args.withholdout <- list(clv.data=clv.data.cdnow.with.holdout)
 
   .fct.testthat.inputchecks.clvfitted(name.method=name.method, method=method, start.params.model=start.params.model,
                                       l.std.args.noholdout=l.std.args.noholdout, l.std.args.withholdout=l.std.args.withholdout,
-                                      l.illegal.start.params.model=l.illegal.start.params.model, data.cdnow=data.cdnow)
+                                      l.illegal.start.params.model=l.illegal.start.params.model)
 
 
-  fct.testthat.inputchecks.cannot.predict.without.spending(method = method, data.cdnow = data.cdnow, is.spending.model = FALSE)
+  fct.testthat.inputchecks.cannot.predict.without.spending(method = method, is.spending.model = FALSE)
 
   if(has.cor){
     fct.testthat.inputchecks.usecor(method = method, l.std.args = l.std.args.noholdout)
@@ -291,22 +288,21 @@ fct.testthat.inputchecks.clvfittedtransactions.nocov <- function(name.method, me
 }
 
 
-fct.testthat.inputchecks.clvfittedspending.nocov <- function(name.method, method, start.params.model, l.illegal.start.params.model,
-                                                             data.cdnow){
+fct.testthat.inputchecks.clvfittedspending.nocov <- function(name.method, method, start.params.model, l.illegal.start.params.model){
 
-  l.std.args.noholdout   <- list(clv.data=fct.helper.create.clvdata.cdnow(data.cdnow, estimation.split=NULL))
-  l.std.args.withholdout <- list(clv.data=fct.helper.create.clvdata.cdnow(data.cdnow, estimation.split=37))
+  l.std.args.noholdout   <- list(clv.data=fct.helper.create.clvdata.cdnow(estimation.split=NULL))
+  l.std.args.withholdout <- list(clv.data=fct.helper.create.clvdata.cdnow())
 
   .fct.testthat.inputchecks.clvfitted(name.method=name.method, method=method, start.params.model=start.params.model,
                                       l.std.args.noholdout=l.std.args.noholdout, l.std.args.withholdout=l.std.args.withholdout,
-                                      l.illegal.start.params.model=l.illegal.start.params.model, data.cdnow=data.cdnow)
+                                      l.illegal.start.params.model=l.illegal.start.params.model)
 
 
   fct.testthat.inputchecks.remove.first.transaction(method = method, l.std.args = l.std.args.noholdout)
   fct.testthat.inputchecks.remove.first.transaction(method = method, l.std.args = l.std.args.withholdout)
 
-  fct.testthat.inputchecks.cannot.fit.without.spending(method = method, data.cdnow = data.cdnow)
-  fct.testthat.inputchecks.cannot.predict.without.spending(method = method, data.cdnow = data.cdnow, is.spending.model = TRUE)
+  fct.testthat.inputchecks.cannot.fit.without.spending(method = method)
+  fct.testthat.inputchecks.cannot.predict.without.spending(method = method, is.spending.model = TRUE)
 }
 
 

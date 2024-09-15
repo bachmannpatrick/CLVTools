@@ -59,7 +59,7 @@ in combination with a probabilistic model predicting customer transaction such a
 \donttest{
 data("apparelTrans")
 clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
-                            time.unit = "w", estimation.split = 40)
+                            time.unit = "w", estimation.split = 52)
 
 # Fit the gg model
 gg(clv.data.apparel)

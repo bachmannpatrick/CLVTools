@@ -1,12 +1,10 @@
 skip_on_cran()
-data("cdnow")
 
 
 test_that("x is valid input (integer vector)", {
   skip_on_cran()
 
-  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split = NULL)
-  expect_silent(p.cdnow <- pnbd(clv.cdnow, verbose=FALSE))
+  p.cdnow <- fit.cdnow()
 
   expect_error(pmf(p.cdnow, x=NULL), regex="NULL")
   expect_error(pmf(p.cdnow, x=NA_real_), regex="any NA")

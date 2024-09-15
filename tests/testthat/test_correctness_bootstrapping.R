@@ -9,16 +9,14 @@ data("apparelDynCov")
 optimx.args.fast <- list(method='Nelder-Mead', itnmax=25, hessian=FALSE)
 
 # create with holdout
-clv.cdnow <- fct.helper.create.clvdata.cdnow(estimation.split=37)
+clv.cdnow <- fct.helper.create.clvdata.cdnow()
 
 # create with different covs for both processes
 clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(
-  estimation.split = 40,
   names.cov.life = c("Gender"),
   names.cov.trans = c("Gender", "Channel")
 )
 clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(
-  estimation.split = 40,
   names.cov.life = c("Gender"),
   names.cov.trans = c("Gender", "Channel")
 )
@@ -220,7 +218,7 @@ test_that("Correct model specification args for nocov models", {
   # caught while the other will bubble up/out
   expect_warning(expect_warning(p.cdnow <- pnbd(
     clv.cdnow,
-    start.params.model = c(alpha=1.23, r=2.34, beta=12.23, s=0.67),
+    start.params.model = c(r=0.5, alpha=15, s=0.5, beta=10),
     use.cor=TRUE,
     start.param.cor = c(cor=0.2),
     optimx.args = optimx.args.fast,
@@ -229,7 +227,7 @@ test_that("Correct model specification args for nocov models", {
   expect_mapequal(
     p.cdnow@model.specification.args,
     list(
-      start.params.model = c(alpha=1.23, r=2.34, beta=12.23, s=0.67),
+      start.params.model = c(r=0.5, alpha=15, s=0.5, beta=10),
       optimx.args = optimx.args.fast,
       verbose=FALSE,
       use.cor=TRUE,
@@ -267,7 +265,7 @@ test_that("Correct interface args for static covariate models", {
   # With options
   expect_warning(expect_warning(p.apparel.static <- pnbd(
     clv.apparel.cov,
-    start.params.model = c(alpha=1.23, r=2.34, beta=12.23, s=0.67),
+    start.params.model = c(r=0.5, alpha=15, s=0.5, beta=10),
     use.cor=TRUE,
     start.param.cor = c(cor=0.1),
     optimx.args = optimx.args.fast,
@@ -284,7 +282,7 @@ test_that("Correct interface args for static covariate models", {
   expect_mapequal(
     p.apparel.static@model.specification.args,
     list(
-      start.params.model = c(alpha=1.23, r=2.34, beta=12.23, s=0.67),
+      start.params.model = c(r=0.5, alpha=15, s=0.5, beta=10),
       optimx.args = optimx.args.fast,
       verbose = FALSE,
       names.cov.life="Gender",
@@ -309,7 +307,7 @@ test_that("Correct interface args for dynamic covariate models", {
     clv.apparel.dyn,
     optimx.args = optimx.args.fast,
     verbose = FALSE,
-    start.params.model = c(alpha=1.23, r=2.34, beta=12.23, s=0.67),
+    start.params.model = c(r=0.5, alpha=15, s=0.5, beta=10),
     use.cor = TRUE,
     start.param.cor = c(cor=0.2),
     names.cov.life="Gender",
@@ -326,7 +324,7 @@ test_that("Correct interface args for dynamic covariate models", {
     list(
       optimx.args = optimx.args.fast,
       verbose = FALSE,
-      start.params.model = c(alpha=1.23, r=2.34, beta=12.23, s=0.67),
+      start.params.model = c(r=0.5, alpha=15, s=0.5, beta=10),
       use.cor = TRUE,
       start.param.cor = c(cor=0.2),
       names.cov.life="Gender",
@@ -379,11 +377,11 @@ test_that("Correct args for spending models", {
 # clv.bootstrapped.apply ---------------------------------------------------------
 
 # with holdout
-p.cdnow <- fit.cdnow(cdnow, estimation.split = 37, model=pnbd, optimx.args = optimx.args.fast)
-bg.cdnow <- fit.cdnow(cdnow, estimation.split = 37, model=bgnbd, optimx.args = optimx.args.fast)
+p.cdnow <- fit.cdnow(cdnow, model=pnbd, optimx.args = optimx.args.fast)
+bg.cdnow <- fit.cdnow(cdnow, model=bgnbd, optimx.args = optimx.args.fast)
 bg.apparel.static <- fit.apparel.static(model = bgnbd, optimx.args = optimx.args.fast)
 p.apparel.dyn <- fit.apparel.dyncov.quick(hessian=FALSE)
-gg.cdnow <- fit.cdnow(cdnow, estimation.split = 37, model=gg, optimx.args = optimx.args.fast)
+gg.cdnow <- fit.cdnow(cdnow, model=gg, optimx.args = optimx.args.fast)
 
 test_that("Sampling all customers leads to same model estimate (nocov, static cov, dyncov, spending)", {
 

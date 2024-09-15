@@ -356,8 +356,13 @@ check_userinput_datadyncov_datadyncovspecific <- function(dt.data.dyn.cov, dt.re
   # Id checks ------------------------------------------------------------------------------------
 
   # every Id needs to be in covariate Id
-  if(nrow(fsetdiff(dt.required.ids, dt.data.dyn.cov[, "Id"])) > 0)
-    err.msg <- c(err.msg, paste0("Every Id in the transaction data needs to be in the ",name.of.covariate," covariate data as well!"))
+  if(!fsetequal(
+    x = dt.required.ids,
+    y = dt.data.dyn.cov[, "Id"],
+    all = FALSE # exact same count not required
+    )){
+    err.msg <- c(err.msg, paste0("Every Id in the transaction data needs to be in the ",name.of.covariate," covariate data and vice versa!"))
+  }
 
 
   # Date checks -----------------------------------------------------------------------------------

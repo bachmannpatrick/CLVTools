@@ -25,8 +25,8 @@ bg.apparel.static <- fit.apparel.static(model = bgnbd, names.cov.life = "Channel
 ggom.apparel.static <- fit.apparel.static(model = ggomnbd, names.cov.life = "Channel", names.cov.trans = c("Channel", "Gender"), optimx.args = optimx.args.fast)
 
 p.apparel.dyn <- fct.helper.dyncov.quickfit.apparel.data(
-  names.cov.life = c("Marketing", "Gender"),
-  names.cov.trans = c("Marketing", "Gender", "Channel")
+  names.cov.life = c("High.Season", "Gender"),
+  names.cov.trans = c("High.Season", "Gender", "Channel")
 )
 
 
@@ -99,7 +99,7 @@ default.dyn.cov.life <- function(cov.dates=cov.dates.nc.dyncov){
     Cov.Date=cov.dates,
     Gender=rep_len(0, length(cov.dates)),
     # Channel=rep_len(c(-12.2, 0, 2.4, 5.91, -0.3, -3.88), length(cov.dates)),
-    Marketing=rep_len(c(4, 0, 7, 2, 9, 0), length(cov.dates))))
+    High.Season=rep_len(c(4, 0, 7, 2, 9, 0), length(cov.dates))))
 }
 
 default.dyn.cov.trans <- function(cov.dates=cov.dates.nc.dyncov){
@@ -107,7 +107,7 @@ default.dyn.cov.trans <- function(cov.dates=cov.dates.nc.dyncov){
     Cov.Date=cov.dates,
     Gender=rep_len(0, length(cov.dates)),
     Channel=rep_len(c(0, 0, 2, 1.23, -1.23, -2), length(cov.dates)),
-    Marketing=rep_len(c(4, 0, 7, 2, 9, 0), length(cov.dates))))
+    High.Season=rep_len(c(4, 0, 7, 2, 9, 0), length(cov.dates))))
 }
 
 dt.cov.life.nc.dyncov <- default.dyn.cov.life()

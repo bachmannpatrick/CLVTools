@@ -4,18 +4,19 @@ data("apparelStaticCov")
 
 
 # Coefs are our estimate
-fct.testthat.correctness.clvfittedtransactions(name.model = "GGompertz/NBD", method=ggomnbd, data.cdnow=cdnow,
-                                               data.apparelTrans=apparelTrans, data.apparelStaticCov=apparelStaticCov,
-                                               correct.start.params.model = c(r = 0.5, alpha = 2, b = 0.5, s = 0.5, beta = 0.5),
-                                               correct.params.nocov.coef = c(r = 0.55313, alpha = 10.5758, b = 0.0000011, s = 0.60682, beta = 0.000013),
-                                               correct.LL.nocov = -9594.9762,
-                                               kkt2.true = FALSE)
+fct.testthat.correctness.clvfittedtransactions(
+  name.model = "GGompertz/NBD",
+  method=ggomnbd,
+  correct.start.params.model = c(r = 0.5, alpha = 2, b = 0.5, s = 0.5, beta = 0.5),
+  correct.params.nocov.coef = c(r = 0.55313, alpha = 10.5758, b = 0.0000011, s = 0.60682, beta = 0.000013),
+  correct.LL.nocov = -9594.9762,
+  kkt2.true = FALSE
+)
 
 
 # Bemmaor and Glady (2012)
 #   Table 2, p. 1018
 fct.testthat.correctness.clvfitted.correct.coefs(method = ggomnbd,
-                                                 cdnow = cdnow,
                                                  start.params.model = c(r = 0.5, alpha = 2, b = 0.5, s = 0.5, beta = 0.5),
                                                  params.nocov.coef = c(r = 0.553, alpha = 10.578, b = 0.0002, s = 0.603, beta = 0.0026),
                                                  LL.nocov = -9594.98)
@@ -23,7 +24,6 @@ fct.testthat.correctness.clvfitted.correct.coefs(method = ggomnbd,
 # No reliable data available for comparison. Paper information is not sufficient
 #   In the paper, no explanation is given on how the SEs were derived and they diverge substantially from ours for s and beta
 # fct.testthat.correctness.clvfitted.nocov.correct.se(method = ggomnbd,
-#                                           cdnow = cdnow,
 #                                           start.params.model = c(r = 0.5, alpha = 2, b = 0.5, s = 0.5, beta = 0.5),
 #                                           params.nocov.se = c(r = 0.049, alpha = 0.949, b = 0.0000, s = 0.039, beta = 0.0004))
 
@@ -54,9 +54,17 @@ fct.ggomnbd.expectation.R <- function(params_i.t){
 # To test expectation correctly, fake that some customers only come alive later
 apparelTrans.later <- copy(apparelTrans)
 apparelTrans.later[Id %in% c("1", "10", "100"), Date := Date + lubridate::weeks(10)]
-clv.apparel.static <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = apparelTrans.later,
-                                                                  data.apparelStaticCov = apparelStaticCov,
-                                                                  estimation.split = 38)
+
+# drop customers with very high number of transactions (x) which cannot be handled
+# by the matlab code
+ids.high.x <- apparelTrans.later[, .N, by='Id'][N>50, Id]
+apparelTrans.later <- apparelTrans.later[!(Id %in% ids.high.x)]
+
+clv.apparel.static <- fct.helper.create.clvdata.apparel.staticcov(
+  data.apparelTrans = apparelTrans.later,
+  data.apparelStaticCov = apparelStaticCov[Id %in% apparelTrans.later$Id]
+)
+
 expect_silent(clv.ggomnbd <- ggomnbd(clv.data = clv.apparel.static, verbose = FALSE))
 
 r     <- clv.ggomnbd@prediction.params.model[["r"]]
@@ -82,7 +90,7 @@ expect_silent(beta_i  <- beta  * exp( -m.cov.data.life  %*% clv.ggomnbd@predicti
 test_that("Expectation in Rcpp matches expectation in R (nocov)", {
   skip_on_cran()
 
-  expect_silent(fitted.cdnow <- ggomnbd(clv.data = fct.helper.create.clvdata.cdnow(cdnow), verbose = FALSE))
+  fitted.cdnow <- fit.cdnow(model=ggomnbd)
 
   params_i <- fitted.cdnow@cbs[, c("Id", "T.cal", "date.first.actual.trans")]
   params_i[, r       := fitted.cdnow@prediction.params.model[["r"]]]

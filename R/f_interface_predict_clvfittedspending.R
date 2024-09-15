@@ -36,7 +36,7 @@
 #'
 #' # Fit gg model on data
 #' apparel.holdout <- clvdata(apparelTrans, time.unit="w",
-#'                            estimation.split=37, date.format="ymd")
+#'                            estimation.split = 52, date.format = "ymd")
 #' apparel.gg <- gg(apparel.holdout)
 #'
 #' # Predict customers' future mean spending per transaction
