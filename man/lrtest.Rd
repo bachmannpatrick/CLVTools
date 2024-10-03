@@ -27,9 +27,10 @@ degrees of freedom, the difference in degrees of freedom, likelihood ratio
 Chi-squared statistic and corresponding p-value.
 }
 \description{
-\code{lrtest} carrys out likelihood ratio tests to compare nested CLV models.
+\code{lrtest} carries out likelihood ratio tests to compare nested CLV models
+of the same family that were fitted on the same transaction data.
 
-The method consecutively compares the first model given in \code{object} with all the
-other models passed in \code{...}. An asymptotic likelihood ratio test is carried out:
-Twice the difference in log-likelihoods is compared with a Chi-squared distribution.
+The method compares each two consecutive models.
+An asymptotic likelihood ratio test is carried out: Twice the difference in
+log-likelihoods is compared with a Chi-squared distribution.
 }
