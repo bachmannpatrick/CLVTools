@@ -191,7 +191,9 @@ predict.clv.fitted.transactions <- function(object, newdata=NULL, prediction.end
   uncertainty <- match.arg(tolower(uncertainty), choices = c("none", "boots"), several.ok = FALSE)
 
   # The usual prediction unless newdata indicates a new customer prediction (ie newdata=newcustomer())
+  # the newdata classes for static and dyncov inherit from `clv.newcustomer.no.cov`
   if(is(newdata, "clv.newcustomer.no.cov")){
+    # TODO: Check that is not newcustomer.spending()
     # not other parameters except object and newdata may be given (all others must be missing)
     if(!all(missing(prediction.end), missing(predict.spending), missing(continuous.discount.factor))){
       check_err_msg("Parameters prediction.end, predict.spending and continuous.discount.factor may not be specified when predicting for new customers.")

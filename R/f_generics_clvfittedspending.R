@@ -47,6 +47,17 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.spen
 })
 
 
+# . clv.controlflow.predict.new.customer -----------------------------------------------------------------------
+setMethod("clv.controlflow.predict.new.customer", signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, clv.newcustomer){
+
+  return(drop(clv.model.predict.new.customer(
+    clv.model = clv.fitted@clv.model,
+    clv.fitted = clv.fitted,
+    clv.newcustomer=clv.newcustomer
+  )))
+})
+
+
 # . clv.controlflow.predict.build.result.table -----------------------------------------------------------------
 setMethod("clv.controlflow.predict.build.result.table", signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, verbose, ...){
   dt.predictions <- copy(clv.fitted@cbs[, "Id"])
