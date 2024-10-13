@@ -1,14 +1,11 @@
 # Comment from the authors
-This is version 0.11.0 of the CLVTools package. It contains a wide range of changes compared to the previous version, the most relevant being: 
+This is version 0.11.1 of the CLVTools package. 
+The most relevant changes in this version are: 
 
-* Bootstrapping: Add facilities to estimate parameter uncertainty for all models
-* Simplify the formula interfaces `latentAttrition()` and `spending()`
-* Implement erratum and new expressions derived by fellow researchers
-* Reduced fitting times for all models by using compressed model data as input to the likelihood method
-* Ability to predict future transactions of customers with no existing transaction history
-* Improved numeric stability of various methods
-* lrtest(): Likelihood ratio testing for latent attrition models
-* Estimating the Pareto/NBD with time-varying covariates with process correlation was not possible
+* Updated the example data
+* Bootstrapping: Calculate confidence intervals using regular rather than "reversed-quantiles"
+
+
 
 # Test environments
 

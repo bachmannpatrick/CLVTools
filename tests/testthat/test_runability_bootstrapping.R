@@ -50,7 +50,7 @@ fct.testthat.clv.bootstrapped.apply.ellipsis.works <- function(clv.fitted){
 # all sorts of plotting etc work
 
 test_that("All clv.data methods work on bootstrapped clv.data", {
-  clv.data.dyn <- fct.helper.create.clvdata.apparel.dyncov(estimation.split=40)
+  clv.data.dyn <- fct.helper.create.clvdata.apparel.dyncov(estimation.split=104)
 
   expect_silent(clv.boots <- clv.data.create.bootstrapping.data(
     clv.data.dyn,
@@ -80,18 +80,23 @@ test_that("All clv.data methods work on bootstrapped clv.data", {
 
 # No cov models ---------------------------------------------------------------
 
+# Optimx args:
+#  - use Nelder-Mead which is less prone to lead failed estimation on bootstrapped data
+#  - restrict max iterations to reduce runtime as NelderMead takes longer to converge
+optimx.args.NM <- list(method='Nelder-Mead', itnmax=100)
+
 clv.apparel.nocov.holdout <- fct.helper.create.clvdata.apparel.nocov()
 clv.apparel.nocov.no.holdout <- fct.helper.create.clvdata.apparel.nocov(estimation.split=NULL)
 
 for(clv.fitted in list(
-  fit.apparel.nocov(model=pnbd, estimation.split=40),
-  fit.apparel.nocov(model=pnbd, estimation.split=NULL),
+  fit.apparel.nocov(model=pnbd, estimation.split=104, optimx.args=optimx.args.NM),
+  fit.apparel.nocov(model=pnbd, estimation.split=NULL, optimx.args=optimx.args.NM),
 
-  fit.apparel.nocov(model=bgnbd, estimation.split=40),
-  fit.apparel.nocov(model=bgnbd, estimation.split=NULL),
+  fit.apparel.nocov(model=bgnbd, estimation.split=104, optimx.args=optimx.args.NM),
+  fit.apparel.nocov(model=bgnbd, estimation.split=NULL, optimx.args=optimx.args.NM),
 
-  fit.apparel.nocov(model=ggomnbd, estimation.split=40),
-  fit.apparel.nocov(model=ggomnbd, estimation.split=NULL)
+  fit.apparel.nocov(model=ggomnbd, estimation.split=104, optimx.args=optimx.args.NM),
+  fit.apparel.nocov(model=ggomnbd, estimation.split=NULL, optimx.args=optimx.args.NM)
   )){
 
   # . clv.bootstrapped.apply ----------------------------------------------------
@@ -114,19 +119,19 @@ for(clv.fitted in list(
 
 
 # Static cov models -----------------------------------------------------------
-clv.apparel.static.holdout <- fct.helper.create.clvdata.apparel.staticcov(estimation.split=40)
+clv.apparel.static.holdout <- fct.helper.create.clvdata.apparel.staticcov(estimation.split=104)
 clv.apparel.static.no.holdout <- fct.helper.create.clvdata.apparel.staticcov(estimation.split=NULL)
 
 
 for(clv.fitted in list(
-  fit.apparel.static(model=pnbd, estimation.split=NULL),
-  fit.apparel.static(model=pnbd, estimation.split=40),
+  fit.apparel.static(model=pnbd, estimation.split=NULL, optimx.args=optimx.args.NM),
+  fit.apparel.static(model=pnbd, estimation.split=104, optimx.args=optimx.args.NM),
 
-  fit.apparel.static(model=bgnbd, estimation.split=NULL),
-  fit.apparel.static(model=bgnbd, estimation.split=40),
+  fit.apparel.static(model=bgnbd, estimation.split=NULL, optimx.args=optimx.args.NM),
+  fit.apparel.static(model=bgnbd, estimation.split=104, optimx.args=optimx.args.NM),
 
-  fit.apparel.static(model=ggomnbd, estimation.split=NULL),
-  fit.apparel.static(model=ggomnbd, estimation.split=40)
+  fit.apparel.static(model=ggomnbd, estimation.split=NULL, optimx.args=optimx.args.NM),
+  fit.apparel.static(model=ggomnbd, estimation.split=104, optimx.args=optimx.args.NM)
   )){
 
   # . clv.bootstrapped.apply ----------------------------------------------------
@@ -153,7 +158,7 @@ clv.apparel.dyn.no.holdout <- fct.helper.create.clvdata.apparel.dyncov(estimatio
 
 for(clv.fitted in list(
   fit.apparel.dyncov.quick(estimation.split=NULL, hessian=FALSE),
-  fit.apparel.dyncov.quick(estimation.split=40, hessian=FALSE)
+  fit.apparel.dyncov.quick(estimation.split=104, hessian=FALSE)
 )){
 
   # . clv.bootstrapped.apply ----------------------------------------------------
@@ -269,21 +274,22 @@ test_that("predict(boots) works on all model specifications", {
     expect_warning(predict(clv.fitted, uncertainty='boots', num.boots=2, predict.spending=TRUE, verbose=FALSE), regexp = 'recommended to run')
   }
 
-  p.cor <- fit.apparel.nocov(use.cor=TRUE, verbose=FALSE)
+  p.cor <- fit.apparel.nocov(use.cor=TRUE, verbose=FALSE, optimx.args=optimx.args.NM)
   fn.predict.boots(p.cor)
 
-  bg.reg <- fit.apparel.static(model=bgnbd, reg.lambdas = c(trans=10, life=20), verbose=FALSE)
+  bg.reg <- fit.apparel.static(model=bgnbd, reg.lambdas = c(trans=10, life=20), verbose=FALSE, optimx.args=optimx.args.NM)
   fn.predict.boots(bg.reg)
 
-  ggom.constr <- fit.apparel.static(model=ggomnbd, names.cov.constr = "Gender", verbose=FALSE)
+  ggom.constr <- fit.apparel.static(model=ggomnbd, names.cov.constr = "Channel", verbose=FALSE, optimx.args=optimx.args.NM)
   fn.predict.boots(ggom.constr)
 
   p.combo <- fit.apparel.static(
     model=pnbd,
     use.cor=TRUE,
-    names.cov.constr = "Gender",
+    names.cov.constr = "Channel",
     reg.lambdas = c(trans=20, life=30),
-    verbose=FALSE)
+    verbose=FALSE,
+    optimx.args=optimx.args.NM)
   fn.predict.boots(p.combo)
 
 
@@ -291,8 +297,8 @@ test_that("predict(boots) works on all model specifications", {
   expect_warning(p.dyn.combo <- fit.apparel.dyncov(
     model=pnbd,
     use.cor=TRUE,
-    names.cov.constr = "Gender",
-    reg.lambdas = c(trans=20, life=30),
+    names.cov.constr = "Channel",
+    reg.lambdas = c(trans=5, life=5),
     verbose=FALSE,
     optimx.args = fct.helper.dyncov.get.optimxargs.quickfit(hessian=FALSE)
     ))

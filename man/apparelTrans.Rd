@@ -5,7 +5,7 @@
 \alias{apparelTrans}
 \title{Apparel Retailer Dataset}
 \format{
-A \code{data.table} with 2353 rows and 3 variables:
+A \code{data.table} with 3,187 rows and 3 variables:
 \describe{
   \item{\code{Id}}{Customer Id}
   \item{\code{Date}}{Date of purchase}
@@ -17,7 +17,7 @@ data("apparelTrans")
 }
 \description{
 This is a simulated dataset containing the entire purchase history of customers made their first purchase at an
-apparel retailer on January 3rd 2005. In total the dataset contains 250 customers who made
-3648 transactions between January 2005 and mid July 2006.
+apparel retailer on January 2nd 2005. In total the dataset contains 600 customers who made
+3,187 transactions between January 2005 and end of December 2010.
 }
 \keyword{datasets}

@@ -1,11 +1,7 @@
 skip_on_cran()
-data("cdnow")
-data("apparelTrans")
-data("apparelStaticCov")
-data("apparelDynCov")
 
 # nocov ---------------------------------------------------------------------------------
-clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+clv.cdnow <- fct.helper.create.clvdata.cdnow()
 
 
 test_that("Works out of the box with all models (family unevaluated)", {
@@ -51,7 +47,7 @@ test_that("Works with correlation", {
 
 
 # static cov ------------------------------------------------------------------------------------
-clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(apparelTrans, apparelStaticCov, estimation.split = NULL)
+clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(estimation.split = NULL)
 
 test_that("Every model works without specials", {
   skip_on_cran()
@@ -88,7 +84,7 @@ test_that("Works with . and excluding covs", {
 
 
 # dyn cov ------------------------------------------------------------------------------------
-clv.apparel.dyn.cov <- fct.helper.create.clvdata.apparel.dyncov(data.apparelTrans=apparelTrans,  data.apparelDynCov=apparelDynCov, estimation.split=40)
+clv.apparel.dyn.cov <- fct.helper.create.clvdata.apparel.dyncov()
 
 test_that("Works with . and excluding covs", {
   skip_on_cran()

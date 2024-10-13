@@ -1,3 +1,15 @@
+# CLVTools 0.11.1
+
+### NEW FEATURES
+* Updated the apparel example data
+* Prediction bootstrapping: Calculate confidence intervals using regular rather than "reversed-quantiles"
+
+### BUG FIXES
+* Prediction bootstrapping: Re-fit model using exact original specification
+* GGomNBD: Set limit in integration method to size of workspace
+
+
+
 # CLVTools 0.11.0
 
 ### NEW FEATURES

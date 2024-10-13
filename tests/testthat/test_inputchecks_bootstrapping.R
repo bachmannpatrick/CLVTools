@@ -2,7 +2,7 @@
 
 # with holdout to not require `prediction.end` and can use same call to `predict`
 # also for spending model
-bg.cdnow <- fit.cdnow(model=bgnbd, estimation.split=37)
+bg.cdnow <- fit.cdnow(model=bgnbd)
 
 test_that("clv.bootstrapped.apply(num.boot) may only be an integer > 0", {
   fn.expect.num.boot.greater0 <- function(n){
@@ -59,7 +59,7 @@ test_that("clv.bootstrapped.apply(fn.sample) may only be a function", {
 
 
 # predict ----------------------------------------------------------------------
-gg.cdnow <- fit.cdnow(model=gg, estimation.split=37)
+gg.cdnow <- fit.cdnow(model=gg)
 
 # . transaction model ----------------------------------------------------------
 

@@ -1,7 +1,7 @@
 skip_on_cran()
 data("cdnow")
 
-clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+clv.cdnow <- fct.helper.create.clvdata.cdnow()
 
 # data -----------------------------------------------------------------------------------------------
 test_that("Fails if data is not clv.data", {

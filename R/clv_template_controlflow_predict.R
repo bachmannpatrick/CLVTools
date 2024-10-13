@@ -75,40 +75,33 @@ clv.controlflow.predict.add.uncertainty.estimates <- function(clv.fitted, dt.pre
     message("Calculating confidence intervals...")
   }
 
-  # Customers that are sampled multiple times are added to the boostrapping data with suffix "_BOOTSID_<i?"
+  # Customers that are sampled multiple times are added to the boostrapping data with suffix "_BOOTSID_<i>"
   # Remove this suffix again to get the original Id and calculate the quantiles across a single customers multiple draws
   # regex: "ends with _BOOTSTRAP_ID_<one or more digits>"
   dt.boots[, Id := sub("_BOOTSTRAP_ID_[0-9]+$", "", Id)]
 
-  # quantiles for each predicted quantity
-  # select only the existing ones
+  # quantiles for each predicted quantity: select only the existing ones
   cols.predictions <- c("PAlive", "CET", "DERT", "DECT", "predicted.mean.spending", "predicted.total.spending", "predicted.CLV")
   cols.predictions <- cols.predictions[cols.predictions %in% colnames(dt.boots)]
 
   # Long-format for easier handling of different prediction columns
   dt.boots <- melt(dt.boots, id.vars="Id", measure.vars=cols.predictions, variable.name="variable", value.name="value")
-  dt.predictions.long <- melt(dt.predictions, id.vars="Id", measure.vars=cols.predictions, variable.name="variable", value.name="value")
 
-  # Calculate quantiles for each customer and prediction column
-  #
-  # Reversed quantiles
-  #   [theta_star - q_upper(diff), theta_star - q_lower(diff)]
-  #   where diff = theta_boot - theta_star
-  # Note that q_upper is used for the lower boundary and q_lower for the upper boundary while subtracting in both cases.
-  # Therefore quantile(probs=) is reversed.
+  ci.levels <- c((1-level)/2, 1-(1-level)/2)
 
-  # Calculate difference between bootstrapped and regular predictions
-  dt.boots[dt.predictions.long, value.star := i.value, on=c("Id", "variable")]
-  dt.boots[, value.diff := value - value.star]
+  # create names outside table to avoid doing it for each customer
+  # only post-fix which is then appended to the content of col `variable`
+  ci.post.fixes <- paste0(".CI.", ci.levels*100)
 
-  levels <- c((1-level)/2, 1-(1-level)/2)
-  name.levels <- paste0(".CI.", levels*100) # outside table to avoid doing it for each customer
-
+  # Calculate quantiles for each customer and prediction column, using
+  # ordinary quantiles
   dt.CI <- dt.boots[, list(
-    ci.name=name.levels,
-    # Have to use value.star[1] because there are >1 row if sampled more than once.
-    # names=FALSE is considerably faster.
-    ci.value = value.star[1] - quantile(value.diff, probs = rev(levels), names = FALSE)),
+    # store the lower and upper CI name directly with the calculated value
+    # this might could be moved to `ci.name := paste0(variable, ci.name)` but to
+    # be sure the
+    ci.name=ci.post.fixes,
+    # names=FALSE is considerably faster
+    ci.value = quantile(value, probs = ci.levels, names = FALSE)),
     keyby=c("Id", "variable")]
 
   # Presentable names

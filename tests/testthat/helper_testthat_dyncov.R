@@ -1,4 +1,3 @@
-
 fct.helper.dyncov.create.longer.dyncov.data <- function(num.additional, data.apparelDynCov){
 
   # Add additional <num.additional> weeks of fake cov data for all Ids
@@ -6,7 +5,7 @@ fct.helper.dyncov.create.longer.dyncov.data <- function(num.additional, data.app
                                    Cov.Date = seq(from=apparelDynCov[, max(Cov.Date)]+lubridate::weeks(1),
                                                   length.out = num.additional, by = "week"), stringsAsFactors = FALSE)
   setDT(dt.additional.cov)
-  dt.additional.cov[, Marketing := rep(c(0,1,2,3),.N/4)]
+  dt.additional.cov[, High.Season := rep(c(0,1,1,0),.N/4)]
   dt.additional.cov[, Gender    := rep(c(0,1),.N/2)]
   dt.additional.cov[, Channel   := rep(c(0,1),.N/2)]
 
