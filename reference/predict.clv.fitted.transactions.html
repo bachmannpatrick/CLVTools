@@ -57,7 +57,7 @@ See examples and newcustomer for more details.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.1</span>
       </span>
     </div>
 
@@ -293,12 +293,16 @@ to delta=ln(1+d)/k, where k are the number of time units in a year.</p>
 These provide an estimate of parameter uncertainty.
 To create bootstrapped data, customer ids are sampled with replacement until reaching original
 length and all transactions of the sampled customers are used to create a new <code>clv.data</code> object.
-A new model is fit on the bootstrapped data with the same specification as <code>object</code>
-(incl. start parameters and `optimx.args`) and it is then used to predict on this data.
-All prediction parameters, incl <code>prediction.end</code> and <code>continuous.discount.factor</code>, are forwarded
+A new model is fit on the bootstrapped data with the exact same specification as used when
+fitting <code>object</code> (incl. start parameters and `optimx.args`) and it is then used to predict on this data.</p>
+<p>It is highly recommended to fit the original model (<code>object</code>) with a robust optimization
+method, such as Nelder-Mead (<code>optimx.args=list(method='Nelder-Mead')</code>).
+This ensures that the model can also be fit on the bootstrapped data.</p>
+<p>All prediction parameters, incl <code>prediction.end</code> and <code>continuous.discount.factor</code>, are forwarded
 to the prediction on the bootstrapped data.
-Per customer, confidence intervals of each predicted metric are created using a "reversed quantile" approach.
-See <a href="clv.bootstrapped.apply.html">clv.bootstrapped.apply</a> to create a custom bootstrapping procedure.</p>
+Per customer, the boundaries of the confidence intervals of each predicted metric are the
+sample quantiles (<code>quantile(x, probs=c((1-level)/2, 1-(1-level)/2)</code>).</p>
+<p>See <a href="clv.bootstrapped.apply.html">clv.bootstrapped.apply</a> to create a custom bootstrapping procedure.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -317,299 +321,299 @@ See <a href="clv.bootstrapped.apply.html">clv.bootstrapped.apply</a> to create a
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelTrans"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Fit pnbd standard model on data, WITH holdout</span></span></span>
 <span class="r-in"><span><span class="va">apparel.holdout</span> <span class="op">&lt;-</span> <span class="fu"><a href="clvdata.html">clvdata</a></span><span class="op">(</span><span class="va">apparelTrans</span>, time.unit<span class="op">=</span><span class="st">"w"</span>,</span></span>
-<span class="r-in"><span>                           estimation.split<span class="op">=</span><span class="fl">37</span>, date.format<span class="op">=</span><span class="st">"ymd"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                           estimation.split<span class="op">=</span><span class="fl">52</span>, date.format<span class="op">=</span><span class="st">"ymd"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">apparel.pnbd</span> <span class="op">&lt;-</span> <span class="fu"><a href="pnbd.html">pnbd</a></span><span class="op">(</span><span class="va">apparel.holdout</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimation finished!</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Predict until the end of the holdout period</span></span></span>
 <span class="r-in"><span><span class="fu">predict</span><span class="op">(</span><span class="va">apparel.pnbd</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2005-09-20 until (incl.) 2006-07-16 (42.86 Weeks).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2006-01-02 until (incl.) 2010-12-20 (259.14 Weeks).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating gg model to predict spending...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimation finished!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Key: &lt;Id&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          Id period.first period.last period.length actual.x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;char&gt;       &lt;Date&gt;      &lt;Date&gt;         &lt;num&gt;    &lt;int&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      1   2005-09-20  2006-07-16      42.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     10   2005-09-20  2006-07-16      42.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:    100   2005-09-20  2006-07-16      42.85714       23</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:   1000   2005-09-20  2006-07-16      42.85714       25</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:   1001   2005-09-20  2006-07-16      42.85714       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      1   2006-01-02  2010-12-20      259.1429        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     10   2006-01-02  2010-12-20      259.1429        2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:    100   2006-01-02  2010-12-20      259.1429        9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:    101   2006-01-02  2010-12-20      259.1429        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:    102   2006-01-02  2010-12-20      259.1429        0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246:   1219   2005-09-20  2006-07-16      42.85714       14</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247:    122   2005-09-20  2006-07-16      42.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248:   1220   2005-09-20  2006-07-16      42.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249:   1221   2005-09-20  2006-07-16      42.85714        9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250:   1222   2005-09-20  2006-07-16      42.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      actual.total.spending    PAlive        CET      DERT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                      &lt;num&gt;     &lt;num&gt;      &lt;num&gt;     &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                  0.00 0.3908705  0.2695076 0.0705440</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                  0.00 0.4683273  1.1454855 0.2998325</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                737.53 0.9858250 16.2632775 4.2569363</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:               1120.41 0.9948485 12.9174313 3.3811563</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                364.00 0.6492819  5.0092842 1.3111874</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246:                413.76 0.9859129  4.1431118 1.0844655</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247:                  0.00 0.3908705  0.2695076 0.0705440</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248:                  0.00 0.3908705  0.2695076 0.0705440</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249:                302.65 0.9762824  4.9600134 1.2982907</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250:                  0.00 0.4471444  0.7009915 0.1834855</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:     95   2006-01-02  2010-12-20      259.1429        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:     96   2006-01-02  2010-12-20      259.1429        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:     97   2006-01-02  2010-12-20      259.1429        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:     98   2006-01-02  2010-12-20      259.1429        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:     99   2006-01-02  2010-12-20      259.1429        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      actual.total.spending    PAlive      CET       DERT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      &lt;num&gt;     &lt;num&gt;    &lt;num&gt;      &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                524.10 0.9162891 4.081243 0.21733995</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                 63.31 0.8411075 3.746377 0.19950721</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                333.35 0.6575400 1.659795 0.08838968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                  0.00 0.8946137 3.984698 0.21219864</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                  0.00 0.6575400 1.659795 0.08838968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:                113.80 0.9400738 4.187182 0.22298158</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:                253.61 0.6575400 1.659795 0.08838968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:                  0.00 0.6575400 1.659795 0.08838968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:                  0.00 0.9655367 4.300596 0.22902127</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:                 13.99 0.9384834 5.991230 0.31905325</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      predicted.mean.spending predicted.total.spending predicted.CLV</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                        &lt;num&gt;                    &lt;num&gt;         &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                40.39473                 10.88669      2.849606</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                57.49121                 65.85534     17.237731</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                43.83628                712.92159    186.608253</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                43.46097                561.40408    146.948327</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                46.17637                231.31054     60.545866</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                63.77959                260.30000     13.861854</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                38.10316                142.74877      7.601854</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                37.12434                 61.61878      3.281408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                33.08404                131.82992      7.020388</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                37.12434                 61.61878      3.281408</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246:                33.20726                137.58140     36.012131</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247:                40.39473                 10.88669      2.849606</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248:                40.39473                 10.88669      2.849606</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249:                34.00868                168.68352     44.153154</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250:                48.80122                 34.20924      8.954317</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:                28.29614                118.48111      6.309519</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:                37.12434                 61.61878      3.281408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:                37.12434                 61.61878      3.281408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:                34.87739                149.99357      7.987664</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:                16.11315                 96.53757      5.140952</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Predict until 10 periods (weeks in this case) after</span></span></span>
 <span class="r-in"><span><span class="co">#   the end of the 37 weeks fitting period</span></span></span>
 <span class="r-in"><span><span class="fu">predict</span><span class="op">(</span><span class="va">apparel.pnbd</span>, prediction.end <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="co"># ends on 2010-11-28</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2005-09-20 until (incl.) 2005-11-28 (10 Weeks).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2006-01-02 until (incl.) 2006-03-12 (10 Weeks).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating gg model to predict spending...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimation finished!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Key: &lt;Id&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          Id period.first period.last period.length actual.x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;char&gt;       &lt;Date&gt;      &lt;Date&gt;         &lt;int&gt;    &lt;int&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      1   2005-09-20  2005-11-28            10        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     10   2005-09-20  2005-11-28            10        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:    100   2005-09-20  2005-11-28            10        6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:   1000   2005-09-20  2005-11-28            10        9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:   1001   2005-09-20  2005-11-28            10        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      1   2006-01-02  2006-03-12            10        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     10   2006-01-02  2006-03-12            10        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:    100   2006-01-02  2006-03-12            10        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:    101   2006-01-02  2006-03-12            10        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:    102   2006-01-02  2006-03-12            10        0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246:   1219   2005-09-20  2005-11-28            10        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247:    122   2005-09-20  2005-11-28            10        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248:   1220   2005-09-20  2005-11-28            10        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249:   1221   2005-09-20  2005-11-28            10        4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250:   1222   2005-09-20  2005-11-28            10        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      actual.total.spending    PAlive        CET      DERT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                      &lt;num&gt;     &lt;num&gt;      &lt;num&gt;     &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                  0.00 0.3908705 0.06947848 0.0705440</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                  0.00 0.4683273 0.29530372 0.2998325</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                134.15 0.9858250 4.19263832 4.2569363</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                318.20 0.9948485 3.33008629 3.3811563</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                118.22 0.6492819 1.29138281 1.3111874</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246:                 93.92 0.9859129 1.06808542 1.0844655</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247:                  0.00 0.3908705 0.06947848 0.0705440</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248:                  0.00 0.3908705 0.06947848 0.0705440</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249:                 91.80 0.9762824 1.27868090 1.2982907</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250:                  0.00 0.4471444 0.18071411 0.1834855</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:     95   2006-01-02  2006-03-12            10        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:     96   2006-01-02  2006-03-12            10        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:     97   2006-01-02  2006-03-12            10        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:     98   2006-01-02  2006-03-12            10        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:     99   2006-01-02  2006-03-12            10        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      actual.total.spending    PAlive        CET       DERT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      &lt;num&gt;     &lt;num&gt;      &lt;num&gt;      &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                131.07 0.9162891 0.21100460 0.21733995</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                  0.00 0.8411075 0.19369167 0.19950721</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                  0.00 0.6575400 0.08581316 0.08838968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                  0.00 0.8946137 0.20601315 0.21219864</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                  0.00 0.6575400 0.08581316 0.08838968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:                  0.00 0.9400738 0.21648178 0.22298158</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:                  0.00 0.6575400 0.08581316 0.08838968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:                  0.00 0.6575400 0.08581316 0.08838968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:                  0.00 0.9655367 0.22234542 0.22902127</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:                  0.00 0.9384834 0.30975300 0.31905325</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      predicted.mean.spending predicted.total.spending predicted.CLV</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                        &lt;num&gt;                    &lt;num&gt;         &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                40.39473                 2.806565      2.849606</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                57.49121                16.977367     17.237731</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                43.83628               183.789668    186.608253</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                43.46097               144.728777    146.948327</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                46.17637                59.631364     60.545866</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                63.77959                13.457787     13.861854</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                38.10316                 7.380264      7.601854</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                37.12434                 3.185757      3.281408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                33.08404                 6.815748      7.020388</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                37.12434                 3.185757      3.281408</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246:                33.20726                35.468193     36.012131</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247:                40.39473                 2.806565      2.849606</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248:                40.39473                 2.806565      2.849606</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249:                34.00868                43.486252     44.153154</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250:                48.80122                 8.819068      8.954317</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:                28.29614                 6.125600      6.309519</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:                37.12434                 3.185757      3.281408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:                37.12434                 3.185757      3.281408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:                34.87739                 7.754827      7.987664</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:                16.11315                 4.991095      5.140952</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Predict until 31th Dec 2016 with the timepoint as a character</span></span></span>
 <span class="r-in"><span><span class="fu">predict</span><span class="op">(</span><span class="va">apparel.pnbd</span>, prediction.end <span class="op">=</span> <span class="st">"2016-12-31"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2005-09-20 until (incl.) 2016-12-31 (588.71 Weeks).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2006-01-02 until (incl.) 2016-12-31 (573.86 Weeks).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating gg model to predict spending...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimation finished!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Key: &lt;Id&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          Id period.first period.last period.length    PAlive        CET</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;char&gt;       &lt;Date&gt;      &lt;Date&gt;         &lt;num&gt;     &lt;num&gt;      &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      1   2005-09-20  2016-12-31      588.7143 0.3908705   2.095780</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     10   2005-09-20  2016-12-31      588.7143 0.4683273   8.907673</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:    100   2005-09-20  2016-12-31      588.7143 0.9858250 126.468606</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:   1000   2005-09-20  2016-12-31      588.7143 0.9948485 100.450204</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:   1001   2005-09-20  2016-12-31      588.7143 0.6492819  38.953845</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246:   1219   2005-09-20  2016-12-31      588.7143 0.9859129  32.218203</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247:    122   2005-09-20  2016-12-31      588.7143 0.3908705   2.095780</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248:   1220   2005-09-20  2016-12-31      588.7143 0.3908705   2.095780</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249:   1221   2005-09-20  2016-12-31      588.7143 0.9762824  38.570699</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250:   1222   2005-09-20  2016-12-31      588.7143 0.4471444   5.451141</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           DERT predicted.mean.spending predicted.total.spending predicted.CLV</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          &lt;num&gt;                   &lt;num&gt;                    &lt;num&gt;         &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1: 0.0705440                40.39473                 84.65847      2.849606</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2: 0.2998325                57.49121                512.11286     17.237731</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3: 4.2569363                43.83628               5543.91326    186.608253</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4: 3.3811563                43.46097               4365.66317    146.948327</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5: 1.3111874                46.17637               1798.74698     60.545866</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                                         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246: 1.0844655                33.20726               1069.87835     36.012131</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247: 0.0705440                40.39473                 84.65847      2.849606</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248: 0.0705440                40.39473                 84.65847      2.849606</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249: 1.2982907                34.00868               1311.73864     44.153154</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250: 0.1834855                48.80122                266.02230      8.954317</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          Id period.first period.last period.length    PAlive       CET</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;char&gt;       &lt;Date&gt;      &lt;Date&gt;         &lt;num&gt;     &lt;num&gt;     &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      1   2006-01-02  2016-12-31      573.8571 0.9162891  7.439917</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     10   2006-01-02  2016-12-31      573.8571 0.8411075  6.829472</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:    100   2006-01-02  2016-12-31      573.8571 0.6575400  3.025729</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:    101   2006-01-02  2016-12-31      573.8571 0.8946137  7.263921</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:    102   2006-01-02  2016-12-31      573.8571 0.6575400  3.025729</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:     95   2006-01-02  2016-12-31      573.8571 0.9400738  7.633040</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:     96   2006-01-02  2016-12-31      573.8571 0.6575400  3.025729</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:     97   2006-01-02  2016-12-31      573.8571 0.6575400  3.025729</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:     98   2006-01-02  2016-12-31      573.8571 0.9655367  7.839788</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:     99   2006-01-02  2016-12-31      573.8571 0.9384834 10.921736</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            DERT predicted.mean.spending predicted.total.spending predicted.CLV</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           &lt;num&gt;                   &lt;num&gt;                    &lt;num&gt;         &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1: 0.21733995                63.77959                 474.5149     13.861854</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2: 0.19950721                38.10316                 260.2244      7.601854</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3: 0.08838968                37.12434                 112.3282      3.281408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4: 0.21219864                33.08404                 240.3199      7.020388</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5: 0.08838968                37.12434                 112.3282      3.281408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596: 0.22298158                28.29614                 215.9856      6.309519</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597: 0.08838968                37.12434                 112.3282      3.281408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598: 0.08838968                37.12434                 112.3282      3.281408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599: 0.22902127                34.87739                 273.4313      7.987664</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600: 0.31905325                16.11315                 175.9835      5.140952</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Predict until 31th Dec 2016 with the timepoint as a Date</span></span></span>
 <span class="r-in"><span><span class="fu">predict</span><span class="op">(</span><span class="va">apparel.pnbd</span>, prediction.end <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd.html" class="external-link">ymd</a></span><span class="op">(</span><span class="st">"2016-12-31"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2005-09-20 until (incl.) 2016-12-31 (588.71 Weeks).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2006-01-02 until (incl.) 2016-12-31 (573.86 Weeks).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating gg model to predict spending...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimation finished!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Key: &lt;Id&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          Id period.first period.last period.length    PAlive        CET</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;char&gt;       &lt;Date&gt;      &lt;Date&gt;         &lt;num&gt;     &lt;num&gt;      &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      1   2005-09-20  2016-12-31      588.7143 0.3908705   2.095780</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     10   2005-09-20  2016-12-31      588.7143 0.4683273   8.907673</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:    100   2005-09-20  2016-12-31      588.7143 0.9858250 126.468606</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:   1000   2005-09-20  2016-12-31      588.7143 0.9948485 100.450204</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:   1001   2005-09-20  2016-12-31      588.7143 0.6492819  38.953845</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246:   1219   2005-09-20  2016-12-31      588.7143 0.9859129  32.218203</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247:    122   2005-09-20  2016-12-31      588.7143 0.3908705   2.095780</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248:   1220   2005-09-20  2016-12-31      588.7143 0.3908705   2.095780</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249:   1221   2005-09-20  2016-12-31      588.7143 0.9762824  38.570699</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250:   1222   2005-09-20  2016-12-31      588.7143 0.4471444   5.451141</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           DERT predicted.mean.spending predicted.total.spending predicted.CLV</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          &lt;num&gt;                   &lt;num&gt;                    &lt;num&gt;         &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1: 0.0705440                40.39473                 84.65847      2.849606</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2: 0.2998325                57.49121                512.11286     17.237731</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3: 4.2569363                43.83628               5543.91326    186.608253</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4: 3.3811563                43.46097               4365.66317    146.948327</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5: 1.3111874                46.17637               1798.74698     60.545866</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                                         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246: 1.0844655                33.20726               1069.87835     36.012131</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247: 0.0705440                40.39473                 84.65847      2.849606</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248: 0.0705440                40.39473                 84.65847      2.849606</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249: 1.2982907                34.00868               1311.73864     44.153154</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250: 0.1834855                48.80122                266.02230      8.954317</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          Id period.first period.last period.length    PAlive       CET</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;char&gt;       &lt;Date&gt;      &lt;Date&gt;         &lt;num&gt;     &lt;num&gt;     &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      1   2006-01-02  2016-12-31      573.8571 0.9162891  7.439917</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     10   2006-01-02  2016-12-31      573.8571 0.8411075  6.829472</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:    100   2006-01-02  2016-12-31      573.8571 0.6575400  3.025729</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:    101   2006-01-02  2016-12-31      573.8571 0.8946137  7.263921</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:    102   2006-01-02  2016-12-31      573.8571 0.6575400  3.025729</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:     95   2006-01-02  2016-12-31      573.8571 0.9400738  7.633040</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:     96   2006-01-02  2016-12-31      573.8571 0.6575400  3.025729</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:     97   2006-01-02  2016-12-31      573.8571 0.6575400  3.025729</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:     98   2006-01-02  2016-12-31      573.8571 0.9655367  7.839788</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:     99   2006-01-02  2016-12-31      573.8571 0.9384834 10.921736</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            DERT predicted.mean.spending predicted.total.spending predicted.CLV</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           &lt;num&gt;                   &lt;num&gt;                    &lt;num&gt;         &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1: 0.21733995                63.77959                 474.5149     13.861854</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2: 0.19950721                38.10316                 260.2244      7.601854</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3: 0.08838968                37.12434                 112.3282      3.281408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4: 0.21219864                33.08404                 240.3199      7.020388</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5: 0.08838968                37.12434                 112.3282      3.281408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596: 0.22298158                28.29614                 215.9856      6.309519</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597: 0.08838968                37.12434                 112.3282      3.281408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598: 0.08838968                37.12434                 112.3282      3.281408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599: 0.22902127                34.87739                 273.4313      7.987664</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600: 0.31905325                16.11315                 175.9835      5.140952</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Predict future transactions but not spending and CLV</span></span></span>
 <span class="r-in"><span><span class="fu">predict</span><span class="op">(</span><span class="va">apparel.pnbd</span>, predict.spending <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2005-09-20 until (incl.) 2006-07-16 (42.86 Weeks).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2006-01-02 until (incl.) 2010-12-20 (259.14 Weeks).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Key: &lt;Id&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          Id period.first period.last period.length actual.x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;char&gt;       &lt;Date&gt;      &lt;Date&gt;         &lt;num&gt;    &lt;int&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      1   2005-09-20  2006-07-16      42.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     10   2005-09-20  2006-07-16      42.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:    100   2005-09-20  2006-07-16      42.85714       23</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:   1000   2005-09-20  2006-07-16      42.85714       25</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:   1001   2005-09-20  2006-07-16      42.85714       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      1   2006-01-02  2010-12-20      259.1429        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     10   2006-01-02  2010-12-20      259.1429        2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:    100   2006-01-02  2010-12-20      259.1429        9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:    101   2006-01-02  2010-12-20      259.1429        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:    102   2006-01-02  2010-12-20      259.1429        0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246:   1219   2005-09-20  2006-07-16      42.85714       14</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247:    122   2005-09-20  2006-07-16      42.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248:   1220   2005-09-20  2006-07-16      42.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249:   1221   2005-09-20  2006-07-16      42.85714        9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250:   1222   2005-09-20  2006-07-16      42.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      actual.total.spending    PAlive        CET      DERT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                      &lt;num&gt;     &lt;num&gt;      &lt;num&gt;     &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                  0.00 0.3908705  0.2695076 0.0705440</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                  0.00 0.4683273  1.1454855 0.2998325</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                737.53 0.9858250 16.2632775 4.2569363</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:               1120.41 0.9948485 12.9174313 3.3811563</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                364.00 0.6492819  5.0092842 1.3111874</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246:                413.76 0.9859129  4.1431118 1.0844655</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247:                  0.00 0.3908705  0.2695076 0.0705440</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248:                  0.00 0.3908705  0.2695076 0.0705440</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249:                302.65 0.9762824  4.9600134 1.2982907</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250:                  0.00 0.4471444  0.7009915 0.1834855</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:     95   2006-01-02  2010-12-20      259.1429        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:     96   2006-01-02  2010-12-20      259.1429        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:     97   2006-01-02  2010-12-20      259.1429        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:     98   2006-01-02  2010-12-20      259.1429        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:     99   2006-01-02  2010-12-20      259.1429        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      actual.total.spending    PAlive      CET       DERT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      &lt;num&gt;     &lt;num&gt;    &lt;num&gt;      &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                524.10 0.9162891 4.081243 0.21733995</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                 63.31 0.8411075 3.746377 0.19950721</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                333.35 0.6575400 1.659795 0.08838968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                  0.00 0.8946137 3.984698 0.21219864</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                  0.00 0.6575400 1.659795 0.08838968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:                113.80 0.9400738 4.187182 0.22298158</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:                253.61 0.6575400 1.659795 0.08838968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:                  0.00 0.6575400 1.659795 0.08838968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:                  0.00 0.9655367 4.300596 0.22902127</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:                 13.99 0.9384834 5.991230 0.31905325</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Predict spending by fitting a Gamma-Gamma model</span></span></span>
 <span class="r-in"><span><span class="fu">predict</span><span class="op">(</span><span class="va">apparel.pnbd</span>, predict.spending <span class="op">=</span> <span class="va">gg</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2005-09-20 until (incl.) 2006-07-16 (42.86 Weeks).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2006-01-02 until (incl.) 2010-12-20 (259.14 Weeks).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating gg model to predict spending...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimation finished!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Key: &lt;Id&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          Id period.first period.last period.length actual.x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;char&gt;       &lt;Date&gt;      &lt;Date&gt;         &lt;num&gt;    &lt;int&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      1   2005-09-20  2006-07-16      42.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     10   2005-09-20  2006-07-16      42.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:    100   2005-09-20  2006-07-16      42.85714       23</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:   1000   2005-09-20  2006-07-16      42.85714       25</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:   1001   2005-09-20  2006-07-16      42.85714       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      1   2006-01-02  2010-12-20      259.1429        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     10   2006-01-02  2010-12-20      259.1429        2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:    100   2006-01-02  2010-12-20      259.1429        9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:    101   2006-01-02  2010-12-20      259.1429        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:    102   2006-01-02  2010-12-20      259.1429        0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246:   1219   2005-09-20  2006-07-16      42.85714       14</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247:    122   2005-09-20  2006-07-16      42.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248:   1220   2005-09-20  2006-07-16      42.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249:   1221   2005-09-20  2006-07-16      42.85714        9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250:   1222   2005-09-20  2006-07-16      42.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      actual.total.spending    PAlive        CET      DERT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                      &lt;num&gt;     &lt;num&gt;      &lt;num&gt;     &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                  0.00 0.3908705  0.2695076 0.0705440</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                  0.00 0.4683273  1.1454855 0.2998325</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                737.53 0.9858250 16.2632775 4.2569363</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:               1120.41 0.9948485 12.9174313 3.3811563</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                364.00 0.6492819  5.0092842 1.3111874</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246:                413.76 0.9859129  4.1431118 1.0844655</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247:                  0.00 0.3908705  0.2695076 0.0705440</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248:                  0.00 0.3908705  0.2695076 0.0705440</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249:                302.65 0.9762824  4.9600134 1.2982907</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250:                  0.00 0.4471444  0.7009915 0.1834855</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:     95   2006-01-02  2010-12-20      259.1429        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:     96   2006-01-02  2010-12-20      259.1429        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:     97   2006-01-02  2010-12-20      259.1429        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:     98   2006-01-02  2010-12-20      259.1429        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:     99   2006-01-02  2010-12-20      259.1429        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      actual.total.spending    PAlive      CET       DERT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      &lt;num&gt;     &lt;num&gt;    &lt;num&gt;      &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                524.10 0.9162891 4.081243 0.21733995</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                 63.31 0.8411075 3.746377 0.19950721</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                333.35 0.6575400 1.659795 0.08838968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                  0.00 0.8946137 3.984698 0.21219864</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                  0.00 0.6575400 1.659795 0.08838968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:                113.80 0.9400738 4.187182 0.22298158</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:                253.61 0.6575400 1.659795 0.08838968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:                  0.00 0.6575400 1.659795 0.08838968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:                  0.00 0.9655367 4.300596 0.22902127</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:                 13.99 0.9384834 5.991230 0.31905325</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      predicted.mean.spending predicted.total.spending predicted.CLV</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                        &lt;num&gt;                    &lt;num&gt;         &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                40.39473                 10.88669      2.849606</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                57.49121                 65.85534     17.237731</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                43.83628                712.92159    186.608253</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                43.46097                561.40408    146.948327</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                46.17637                231.31054     60.545866</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                63.77959                260.30000     13.861854</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                38.10316                142.74877      7.601854</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                37.12434                 61.61878      3.281408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                33.08404                131.82992      7.020388</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                37.12434                 61.61878      3.281408</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246:                33.20726                137.58140     36.012131</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247:                40.39473                 10.88669      2.849606</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248:                40.39473                 10.88669      2.849606</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249:                34.00868                168.68352     44.153154</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250:                48.80122                 34.20924      8.954317</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:                28.29614                118.48111      6.309519</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:                37.12434                 61.61878      3.281408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:                37.12434                 61.61878      3.281408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:                34.87739                149.99357      7.987664</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:                16.11315                 96.53757      5.140952</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Fit a spending model separately and use it to predict spending</span></span></span>
 <span class="r-in"><span><span class="va">apparel.gg</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg.html">gg</a></span><span class="op">(</span><span class="va">apparel.holdout</span>, remove.first.transaction <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimation finished!</span>
 <span class="r-in"><span><span class="fu">predict</span><span class="op">(</span><span class="va">apparel.pnbd</span>, predict.spending <span class="op">=</span> <span class="va">apparel.gg</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2005-09-20 until (incl.) 2006-07-16 (42.86 Weeks).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2006-01-02 until (incl.) 2010-12-20 (259.14 Weeks).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Key: &lt;Id&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          Id period.first period.last period.length actual.x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;char&gt;       &lt;Date&gt;      &lt;Date&gt;         &lt;num&gt;    &lt;int&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      1   2005-09-20  2006-07-16      42.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     10   2005-09-20  2006-07-16      42.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:    100   2005-09-20  2006-07-16      42.85714       23</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:   1000   2005-09-20  2006-07-16      42.85714       25</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:   1001   2005-09-20  2006-07-16      42.85714       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      1   2006-01-02  2010-12-20      259.1429        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     10   2006-01-02  2010-12-20      259.1429        2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:    100   2006-01-02  2010-12-20      259.1429        9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:    101   2006-01-02  2010-12-20      259.1429        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:    102   2006-01-02  2010-12-20      259.1429        0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246:   1219   2005-09-20  2006-07-16      42.85714       14</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247:    122   2005-09-20  2006-07-16      42.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248:   1220   2005-09-20  2006-07-16      42.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249:   1221   2005-09-20  2006-07-16      42.85714        9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250:   1222   2005-09-20  2006-07-16      42.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      actual.total.spending    PAlive        CET      DERT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                      &lt;num&gt;     &lt;num&gt;      &lt;num&gt;     &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                  0.00 0.3908705  0.2695076 0.0705440</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                  0.00 0.4683273  1.1454855 0.2998325</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                737.53 0.9858250 16.2632775 4.2569363</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:               1120.41 0.9948485 12.9174313 3.3811563</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                364.00 0.6492819  5.0092842 1.3111874</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246:                413.76 0.9859129  4.1431118 1.0844655</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247:                  0.00 0.3908705  0.2695076 0.0705440</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248:                  0.00 0.3908705  0.2695076 0.0705440</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249:                302.65 0.9762824  4.9600134 1.2982907</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250:                  0.00 0.4471444  0.7009915 0.1834855</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:     95   2006-01-02  2010-12-20      259.1429        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:     96   2006-01-02  2010-12-20      259.1429        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:     97   2006-01-02  2010-12-20      259.1429        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:     98   2006-01-02  2010-12-20      259.1429        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:     99   2006-01-02  2010-12-20      259.1429        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      actual.total.spending    PAlive      CET       DERT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      &lt;num&gt;     &lt;num&gt;    &lt;num&gt;      &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                524.10 0.9162891 4.081243 0.21733995</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                 63.31 0.8411075 3.746377 0.19950721</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                333.35 0.6575400 1.659795 0.08838968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                  0.00 0.8946137 3.984698 0.21219864</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                  0.00 0.6575400 1.659795 0.08838968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:                113.80 0.9400738 4.187182 0.22298158</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:                253.61 0.6575400 1.659795 0.08838968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:                  0.00 0.6575400 1.659795 0.08838968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:                  0.00 0.9655367 4.300596 0.22902127</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:                 13.99 0.9384834 5.991230 0.31905325</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      predicted.mean.spending predicted.total.spending predicted.CLV</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                        &lt;num&gt;                    &lt;num&gt;         &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                70.27718                18.940234      4.957634</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                61.78767                70.776884     18.525951</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                42.33307               688.474460    180.209182</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                41.93464               541.687877    141.787583</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                45.28636               226.852233     59.378899</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:               136.73183                558.03579     29.717289</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                29.00428                108.66095      5.786562</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                48.90849                 81.17806      4.323006</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                31.76895                126.58969      6.741328</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                77.59707                128.79522      6.858780</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246:                29.90681               123.907253     32.432902</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247:                34.95251                 9.419966      2.465690</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248:                37.82832                10.195020      2.668561</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249:                30.88611               153.195497     40.099142</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250:                48.29395                33.853644      8.861240</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:                21.67439                 90.75460      4.832989</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:                45.64301                 75.75803      4.034371</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:                29.53283                 49.01844      2.610398</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:                32.46527                139.62002      7.435238</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:                22.06995                132.22615      7.041489</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Fit pnbd standard model WITHOUT holdout</span></span></span>
@@ -624,44 +628,44 @@ See <a href="clv.bootstrapped.apply.html">clv.bootstrapped.apply</a> to create a
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># But it works if providing a prediction.end</span></span></span>
 <span class="r-in"><span><span class="fu">predict</span><span class="op">(</span><span class="va">pnc</span>, prediction.end <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="co"># ends on 2016-12-17</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2006-07-17 until (incl.) 2006-09-24 (10 Weeks).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2010-12-21 until (incl.) 2011-02-28 (10 Weeks).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating gg model to predict spending...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimation finished!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Key: &lt;Id&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          Id period.first period.last period.length     PAlive        CET</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;char&gt;       &lt;Date&gt;      &lt;Date&gt;         &lt;int&gt;      &lt;num&gt;      &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      1   2006-07-17  2006-09-24            10 0.19162799 0.01673257</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     10   2006-07-17  2006-09-24            10 0.07060463 0.02243351</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:    100   2006-07-17  2006-09-24            10 0.99543387 4.78888430</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:   1000   2006-07-17  2006-09-24            10 0.99921326 4.57683140</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:   1001   2006-07-17  2006-09-24            10 0.92654420 2.10906702</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246:   1219   2006-07-17  2006-09-24            10 0.80938488 1.74913277</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247:    122   2006-07-17  2006-09-24            10 0.19162799 0.01673257</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248:   1220   2006-07-17  2006-09-24            10 0.19162799 0.01673257</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249:   1221   2006-07-17  2006-09-24            10 0.88302000 1.50133868</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250:   1222   2006-07-17  2006-09-24            10 0.12411992 0.02513753</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            DERT predicted.mean.spending predicted.total.spending predicted.CLV</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           &lt;num&gt;                   &lt;num&gt;                    &lt;num&gt;         &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1: 0.01713505                38.64708                 0.646665     0.6622198</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2: 0.02297312                50.23072                 1.126851     1.1539564</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3: 4.90407538                37.91699               181.580090   185.9477891</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4: 4.68692179                43.53497               199.252218   204.0449995</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5: 2.15979819                39.80794                83.957620    85.9771239</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                                          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246: 1.79120614                31.80966                55.639319    56.9776588</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247: 0.01713505                38.64708                 0.646665     0.6622198</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248: 0.01713505                38.64708                 0.646665     0.6622198</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249: 1.53745165                34.22209                51.378944    52.6148051</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250: 0.02574218                44.10134                 1.108599     1.1352646</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          Id period.first period.last period.length      PAlive         CET</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;char&gt;       &lt;Date&gt;      &lt;Date&gt;         &lt;int&gt;       &lt;num&gt;       &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      1   2010-12-21  2011-02-28            10 0.007191623 0.001466915</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     10   2010-12-21  2011-02-28            10 0.836860928 0.101279050</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:    100   2010-12-21  2011-02-28            10 0.922281780 0.264629016</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:    101   2010-12-21  2011-02-28            10 0.053020374 0.003484528</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:    102   2010-12-21  2011-02-28            10 0.061489323 0.002340870</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:     95   2010-12-21  2011-02-28            10 0.697534261 0.142279953</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:     96   2010-12-21  2011-02-28            10 0.551357052 0.066726640</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:     97   2010-12-21  2011-02-28            10 0.061489323 0.002340870</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:     98   2010-12-21  2011-02-28            10 0.077985685 0.005125262</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:     99   2010-12-21  2011-02-28            10 0.065543374 0.007932227</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             DERT predicted.mean.spending predicted.total.spending predicted.CLV</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            &lt;num&gt;                   &lt;num&gt;                    &lt;num&gt;         &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1: 0.001524793                77.79363                0.1141167    0.11861922</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2: 0.105275083                36.04491                3.6505939    3.79463052</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3: 0.275070134                37.23417                9.8532412   10.24200757</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4: 0.003622012                36.01842                0.1255072    0.13045916</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5: 0.002433231                37.73097                0.0883233    0.09180815</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596: 0.147893705                28.17770                4.0091225    4.16730515</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597: 0.069359385                59.20915                3.9508274    4.10671002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598: 0.002433231                37.73097                0.0883233    0.09180815</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599: 0.005327482                36.71922                0.1881956    0.19562100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600: 0.008245198                25.00120                0.1983152    0.20613989</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Predict num transactions for a newly alive customer</span></span></span>
 <span class="r-in"><span><span class="co"># in the next 3.45 weeks</span></span></span>
 <span class="r-in"><span><span class="co"># See ?newcustomer() for more examples</span></span></span>
 <span class="r-in"><span><span class="fu">predict</span><span class="op">(</span><span class="va">apparel.pnbd</span>, newdata <span class="op">=</span> <span class="fu"><a href="newcustomer.html">newcustomer</a></span><span class="op">(</span>num.periods<span class="op">=</span><span class="fl">3.45</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4707139</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.09627075</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
@@ -681,7 +685,7 @@ See <a href="clv.bootstrapped.apply.html">clv.bootstrapped.apply</a> to create a
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer></div>

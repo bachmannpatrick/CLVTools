@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.1</span>
       </span>
     </div>
 
@@ -191,17 +191,17 @@ Use the <code>data(apparelTrans)</code> to load it:</p>
 <span><span class="va">apparelTrans</span></span>
 <span><span class="co">#&gt;           Id       Date  Price</span></span>
 <span><span class="co">#&gt;       &lt;char&gt;     &lt;Date&gt;  &lt;num&gt;</span></span>
-<span><span class="co">#&gt;    1:      1 2005-01-03 230.30</span></span>
-<span><span class="co">#&gt;    2:     10 2005-01-03  84.39</span></span>
-<span><span class="co">#&gt;    3:     10 2005-02-25 131.07</span></span>
-<span><span class="co">#&gt;    4:     10 2005-04-05  86.43</span></span>
-<span><span class="co">#&gt;    5:    100 2005-01-03  11.49</span></span>
+<span><span class="co">#&gt;    1:      1 2005-01-02 230.30</span></span>
+<span><span class="co">#&gt;    2:      1 2005-09-06  84.39</span></span>
+<span><span class="co">#&gt;    3:      1 2006-01-18 131.07</span></span>
+<span><span class="co">#&gt;    4:      1 2006-04-05  86.43</span></span>
+<span><span class="co">#&gt;    5:      1 2006-07-02  11.49</span></span>
 <span><span class="co">#&gt;   ---                         </span></span>
-<span><span class="co">#&gt; 2349:   1221 2006-01-23  26.57</span></span>
-<span><span class="co">#&gt; 2350:   1221 2006-03-09 129.82</span></span>
-<span><span class="co">#&gt; 2351:   1221 2006-05-14  14.37</span></span>
-<span><span class="co">#&gt; 2352:   1222 2005-01-03  44.77</span></span>
-<span><span class="co">#&gt; 2353:   1222 2005-03-03  99.21</span></span></code></pre></div>
+<span><span class="co">#&gt; 3183:    600 2005-01-02  24.94</span></span>
+<span><span class="co">#&gt; 3184:    600 2005-04-17  54.97</span></span>
+<span><span class="co">#&gt; 3185:    600 2005-06-30  66.84</span></span>
+<span><span class="co">#&gt; 3186:    600 2005-10-27  22.54</span></span>
+<span><span class="co">#&gt; 3187:    600 2006-01-09  12.97</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="clvdata">Initialize the CLV-Object<a class="anchor" aria-label="anchor" href="#clvdata"></a>
@@ -247,7 +247,7 @@ supplied dataset. Note that the price column is optional.</p>
 <code class="sourceCode R"><span><span class="va">clv.apparel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/clvdata.html">clvdata</a></span><span class="op">(</span><span class="va">apparelTrans</span>,  </span>
 <span>                       date.format<span class="op">=</span><span class="st">"ymd"</span>, </span>
 <span>                       time.unit <span class="op">=</span> <span class="st">"week"</span>,</span>
-<span>                       estimation.split <span class="op">=</span> <span class="fl">40</span>,</span>
+<span>                       estimation.split <span class="op">=</span> <span class="fl">104</span>,</span>
 <span>                       name.id <span class="op">=</span> <span class="st">"Id"</span>,</span>
 <span>                       name.date <span class="op">=</span> <span class="st">"Date"</span>,</span>
 <span>                       name.price <span class="op">=</span> <span class="st">"Price"</span><span class="op">)</span></span></code></pre></div>
@@ -263,23 +263,23 @@ console.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; clvdata(data.transactions = apparelTrans, date.format = "ymd", </span></span>
-<span><span class="co">#&gt;     time.unit = "week", estimation.split = 40, name.id = "Id", </span></span>
+<span><span class="co">#&gt;     time.unit = "week", estimation.split = 104, name.id = "Id", </span></span>
 <span><span class="co">#&gt;     name.date = "Date", name.price = "Price")</span></span>
 <span><span class="co">#&gt;                          </span></span>
-<span><span class="co">#&gt; Total # customers    250 </span></span>
-<span><span class="co">#&gt; Total # transactions 2257</span></span>
+<span><span class="co">#&gt; Total # customers    600 </span></span>
+<span><span class="co">#&gt; Total # transactions 3183</span></span>
 <span><span class="co">#&gt; Spending information TRUE</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;                                 </span></span>
 <span><span class="co">#&gt; Time unit         Weeks         </span></span>
 <span><span class="co">#&gt;                                 </span></span>
-<span><span class="co">#&gt; Estimation start  2005-01-03    </span></span>
-<span><span class="co">#&gt; Estimation end    2005-10-10    </span></span>
-<span><span class="co">#&gt; Estimation length 40.0000 Weeks </span></span>
+<span><span class="co">#&gt; Estimation start  2005-01-02    </span></span>
+<span><span class="co">#&gt; Estimation end    2006-12-31    </span></span>
+<span><span class="co">#&gt; Estimation length 104.0000 Weeks</span></span>
 <span><span class="co">#&gt;                                 </span></span>
-<span><span class="co">#&gt; Holdout start     2005-10-11    </span></span>
-<span><span class="co">#&gt; Holdout end       2006-07-16    </span></span>
-<span><span class="co">#&gt; Holdout length    39.71429 Weeks</span></span></code></pre></div>
+<span><span class="co">#&gt; Holdout start     2007-01-01    </span></span>
+<span><span class="co">#&gt; Holdout end       2010-12-20    </span></span>
+<span><span class="co">#&gt; Holdout length    207.0000 Weeks</span></span></code></pre></div>
 <p>Alternatively the <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> command provides full
 detailed summary statistics for the provided transactional detail.
 <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> is available at any step in the process of
@@ -296,24 +296,24 @@ not return to the store after their first purchase.</p>
 <span><span class="co">#&gt; CLV Transaction Data </span></span>
 <span><span class="co">#&gt;                                 </span></span>
 <span><span class="co">#&gt; Time unit         Weeks         </span></span>
-<span><span class="co">#&gt; Estimation length 40.0000 Weeks </span></span>
-<span><span class="co">#&gt; Holdout length    39.71429 Weeks</span></span>
+<span><span class="co">#&gt; Estimation length 104.0000 Weeks</span></span>
+<span><span class="co">#&gt; Holdout length    207.0000 Weeks</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Transaction Data Summary </span></span>
 <span><span class="co">#&gt;                                    Estimation      Holdout         Total     </span></span>
-<span><span class="co">#&gt; Number of customers                -               -               250       </span></span>
-<span><span class="co">#&gt; First Transaction in period        2005-01-03      2005-10-11      2005-01-03</span></span>
-<span><span class="co">#&gt; Last Transaction in period         2005-10-10      2006-07-16      2006-07-16</span></span>
-<span><span class="co">#&gt; Total # Transactions               1311            946             2257      </span></span>
-<span><span class="co">#&gt; Mean # Transactions per cust       5.244           8.226           9.028     </span></span>
-<span><span class="co">#&gt; (SD)                               6.082           8.934           12.603    </span></span>
-<span><span class="co">#&gt; Mean Spending per Transaction      39.436          38.519          39.051    </span></span>
-<span><span class="co">#&gt; (SD)                               42.649          59.723          50.503    </span></span>
-<span><span class="co">#&gt; Total Spending                     51700.490       36438.640       88139.130 </span></span>
-<span><span class="co">#&gt; Total # zero repeaters             77              -               -         </span></span>
-<span><span class="co">#&gt; Percentage of zero repeaters       30.800          -               -         </span></span>
-<span><span class="co">#&gt; Mean Interpurchase time            7.361           5.756           9.462     </span></span>
-<span><span class="co">#&gt; (SD)                               6.791           6.394           12.266</span></span></code></pre></div>
+<span><span class="co">#&gt; Number of customers                -               -               600       </span></span>
+<span><span class="co">#&gt; First Transaction in period        2005-01-02      2007-01-01      2005-01-02</span></span>
+<span><span class="co">#&gt; Last Transaction in period         2006-12-31      2010-12-20      2010-12-20</span></span>
+<span><span class="co">#&gt; Total # Transactions               1866            1317            3183      </span></span>
+<span><span class="co">#&gt; Mean # Transactions per cust       3.110           5.557           5.305     </span></span>
+<span><span class="co">#&gt; (SD)                               2.714           5.123           6.119     </span></span>
+<span><span class="co">#&gt; Mean Spending per Transaction      40.545          36.977          39.069    </span></span>
+<span><span class="co">#&gt; (SD)                               73.362          55.356          66.519    </span></span>
+<span><span class="co">#&gt; Total Spending                     75657.730       48699.170       124356.900</span></span>
+<span><span class="co">#&gt; Total # zero repeaters             213             -               -         </span></span>
+<span><span class="co">#&gt; Percentage of zero repeaters       35.500          -               -         </span></span>
+<span><span class="co">#&gt; Mean Interpurchase time            24.823          30.604          37.817    </span></span>
+<span><span class="co">#&gt; (SD)                               19.417          24.756          42.339</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="estimate">Estimate Model Parameters<a class="anchor" aria-label="anchor" href="#estimate"></a>
@@ -363,7 +363,7 @@ following we illustrate the two alternatives.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Coefficients:</span></span>
 <span><span class="co">#&gt;       r    alpha        s     beta  </span></span>
-<span><span class="co">#&gt;  0.7858   5.3312   0.3606  11.8221  </span></span>
+<span><span class="co">#&gt;  1.4490  48.6361   0.5613  46.8844  </span></span>
 <span><span class="co">#&gt; KKT1: TRUE </span></span>
 <span><span class="co">#&gt; KKT2: TRUE </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -432,27 +432,27 @@ using alternative starting values.</p>
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; latentAttrition(family = pnbd, data = clv.apparel)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Fitting period:                               </span></span>
-<span><span class="co">#&gt; Estimation start  2005-01-03   </span></span>
-<span><span class="co">#&gt; Estimation end    2005-10-10   </span></span>
-<span><span class="co">#&gt; Estimation length 40.0000 Weeks</span></span>
+<span><span class="co">#&gt; Fitting period:                                </span></span>
+<span><span class="co">#&gt; Estimation start  2005-01-02    </span></span>
+<span><span class="co">#&gt; Estimation end    2006-12-31    </span></span>
+<span><span class="co">#&gt; Estimation length 104.0000 Weeks</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Coefficients:</span></span>
 <span><span class="co">#&gt;       Estimate Std. Error z-val Pr(&gt;|z|)    </span></span>
-<span><span class="co">#&gt; r       0.7858     0.1322 5.946 2.75e-09 ***</span></span>
-<span><span class="co">#&gt; alpha   5.3312     0.9018 5.912 3.39e-09 ***</span></span>
-<span><span class="co">#&gt; s       0.3606     0.1874 1.924   0.0544 .  </span></span>
-<span><span class="co">#&gt; beta   11.8221    10.9111 1.083   0.2786    </span></span>
+<span><span class="co">#&gt; r       1.4490     0.2434 5.952 2.64e-09 ***</span></span>
+<span><span class="co">#&gt; alpha  48.6361     7.4892 6.494 8.35e-11 ***</span></span>
+<span><span class="co">#&gt; s       0.5613     0.2710 2.071   0.0384 *  </span></span>
+<span><span class="co">#&gt; beta   46.8844    35.6114 1.317   0.1880    </span></span>
 <span><span class="co">#&gt; ---</span></span>
 <span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Optimization info:                 </span></span>
-<span><span class="co">#&gt; LL     -2879.4701</span></span>
-<span><span class="co">#&gt; AIC    5766.9402 </span></span>
-<span><span class="co">#&gt; BIC    5781.0261 </span></span>
+<span><span class="co">#&gt; LL     -5848.0978</span></span>
+<span><span class="co">#&gt; AIC    11704.1957</span></span>
+<span><span class="co">#&gt; BIC    11721.7834</span></span>
 <span><span class="co">#&gt; KKT 1  TRUE      </span></span>
 <span><span class="co">#&gt; KKT 2  TRUE      </span></span>
-<span><span class="co">#&gt; fevals 12.0000   </span></span>
+<span><span class="co">#&gt; fevals 25.0000   </span></span>
 <span><span class="co">#&gt; Method L-BFGS-B  </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Used Options:                 </span></span>
@@ -461,7 +461,7 @@ using alternative starting values.</p>
 <span><span class="co">#Extract the coefficients only</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">est.pnbd</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          r      alpha          s       beta </span></span>
-<span><span class="co">#&gt;  0.7857625  5.3311917  0.3606041 11.8220617</span></span>
+<span><span class="co">#&gt;  1.4489768 48.6360846  0.5612598 46.8843632</span></span>
 <span><span class="co">#Alternative: oefficients(est.pnbd.obj)</span></span></code></pre></div>
 <p>To extract only the coefficients, we can use <code><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef()</a></code>. To
 access the confidence intervals for all parameters
@@ -470,30 +470,30 @@ access the confidence intervals for all parameters
 <code class="sourceCode R"><span><span class="co">#Extract the coefficients only</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">est.pnbd</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          r      alpha          s       beta </span></span>
-<span><span class="co">#&gt;  0.7857625  5.3311917  0.3606041 11.8220617</span></span>
+<span><span class="co">#&gt;  1.4489768 48.6360846  0.5612598 46.8843632</span></span>
 <span><span class="co">#Alternative: oefficients(est.pnbd.obj)</span></span>
 <span></span>
 <span><span class="co">#Extract the confidence intervals</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint</a></span><span class="op">(</span><span class="va">est.pnbd</span><span class="op">)</span></span>
 <span><span class="co">#&gt;              2.5 %     97.5 %</span></span>
-<span><span class="co">#&gt; r      0.526747189  1.0447777</span></span>
-<span><span class="co">#&gt; alpha  3.563677128  7.0987063</span></span>
-<span><span class="co">#&gt; s     -0.006735243  0.7279434</span></span>
-<span><span class="co">#&gt; beta  -9.563255166 33.2073785</span></span></code></pre></div>
+<span><span class="co">#&gt; r       0.97186638   1.926087</span></span>
+<span><span class="co">#&gt; alpha  33.95755820  63.314611</span></span>
+<span><span class="co">#&gt; s       0.03001565   1.092504</span></span>
+<span><span class="co">#&gt; beta  -22.91271866 116.681445</span></span></code></pre></div>
 <p>In order to get the Likelihood value and the corresponding
 Variance-Covariance Matrix we use the following commands:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># LogLikelihood at maximum</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">est.pnbd</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'log Lik.' -2879.47 (df=4)</span></span>
+<span><span class="co">#&gt; 'log Lik.' -5848.098 (df=4)</span></span>
 <span></span>
 <span><span class="co"># Variance-Covariance Matrix at maximum</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">est.pnbd</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                  r       alpha            s        beta</span></span>
-<span><span class="co">#&gt; r      0.017464436  0.10225993 -0.005779591  -0.5670165</span></span>
-<span><span class="co">#&gt; alpha  0.102259931  0.81326077 -0.024620777  -2.5217274</span></span>
-<span><span class="co">#&gt; s     -0.005779591 -0.02462078  0.035126803   1.9346047</span></span>
-<span><span class="co">#&gt; beta  -0.567016538 -2.52172738  1.934604707 119.0515890</span></span></code></pre></div>
+<span><span class="co">#&gt;                 r       alpha           s        beta</span></span>
+<span><span class="co">#&gt; r      0.05925727   1.7049763 -0.01786466   -3.472616</span></span>
+<span><span class="co">#&gt; alpha  1.70497629  56.0878423 -0.43375970  -82.963755</span></span>
+<span><span class="co">#&gt; s     -0.01786466  -0.4337597  0.07346697    9.366245</span></span>
+<span><span class="co">#&gt; beta  -3.47261638 -82.9637547  9.36624462 1268.172554</span></span></code></pre></div>
 <p>As an alternative to the Pareto/NBD model <code>CLVTools</code>
 features the BG/NBD model <span class="citation">(Fader, Hardie, and Lee
 2005a)</span> and the GGomp/NBD <span class="citation">(Bemmaor and
@@ -566,9 +566,10 @@ following we illustrate the two alternatives.</p>
 <h4 id="estimating-the-model-using-formula-interface-1">
 <strong>Estimating the model using formula interface:</strong><a class="anchor" aria-label="anchor" href="#estimating-the-model-using-formula-interface-1"></a>
 </h4>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>  est.ggomnbd <span class="ot">&lt;-</span> <span class="fu">latentAttrition</span>(<span class="at">formula =</span> , <span class="at">family =</span> ggomnbd, <span class="at">data=</span>clv.apparel, </span>
-<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>                                 <span class="at">optimx.args =</span> <span class="fu">list</span>(<span class="at">method=</span><span class="st">"Nelder-Mead"</span>)</span>
-<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>                                 <span class="at">start.params.model=</span><span class="fu">c</span>(<span class="at">r=</span><span class="fl">0.7</span>, <span class="at">alpha=</span><span class="dv">5</span>, <span class="at">b=</span><span class="fl">0.005</span>,  <span class="at">s=</span><span class="fl">0.02</span>, <span class="at">beta=</span><span class="fl">0.001</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span>  <span class="va">est.ggomnbd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/latentAttrition.html">latentAttrition</a></span><span class="op">(</span>formula <span class="op">=</span> , family <span class="op">=</span> <span class="va">ggomnbd</span>, data<span class="op">=</span><span class="va">clv.apparel</span>, </span>
+<span>                                 optimx.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method<span class="op">=</span><span class="st">"Nelder-Mead"</span><span class="op">)</span>,</span>
+<span>                                 start.params.model<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>r<span class="op">=</span><span class="fl">0.7</span>, alpha<span class="op">=</span><span class="fl">5</span>, b<span class="op">=</span><span class="fl">0.005</span>,  s<span class="op">=</span><span class="fl">0.02</span>, beta<span class="op">=</span><span class="fl">0.001</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="estimating-the-model-using-non-formula-interface-1">
@@ -631,7 +632,7 @@ cohort), the argument <code>newdata</code> optionally allows to provide
 a new <code>clvdata</code> object.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predict.clv.fitted.transactions.html">predict</a></span><span class="op">(</span><span class="va">est.pnbd</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Predicting from 2005-10-11 until (incl.) 2006-07-16 (39.86 Weeks).</span></span>
+<span><span class="co">#&gt; Predicting from 2007-01-01 until (incl.) 2010-12-20 (207.14 Weeks).</span></span>
 <span><span class="co">#&gt; Estimating gg model to predict spending...</span></span>
 <span><span class="co">#&gt; Starting estimation...</span></span>
 <span><span class="co">#&gt; Estimation finished!</span></span>
@@ -639,43 +640,43 @@ a new <code>clvdata</code> object.</p>
 <span><span class="co">#&gt; Key: &lt;Id&gt;</span></span>
 <span><span class="co">#&gt;          Id period.first period.last period.length actual.x</span></span>
 <span><span class="co">#&gt;      &lt;char&gt;       &lt;Date&gt;      &lt;Date&gt;         &lt;num&gt;    &lt;int&gt;</span></span>
-<span><span class="co">#&gt;   1:      1   2005-10-11  2006-07-16      39.85714        0</span></span>
-<span><span class="co">#&gt;   2:     10   2005-10-11  2006-07-16      39.85714        0</span></span>
-<span><span class="co">#&gt;   3:    100   2005-10-11  2006-07-16      39.85714       23</span></span>
-<span><span class="co">#&gt;   4:   1000   2005-10-11  2006-07-16      39.85714       23</span></span>
-<span><span class="co">#&gt;   5:   1001   2005-10-11  2006-07-16      39.85714       11</span></span>
+<span><span class="co">#&gt;   1:      1   2007-01-01  2010-12-20      207.1429        0</span></span>
+<span><span class="co">#&gt;   2:     10   2007-01-01  2010-12-20      207.1429        1</span></span>
+<span><span class="co">#&gt;   3:    100   2007-01-01  2010-12-20      207.1429        9</span></span>
+<span><span class="co">#&gt;   4:    101   2007-01-01  2010-12-20      207.1429        0</span></span>
+<span><span class="co">#&gt;   5:    102   2007-01-01  2010-12-20      207.1429        0</span></span>
 <span><span class="co">#&gt;  ---                                                       </span></span>
-<span><span class="co">#&gt; 246:   1219   2005-10-11  2006-07-16      39.85714       14</span></span>
-<span><span class="co">#&gt; 247:    122   2005-10-11  2006-07-16      39.85714        0</span></span>
-<span><span class="co">#&gt; 248:   1220   2005-10-11  2006-07-16      39.85714        0</span></span>
-<span><span class="co">#&gt; 249:   1221   2005-10-11  2006-07-16      39.85714        9</span></span>
-<span><span class="co">#&gt; 250:   1222   2005-10-11  2006-07-16      39.85714        0</span></span>
-<span><span class="co">#&gt;      actual.total.spending    PAlive        CET       DERT</span></span>
-<span><span class="co">#&gt;                      &lt;num&gt;     &lt;num&gt;      &lt;num&gt;      &lt;num&gt;</span></span>
-<span><span class="co">#&gt;   1:                  0.00 0.3575906  0.2211298 0.06120541</span></span>
-<span><span class="co">#&gt;   2:                  0.00 0.4216820  0.9244830 0.25588305</span></span>
-<span><span class="co">#&gt;   3:                737.53 0.9150948 13.5289689 3.74461601</span></span>
-<span><span class="co">#&gt;   4:               1069.91 0.9967590 13.1674310 3.64454775</span></span>
-<span><span class="co">#&gt;   5:                364.00 0.5084919  3.5158741 0.97314131</span></span>
-<span><span class="co">#&gt;  ---                                                      </span></span>
-<span><span class="co">#&gt; 246:                413.76 0.9576903  3.6069992 0.99836336</span></span>
-<span><span class="co">#&gt; 247:                  0.00 0.3575906  0.2211298 0.06120541</span></span>
-<span><span class="co">#&gt; 248:                  0.00 0.3575906  0.2211298 0.06120541</span></span>
-<span><span class="co">#&gt; 249:                302.65 0.9431222  4.2943593 1.18861434</span></span>
-<span><span class="co">#&gt; 250:                  0.00 0.4130103  0.5804360 0.16065600</span></span>
+<span><span class="co">#&gt; 596:     95   2007-01-01  2010-12-20      207.1429        4</span></span>
+<span><span class="co">#&gt; 597:     96   2007-01-01  2010-12-20      207.1429        3</span></span>
+<span><span class="co">#&gt; 598:     97   2007-01-01  2010-12-20      207.1429        0</span></span>
+<span><span class="co">#&gt; 599:     98   2007-01-01  2010-12-20      207.1429        0</span></span>
+<span><span class="co">#&gt; 600:     99   2007-01-01  2010-12-20      207.1429        0</span></span>
+<span><span class="co">#&gt;      actual.total.spending    PAlive       CET       DERT</span></span>
+<span><span class="co">#&gt;                      &lt;num&gt;     &lt;num&gt;     &lt;num&gt;      &lt;num&gt;</span></span>
+<span><span class="co">#&gt;   1:                  0.00 0.9468478 7.3256573 0.46765602</span></span>
+<span><span class="co">#&gt;   2:                 14.37 0.9825606 3.5198114 0.22469806</span></span>
+<span><span class="co">#&gt;   3:                333.35 0.2784686 0.4190901 0.02675392</span></span>
+<span><span class="co">#&gt;   4:                  0.00 0.4739762 1.2056215 0.07696458</span></span>
+<span><span class="co">#&gt;   5:                  0.00 0.2784686 0.4190901 0.02675392</span></span>
+<span><span class="co">#&gt;  ---                                                     </span></span>
+<span><span class="co">#&gt; 596:                 98.81 0.8978209 3.2162499 0.20531927</span></span>
+<span><span class="co">#&gt; 597:                253.61 0.2784686 0.4190901 0.02675392</span></span>
+<span><span class="co">#&gt; 598:                  0.00 0.2784686 0.4190901 0.02675392</span></span>
+<span><span class="co">#&gt; 599:                  0.00 0.6024098 1.5323094 0.09781972</span></span>
+<span><span class="co">#&gt; 600:                  0.00 0.9416701 4.3513967 0.27778489</span></span>
 <span><span class="co">#&gt;      predicted.mean.spending predicted.total.spending predicted.CLV</span></span>
 <span><span class="co">#&gt;                        &lt;num&gt;                    &lt;num&gt;         &lt;num&gt;</span></span>
-<span><span class="co">#&gt;   1:                39.95483                 8.835202      2.445452</span></span>
-<span><span class="co">#&gt;   2:                55.23031                51.059480     14.132500</span></span>
-<span><span class="co">#&gt;   3:                43.57390               589.509928    163.167521</span></span>
-<span><span class="co">#&gt;   4:                41.60921               547.886363    151.646742</span></span>
-<span><span class="co">#&gt;   5:                45.58153               160.258909     44.357266</span></span>
+<span><span class="co">#&gt;   1:                88.64634                649.39268     41.455992</span></span>
+<span><span class="co">#&gt;   2:                41.21027                145.05238      9.259868</span></span>
+<span><span class="co">#&gt;   3:                37.62791                 15.76949      1.006694</span></span>
+<span><span class="co">#&gt;   4:                34.56278                 41.66962      2.660110</span></span>
+<span><span class="co">#&gt;   5:                37.62791                 15.76949      1.006694</span></span>
 <span><span class="co">#&gt;  ---                                                               </span></span>
-<span><span class="co">#&gt; 246:                33.58728               121.149284     33.532308</span></span>
-<span><span class="co">#&gt; 247:                39.95483                 8.835202      2.445452</span></span>
-<span><span class="co">#&gt; 248:                39.95483                 8.835202      2.445452</span></span>
-<span><span class="co">#&gt; 249:                34.28958               147.251774     40.757086</span></span>
-<span><span class="co">#&gt; 250:                47.35500                27.486549      7.607865</span></span></code></pre></div>
+<span><span class="co">#&gt; 596:                26.54863                 85.38701      5.450944</span></span>
+<span><span class="co">#&gt; 597:                37.62791                 15.76949      1.006694</span></span>
+<span><span class="co">#&gt; 598:                37.62791                 15.76949      1.006694</span></span>
+<span><span class="co">#&gt; 599:                35.83393                 54.90868      3.505265</span></span>
+<span><span class="co">#&gt; 600:                19.20941                 83.58774      5.336082</span></span></code></pre></div>
 <p>To change the duration of the prediction time, we use the
 <code>predicton.end</code> argument. We can either provide a time period
 (30 weeks in this example):</p>
@@ -725,7 +726,7 @@ repeat-transactions are note part of this plot.</li>
 repeat transactions</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">clv.apparel</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Plotting from 2005-01-03 until 2006-07-16.</span></span></code></pre></div>
+<span><span class="co">#&gt; Plotting from 2005-01-02 until 2010-12-26.</span></span></code></pre></div>
 <p><img src="CLVTools_files/figure-html/plot-actual-1.png" width="100%">
 To plot customers mean interpurchase time, we use:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
@@ -762,7 +763,7 @@ needs to be adapted as well.</li>
 <p>For a standard tracking plot including the model, we use:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">est.pnbd</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Plotting from 2005-01-03 until 2006-07-16.</span></span></code></pre></div>
+<span><span class="co">#&gt; Plotting from 2005-01-02 until 2010-12-26.</span></span></code></pre></div>
 <p><img src="CLVTools_files/figure-html/plot-model-1.png" width="100%"></p>
 <p>To plot the <em>cumulative</em> expected transactions 30 time units
 (30 weeks in this example) ahead of the end of the estimation plot, we
@@ -809,43 +810,43 @@ covariates. In this example gender is coded as a dummy variable with
 <span><span class="co">#&gt;          Id Gender Channel</span></span>
 <span><span class="co">#&gt;      &lt;char&gt;  &lt;num&gt;   &lt;num&gt;</span></span>
 <span><span class="co">#&gt;   1:      1      0       0</span></span>
-<span><span class="co">#&gt;   2:     10      0       0</span></span>
-<span><span class="co">#&gt;   3:    100      1       0</span></span>
-<span><span class="co">#&gt;   4:   1000      1       1</span></span>
-<span><span class="co">#&gt;   5:   1001      1       0</span></span>
+<span><span class="co">#&gt;   2:      2      1       0</span></span>
+<span><span class="co">#&gt;   3:      3      1       0</span></span>
+<span><span class="co">#&gt;   4:      4      1       0</span></span>
+<span><span class="co">#&gt;   5:      5      1       0</span></span>
 <span><span class="co">#&gt;  ---                      </span></span>
-<span><span class="co">#&gt; 246:   1219      0       1</span></span>
-<span><span class="co">#&gt; 247:    122      0       0</span></span>
-<span><span class="co">#&gt; 248:   1220      0       0</span></span>
-<span><span class="co">#&gt; 249:   1221      1       1</span></span>
-<span><span class="co">#&gt; 250:   1222      1       0</span></span></code></pre></div>
+<span><span class="co">#&gt; 596:    596      0       1</span></span>
+<span><span class="co">#&gt; 597:    597      0       1</span></span>
+<span><span class="co">#&gt; 598:    598      1       0</span></span>
+<span><span class="co">#&gt; 599:    599      0       1</span></span>
+<span><span class="co">#&gt; 600:    600      0       0</span></span></code></pre></div>
 <p>Data for time-varying covariates requires a time-series of covariate
 values for every customer. I.e. if the time-varying covariates are
 allowed to change every week, a value for every customer for every week
 is required. Note that all contextual factors are required to use the
 same time intervals for the time-series. In the example of the apparel
-retailer we use information on direct marketing (<code>Marekting</code>)
-as time-varying covariate. Additionally, we add gender as time-invariant
-contextual factors. Note that the data structure of invariant covariates
-needs to be aligned with the structure of time-varying covariate. Use
-<code>data("apparelDynCov")</code> command to load</p>
+retailer we use information on seasonal patterns
+(<code>High.Season</code>) as time-varying covariate. Additionally, we
+add gender as time-invariant contextual factors. Note that the data
+structure of invariant covariates needs to be aligned with the structure
+of time-varying covariate. Use <code>data("apparelDynCov")</code>
+command to load</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelDynCov"</span><span class="op">)</span></span>
 <span><span class="va">apparelDynCov</span></span>
-<span><span class="co">#&gt; Key: &lt;Id&gt;</span></span>
-<span><span class="co">#&gt;            Id   Cov.Date Marketing Gender Channel</span></span>
-<span><span class="co">#&gt;        &lt;char&gt;     &lt;Date&gt;     &lt;num&gt;  &lt;num&gt;   &lt;num&gt;</span></span>
-<span><span class="co">#&gt;     1:      1 2004-12-26         1      0       0</span></span>
-<span><span class="co">#&gt;     2:      1 2005-01-02         1      0       0</span></span>
-<span><span class="co">#&gt;     3:      1 2005-01-09         0      0       0</span></span>
-<span><span class="co">#&gt;     4:      1 2005-01-16         1      0       0</span></span>
-<span><span class="co">#&gt;     5:      1 2005-01-23         2      0       0</span></span>
-<span><span class="co">#&gt;    ---                                           </span></span>
-<span><span class="co">#&gt; 20496:   1222 2006-06-18         0      1       0</span></span>
-<span><span class="co">#&gt; 20497:   1222 2006-06-25         0      1       0</span></span>
-<span><span class="co">#&gt; 20498:   1222 2006-07-02         0      1       0</span></span>
-<span><span class="co">#&gt; 20499:   1222 2006-07-09         0      1       0</span></span>
-<span><span class="co">#&gt; 20500:   1222 2006-07-16         0      1       0</span></span></code></pre></div>
+<span><span class="co">#&gt;             Id   Cov.Date High.Season Gender Channel</span></span>
+<span><span class="co">#&gt;         &lt;char&gt;     &lt;Date&gt;       &lt;num&gt;  &lt;num&gt;   &lt;num&gt;</span></span>
+<span><span class="co">#&gt;      1:      1 2005-01-02           0      0       0</span></span>
+<span><span class="co">#&gt;      2:      1 2005-01-09           0      0       0</span></span>
+<span><span class="co">#&gt;      3:      1 2005-01-16           0      0       0</span></span>
+<span><span class="co">#&gt;      4:      1 2005-01-23           0      0       0</span></span>
+<span><span class="co">#&gt;      5:      1 2005-01-30           0      0       0</span></span>
+<span><span class="co">#&gt;     ---                                             </span></span>
+<span><span class="co">#&gt; 187796:    600 2010-11-28           1      0       0</span></span>
+<span><span class="co">#&gt; 187797:    600 2010-12-05           1      0       0</span></span>
+<span><span class="co">#&gt; 187798:    600 2010-12-12           0      0       0</span></span>
+<span><span class="co">#&gt; 187799:    600 2010-12-19           0      0       0</span></span>
+<span><span class="co">#&gt; 187800:    600 2010-12-26           0      0       0</span></span></code></pre></div>
 <p>To add the covariates to an initialized <code>clvdata</code> object
 the commands <code><a href="../reference/SetStaticCovariates.html">SetStaticCovariates()</a></code> and
 <code><a href="../reference/SetDynamicCovariates.html">SetDynamicCovariates()</a></code> are available. The two commands are
@@ -868,14 +869,14 @@ time-invariant covariates “Gender” and “Channel” as follows:</p>
 <span>                                      names.cov.life <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Gender"</span>, <span class="st">"Channel"</span><span class="op">)</span>, </span>
 <span>                                      names.cov.trans <span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Gender"</span>, <span class="st">"Channel"</span><span class="op">)</span>, </span>
 <span>                                      name.id <span class="op">=</span> <span class="st">"Id"</span><span class="op">)</span></span></code></pre></div>
-<p>To specify the time-varying contextual factors for seasonal patterns
-and direct marketing, we use the following:</p>
+<p>To specify the time-varying contextual factors for seasonal patterns,
+we use the following:</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">clv.dyn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SetDynamicCovariates.html">SetDynamicCovariates</a></span><span class="op">(</span>clv.data <span class="op">=</span> <span class="va">clv.apparel</span>, </span>
 <span>                                     data.cov.life <span class="op">=</span> <span class="va">apparelDynCov</span>,</span>
 <span>                                     data.cov.trans <span class="op">=</span> <span class="va">apparelDynCov</span>, </span>
-<span>                                     names.cov.life <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Marketing"</span>, <span class="st">"Gender"</span>, <span class="st">"Channel"</span><span class="op">)</span>, </span>
-<span>                                     names.cov.trans <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Marketing"</span>, <span class="st">"Gender"</span>, <span class="st">"Channel"</span><span class="op">)</span>, </span>
+<span>                                     names.cov.life <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"High.Season"</span>, <span class="st">"Gender"</span>, <span class="st">"Channel"</span><span class="op">)</span>, </span>
+<span>                                     names.cov.trans <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"High.Season"</span>, <span class="st">"Gender"</span>, <span class="st">"Channel"</span><span class="op">)</span>, </span>
 <span>                                     name.id <span class="op">=</span> <span class="st">"Id"</span>,</span>
 <span>                                     name.date <span class="op">=</span> <span class="st">"Cov.Date"</span><span class="op">)</span></span></code></pre></div>
 <p>In order to include time-invariant covariates in a time-varying
@@ -935,8 +936,8 @@ covariates:</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">est.pnbd.dyn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pnbd.html">pnbd</a></span><span class="op">(</span><span class="va">clv.dyn</span>, </span>
 <span>                     start.params.model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>r<span class="op">=</span><span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">2</span>, s <span class="op">=</span> <span class="fl">1</span>, beta <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
-<span>                     start.params.life <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>Marketing<span class="op">=</span><span class="fl">0.5</span>, Gender<span class="op">=</span><span class="fl">0.6</span>, Channel<span class="op">=</span><span class="fl">0.4</span><span class="op">)</span>,</span>
-<span>                     start.params.trans <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>Marketing<span class="op">=</span><span class="fl">0.5</span>, Gender<span class="op">=</span><span class="fl">0.6</span>, Channel<span class="op">=</span><span class="fl">0.4</span><span class="op">)</span>,</span>
+<span>                     start.params.life <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>High.Season<span class="op">=</span><span class="fl">0.5</span>, Gender<span class="op">=</span><span class="fl">0.6</span>, Channel<span class="op">=</span><span class="fl">0.4</span><span class="op">)</span>,</span>
+<span>                     start.params.trans <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>High.Season<span class="op">=</span><span class="fl">0.5</span>, Gender<span class="op">=</span><span class="fl">0.6</span>, Channel<span class="op">=</span><span class="fl">0.4</span><span class="op">)</span>,</span>
 <span>                     optimx.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>control<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>trace<span class="op">=</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>To inspect the estimated model we use <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>, however
 all other commands such as <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>, <code><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef()</a></code>,
@@ -970,31 +971,31 @@ alternative starting values.</p>
 <span><span class="co">#&gt;     s = 1, beta = 2), start.params.life = c(Gender = 0.6, Channel = 0.4), </span></span>
 <span><span class="co">#&gt;     start.params.trans = c(Gender = 0.6, Channel = 0.4))</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Fitting period:                               </span></span>
-<span><span class="co">#&gt; Estimation start  2005-01-03   </span></span>
-<span><span class="co">#&gt; Estimation end    2005-10-10   </span></span>
-<span><span class="co">#&gt; Estimation length 40.0000 Weeks</span></span>
+<span><span class="co">#&gt; Fitting period:                                </span></span>
+<span><span class="co">#&gt; Estimation start  2005-01-02    </span></span>
+<span><span class="co">#&gt; Estimation end    2006-12-31    </span></span>
+<span><span class="co">#&gt; Estimation length 104.0000 Weeks</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Coefficients:</span></span>
 <span><span class="co">#&gt;               Estimate Std. Error  z-val Pr(&gt;|z|)    </span></span>
-<span><span class="co">#&gt; r              1.41800    0.27733  5.113 3.17e-07 ***</span></span>
-<span><span class="co">#&gt; alpha         35.62069    8.58072  4.151 3.31e-05 ***</span></span>
-<span><span class="co">#&gt; s              0.27258    0.09512  2.866  0.00416 ** </span></span>
-<span><span class="co">#&gt; beta           8.63265   11.26299  0.766  0.44340    </span></span>
-<span><span class="co">#&gt; life.Gender    1.53314    1.09655  1.398  0.16207    </span></span>
-<span><span class="co">#&gt; life.Channel  -1.70528    0.66153 -2.578  0.00994 ** </span></span>
-<span><span class="co">#&gt; trans.Gender   1.42366    0.19764  7.203 5.88e-13 ***</span></span>
-<span><span class="co">#&gt; trans.Channel  0.40225    0.15123  2.660  0.00782 ** </span></span>
+<span><span class="co">#&gt; r               1.8387     0.3457  5.319 1.04e-07 ***</span></span>
+<span><span class="co">#&gt; alpha          92.9435    16.9749  5.475 4.37e-08 ***</span></span>
+<span><span class="co">#&gt; s               0.5913     0.2603  2.272  0.02311 *  </span></span>
+<span><span class="co">#&gt; beta           49.5050    36.1445  1.370  0.17080    </span></span>
+<span><span class="co">#&gt; life.Gender    -0.6428     0.2956 -2.175  0.02965 *  </span></span>
+<span><span class="co">#&gt; life.Channel    0.7902     0.3058  2.584  0.00978 ** </span></span>
+<span><span class="co">#&gt; trans.Gender    0.2860     0.1041  2.746  0.00603 ** </span></span>
+<span><span class="co">#&gt; trans.Channel   0.6239     0.1049  5.945 2.76e-09 ***</span></span>
 <span><span class="co">#&gt; ---</span></span>
 <span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Optimization info:                 </span></span>
-<span><span class="co">#&gt; LL     -2846.1677</span></span>
-<span><span class="co">#&gt; AIC    5708.3355 </span></span>
-<span><span class="co">#&gt; BIC    5736.5071 </span></span>
+<span><span class="co">#&gt; LL     -5821.0627</span></span>
+<span><span class="co">#&gt; AIC    11658.1254</span></span>
+<span><span class="co">#&gt; BIC    11693.3008</span></span>
 <span><span class="co">#&gt; KKT 1  TRUE      </span></span>
 <span><span class="co">#&gt; KKT 2  TRUE      </span></span>
-<span><span class="co">#&gt; fevals 52.0000   </span></span>
+<span><span class="co">#&gt; fevals 60.0000   </span></span>
 <span><span class="co">#&gt; Method L-BFGS-B  </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Used Options:                     </span></span>
@@ -1175,17 +1176,17 @@ using the <code><a href="../reference/clvdata.html">clvdata()</a></code> command
 <span><span class="va">apparelTrans</span></span>
 <span><span class="co">#&gt;           Id       Date  Price</span></span>
 <span><span class="co">#&gt;       &lt;char&gt;     &lt;Date&gt;  &lt;num&gt;</span></span>
-<span><span class="co">#&gt;    1:      1 2005-01-03 230.30</span></span>
-<span><span class="co">#&gt;    2:     10 2005-01-03  84.39</span></span>
-<span><span class="co">#&gt;    3:     10 2005-02-25 131.07</span></span>
-<span><span class="co">#&gt;    4:     10 2005-04-05  86.43</span></span>
-<span><span class="co">#&gt;    5:    100 2005-01-03  11.49</span></span>
+<span><span class="co">#&gt;    1:      1 2005-01-02 230.30</span></span>
+<span><span class="co">#&gt;    2:      1 2005-09-06  84.39</span></span>
+<span><span class="co">#&gt;    3:      1 2006-01-18 131.07</span></span>
+<span><span class="co">#&gt;    4:      1 2006-04-05  86.43</span></span>
+<span><span class="co">#&gt;    5:      1 2006-07-02  11.49</span></span>
 <span><span class="co">#&gt;   ---                         </span></span>
-<span><span class="co">#&gt; 2349:   1221 2006-01-23  26.57</span></span>
-<span><span class="co">#&gt; 2350:   1221 2006-03-09 129.82</span></span>
-<span><span class="co">#&gt; 2351:   1221 2006-05-14  14.37</span></span>
-<span><span class="co">#&gt; 2352:   1222 2005-01-03  44.77</span></span>
-<span><span class="co">#&gt; 2353:   1222 2005-03-03  99.21</span></span>
+<span><span class="co">#&gt; 3183:    600 2005-01-02  24.94</span></span>
+<span><span class="co">#&gt; 3184:    600 2005-04-17  54.97</span></span>
+<span><span class="co">#&gt; 3185:    600 2005-06-30  66.84</span></span>
+<span><span class="co">#&gt; 3186:    600 2005-10-27  22.54</span></span>
+<span><span class="co">#&gt; 3187:    600 2006-01-09  12.97</span></span>
 <span></span>
 <span><span class="va">clv.apparel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/clvdata.html">clvdata</a></span><span class="op">(</span><span class="va">apparelTrans</span>,  </span>
 <span>                       date.format<span class="op">=</span><span class="st">"ymd"</span>, </span>
@@ -1233,8 +1234,8 @@ following we illustrate the two alternatives.</p>
 <span><span class="co">#&gt; spending(family = gg, data = clv.apparel)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Coefficients:</span></span>
-<span><span class="co">#&gt;       p        q    gamma  </span></span>
-<span><span class="co">#&gt;   2.305   17.148  279.974  </span></span>
+<span><span class="co">#&gt;      p       q   gamma  </span></span>
+<span><span class="co">#&gt;  3.675   4.630  36.111  </span></span>
 <span><span class="co">#&gt; KKT1: TRUE </span></span>
 <span><span class="co">#&gt; KKT2: TRUE</span></span></code></pre></div>
 <p>Using start parameters or other additional arguments for the
@@ -1291,17 +1292,17 @@ a new <code>clvdata</code> object.</p>
 <span><span class="co">#&gt; Key: &lt;Id&gt;</span></span>
 <span><span class="co">#&gt;          Id actual.mean.spending predicted.mean.spending</span></span>
 <span><span class="co">#&gt;      &lt;char&gt;                &lt;num&gt;                   &lt;num&gt;</span></span>
-<span><span class="co">#&gt;   1:      1              0.00000                39.95483</span></span>
-<span><span class="co">#&gt;   2:     10              0.00000                55.23031</span></span>
-<span><span class="co">#&gt;   3:    100             32.06652                43.57390</span></span>
-<span><span class="co">#&gt;   4:   1000             46.51783                41.60921</span></span>
-<span><span class="co">#&gt;   5:   1001             33.09091                45.58153</span></span>
+<span><span class="co">#&gt;   1:      1            104.82000                60.62446</span></span>
+<span><span class="co">#&gt;   2:     10             31.65500                37.71808</span></span>
+<span><span class="co">#&gt;   3:    100             37.03889                36.56190</span></span>
+<span><span class="co">#&gt;   4:    101              0.00000                33.24045</span></span>
+<span><span class="co">#&gt;   5:    102              0.00000                36.56190</span></span>
 <span><span class="co">#&gt;  ---                                                    </span></span>
-<span><span class="co">#&gt; 246:   1219             29.55429                33.58728</span></span>
-<span><span class="co">#&gt; 247:    122              0.00000                39.95483</span></span>
-<span><span class="co">#&gt; 248:   1220              0.00000                39.95483</span></span>
-<span><span class="co">#&gt; 249:   1221             33.62778                34.28958</span></span>
-<span><span class="co">#&gt; 250:   1222              0.00000                47.35500</span></span></code></pre></div>
+<span><span class="co">#&gt; 596:     95             22.76000                28.96908</span></span>
+<span><span class="co">#&gt; 597:     96             84.53667                36.56190</span></span>
+<span><span class="co">#&gt; 598:     97              0.00000                36.56190</span></span>
+<span><span class="co">#&gt; 599:     98             33.14000                36.56190</span></span>
+<span><span class="co">#&gt; 600:     99             13.99000                17.43526</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="plot-spendings">Plot Spendings<a class="anchor" aria-label="anchor" href="#plot-spendings"></a>
@@ -1408,7 +1409,7 @@ Tools to Make Developing r Packages Easier</em>. <a href="https://CRAN.R-project
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>

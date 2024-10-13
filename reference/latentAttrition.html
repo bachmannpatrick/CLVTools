@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.1</span>
       </span>
     </div>
 
@@ -157,7 +157,7 @@ May not be given if <code>data</code> contains no covariates.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       r    alpha        s     beta  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.7579   4.7419   0.5432  22.1889  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1.3768  47.2937   0.6746  62.8325  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -172,8 +172,8 @@ May not be given if <code>data</code> contains no covariates.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> latentAttrition(family = bgnbd, data = clv.nocov)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      r   alpha       a       b  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.4367  2.6269  0.3801  3.3979  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       r    alpha        a        b  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.4447  14.2235   0.6653   3.2849  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
 <span class="r-in"><span><span class="fu">latentAttrition</span><span class="op">(</span>formula <span class="op">=</span>, family<span class="op">=</span><span class="va">ggomnbd</span>, data<span class="op">=</span><span class="va">clv.nocov</span><span class="op">)</span></span></span>
@@ -185,10 +185,10 @@ May not be given if <code>data</code> contains no covariates.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> latentAttrition(family = ggomnbd, data = clv.nocov)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       r    alpha        b        s     beta  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.77441  4.79784  0.02794  0.23294  0.21077  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         r      alpha          b          s       beta  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1.376e+00  4.725e+01  4.050e-07  6.743e-01  2.542e-05  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: FALSE </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Fit pnbd with start parameters and correlation</span></span></span>
 <span class="r-in"><span><span class="co"># required args are passed as part of '...'</span></span></span>
@@ -205,11 +205,11 @@ May not be given if <code>data</code> contains no covariates.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               r            alpha                s             beta  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        0.757581         4.745652         0.546166        22.394441  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       1.2588082       43.0074084        0.4502443       28.1249106  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Cor(life,trans)  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       -0.001608  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      -0.0005874  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: FALSE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: FALSE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Used Options:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Correlation:     TRUE </span>
@@ -226,9 +226,9 @@ May not be given if <code>data</code> contains no covariates.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             r          alpha              s           beta    life.Gender  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         1.318         26.898          0.405         13.988          1.245  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        1.6943        85.6670         0.6985        56.4854        -0.6634  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  life.Channel   trans.Gender  trans.Channel  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        -1.458          1.309          0.376  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        0.5544         0.3004         0.5583  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -250,9 +250,9 @@ May not be given if <code>data</code> contains no covariates.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             r          alpha              s           beta    life.Gender  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        1.1262        25.5860         0.4910        40.8724         1.1317  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        1.6988        83.8248         0.6881        42.9313        -0.7195  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> trans.Channel   trans.Gender  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        0.4927         1.3158  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        0.5112         0.2945  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -277,9 +277,9 @@ May not be given if <code>data</code> contains no covariates.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             r          alpha              s           beta    life.Gender  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        1.1251        25.5581         0.4913        40.9104         1.1307  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        1.7004        83.8950         0.6873        42.7870        -0.7208  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  trans.Gender  trans.Channel  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        1.3155         0.4928  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        0.2944         0.5115  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -301,11 +301,11 @@ May not be given if <code>data</code> contains no covariates.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                         r                      alpha  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    0.7599                    16.5349  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    1.6467                   160.1213  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                         s                       beta  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    0.6319                    43.1094  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    0.6695                    38.2271  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               life.Gender  trans.I.log.Channel...2..  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    0.5048                     1.3801  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   -0.8432                     1.2318  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -327,9 +327,9 @@ May not be given if <code>data</code> contains no covariates.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             r          alpha              s           beta    life.Gender  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      0.761805       4.805476       0.543271      22.099769       0.001930  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      1.383495      47.741272       0.676110      62.860816      -0.006224  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  life.Channel   trans.Gender  trans.Channel  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     -0.006228       0.006800       0.005040  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      0.003006       0.003998       0.005636  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -351,9 +351,9 @@ May not be given if <code>data</code> contains no covariates.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              r           alpha               s            beta     life.Gender  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         1.1225         22.7602          0.4396         37.9219          1.1427  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         1.6938         85.6338          0.6995         56.7011         -0.6637  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   trans.Gender  constr.Channel  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         1.3174          0.2597  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         0.3002          0.5581  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -379,7 +379,7 @@ May not be given if <code>data</code> contains no covariates.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer></div>

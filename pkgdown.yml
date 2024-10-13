@@ -1,10 +1,10 @@
 pandoc: 3.1.11
-pkgdown: 2.1.0
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   CLVTools: CLVTools.html
   internal_docu/internal_docu: internal_docu/internal_docu.html
-last_built: 2024-08-17T22:07Z
+last_built: 2024-10-13T20:45Z
 urls:
   reference: https://www.clvtools.com/reference
   article: https://www.clvtools.com/articles

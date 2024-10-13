@@ -29,7 +29,7 @@ for static and dynamic covariate models. See details for the required format.'><
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.1</span>
       </span>
     </div>
 
@@ -141,7 +141,7 @@ For example: <code>data.frame(Gender=1, Age=30, Channel=0)</code>.</p>
 <p>For <code>newcustomer.dynamic()</code>: One column for every covariate parameter in the estimated model.
 No column <code>Id</code>. A column <code>Cov.Date</code> with time points that mark the start of the period defined by <code>time.unit</code>.
 For every <code>Cov.Date</code>, exactly 1 row of numeric covariate data. <br>
-For example for weekly covariates: <code>data.frame(Cov.Date=c("2000-01-03", "2000-01-10"), Gender=c(1,1), High.Season=c(0, 1), Marketing=c(-0.5,1.12))</code> <br>
+For example for weekly covariates: <code>data.frame(Cov.Date=c("2000-01-03", "2000-01-10"), Gender=c(1,1), Channel=c(1, 1), High.Season=c(0,1,0))</code> <br>
 If <code>Cov.Date</code> is of type character, the <code>date.format</code> given when creating the the <code>clv.data</code> object is used to parse it.
 The data has to cover the time from the customer's first transaction <code>first.transaction</code>
 to the end of the prediction period given by <code>t</code>. It does not have to cover the same time range as when fitting the model.
@@ -163,7 +163,7 @@ to be known.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelDynCov"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">clv.data.apparel</span> <span class="op">&lt;-</span> <span class="fu"><a href="clvdata.html">clvdata</a></span><span class="op">(</span><span class="va">apparelTrans</span>, date.format <span class="op">=</span> <span class="st">"ymd"</span>,</span></span>
-<span class="r-in"><span>                            time.unit <span class="op">=</span> <span class="st">"w"</span>, estimation.split <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                            time.unit <span class="op">=</span> <span class="st">"w"</span>, estimation.split <span class="op">=</span> <span class="fl">52</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">clv.data.static.cov</span> <span class="op">&lt;-</span></span></span>
 <span class="r-in"><span> <span class="fu"><a href="SetStaticCovariates.html">SetStaticCovariates</a></span><span class="op">(</span><span class="va">clv.data.apparel</span>,</span></span>
 <span class="r-in"><span>                     data.cov.life <span class="op">=</span> <span class="va">apparelStaticCov</span>,</span></span>
@@ -174,11 +174,9 @@ to be known.</p>
 <span class="r-in"><span>  <span class="fu"><a href="SetDynamicCovariates.html">SetDynamicCovariates</a></span><span class="op">(</span>clv.data <span class="op">=</span> <span class="va">clv.data.apparel</span>,</span></span>
 <span class="r-in"><span>                       data.cov.life <span class="op">=</span> <span class="va">apparelDynCov</span>,</span></span>
 <span class="r-in"><span>                       data.cov.trans <span class="op">=</span> <span class="va">apparelDynCov</span>,</span></span>
-<span class="r-in"><span>                       names.cov.life <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Marketing"</span>, <span class="st">"Gender"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                       names.cov.trans <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Marketing"</span>, <span class="st">"Gender"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                       names.cov.life <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"High.Season"</span>, <span class="st">"Gender"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                       names.cov.trans <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"High.Season"</span>, <span class="st">"Gender"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                       name.date <span class="op">=</span> <span class="st">"Cov.Date"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The Lifetime covariate data before 2005-01-02 (period of estimation start) is cut off.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The Transaction covariate data before 2005-01-02 (period of estimation start) is cut off.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
@@ -193,7 +191,7 @@ to be known.</p>
 <span class="r-in"><span>  <span class="va">p.apparel</span>,</span></span>
 <span class="r-in"><span>  newdata<span class="op">=</span><span class="fu">newcustomer</span><span class="op">(</span>num.periods<span class="op">=</span><span class="fl">3.68</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.5155953</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1026112</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
@@ -214,7 +212,7 @@ to be known.</p>
 <span class="r-in"><span>    data.cov.trans<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Gender<span class="op">=</span><span class="fl">1</span>, Channel<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4988839</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1028615</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
@@ -223,8 +221,8 @@ to be known.</p>
 <span class="r-in"><span><span class="va">p.apparel.dyn</span> <span class="op">&lt;-</span> <span class="fu"><a href="pnbd.html">pnbd</a></span><span class="op">(</span><span class="va">clv.data.dyn.cov</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Predict the number of transactions an average new</span></span></span>
-<span class="r-in"><span><span class="co"># customer who is male (Gender=0), who was contacted</span></span></span>
-<span class="r-in"><span><span class="co"># 4, 0, and 7 times with direct marketing, and who was</span></span></span>
+<span class="r-in"><span><span class="co"># customer who is male (Gender=0), who did not purchase during</span></span></span>
+<span class="r-in"><span><span class="co"># high.season, and who was</span></span></span>
 <span class="r-in"><span><span class="co"># acquired on "2005-02-16" (first.transaction) is expected</span></span></span>
 <span class="r-in"><span><span class="co"># to make in the first 2.12 weeks.</span></span></span>
 <span class="r-in"><span><span class="co"># Note that the time range is very different from the one used</span></span></span>
@@ -237,11 +235,11 @@ to be known.</p>
 <span class="r-in"><span>    data.cov.life<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>      Cov.Date<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2051-02-12"</span>, <span class="st">"2051-02-19"</span>, <span class="st">"2051-02-26"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>      Gender<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>      Marketing<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">0</span>, <span class="fl">7</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      High.Season<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">0</span>, <span class="fl">7</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    data.cov.trans<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>      Cov.Date<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2051-02-12"</span>, <span class="st">"2051-02-19"</span>, <span class="st">"2051-02-26"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>      Gender<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>      Marketing<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">0</span>, <span class="fl">7</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      High.Season<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">0</span>, <span class="fl">7</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    first.transaction <span class="op">=</span> <span class="st">"2051-02-16"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
@@ -263,7 +261,7 @@ to be known.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer></div>

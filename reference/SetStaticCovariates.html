@@ -26,7 +26,7 @@ At least 1 covariate is needed for both processes and no categorical covariate m
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.1</span>
       </span>
     </div>
 
@@ -154,26 +154,26 @@ to k-1 numeric dummy variables.</p>
 <span class="r-in"><span><span class="co"># more summary output</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">clv.data.apparel.cov</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> CLV Transaction Data with Static Covariates </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Time unit         Weeks        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Estimation length 79.8571 Weeks</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Holdout length    -            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Time unit         Weeks         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Estimation length 311.1429 Weeks</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Holdout length    -             </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Transaction Data Summary </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                    Estimation      Holdout      Total     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of customers                -               -            250       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> First Transaction in period        2005-01-03      -            2005-01-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Last Transaction in period         2006-07-16      -            2006-07-16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Total # Transactions               2257            -            2257      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Mean # Transactions per cust       9.028           -            9.028     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               12.603          -            12.603    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Mean Spending per Transaction      39.051          -            39.051    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               50.503          -            50.503    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Total Spending                     88139.130       -            88139.130 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Total # zero repeaters             65              -            -         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Percentage of zero repeaters       26.000          -            -         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Mean Interpurchase time            9.462           -            9.462     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               12.266          -            12.266    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of customers                -               -            600       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> First Transaction in period        2005-01-02      -            2005-01-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Last Transaction in period         2010-12-20      -            2010-12-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total # Transactions               3183            -            3183      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mean # Transactions per cust       5.305           -            5.305     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               6.119           -            6.119     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mean Spending per Transaction      39.069          -            39.069    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               66.519          -            66.519    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total Spending                     124356.900      -            124356.900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total # zero repeaters             175             -            -         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Percentage of zero repeaters       29.167          -            -         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mean Interpurchase time            37.817          -            37.817    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               42.339          -            42.339    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Covariates                           </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Trans. Covariates    Gender</span>
@@ -193,9 +193,9 @@ to k-1 numeric dummy variables.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            r         alpha             s          beta   life.Gender  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       1.1119       19.3966        0.4539       32.3786        1.0783  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       1.4521       58.3840        0.7280       49.3643       -0.7065  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> trans.Gender  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       1.3094  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       0.2823  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -219,7 +219,7 @@ to k-1 numeric dummy variables.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer></div>

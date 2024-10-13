@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.1</span>
       </span>
     </div>
 
@@ -191,7 +191,7 @@ The generic accessor functions <code>coefficients</code>, <code><a href="vcov.cl
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>Model parameters for the Pareto/NBD model are <code>alpha, r, beta, and s</code>. <br><code>s</code>: shape parameter of the Gamma distribution for the lifetime process.
+    <p>Model parameters for the Pareto/NBD model are <code>r, alpha, s, and beta</code>. <br><code>s</code>: shape parameter of the Gamma distribution for the lifetime process.
 The smaller s, the stronger the heterogeneity of customer lifetimes. <br><code>beta</code>: rate parameter for the Gamma distribution for the lifetime process. <br><code>r</code>: shape parameter of the Gamma distribution of the purchase process.
 The smaller r, the stronger the heterogeneity of the purchase process.<br><code>alpha</code>: rate parameter of the Gamma distribution of the purchase process.</p>
 <p>Based on these parameters, the average purchase rate while customers are active
@@ -278,7 +278,7 @@ to add static covariates to an existing clv data object.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"apparelTrans"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">clv.data.apparel</span> <span class="op">&lt;-</span> <span class="fu"><a href="clvdata.html">clvdata</a></span><span class="op">(</span><span class="va">apparelTrans</span>, date.format <span class="op">=</span> <span class="st">"ymd"</span>,</span></span>
-<span class="r-in"><span>                            time.unit <span class="op">=</span> <span class="st">"w"</span>, estimation.split <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                            time.unit <span class="op">=</span> <span class="st">"w"</span>, estimation.split <span class="op">=</span> <span class="fl">52</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Fit standard pnbd model</span></span></span>
 <span class="r-in"><span><span class="fu">pnbd</span><span class="op">(</span><span class="va">clv.data.apparel</span><span class="op">)</span></span></span>
@@ -291,7 +291,7 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       r    alpha        s     beta  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.7858   5.3312   0.3606  11.8221  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1.3080  46.3352   0.4794  70.2292  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -311,7 +311,7 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       r    alpha        s     beta  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.7858   5.3312   0.3606  11.8221  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1.3080  46.3352   0.4794  70.2292  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -385,8 +385,8 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ufn</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function (par) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> fn(par, ...)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x12e143cb8&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x13a1cd2a8&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x114ab06a0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x120fafd08&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $have.bounds</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
@@ -396,86 +396,134 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Method:  Nelder-Mead </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Nelder-Mead direct search function minimizer</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function value for initial parameters = 3054.783875</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Scaled convergence tolerance is 4.55198e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function value for initial parameters = 3577.490724</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Scaled convergence tolerance is 5.33088e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Stepsize computed as 0.270805</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> BUILD              5 3130.171249 3012.666615</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION          7 3073.973545 2934.108266</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION       9 3054.783875 2934.108266</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION         11 3046.196662 2890.274544</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION        13 3012.666615 2885.087876</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION        15 2953.224793 2880.665503</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      17 2934.108266 2880.665503</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      19 2890.274544 2880.665503</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      21 2886.242588 2880.665503</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      23 2885.087876 2880.665503</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      25 2882.431079 2880.665503</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      27 2882.373576 2880.286217</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      29 2881.398381 2880.286217</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION         31 2881.323229 2879.756503</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      33 2880.665503 2879.748586</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      35 2880.356248 2879.748586</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      37 2880.286217 2879.675815</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      39 2880.004056 2879.675815</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      41 2879.821861 2879.675815</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      43 2879.756503 2879.675815</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      45 2879.748586 2879.669232</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      47 2879.691775 2879.668339</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      49 2879.686220 2879.652021</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      51 2879.675815 2879.652021</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      53 2879.669232 2879.652021</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      55 2879.668339 2879.652021</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      57 2879.658041 2879.652021</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      59 2879.653671 2879.650385</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION        61 2879.653554 2879.648557</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION        63 2879.653031 2879.645463</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      65 2879.652021 2879.645463</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      67 2879.650385 2879.645463</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION         69 2879.648557 2879.639035</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      71 2879.647520 2879.639035</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      73 2879.646944 2879.639035</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION         75 2879.645463 2879.631207</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      77 2879.643620 2879.631207</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION         79 2879.642257 2879.627502</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      81 2879.639035 2879.627502</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION         83 2879.635380 2879.611646</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      85 2879.631207 2879.611646</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      87 2879.629717 2879.611646</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION         89 2879.627502 2879.596842</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION         91 2879.620950 2879.581402</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION         93 2879.614418 2879.564653</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION         95 2879.611646 2879.541865</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION         97 2879.596842 2879.512661</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION         99 2879.581402 2879.484609</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     101 2879.564653 2879.484609</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     103 2879.541865 2879.484609</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     105 2879.512661 2879.484609</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION       107 2879.489001 2879.482623</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION       109 2879.487967 2879.477322</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION       111 2879.485488 2879.473094</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     113 2879.484609 2879.473094</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION     115 2879.482623 2879.473094</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     117 2879.477322 2879.473094</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     119 2879.477157 2879.473094</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION        121 2879.475811 2879.470484</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION     123 2879.474730 2879.470484</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     125 2879.473882 2879.470484</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     127 2879.473094 2879.470484</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     129 2879.472662 2879.470381</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION     131 2879.470911 2879.470381</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION     133 2879.470860 2879.470381</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION       135 2879.470730 2879.470063</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     137 2879.470492 2879.470063</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     139 2879.470484 2879.470063</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION     141 2879.470381 2879.470063</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     143 2879.470174 2879.470039</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION       145 2879.470168 2879.470019</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION       147 2879.470072 2879.469968</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION     149 2879.470063 2879.469968</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION     151 2879.470039 2879.469968</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION     153 2879.470019 2879.469968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BUILD              5 3618.102926 3557.499818</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION          7 3588.766454 3515.206187</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION       9 3577.490724 3515.206187</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      11 3560.629019 3515.206187</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      13 3557.499818 3515.206187</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION         15 3538.949426 3502.124657</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION         17 3522.301702 3491.315153</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      19 3520.130144 3491.315153</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      21 3515.206187 3491.315153</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION         23 3502.124657 3487.029141</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      25 3494.722953 3487.029141</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION        27 3493.410647 3485.989378</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      29 3491.315153 3485.989378</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      31 3487.841273 3485.989378</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      33 3487.231847 3485.989378</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      35 3487.029141 3485.989378</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION         37 3486.635771 3484.509002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      39 3486.256159 3484.509002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      41 3486.135308 3484.509002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      43 3485.989378 3484.509002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      45 3485.602665 3484.509002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION        47 3485.131743 3484.022296</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      49 3485.094658 3484.022296</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION        51 3484.734465 3483.944565</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION         53 3484.509002 3483.051738</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      55 3484.390375 3483.051738</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION         57 3484.022296 3482.672127</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      59 3483.944565 3482.672127</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      61 3483.885871 3482.672127</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      63 3483.183497 3482.672127</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      65 3483.051738 3482.605147</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      67 3482.869919 3482.605147</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      69 3482.678491 3482.605147</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      71 3482.677209 3482.586838</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      73 3482.672127 3482.586838</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      75 3482.626645 3482.586838</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      77 3482.606469 3482.584373</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION        79 3482.605147 3482.570883</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      81 3482.591298 3482.570883</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      83 3482.586838 3482.570883</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION        85 3482.584373 3482.562448</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      87 3482.578339 3482.562448</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      89 3482.574087 3482.562448</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION         91 3482.570883 3482.546872</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      93 3482.569656 3482.546872</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION      95 3482.564846 3482.546872</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION        97 3482.562448 3482.545725</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION      99 3482.559624 3482.545725</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION        101 3482.552132 3482.529225</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     103 3482.548141 3482.529225</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     105 3482.546872 3482.529225</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION        107 3482.545725 3482.524888</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION       109 3482.539489 3482.523911</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION        111 3482.532682 3482.508336</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     113 3482.529225 3482.508336</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     115 3482.524888 3482.508336</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     117 3482.523911 3482.508336</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     119 3482.518928 3482.508336</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     121 3482.518699 3482.508336</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION        123 3482.516119 3482.501974</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION        125 3482.511347 3482.491345</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     127 3482.509855 3482.491345</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION        129 3482.508336 3482.479883</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     131 3482.501974 3482.479883</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION        133 3482.491895 3482.451710</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     135 3482.491345 3482.451710</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     137 3482.485097 3482.451710</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION        139 3482.479883 3482.426861</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     141 3482.467825 3482.426861</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION        143 3482.464402 3482.392452</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION        145 3482.451710 3482.362389</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION        147 3482.434120 3482.326554</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     149 3482.426861 3482.326554</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION        151 3482.392452 3482.234085</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     153 3482.362389 3482.234085</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     155 3482.333002 3482.234085</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     157 3482.326554 3482.234085</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     159 3482.270427 3482.228485</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION        161 3482.249626 3482.187145</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     163 3482.243048 3482.187145</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION        165 3482.234085 3482.143757</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     167 3482.228485 3482.143757</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION        169 3482.187150 3482.076034</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     171 3482.187145 3482.076034</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION        173 3482.168268 3482.051621</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     175 3482.143757 3482.051621</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION       177 3482.100647 3482.024184</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION       179 3482.076034 3482.022426</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION     181 3482.051696 3482.022426</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION       183 3482.051621 3481.999804</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     185 3482.030557 3481.999804</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     187 3482.024184 3481.999804</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     189 3482.022426 3481.999429</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION     191 3482.014260 3481.999429</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     193 3482.005517 3481.998573</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     195 3482.005327 3481.998573</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION       197 3481.999804 3481.992755</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION     199 3481.999429 3481.992755</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     201 3481.999171 3481.992755</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION       203 3481.998573 3481.992659</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION     205 3481.996090 3481.992659</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION        207 3481.995202 3481.989353</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION        209 3481.994861 3481.987456</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     211 3481.992755 3481.987456</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION       213 3481.992659 3481.986721</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION        215 3481.989353 3481.980449</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     217 3481.987760 3481.980449</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     219 3481.987456 3481.980449</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     221 3481.986721 3481.980449</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> EXTENSION        223 3481.984187 3481.978655</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     225 3481.983425 3481.978655</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     227 3481.981552 3481.978655</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION       229 3481.980449 3481.978351</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     231 3481.979349 3481.978351</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     233 3481.978943 3481.978351</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION     235 3481.978704 3481.978351</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> REFLECTION       237 3481.978655 3481.978253</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     239 3481.978629 3481.978253</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     241 3481.978532 3481.978253</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION     243 3481.978351 3481.978253</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HI-REDUCTION     245 3481.978345 3481.978253</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     247 3481.978321 3481.978252</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LO-REDUCTION     249 3481.978295 3481.978236</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Exiting from Nelder Mead minimizer</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     155 function evaluations used</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     251 function evaluations used</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Post processing for method  Nelder-Mead </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Successful convergence! </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Compute Hessian approximation at finish of  Nelder-Mead </span>
@@ -483,10 +531,10 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Save results from method  Nelder-Mead </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $par</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      log.r  log.alpha      log.s   log.beta </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -0.2402537  1.6745955 -1.0319390  2.4497084 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.2678451  3.8353761 -0.7332306  4.2554487 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2879.47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3481.978</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $message</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
@@ -496,7 +544,7 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $fevals</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      155 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      251 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $gevals</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> gradient </span>
@@ -513,7 +561,7 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $xtimes</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> user.self </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     0.018 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      0.04 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Assemble the answers</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimation finished!</span>
@@ -521,7 +569,7 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-in"><span><span class="co"># estimated coefs</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">apparel.pnbd</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          r      alpha          s       beta </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.7864283  5.3366358  0.3563154 11.5849676 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1.3071447 46.3108420  0.4803547 70.4884348 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># summary of the fitted model</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">apparel.pnbd</span><span class="op">)</span></span></span>
@@ -532,26 +580,26 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     control = list(trace = 6)))</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Fitting period:                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Estimation start  2005-01-03   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Estimation end    2005-10-10   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Estimation length 40.0000 Weeks</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Estimation start  2005-01-02   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Estimation end    2006-01-01   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Estimation length 52.0000 Weeks</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Estimate Std. Error z-val Pr(&gt;|z|)    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r       0.7864     0.1323 5.944 2.78e-09 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> alpha   5.3366     0.9025 5.913 3.36e-09 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> s       0.3563     0.1830 1.947   0.0516 .  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> beta   11.5850    10.6138 1.092   0.2751    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r       1.3071     0.2123 6.157 7.42e-10 ***</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alpha  46.3108     7.5368 6.145 8.01e-10 ***</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> s       0.4804     1.0819 0.444    0.657    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> beta   70.4884   203.3985 0.347    0.729    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ---</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization info:                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> LL     -2879.4700 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> AIC    5766.9399  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> BIC    5781.0258  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> LL     -3481.9782 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AIC    6971.9565  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BIC    6989.5442  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT 1  TRUE       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT 2  TRUE       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> fevals 155.0000   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fevals 251.0000   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Method Nelder-Mead</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Used Options:                 </span>
@@ -559,97 +607,97 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># predict CLV etc for holdout period</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="predict.clv.fitted.transactions.html">predict</a></span><span class="op">(</span><span class="va">apparel.pnbd</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2005-10-11 until (incl.) 2006-07-16 (39.86 Weeks).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2006-01-02 until (incl.) 2010-12-20 (259.14 Weeks).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating gg model to predict spending...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimation finished!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Key: &lt;Id&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          Id period.first period.last period.length actual.x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;char&gt;       &lt;Date&gt;      &lt;Date&gt;         &lt;num&gt;    &lt;int&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      1   2005-10-11  2006-07-16      39.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     10   2005-10-11  2006-07-16      39.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:    100   2005-10-11  2006-07-16      39.85714       23</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:   1000   2005-10-11  2006-07-16      39.85714       23</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:   1001   2005-10-11  2006-07-16      39.85714       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      1   2006-01-02  2010-12-20      259.1429        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     10   2006-01-02  2010-12-20      259.1429        2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:    100   2006-01-02  2010-12-20      259.1429        9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:    101   2006-01-02  2010-12-20      259.1429        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:    102   2006-01-02  2010-12-20      259.1429        0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246:   1219   2005-10-11  2006-07-16      39.85714       14</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247:    122   2005-10-11  2006-07-16      39.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248:   1220   2005-10-11  2006-07-16      39.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249:   1221   2005-10-11  2006-07-16      39.85714        9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250:   1222   2005-10-11  2006-07-16      39.85714        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      actual.total.spending    PAlive        CET       DERT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                      &lt;num&gt;     &lt;num&gt;      &lt;num&gt;      &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                  0.00 0.3574086  0.2213742 0.06124756</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                  0.00 0.4229262  0.9281438 0.25678942</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                737.53 0.9156653 13.5482683 3.74839745</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:               1069.91 0.9967828 13.1783679 3.64605717</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                364.00 0.5102077  3.5307112 0.97684137</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246:                413.76 0.9579838  3.6113745 0.99915845</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247:                  0.00 0.3574086  0.2213742 0.06124756</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248:                  0.00 0.3574086  0.2213742 0.06124756</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249:                302.65 0.9435096  4.2999136 1.18965648</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250:                  0.00 0.4139543  0.5824260 0.16113973</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:     95   2006-01-02  2010-12-20      259.1429        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:     96   2006-01-02  2010-12-20      259.1429        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:     97   2006-01-02  2010-12-20      259.1429        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:     98   2006-01-02  2010-12-20      259.1429        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:     99   2006-01-02  2010-12-20      259.1429        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      actual.total.spending    PAlive      CET       DERT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      &lt;num&gt;     &lt;num&gt;    &lt;num&gt;      &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                524.10 0.9163171 4.080260 0.21731960</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                 63.31 0.8411806 3.745685 0.19949974</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                333.35 0.6578365 1.659621 0.08839341</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                  0.00 0.8946531 3.983793 0.21218163</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                  0.00 0.6578365 1.659621 0.08839341</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:                113.80 0.9400910 4.186123 0.22295799</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:                253.61 0.6578365 1.659621 0.08839341</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:                  0.00 0.6578365 1.659621 0.08839341</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:                  0.00 0.9655447 4.299465 0.22899475</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:                 13.99 0.9384998 5.990383 0.31905509</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      predicted.mean.spending predicted.total.spending predicted.CLV</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                        &lt;num&gt;                    &lt;num&gt;         &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                39.95483                 8.844967      2.447136</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                55.23031                51.261670     14.182559</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                43.57390               590.350880    163.332293</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                41.60921               548.341440    151.709548</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                45.58153               160.935208     44.525921</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                63.77959                260.23732     13.860556</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                38.10316                142.72242      7.601570</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                37.12434                 61.61231      3.281547</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                33.08404                131.79995      7.019826</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                37.12434                 61.61231      3.281547</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246:                33.58728               121.296238     33.559013</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247:                39.95483                 8.844967      2.447136</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248:                39.95483                 8.844967      2.447136</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249:                34.28958               147.442230     40.792821</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250:                47.35500                27.580786      7.630772</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:                28.29614                118.45113      6.308851</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:                37.12434                 61.61231      3.281547</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:                37.12434                 61.61231      3.281547</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:                34.87739                149.95411      7.986738</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:                16.11315                 96.52392      5.140981</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># predict CLV etc for the next 15 periods</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="predict.clv.fitted.transactions.html">predict</a></span><span class="op">(</span><span class="va">apparel.pnbd</span>, prediction.end <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2005-10-11 until (incl.) 2006-01-23 (15 Weeks).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Predicting from 2006-01-02 until (incl.) 2006-04-16 (15 Weeks).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating gg model to predict spending...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting estimation...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimation finished!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Key: &lt;Id&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          Id period.first period.last period.length actual.x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;char&gt;       &lt;Date&gt;      &lt;Date&gt;         &lt;int&gt;    &lt;int&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      1   2005-10-11  2006-01-23            15        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     10   2005-10-11  2006-01-23            15        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:    100   2005-10-11  2006-01-23            15       10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:   1000   2005-10-11  2006-01-23            15       10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:   1001   2005-10-11  2006-01-23            15        6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:      1   2006-01-02  2006-04-16            15        2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     10   2006-01-02  2006-04-16            15        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:    100   2006-01-02  2006-04-16            15        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:    101   2006-01-02  2006-04-16            15        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:    102   2006-01-02  2006-04-16            15        0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246:   1219   2005-10-11  2006-01-23            15       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247:    122   2005-10-11  2006-01-23            15        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248:   1220   2005-10-11  2006-01-23            15        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249:   1221   2005-10-11  2006-01-23            15        7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250:   1222   2005-10-11  2006-01-23            15        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      actual.total.spending    PAlive        CET       DERT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                      &lt;num&gt;     &lt;num&gt;      &lt;num&gt;      &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                  0.00 0.3574086 0.08872108 0.06124756</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                  0.00 0.4229262 0.37197621 0.25678942</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                224.71 0.9156653 5.42979800 3.74839745</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                343.11 0.9967828 5.28155143 3.64605717</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                206.65 0.5102077 1.41501839 0.97684137</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246:                325.05 0.9579838 1.44734614 0.99915845</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247:                  0.00 0.3574086 0.08872108 0.06124756</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248:                  0.00 0.3574086 0.08872108 0.06124756</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249:                158.46 0.9435096 1.72329495 1.18965648</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250:                  0.00 0.4139543 0.23342140 0.16113973</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:     95   2006-01-02  2006-04-16            15        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:     96   2006-01-02  2006-04-16            15        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:     97   2006-01-02  2006-04-16            15        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:     98   2006-01-02  2006-04-16            15        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:     99   2006-01-02  2006-04-16            15        0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      actual.total.spending    PAlive       CET       DERT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      &lt;num&gt;     &lt;num&gt;     &lt;num&gt;      &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                 217.5 0.9163171 0.3136059 0.21731960</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                   0.0 0.8411806 0.2878907 0.19949974</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                   0.0 0.6578365 0.1275573 0.08839341</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                   0.0 0.8946531 0.3061915 0.21218163</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                   0.0 0.6578365 0.1275573 0.08839341</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:                   0.0 0.9400910 0.3217425 0.22295799</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:                   0.0 0.6578365 0.1275573 0.08839341</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:                   0.0 0.6578365 0.1275573 0.08839341</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:                   0.0 0.9655447 0.3304539 0.22899475</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:                   0.0 0.9384998 0.4604166 0.31905509</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      predicted.mean.spending predicted.total.spending predicted.CLV</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                        &lt;num&gt;                    &lt;num&gt;         &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                39.95483                 3.544835      2.447136</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                55.23031                20.544361     14.182559</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                43.57390               236.597472    163.332293</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                41.60921               219.761167    151.709548</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                45.58153                64.498698     44.525921</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                63.77959                20.001658     13.860556</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                38.10316                10.969545      7.601570</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                37.12434                 4.735479      3.281547</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                33.08404                10.130052      7.019826</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                37.12434                 4.735479      3.281547</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 246:                33.58728                48.612417     33.559013</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 247:                39.95483                 3.544835      2.447136</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248:                39.95483                 3.544835      2.447136</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 249:                34.28958                59.091059     40.792821</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 250:                47.35500                11.053671      7.630772</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:                28.29614                 9.104071      6.308851</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:                37.12434                 4.735479      3.281547</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:                37.12434                 4.735479      3.281547</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:                34.87739                11.525368      7.986738</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:                16.11315                 7.418761      5.140981</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co"># Estimate correlation as well</span></span></span>
@@ -663,11 +711,11 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               r            alpha                s             beta  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         0.78443          5.31381          0.35410         11.52172  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       1.308e+00        4.635e+01        4.812e-01        7.070e+01  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Cor(life,trans)  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         0.00495  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       1.337e-04  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: FALSE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Used Options:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Correlation:     TRUE </span>
@@ -694,9 +742,9 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             r          alpha              s           beta    life.Gender  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        1.4201        35.6425         0.2729         8.5634         1.5215  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       1.64611      103.81807        0.37820      308.80294       -0.01539  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  life.Channel   trans.Gender  trans.Channel  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       -1.7010         1.4228         0.4024  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       2.75180        0.47034        0.73633  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -718,9 +766,9 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             r          alpha              s           beta    life.Gender  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        1.4175        35.6357         0.2730         8.6759         1.5335  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       1.64557      103.94063        0.37849      324.01338       -0.01451  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  life.Channel   trans.Gender  trans.Channel  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       -1.7026         1.4240         0.4028  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       2.79911        0.47025        0.73813  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -741,9 +789,9 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             r          alpha              s           beta    life.Gender  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     0.7921514      5.4472757      0.3603584     11.7402269     -0.0004837  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     1.317e+00      4.693e+01      4.769e-01      6.951e+01     -7.733e-04  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  life.Channel   trans.Gender  trans.Channel  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    -0.0023797      0.0106719      0.0087680  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    -6.011e-05      6.173e-03      6.701e-03  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -765,9 +813,9 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             r          alpha              s           beta   life.Channel  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        1.4230        35.4434         0.2741         7.8762        -1.6881  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        1.6171       104.1847         0.3552       563.3726         3.1050  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> trans.Channel  constr.Gender  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        0.4017         1.4156  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        0.7324         0.4923  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -788,9 +836,9 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             r          alpha              s           beta   life.Channel  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        1.4924        32.1618         0.2496         1.7968        -1.6954  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        1.6470       103.9005         0.3775       309.2000         2.7485  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  trans.Gender  trans.Channel  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        1.2723         0.3933  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        0.4710         0.7364  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -808,8 +856,8 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-in"><span>  <span class="fu"><a href="SetDynamicCovariates.html">SetDynamicCovariates</a></span><span class="op">(</span>clv.data <span class="op">=</span> <span class="va">clv.data.apparel</span>,</span></span>
 <span class="r-in"><span>                       data.cov.life <span class="op">=</span> <span class="va">apparelDynCov</span>,</span></span>
 <span class="r-in"><span>                       data.cov.trans <span class="op">=</span> <span class="va">apparelDynCov</span>,</span></span>
-<span class="r-in"><span>                       names.cov.life <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Marketing"</span>, <span class="st">"Gender"</span>, <span class="st">"Channel"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                       names.cov.trans <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Marketing"</span>, <span class="st">"Gender"</span>, <span class="st">"Channel"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                       names.cov.life <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"High.Season"</span>, <span class="st">"Gender"</span>, <span class="st">"Channel"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                       names.cov.trans <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"High.Season"</span>, <span class="st">"Gender"</span>, <span class="st">"Channel"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                       name.date <span class="op">=</span> <span class="st">"Cov.Date"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
@@ -836,7 +884,7 @@ to add static covariates to an existing clv data object.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer></div>
