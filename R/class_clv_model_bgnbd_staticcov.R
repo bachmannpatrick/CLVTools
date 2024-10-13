@@ -130,8 +130,8 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.static.c
                        fct.expectation = fct.bgnbd.expectation, clv.time = clv.fitted@clv.data@clv.time))
 })
 
-# . clv.model.predict.new.customer.unconditional.expectation -----------------------------------------------------------------------------------------------------
-setMethod("clv.model.predict.new.customer.unconditional.expectation", signature = signature(clv.model="clv.model.bgnbd.static.cov"), definition = function(clv.model, clv.fitted, clv.newcustomer, t){
+# . clv.model.predict.new.customer -----------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict.new.customer", signature = signature(clv.model="clv.model.bgnbd.static.cov"), definition = function(clv.model, clv.fitted, clv.newcustomer){
 
   m.cov.trans <- clv.newcustomer.static.get.matrix.cov.trans(clv.newcustomer=clv.newcustomer, clv.fitted=clv.fitted)
   m.cov.life <- clv.newcustomer.static.get.matrix.cov.life(clv.newcustomer=clv.newcustomer, clv.fitted=clv.fitted)
@@ -153,7 +153,7 @@ setMethod("clv.model.predict.new.customer.unconditional.expectation", signature 
     vAlpha_i = alpha_i,
     vA_i     = a_i,
     vB_i     = b_i,
-    vT_i     = t
+    vT_i     = clv.newcustomer@num.periods
   ))
 })
 
