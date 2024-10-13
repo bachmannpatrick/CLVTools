@@ -4,6 +4,7 @@
 \alias{newcustomer}
 \alias{newcustomer.static}
 \alias{newcustomer.dynamic}
+\alias{newcustomer.spending}
 \title{New customer prediction data}
 \usage{
 newcustomer(num.periods)
@@ -16,6 +17,8 @@ newcustomer.dynamic(
   data.cov.trans,
   first.transaction
 )
+
+newcustomer.spending()
 }
 \arguments{
 \item{num.periods}{A positive, numeric scalar indicating the number of periods to predict.}

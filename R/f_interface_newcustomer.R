@@ -133,10 +133,20 @@
 #'
 NULL
 
+# A (near useless) base class from which other 'newcustomer' classes inherit.
+# This is required because a class defined without slots and without parents is
+# considered VIRTUAL and cannot be instantiated. Inheriting from this class,
+# allows to define a class `newcustomer.spending` which has no slots and
+# otherwise would be considered VIRTUAL.
+# Making this class virtual is not required as having no slots and parent has
+# the same effect but better to be explicit.
+setClass("clv.newcustomer.base", contains = "VIRTUAL")
+
 setClass(
   Class = "clv.newcustomer.no.cov",
-  representation = list(num.periods="numeric")
-  )
+  representation = list(num.periods="numeric"),
+  contains = 'clv.newcustomer.base'
+)
 
 clv.newcustomer.no.cov <- function(num.periods){
   return(new("clv.newcustomer.no.cov", num.periods=num.periods))
@@ -229,6 +239,19 @@ clv.newcustomer.dynamic.cov.convert.time <- function(clv.newcustomer, clv.time){
 }
 
 
+# Needs to inherit from a class as it would otherwise be a VIRTUAL class as it
+# also has no slots.
+setClass(
+  Class = "clv.newcustomer.spending",
+  contains = 'clv.newcustomer.base'
+)
+
+clv.newcustomer.spending <- function(){
+  return(new("clv.newcustomer.spending"))
+}
+
+
+
 #' @rdname newcustomer
 #' @export
 newcustomer <- function(num.periods){
@@ -276,6 +299,13 @@ newcustomer.dynamic <- function(num.periods, data.cov.life, data.cov.trans, firs
     data.cov.trans = dt.cov.trans,
     first.transaction = first.transaction
   ))
+}
+
+
+#' @rdname newcustomer
+#' @export
+newcustomer.spending <- function(){
+  return(clv.newcustomer.spending())
 }
 
 
