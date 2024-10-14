@@ -70,6 +70,21 @@ layers include:
 -   Equality constraints between parameters of contextual factors for
     the purchase and the attrition process.
 
+The following table provides an overview which advanced modeling options are supported for which models:
+
+|                                             | pnbd                         | bgnbd                        | ggomnbd                      |
+|---------------------------------------------|------------------------------|------------------------------|------------------------------|
+| **Model name**                              | Pareto/ NBD                  | BG/ NBD                      | GGom/ NBD                    |
+| **Attrition: Distribution main process & heterogeneity** | Exponential / Gamma          | Geometric / Beta              | Gompertz / Gamma              |
+| **Transaction: Distribution main process & heterogeneity** | Poisson / Gamma              | Poisson / Gamma               | Poisson / Gamma               |
+| **Model Parameters**                        | r, α, s, β                   | r, α, a, b                   | r, α, β, b, s                |
+| **Covariates (time-invariant/-varying)**    | ✔ / ✔                        | ✔ / -                        | ✔ / -                        |
+| **Process correlation**                     | ✔                            | -                            | -                            |
+| **Equality constraints of covariate parameters** | ✔                            | ✔                            | ✔                            |
+| **Regularization of covariate parameters**  | ✔                            | ✔                            | ✔                            |
+
+
+
 ## Installation
 
 Install the most recent **stable release from CRAN**:
