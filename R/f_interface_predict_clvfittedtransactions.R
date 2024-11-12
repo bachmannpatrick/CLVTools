@@ -40,8 +40,9 @@
 #' Uncertainty estimates are available for all predicted quantities using bootstrapping.
 #'
 #' \subsection{New customer prediction}{
-#' The fitted model can also be used to predict the number of transactions a single, average
+#' The fitted model can also be used to predict the number of transactions a fictional, single, average
 #' newly alive customer is expected to make at the moment of the first transaction ("coming alive").
+#' This is, for a customer which has no existing order history.
 #' For covariate models, the prediction is for an average customer with the given covariates.
 #'
 #' The individual-level unconditional expectation that is also used for the
@@ -94,7 +95,6 @@
 #'
 #' See \link{clv.bootstrapped.apply} to create a custom bootstrapping procedure.
 #'
-
 #'
 #'
 #' @seealso models to predict transactions: \link{pnbd}, \link{bgnbd}, \link{ggomnbd}.
@@ -168,9 +168,8 @@
 #' # But it works if providing a prediction.end
 #' predict(pnc, prediction.end = 10) # ends on 2016-12-17
 #'
-#'
-#' # Predict num transactions for a newly alive customer
-#' # in the next 3.45 weeks
+#' # Predict the number of transactions a single, fictional, average new
+#' # customer is expected to make in the first 3.45 weeks since coming alive
 #' # See ?newcustomer() for more examples
 #' predict(apparel.pnbd, newdata = newcustomer(num.periods=3.45))
 #'

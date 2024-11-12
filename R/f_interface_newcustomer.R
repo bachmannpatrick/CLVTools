@@ -2,15 +2,25 @@
 #' @title New customer prediction data
 #'
 #' @description
-#' The methods documented here are to be used together with \link[CLVTools:predict.clv.fitted.transactions]{predict} to obtain
-#' the expected number of transactions of an average newly alive customer.
-#' It describes the number of transactions a single, average new customer is expected to make in
-#' the \code{num.periods} periods since making the first transaction ("coming alive"). This prediction is only
-#' sensible for customers who just came alive and have not had the chance to reveal any more of their behavior.
+#' The methods documented here are to be used together with
+#' \link[CLVTools:predict.clv.fitted.transactions]{predict (transactions)} to obtain
+#' the expected number of transactions of an average newly alive customer and
+#' with \link[CLVTools:predict.clv.fitted.spending]{predict (spending)} to obtain
+#' the expected spending of an average newly alive customer.
+#' This prediction is only sensible for (fictional) customers without order history:
+#' Customers which just came alive and have not had the chance to reveal any more of their behavior.
 #'
-#' The data required for this new customer prediction is produced by the methods described here. This is mostly covariate data
-#' for static and dynamic covariate models. See details for the required format.
+#' The methods described here produce the data required as input to
+#' \code{predict(newdata=)} to make this new customer prediction.
+#' This is mostly covariate data for static and dynamic covariate models.
+#' See details for the required format.
 #'
+#' \code{newcustomer()}, \code{newcustomer.static()}, \code{newcustomer.dynamic()}:
+#' To predict the number of transactions a single, fictional, average new customer is expected to make in
+#' the \code{num.periods} periods since making the first transaction ("coming alive").
+#'
+#' \code{newcustomer.spending()}: To estimate how much a single, fictional, average
+#' new customer is expected to spend on average per transaction.
 #'
 #' @param num.periods A positive, numeric scalar indicating the number of periods to predict.
 #' @param data.cov.life Numeric-only covariate data for the lifetime process for a single customer, \code{data.table} or \code{data.frame}. See details.
@@ -18,7 +28,8 @@
 #' @param first.transaction For dynamic covariate models only: The time point of the first transaction of the customer ("coming alive") for which a prediction is made.
 #' Has to be within the time range of the covariate data.
 #'
-#' @seealso \link[CLVTools:predict.clv.fitted.transactions]{predict} to use the output of the methods described here.
+#' @seealso \link[CLVTools:predict.clv.fitted.transactions]{predict (transactions)} to use the output of the methods described here.
+#' @seealso \link[CLVTools:predict.clv.fitted.spending]{predict (spending)} to use the output of the methods described here.
 #'
 #' @details
 #' The covariate data has to contain one column for every covariate parameter in the fitted model. Only numeric values are allowed, no factors or characters.
@@ -45,6 +56,9 @@
 #' \item{newcustomer()}{An object of class \code{clv.newcustomer.no.cov}}
 #' \item{newcustomer.static()}{An object of class \code{clv.newcustomer.static.cov}}
 #' \item{newcustomer.dynamic()}{An object of class \code{clv.newcustomer.dynamic.cov}}
+#' \item{newcustomer.spending()}{An object of class \code{clv.newcustomer.spending}}
+#'
+#'
 #'
 #' @examples
 #' \donttest{
@@ -79,6 +93,11 @@
 #'   p.apparel,
 #'   newdata=newcustomer(num.periods=3.68)
 #' )
+#'
+#'
+#' # Spending model
+#' gg.apparel <- gg(clv.data.apparel)
+#' predict(gg.apparel, newdata = newcustomer.spending())
 #'
 #'
 #'
@@ -127,7 +146,6 @@
 #'     first.transaction = "2051-02-16"
 #'   )
 #' )
-#'
 #' }
 #' }
 #'
