@@ -156,6 +156,8 @@ NULL
 # considered VIRTUAL and cannot be instantiated. Inheriting from this class,
 # allows to define a class `newcustomer.spending` which has no slots and
 # otherwise would be considered VIRTUAL.
+# This base class additionally is handy to catch any type of newcustomer
+# instance when verifying parameters.
 # Making this class virtual is not required as having no slots and parent has
 # the same effect but better to be explicit.
 setClass("clv.newcustomer.base", contains = "VIRTUAL")

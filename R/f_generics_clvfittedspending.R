@@ -50,6 +50,12 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.spen
 # . clv.controlflow.predict.new.customer -----------------------------------------------------------------------
 setMethod("clv.controlflow.predict.new.customer", signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, clv.newcustomer){
 
+
+  # Only newcustomer.spending() is allowed
+  if(!is(newdata, "clv.newcustomer.spending")){
+    check_err_msg("To predict for new customers, 'newdata' has to be the output of 'newdata.spending()'!")
+  }
+
   return(drop(clv.model.predict.new.customer(
     clv.model = clv.fitted@clv.model,
     clv.fitted = clv.fitted,

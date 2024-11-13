@@ -66,24 +66,24 @@
 predict.clv.fitted.spending <- function(object, newdata=NULL, uncertainty=c("none", "boots"), level=0.9, num.boots=100, verbose=TRUE, ...){
 
   check_err_msg(check_user_data_emptyellipsis(...))
-  check_err_msg(check_user_data_uncertainty(uncertainty = uncertainty))
-  # match uncertainty to one of the allowed values
-  uncertainty <- match.arg(tolower(uncertainty), choices=c("none", "boots"), several.ok=FALSE)
-
-
 
   # The usual prediction unless newdata indicates a new customer prediction (ie newdata=newcustomer.spending())
-  if(is(newdata, "clv.newcustomer.spending")){
+  # check for base class and not "clv.newcustomer.spending" as users likely will pass other newcustomer objects
+  if(is(newdata, "clv.newcustomer.base")){
+    # some type of newcustomer object passed
 
-    # TODO: Implement parameter checks
-    # not other parameters except object and newdata may be given (all others must be missing)
-    # if(!all(missing(prediction.end), missing(predict.spending), missing(continuous.discount.factor))){
-    #   check_err_msg("Parameters prediction.end, predict.spending and continuous.discount.factor may not be specified when predicting for new customers.")
-    # }
+    # No other parameters may be passed (all others must be missing)
+    if(!all(missing(uncertainty), missing(level), missing(num.boots))){
+      check_err_msg("No other parameters ('uncertainty', 'level', 'num.boots') may be specified when predicting for new customers!")
+    }
+
     return(clv.controlflow.predict.new.customer(clv.fitted = object, clv.newcustomer = newdata))
   }
 
-
+  # match uncertainty to one of the allowed values. Only after newdata section
+  # because after match.arg(), missing() is always false
+  check_err_msg(check_user_data_uncertainty(uncertainty = uncertainty))
+  uncertainty <- match.arg(tolower(uncertainty), choices=c("none", "boots"), several.ok=FALSE)
   return(clv.template.controlflow.predict(clv.fitted=object, verbose=verbose, user.newdata=newdata, uncertainty=uncertainty, num.boots=num.boots, level=level))
 }
 

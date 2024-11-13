@@ -185,22 +185,42 @@ predict.clv.fitted.transactions <- function(object, newdata=NULL, prediction.end
                                             continuous.discount.factor=log(1+0.1), uncertainty=c("none", "boots"), level=0.9, num.boots=100, verbose=TRUE, ...){
 
   check_err_msg(check_user_data_emptyellipsis(...))
-  check_err_msg(check_user_data_uncertainty(uncertainty=uncertainty))
-  # match uncertainty to one of the allowed values
-  uncertainty <- match.arg(tolower(uncertainty), choices = c("none", "boots"), several.ok = FALSE)
 
   # The usual prediction unless newdata indicates a new customer prediction (ie newdata=newcustomer())
-  # the newdata classes for static and dyncov inherit from `clv.newcustomer.no.cov`
-  if(is(newdata, "clv.newcustomer.no.cov")){
-    # TODO: Check that is not newcustomer.spending()
+  if(is(newdata, "clv.newcustomer.base")){
+
     # not other parameters except object and newdata may be given (all others must be missing)
-    if(!all(missing(prediction.end), missing(predict.spending), missing(continuous.discount.factor))){
-      check_err_msg("Parameters prediction.end, predict.spending and continuous.discount.factor may not be specified when predicting for new customers.")
+    if(!all(missing(prediction.end), missing(predict.spending),
+            missing(continuous.discount.factor), missing(uncertainty),
+            missing(level), missing(num.boots))){
+      check_err_msg("No other parameters ('prediction.end', 'predict.spending', 'continuous.discount.factor', uncertainty', 'level', 'num.boots') may be specified when predicting for new customers!")
     }
 
+    # the newdata classes for static and dyncov inherit from `clv.newcustomer.no.cov`
+    # but `clv.newcustomer.spending` does not
+    if(!is(newdata, "clv.newcustomer.no.cov")){
+
+      if(is(object, "clv.fitted.transactions.dynamic.cov")){
+        msg.newcustomer <- "newcustomer.dynamic()"
+      }else{
+        if(is(object, "clv.fitted.transactions.static.cov")){
+          msg.newcustomer <- "newcustomer.static()"
+        }else{
+          msg.newcustomer <- "newcustomer()"
+        }
+      }
+      check_err_msg(paste0("To predict for new customers, 'newdata' has to be the output of '",msg.newcustomer,"'!"))
+    }
 
     return(clv.controlflow.predict.new.customer(clv.fitted = object, clv.newcustomer = newdata))
   }
+
+
+  # match uncertainty to one of the allowed values. Only after newdata section
+  # because after match.arg(), missing() is always false
+  check_err_msg(check_user_data_uncertainty(uncertainty=uncertainty))
+  # match uncertainty to one of the allowed values
+  uncertainty <- match.arg(tolower(uncertainty), choices = c("none", "boots"), several.ok = FALSE)
 
   # If it was not explicitly passed in the call, the spending model should only be applied
   #   it there is spending data. Otherwise, predict does not work out-of-the-box for
