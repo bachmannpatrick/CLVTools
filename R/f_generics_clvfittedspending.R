@@ -52,7 +52,7 @@ setMethod("clv.controlflow.predict.new.customer", signature(clv.fitted="clv.fitt
 
 
   # Only newcustomer.spending() is allowed
-  if(!is(newdata, "clv.newcustomer.spending")){
+  if(!is(clv.newcustomer, "clv.newcustomer.spending")){
     check_err_msg("To predict for new customers, 'newdata' has to be the output of 'newdata.spending()'!")
   }
 
