@@ -173,6 +173,11 @@ test_that("newcustomer fits the type of fitted model", {
   expect_error(predict(p.apparel.dyn, newdata=nc.nocov), regexp = "output from")
   expect_error(predict(p.apparel.dyn, newdata=nc.static), regexp = "output from")
   expect_error(predict(p.apparel.dyn, newdata=nc.spending), regexp = "output from")
+
+  # spending mode
+  expect_error(predict(gg.cdnow, newdata=nc.nocov), regexp = "output of")
+  expect_error(predict(gg.cdnow, newdata=nc.static), regexp = "output of")
+  expect_error(predict(gg.cdnow, newdata=nc.dyn), regexp = "output of")
 })
 
 
