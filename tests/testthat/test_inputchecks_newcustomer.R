@@ -4,6 +4,8 @@ p.cdnow <- fit.cdnow()
 p.apparel.static <- fit.apparel.static()
 p.apparel.dyn <- fit.apparel.dyncov.quick()
 
+gg.cdnow <- fit.cdnow(model=gg)
+
 
 default.dyn.cov <- function(...){
   l.args <- list(...)
@@ -154,25 +156,38 @@ test_that("newcustomer fits the type of fitted model", {
   nc.nocov <- newcustomer(num.periods = 1.23)
   nc.static <- default.nc.static()
   nc.dyn <- default.nc.dyn()
+  nc.spending <- newcustomer.spending()
 
   # nocov
   expect_error(predict(p.cdnow, newdata=nc.static), regexp = "output from")
   expect_error(predict(p.cdnow, newdata=nc.dyn), regexp = "output from")
+  expect_error(predict(p.cdnow, newdata=nc.spending), regexp = "output from")
+
 
   # static cov
   expect_error(predict(p.apparel.static, newdata=nc.nocov), regexp = "output from")
   expect_error(predict(p.apparel.static, newdata=nc.dyn), regexp = "output from")
+  expect_error(predict(p.apparel.static, newdata=nc.spending), regexp = "output from")
 
   # dyncov
   expect_error(predict(p.apparel.dyn, newdata=nc.nocov), regexp = "output from")
   expect_error(predict(p.apparel.dyn, newdata=nc.static), regexp = "output from")
+  expect_error(predict(p.apparel.dyn, newdata=nc.spending), regexp = "output from")
 })
 
 
-test_that("predict(): Error if other parameters are passed", {
+test_that("predict(): Error if other parameters are passed (spending & transactions)", {
+
+  # transactions
   expect_error(predict(p.cdnow, newdata=newcustomer(12), prediction.end=12), regexp = "No other parameters")
   expect_error(predict(p.cdnow, newdata=newcustomer(12), continuous.discount.factor=0.1), regexp = "No other parameters")
   expect_error(predict(p.cdnow, newdata=newcustomer(12), predict.spending=TRUE), regexp = "No other parameters")
+
+  # spending
+  expect_error(predict(gg.cdnow, newdata=newcustomer.spending(), uncertainty="none"), regexp = "No other parameters")
+  expect_error(predict(gg.cdnow, newdata=newcustomer.spending(), num.boots=12), regexp = "No other parameters")
+  expect_error(predict(gg.cdnow, newdata=newcustomer.spending(), level=0.8), regexp = "No other parameters")
+
 })
 
 test_that("predict vs newcustomer: dyn/static cov data names are not the same as parameters", {
