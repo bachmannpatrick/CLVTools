@@ -151,6 +151,7 @@
 #'
 NULL
 
+# . clv.newcustomer.base -------------------------------------------------------
 # A (near useless) base class from which other 'newcustomer' classes inherit.
 # This is required because a class defined without slots and without parents is
 # considered VIRTUAL and cannot be instantiated. Inheriting from this class,
@@ -182,8 +183,9 @@ clv.newcustomer.no.cov <- function(num.periods){
 # convert the data
 setClass(
   Class = "clv.newcustomer.static.cov",
-  contains = "clv.newcustomer.no.cov",
+  contains = "clv.newcustomer.base",
   representation = list(
+    num.periods="numeric",
     data.cov.life="data.table",
     data.cov.trans="data.table"
 ))
@@ -211,8 +213,11 @@ clv.newcustomer.static.get.matrix.cov.life <- function(clv.newcustomer, clv.fitt
 
 setClass(
   Class = "clv.newcustomer.dynamic.cov",
-  contains = "clv.newcustomer.static.cov",
+  contains = "clv.newcustomer.base",
   representation = list(
+    num.periods="numeric",
+    data.cov.life="data.table",
+    data.cov.trans="data.table",
     # Has to be ANY because can be Date, Posixt, or character because this class is
     # used to transport the data to the clv.fitted object for predicting and it
     # contains the clv.data@clv.time object required to convert first.transaction

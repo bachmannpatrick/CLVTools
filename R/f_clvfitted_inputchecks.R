@@ -437,7 +437,7 @@ check_user_data_predict_newcustomer_numperiods <- function(num.periods){
 check_user_data_predict_newcustomer_staticcov <- function(clv.fitted, clv.newcustomer){
 
   # is exactly "clv.newcustomer.static.cov"
-  if(!is(clv.newcustomer, "clv.newcustomer.static.cov") | is(clv.newcustomer, "clv.newcustomer.dynamic.cov")){
+  if(!is(clv.newcustomer, "clv.newcustomer.static.cov")){
     return("Parameter newdata has to be output from calling `newcustomer.static()`!")
   }
 

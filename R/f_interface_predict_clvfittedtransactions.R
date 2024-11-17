@@ -190,26 +190,13 @@ predict.clv.fitted.transactions <- function(object, newdata=NULL, prediction.end
   if(is(newdata, "clv.newcustomer.base")){
 
     # not other parameters except object and newdata may be given (all others must be missing)
-    if(!all(missing(prediction.end), missing(predict.spending),
-            missing(continuous.discount.factor), missing(uncertainty),
-            missing(level), missing(num.boots))){
+    if(!all(missing(prediction.end),
+            missing(predict.spending),
+            missing(continuous.discount.factor),
+            missing(uncertainty),
+            missing(level),
+            missing(num.boots))){
       check_err_msg("No other parameters ('prediction.end', 'predict.spending', 'continuous.discount.factor', uncertainty', 'level', 'num.boots') may be specified when predicting for new customers!")
-    }
-
-    # the newdata classes for static and dyncov inherit from `clv.newcustomer.no.cov`
-    # but `clv.newcustomer.spending` does not
-    if(!is(newdata, "clv.newcustomer.no.cov")){
-
-      if(is(object, "clv.fitted.transactions.dynamic.cov")){
-        msg.newcustomer <- "newcustomer.dynamic()"
-      }else{
-        if(is(object, "clv.fitted.transactions.static.cov")){
-          msg.newcustomer <- "newcustomer.static()"
-        }else{
-          msg.newcustomer <- "newcustomer()"
-        }
-      }
-      check_err_msg(paste0("To predict for new customers, 'newdata' has to be the output of '",msg.newcustomer,"'!"))
     }
 
     return(clv.controlflow.predict.new.customer(clv.fitted = object, clv.newcustomer = newdata))
