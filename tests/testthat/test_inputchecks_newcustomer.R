@@ -170,9 +170,9 @@ test_that("newcustomer fits the type of fitted model", {
 
 
 test_that("predict(): Error if other parameters are passed", {
-  expect_error(predict(p.cdnow, newdata=newcustomer(12), prediction.end=12), regexp = "may not be specified")
-  expect_error(predict(p.cdnow, newdata=newcustomer(12), continuous.discount.factor=0.1), regexp = "may not be specified")
-  expect_error(predict(p.cdnow, newdata=newcustomer(12), predict.spending=TRUE), regexp = "may not be specified")
+  expect_error(predict(p.cdnow, newdata=newcustomer(12), prediction.end=12), regexp = "No other parameters")
+  expect_error(predict(p.cdnow, newdata=newcustomer(12), continuous.discount.factor=0.1), regexp = "No other parameters")
+  expect_error(predict(p.cdnow, newdata=newcustomer(12), predict.spending=TRUE), regexp = "No other parameters")
 })
 
 test_that("predict vs newcustomer: dyn/static cov data names are not the same as parameters", {
