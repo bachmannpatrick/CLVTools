@@ -107,9 +107,8 @@ setMethod(f = "clv.controlflow.predict.new.customer", signature = signature(clv.
     tp.prediction.end=tp.prediction.end))
 
 
-  return(clv.model.predict.new.customer.unconditional.expectation(
+  return(clv.model.predict.new.customer(
     clv.model = clv.fitted@clv.model,
     clv.fitted = clv.fitted,
-    t=clv.newcustomer@num.periods,
     clv.newcustomer=clv.newcustomer))
 })

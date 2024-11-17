@@ -47,6 +47,23 @@ setMethod("clv.controlflow.check.newdata", signature(clv.fitted="clv.fitted.spen
 })
 
 
+# . clv.controlflow.predict.new.customer -----------------------------------------------------------------------
+setMethod("clv.controlflow.predict.new.customer", signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, clv.newcustomer){
+
+
+  # Only newcustomer.spending() is allowed
+  if(!is(clv.newcustomer, "clv.newcustomer.spending")){
+    check_err_msg("To predict for new customers, 'newdata' has to be the output of 'newdata.spending()'!")
+  }
+
+  return(drop(clv.model.predict.new.customer(
+    clv.model = clv.fitted@clv.model,
+    clv.fitted = clv.fitted,
+    clv.newcustomer=clv.newcustomer
+  )))
+})
+
+
 # . clv.controlflow.predict.build.result.table -----------------------------------------------------------------
 setMethod("clv.controlflow.predict.build.result.table", signature(clv.fitted="clv.fitted.spending"), definition = function(clv.fitted, verbose, ...){
   dt.predictions <- copy(clv.fitted@cbs[, "Id"])

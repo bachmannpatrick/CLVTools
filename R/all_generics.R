@@ -165,10 +165,10 @@ setGeneric(name="clv.model.process.newdata", def=function(clv.model, clv.fitted,
 setGeneric(name="clv.model.pmf", def=function(clv.model, clv.fitted, x)
   standardGeneric("clv.model.pmf"))
 
-# .. New customer expectation -----------------------------------------------------------------------------------------------
-# predict unconditional expectation until individual t_i for all customers in clv.fitted@clv.data
-setGeneric("clv.model.predict.new.customer.unconditional.expectation", function(clv.model, clv.fitted, clv.newcustomer, t)
-  standardGeneric("clv.model.predict.new.customer.unconditional.expectation"))
+# .. New customer prediction -----------------------------------------------------------------------------------------------
+setGeneric("clv.model.predict.new.customer", function(clv.model, clv.fitted, clv.newcustomer)
+  standardGeneric("clv.model.predict.new.customer"))
+
 
 
 
