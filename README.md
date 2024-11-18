@@ -3,7 +3,7 @@
 checks](https://github.com/bachmannpatrick/CLVTools/workflows/R-CMD-check/badge.svg?branch=development)](https://github.com/bachmannpatrick/CLVTools/actions)
 [![Tests](https://github.com/bachmannpatrick/CLVTools/workflows/testthat-tests/badge.svg?branch=development)](https://github.com/bachmannpatrick/CLVTools/actions)
 [![CRAN
-Status](http://www.r-pkg.org/badges/version/CLVTools)](https://cran.r-project.org/package=CLVTools)
+Status](https://www.r-pkg.org/badges/version/CLVTools)](https://cran.r-project.org/package=CLVTools)
 [![Repo
 Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![CRAN
@@ -69,6 +69,21 @@ layers include:
 
 -   Equality constraints between parameters of contextual factors for
     the purchase and the attrition process.
+
+The following table provides an overview which advanced modeling options are supported for which models:
+
+|                                             | pnbd                         | bgnbd                        | ggomnbd                      |
+|---------------------------------------------|------------------------------|------------------------------|------------------------------|
+| **Model name**                              | Pareto/ NBD                  | BG/ NBD                      | GGom/ NBD                    |
+| **Attrition: Distribution main process & heterogeneity** | Exponential / Gamma          | Geometric / Beta              | Gompertz / Gamma              |
+| **Transaction: Distribution main process & heterogeneity** | Poisson / Gamma              | Poisson / Gamma               | Poisson / Gamma               |
+| **Model Parameters**                        | r, α, s, β                   | r, α, a, b                   | r, α, β, b, s                |
+| **Covariates (time-invariant/-varying)**    | ✔ / ✔                        | ✔ / -                        | ✔ / -                        |
+| **Process correlation**                     | ✔                            | -                            | -                            |
+| **Equality constraints of covariate parameters** | ✔                            | ✔                            | ✔                            |
+| **Regularization of covariate parameters**  | ✔                            | ✔                            | ✔                            |
+
+
 
 ## Installation
 

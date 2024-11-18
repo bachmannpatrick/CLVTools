@@ -7,7 +7,7 @@ test_that("Zero repeaters are counted correctly", {
 
   # reported vs manual count/perc of zero-repeaters
   fct.verify.zero.repeaters <- function(date.estimation.split){
-    clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split = date.estimation.split)
+    clv.cdnow <- fct.helper.create.clvdata.cdnow(estimation.split = date.estimation.split)
     expect_silent(res.sum <- summary(clv.cdnow))
 
     # Only entries in estimation but not in holdout and total
@@ -31,8 +31,8 @@ test_that("Zero repeaters are counted correctly", {
 })
 
 test_that("Summary has no NA", {
-  clv.cdnow.holdout <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split = 37)
-  clv.cdnow.no.holdout <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split = NULL)
+  clv.cdnow.holdout <- fct.helper.create.clvdata.cdnow()
+  clv.cdnow.no.holdout <- fct.helper.create.clvdata.cdnow(estimation.split = NULL)
 
   fct.summary.has.no.na <- function(clv.data, ids){
     expect_silent(res.sum <- summary(clv.data, ids=ids))
@@ -59,7 +59,7 @@ test_that("Summary has no NA", {
 
 test_that("Same transaction summary if all ids or NULL are given", {
   skip_on_cran()
-  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+  clv.cdnow <- fct.helper.create.clvdata.cdnow()
 
   expect_silent(res.sum.null <- summary(clv.cdnow, ids=NULL))
   expect_silent(res.sum.all <- summary(clv.cdnow, ids=cdnow[, unique(Id)]))
@@ -69,7 +69,7 @@ test_that("Same transaction summary if all ids or NULL are given", {
 
 test_that("Correct Ids selected", {
   skip_on_cran()
-  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+  clv.cdnow <- fct.helper.create.clvdata.cdnow()
   expect_silent(res.sum <- summary(clv.cdnow, ids=c("1", "2", "3")))
   expect_true(setequal(res.sum$selected.ids, c("1", "2", "3")))
   expect_true(length(unique(res.sum$selected.ids)) == length(res.sum$selected.ids))
@@ -81,7 +81,7 @@ test_that("Correct Ids selected", {
 
 test_that("Different output if ids given", {
   skip_on_cran()
-  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+  clv.cdnow <- fct.helper.create.clvdata.cdnow()
   expect_silent(df.desc.1 <- summary(clv.cdnow, ids="1")$descriptives.transactions)
   expect_silent(df.desc.123 <- summary(clv.cdnow, ids=c("1", "2", "3" ,"99"))$descriptives.transactions)
 
@@ -92,7 +92,7 @@ test_that("Different output if ids given", {
 
 test_that("Holdout is - if customer has no transactions in holdout period", {
   skip_on_cran()
-  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+  clv.cdnow <- fct.helper.create.clvdata.cdnow()
   expect_true(all(summary(clv.cdnow, ids="2")$descriptives.transactions[, "Holdout"] == "-"))
 })
 
@@ -100,7 +100,7 @@ test_that("Holdout is - if customer has no transactions in holdout period", {
 # as.data.x ---------------------------------------------------------------------------------------------------------
 test_that("Correct data format is returned", {
   skip_on_cran()
-  clv.cdnow <- fct.helper.create.clvdata.cdnow(data.cdnow=cdnow)
+  clv.cdnow <- fct.helper.create.clvdata.cdnow()
 
   expect_false(is.data.table(as.data.frame(clv.cdnow)))
   expect_true(is.data.frame(as.data.frame(clv.cdnow)))
@@ -112,7 +112,7 @@ test_that("Correct data format is returned", {
 
 test_that("Correct ids are returned", {
   skip_on_cran()
-  clv.cdnow <- fct.helper.create.clvdata.cdnow(data.cdnow=cdnow)
+  clv.cdnow <- fct.helper.create.clvdata.cdnow()
   target.ids <- c("1", "2", "999")
 
   expect_setequal(as.data.frame(clv.cdnow, ids = target.ids)$Id, target.ids)
@@ -125,7 +125,7 @@ test_that("Correct ids are returned", {
 test_that("Returns correct number of transactinons for given sample", {
   skip_on_cran()
 
-  clv.cdnow <- fct.helper.create.clvdata.cdnow(data.cdnow=cdnow)
+  clv.cdnow <- fct.helper.create.clvdata.cdnow()
 
   fct.verify.correct.number.trans <- function(fct.as.data.x){
     expect_true(nrow(fct.as.data.x(clv.cdnow)) == nrow(cdnow))
@@ -143,7 +143,7 @@ test_that("Returns correct number of transactinons for given sample", {
 
 test_that("Always returns a copy", {
   skip_on_cran()
-  clv.cdnow <- fct.helper.create.clvdata.cdnow(data.cdnow=cdnow)
+  clv.cdnow <- fct.helper.create.clvdata.cdnow()
   orig.address <- address(clv.cdnow@data.transactions)
 
   # data.frame
@@ -173,7 +173,7 @@ test_that("Always returns a copy", {
 test_that("Correct data selected", {
   skip_on_cran()
   # with holdout
-  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+  clv.cdnow <- fct.helper.create.clvdata.cdnow()
 
   # full
   # no arg same as full
@@ -234,7 +234,7 @@ test_that("Correct data selected", {
 
 test_that("If no holdout, full and estimation are the same", {
   skip_on_cran()
-  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow, estimation.split=NULL)
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(estimation.split=NULL)
   expect_true(isTRUE(all.equal(subset(clv.cdnow, sample="full"),
                                subset(clv.cdnow, sample="estimation"))))
 
@@ -245,7 +245,7 @@ test_that("If no holdout, full and estimation are the same", {
 
 test_that("Same when argument positions are swapped", {
   skip_on_cran()
-  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+  clv.cdnow <- fct.helper.create.clvdata.cdnow()
 
   expect_true(isTRUE(all.equal(subset(clv.cdnow, Id=="111", c("Id", "Date")),
                                subset(clv.cdnow, select=c("Id", "Date"), Id=="111"))))
@@ -254,7 +254,7 @@ test_that("Same when argument positions are swapped", {
 
 test_that("Always returns a copy of the data", {
   skip_on_cran()
-  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+  clv.cdnow <- fct.helper.create.clvdata.cdnow()
   orig.address <- address(clv.cdnow@data.transactions)
 
   # only both, holdout and estimation always return different object because different data
@@ -272,7 +272,7 @@ test_that("Always returns a copy of the data", {
 # . frequency ---------------------------------------------------------------
 test_that("frequency plot - actual trans has no 0", {
   skip_on_cran()
-  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+  clv.cdnow <- fct.helper.create.clvdata.cdnow()
 
   expect_silent(dt.plot <- plot(clv.cdnow, which="frequency",
                                 count.repeat.trans=FALSE, trans.bins=c(1,2,3),
@@ -287,7 +287,7 @@ test_that("frequency plot - actual trans has no 0", {
 
 test_that("frequency plot - remaining label is the highest level and disappears it not needed", {
   skip_on_cran()
-  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+  clv.cdnow <- fct.helper.create.clvdata.cdnow()
 
   expect_silent(dt.plot <- plot(clv.cdnow, which="frequency",
                                 trans.bins=0:10, label.remaining="AbC123",
@@ -308,7 +308,7 @@ test_that("frequency plot - remaining label is the highest level and disappears 
 # . spending ---------------------------------------------------------------
 test_that("Spending plot - different data for different sample", {
   skip_on_cran()
-  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+  clv.cdnow <- fct.helper.create.clvdata.cdnow()
 
   expect_silent(dt.none       <- plot(clv.cdnow, which="spending", plot=FALSE, verbose=FALSE))
   expect_silent(dt.estimation <- plot(clv.cdnow, which="spending", sample="estimation", plot=FALSE, verbose=FALSE))
@@ -326,7 +326,7 @@ test_that("Spending plot - different data for different sample", {
 
 test_that("Spending plot - ggplot styling works correctly", {
   skip_on_cran()
-  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+  clv.cdnow <- fct.helper.create.clvdata.cdnow()
 
   # defaults to line
   expect_silent(gg.default <- plot(clv.cdnow, which="spending", verbose=FALSE))
@@ -343,7 +343,7 @@ test_that("Spending plot - ggplot styling works correctly", {
 
 test_that("Spending plot - correct num plotted", {
   skip_on_cran()
-  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+  clv.cdnow <- fct.helper.create.clvdata.cdnow()
 
   # mean.spending = TRUE
   expect_silent(dt.plot <- plot(clv.cdnow,mean.spending=TRUE, sample="full", which="spending", plot=FALSE, verbose=FALSE))
@@ -364,7 +364,7 @@ test_that("Spending plot - correct num plotted", {
 
 test_that("Interpurchasetime plot - zero-repeaters removed", {
   skip_on_cran()
-  clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+  clv.cdnow <- fct.helper.create.clvdata.cdnow()
 
   expect_silent(dt.plot <- plot(clv.cdnow, which="interpurchasetime", sample="estimation", plot=FALSE, verbose=FALSE))
   expect_s3_class(dt.plot, "data.table")

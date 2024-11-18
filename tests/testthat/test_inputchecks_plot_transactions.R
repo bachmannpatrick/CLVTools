@@ -81,14 +81,12 @@ fct.testthat.inputchecks.clvfittedtransactions.plot.pmf.trans.bins <- function(c
   })
 }
 
-fct.testthat.inputchecks.clvfittedtransactions.plot.pmf <- function(data.cdnow, data.apparelTrans, data.apparelStaticCov){
-  expect_silent(fitted.cdnow.nohold <- pnbd(fct.helper.create.clvdata.cdnow(data.cdnow, estimation.split=NULL), verbose = FALSE))
+fct.testthat.inputchecks.clvfittedtransactions.plot.pmf <- function(){
+  expect_silent(fitted.cdnow.nohold <- pnbd(fct.helper.create.clvdata.cdnow(estimation.split=NULL), verbose = FALSE))
   l.std.args <- list(x=fitted.cdnow.nohold, which="pmf")
 
   # Common
-  fct.testthat.inputchecks.clvfittedtransactions.plot.common(which="pmf", l.std.args = l.std.args,
-                                                             data.cdnow=data.cdnow, data.apparelTrans=data.apparelTrans,
-                                                             data.apparelStaticCov=data.apparelStaticCov)
+  fct.testthat.inputchecks.clvfittedtransactions.plot.common(which="pmf", l.std.args = l.std.args)
 
 
   fct.testthat.inputchecks.clvfittedtransactions.plot.pmf.trans.bins(clv.fitted = fitted.cdnow.nohold)
@@ -99,34 +97,29 @@ fct.testthat.inputchecks.clvfittedtransactions.plot.pmf <- function(data.cdnow, 
 
 }
 
-fct.testthat.inputchecks.clvfittedtransactions.plot.tracking <- function(data.cdnow, data.apparelTrans, data.apparelStaticCov){
+fct.testthat.inputchecks.clvfittedtransactions.plot.tracking <- function(){
 
-  expect_silent(fitted.cdnow.nohold <- pnbd(fct.helper.create.clvdata.cdnow(data.cdnow, estimation.split=NULL), verbose = FALSE))
+  expect_silent(fitted.cdnow.nohold <- pnbd(fct.helper.create.clvdata.cdnow(estimation.split=NULL), verbose = FALSE))
   l.std.args <- list(x=fitted.cdnow.nohold, prediction.end=6, which="tracking")
 
   # Common
-  fct.testthat.inputchecks.clvfittedtransactions.plot.common(which="tracking", l.std.args = l.std.args,
-                                                             data.cdnow=data.cdnow, data.apparelTrans=data.apparelTrans,
-                                                             data.apparelStaticCov=data.apparelStaticCov)
+  fct.testthat.inputchecks.clvfittedtransactions.plot.common(which="tracking", l.std.args = l.std.args)
 
   fct.testthat.inputchecks.clvfittedtransactions.prediction.end.wrong.format(fitted.transactions = fitted.cdnow.nohold)
   fct.testthat.inputchecks.clvfittedtransactions.plot.prediction.end.before.estimation.start(fitted.transactions = fitted.cdnow.nohold)
-  fct.testthat.inputchecks.clvfittedtransactions.prediction.end.uses.newdata(s3method = plot, fitted.cdnow = fitted.cdnow.nohold, data.cdnow = data.cdnow)
+  fct.testthat.inputchecks.clvfittedtransactions.prediction.end.uses.newdata(s3method = plot, fitted.cdnow = fitted.cdnow.nohold)
 
   .fct.helper.inputchecks.single.logical(fct = plot, l.std.args = l.std.args, name.param = "cumulative")
 }
 
 
 
-fct.testthat.inputchecks.clvfittedtransactions.plot.common <- function(which, l.std.args,
-                                                                       data.cdnow, data.apparelTrans, data.apparelStaticCov){
+fct.testthat.inputchecks.clvfittedtransactions.plot.common <- function(which, l.std.args){
 
   # Prepare
-  clv.data.apparel.static.cov <- fct.helper.create.clvdata.apparel.staticcov(data.apparelTrans = data.apparelTrans,
-                                                                             data.apparelStaticCov = data.apparelStaticCov,
-                                                                             estimation.split = 40)
+  clv.data.apparel.static.cov <- fct.helper.create.clvdata.apparel.staticcov()
   expect_silent(fitted.apparel.static <- pnbd(clv.data.apparel.static.cov, verbose = FALSE))
-  clv.data.cdnow.nohold <- fct.helper.create.clvdata.cdnow(data.cdnow, estimation.split=NULL)
+  clv.data.cdnow.nohold <- fct.helper.create.clvdata.cdnow(estimation.split=NULL)
   expect_silent(fitted.cdnow.nohold   <- pnbd(clv.data.cdnow.nohold, verbose = FALSE))
 
 
@@ -139,11 +132,10 @@ fct.testthat.inputchecks.clvfittedtransactions.plot.common <- function(which, l.
   fct.testthat.inputchecks.clvfittedtransactions.cov.na.in.prediction.params.cov(s3method = plot, clv.fitted.cov = fitted.apparel.static,
                                                                                  l.s3method.args=l.std.args)
 
-  fct.testthat.inputchecks.clvfitted.newdata.not.clvdata(s3method = plot, l.std.args=l.std.args, data.cdnow = data.cdnow)
+  fct.testthat.inputchecks.clvfitted.newdata.not.clvdata(s3method = plot, l.std.args=l.std.args)
   fct.testthat.inputchecks.clvfittedtransactions.newdata.has.different.covs(s3method = plot,
                                                                             l.s3method.args = l.std.args,
-                                                                            clv.fitted.apparel.cov = fitted.apparel.static,
-                                                                            data.apparelStaticCov = data.apparelStaticCov)
+                                                                            clv.fitted.apparel.cov = fitted.apparel.static)
   fct.testthat.inputchecks.clvfittedtransactions.newdata.is.different.class(s3method = plot,
                                                                             l.s3method.args=l.std.args,
                                                                             clv.fitted.transactions.nocov = fitted.cdnow.nohold,
@@ -176,5 +168,5 @@ data("cdnow")
 data("apparelTrans")
 data("apparelStaticCov")
 
-fct.testthat.inputchecks.clvfittedtransactions.plot.tracking(data.cdnow = cdnow, data.apparelTrans = apparelTrans, data.apparelStaticCov = apparelStaticCov)
-fct.testthat.inputchecks.clvfittedtransactions.plot.pmf(data.cdnow = cdnow, data.apparelTrans = apparelTrans, data.apparelStaticCov = apparelStaticCov)
+fct.testthat.inputchecks.clvfittedtransactions.plot.tracking()
+fct.testthat.inputchecks.clvfittedtransactions.plot.pmf()

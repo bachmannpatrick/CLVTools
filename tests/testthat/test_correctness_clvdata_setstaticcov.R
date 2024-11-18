@@ -1,13 +1,10 @@
 # Load data ---------------------------------------------------------------------------------------
-data("apparelTrans")
 data("apparelStaticCov")
 
 # Covariate dummies ---------------------------------------------------------------------------------------
 
-expect_silent(clv.data.apparel.nohold   <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w"))
-expect_silent(clv.data.apparel.withhold <- clvdata(apparelTrans, date.format = "ymd", time.unit = "w",
-                                                   estimation.split = 39))
-
+clv.data.apparel.withhold <- fct.helper.create.clvdata.apparel.nocov()
+clv.data.apparel.nohold <- fct.helper.create.clvdata.apparel.nocov(estimation.split=NULL)
 
 test_that("Factor and char covariates result in same dummies - no holdout",{
   apparelStaticCov.char <- data.table::copy(apparelStaticCov)
@@ -109,7 +106,7 @@ test_that("Creates correct number of dummies - 2 categories", {
 test_that("Creates correct number of dummies - 3 categories",{
   skip_on_cran()
   apparelStaticCov.3cat <- data.table::copy(apparelStaticCov)
-  apparelStaticCov.3cat[, Gender := c("F", rep(c("F", "M", "X"), nrow(apparelStaticCov.3cat)/3))]
+  apparelStaticCov.3cat[, Gender := c(rep(c("F", "M", "X"), nrow(apparelStaticCov.3cat)/3))]
   expect_silent(static.cov <- SetStaticCovariates(clv.data = clv.data.apparel.withhold,
                                                   data.cov.life  = apparelStaticCov.3cat, names.cov.life = "Gender",
                                                   data.cov.trans = apparelStaticCov, names.cov.trans = "Gender"))

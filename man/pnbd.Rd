@@ -93,7 +93,7 @@ The generic accessor functions \code{coefficients}, \code{\link[CLVTools:vcov.cl
 Fits Pareto/NBD models on transactional data with and without covariates.
 }
 \details{
-Model parameters for the Pareto/NBD model are \code{alpha, r, beta, and s}. \cr
+Model parameters for the Pareto/NBD model are \code{r, alpha, s, and beta}. \cr
 \code{s}: shape parameter of the Gamma distribution for the lifetime process.
 The smaller s, the stronger the heterogeneity of customer lifetimes. \cr
 \code{beta}: rate parameter for the Gamma distribution for the lifetime process. \cr
@@ -109,7 +109,7 @@ concerning the heterogeneity of customers in their buy and die rate.
 If covariates are included into the model additionally parameters for the
 covariates affecting the attrition and the purchase process are part of the model.
 
-If no start parameters are given, r=0.5, alpha=2, b=0.1, s=1, beta=0.1 is used for all model parameters and 0.1 for covariate parameters.
+If no start parameters are given, r=0.5, alpha=15, s=0.5, beta=10 is used for all model parameters and 0.1 for covariate parameters.
 The model start parameters are required to be > 0.
 
 \subsection{The Pareto/NBD model}{
@@ -153,7 +153,7 @@ of less than one day (data that was built with time unit \code{hours}).
 \donttest{
 data("apparelTrans")
 clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
-                            time.unit = "w", estimation.split = 40)
+                            time.unit = "w", estimation.split = 52)
 
 # Fit standard pnbd model
 pnbd(clv.data.apparel)
@@ -224,8 +224,8 @@ clv.data.dyn.cov <-
   SetDynamicCovariates(clv.data = clv.data.apparel,
                        data.cov.life = apparelDynCov,
                        data.cov.trans = apparelDynCov,
-                       names.cov.life = c("Marketing", "Gender", "Channel"),
-                       names.cov.trans = c("Marketing", "Gender", "Channel"),
+                       names.cov.life = c("High.Season", "Gender", "Channel"),
+                       names.cov.trans = c("High.Season", "Gender", "Channel"),
                        name.date = "Cov.Date")
 
 

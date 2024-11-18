@@ -97,8 +97,9 @@ In this case, the prediction additionally contains the following two columns:
 Uncertainty estimates are available for all predicted quantities using bootstrapping.
 
 \subsection{New customer prediction}{
-The fitted model can also be used to predict the number of transactions a single, average
+The fitted model can also be used to predict the number of transactions a fictional, single, average
 newly alive customer is expected to make at the moment of the first transaction ("coming alive").
+This is, for a customer which has no existing order history.
 For covariate models, the prediction is for an average customer with the given covariates.
 
 The individual-level unconditional expectation that is also used for the
@@ -157,11 +158,18 @@ Bootstrapping is used to provide confidence intervals of all predicted metrics.
 These provide an estimate of parameter uncertainty.
 To create bootstrapped data, customer ids are sampled with replacement until reaching original
 length and all transactions of the sampled customers are used to create a new \code{clv.data} object.
-A new model is fit on the bootstrapped data with the same specification as \code{object}
-(incl. start parameters and `optimx.args`) and it is then used to predict on this data.
+A new model is fit on the bootstrapped data with the exact same specification as used when
+fitting \code{object} (incl. start parameters and `optimx.args`) and it is then used to predict on this data.
+
+It is highly recommended to fit the original model (\code{object}) with a robust optimization
+method, such as Nelder-Mead (\code{optimx.args=list(method='Nelder-Mead')}).
+This ensures that the model can also be fit on the bootstrapped data.
+
 All prediction parameters, incl \code{prediction.end} and \code{continuous.discount.factor}, are forwarded
 to the prediction on the bootstrapped data.
-Per customer, confidence intervals of each predicted metric are created using a "reversed quantile" approach.
+Per customer, the boundaries of the confidence intervals of each predicted metric are the
+sample quantiles (\code{quantile(x, probs=c((1-level)/2, 1-(1-level)/2)}).
+
 See \link{clv.bootstrapped.apply} to create a custom bootstrapping procedure.
 }
 
@@ -172,7 +180,7 @@ See \link{clv.bootstrapped.apply} to create a custom bootstrapping procedure.
 data("apparelTrans")
 # Fit pnbd standard model on data, WITH holdout
 apparel.holdout <- clvdata(apparelTrans, time.unit="w",
-                           estimation.split=37, date.format="ymd")
+                           estimation.split=52, date.format="ymd")
 apparel.pnbd <- pnbd(apparel.holdout)
 
 # Predict until the end of the holdout period
@@ -211,9 +219,8 @@ predict(pnc)
 # But it works if providing a prediction.end
 predict(pnc, prediction.end = 10) # ends on 2016-12-17
 
-
-# Predict num transactions for a newly alive customer
-# in the next 3.45 weeks
+# Predict the number of transactions a single, fictional, average new
+# customer is expected to make in the first 3.45 weeks since coming alive
 # See ?newcustomer() for more examples
 predict(apparel.pnbd, newdata = newcustomer(num.periods=3.45))
 

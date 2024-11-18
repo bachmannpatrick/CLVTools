@@ -1,12 +1,8 @@
 skip_on_cran()
-data("cdnow")
-data("apparelTrans")
-data("apparelStaticCov")
-data("apparelDynCov")
 
 
 # no cov ---------------------------------------------------------------------------------------------------
-clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+clv.cdnow <- fct.helper.create.clvdata.cdnow()
 
 test_that("No cov: Same as std interface", {
   skip_on_cran()
@@ -26,7 +22,7 @@ test_that("No cov: Same as std interface", {
 
 # static cov ---------------------------------------------------------------------------------------------------
 
-clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(apparelTrans, apparelStaticCov, estimation.split = NULL)
+clv.apparel.cov <- fct.helper.create.clvdata.apparel.staticcov(estimation.split = NULL)
 
 .fct.test.latentattrition.selects.correct.covs <- function(formula, covs.life, covs.trans){
   expect_silent(p.lA <- latentAttrition(formula = formula, family=pnbd, data = clv.apparel.cov, verbose=FALSE))
@@ -116,7 +112,7 @@ test_that("Correct cov data when using interactions and all except (. -)", {
 
 
 # dynamic cov ---------------------------------------------------------------------------------------------------
-clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(apparelTrans, apparelDynCov, estimation.split = 40)
+clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov()
 clv.dyn.common.cols <- c("Id", "Cov.Date","tp.cov.lower","tp.cov.upper")
 
 .fct.latentattrition.fit.dyncov <- function(formula){
@@ -141,10 +137,10 @@ test_that("Same as std interface", {
 
 test_that("Correct cov data selected and transformations applied, data copied", {
   skip_on_cran()
-  p.lA <- .fct.latentattrition.fit.dyncov(formula=~I(Gender+1)+Channel|log(Gender+2)+Marketing)
+  p.lA <- .fct.latentattrition.fit.dyncov(formula=~I(Gender+1)+Channel|log(Gender+2)+High.Season)
 
   expect_setequal(colnames(p.lA@clv.data@data.cov.life), c(clv.dyn.common.cols, "Channel", "I.Gender...1."))
-  expect_setequal(colnames(p.lA@clv.data@data.cov.trans), c(clv.dyn.common.cols, "Marketing","log.Gender...2."))
+  expect_setequal(colnames(p.lA@clv.data@data.cov.trans), c(clv.dyn.common.cols, "High.Season","log.Gender...2."))
 
   expect_false(address(clv.apparel.dyn) == address(p.lA@clv.data))
   expect_false(address(clv.apparel.dyn@data.transactions) == address(p.lA@clv.data@data.transactions))
@@ -153,13 +149,13 @@ test_that("Correct cov data selected and transformations applied, data copied", 
 test_that("'.' selects correct cov data", {
   skip_on_cran()
   p.lA <- .fct.latentattrition.fit.dyncov(formula=~.|.+I(Gender+1))
-  expect_setequal(colnames(p.lA@clv.data@data.cov.life), c(clv.dyn.common.cols, "Channel", "Gender", "Marketing"))
-  expect_setequal(colnames(p.lA@clv.data@data.cov.trans), c(clv.dyn.common.cols, "Channel", "Gender", "Marketing", "I.Gender...1."))
+  expect_setequal(colnames(p.lA@clv.data@data.cov.life), c(clv.dyn.common.cols, "Channel", "Gender", "High.Season"))
+  expect_setequal(colnames(p.lA@clv.data@data.cov.trans), c(clv.dyn.common.cols, "Channel", "Gender", "High.Season", "I.Gender...1."))
 })
 
 test_that("Correct cov data when using interactions and all except (. -)", {
   skip_on_cran()
   p.lA <- .fct.latentattrition.fit.dyncov(formula=~Gender*Channel|.-Gender)
   expect_setequal(c("Channel", "Gender", "Gender.Channel", clv.dyn.common.cols), colnames(p.lA@clv.data@data.cov.life))
-  expect_setequal(c("Channel", "Marketing", clv.dyn.common.cols), colnames(p.lA@clv.data@data.cov.trans))
+  expect_setequal(c("Channel", "High.Season", clv.dyn.common.cols), colnames(p.lA@clv.data@data.cov.trans))
 })

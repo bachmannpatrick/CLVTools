@@ -1,11 +1,7 @@
 skip_on_cran()
-data("cdnow")
-data("apparelTrans")
-data("apparelStaticCov")
-data("apparelDynCov")
 
 # nocov ------------------------------------------------------------------------------------------
-clv.cdnow <- fct.helper.create.clvdata.cdnow(cdnow)
+clv.cdnow <- fct.helper.create.clvdata.cdnow()
 
 test_that("Works out of the box", {
   skip_on_cran()
@@ -31,7 +27,7 @@ test_that("Works with optimx args", {
 
 
 # static cov --------------------------------------------------------------------------------------
-clv.apparel.static <- fct.helper.create.clvdata.apparel.staticcov(apparelTrans, apparelStaticCov, estimation.split = NULL)
+clv.apparel.static <- fct.helper.create.clvdata.apparel.staticcov(estimation.split = NULL)
 
 test_that("Works with clv.data static cov", {
   skip_on_cran()
@@ -40,7 +36,7 @@ test_that("Works with clv.data static cov", {
 
 
 # dyn cov -----------------------------------------------------------------------------------------
-clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(apparelTrans, apparelDynCov, estimation.split = NULL)
+clv.apparel.dyn <- fct.helper.create.clvdata.apparel.dyncov(estimation.split = NULL)
 
 test_that("Works with clv.data dyn cov", {
   skip_on_cran()

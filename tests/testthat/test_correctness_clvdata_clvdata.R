@@ -392,7 +392,7 @@ test_that("Aggregating first and removing after removes all first transactions",
 test_that("clv.data.get.repeat.transactions.in.estimation.period() is the same as creating repeat transactions from estimation period data", {
   skip_on_cran()
 
-  clv.cdnow <- clvdata(cdnow, date.format = "ymd", time.unit = "w", estimation.split = NULL)
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(estimation.split = NULL)
 
   dt.estimation.period   <- clv.data.get.transactions.in.estimation.period(clv.cdnow)
   dt.self.made.repeat    <- clv.data.make.repeat.transactions(dt.estimation.period)
@@ -405,7 +405,7 @@ test_that("clv.data.get.repeat.transactions.in.estimation.period() is the same a
 # mean.interpurchase.times ----------------------------------------------------------------------------
 test_that("New faster mean.interpurchase.times same result as original implementation", {
 
-  clv.cdnow <- fct.helper.create.clvdata.cdnow(data.cdnow=cdnow)
+  clv.cdnow <- fct.helper.create.clvdata.cdnow()
 
   fct.old.interp.time <- function(clv.data, dt.transactions){
 

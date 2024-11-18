@@ -5,7 +5,7 @@
 \alias{apparelStaticCov}
 \title{Time-invariant Covariates for the Apparel Retailer Dataset}
 \format{
-A \code{data.table} with 250 rows and 3 variables:
+A \code{data.table} with 600 rows and 3 variables:
 
 \describe{
   \item{Id}{Customer Id}
@@ -17,7 +17,7 @@ A \code{data.table} with 250 rows and 3 variables:
 data("apparelStaticCov")
 }
 \description{
-This simulated data contains additional demographic information on all 250 customers in the
+This simulated data contains additional demographic information on all 600 customers in the
 "apparelTrans" dataset. This information can be used as time-invariant covariates.
 }
 \keyword{datasets}

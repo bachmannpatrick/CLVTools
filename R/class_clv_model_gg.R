@@ -60,7 +60,7 @@ setMethod("clv.model.backtransform.estimated.params.model", signature = signatur
 #' @importFrom utils modifyList
 setMethod(f = "clv.model.prepare.optimx.args", signature = signature(clv.model="clv.model.gg"), definition = function(clv.model, clv.fitted, prepared.optimx.args){
 
-  dt.compressed.cbs <- clv.fitted@cbs[, .(n = .N), by=c('x', 'Spending')]
+  dt.compressed.cbs <- clv.fitted@cbs[, list(n = .N), by=c('x', 'Spending')]
 
   optimx.args <- modifyList(prepared.optimx.args,
                             list(LL.function.sum = gg_LL,
@@ -112,6 +112,18 @@ setMethod("clv.model.predict", signature(clv.model="clv.model.gg"), function(clv
   dt.predictions[, cbs.Spending := NULL]
 
   return(dt.predictions)
+})
+
+
+# .clv.model.predict.newcustomer --------------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict.new.customer", signature(clv.model="clv.model.gg"), function(clv.model, clv.fitted, clv.newcustomer){
+
+  p     <- clv.fitted@prediction.params.model[["p"]]
+  q     <- clv.fitted@prediction.params.model[["q"]]
+  gamma <- clv.fitted@prediction.params.model[["gamma"]]
+
+  # setting x=0 in the ordinary prediction function
+  return( (gamma) * p/(q - 1) )
 })
 
 

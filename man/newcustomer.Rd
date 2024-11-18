@@ -4,6 +4,7 @@
 \alias{newcustomer}
 \alias{newcustomer.static}
 \alias{newcustomer.dynamic}
+\alias{newcustomer.spending}
 \title{New customer prediction data}
 \usage{
 newcustomer(num.periods)
@@ -16,6 +17,8 @@ newcustomer.dynamic(
   data.cov.trans,
   first.transaction
 )
+
+newcustomer.spending()
 }
 \arguments{
 \item{num.periods}{A positive, numeric scalar indicating the number of periods to predict.}
@@ -31,16 +34,28 @@ Has to be within the time range of the covariate data.}
 \item{newcustomer()}{An object of class \code{clv.newcustomer.no.cov}}
 \item{newcustomer.static()}{An object of class \code{clv.newcustomer.static.cov}}
 \item{newcustomer.dynamic()}{An object of class \code{clv.newcustomer.dynamic.cov}}
+\item{newcustomer.spending()}{An object of class \code{clv.newcustomer.spending}}
 }
 \description{
-The methods documented here are to be used together with \link[CLVTools:predict.clv.fitted.transactions]{predict} to obtain
-the expected number of transactions of an average newly alive customer.
-It describes the number of transactions a single, average new customer is expected to make in
-the \code{num.periods} periods since making the first transaction ("coming alive"). This prediction is only
-sensible for customers who just came alive and have not had the chance to reveal any more of their behavior.
+The methods documented here are to be used together with
+\link[CLVTools:predict.clv.fitted.transactions]{predict (transactions)} to obtain
+the expected number of transactions of an average newly alive customer and
+with \link[CLVTools:predict.clv.fitted.spending]{predict (spending)} to obtain
+the expected spending of an average newly alive customer.
+This prediction is only sensible for (fictional) customers without order history:
+Customers which just came alive and have not had the chance to reveal any more of their behavior.
 
-The data required for this new customer prediction is produced by the methods described here. This is mostly covariate data
-for static and dynamic covariate models. See details for the required format.
+The methods described here produce the data required as input to
+\code{predict(newdata=)} to make this new customer prediction.
+This is mostly covariate data for static and dynamic covariate models.
+See details for the required format.
+
+\code{newcustomer()}, \code{newcustomer.static()}, \code{newcustomer.dynamic()}:
+To predict the number of transactions a single, fictional, average new customer is expected to make in
+the \code{num.periods} periods since making the first transaction ("coming alive").
+
+\code{newcustomer.spending()}: To estimate how much a single, fictional, average
+new customer is expected to spend on average per transaction.
 }
 \details{
 The covariate data has to contain one column for every covariate parameter in the fitted model. Only numeric values are allowed, no factors or characters.
@@ -53,7 +68,7 @@ For example: \code{data.frame(Gender=1, Age=30, Channel=0)}.
 For \code{newcustomer.dynamic()}: One column for every covariate parameter in the estimated model.
 No column \code{Id}. A column \code{Cov.Date} with time points that mark the start of the period defined by \code{time.unit}.
 For every \code{Cov.Date}, exactly 1 row of numeric covariate data. \cr
-For example for weekly covariates: \code{data.frame(Cov.Date=c("2000-01-03", "2000-01-10"), Gender=c(1,1), High.Season=c(0, 1), Marketing=c(-0.5,1.12))} \cr
+For example for weekly covariates: \code{data.frame(Cov.Date=c("2000-01-03", "2000-01-10"), Gender=c(1,1), Channel=c(1, 1), High.Season=c(0,1,0))} \cr
 If \code{Cov.Date} is of type character, the \code{date.format} given when creating the the \code{clv.data} object is used to parse it.
 The data has to cover the time from the customer's first transaction \code{first.transaction}
 to the end of the prediction period given by \code{t}. It does not have to cover the same time range as when fitting the model.
@@ -70,7 +85,7 @@ data("apparelStaticCov")
 data("apparelDynCov")
 
 clv.data.apparel <- clvdata(apparelTrans, date.format = "ymd",
-                            time.unit = "w", estimation.split = 40)
+                            time.unit = "w", estimation.split = 52)
 clv.data.static.cov <-
  SetStaticCovariates(clv.data.apparel,
                      data.cov.life = apparelStaticCov,
@@ -81,8 +96,8 @@ clv.data.dyn.cov <-
   SetDynamicCovariates(clv.data = clv.data.apparel,
                        data.cov.life = apparelDynCov,
                        data.cov.trans = apparelDynCov,
-                       names.cov.life = c("Marketing", "Gender"),
-                       names.cov.trans = c("Marketing", "Gender"),
+                       names.cov.life = c("High.Season", "Gender"),
+                       names.cov.trans = c("High.Season", "Gender"),
                        name.date = "Cov.Date")
 
 
@@ -96,6 +111,11 @@ predict(
   p.apparel,
   newdata=newcustomer(num.periods=3.68)
 )
+
+
+# Spending model
+gg.apparel <- gg(clv.data.apparel)
+predict(gg.apparel, newdata = newcustomer.spending())
 
 
 
@@ -122,8 +142,8 @@ predict(
 p.apparel.dyn <- pnbd(clv.data.dyn.cov)
 
 # Predict the number of transactions an average new
-# customer who is male (Gender=0), who was contacted
-# 4, 0, and 7 times with direct marketing, and who was
+# customer who is male (Gender=0), who did not purchase during
+# high.season, and who was
 # acquired on "2005-02-16" (first.transaction) is expected
 # to make in the first 2.12 weeks.
 # Note that the time range is very different from the one used
@@ -136,19 +156,20 @@ predict(
     data.cov.life=data.frame(
       Cov.Date=c("2051-02-12", "2051-02-19", "2051-02-26"),
       Gender=c(0, 0, 0),
-      Marketing=c(4, 0, 7)),
+      High.Season=c(4, 0, 7)),
     data.cov.trans=data.frame(
       Cov.Date=c("2051-02-12", "2051-02-19", "2051-02-26"),
       Gender=c(0, 0, 0),
-      Marketing=c(4, 0, 7)),
+      High.Season=c(4, 0, 7)),
     first.transaction = "2051-02-16"
   )
 )
-
 }
 }
 
 }
 \seealso{
-\link[CLVTools:predict.clv.fitted.transactions]{predict} to use the output of the methods described here.
+\link[CLVTools:predict.clv.fitted.transactions]{predict (transactions)} to use the output of the methods described here.
+
+\link[CLVTools:predict.clv.fitted.spending]{predict (spending)} to use the output of the methods described here.
 }

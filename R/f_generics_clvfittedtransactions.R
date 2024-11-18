@@ -329,27 +329,19 @@ setMethod("clv.controlflow.predict.post.process.prediction.table", signature = s
 #' @include class_clv_fitted_transactions.R
 setMethod("clv.controlflow.predict.new.customer", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, clv.newcustomer){
 
-  if(!is(clv.newcustomer, "clv.newcustomer.no.cov") | is(clv.newcustomer, "clv.newcustomer.static.cov")){
+  if(!is(clv.newcustomer, "clv.newcustomer.no.cov")){
     check_err_msg("Parameter newdata has to be output from calling `newcustomer()`!")
   }
 
-  return(drop(clv.model.predict.new.customer.unconditional.expectation(
+  return(drop(clv.model.predict.new.customer(
     clv.model = clv.fitted@clv.model,
     clv.fitted = clv.fitted,
-    clv.newcustomer=clv.newcustomer,
-    t=clv.newcustomer@num.periods)))
+    clv.newcustomer=clv.newcustomer)))
 })
 
 
 # . clv.fitted.bootstrap.predictions --------------------------------------------
 setMethod(f = "clv.fitted.bootstrap.predictions", signature = signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, num.boots, verbose, prediction.end, predict.spending, continuous.discount.factor){
-
-  # have to explicitly give prediction.end because bootstrapping data has no holdout
-  if(is.null(prediction.end)){
-    boots.prediction.end <- clv.fitted@clv.data@clv.time@timepoint.holdout.end
-  }else{
-    boots.prediction.end <- prediction.end
-  }
 
   if(verbose){
     # Print message before progress bar is created
@@ -358,17 +350,18 @@ setMethod(f = "clv.fitted.bootstrap.predictions", signature = signature(clv.fitt
     progress.bar <- txtProgressBar(max = num.boots, style = 3)
     update.pb    <- function(n){setTxtProgressBar(pb=progress.bar, value = n)}
   }else{
-    # has to be also defined if verbose=F because used in boots.predict
+    # also has to be defined if verbose=F because used in boots.predict
     update.pb <- function(n){}
   }
   pb.i <- 0
 
+  # Method that is called on the bootstrapped data
   boots.predict <- function(clv.boot){
     pb.i <<- pb.i + 1
     update.pb(n = pb.i)
     return(predict(
       object = clv.boot,
-      prediction.end = boots.prediction.end,
+      prediction.end = prediction.end,
       verbose = FALSE,
       predict.spending = predict.spending,
       continuous.discount.factor = continuous.discount.factor,
@@ -377,11 +370,12 @@ setMethod(f = "clv.fitted.bootstrap.predictions", signature = signature(clv.fitt
 
   l.boots <- clv.bootstrapped.apply(
     object = clv.fitted,
+    fn.sample = NULL,
     num.boots = num.boots,
     fn.boot.apply = boots.predict,
-    fn.sample = NULL,
-    verbose = FALSE,
-    start.params.model = clv.fitted@prediction.params.model
+    # Fitting on bootstrapped data: Never verbose because does not mix well
+    # with status bar shown when verbose=TRUE
+    verbose = FALSE
   )
 
   return(rbindlist(l.boots))

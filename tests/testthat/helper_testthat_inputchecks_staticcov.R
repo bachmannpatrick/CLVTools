@@ -214,12 +214,10 @@ fct.testthat.inputchecks.staticcov... <- function(method, l.std.args){
 
 
 
-fct.testthat.inputchecks.staticcov <- function(name.method, method, start.params.model, has.cor, data.apparelTrans, data.apparelStaticCov){
+fct.testthat.inputchecks.staticcov <- function(name.method, method, start.params.model, has.cor){
 
-  l.std.args.noholdout   <- list(clv.data=fct.helper.create.clvdata.apparel.staticcov(estimation.split=NULL, data.apparelTrans=data.apparelTrans, data.apparelStaticCov=data.apparelStaticCov,
-                                                                                      names.cov.life="Gender", names.cov.trans="Gender"))
-  clv.data.apparel.with.holdout <- fct.helper.create.clvdata.apparel.staticcov(estimation.split=38, data.apparelTrans=data.apparelTrans, data.apparelStaticCov=data.apparelStaticCov,
-                                                                               names.cov.life="Gender", names.cov.trans="Gender")
+  l.std.args.noholdout   <- list(clv.data=fct.helper.create.clvdata.apparel.staticcov(estimation.split=NULL, names.cov.life="Gender", names.cov.trans="Gender"))
+  clv.data.apparel.with.holdout <- fct.helper.create.clvdata.apparel.staticcov(names.cov.life="Gender", names.cov.trans="Gender")
   l.std.args.withholdout <- list(clv.data=clv.data.apparel.with.holdout)
 
 

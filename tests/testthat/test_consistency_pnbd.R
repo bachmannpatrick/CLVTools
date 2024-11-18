@@ -6,9 +6,13 @@ data("apparelStaticCov")
 data("apparelDynCov")
 
 # PNBD nocov vs static cov consistency
-fct.testthat.consistency(name.model = "PNBD", method = pnbd,
-                         data.apparelTrans = apparelTrans, data.apparelStaticCov=apparelStaticCov,
-                         fct.LL.ind.nocov = pnbd_nocov_LL_ind, fct.LL.ind.static.cov = pnbd_staticcov_LL_ind)
+fct.testthat.consistency(
+  name.model = "PNBD",
+  method = pnbd,
+  fct.LL.ind.nocov = pnbd_nocov_LL_ind,
+  fct.LL.ind.static.cov = pnbd_staticcov_LL_ind
+)
+
 
 
 # Dyncov vs nocov consistency ---------------------------------------------------------------------------
@@ -46,9 +50,12 @@ fct.helper.dyncov.g0.with.predition.params.model <- function(p.dyncov, predictio
   expect_silent(p.dyncov@prediction.params.life[] <- 0)
   expect_silent(p.dyncov@prediction.params.trans[] <- 0)
 
-  return(.fn.helper.dyncov.recalculate.LLdata.with.prediction.params.model(
-    p.dyncov = p.dyncov, prediction.params.model = prediction.params.model
-  ))
+  # Recalculate the LL data for these fake params
+  expect_silent(log.params <- setNames(log(p.dyncov@prediction.params.model[c("r", "alpha", "s", "beta")]),
+                                       c("log.r", "log.alpha", "log.s", "log.beta")))
+  expect_silent(log.params[c("life.High.Season", "life.Gender", "life.Channel", "trans.High.Season", "trans.Gender", "trans.Channel")] <- 0)
+  expect_silent(p.dyncov@LL.data <- pnbd_dyncov_getLLdata(clv.fitted=p.dyncov, params=log.params))
+  return(p.dyncov)
 }
 
 fn.helper.dyncov.cov0.with.prediction.params.model <- function(p.dyncov, prediction.params.model){
