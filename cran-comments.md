@@ -1,12 +1,12 @@
 # Comment from the authors
-This is version 0.11.1 of the CLVTools package. 
+This is version 0.11.2 of the CLVTools package. 
 The most relevant changes in this version are: 
 
-* Updated the example data
-* Bootstrapping: Calculate confidence intervals using regular rather than "reversed-quantiles"
+* `newcustomer.spending()`: Predict average spending per transaction for customers without order history
+* Improved optimizer defaults
 
 
-
+ 
 # Test environments
 
 ## Testthat
