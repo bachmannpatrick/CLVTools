@@ -27,6 +27,10 @@
 #'
 #' To predict for new customers, the output of \link[CLVTools:newcustomer]{newcustomer.spending} has to be given to \code{newdata}. See examples.
 #'
+#'
+#' @template template_predict_uncertainty
+#'
+#'
 #' @seealso models to predict spending: \link{gg}.
 #' @seealso models to predict transactions: \link{pnbd}, \link{bgnbd}, \link{ggomnbd}.
 #' @seealso \code{\link[CLVTools:predict.clv.fitted.transactions]{predict}} for transaction models
