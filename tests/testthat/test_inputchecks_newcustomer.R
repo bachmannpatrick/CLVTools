@@ -183,16 +183,21 @@ test_that("newcustomer fits the type of fitted model", {
 
 test_that("predict(): Error if other parameters are passed (spending & transactions)", {
 
-  # transactions
-  expect_error(predict(p.cdnow, newdata=newcustomer(12), prediction.end=12), regexp = "No other parameters")
-  expect_error(predict(p.cdnow, newdata=newcustomer(12), continuous.discount.factor=0.1), regexp = "No other parameters")
-  expect_error(predict(p.cdnow, newdata=newcustomer(12), predict.spending=TRUE), regexp = "No other parameters")
+  for(m in list(p.cdnow, gg.cdnow)){
+    if(is(m, "clv.pnbd")){
+      nc <- newcustomer(12)
 
-  # spending
-  expect_error(predict(gg.cdnow, newdata=newcustomer.spending(), uncertainty="none"), regexp = "No other parameters")
-  expect_error(predict(gg.cdnow, newdata=newcustomer.spending(), num.boots=12), regexp = "No other parameters")
-  expect_error(predict(gg.cdnow, newdata=newcustomer.spending(), level=0.8), regexp = "No other parameters")
+      expect_error(predict(m, newdata=nc, prediction.end=12), regexp = "No other parameters")
+      expect_error(predict(m, newdata=nc, continuous.discount.factor=0.1), regexp = "No other parameters")
+      expect_error(predict(m, newdata=nc, predict.spending=TRUE), regexp = "No other parameters")
+    }else{
+      nc <- newcustomer.spending()
+    }
 
+    expect_error(predict(m, newdata=nc, uncertainty="boots"), regexp = "No other parameters")
+    expect_error(predict(m, newdata=nc, num.boots=12), regexp = "No other parameters")
+    expect_error(predict(m, newdata=nc, level=0.8), regexp = "No other parameters")
+  }
 })
 
 test_that("predict vs newcustomer: dyn/static cov data names are not the same as parameters", {
