@@ -21,8 +21,9 @@ In this case, the prediction additionally contains the following two columns:
 Uncertainty estimates are available for all predicted quantities using bootstrapping.
 
 New customer prediction
-The fitted model can also be used to predict the number of transactions a single, average
+The fitted model can also be used to predict the number of transactions a fictional, single, average
 newly alive customer is expected to make at the moment of the first transaction ("coming alive").
+This is, for a customer which has no existing order history.
 For covariate models, the prediction is for an average customer with the given covariates.
 The individual-level unconditional expectation that is also used for the
 tracking plot is used to obtain this prediction.
@@ -57,7 +58,7 @@ See examples and newcustomer for more details.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.2</span>
       </span>
     </div>
 
@@ -118,8 +119,9 @@ In this case, the prediction additionally contains the following two columns:</p
 </ul><p>Uncertainty estimates are available for all predicted quantities using bootstrapping.</p>
 <div class="section">
 <h3 id="new-customer-prediction">New customer prediction<a class="anchor" aria-label="anchor" href="#new-customer-prediction"></a></h3>
-<p>The fitted model can also be used to predict the number of transactions a single, average
+<p>The fitted model can also be used to predict the number of transactions a fictional, single, average
 newly alive customer is expected to make at the moment of the first transaction ("coming alive").
+This is, for a customer which has no existing order history.
 For covariate models, the prediction is for an average customer with the given covariates.</p>
 <p>The individual-level unconditional expectation that is also used for the
 <a href="plot.clv.fitted.transactions.html">tracking plot</a> is used to obtain this prediction.
@@ -660,9 +662,8 @@ sample quantiles (<code>quantile(x, probs=c((1-level)/2, 1-(1-level)/2)</code>).
 <span class="r-out co"><span class="r-pr">#&gt;</span> 599: 0.005327482                36.71922                0.1881956    0.19562100</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 600: 0.008245198                25.00120                0.1983152    0.20613989</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Predict num transactions for a newly alive customer</span></span></span>
-<span class="r-in"><span><span class="co"># in the next 3.45 weeks</span></span></span>
+<span class="r-in"><span><span class="co"># Predict the number of transactions a single, fictional, average new</span></span></span>
+<span class="r-in"><span><span class="co"># customer is expected to make in the first 3.45 weeks since coming alive</span></span></span>
 <span class="r-in"><span><span class="co"># See ?newcustomer() for more examples</span></span></span>
 <span class="r-in"><span><span class="fu">predict</span><span class="op">(</span><span class="va">apparel.pnbd</span>, newdata <span class="op">=</span> <span class="fu"><a href="newcustomer.html">newcustomer</a></span><span class="op">(</span>num.periods<span class="op">=</span><span class="fl">3.45</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.09627075</span>

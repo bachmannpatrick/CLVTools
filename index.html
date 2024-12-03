@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.2</span>
       </span>
     </div>
 
@@ -115,6 +115,71 @@
 <li><p>L2 regularization for parameters of contextual factors</p></li>
 <li><p>Equality constraints between parameters of contextual factors for the purchase and the attrition process.</p></li>
 </ul>
+<p>The following table provides an overview which advanced modeling options are supported for which models:</p>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="22%">
+<col width="22%">
+<col width="22%">
+</colgroup>
+<thead><tr class="header">
+<th></th>
+<th>pnbd</th>
+<th>bgnbd</th>
+<th>ggomnbd</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><strong>Model name</strong></td>
+<td>Pareto/ NBD</td>
+<td>BG/ NBD</td>
+<td>GGom/ NBD</td>
+</tr>
+<tr class="even">
+<td><strong>Attrition: Distribution main process &amp; heterogeneity</strong></td>
+<td>Exponential / Gamma</td>
+<td>Geometric / Beta</td>
+<td>Gompertz / Gamma</td>
+</tr>
+<tr class="odd">
+<td><strong>Transaction: Distribution main process &amp; heterogeneity</strong></td>
+<td>Poisson / Gamma</td>
+<td>Poisson / Gamma</td>
+<td>Poisson / Gamma</td>
+</tr>
+<tr class="even">
+<td><strong>Model Parameters</strong></td>
+<td>r, α, s, β</td>
+<td>r, α, a, b</td>
+<td>r, α, β, b, s</td>
+</tr>
+<tr class="odd">
+<td><strong>Covariates (time-invariant/-varying)</strong></td>
+<td>✔ / ✔</td>
+<td>✔ / -</td>
+<td>✔ / -</td>
+</tr>
+<tr class="even">
+<td><strong>Process correlation</strong></td>
+<td>✔</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td><strong>Equality constraints of covariate parameters</strong></td>
+<td>✔</td>
+<td>✔</td>
+<td>✔</td>
+</tr>
+<tr class="even">
+<td><strong>Regularization of covariate parameters</strong></td>
+<td>✔</td>
+<td>✔</td>
+<td>✔</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>

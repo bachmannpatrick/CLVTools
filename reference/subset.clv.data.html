@@ -25,7 +25,7 @@ Possible rows to subset and select are Id, Date, and Price (if present)."><!-- m
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.2</span>
       </span>
     </div>
 
@@ -101,7 +101,7 @@ Possible rows to subset and select are <code>Id</code>, <code>Date</code>, and <
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>further arguments passed to <code><a href="https://rdatatable.gitlab.io/data.table/reference/subset.data.table.html" class="external-link">data.table::subset</a></code></p></dd>
+<dd><p>further arguments passed to <code><a href="https://rdrr.io/pkg/data.table/man/subset.data.table.html" class="external-link">data.table::subset</a></code></p></dd>
 
 </dl></div>
     <div id="value">
@@ -110,7 +110,7 @@ Possible rows to subset and select are <code>Id</code>, <code>Date</code>, and <
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code>data.table</code>'s <code><a href="https://rdatatable.gitlab.io/data.table/reference/subset.data.table.html" class="external-link">subset</a></code></p></div>
+    <div class="dont-index"><p><code>data.table</code>'s <code><a href="https://rdrr.io/pkg/data.table/man/subset.data.table.html" class="external-link">subset</a></code></p></div>
     </div>
 
     <div id="ref-examples">
@@ -239,7 +239,7 @@ Possible rows to subset and select are <code>Id</code>, <code>Date</code>, and <
 <span class="r-out co"><span class="r-pr">#&gt;</span> 630:    998 1997-02-07 28.76</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 631:    999 1997-02-07 10.78</span>
 <span class="r-in"><span><span class="co"># same using data.table's between</span></span></span>
-<span class="r-in"><span><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/between.html" class="external-link">between</a></span><span class="op">(</span><span class="va">Date</span>, <span class="st">"1997-02-01"</span>,<span class="st">"1997-02-16"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/between.html" class="external-link">between</a></span><span class="op">(</span><span class="va">Date</span>, <span class="st">"1997-02-01"</span>,<span class="st">"1997-02-16"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Key: &lt;Id, Date&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          Id       Date Price</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;char&gt;     &lt;Date&gt; &lt;num&gt;</span>
@@ -272,7 +272,7 @@ Possible rows to subset and select are <code>Id</code>, <code>Date</code>, and <
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1019:    994 1997-02-07 59.96</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1020:    994 1998-02-25 62.96</span>
 <span class="r-in"><span><span class="co"># same using data.table's between</span></span></span>
-<span class="r-in"><span><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/between.html" class="external-link">between</a></span><span class="op">(</span><span class="va">Price</span>, <span class="fl">50</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">subset</span><span class="op">(</span><span class="va">clv.cdnow</span>, <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/between.html" class="external-link">between</a></span><span class="op">(</span><span class="va">Price</span>, <span class="fl">50</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Key: &lt;Id, Date&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           Id       Date Price</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;char&gt;     &lt;Date&gt; &lt;num&gt;</span>
