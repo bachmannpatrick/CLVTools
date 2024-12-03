@@ -115,6 +115,18 @@ setMethod("clv.model.predict", signature(clv.model="clv.model.gg"), function(clv
 })
 
 
+# .clv.model.predict.newcustomer --------------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict.new.customer", signature(clv.model="clv.model.gg"), function(clv.model, clv.fitted, clv.newcustomer){
+
+  p     <- clv.fitted@prediction.params.model[["p"]]
+  q     <- clv.fitted@prediction.params.model[["q"]]
+  gamma <- clv.fitted@prediction.params.model[["gamma"]]
+
+  # setting x=0 in the ordinary prediction function
+  return( (gamma) * p/(q - 1) )
+})
+
+
 # .clv.model.vcov.jacobi.diag --------------------------------------------------------------------------------------------------------
 setMethod(f = "clv.model.vcov.jacobi.diag", signature = signature(clv.model="clv.model.gg"), definition = function(clv.model, clv.fitted, prefixed.params){
 

@@ -29,6 +29,9 @@ p.apparel.dyn <- fct.helper.dyncov.quickfit.apparel.data(
   names.cov.trans = c("High.Season", "Gender", "Channel")
 )
 
+gg.apparel.remove.first <- fit.apparel.nocov(model=gg, remove.first.transaction=TRUE)
+gg.apparel.notremove.first <- fit.apparel.nocov(model=gg, remove.first.transaction=FALSE)
+
 
 
 # Tests no cov models ------------------------------------------------------------------
@@ -232,3 +235,10 @@ test_that("Works with Cov.Date & first.transaction of type Date, character, POSI
 })
 
 
+
+# Tests spending models ---------------------------------------------------------
+
+test_that("Works for spending models", {
+  fct.expect.silent.predict.newcustomer(gg.apparel.remove.first, newcustomer.spending())
+  fct.expect.silent.predict.newcustomer(gg.apparel.notremove.first, newcustomer.spending())
+})

@@ -106,15 +106,15 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.bgnbd.no.cov")
                        fct.expectation = fct.bgnbd.expectation, clv.time = clv.fitted@clv.data@clv.time))
 })
 
-# . clv.model.predict.new.customer.unconditional.expectation --------------------------------------------------------------------------------------------------------
-setMethod("clv.model.predict.new.customer.unconditional.expectation", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, clv.newcustomer, t){
+# . clv.model.predict.new.customer --------------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict.new.customer", signature = signature(clv.model="clv.model.bgnbd.no.cov"), definition = function(clv.model, clv.fitted, clv.newcustomer){
 
   return(bgnbd_nocov_expectation(
     r = clv.fitted@prediction.params.model[["r"]],
     alpha = clv.fitted@prediction.params.model[["alpha"]],
     a = clv.fitted@prediction.params.model[["a"]],
     b = clv.fitted@prediction.params.model[["b"]],
-    vT_i = t))
+    vT_i = clv.newcustomer@num.periods))
 })
 
 

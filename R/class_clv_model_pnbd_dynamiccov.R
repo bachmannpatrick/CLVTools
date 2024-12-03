@@ -18,7 +18,7 @@ clv.model.pnbd.dynamic.cov <- function(){
              name.model       = "Pareto/NBD with Dynamic Covariates",
              # Overwrite optimx default args
              optimx.defaults  = list(method = "Nelder-Mead",
-                                     itnmax = 3000,
+                                     itnmax = 50000,
                                      control = list(
                                        kkt = TRUE,
                                        save.failures = TRUE,
@@ -175,11 +175,11 @@ setMethod("clv.model.expectation", signature(clv.model="clv.model.pnbd.dynamic.c
 })
 
 
-# . clv.model.predict.new.customer.unconditional.expectation -----------------------------------------------------------------------------------------------------
-setMethod("clv.model.predict.new.customer.unconditional.expectation", signature = signature(clv.model="clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, clv.newcustomer, t){
+# . clv.model.predict.new.customer -----------------------------------------------------------------------------------------------------
+setMethod("clv.model.predict.new.customer", signature = signature(clv.model="clv.model.pnbd.dynamic.cov"), definition = function(clv.model, clv.fitted, clv.newcustomer){
   return(pnbd_dyncov_newcustomer_expectation(
     clv.fitted=clv.fitted,
-    t=t,
+    t=clv.newcustomer@num.periods,
     tp.first.transaction=clv.newcustomer@first.transaction,
     dt.cov.life=clv.newcustomer@data.cov.life,
     dt.cov.trans=clv.newcustomer@data.cov.trans))
