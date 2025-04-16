@@ -1,3 +1,11 @@
+# CLVTools 0.11.2
+
+### NEW FEATURES
+* `newcustomer.spending()`: Predict average spending per transaction for customers without order history
+* Improved optimizer defaults (higher iteration count) for PNBD dyncov
+
+
+
 # CLVTools 0.11.1
 
 ### NEW FEATURES

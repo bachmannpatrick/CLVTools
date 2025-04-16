@@ -18,7 +18,7 @@ clv.model.pnbd.dynamic.cov <- function(){
              name.model       = "Pareto/NBD with Dynamic Covariates",
              # Overwrite optimx default args
              optimx.defaults  = list(method = "Nelder-Mead",
-                                     itnmax = 3000,
+                                     itnmax = 50000,
                                      control = list(
                                        kkt = TRUE,
                                        save.failures = TRUE,

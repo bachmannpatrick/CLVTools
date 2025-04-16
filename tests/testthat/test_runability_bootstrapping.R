@@ -262,14 +262,14 @@ for(clv.fitted in list(
 }
 
 
-# predict(boots) works on all model specifications -----------------------------
-# This also includes testing clv.bootstrapped.apply because it is used under the hood
+# predict(uncertainty=boots) works on all model specifications -----------------------------
+# This also includes testing `clv.bootstrapped.apply` because it is used under the hood
 # - fit with correlation
 # - constrained params
 # - regularization
 # - combinations
 
-test_that("predict(boots) works on all model specifications", {
+test_that("predict(uncertainty=boots) works on all model specifications", {
   fn.predict.boots <- function(clv.fitted){
     expect_warning(predict(clv.fitted, uncertainty='boots', num.boots=2, predict.spending=TRUE, verbose=FALSE), regexp = 'recommended to run')
   }
@@ -307,3 +307,53 @@ test_that("predict(boots) works on all model specifications", {
 
 })
 
+
+
+# predict(uncertainty=boots) works with various inputs ------------------------------------
+
+test_that("predict(uncertainty=boots) works with predict.spending, newdata, prediction.end", {
+
+  p.cdnow <- fit.cdnow(optimx.args = optimx.args.NM)
+
+  fn.predict.boots <- function(predict.spending=TRUE, newdata=NULL, prediction.end=NULL){
+    expect_warning(dt.pred <- predict(
+      p.cdnow,
+      verbose=FALSE,
+      uncertainty='boots',
+      num.boots=2,
+      newdata=newdata,
+      prediction.end=prediction.end,
+      predict.spending=predict.spending
+    ), regexp = "recommended to run")
+    return(dt.pred)
+  }
+
+  # predict.spending
+  fn.predict.boots(predict.spending = TRUE)
+  fn.predict.boots(predict.spending = FALSE)
+  fn.predict.boots(predict.spending = gg)
+  fn.predict.boots(predict.spending = fit.cdnow(model = gg))
+
+  # newdata
+  clv.apparel.nocov <- fct.helper.create.clvdata.apparel.nocov()
+  dt.pred <- fn.predict.boots(newdata=clv.apparel.nocov)
+  # really did predict for the apparel dataset and not the cdnow
+  expect_true(dt.pred[, .N] == nobs(clv.apparel.nocov))
+
+  # prediction.end
+  clv.cdnow.noholdout <- fct.helper.create.clvdata.cdnow(estimation.split = NULL)
+
+  # with holdout, no prediction.end is required
+  fn.predict.boots(prediction.end=NULL)
+  # with holdout, can also with prediction.end
+  fn.predict.boots(prediction.end=10)
+
+  # without holdout, prediction.end is required
+  expect_error(
+    predict(p.cdnow, uncertainty='boots', newdata=clv.cdnow.noholdout),
+    regexp = "Cannot predict without prediction.end"
+  )
+  # without holdout, works if prediction.end is given
+  fn.predict.boots(newdata=clv.cdnow.noholdout, prediction.end=10)
+
+})
