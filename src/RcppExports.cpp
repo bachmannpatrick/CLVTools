@@ -854,6 +854,30 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// pnbd_dyncov_pmf_per_customer
+double pnbd_dyncov_pmf_per_customer(const arma::vec& cov_period_life_exp, const arma::vec& cov_period_trans_exp, const arma::vec& cov_sincealive_life_exp, const arma::vec& cov_sincealive_trans_exp, double r_param, double alpha_r_param, double s_param, double beta_s_param, double x_double, double t_r_param, double d1_param, double d_omega_param, double k0u_param, double ui_param);
+RcppExport SEXP _CLVTools_pnbd_dyncov_pmf_per_customer(SEXP cov_period_life_expSEXP, SEXP cov_period_trans_expSEXP, SEXP cov_sincealive_life_expSEXP, SEXP cov_sincealive_trans_expSEXP, SEXP r_paramSEXP, SEXP alpha_r_paramSEXP, SEXP s_paramSEXP, SEXP beta_s_paramSEXP, SEXP x_doubleSEXP, SEXP t_r_paramSEXP, SEXP d1_paramSEXP, SEXP d_omega_paramSEXP, SEXP k0u_paramSEXP, SEXP ui_paramSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type cov_period_life_exp(cov_period_life_expSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type cov_period_trans_exp(cov_period_trans_expSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type cov_sincealive_life_exp(cov_sincealive_life_expSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type cov_sincealive_trans_exp(cov_sincealive_trans_expSEXP);
+    Rcpp::traits::input_parameter< double >::type r_param(r_paramSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha_r_param(alpha_r_paramSEXP);
+    Rcpp::traits::input_parameter< double >::type s_param(s_paramSEXP);
+    Rcpp::traits::input_parameter< double >::type beta_s_param(beta_s_paramSEXP);
+    Rcpp::traits::input_parameter< double >::type x_double(x_doubleSEXP);
+    Rcpp::traits::input_parameter< double >::type t_r_param(t_r_paramSEXP);
+    Rcpp::traits::input_parameter< double >::type d1_param(d1_paramSEXP);
+    Rcpp::traits::input_parameter< double >::type d_omega_param(d_omega_paramSEXP);
+    Rcpp::traits::input_parameter< double >::type k0u_param(k0u_paramSEXP);
+    Rcpp::traits::input_parameter< double >::type ui_param(ui_paramSEXP);
+    rcpp_result_gen = Rcpp::wrap(pnbd_dyncov_pmf_per_customer(cov_period_life_exp, cov_period_trans_exp, cov_sincealive_life_exp, cov_sincealive_trans_exp, r_param, alpha_r_param, s_param, beta_s_param, x_double, t_r_param, d1_param, d_omega_param, k0u_param, ui_param));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 RcppExport SEXP run_testthat_tests(SEXP);
 
@@ -908,7 +932,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_CLVTools_pnbd_staticcov_PMF", (DL_FUNC) &_CLVTools_pnbd_staticcov_PMF, 6},
     {"_CLVTools_pnbd_dyncov_LL_negsum", (DL_FUNC) &_CLVTools_pnbd_dyncov_LL_negsum, 16},
     {"_CLVTools_pnbd_dyncov_LL_ind", (DL_FUNC) &_CLVTools_pnbd_dyncov_LL_ind, 16},
-    {"run_testthat_tests", (DL_FUNC) &run_testthat_tests, 1},
+    {"_CLVTools_pnbd_dyncov_pmf_per_customer", (DL_FUNC) &_CLVTools_pnbd_dyncov_pmf_per_customer, 14},
+    {"run_testthat_tests",                     (DL_FUNC) &run_testthat_tests,                      1},
     {NULL, NULL, 0}
 };
 

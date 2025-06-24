@@ -317,10 +317,7 @@ pnbd_dyncov_pmf_per_customer <- function(dt.data.period.customer,
   return(S1 + S2_sums)
 }
 
-
-
-
-pnbd_dyncov_pmf <- function(object, x){
+pnbd_dyncov_pmf_r <- function(object, x){
   Date <- exp.gX.L <- exp.gX.P <- i.exp.gX.L <- i.exp.gX.P <- Date.first.trans <- date.tu <- Date.next.cov <- NULL
   tmp.Date <- Date.next.covariate.after.first.trans <- d_omega <- date.u <- i.Date.first.trans <- is.alive <- NULL
   k0u <- ui <- d.i <- pmf <- Id <- d1 <- N <- NULL
@@ -545,4 +542,134 @@ pnbd_dyncov_pmf <- function(object, x){
 
   results.tmp <- rbindlist(results.tmp)
   return(results.tmp)
+}
+
+
+pnbd_dyncov_prepare_data <- function(object) {
+  Date <- exp.gX.L <- exp.gX.P <- i.exp.gX.L <- i.exp.gX.P <- Date.first.trans <- NULL
+  date.tu <- Date.next.cov <- tmp.Date <- Date.next.covariate.after.first.trans <- NULL
+  d_omega <- date.u <- i.Date.first.trans <- is.alive <- k0u <- ui <- d1 <- NULL
+
+  clv.time <- object@clv.data@clv.time
+  date.u <- clv.time@timepoint.estimation.start
+  date.tu <- clv.time@timepoint.estimation.end
+
+  dt.data.cov.life <- copy(object@clv.data@data.cov.life)
+  dt.data.cov.trans <- copy(object@clv.data@data.cov.trans)
+
+  setnames(dt.data.cov.life, "Cov.Date", "Date")
+  setnames(dt.data.cov.trans, "Cov.Date", "Date")
+  vec.gamma.life <- object@prediction.params.life
+  vec.gamma.trans <- object@prediction.params.trans
+  m.cov.life <- as.matrix(dt.data.cov.life[, .SD, .SDcols = names(vec.gamma.life)])
+  m.cov.trans <- as.matrix(dt.data.cov.trans[, .SD, .SDcols = names(vec.gamma.trans)])
+  dt.data.cov.life[, exp.gX.L := exp(m.cov.life %*% vec.gamma.life)]
+  dt.data.cov.trans[, exp.gX.P := exp(m.cov.trans %*% vec.gamma.trans)]
+  dt.data <- merge(dt.data.cov.life[, c("Id", "Date", "exp.gX.L")],
+                   dt.data.cov.trans[, c("Id", "Date", "exp.gX.P")],
+                   by = c("Id", "Date"), all = TRUE)
+
+  dt.transactions <- copy(object@clv.data@data.transactions)
+  dt.first.transactions <- dt.transactions[, list(Date.first.trans = min(Date)), by = "Id"]
+  dt.data <- merge(dt.data, dt.first.transactions, by = "Id")
+
+  dt.data <- dt.data[Date.first.trans < date.tu]
+
+  dt.data[, tmp.Date := Date]
+  dt.next.cov <- dt.data[dt.first.transactions, list(Id, Date.next.cov = tmp.Date),
+                         on = c("Id", "Date" = "Date.first.trans"), roll = -Inf]
+  dt.data[, tmp.Date := NULL]
+  dt.first.transactions[dt.next.cov, Date.next.cov.after.first.trans := Date.next.cov, on = "Id"]
+  dt.first.transactions[, d1 := clv.time.interval.in.number.tu(clv.time,
+                                                               interval(start = Date.first.trans,
+                                                                        end = Date.next.cov.after.first.trans))]
+  dt.first.transactions[, d_omega := clv.time.interval.in.number.tu(clv.time,
+                                                                    interval(start = date.u,
+                                                                             end = clv.time.ceiling.date(clv.time, date.u)))]
+  dt.first.transactions[, k0u := clv.time.interval.in.number.tu(clv.time,
+                                                                interval(end = clv.time.ceiling.date(clv.time, date.u),
+                                                                         start = clv.time.floor.date(clv.time, Date.first.trans)))]
+  dt.first.transactions[, ui := clv.time.interval.in.number.tu(clv.time,
+                                                               interval(end = date.u,
+                                                                        start = Date.first.trans))]
+
+  dt.data <- merge(dt.data, dt.first.transactions, by = c("Id", "Date.first.trans"))
+  setkeyv(dt.data, c("Id", "Date"))
+  
+  return(dt.data)
+}
+
+pnbd_dyncov_calculate_pmf_cpp <- function(dt_customer_set, dt_since_alive_data,
+                                          r, s, a, b, x, t) {
+  if (nrow(dt_customer_set) == 0) {
+    return(data.table(Id = character(0), pmf = numeric(0)))
+  }
+  
+  results_list <- lapply(unique(dt_customer_set$Id), function(customer_id) {
+    dt_customer_period <- dt_customer_set[Id == customer_id][order(Date)]
+    dt_customer_sincealive <- dt_since_alive_data[Id == customer_id][order(Date)]
+    
+    if (nrow(dt_customer_period) == 0) return(NULL)
+    
+    pmf_value <- .Call('_CLVTools_pnbd_dyncov_pmf_per_customer',
+                       PACKAGE = 'CLVTools',
+                       dt_customer_period$exp.gX.L,
+                       dt_customer_period$exp.gX.P,
+                       dt_customer_sincealive$exp.gX.L,
+                       dt_customer_sincealive$exp.gX.P,
+                       r, a, s, b,
+                       as.numeric(x),
+                       t,
+                       dt_customer_period$d1[1],
+                       dt_customer_period$d_omega[1],
+                       dt_customer_period$k0u[1],
+                       dt_customer_period$ui[1])
+                       
+    return(data.table(Id = customer_id, pmf = pmf_value))
+  })
+  
+  return(rbindlist(results_list))
+}
+
+pnbd_dyncov_pmf <- function(object, x, use_r = FALSE) {
+  if (length(x) > 1 && !use_r) {
+    warning("Vector support for `x` is only available in the R implementation. Switching to R implementation.")
+    use_r <- TRUE
+  }
+  if (use_r) {
+    return(pnbd_dyncov_pmf_r(object, x))
+  }
+  
+  dt.prepared.data <- pnbd_dyncov_prepare_data(object)
+
+  r <- object@prediction.params.model[["r"]]
+  a <- object@prediction.params.model[["alpha"]]
+  s <- object@prediction.params.model[["s"]]
+  b <- object@prediction.params.model[["beta"]]
+
+  clv.time <- object@clv.data@clv.time
+  date.u <- clv.time@timepoint.estimation.start
+  date.tu <- clv.time@timepoint.estimation.end
+  
+  dt.already.alive.period <- dt.prepared.data[Date.first.trans < date.u & Date >= date.u & Date <= date.tu]
+
+  dt.newly.alive.period <- dt.prepared.data[Date.first.trans >= date.u & Date >= Date.first.trans & Date <= date.tu]
+
+  dt.since.alive.data <- dt.prepared.data[Date >= Date.first.trans & Date <= date.tu]
+
+  t_full <- clv.time.interval.in.number.tu(clv.time, interval(start = date.u, end = date.tu))
+  results_already_alive <- pnbd_dyncov_calculate_pmf_cpp(
+    dt_customer_set = dt.already.alive.period,
+    dt_since_alive_data = dt.since.alive.data,
+    r = r, s = s, a = a, b = b, x = x, t = t_full
+  )
+  
+  results_newly_alive_list <- lapply(unique(dt.newly.alive.period$Id), function(id){
+      dt_cust_new <- dt.newly.alive.period[Id == id]
+      cust_start_date <- dt_cust_new$Date.first.trans[1]
+      t_new <- clv.time.interval.in.number.tu(clv.time, interval(start=cust_start_date, end=date.tu))
+      pnbd_dyncov_calculate_pmf_cpp(dt_cust_new, dt.since.alive.data, r,s,a,b,x,t_new)
+  })
+
+  return(rbindlist(c(list(results_already_alive), results_newly_alive_list)))
 }
