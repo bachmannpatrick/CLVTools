@@ -1,4 +1,3 @@
-#'
 #' @title <%=name_model_full %>: Conditional Expected Transactions
 #'
 #' @description

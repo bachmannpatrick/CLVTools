@@ -1,4 +1,3 @@
-#'
 #' @title <%=name_model_full %>: Log-Likelihood functions
 #'
 #' @param vLogparams vector with the <%=name_model_full %> model parameters at log scale. See Details.

@@ -62,6 +62,7 @@ arma::uword DynamicCovariates::n_elem() const {
   return data.n_elem;
 }
 
+//' @name pnbd_dyncov_pmf_hyp2f1_C
 //' @title GSL Hypergeometric 2F1 wrapper for dynamic covariates
 //' @description Calculates the hypergeometric function 2F1(a,b,c,z) with error checking
 //' 
@@ -117,6 +118,7 @@ double pnbd_dyncov_pmf_hyp2f1_C(double a, double b, double c, double z) {
   return res.val;
 }
 
+//' @name pnbd_dyncov_pmf_A_i_C
 //' @title Get transaction covariate effect for a specific time period
 //' @description Retrieves the transaction covariate effect for a specific period index
 //' 
@@ -133,6 +135,7 @@ double pnbd_dyncov_pmf_A_i_C(arma::uword i_1based, const DynamicCovariates& dt_d
   return dt_data_period_customer_trans.at(i_1based - 1);
 }
 
+//' @name pnbd_dyncov_pmf_C_i_C
 //' @title Get lifetime covariate effect for a specific time period
 //' @description Retrieves the lifetime/dropout covariate effect for a specific period index
 //' 
@@ -149,6 +152,7 @@ double pnbd_dyncov_pmf_C_i_C(arma::uword i_1based, const DynamicCovariates& dt_d
   return dt_data_period_customer_life.at(i_1based - 1);
 }
 
+//' @name pnbd_dyncov_pmf_Bbar_i_C
 //' @title Calculate adjusted cumulative transaction covariate effect
 //' @description Computes Bbar_i, the adjusted cumulative transaction covariate effect
 //'
@@ -181,6 +185,7 @@ double pnbd_dyncov_pmf_Bbar_i_C(arma::uword i_1based, const DynamicCovariates& d
     return arma::sum(Bbar_terms);
 }
 
+//' @name pnbd_dyncov_pmf_Dbar_i_C
 //' @title Calculate adjusted cumulative dropout covariate effect
 //' @description Computes Dbar_i, the adjusted cumulative dropout covariate effect
 //' 
@@ -248,6 +253,7 @@ double pnbd_dyncov_pmf_Dbar_i_C(arma::uword i_1based_period,
   return arma::sum(Dbar_terms);
 }
 
+//' @name pnbd_dyncov_pmf_bu_i_C
 //' @title Calculate time boundary for period i
 //' @description Computes the time boundary bu_i for the specified period
 //' 
@@ -265,6 +271,7 @@ double pnbd_dyncov_pmf_bu_i_C(double ui, arma::uword i_1based, double d1) {
   return ui + d1 + static_cast<double>(i_1based) - 2.0;
 }
 
+//' @name factorial_C
 //' @title Compute factorial using gamma function
 //' @description Calculates factorial using the gamma function for numerical stability
 //' 
@@ -278,6 +285,7 @@ double factorial_C(int n) {
   return std::tgamma(n + 1.0);
 }
 
+//' @name pnbd_dyncov_pmf_S1_per_customer_C
 //' @title Calculate S1 component of PMF
 //' @description Computes the S1 component of the Pareto/NBD PMF with dynamic covariates
 //' 
@@ -347,6 +355,7 @@ double pnbd_dyncov_pmf_S1_per_customer_C(
   return term1 * term2 * term3;
 }
 
+//' @name pnbd_dyncov_pmf_S2_1j_per_customer_C
 //' @title Calculate S2_1j component of PMF
 //' @description Computes the S2_1j component of the Pareto/NBD PMF with dynamic covariates
 //' 
@@ -524,6 +533,7 @@ double pnbd_dyncov_pmf_S2_1j_per_customer_C(
 }
 
 
+//' @name pnbd_dyncov_pmf_S2_ij_per_customer_C
 //' @title Calculate S2_ij component of PMF
 //' @description Computes the S2_ij component of the Pareto/NBD PMF with dynamic covariates
 //' 
@@ -625,6 +635,7 @@ double pnbd_dyncov_pmf_S2_ij_per_customer_C(
   return (std::pow(Bbar_i, static_cast<double>(j_S2)) * std::pow(Ai, x_double - static_cast<double>(j_S2)) * Ci / factorial_C(static_cast<int>(j_S2))) * sum_val;
 }
 
+//' @name pnbd_dyncov_pmf_S2_kutuj_per_customer_C
 //' @title Calculate S2_kutuj component of PMF
 //' @description Computes the S2_kutuj component of the Pareto/NBD PMF with dynamic covariates
 //' 
@@ -727,6 +738,7 @@ double pnbd_dyncov_pmf_S2_kutuj_per_customer_C(
   return (std::pow(B_kutu, static_cast<double>(j_S2_kutu)) * std::pow(Ai, x_double - static_cast<double>(j_S2_kutu)) * Ci / factorial_C(static_cast<int>(j_S2_kutu))) * sum_val;
 }
 
+//' @name pnbd_dyncov_pmf_per_customer
 //' @title PNBD Dynamic Covariates PMF Per Customer
 //' @description Calculate the probability mass function (PMF) for Pareto/NBD model with dynamic covariates for a single customer
 //' 

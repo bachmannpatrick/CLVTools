@@ -572,6 +572,7 @@ pnbd_dyncov_LL_ind <- function(params, X, t_x, T_cal, d_omega, walkinfo_aux_life
     .Call(`_CLVTools_pnbd_dyncov_LL_ind`, params, X, t_x, T_cal, d_omega, walkinfo_aux_life, walkinfo_real_life, walkinfo_aux_trans, walkinfo_real_trans, walkinfo_trans_real_from, walkinfo_trans_real_to, covdata_aux_life, covdata_real_life, covdata_aux_trans, covdata_real_trans, return_intermediate_results)
 }
 
+#' @name pnbd_dyncov_pmf_hyp2f1_C
 #' @title GSL Hypergeometric 2F1 wrapper for dynamic covariates
 #' @description Calculates the hypergeometric function 2F1(a,b,c,z) with error checking
 #' 
@@ -591,6 +592,7 @@ pnbd_dyncov_LL_ind <- function(params, X, t_x, T_cal, d_omega, walkinfo_aux_life
 #' @keywords internal
 NULL
 
+#' @name pnbd_dyncov_pmf_A_i_C
 #' @title Get transaction covariate effect for a specific time period
 #' @description Retrieves the transaction covariate effect for a specific period index
 #' 
@@ -602,6 +604,7 @@ NULL
 #' @keywords internal
 NULL
 
+#' @name pnbd_dyncov_pmf_C_i_C
 #' @title Get lifetime covariate effect for a specific time period
 #' @description Retrieves the lifetime/dropout covariate effect for a specific period index
 #' 
@@ -613,6 +616,7 @@ NULL
 #' @keywords internal
 NULL
 
+#' @name pnbd_dyncov_pmf_Bbar_i_C
 #' @title Calculate adjusted cumulative transaction covariate effect
 #' @description Computes Bbar_i, the adjusted cumulative transaction covariate effect
 #'
@@ -626,6 +630,7 @@ NULL
 #' @keywords internal
 NULL
 
+#' @name pnbd_dyncov_pmf_Dbar_i_C
 #' @title Calculate adjusted cumulative dropout covariate effect
 #' @description Computes Dbar_i, the adjusted cumulative dropout covariate effect
 #' 
@@ -640,6 +645,7 @@ NULL
 #' @keywords internal
 NULL
 
+#' @name pnbd_dyncov_pmf_bu_i_C
 #' @title Calculate time boundary for period i
 #' @description Computes the time boundary bu_i for the specified period
 #' 
@@ -652,6 +658,7 @@ NULL
 #' @keywords internal
 NULL
 
+#' @name factorial_C
 #' @title Compute factorial using gamma function
 #' @description Calculates factorial using the gamma function for numerical stability
 #' 
@@ -662,6 +669,7 @@ NULL
 #' @keywords internal
 NULL
 
+#' @name pnbd_dyncov_pmf_S1_per_customer_C
 #' @title Calculate S1 component of PMF
 #' @description Computes the S1 component of the Pareto/NBD PMF with dynamic covariates
 #' 
@@ -688,6 +696,7 @@ NULL
 #' @keywords internal
 NULL
 
+#' @name pnbd_dyncov_pmf_S2_1j_per_customer_C
 #' @title Calculate S2_1j component of PMF
 #' @description Computes the S2_1j component of the Pareto/NBD PMF with dynamic covariates
 #' 
@@ -714,6 +723,7 @@ NULL
 #' @keywords internal
 NULL
 
+#' @name pnbd_dyncov_pmf_S2_ij_per_customer_C
 #' @title Calculate S2_ij component of PMF
 #' @description Computes the S2_ij component of the Pareto/NBD PMF with dynamic covariates
 #' 
@@ -741,6 +751,7 @@ NULL
 #' @keywords internal
 NULL
 
+#' @name pnbd_dyncov_pmf_S2_kutuj_per_customer_C
 #' @title Calculate S2_kutuj component of PMF
 #' @description Computes the S2_kutuj component of the Pareto/NBD PMF with dynamic covariates
 #' 
@@ -768,6 +779,7 @@ NULL
 #' @keywords internal
 NULL
 
+#' @name pnbd_dyncov_pmf_per_customer
 #' @title PNBD Dynamic Covariates PMF Per Customer
 #' @description Calculate the probability mass function (PMF) for Pareto/NBD model with dynamic covariates for a single customer
 #' 

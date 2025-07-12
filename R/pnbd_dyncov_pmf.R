@@ -586,6 +586,7 @@ pnbd_dyncov_prepare_data <- function(object) {
   dt.first.transactions[, d_omega := clv.time.interval.in.number.tu(clv.time,
                                                                     interval(start = date.u,
                                                                              end = clv.time.ceiling.date(clv.time, date.u)))]
+
   dt.first.transactions[, k0u := clv.time.interval.in.number.tu(clv.time,
                                                                 interval(end = clv.time.ceiling.date(clv.time, date.u),
                                                                          start = clv.time.floor.date(clv.time, Date.first.trans)))]
