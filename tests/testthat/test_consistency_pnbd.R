@@ -49,6 +49,11 @@ fct.helper.dyncov.g0.with.predition.params.model <- function(p.dyncov, predictio
 
   expect_silent(p.dyncov@prediction.params.life[] <- 0)
   expect_silent(p.dyncov@prediction.params.trans[] <- 0)
+  
+  # Define names.params.model before using it
+  names.params.model <- p.dyncov@clv.model@names.original.params.model
+  
+  p.dyncov@prediction.params.model[names.params.model] <- prediction.params.model[names.params.model]
 
   # Recalculate the LL data for these fake params
   expect_silent(log.params <- setNames(log(p.dyncov@prediction.params.model[c("r", "alpha", "s", "beta")]),

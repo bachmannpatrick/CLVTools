@@ -572,3 +572,252 @@ pnbd_dyncov_LL_ind <- function(params, X, t_x, T_cal, d_omega, walkinfo_aux_life
     .Call(`_CLVTools_pnbd_dyncov_LL_ind`, params, X, t_x, T_cal, d_omega, walkinfo_aux_life, walkinfo_real_life, walkinfo_aux_trans, walkinfo_real_trans, walkinfo_trans_real_from, walkinfo_trans_real_to, covdata_aux_life, covdata_real_life, covdata_aux_trans, covdata_real_trans, return_intermediate_results)
 }
 
+#' @name pnbd_dyncov_pmf_hyp2f1_C
+#' @title GSL Hypergeometric 2F1 wrapper for dynamic covariates
+#' @description Calculates the hypergeometric function 2F1(a,b,c,z) with error checking
+#' 
+#' @param a First parameter of hypergeometric function
+#' @param b Second parameter of hypergeometric function
+#' @param c Third parameter of hypergeometric function
+#' @param z Argument of hypergeometric function
+#'
+#' @details 
+#' This function wraps the GSL implementation of the hypergeometric function with
+#' additional error handling for parameter validation, convergence issues, and
+#' special cases. It plays a critical role in calculating the probability
+#' mass function for the Pareto/NBD model with dynamic covariates.
+#'
+#' @return Value of the hypergeometric function or NaN if calculation fails
+#' 
+#' @keywords internal
+NULL
+
+#' @name pnbd_dyncov_pmf_A_i_C
+#' @title Get transaction covariate effect for a specific time period
+#' @description Retrieves the transaction covariate effect for a specific period index
+#' 
+#' @param i_1based One-based index of the period to retrieve
+#' @param dt_data_period_customer_trans Dynamic covariates object containing transaction effects
+#'
+#' @return Covariate effect value for the specified period
+#' 
+#' @keywords internal
+NULL
+
+#' @name pnbd_dyncov_pmf_C_i_C
+#' @title Get lifetime covariate effect for a specific time period
+#' @description Retrieves the lifetime/dropout covariate effect for a specific period index
+#' 
+#' @param i_1based One-based index of the period to retrieve
+#' @param dt_data_period_customer_life Dynamic covariates object containing lifetime effects
+#'
+#' @return Covariate effect value for the specified period
+#' 
+#' @keywords internal
+NULL
+
+#' @name pnbd_dyncov_pmf_Bbar_i_C
+#' @title Calculate adjusted cumulative transaction covariate effect
+#' @description Computes Bbar_i, the adjusted cumulative transaction covariate effect
+#'
+#' @param i_1based One-based index of the period to calculate up to
+#' @param dt_data_period_customer_trans Dynamic covariates object containing transaction effects
+#' @param d1 Fraction of time between first transaction and next covariate date
+#' @param ui Time between customer's first transaction and start of estimation period
+#'
+#' @return Adjusted cumulative transaction covariate effect
+#'
+#' @keywords internal
+NULL
+
+#' @name pnbd_dyncov_pmf_Dbar_i_C
+#' @title Calculate adjusted cumulative dropout covariate effect
+#' @description Computes Dbar_i, the adjusted cumulative dropout covariate effect
+#' 
+#' @param i_1based_period One-based index of the period to calculate
+#' @param dt_data_period_customer_life Dynamic covariates object for lifetime in period
+#' @param dt_data_since_alive_customer_life Dynamic covariates object for lifetime since alive
+#' @param d_omega Fraction of time from period start until next time unit
+#' @param k0u_Dbar Number of time units between customer's first transaction and start of period
+#'
+#' @return Adjusted cumulative dropout covariate effect
+#' 
+#' @keywords internal
+NULL
+
+#' @name pnbd_dyncov_pmf_bu_i_C
+#' @title Calculate time boundary for period i
+#' @description Computes the time boundary bu_i for the specified period
+#' 
+#' @param ui Time between customer's first transaction and start of estimation period
+#' @param i_1based One-based index of the period
+#' @param d1 Fraction of time between first transaction and next covariate date
+#'
+#' @return Time boundary value
+#' 
+#' @keywords internal
+NULL
+
+#' @name factorial_C
+#' @title Compute factorial using gamma function
+#' @description Calculates factorial using the gamma function for numerical stability
+#' 
+#' @param n Integer value for which to calculate factorial
+#'
+#' @return The factorial of n
+#' 
+#' @keywords internal
+NULL
+
+#' @name pnbd_dyncov_pmf_S1_per_customer_C
+#' @title Calculate S1 component of PMF
+#' @description Computes the S1 component of the Pareto/NBD PMF with dynamic covariates
+#' 
+#' @param dt_data_period_customer_trans Dynamic covariates for transaction process
+#' @param dt_data_period_customer_life Dynamic covariates for lifetime process
+#' @param dt_data_since_alive_customer_life Dynamic covariates for lifetime since first transaction
+#' @param x_double Number of transactions
+#' @param alpha_r Scale parameter for transaction rate distribution
+#' @param beta_s Scale parameter for dropout rate distribution
+#' @param r Shape parameter for transaction rate distribution
+#' @param s Shape parameter for dropout rate distribution
+#' @param t_r Time span for prediction
+#' @param ui Time between customer's first transaction and start of estimation period
+#' @param d1 Fraction of time between first transaction and next covariate date
+#' @param d_omega Fraction of time from period start until next time unit
+#' @param k0u_S1 Number of time units between customer's first transaction and period start
+#'
+#' @details 
+#' S1 represents the probability that a customer makes exactly x transactions in the 
+#' prediction period conditional on being alive throughout the entire period.
+#'
+#' @return S1 component value
+#' 
+#' @keywords internal
+NULL
+
+#' @name pnbd_dyncov_pmf_S2_1j_per_customer_C
+#' @title Calculate S2_1j component of PMF
+#' @description Computes the S2_1j component of the Pareto/NBD PMF with dynamic covariates
+#' 
+#' @param dt_data_period_customer_trans Dynamic covariates for transaction process
+#' @param dt_data_period_customer_life Dynamic covariates for lifetime process
+#' @param dt_data_since_alive_customer_life Dynamic covariates for lifetime since first transaction
+#' @param j_S2_1j Number of transactions at time of churn
+#' @param x_double Total number of transactions
+#' @param alpha_r Scale parameter for transaction rate distribution
+#' @param beta_s Scale parameter for dropout rate distribution
+#' @param r_param Shape parameter for transaction rate distribution
+#' @param s_param Shape parameter for dropout rate distribution
+#' @param ui Time between customer's first transaction and start of estimation period
+#' @param d1 Fraction of time between first transaction and next covariate date
+#' @param d_omega Fraction of time from period start until next time unit
+#' @param k0u_S2_1j Number of time units between customer's first transaction and period start
+#'
+#' @details 
+#' S2_1j represents the probability that a customer churns during the first period
+#' with exactly j transactions at the time of churn, and makes a total of x transactions.
+#'
+#' @return S2_1j component value
+#' 
+#' @keywords internal
+NULL
+
+#' @name pnbd_dyncov_pmf_S2_ij_per_customer_C
+#' @title Calculate S2_ij component of PMF
+#' @description Computes the S2_ij component of the Pareto/NBD PMF with dynamic covariates
+#' 
+#' @param dt_data_period_customer_trans Dynamic covariates for transaction process
+#' @param dt_data_period_customer_life Dynamic covariates for lifetime process
+#' @param dt_data_since_alive_customer_life Dynamic covariates for lifetime since first transaction
+#' @param i_S2_1based Period index in which customer churns
+#' @param j_S2 Number of transactions at time of churn
+#' @param x_double Total number of transactions
+#' @param alpha_r Scale parameter for transaction rate distribution
+#' @param beta_s Scale parameter for dropout rate distribution
+#' @param r_param Shape parameter for transaction rate distribution
+#' @param s_param Shape parameter for dropout rate distribution
+#' @param ui Time between customer's first transaction and start of estimation period
+#' @param d1 Fraction of time between first transaction and next covariate date
+#' @param d_omega Fraction of time from period start until next time unit
+#' @param k0u_S2_ij Number of time units between customer's first transaction and period start
+#'
+#' @details 
+#' S2_ij represents the probability that a customer churns during period i
+#' with exactly j transactions at the time of churn, and makes a total of x transactions.
+#'
+#' @return S2_ij component value
+#' 
+#' @keywords internal
+NULL
+
+#' @name pnbd_dyncov_pmf_S2_kutuj_per_customer_C
+#' @title Calculate S2_kutuj component of PMF
+#' @description Computes the S2_kutuj component of the Pareto/NBD PMF with dynamic covariates
+#' 
+#' @param dt_data_period_customer_trans Dynamic covariates for transaction process
+#' @param dt_data_period_customer_life Dynamic covariates for lifetime process
+#' @param dt_data_since_alive_customer_life Dynamic covariates for lifetime since first transaction
+#' @param j_S2_kutu Number of transactions at time of churn
+#' @param x_double Total number of transactions
+#' @param r_param Shape parameter for transaction rate distribution
+#' @param alpha_r Scale parameter for transaction rate distribution
+#' @param s_param Shape parameter for dropout rate distribution
+#' @param beta_s Scale parameter for dropout rate distribution
+#' @param t_r Time span for prediction
+#' @param ui Time between customer's first transaction and start of estimation period
+#' @param d1 Fraction of time between first transaction and next covariate date
+#' @param d_omega Fraction of time from period start until next time unit
+#' @param k0u_S2_kutu Number of time units between customer's first transaction and period start
+#'
+#' @details 
+#' S2_kutuj represents the probability that a customer churns during the last period
+#' with exactly j transactions at the time of churn, and makes a total of x transactions.
+#'
+#' @return S2_kutuj component value
+#' 
+#' @keywords internal
+NULL
+
+#' @name pnbd_dyncov_pmf_per_customer
+#' @title PNBD Dynamic Covariates PMF Per Customer
+#' @description Calculate the probability mass function (PMF) for Pareto/NBD model with dynamic covariates for a single customer
+#' 
+#' @param cov_period_life_exp Pre-computed exp(γ*X) for lifetime process in the period (u, tu]; sorted by date
+#' @param cov_period_trans_exp Pre-computed exp(β*X) for transaction process in the period (u, tu]; sorted by date
+#' @param cov_sincealive_life_exp Pre-computed exp(γ*X) for lifetime process from customer's first transaction; sorted by date
+#' @param r_param Shape parameter r for the transaction rate gamma distribution
+#' @param alpha_r_param Scale parameter α for the transaction rate gamma distribution
+#' @param s_param Shape parameter s for the dropout rate gamma distribution  
+#' @param beta_s_param Scale parameter β for the dropout rate gamma distribution
+#' @param x_double Number of transactions to calculate PMF for
+#' @param t_r_param Time from start of period (u) to end of period (tu)
+#' @param d1_param Fraction of time between first transaction and next covariate date
+#' @param d_omega_param Fraction of time from u to next time unit
+#' @param k0u_param Number of time units between customer's first transaction and beginning of period
+#' @param ui_param Time between customer's first transaction and start of estimation period u
+#'
+#' @details
+#' The dynamic covariate Pareto/NBD model extends the standard model by allowing the transaction and 
+#' dropout rates to vary over time according to time-varying covariates:
+#' 
+#' λ(t) = λ * exp(β*X(t)) for transaction rate
+#' μ(t) = μ * exp(γ*X(t)) for dropout rate
+#' 
+#' Where:
+#' - λ and μ are the base rates (linked to parameters r, α, s, β)
+#' - β and γ are coefficient vectors for the covariates
+#' - X(t) are time-varying covariates at time t
+#' 
+#' Formula structure follows PMF = S1 + S2, where:
+#' - S1 represents probability for a customer who has not churned in period (u, t+u] and makes exactly x transactions
+#' - S2 represents probability for a customer who has churned during period (u, t+u] and makes exactly x transactions
+#'   (this is further decomposed into sums over all possible churn times and transaction patterns)
+#'
+#' @return The probability mass function value for the specified number of transactions
+#'
+#' @keywords internal
+pnbd_dyncov_pmf_per_customer <- function(cov_period_life_exp, cov_period_trans_exp, cov_sincealive_life_exp, cov_sincealive_trans_exp, r_param, alpha_r_param, s_param, beta_s_param, x_double, t_r_param, d1_param, d_omega_param, k0u_param, ui_param) {
+    .Call(`_CLVTools_pnbd_dyncov_pmf_per_customer`, cov_period_life_exp, cov_period_trans_exp, cov_sincealive_life_exp, cov_sincealive_trans_exp, r_param, alpha_r_param, s_param, beta_s_param, x_double, t_r_param, d1_param, d_omega_param, k0u_param, ui_param)
+}
+

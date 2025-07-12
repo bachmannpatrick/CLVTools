@@ -1,6 +1,4 @@
-#'
 #' @title <%=name_model_full %>: Probability of Being Alive
-#'
 #'
 #' @description
 #' Calculates the probability of a customer being alive at the end of the calibration period,

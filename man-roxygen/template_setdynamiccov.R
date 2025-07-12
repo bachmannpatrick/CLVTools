@@ -1,5 +1,4 @@
 #' @name SetDynamicCovariates
-#'
 #' @title Add Dynamic Covariates to a CLV data object
 #'
 #' @param clv.data CLV data object to add the covariates data to.
