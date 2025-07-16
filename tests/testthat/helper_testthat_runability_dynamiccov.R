@@ -36,10 +36,10 @@ fct.testthat.runability.dynamiccov.predict.works <- function(clv.fitted){
 
 fct.testthat.runability.dynamiccov.predict.newdata.works <- function(clv.fitted){
 
-  sample.ids <- unique(apparelTrans$Id)[101:200]
-
   data.apparelTrans <- fct.helper.load.apparelTrans()
   data.apparelDynCov <- fct.helper.load.apparelDynCov()
+
+  sample.ids <- unique(data.apparelTrans$Id)[101:200]
 
   clv.dyncov.sample <- fct.helper.create.clvdata.apparel.dyncov(
     data.apparelTrans=data.apparelTrans[Id %in% sample.ids],
