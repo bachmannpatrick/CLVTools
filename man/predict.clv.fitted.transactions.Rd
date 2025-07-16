@@ -66,7 +66,7 @@ An object of class \code{data.table} with columns:
 \item{actual.x}{Actual number of transactions until prediction.end. Only if there is a holdout period and the prediction ends in it, otherwise not reported.}
 \item{actual.total.spending}{Actual total spending until prediction.end. Only if there is a holdout period and the prediction ends in it, otherwise not reported.}
 \item{predicted.mean.spending}{The mean spending per transactions as predicted by the spending model.}
-\item{predicted.total.spending}{The predicted total spending until prediction.end (\code{CET*predicted.mean.spending}).}
+\item{predicted.period.spending}{The predicted total spending until prediction.end (\code{CET*predicted.mean.spending}).}
 \item{predicted.CLV}{Customer Lifetime Value based on \code{DERT/DECT} and \code{predicted.mean.spending}.}
 
 If predicting for new customers (using \code{newcustomer()}), a numeric scalar indicating the expected
