@@ -370,6 +370,14 @@ summary.clv.fitted <- function(object, ...){
   rownames(res$coefficients) <- names(all.est.params)
   colnames(res$coefficients) <- c("Estimate","Std. Error", "z-val", "Pr(>|z|)")
 
+  # Set z-val and Pvalue of the model parameters to NA as they are by definition always > 0 ("significant")
+  # Printing "-" would be preferred but
+  #   - setting to "-" would convert the whole matrix to character
+  #   - using `printCoefmat(na.print='-')` would also show "-" for NA parameter estimates
+  #   - therefore would likely require to re-implement `printCoefmat()` to only na.print
+  #     for some params & columns but this is cumbersome as na.print is from the internal `print.default`
+  res$coefficients[object@clv.model@names.original.params.model, c("z-val", "Pr(>|z|)")] <- NA_real_
+
   # Optimization -------------------------------------------------------------------
   res$estimated.LL <- as.vector(logLik(object))
   res$AIC <- AIC(object)
