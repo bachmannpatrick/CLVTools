@@ -310,7 +310,7 @@ results <- predict(est.pnbd)
 #> Starting estimation...
 #> Estimation finished!
 print(results)
-#>        Id period.first period.last period.length actual.x actual.total.spending
+#>        Id period.first period.last period.length actual.x actual.period.spending
 #>   1:    1   2005-10-11  2006-07-16      39.85714        0                  0.00
 #>   2:   10   2005-10-11  2006-07-16      39.85714        0                  0.00
 #>   3:  100   2005-10-11  2006-07-16      39.85714       23                737.53

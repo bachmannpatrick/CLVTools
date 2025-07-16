@@ -97,7 +97,7 @@
 #' \item{CET}{The Conditional Expected Transactions: The number of transactions expected until prediction.end.}
 #' \item{DERT or DECT}{Discounted Expected Residual Transactions or Discounted Expected Conditional Transactions for dynamic covariates models}
 #' \item{actual.x}{Actual number of transactions until prediction.end. Only if there is a holdout period and the prediction ends in it, otherwise not reported.}
-#' \item{actual.total.spending}{Actual total spending until prediction.end. Only if there is a holdout period and the prediction ends in it, otherwise not reported.}
+#' \item{actual.period.spending}{Actual total spending until prediction.end. Only if there is a holdout period and the prediction ends in it, otherwise not reported.}
 #' \item{predicted.mean.spending}{The mean spending per transactions as predicted by the spending model.}
 #' \item{predicted.period.spending}{The predicted total spending until prediction.end (\code{CET*predicted.mean.spending}).}
 #' \item{predicted.CLV}{Customer Lifetime Value based on \code{DERT/DECT} and \code{predicted.mean.spending}.}
