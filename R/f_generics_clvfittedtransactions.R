@@ -160,15 +160,15 @@ setMethod("clv.controlflow.predict.get.has.actuals", signature(clv.fitted="clv.f
 # .clv.controlflow.predict.add.actuals ---------------------------------------------------------------------------------
 setMethod("clv.controlflow.predict.add.actuals", signature(clv.fitted="clv.fitted.transactions"), definition = function(clv.fitted, dt.predictions, has.actuals, verbose, ...){
 
-  actual.total.spending <- i.actual.total.spending <- Price <- Date <- period.first <- period.last <- actual.x <- i.actual.x <- NULL
+  actual.period.spending <- i.actual.period.spending <- Price <- Date <- period.first <- period.last <- actual.x <- i.actual.x <- NULL
 
   # Only if:
   #   - there is a holdout
   #   - the prediction is not beyond holdout
   #
   # Data until prediction end
-  #   actual.x:              number of transactions
-  #   actual.total.spending: total spending
+  #   actual.x:               number of transactions
+  #   actual.period.spending: total spending
 
   timepoint.prediction.first <- dt.predictions[1, period.first]
   timepoint.prediction.last  <- dt.predictions[1, period.last]
@@ -184,8 +184,8 @@ setMethod("clv.controlflow.predict.add.actuals", signature(clv.fitted="clv.fitte
                                                                incbounds = TRUE)]
 
     if(clv.data.has.spending(clv.fitted@clv.data)){
-      dt.actuals  <- dt.actuals.transactions[, list(actual.x              = .N,
-                                                    actual.total.spending = sum(Price)),
+      dt.actuals  <- dt.actuals.transactions[, list(actual.x               = .N,
+                                                    actual.period.spending = sum(Price)),
                                              keyby="Id"]
     }else{
       dt.actuals  <- dt.actuals.transactions[, list(actual.x              = .N), keyby="Id"]
@@ -195,8 +195,8 @@ setMethod("clv.controlflow.predict.add.actuals", signature(clv.fitted="clv.fitte
     dt.predictions[is.na(actual.x),  actual.x  := 0]
 
     if(clv.data.has.spending(clv.fitted@clv.data)){
-      dt.predictions[dt.actuals,                   actual.total.spending  := i.actual.total.spending,  on="Id"]
-      dt.predictions[is.na(actual.total.spending), actual.total.spending  := 0]
+      dt.predictions[dt.actuals,                   actual.period.spending  := i.actual.period.spending,  on="Id"]
+      dt.predictions[is.na(actual.period.spending), actual.period.spending  := 0]
     }
     return(dt.predictions)
   }
@@ -205,7 +205,7 @@ setMethod("clv.controlflow.predict.add.actuals", signature(clv.fitted="clv.fitte
 
 # .clv.controlflow.predict.post.process.prediction.table ------------------------------------------------------------------------------
 setMethod("clv.controlflow.predict.post.process.prediction.table", signature = signature(clv.fitted="clv.fitted.transactions"), function(clv.fitted, dt.predictions, has.actuals, verbose, predict.spending, ...){
-  predicted.mean.spending <- i.predicted.mean.spending <- actual.total.spending <- i.actual.total.spending <- predicted.total.spending <- NULL
+  predicted.mean.spending <- i.predicted.mean.spending <- actual.period.spending <- i.actual.period.spending <- predicted.period.spending <- NULL
   predicted.CLV <- CET <- DECT <- DERT <- NULL
 
   # Predict spending ---------------------------------------------------------------------------------------
@@ -224,7 +224,7 @@ setMethod("clv.controlflow.predict.post.process.prediction.table", signature = s
     dt.predictions[dt.spending, predicted.mean.spending := i.predicted.mean.spending, on = "Id"]
 
     # The actual.mean.spending from dt.spending is not added anymore
-    #   actual.total.spending is already in prediction table
+    #   actual.period.spending is already in prediction table
 
     return(dt.predictions)
   }
@@ -291,8 +291,8 @@ setMethod("clv.controlflow.predict.post.process.prediction.table", signature = s
     if("DECT" %in% colnames(dt.predictions))
       dt.predictions[, predicted.CLV := DECT * predicted.mean.spending]
 
-    # If spending is predicted, also add predicted.total.spending
-    dt.predictions[, predicted.total.spending := predicted.mean.spending * CET]
+    # If spending is predicted, also add predicted.period.spending
+    dt.predictions[, predicted.period.spending := predicted.mean.spending * CET]
   }
 
   # Present cols in desired order ------------------------------------------------------------
@@ -302,8 +302,8 @@ setMethod("clv.controlflow.predict.post.process.prediction.table", signature = s
     cols <- c(cols, "actual.x")
 
     # cannot determine otherwise alone from has.actuals
-    if("actual.total.spending" %in% colnames(dt.predictions))
-      cols <- c(cols, "actual.total.spending")
+    if("actual.period.spending" %in% colnames(dt.predictions))
+      cols <- c(cols, "actual.period.spending")
   }
 
   if("DERT" %in% colnames(dt.predictions))
@@ -312,7 +312,7 @@ setMethod("clv.controlflow.predict.post.process.prediction.table", signature = s
     cols <- c(cols, "PAlive", "CET", "DECT")
 
   if(do.predict.spending)
-    cols <- c(cols, c("predicted.mean.spending", "predicted.total.spending"))
+    cols <- c(cols, c("predicted.mean.spending", "predicted.period.spending"))
 
   if("predicted.CLV" %in% colnames(dt.predictions))
     cols <- c(cols, "predicted.CLV")

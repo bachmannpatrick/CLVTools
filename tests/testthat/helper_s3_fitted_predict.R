@@ -13,17 +13,17 @@ fct.testthat.runability.clvfittedtransactions.predict <- function(fitted.transac
       expect_true(c("actual.x" %in% colnames(dt.pred)))
 
       if(clv.data.has.spending(fitted.transactions@clv.data)){
-        expect_true(c("actual.total.spending" %in% colnames(dt.pred)))
+        expect_true(c("actual.period.spending" %in% colnames(dt.pred)))
       }else{
-        expect_false(c("actual.total.spending" %in% colnames(dt.pred)))
+        expect_false(c("actual.period.spending" %in% colnames(dt.pred)))
       }
     })
   }
 
   # Test
-  #   Sum of actual.total.spending same as sum based on data
+  #   Sum of actual.period.spending same as sum based on data
   #   sum of actual.x same as sum based on data
-  #   actual.total.spending all > 0
+  #   actual.period.spending all > 0
   #   actual.transactions all > 0
   # predicted CLV is = X*Y
   if(clv.data.has.spending(fitted.transactions@clv.data)){
@@ -113,14 +113,14 @@ fct.testthat.runability.clvfittedtransactions.predict <- function(fitted.transac
       expect_true(dt.pred[, is.numeric(actual.x)])
 
       if(clv.data.has.spending(fitted.transactions@clv.data)){
-        expect_true("actual.total.spending" %in% colnames(dt.pred))
-        expect_true(dt.pred[, is.numeric(actual.total.spending)])
+        expect_true("actual.period.spending" %in% colnames(dt.pred))
+        expect_true(dt.pred[, is.numeric(actual.period.spending)])
       }else{
-        expect_false("actual.total.spending" %in% colnames(dt.pred))
+        expect_false("actual.period.spending" %in% colnames(dt.pred))
       }
     }else{
       expect_false("actual.x" %in% colnames(dt.pred))
-      expect_false("actual.total.spending" %in% colnames(dt.pred))
+      expect_false("actual.period.spending" %in% colnames(dt.pred))
     }
   })
 
