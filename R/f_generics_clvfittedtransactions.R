@@ -206,7 +206,7 @@ setMethod("clv.controlflow.predict.add.actuals", signature(clv.fitted="clv.fitte
 # .clv.controlflow.predict.post.process.prediction.table ------------------------------------------------------------------------------
 setMethod("clv.controlflow.predict.post.process.prediction.table", signature = signature(clv.fitted="clv.fitted.transactions"), function(clv.fitted, dt.predictions, has.actuals, verbose, predict.spending, ...){
   predicted.mean.spending <- i.predicted.mean.spending <- actual.period.spending <- i.actual.period.spending <- predicted.period.spending <- NULL
-  predicted.CLV <- CET <- DECT <- DERT <- NULL
+  predicted.CLV <- predicted.period.CLV <- CET <- DECT <- DERT <- NULL
 
   # Predict spending ---------------------------------------------------------------------------------------
   # depends on content of predict.spending:
@@ -289,7 +289,7 @@ setMethod("clv.controlflow.predict.post.process.prediction.table", signature = s
     if("DERT" %in% colnames(dt.predictions))
       dt.predictions[, predicted.CLV := DERT * predicted.mean.spending]
     if("DECT" %in% colnames(dt.predictions))
-      dt.predictions[, predicted.CLV := DECT * predicted.mean.spending]
+      dt.predictions[, predicted.period.CLV := DECT * predicted.mean.spending]
 
     # If spending is predicted, also add predicted.period.spending
     dt.predictions[, predicted.period.spending := predicted.mean.spending * CET]
@@ -316,6 +316,8 @@ setMethod("clv.controlflow.predict.post.process.prediction.table", signature = s
 
   if("predicted.CLV" %in% colnames(dt.predictions))
     cols <- c(cols, "predicted.CLV")
+  if("predicted.period.CLV" %in% colnames(dt.predictions))
+    cols <- c(cols, "predicted.period.CLV")
 
   setcolorder(dt.predictions, cols)
 
