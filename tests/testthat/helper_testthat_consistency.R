@@ -74,8 +74,8 @@ fct.testthat.consistency.cov.params.0.predict.same <- function(fitted.nocov, fit
         # DERT unequal to DECT because only predict short period!
         expect_silent(data.table::setnames(
           dt.pred.cov,
-          old=c("DECT", "predicted.CLV"),
-          new = c("DERT", "predicted.period.CLV")))
+          old=c("DECT", "predicted.period.CLV"),
+          new = c("DERT", "predicted.CLV")))
         expect_true(isTRUE(all.equal(dt.pred.nocov[,  !c("DERT", "predicted.CLV")],
                                      dt.pred.cov[,    !c("DERT", "predicted.CLV")])))
       }else{
