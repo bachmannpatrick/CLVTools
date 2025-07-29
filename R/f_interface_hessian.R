@@ -25,8 +25,6 @@ hessian.clv.fitted <- function(object, method.args = list()){
   # Register for dispatch on a method defined in another package by using
   # @exportS3Method which adds `S3method(numDeriv::hessian,clv.fitted)` to NAMESPACE
 
-  clv.controlflow.check.prediction.params(clv.fitted = object)
-
   # To calculate the Hessian, the LL needs to be called with the final parameters
   # Calling the LL with the exact same inputs/specification as when the fitting
   # is however not trivial as there are plenty of options.
@@ -37,6 +35,10 @@ hessian.clv.fitted <- function(object, method.args = list()){
   # Cannot use coef() as the reported parameters are transformed back and named
   # differently
   final.coefs <- drop(tail(coef(object@optimx.estimation.output), n=1))
+
+  if(anyNA(final.coefs)){
+    check_err_msg("Cannot proceed because there are NAs in the estimated coefficients!")
+  }
 
   prepared.optimx.args <- clv.controlflow.estimate.prepare.optimx.args(
     clv.fitted=object,
