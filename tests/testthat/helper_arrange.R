@@ -113,9 +113,9 @@ fit.cdnow <- function(
     estimation.split = 37,
     name.price = 'Price',
     model = pnbd,
-    start.params.model = c(),
     verbose = FALSE,
-    optimx.args = list()) {
+    ...
+    ) {
 
   clv.cdnow <- fct.helper.create.clvdata.cdnow(
     data.cdnow = data.cdnow,
@@ -127,9 +127,8 @@ fit.cdnow <- function(
     what = model,
     args = list(
       clv.data = clv.cdnow,
-      start.params.model = start.params.model,
-      optimx.args = optimx.args,
-      verbose = verbose
+      verbose = verbose,
+      ...
     )
   ))
 }
@@ -142,7 +141,6 @@ fit.apparel.nocov <- function(
     model = pnbd,
     verbose=FALSE,
     # start.params.model = c(),
-    # verbose = FALSE,
     # optimx.args = list()
     ...
 ) {
