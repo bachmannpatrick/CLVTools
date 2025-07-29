@@ -13,16 +13,18 @@ hessian(object, ...)
 \S4method{hessian}{clv.fitted}(object, method.args = list())
 }
 \arguments{
+\item{object}{Fitted model}
+
 \item{method.args}{List of options forwarded to the numerical approximation
 method. See \link[numDeriv:hessian]{numDeriv::hessian}.}
 
-\item{clv.fitted}{Fitted model}
+\item{...}{Ignored}
 }
 \value{
-The hessian matrix produced by \code{numDeriv::hessian}, with column
-and row names set to the parameter names used to call the LL.
+The hessian matrix, with column and row names set to the parameter
+names used to call the LL.
 }
 \description{
 Calculate a numerical approximation to the Hessian matrix at
-the final estimated parameters.
+the final estimated parameters using \code{numDeriv::hessian}.
 }

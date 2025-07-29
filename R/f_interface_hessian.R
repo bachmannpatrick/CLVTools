@@ -5,9 +5,10 @@
 #' @description Calculate a numerical approximation to the Hessian matrix at
 #' the final estimated parameters using \code{numDeriv::hessian}.
 #'
-#' @param clv.fitted Fitted model
+#' @param object Fitted model
 #' @param method.args List of options forwarded to the numerical approximation
 #' method. See \link[numDeriv:hessian]{numDeriv::hessian}.
+#' @template template_param_dots
 #'
 #' @returns The hessian matrix, with column and row names set to the parameter
 #' names used to call the LL.
