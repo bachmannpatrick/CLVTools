@@ -11,7 +11,7 @@
 #' @importFrom utils modifyList
 interlayer_manager <- function(LL.params, LL.param.names.to.optimx, LL.function.sum,
                                use.interlayer.constr,
-                               use.interlayer.reg, reg.lambda.trans, reg.lambda.life,
+                               use.interlayer.reg, reg.weight.trans, reg.weight.life,
                                use.cor,
                                ...){
   all.other.args <- list(...)
@@ -47,8 +47,8 @@ interlayer_manager <- function(LL.params, LL.param.names.to.optimx, LL.function.
 
   # Add regularization interlayer if needed
   if(use.interlayer.reg == T &
-     !is.null(reg.lambda.trans) & !anyNA(reg.lambda.trans) &
-     !is.null(reg.lambda.life)  & !anyNA(reg.lambda.life)){
+     !is.null(reg.weight.trans) & !anyNA(reg.weight.trans) &
+     !is.null(reg.weight.life)  & !anyNA(reg.weight.life)){
        interlayers.to.use <- c("regularization"=interlayer_regularization, interlayers.to.use)
   }
 
@@ -63,8 +63,8 @@ interlayer_manager <- function(LL.params, LL.param.names.to.optimx, LL.function.
   interlayer.call.args <- list(next.interlayers = interlayers.to.use,
                                LL.function.sum = LL.function.sum,
                                LL.params   = LL.params,
-                               reg.lambda.life  = reg.lambda.life,
-                               reg.lambda.trans = reg.lambda.trans)
+                               reg.weight.life  = reg.weight.life,
+                               reg.weight.trans = reg.weight.trans)
 
   interlayer.call.args <- modifyList(interlayer.call.args,
                                      all.other.args)

@@ -14,8 +14,8 @@
 #' @slot names.prefixed.params.after.constr.life Character vector containing the names of all constraint and free lifetime covariates parameters with lifetime prefixes only. Needed after reduplicating the constraint parameters.
 #' @slot names.prefixed.params.after.constr.trans Character vector containing the names of all constraint and free transaction covariates parameters with transaction prefixes only. Needed after reduplicating the constraint parameters.
 #' @slot estimation.used.regularization Single boolean whether the estimation used regularization.
-#' @slot reg.lambda.life Single numeric with the lambda used for regularizing the lifetime covariate parameters. Length zero if regularization is not used.
-#' @slot reg.lambda.trans Single numeric with the lambda used for regularizing the transaction covariate parameters. Length zero if regularization is not used.
+#' @slot reg.weight.life Single numeric with the weight (lambda) used for regularizing the lifetime covariate parameters. Length zero if regularization is not used.
+#' @slot reg.weight.trans Single numeric with the weight (lambda) used for regularizing the transaction covariate parameters. Length zero if regularization is not used.
 #' @slot prediction.params.life Numeric vector of the lifetime covariate parameters, set and used solely when predicting. Named after lifetime covariates and derived from \code{coef()}.
 #' @slot prediction.params.trans Numeric vector of the transaction covariate parameters, set and used solely when predicting. Named after transaction covariates and derived from \code{coef()}.
 #'
@@ -45,8 +45,8 @@ setClass(Class = "clv.fitted.transactions.static.cov", contains = "clv.fitted.tr
 
                    # Regularization parameters
                    estimation.used.regularization = "logical",
-                   reg.lambda.life  = "numeric",
-                   reg.lambda.trans = "numeric",
+                   reg.weight.life  = "numeric",
+                   reg.weight.trans = "numeric",
 
                    # Params from constraint and unconstraint coefs
                    prediction.params.life  = "numeric",
@@ -68,8 +68,8 @@ setClass(Class = "clv.fitted.transactions.static.cov", contains = "clv.fitted.tr
            names.prefixed.params.after.constr.life  = character(0),
 
            estimation.used.regularization = logical(0),
-           reg.lambda.life  = numeric(0),
-           reg.lambda.trans = numeric(0),
+           reg.weight.life  = numeric(0),
+           reg.weight.trans = numeric(0),
 
            prediction.params.life  = numeric(0),
            prediction.params.trans = numeric(0)))

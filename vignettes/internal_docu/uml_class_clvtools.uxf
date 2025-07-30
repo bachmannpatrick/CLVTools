@@ -284,7 +284,7 @@ bg=green</panel_attributes>
       <w>147</w>
       <h>70</h>
     </coordinates>
-    <panel_attributes>f_interface_pnbd 
+    <panel_attributes>f_interface_pnbd
 &lt;&lt;static&gt;&gt;
 --
 
@@ -312,7 +312,7 @@ bg=green</panel_attributes>
       <w>147</w>
       <h>70</h>
     </coordinates>
-    <panel_attributes>f_interface_bgnbd 
+    <panel_attributes>f_interface_bgnbd
 &lt;&lt;static&gt;&gt;
 --
 
@@ -453,8 +453,8 @@ bg=green</panel_attributes>
 + names.prefixed.params.after.constr.life: character
 + names.prefixed.params.after.constr.trans: character
 + estimation.used.regularization: logical
-+ reg.lambda.life: numeric
-+ reg.lambda.trans: numeric
++ reg.weight.life: numeric
++ reg.weight.trans: numeric
 + prediction.params.life: numeric
 + prediction.params.trans: numeric
 --

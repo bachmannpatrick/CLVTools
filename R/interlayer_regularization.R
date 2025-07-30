@@ -1,7 +1,7 @@
 #' @importFrom utils modifyList
 interlayer_regularization <- function(next.interlayers, LL.params, LL.function.sum,
                                       names.prefixed.params.after.constr.life, names.prefixed.params.after.constr.trans,
-                                      reg.lambda.life, reg.lambda.trans, num.observations, ...){
+                                      reg.weight.life, reg.weight.trans, num.observations, ...){
 
   all.other.args <- list(...)
 
@@ -26,13 +26,13 @@ interlayer_regularization <- function(next.interlayers, LL.params, LL.function.s
   # Regularization --------------------------------------------------------------
   #   LL value + regularization term
   #
-  #   regularization term := lambda.trans * t(cov.trans) * params.trans +
-  #                          lambda.life  * t(cov.life)  * params.life
+  #   regularization term := weight.trans * t(cov.trans) * params.trans +
+  #                          weight.life  * t(cov.life)  * params.life
 
   params.cov.life  <- LL.params[names.prefixed.params.after.constr.life]
   params.cov.trans <- LL.params[names.prefixed.params.after.constr.trans]
 
-  reg.term <- reg.lambda.trans*t(params.cov.trans)%*%params.cov.trans + reg.lambda.life*t(params.cov.life)%*%params.cov.life
+  reg.term <- reg.weight.trans*t(params.cov.trans)%*%params.cov.trans + reg.weight.life*t(params.cov.life)%*%params.cov.life
   reg.term <- as.vector(reg.term)
 
   # Although we use the compressed CBS and only calculate the LL for unique data,

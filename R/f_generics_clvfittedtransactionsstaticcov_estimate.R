@@ -83,13 +83,13 @@ setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitte
   if(!is.null(reg.weights) & !all(reg.weights == 0)){
     # Regularization: Store
     clv.fitted@estimation.used.regularization <- TRUE
-    clv.fitted@reg.lambda.life  <- reg.weights[["life"]]
-    clv.fitted@reg.lambda.trans <- reg.weights[["trans"]]
+    clv.fitted@reg.weight.life  <- reg.weights[["life"]]
+    clv.fitted@reg.weight.trans <- reg.weights[["trans"]]
   }else{
     # No regularization
     clv.fitted@estimation.used.regularization <- FALSE
-    clv.fitted@reg.lambda.life  <- numeric(0)
-    clv.fitted@reg.lambda.trans <- numeric(0)
+    clv.fitted@reg.weight.life  <- numeric(0)
+    clv.fitted@reg.weight.trans <- numeric(0)
   }
 
   # Are some parameters constraint? --------------------------------------------------------------------
@@ -225,7 +225,7 @@ setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(
             prepared.nocov.optimx.args <- callNextMethod()
 
             # Add covariates interlayer parameters ---------------------------------------------------------------------
-            #   keep.null = T, needed so that if reg.lambda or names.original.params.constr params are NULL,
+            #   keep.null = T, needed so that if reg.weights or names.original.params.constr params are NULL,
             #                  they are given to optimx/interlayer_manager as well
 
             # Everything to call the regularization layer
@@ -233,8 +233,8 @@ setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(
                                       list(use.interlayer.reg        = clv.fitted@estimation.used.regularization,
                                            names.prefixed.params.after.constr.trans = clv.fitted@names.prefixed.params.after.constr.trans,
                                            names.prefixed.params.after.constr.life  = clv.fitted@names.prefixed.params.after.constr.life,
-                                           reg.lambda.life           = clv.fitted@reg.lambda.life,
-                                           reg.lambda.trans          = clv.fitted@reg.lambda.trans,
+                                           reg.weight.life           = clv.fitted@reg.weight.life,
+                                           reg.weight.trans          = clv.fitted@reg.weight.trans,
                                            num.observations          = nobs(object = clv.fitted)),
                                       keep.null = TRUE)
 

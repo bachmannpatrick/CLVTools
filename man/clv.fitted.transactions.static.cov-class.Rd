@@ -37,9 +37,9 @@ Also used to perform steps during the estimation process that are specific to st
 
 \item{\code{estimation.used.regularization}}{Single boolean whether the estimation used regularization.}
 
-\item{\code{reg.lambda.life}}{Single numeric with the lambda used for regularizing the lifetime covariate parameters. Length zero if regularization is not used.}
+\item{\code{reg.weight.life}}{Single numeric with the weight (lambda) used for regularizing the lifetime covariate parameters. Length zero if regularization is not used.}
 
-\item{\code{reg.lambda.trans}}{Single numeric with the lambda used for regularizing the transaction covariate parameters. Length zero if regularization is not used.}
+\item{\code{reg.weight.trans}}{Single numeric with the weight (lambda) used for regularizing the transaction covariate parameters. Length zero if regularization is not used.}
 
 \item{\code{prediction.params.life}}{Numeric vector of the lifetime covariate parameters, set and used solely when predicting. Named after lifetime covariates and derived from \code{coef()}.}
 

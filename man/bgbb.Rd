@@ -69,7 +69,7 @@ If multiple optimization methods are specified, only the result of the last meth
 
 \item{start.params.constr}{Named start parameters containing the optimization start parameters for the constraint covariates.}
 
-\item{reg.weights}{Named lambda parameters used for the L2 regularization of the lifetime and the transaction covariate parameters. Lambdas have to be >= 0.}
+\item{reg.weights}{Named weights parameters (lambda) used for the L2 regularization of the lifetime and the transaction covariate parameters. Weights have to be >= 0.}
 }
 \value{
 No value is returned.

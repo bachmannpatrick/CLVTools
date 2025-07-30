@@ -78,8 +78,8 @@ setMethod("clv.controlflow.estimate.prepare.optimx.args", signature = signature(
                                               names.prefixed.params.constr = character(0),
 
                                               use.interlayer.reg           = FALSE,
-                                              reg.lambda.trans             = numeric(0),
-                                              reg.lambda.life              = numeric(0),
+                                              reg.weight.trans             = numeric(0),
+                                              reg.weight.life              = numeric(0),
                                               names.prefixed.params.after.constr.life  = character(0),
                                               names.prefixed.params.after.constr.trans = character(0)),
                             keep.null = TRUE)

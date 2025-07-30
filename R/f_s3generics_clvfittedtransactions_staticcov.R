@@ -23,15 +23,15 @@ summary.clv.fitted.transactions.static.cov <- function(object, ...){
 
   # Add further optimization options -----------------------------------------------
   #   Regularization
-  #     lambdas
+  #     weights
   #   Constraint covs
   #     which
   res$additional.options <- c(res$additional.options,
                               "Regularization"=object@estimation.used.regularization)
   if(object@estimation.used.regularization){
     res$additional.options <- c(res$additional.options,
-                                "   lambda.life"  = object@reg.lambda.life,
-                                "   lambda.trans" = object@reg.lambda.trans)
+                                "   weight.life"  = object@reg.weight.life,
+                                "   weight.trans" = object@reg.weight.trans)
   }
 
   res$additional.options <- c(res$additional.options,

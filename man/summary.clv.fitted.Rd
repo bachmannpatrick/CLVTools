@@ -59,8 +59,8 @@ and the list in \code{additional.options} contains the following elements:
 \item{additional.options}{
        \describe{
            \item{Regularization}{Whether L2 regularization for parameters of contextual factors was used.}
-           \item{lambda.life}{The regularization lambda used for the parameters of the Lifetime process, if used.}
-           \item{lambda.trans}{The regularization lambda used for the parameters of the Transaction process, if used.}
+           \item{weight.life}{The regularization weight (lambda) used for the parameters of the Lifetime process, if used.}
+           \item{weight.trans}{The regularization weight (lambda) used for the parameters of the Transaction process, if used.}
            \item{Constraint covs}{Whether any covariate parameters were forced to be the same for both processes.}
            \item{Constraint params}{Name of the covariate parameters which were constraint, if used.}}}
 }
