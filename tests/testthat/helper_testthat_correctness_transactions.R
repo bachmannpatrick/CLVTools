@@ -206,8 +206,8 @@ fct.testthat.correctness.clvfittedtransactions.staticcov.fitting.sample.predicti
   })
 }
 
-fct.testthat.correctness.clvfittedtransactions.staticcov.regularization.lambda.0.no.regularization <- function(method, clv.apparel.staticcov, m.fitted.static){
-  test_that("Regularization with 0 lambda has the same effect as no regularization", {
+fct.testthat.correctness.clvfittedtransactions.staticcov.regularization.weight.0.no.regularization <- function(method, clv.apparel.staticcov, m.fitted.static){
+  test_that("Regularization with 0 weight has the same effect as no regularization", {
     skip_on_cran()
     l.args <- list(clv.data = clv.apparel.staticcov, reg.weights = c(trans=0, life=0), verbose = FALSE)
     expect_silent(p.0.reg <- do.call(what = method, args = l.args))
@@ -348,7 +348,7 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method,
                                                                                                      clv.apparel.staticcov = clv.apparel.staticcov)
   fct.testhat.correctness.clvfittedtransactions.same.spending.as.independent.spending.model(method = method, clv.data = clv.apparel.staticcov)
 
-  fct.testthat.correctness.clvfittedtransactions.staticcov.regularization.lambda.0.no.regularization(method = method, clv.apparel.staticcov = clv.apparel.staticcov,
+  fct.testthat.correctness.clvfittedtransactions.staticcov.regularization.weight.0.no.regularization(method = method, clv.apparel.staticcov = clv.apparel.staticcov,
                                                                                                      m.fitted.static = obj.fitted.static)
 
   # predict(newdata=newcustomer): static cov

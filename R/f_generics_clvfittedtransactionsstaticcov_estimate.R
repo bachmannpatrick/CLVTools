@@ -31,8 +31,8 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv
   err.msg <- c(err.msg, check_user_data_startparamscov(start.params.cov=start.params.life,  names.params.cov = names.cov.life,  name.of.cov="Lifetime"))
   err.msg <- c(err.msg, check_user_data_startparamscov(start.params.cov=start.params.trans, names.params.cov = names.cov.trans, name.of.cov="Transaction"))
 
-  # Check reg lambdas
-  err.msg <- c(err.msg, check_user_data_reglambdas(reg.weights=reg.weights))
+  # Check reg weights
+  err.msg <- c(err.msg, check_user_data_regweights(reg.weights=reg.weights))
 
   # Check constraint params input
   err.msg <- c(err.msg, check_user_data_namesconstr(clv.fitted=clv.fitted, names.cov.constr = names.cov.constr))
@@ -77,7 +77,7 @@ setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitte
   ))
 
   # is regularization used? ---------------------------------------------------------------------------
-  #   Yes:  Indicate and store lambdas
+  #   Yes:  Indicate and store weights
   #   No:   Indicate
 
   if(!is.null(reg.weights) & !all(reg.weights == 0)){

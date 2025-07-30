@@ -96,9 +96,9 @@ fct.testthat.runability.staticcov.works.with.regularization <- function(method, 
   })
 }
 
-fct.testthat.runability.staticcov.works.with.0.lambdas <- function(method, clv.data.holdout, clv.data.no.holdout, clv.newdata.nohold, clv.newdata.withhold,
+fct.testthat.runability.staticcov.works.with.0.weights <- function(method, clv.data.holdout, clv.data.no.holdout, clv.newdata.nohold, clv.newdata.withhold,
                                                                    param.names.model){
-  test_that("Works with 0 regularization lambdas", {
+  test_that("Works with 0 regularization weights", {
     skip_on_cran()
     skip_on_ci()
     skip_on_covr()
@@ -320,7 +320,7 @@ fct.testthat.runability.staticcov <- function(name.model, method, start.params.m
                                                               clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold,
                                                               clv.data.holdout = clv.data.cov.holdout, clv.data.no.holdout = clv.data.cov.no.holdout)
 
-  fct.testthat.runability.staticcov.works.with.0.lambdas(method = method,
+  fct.testthat.runability.staticcov.works.with.0.weights(method = method,
                                                          param.names.model = names(start.params.model),
                                                          clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold,
                                                          clv.data.holdout = clv.data.cov.holdout, clv.data.no.holdout = clv.data.cov.no.holdout)

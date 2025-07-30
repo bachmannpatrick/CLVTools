@@ -121,7 +121,7 @@ fct.testthat.inputchecks.startparamconstr <- function(method, l.std.args){
   })
 }
 
-fct.testthat.inputchecks.reglambdas <- function(method, l.std.args){
+fct.testthat.inputchecks.regweights <- function(method, l.std.args){
 
   test_that("Fails if is not a numeric vector", {
     expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=list(list(trans=10, life=10))))),
@@ -145,7 +145,7 @@ fct.testthat.inputchecks.reglambdas <- function(method, l.std.args){
                  regexp = "NA")
   })
 
-  test_that("Fails for negative regularization lambdas", {
+  test_that("Fails for negative regularization weights", {
     expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(trans=10,  life=-10)))),
                  regexp = "positive")
     expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(trans=-10, life=10)))),
@@ -154,7 +154,7 @@ fct.testthat.inputchecks.reglambdas <- function(method, l.std.args){
                  regexp = "positive")
   })
 
-  test_that("Fails for wrongly named regularization lambdas", {
+  test_that("Fails for wrongly named regularization weights", {
     expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(trans=10,  live=10)))),
                  regexp = "be named")
     expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(trans=10,  Life=10)))),
@@ -266,7 +266,7 @@ fct.testthat.inputchecks.staticcov <- function(name.method, method, start.params
   fct.testthat.inputchecks.startparamconstr(method = method, l.std.args = l.std.args.noholdout)
   fct.testthat.inputchecks.startparamconstr(method = method, l.std.args = l.std.args.withholdout)
 
-  fct.testthat.inputchecks.reglambdas(method = method, l.std.args = l.std.args.noholdout)
-  fct.testthat.inputchecks.reglambdas(method = method, l.std.args = l.std.args.withholdout)
+  fct.testthat.inputchecks.regweights(method = method, l.std.args = l.std.args.noholdout)
+  fct.testthat.inputchecks.regweights(method = method, l.std.args = l.std.args.withholdout)
 
 }
