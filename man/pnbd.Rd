@@ -30,7 +30,7 @@
   start.params.trans = c(),
   names.cov.constr = c(),
   start.params.constr = c(),
-  reg.lambdas = c(),
+  reg.weights = c(),
   ...
 )
 
@@ -47,7 +47,7 @@
   start.params.trans = c(),
   names.cov.constr = c(),
   start.params.constr = c(),
-  reg.lambdas = c(),
+  reg.weights = c(),
   ...
 )
 }
@@ -234,7 +234,7 @@ pnbd(clv.data.dyn.cov)
 
 # The same fitting options as for the
 #  static covariate are available
-pnbd(clv.data.dyn.cov, reg.lambdas = c(trans=10, life=2))
+pnbd(clv.data.dyn.cov, reg.weights = c(trans=10, life=2))
 }
 }
 

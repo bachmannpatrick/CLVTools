@@ -79,7 +79,7 @@
 #'
 #' # Fit pnbd with all covs and regularization
 #' latentAttrition(formula=~.|., family=pnbd, data=clv.staticcov,
-#'                 reg.lambdas = c(life=3, trans=8))
+#'                 reg.weights = c(life=3, trans=8))
 #'
 #' # Fit pnbd with all covs and constraint parameters for Channel
 #' latentAttrition(formula=~.|., family=pnbd, data=clv.staticcov,
@@ -295,7 +295,7 @@ check_userinput_latentattrition_dots_family_data <- function(family, data, ...){
                         "start.params.trans",
                         "names.cov.constr",
                         "start.params.constr",
-                        "reg.lambdas"))
+                        "reg.weights"))
   }
 
   # these are specified already

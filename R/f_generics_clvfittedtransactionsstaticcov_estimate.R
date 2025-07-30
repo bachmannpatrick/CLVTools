@@ -2,7 +2,7 @@
 setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted,  start.params.model, optimx.args, verbose, # clv.fitted input args
                                                                                                                                                      names.cov.life, names.cov.trans,
                                                                                                                                                      start.params.life, start.params.trans,
-                                                                                                                                                     reg.lambdas,
+                                                                                                                                                     reg.weights,
                                                                                                                                                      names.cov.constr, start.params.constr, cl, ...){
 
   # check input for clv.fitted.transactions
@@ -32,7 +32,7 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv
   err.msg <- c(err.msg, check_user_data_startparamscov(start.params.cov=start.params.trans, names.params.cov = names.cov.trans, name.of.cov="Transaction"))
 
   # Check reg lambdas
-  err.msg <- c(err.msg, check_user_data_reglambdas(reg.lambdas=reg.lambdas))
+  err.msg <- c(err.msg, check_user_data_reglambdas(reg.weights=reg.weights))
 
   # Check constraint params input
   err.msg <- c(err.msg, check_user_data_namesconstr(clv.fitted=clv.fitted, names.cov.constr = names.cov.constr))
@@ -55,7 +55,7 @@ setMethod(f = "clv.controlflow.estimate.check.inputs", signature = signature(clv
 
 # . clv.controlflow.estimate.put.inputs ------------------------------------------------------------------------------
 #' @importFrom methods callNextMethod
-setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted, start.params.model, optimx.args, verbose, reg.lambdas, names.cov.constr, names.cov.life, names.cov.trans, start.params.constr, start.params.life, start.params.trans, ...){
+setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitted="clv.fitted.transactions.static.cov"), definition = function(clv.fitted, start.params.model, optimx.args, verbose, reg.weights, names.cov.constr, names.cov.life, names.cov.trans, start.params.constr, start.params.life, start.params.trans, ...){
 
   # clv.fitted put inputs
   clv.fitted <- callNextMethod()
@@ -73,18 +73,18 @@ setMethod("clv.controlflow.estimate.put.inputs", signature = signature(clv.fitte
     start.params.trans=start.params.trans,
     names.cov.constr=names.cov.constr,
     start.params.constr=start.params.constr,
-    reg.lambdas=reg.lambdas
+    reg.weights=reg.weights
   ))
 
   # is regularization used? ---------------------------------------------------------------------------
   #   Yes:  Indicate and store lambdas
   #   No:   Indicate
 
-  if(!is.null(reg.lambdas) & !all(reg.lambdas == 0)){
+  if(!is.null(reg.weights) & !all(reg.weights == 0)){
     # Regularization: Store
     clv.fitted@estimation.used.regularization <- TRUE
-    clv.fitted@reg.lambda.life  <- reg.lambdas[["life"]]
-    clv.fitted@reg.lambda.trans <- reg.lambdas[["trans"]]
+    clv.fitted@reg.lambda.life  <- reg.weights[["life"]]
+    clv.fitted@reg.lambda.trans <- reg.weights[["trans"]]
   }else{
     # No regularization
     clv.fitted@estimation.used.regularization <- FALSE

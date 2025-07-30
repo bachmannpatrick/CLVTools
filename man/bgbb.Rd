@@ -26,7 +26,7 @@
   start.params.trans = c(),
   names.cov.constr = c(),
   start.params.constr = c(),
-  reg.lambdas = c(),
+  reg.weights = c(),
   ...
 )
 
@@ -41,7 +41,7 @@
   start.params.trans = c(),
   names.cov.constr = c(),
   start.params.constr = c(),
-  reg.lambdas = c(),
+  reg.weights = c(),
   ...
 )
 }

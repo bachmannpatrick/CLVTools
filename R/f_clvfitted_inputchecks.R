@@ -134,25 +134,25 @@ check_user_data_namescov_reduce <- function(names.cov, data.cov.dt, name.of.cov)
 }
 
 
-check_user_data_reglambdas <- function(reg.lambdas){
+check_user_data_reglambdas <- function(reg.weights){
   err.msg <- c()
 
-  if(is.null(reg.lambdas))
+  if(is.null(reg.weights))
     return(err.msg)
 
-  if(!is.numeric(reg.lambdas))
+  if(!is.numeric(reg.weights))
     return("The regularization lambdas have to be a numeric vector!")
 
-  if(anyNA(reg.lambdas))
+  if(anyNA(reg.weights))
     return("The regularization lambdas may not contain any NAs!")
 
-  if(any(reg.lambdas < 0))
+  if(any(reg.weights < 0))
     err.msg <- c(err.msg, "The regularization lambdas have to be positive or 0!")
 
-  if(length(reg.lambdas) != 2)
+  if(length(reg.weights) != 2)
     err.msg <- c(err.msg, "Exactly 2 regularization lambdas need to be given!")
 
-  if(!all(c("life", "trans") %in% names(reg.lambdas)))
+  if(!all(c("life", "trans") %in% names(reg.weights)))
      err.msg <- c(err.msg, "The regularization lambdas need to be named \"life\" and \"trans\"!")
 
   return(err.msg)

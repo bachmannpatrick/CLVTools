@@ -95,7 +95,7 @@ latentAttrition(formula=~Gender|I(log(Channel+2)), family=pnbd,
 
 # Fit pnbd with all covs and regularization
 latentAttrition(formula=~.|., family=pnbd, data=clv.staticcov,
-                reg.lambdas = c(life=3, trans=8))
+                reg.weights = c(life=3, trans=8))
 
 # Fit pnbd with all covs and constraint parameters for Channel
 latentAttrition(formula=~.|., family=pnbd, data=clv.staticcov,
