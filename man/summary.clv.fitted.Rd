@@ -95,7 +95,7 @@ data.apparel.cov  <-
 
 # fit model with covariates and regualization
 pnbd.apparel.cov <- pnbd(data.apparel.cov,
-                         reg.lambdas = c(life=2, trans=4))
+                         reg.weights = c(life=2, trans=4))
 
 # additional summary about covariate parameters
 #   and used regularization

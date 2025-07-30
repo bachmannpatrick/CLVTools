@@ -54,7 +54,7 @@ If multiple optimization methods are specified, only the result of the last meth
 
 \item{start.params.constr}{Named start parameters containing the optimization start parameters for the constraint covariates.}
 
-\item{reg.lambdas}{Named lambda parameters used for the L2 regularization of the lifetime and the transaction covariate parameters. Lambdas have to be >= 0.}
+\item{reg.weights}{Named lambda parameters used for the L2 regularization of the lifetime and the transaction covariate parameters. Lambdas have to be >= 0.}
 }
 \value{
 Depending on the data object on which the model was fit, \code{bgnbd} returns either an object of
@@ -158,7 +158,7 @@ bgnbd(clv.data.static.cov, start.params.trans = c(Gender=0.75, Channel=0.7),
                    start.params.life  = c(Gender=0.5, Channel=0.5))
 
 # Use regularization
-bgnbd(clv.data.static.cov, reg.lambdas = c(trans = 5, life=5))
+bgnbd(clv.data.static.cov, reg.weights = c(trans = 5, life=5))
 
 # Force the same coefficient to be used for both covariates
 bgnbd(clv.data.static.cov, names.cov.constr = "Gender",

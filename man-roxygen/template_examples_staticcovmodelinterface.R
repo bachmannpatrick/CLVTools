@@ -17,7 +17,7 @@
 #'                    start.params.life  = c(Gender=0.5, Channel=0.5))
 #'
 #' # Use regularization
-#' <%=name_model_short%>(clv.data.static.cov, reg.lambdas = c(trans = 5, life=5))
+#' <%=name_model_short%>(clv.data.static.cov, reg.weights = c(trans = 5, life=5))
 #'
 #' # Force the same coefficient to be used for both covariates
 #' <%=name_model_short%>(clv.data.static.cov, names.cov.constr = "Gender",
