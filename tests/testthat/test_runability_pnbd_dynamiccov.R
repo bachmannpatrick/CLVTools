@@ -91,5 +91,5 @@ test_that("Dyncov works with additional model specifications", {
   fn.fit.dyncov.spec(
     use.cor=TRUE,
     names.cov.constr = "Gender",
-    reg.lambda = c(trans=10, life=10))
+    reg.weights = c(trans=10, life=10))
 })
