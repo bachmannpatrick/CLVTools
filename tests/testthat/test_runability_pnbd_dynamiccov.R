@@ -79,7 +79,7 @@ test_that("Dyncov works with additional model specifications", {
   }
 
   # regularization -------------------------------------------------------------
-  fn.fit.dyncov.spec(reg.lambdas = c(trans=10, life=10))
+  fn.fit.dyncov.spec(reg.weights = c(trans=10, life=10))
 
   # constrained covs -----------------------------------------------------------
   fn.fit.dyncov.spec(names.cov.constr = "High.Season")

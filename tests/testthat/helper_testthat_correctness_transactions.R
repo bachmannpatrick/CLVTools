@@ -209,7 +209,7 @@ fct.testthat.correctness.clvfittedtransactions.staticcov.fitting.sample.predicti
 fct.testthat.correctness.clvfittedtransactions.staticcov.regularization.lambda.0.no.regularization <- function(method, clv.apparel.staticcov, m.fitted.static){
   test_that("Regularization with 0 lambda has the same effect as no regularization", {
     skip_on_cran()
-    l.args <- list(clv.data = clv.apparel.staticcov, reg.lambdas = c(trans=0, life=0), verbose = FALSE)
+    l.args <- list(clv.data = clv.apparel.staticcov, reg.weights = c(trans=0, life=0), verbose = FALSE)
     expect_silent(p.0.reg <- do.call(what = method, args = l.args))
 
     expect_equal(coef(p.0.reg),          coef(m.fitted.static))

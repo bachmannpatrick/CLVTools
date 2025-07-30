@@ -40,7 +40,7 @@ test_that("Fails if additional args in dots are not allowed for family", {
   expect_error(latentAttrition(formula = , family=pnbd, data=clv.cdnow, clv.data=clv.cdnow), "may not be passed")
   expect_error(latentAttrition(formula = , family=pnbd, data=clv.cdnow, names.cov.life="Gender"), "may not be passed")
   expect_error(latentAttrition(formula = , family=pnbd, data=clv.cdnow, start.params.trans=c(Channel=2)), "may not be passed")
-  expect_error(latentAttrition(formula = , family=pnbd, data=clv.cdnow, reg.lambdas=c(trans=10, life=20)), "may not be passed")
+  expect_error(latentAttrition(formula = , family=pnbd, data=clv.cdnow, reg.weights=c(trans=10, life=20)), "may not be passed")
   expect_error(latentAttrition(formula = , family=pnbd, data=clv.cdnow, abc=3), "may not be passed")
   expect_error(latentAttrition(formula = , family=pnbd, data=clv.cdnow, vverbose=TRUE), "may not be passed")
 })

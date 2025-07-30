@@ -124,74 +124,74 @@ fct.testthat.inputchecks.startparamconstr <- function(method, l.std.args){
 fct.testthat.inputchecks.reglambdas <- function(method, l.std.args){
 
   test_that("Fails if is not a numeric vector", {
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=list(list(trans=10, life=10))))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=list(list(trans=10, life=10))))),
                  regexp = "numeric vector")
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=data.frame(trans=10, life=10)))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=data.frame(trans=10, life=10)))),
                  regexp = "numeric vector")
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=c(trans="10", life="10")))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(trans="10", life="10")))),
                  regexp = "numeric vector")
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=factor(c(trans="10", life="10"))))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=factor(c(trans="10", life="10"))))),
                  regexp = "numeric vector")
   })
 
   test_that("Fails if any is NA", {
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=c(trans=10, life=NA_real_)))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(trans=10, life=NA_real_)))),
                  regexp = "NA")
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=c(life=10, trans=NA_real_)))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(life=10, trans=NA_real_)))),
                  regexp = "NA")
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=c(life=10, trans=10, NA_real_)))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(life=10, trans=10, NA_real_)))),
                  regexp = "NA")
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=NA_real_))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=NA_real_))),
                  regexp = "NA")
   })
 
   test_that("Fails for negative regularization lambdas", {
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=c(trans=10,  life=-10)))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(trans=10,  life=-10)))),
                  regexp = "positive")
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=c(trans=-10, life=10)))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(trans=-10, life=10)))),
                  regexp = "positive")
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=c(trans=-10, life=-10)))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(trans=-10, life=-10)))),
                  regexp = "positive")
   })
 
   test_that("Fails for wrongly named regularization lambdas", {
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=c(trans=10,  live=10)))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(trans=10,  live=10)))),
                  regexp = "be named")
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=c(trans=10,  Life=10)))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(trans=10,  Life=10)))),
                  regexp = "be named")
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=c(frans=10,  life=10)))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(frans=10,  life=10)))),
                  regexp = "be named")
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=c(Trans=10,  life=10)))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(Trans=10,  life=10)))),
                  regexp = "be named")
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=c(Trans=10,  Life=10)))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(Trans=10,  Life=10)))),
                  regexp = "be named")
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=c(trans=10,  lifetime=10)))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(trans=10,  lifetime=10)))),
                  regexp = "be named")
   })
 
   test_that("Fails if only one given", {
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=c(trans=10)))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(trans=10)))),
                  regexp = "need to be given")
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=c(life=10)))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(life=10)))),
                  regexp = "need to be given")
   })
 
   test_that("Fails if too many given", {
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=c(trans=10, life=10, abc=10)))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(trans=10, life=10, abc=10)))),
                  regexp = "need to be given")
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=c(life=10, life=10, tra=12)))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(life=10, life=10, tra=12)))),
                  regexp = "need to be given")
   })
 
   test_that("Fails if duplicates given", {
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=c(life=10, life=10)))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(life=10, life=10)))),
                  regexp = "need to be named")
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=c(trans=10, trans=10)))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(trans=10, trans=10)))),
                  regexp = "need to be named")
 
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=c(life=10, life=10, trans=10)))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(life=10, life=10, trans=10)))),
                  regexp = "need to be given")
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=c(life=10, trans=10, trans=10)))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(life=10, trans=10, trans=10)))),
                  regexp = "need to be given")
   })
 }

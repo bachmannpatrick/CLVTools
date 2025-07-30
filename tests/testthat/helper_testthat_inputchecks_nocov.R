@@ -166,7 +166,7 @@ fct.testthat.inputchecks.nocov... <- function(method, l.std.args){
     expect_error(do.call(method, modifyList(l.std.args, list(start.params.constr=c(Gender=0.5)))),
                  regexp = "not need")
 
-    expect_error(do.call(method, modifyList(l.std.args, list(reg.lambdas=c(trans=10, life=10)))),
+    expect_error(do.call(method, modifyList(l.std.args, list(reg.weights=c(trans=10, life=10)))),
                  regexp = "not need")
   })
 

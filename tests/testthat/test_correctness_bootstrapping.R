@@ -256,7 +256,7 @@ test_that("Correct interface args for static covariate models", {
       start.params.trans = c(),
       names.cov.constr = c(),
       start.params.constr = c(),
-      reg.lambdas = c(),
+      reg.weights = c(),
       use.cor = FALSE,
       start.param.cor = c())
   )
@@ -276,7 +276,7 @@ test_that("Correct interface args for static covariate models", {
     start.params.trans = c(Channel=-0.345),
     names.cov.constr = "Gender",
     start.params.constr=c(Gender=0.23),
-    reg.lambdas=c(life=8, trans=10)
+    reg.weights=c(life=8, trans=10)
     ), regexp = "Hessian"), regexp = "NA coefficients")
 
   expect_mapequal(
@@ -291,7 +291,7 @@ test_that("Correct interface args for static covariate models", {
       start.params.trans = c(Channel=-0.345),
       names.cov.constr =  "Gender",
       start.params.constr=c(Gender=0.23),
-      reg.lambdas = c(life=8, trans=10),
+      reg.weights = c(life=8, trans=10),
       use.cor = TRUE,
       start.param.cor = c(cor=0.1))
   )
@@ -316,7 +316,7 @@ test_that("Correct interface args for dynamic covariate models", {
     start.params.trans = c(Channel=-0.345),
     names.cov.constr = "Gender",
     start.params.constr=c(Gender=0.23),
-    reg.lambdas=c(life=8, trans=10)
+    reg.weights=c(life=8, trans=10)
   ))
 
   expect_mapequal(
@@ -333,7 +333,7 @@ test_that("Correct interface args for dynamic covariate models", {
       start.params.trans = c(Channel=-0.345),
       names.cov.constr =  "Gender",
       start.params.constr=c(Gender=0.23),
-      reg.lambdas = c(life=8, trans=10))
+      reg.weights = c(life=8, trans=10))
   )
 
 

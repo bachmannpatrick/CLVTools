@@ -59,7 +59,7 @@ test_that("Every model works without specials", {
 
 test_that("Works with regularization", {
   skip_on_cran()
-  expect_silent(latentAttrition(formula =~ .|., family=pnbd, data = clv.apparel.cov, verbose=FALSE, reg.lambdas = c(life=8, trans=10)))
+  expect_silent(latentAttrition(formula =~ .|., family=pnbd, data = clv.apparel.cov, verbose=FALSE, reg.weights = c(life=8, trans=10)))
 })
 
 test_that("Works with selecting single covs", {

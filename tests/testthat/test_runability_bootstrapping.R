@@ -277,7 +277,7 @@ test_that("predict(uncertainty=boots) works on all model specifications", {
   p.cor <- fit.apparel.nocov(use.cor=TRUE, verbose=FALSE, optimx.args=optimx.args.NM)
   fn.predict.boots(p.cor)
 
-  bg.reg <- fit.apparel.static(model=bgnbd, reg.lambdas = c(trans=10, life=20), verbose=FALSE, optimx.args=optimx.args.NM)
+  bg.reg <- fit.apparel.static(model=bgnbd, reg.weights = c(trans=10, life=20), verbose=FALSE, optimx.args=optimx.args.NM)
   fn.predict.boots(bg.reg)
 
   ggom.constr <- fit.apparel.static(model=ggomnbd, names.cov.constr = "Channel", verbose=FALSE, optimx.args=optimx.args.NM)
@@ -287,7 +287,7 @@ test_that("predict(uncertainty=boots) works on all model specifications", {
     model=pnbd,
     use.cor=TRUE,
     names.cov.constr = "Channel",
-    reg.lambdas = c(trans=20, life=30),
+    reg.weights = c(trans=20, life=30),
     verbose=FALSE,
     optimx.args=optimx.args.NM)
   fn.predict.boots(p.combo)
@@ -298,7 +298,7 @@ test_that("predict(uncertainty=boots) works on all model specifications", {
     model=pnbd,
     use.cor=TRUE,
     names.cov.constr = "Channel",
-    reg.lambdas = c(trans=5, life=5),
+    reg.weights = c(trans=5, life=5),
     verbose=FALSE,
     optimx.args = fct.helper.dyncov.get.optimxargs.quickfit(hessian=FALSE)
     ))

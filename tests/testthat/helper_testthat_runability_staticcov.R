@@ -83,8 +83,8 @@ fct.testthat.runability.staticcov.works.with.regularization <- function(method, 
                                                                         param.names.model){
   test_that("Works with regularization", {
     skip_on_cran()
-    l.args.holdout <- list(clv.data = clv.data.holdout, reg.lambdas = c(trans=10, life=10),verbose=FALSE)
-    l.args.no.holdout <- list(clv.data = clv.data.no.holdout, reg.lambdas = c(trans=10, life=10),verbose=FALSE)
+    l.args.holdout <- list(clv.data = clv.data.holdout, reg.weights = c(trans=10, life=10),verbose=FALSE)
+    l.args.no.holdout <- list(clv.data = clv.data.no.holdout, reg.weights = c(trans=10, life=10),verbose=FALSE)
 
     expect_silent(p.hold    <- do.call(what = method, args = l.args.holdout))
     expect_silent(p.no.hold <- do.call(what = method, args = l.args.no.holdout))
@@ -103,8 +103,8 @@ fct.testthat.runability.staticcov.works.with.0.lambdas <- function(method, clv.d
     skip_on_ci()
     skip_on_covr()
 
-    l.args.holdout <- list(clv.data = clv.data.holdout,   reg.lambdas = c(trans=0, life=0),verbose=FALSE)
-    l.args.no.holdout <- list(clv.data = clv.data.no.holdout,reg.lambdas = c(trans=0, life=0),verbose=FALSE)
+    l.args.holdout <- list(clv.data = clv.data.holdout,   reg.weights = c(trans=0, life=0),verbose=FALSE)
+    l.args.no.holdout <- list(clv.data = clv.data.no.holdout,reg.weights = c(trans=0, life=0),verbose=FALSE)
 
     expect_silent(p.hold    <- do.call(what = method, args = l.args.holdout))
     expect_silent(p.no.hold <- do.call(what = method, args = l.args.no.holdout))
@@ -123,8 +123,8 @@ fct.testthat.runability.staticcov.works.with.combined.interlayers.without.cor <-
     skip_on_ci()
     skip_on_covr()
 
-    l.args.holdout <- list(clv.data = clv.data.holdout, names.cov.constr = c("Gender", "Channel"), reg.lambdas = c(trans=10, life=10),verbose=FALSE)
-    l.args.no.holdout <- list(clv.data = clv.data.no.holdout, names.cov.constr = c("Gender", "Channel"), reg.lambdas = c(trans=10, life=10),verbose=FALSE)
+    l.args.holdout <- list(clv.data = clv.data.holdout, names.cov.constr = c("Gender", "Channel"), reg.weights = c(trans=10, life=10),verbose=FALSE)
+    l.args.no.holdout <- list(clv.data = clv.data.no.holdout, names.cov.constr = c("Gender", "Channel"), reg.weights = c(trans=10, life=10),verbose=FALSE)
 
     # Regularization + Constraints
     expect_silent(p.hold    <- do.call(what = method, args = l.args.holdout))
@@ -157,8 +157,8 @@ fct.testthat.runability.staticcov.works.with.combined.interlayers.with.cor <- fu
     fct.helper.clvfittedtransactions.all.s3(p.no.hold, full.names = c(model.param.names, p.no.hold@clv.model@name.correlation.cor, p.no.hold@names.prefixed.params.constr),
                                             clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
 
-    l.args.holdout.2 <- list(clv.data = clv.data.holdout, use.cor = TRUE, reg.lambdas = c(trans=10, life=10),verbose=FALSE)
-    l.args.no.holdout.2 <- list(clv.data = clv.data.no.holdout, use.cor = TRUE, reg.lambdas = c(trans=10, life=10),verbose=FALSE)
+    l.args.holdout.2 <- list(clv.data = clv.data.holdout, use.cor = TRUE, reg.weights = c(trans=10, life=10),verbose=FALSE)
+    l.args.no.holdout.2 <- list(clv.data = clv.data.no.holdout, use.cor = TRUE, reg.weights = c(trans=10, life=10),verbose=FALSE)
 
     # Regularization + Correlation
     expect_silent(p.hold    <- do.call(what = method, args = l.args.holdout.2))
@@ -169,8 +169,8 @@ fct.testthat.runability.staticcov.works.with.combined.interlayers.with.cor <- fu
     fct.helper.clvfittedtransactions.all.s3(p.no.hold, full.names = c(model.param.names, p.no.hold@clv.model@name.correlation.cor, p.no.hold@names.prefixed.params.free.life, p.no.hold@names.prefixed.params.free.trans),
                                             clv.newdata.nohold = clv.newdata.nohold, clv.newdata.withhold = clv.newdata.withhold)
 
-    l.args.holdout.3 <- list(clv.data = clv.data.holdout, use.cor = TRUE, names.cov.constr = c("Gender", "Channel"),reg.lambdas = c(trans=10, life=10),verbose=FALSE)
-    l.args.no.holdout.3 <- list(clv.data = clv.data.no.holdout, use.cor = TRUE, names.cov.constr = c("Gender", "Channel"),reg.lambdas = c(trans=10, life=10),verbose=FALSE)
+    l.args.holdout.3 <- list(clv.data = clv.data.holdout, use.cor = TRUE, names.cov.constr = c("Gender", "Channel"),reg.weights = c(trans=10, life=10),verbose=FALSE)
+    l.args.no.holdout.3 <- list(clv.data = clv.data.no.holdout, use.cor = TRUE, names.cov.constr = c("Gender", "Channel"),reg.weights = c(trans=10, life=10),verbose=FALSE)
 
     # Regularization + Correlation + Constraints
     expect_silent(p.hold    <- do.call(what = method, args = l.args.holdout.3))
