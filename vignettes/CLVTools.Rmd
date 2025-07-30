@@ -417,22 +417,22 @@ The parameter `Cor(life,trans)` is added to the parameter estimates that may be 
 
 In the following we illustrate code for both, a formula-based interface a non-formula-based interface.
 
-***Regularization*** helps to prevent overfitting of the model when using covariates. We can add regularization lambdas for the two processes. The larger the lambdas the stronger the effects of the regularization. Regularization only affects the parameters of the covariates. The use of regularization is indicated at the end of the `summary()` output.
+***Regularization*** helps to prevent overfitting of the model when using covariates. We can add regularization weights for the two processes. The larger the weights the stronger the effects of the regularization. Regularization only affects the parameters of the covariates. The use of regularization is indicated at the end of the `summary()` output.
 
 ### **Estimating the model using formula interface:**
 ```{r reg-formula, eval=FALSE}
 est.pnbd.reg <- latentAttrition(formula = ~ .|., family = pnbd, 
-                                reg.lambdas=c(life=3, trans=8), data=clv.static)
+                                reg.weights=c(life=3, trans=8), data=clv.static)
 summary(est.pnbd.reg)
 ```
 
 ### **Estimating the model using non-formula interface:**
 
-We use the argument `reg.lambdas` to specify the lambdas for the two processes (i.e. `reg.lambdas = c(trans=100, life=100)`:
+We use the argument `reg.weights` to specify the weights for the two processes (i.e. `reg.weights = c(trans=100, life=100)`:
 ```{r reg-advOptions, eval=FALSE}
 est.pnbd.reg <- pnbd(clv.static, 
                          start.params.model = c(r=1, alpha = 2, s = 1, beta = 2),
-                         reg.lambdas = c(trans=100, life=100))
+                         reg.weights = c(trans=100, life=100))
 summary(est.pnbd.reg)
 ```
 
