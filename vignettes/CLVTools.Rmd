@@ -5,7 +5,8 @@ author:
   - "Patrik Schilter"
   - "Jeffrey Näf"
   - "Markus Meierer"
-date: September 15, 2024output:
+date: September 15, 2024
+output:
   pdf_document:
     latex_engine: xelatex
     toc: true
