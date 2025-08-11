@@ -75,9 +75,23 @@ clv.time.has.holdout <- function(clv.time){
 
 # set.sample.periods ------------------------------------------------------------------------
 #' @importFrom lubridate period
-clv.time.set.sample.periods <- function(clv.time, tp.first.transaction, tp.last.transaction, user.estimation.end){
+clv.time.set.sample.periods <- function(clv.time, tp.first.transaction, tp.last.transaction, user.estimation.end, user.observation.end){
 
   tp.estimation.start <- tp.first.transaction
+
+  if(is.null(user.observation.end)){
+    tp.observation.end <- tp.last.transaction
+  }else{
+    tp.observation.end <- clv.time.convert.user.input.to.timepoint(
+      clv.time=clv.time,
+      user.timepoint=user.observation.end)
+
+    # Observation end may not be before last transaction
+    if(tp.observation.end < tp.last.transaction){
+      stop("The given observation.end may not be before the last recorded transaction!")
+    }
+  }
+
 
   if(!is.null(user.estimation.end)){
     # specific end
@@ -100,22 +114,21 @@ clv.time.set.sample.periods <- function(clv.time, tp.first.transaction, tp.last.
 
     # Need to be 2 periods because otherwise for days, holdout can be not on estimation.end but still be of length zero
     #   ie 2 periods to still have 1 as holdout
-    if(tp.estimation.end > tp.last.transaction-clv.time.number.timeunits.to.timeperiod(clv.time, 2L))
-      stop("Parameter estimation.split needs to indicate a point at least 2 periods before the last transaction!", call. = FALSE)
+    if(tp.estimation.end > tp.observation.end - clv.time.number.timeunits.to.timeperiod(clv.time, 2L))
+      stop("Parameter estimation.split needs to indicate a point in time such that it yields a holdout period of at least 2 time.units!", call. = FALSE)
 
     # + 1 day is the same for all because most fine-grained change that Date can do
     tp.holdout.start   <- tp.estimation.end + clv.time.epsilon(clv.time=clv.time)
-    tp.holdout.end     <- tp.last.transaction
+    tp.holdout.end     <- tp.observation.end
     holdout.period.in.tu <- clv.time.interval.in.number.tu(clv.time,
                                                            interv=interval(start = tp.holdout.start,
                                                                            end   = tp.holdout.end))
   }else{
-    # NULL: no specific end - until end of data (last transaction)
-    #   **TODO: last transaction or full period where last transaction is in?
+    # NULL: no specific end - until observation end
 
-    # tp.holdout.start and .end HAVE to be end of estimation period as this is used elsewhere!
+    # tp.holdout.start/.end and HAVE to be end of estimation period as this is used elsewhere!
     #   ie to ensure prediction.end (with clv.time.get.prediction.table) finds correct end if user gives NULL
-    tp.estimation.end  <- tp.last.transaction
+    tp.estimation.end  <- tp.observation.end
     tp.holdout.start   <- tp.estimation.end
     tp.holdout.end     <- tp.estimation.end
     holdout.period.in.tu <- 0
