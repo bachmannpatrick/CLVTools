@@ -228,9 +228,6 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
   if(clv.t@timepoint.estimation.end > dt.trans[, max(Date)])
     stop("Parameter estimation.split needs to indicate a point in the data!", call. = FALSE)
 
-  if(clv.t@estimation.period.in.tu < 1)
-    stop("Parameter estimation.split needs to be at least 1 time.unit after the start!", call. = FALSE)
-
 
   # Check if the estimation.split is valid ----------------------------------------
   #   - estimation period long enough
