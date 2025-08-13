@@ -238,7 +238,7 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
   everyones.first.trans <- dt.trans[, list(date.first.actual.trans = min(Date)), by="Id"]
   date.last.first.trans <- everyones.first.trans[, max(date.first.actual.trans)]
   if(clv.t@timepoint.estimation.end < date.last.first.trans)
-    stop("The estimation split is too short! Not all customers of this cohort had their first actual transaction until the specified estimation.split!", call. = F)
+    stop("The estimation period is too short! Not all customers had their first transaction until the end of the estimation period!", call. = FALSE)
 
 
 
