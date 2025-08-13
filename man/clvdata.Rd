@@ -24,13 +24,13 @@ clvdata(
 
 \item{estimation.split}{Indicates the length of the estimation period. See details.}
 
+\item{observation.end}{The end of the observation period, beyond the last recorded transaction in \code{data.transactions}. See details.}
+
 \item{name.id}{Column name of the customer id in \code{data.transactions}.}
 
 \item{name.date}{Column name of the transaction date in \code{data.transactions}.}
 
 \item{name.price}{Column name of price in \code{data.transactions}. NULL if no spending data is present.}
-
-\item{observation.split}{The end of the observation period, beyond the last recorded transaction in \code{data.transactions}. See details.}
 }
 \value{
 An object of class \code{clv.data}.

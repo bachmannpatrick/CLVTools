@@ -47,6 +47,8 @@ as.clv.data(
 
 \item{time.unit}{What time unit defines a period. May be abbreviated, capitalization is ignored. See details.}
 
+\item{observation.end}{The end of the observation period, beyond the last recorded transaction in \code{x}. See details.}
+
 \item{estimation.split}{Indicates the length of the estimation period. See details.}
 
 \item{name.id}{Column name of the customer id in \code{x}.}
@@ -56,8 +58,6 @@ as.clv.data(
 \item{name.price}{Column name of price in \code{x}. NULL if no spending data is present.}
 
 \item{...}{Ignored}
-
-\item{observation.split}{The end of the observation period, beyond the last recorded transaction in \code{x}. See details.}
 }
 \description{
 Functions to coerce transaction data to a \code{clv.data} object.
