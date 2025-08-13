@@ -125,7 +125,7 @@
 #'
 #'
 #' @export
-clvdata <- function(data.transactions, date.format, time.unit, estimation.split=NULL, name.id="Id", name.date="Date", name.price="Price"){
+clvdata <- function(data.transactions, date.format, time.unit, estimation.split=NULL, observation.end=NULL, name.id="Id", name.date="Date", name.price="Price"){
   # silence CRAN notes
   Date <- Price <- Id <- x <- previous <- date.first.actual.trans <- NULL
 
@@ -149,6 +149,7 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
 
   err.msg <- c(err.msg, .check_userinput_charactervec(char=date.format, var.name = "date.format", n=1))
   err.msg <- c(err.msg, check_userinput_datanocov_estimationsplit(estimation.split=estimation.split, date.format=date.format))
+  err.msg <- c(err.msg, check_userinput_datanocov_observationend(observation.end=observation.end, date.format=date.format))
   check_err_msg(err.msg)
 
 
@@ -221,6 +222,7 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
   clv.t <- clv.time.set.sample.periods(clv.time = clv.t,
                                        tp.first.transaction = tp.first.transaction,
                                        tp.last.transaction  = tp.last.transaction,
+                                       user.observation.end = observation.end,
                                        user.estimation.end  = estimation.split)
 
   if(clv.t@timepoint.estimation.end > dt.trans[, max(Date)])

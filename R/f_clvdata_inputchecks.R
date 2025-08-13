@@ -210,6 +210,31 @@ check_userinput_datanocov_estimationsplit <- function(estimation.split, date.for
   return(c())
 }
 
+#' @importFrom lubridate is.POSIXt is.Date parse_date_time
+check_userinput_datanocov_observationend <- function(observation.end, date.format){
+
+  # May be NULL
+  if(is.null(observation.end))
+    return(c())
+
+  if(length(observation.end) != 1)
+    return("observation.end must contain exactly one single element!")
+
+  if(anyNA(observation.end))
+    return("observation.end may not contain any NAs!")
+
+  if(!is.character(observation.end)
+     & !is.Date(observation.end)
+     & !is.POSIXt(observation.end))
+    return("observation.end needs to either of type character or date-like (Date or POSIXt)")
+
+  if(is.character(observation.end))
+    if(anyNA(parse_date_time(x=observation.end, quiet=TRUE, orders=date.format)))
+      return("Please provide a valid observation.end to that can be converted with the given date.format!")
+
+  return(c())
+}
+
 
 #' @importFrom lubridate is.POSIXct
 check_userinput_datanocov_datatransactions <- function(data.transactions.dt, has.spending){
