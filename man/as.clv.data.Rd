@@ -10,6 +10,7 @@ as.clv.data(
   x,
   date.format = "ymd",
   time.unit = "weeks",
+  observation.end = NULL,
   estimation.split = NULL,
   name.id = "Id",
   name.date = "Date",
@@ -55,6 +56,8 @@ as.clv.data(
 \item{name.price}{Column name of price in \code{x}. NULL if no spending data is present.}
 
 \item{...}{Ignored}
+
+\item{observation.split}{The end of the observation period, beyond the last recorded transaction in \code{x}. See details.}
 }
 \description{
 Functions to coerce transaction data to a \code{clv.data} object.

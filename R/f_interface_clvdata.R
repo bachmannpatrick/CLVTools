@@ -32,6 +32,12 @@
 #' (i.e., "2010-06-17") is indicated with \code{"ymd"}. Other combinations such as \code{"dmy"}, \code{"dym"},
 #' \code{"ymd HMS"}, or \code{"HMS dmy"} are possible as well.
 #'
+#' \code{observation.end} The point in time at which the observation period ends.
+#' The observation period is the total time frame in which customers were observed and is the combined estimation and holdout periods.
+#' Useful when the last recorded transaction does not constitute the end of the observation period.
+#' For example, when the last transaction was on "2000-12-29" but customers where actually observed until "2000-12-31".
+#' Required to be after the last recorded transaction.
+#'
 #' \code{estimation.split} May be specified as either the number of periods since the first transaction or the timepoint
 #' (either as character, Date, or POSIXct) at which the estimation period ends. The indicated timepoint itself will be part of the estimation sample.
 #' If no value is provided or set to \code{NULL}, the whole dataset will used for fitting the model (no holdout sample).
@@ -82,6 +88,13 @@
 #' clv.data.cdnow <- clvdata(data.transactions = cdnow,
 #'                           date.format="ymd",
 #'                           time.unit = "w",
+#'                           estimation.split = "1997-10-15")
+#'
+#' # Extend observation period until 31th Dec 1998
+#' clv.data.cdnow <- clvdata(data.transactions = cdnow,
+#'                           date.format="ymd",
+#'                           time.unit = "w",
+#'                           observation.end = "1998-12-31",
 #'                           estimation.split = "1997-10-15")
 #'
 #' # summary of the transaction data
