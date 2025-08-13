@@ -112,6 +112,12 @@ clv.time.set.sample.periods <- function(clv.time, tp.first.transaction, tp.last.
                                                                     user.timepoint=user.estimation.end)
     }
 
+
+    # Before the last transaction to ensure there is at least 1 transaction in the holdout period.
+    # Needed additionally to holdout >=2 periods
+    if(tp.estimation.end >= tp.last.transaction)
+      stop("Parameter estimation.split needs to indicate a point before the last transaction!", call. = FALSE)
+
     # Need to be 2 periods because otherwise for days, holdout can be not on estimation.end but still be of length zero
     #   ie 2 periods to still have 1 as holdout
     if(tp.estimation.end > tp.observation.end - clv.time.number.timeunits.to.timeperiod(clv.time, 2L))
