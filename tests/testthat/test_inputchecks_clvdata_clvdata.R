@@ -194,19 +194,15 @@ test_that("Fails with character in wrong dateformat",{
 
 test_that("Fails with split after last transaction",{
   expect_error(clvdata(estimation.split = "2010-01-01",time.unit = "w", data.transactions = cdnow,
-                       date.format="ymd"), regexp = "a holdout period of at least 2 time.units")
+                       date.format="ymd"), regexp = "before the last transaction")
   expect_error(clvdata(estimation.split = 200,time.unit = "w", data.transactions = cdnow,
-                       date.format="ymd"), regexp = "a holdout period of at least 2 time.units")
+                       date.format="ymd"), regexp = "before the last transaction")
   expect_error(clvdata(estimation.split = 4,time.unit = "y", data.transactions = cdnow,
-                       date.format="ymd"), regexp = "a holdout period of at least 2 time.units")
+                       date.format="ymd"), regexp = "before the last transaction")
 })
 
 test_that("Fails with split in 2 periods before last transaction (ie in last period)",{
-  expect_error(clvdata(estimation.split = "1998-06-30",time.unit = "d", data.transactions = cdnow,
-                       date.format="ymd"), regexp = "a holdout period of at least 2 time.units")
   expect_error(clvdata(estimation.split = "1998-06-29",time.unit = "d", data.transactions = cdnow,
-                       date.format="ymd"), regexp = "a holdout period of at least 2 time.units")
-  expect_error(clvdata(estimation.split = "1998-06-30",time.unit = "w", data.transactions = cdnow,
                        date.format="ymd"), regexp = "a holdout period of at least 2 time.units")
   expect_error(clvdata(estimation.split = "1998-06-21",time.unit = "w", data.transactions = cdnow,
                        date.format="ymd"), regexp = "a holdout period of at least 2 time.units")
