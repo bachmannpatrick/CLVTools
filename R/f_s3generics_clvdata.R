@@ -291,8 +291,10 @@ subset.clv.data <- function(x,
 #' @rdname as.clv.data
 #' @export
 as.clv.data.data.frame <- function(x,
-                                   date.format="ymd", time.unit="weeks",
+                                   date.format="ymd",
+                                   time.unit="weeks",
                                    estimation.split = NULL,
+                                   observation.end = NULL,
                                    name.id="Id", name.date="Date", name.price="Price",
                                    ...){
   return(clvdata(data.transactions = x,
@@ -304,8 +306,10 @@ as.clv.data.data.frame <- function(x,
 #' @rdname as.clv.data
 #' @export
 as.clv.data.data.table <- function(x,
-                                   date.format="ymd", time.unit="weeks",
+                                   date.format="ymd",
+                                   time.unit="weeks",
                                    estimation.split = NULL,
+                                   observation.end = NULL,
                                    name.id="Id", name.date="Date", name.price="Price",
                                    ...){
   return(clvdata(data.transactions = x,

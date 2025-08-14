@@ -247,8 +247,8 @@ setGeneric("clv.data.create.bootstrapping.data", def = function(clv.data, ids){
 as.clv.data <- function(x,
                         date.format="ymd",
                         time.unit="weeks",
-                        observation.end = NULL,
                         estimation.split = NULL,
+                        observation.end = NULL,
                         name.id="Id", name.date="Date", name.price="Price",
                         ...){
   UseMethod("as.clv.data", x)
