@@ -100,6 +100,18 @@ test_that("Fails if covariate data is to short for all customers",{
   fct.expect.error.setdyncov(data.cov.trans = apparelDynCov.tooshort, regexp = "covariate data exactly from")
 })
 
+test_that("Fails if covariate data ends before observation.end", {
+
+  clv.data.apparel.obsE <- fct.helper.create.clvdata.apparel.nocov(
+    estimation.split = NULL,
+    observation.end = "2012-12-31")
+
+  fct.expect.error.setdyncov(
+    clv.data = clv.data.apparel.obsE,
+    regexp = "There need to be weekly covariate data exactly")
+
+})
+
 test_that("Fails if there are Ids in the covariates that are not in the transaction data", {
   dt.cov.1additional <- data.table::copy(apparelDynCov[Id == "1"])
   dt.cov.1additional[, Id := "ABC"]
