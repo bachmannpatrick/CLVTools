@@ -399,14 +399,15 @@ fct.testthat.correctness.clvtime.set.sample.periods.char.estimation.end <- funct
 
 fct.testthat.correctness.clvtime.set.sample.periods.observation.end <- function(){
 
-  # fct.helper.clv.time.correct.datetype
+  #
+  clv.t <- clv.time.weeks("ymd")
 
   test_that("Fail if observation.end is before last transaction",{
     expect_error(
       clv.time.set.sample.periods(
-        clv.time.weeks("ymd"),
-        tp.first.transaction = ymd("2000-01-01"),
-        tp.last.transaction = ymd("2000-12-31"),
+        clv.t,
+        tp.first.transaction = fct.helper.clv.time.correct.datetype("2000-01-01", clv.t = clv.t),
+        tp.last.transaction = fct.helper.clv.time.correct.datetype("2000-12-31", clv.t = clv.t),
         user.estimation.end = NULL,
         user.observation.end = "2000-12-30"),
       regexp = "may not be before the last recorded transaction"
@@ -417,45 +418,50 @@ fct.testthat.correctness.clvtime.set.sample.periods.observation.end <- function(
   test_that("Fail if observation.end leads to holdout period < 2 periods", {
     expect_error(
       clv.time.set.sample.periods(
-        clv.time.weeks("ymd"),
-        tp.first.transaction = ymd("2000-01-01"),
-        tp.last.transaction = ymd("2000-12-31"),
-        user.estimation.end = "2001-01-20",
-        user.observation.end = "2001-01-31"),
+        clv.t,
+        tp.first.transaction = fct.helper.clv.time.correct.datetype("2000-01-01", clv.t = clv.t),
+        tp.last.transaction = fct.helper.clv.time.correct.datetype("2000-12-31", clv.t = clv.t),
+        user.estimation.end = "2000-12-28",
+        user.observation.end = "2001-01-03"),
       regexp = "holdout period of at least 2 time.units"
     )
 
   })
 
-  test_that("Fail if observation.end leads to estimation period < 1 period", {
-    expect_error(
-      clv.time.set.sample.periods(
-        clv.time.weeks("ymd"),
-        tp.first.transaction = ymd("2000-01-01"),
-        tp.last.transaction = ymd("2000-01-02"),
-        user.estimation.end = "2000-01-05",
-        user.observation.end = "2000-01-31"),
-      regexp = "least 1 time.unit"
-    )
-  })
 
-  test_that("Fail if observation.end is before estimation.split", {
-    expect_error(
-      clv.time.set.sample.periods(
-        clv.time.weeks("ymd"),
-        tp.first.transaction = ymd("2000-01-01"),
-        tp.last.transaction = ymd("2000-12-31"),
-        user.estimation.end = "2001-02-15",
-        user.observation.end = "2001-01-31"),
-      regexp = "holdout period of at least 2 time.units"
-    )
-  })
+  # Not possible anymore since requiring estimation.split to be before last
+  # transaction and observation.end after last transaction
+  # test_that("Fail if observation.end leads to estimation period < 1 period", {
+  #   expect_error(
+  #     clv.time.set.sample.periods(
+  #       clv.t,
+  #       tp.first.transaction = fct.helper.clv.time.correct.datetype("2000-01-01", clv.t = clv.t),
+  #       tp.last.transaction = fct.helper.clv.time.correct.datetype("2000-01-10", clv.t = clv.t),
+  #       user.estimation.end = "2000-01-05",
+  #       user.observation.end = "2000-01-31"),
+  #     regexp = "least 1 time.unit"
+  #   )
+  # })
+
+  # Not possible anymore since requiring estimation.split to be before last
+  # transaction and observation.end after last transaction
+  # test_that("Fail if observation.end is before estimation.split", {
+  #   expect_error(
+  #     clv.time.set.sample.periods(
+  #       clv.t,
+  #       tp.first.transaction = fct.helper.clv.time.correct.datetype("2000-01-01", clv.t = clv.t),
+  #       tp.last.transaction = fct.helper.clv.time.correct.datetype("2000-12-31", clv.t = clv.t),
+  #       user.estimation.end = "2001-02-15",
+  #       user.observation.end = "2001-01-31"),
+  #     regexp = "holdout period of at least 2 time.units"
+  #   )
+  # })
 
   test_that("Same object when no observation.end as when observation.end=tp.last.transaction", {
     l.args <- list(
-      clv.time = clv.time.weeks("ymd"),
-      tp.first.transaction = ymd("2000-01-01"),
-      tp.last.transaction = ymd("2000-12-31")
+      clv.time = clv.t,
+      tp.first.transaction = fct.helper.clv.time.correct.datetype("2000-01-01", clv.t = clv.t),
+      tp.last.transaction = fct.helper.clv.time.correct.datetype("2000-12-31", clv.t = clv.t)
     )
 
     # No holdout
@@ -473,29 +479,32 @@ fct.testthat.correctness.clvtime.set.sample.periods.observation.end <- function(
     )
   })
 
-  test_that("estimation.split can be after last transaction if observation.end is given", {
-    expect_silent(
-      clv.time.set.sample.periods(
-        clv.time.weeks("ymd"),
-        tp.first.transaction = ymd("2000-01-01"),
-        tp.last.transaction = ymd("2000-12-31"),
-        user.estimation.end = "2001-01-10",
-        user.observation.end = "2001-01-31")
-    )
-  })
+
+  # Not possible anymore since requiring estimation.split to be before last
+  # transaction and observation.end after last transaction
+  # test_that("estimation.split can be after last transaction if observation.end is given", {
+  #   expect_silent(
+  #     clv.time.set.sample.periods(
+  #       clv.t,
+  #       tp.first.transaction = fct.helper.clv.time.correct.datetype("2000-01-01", clv.t=clv.t),
+  #       tp.last.transaction = fct.helper.clv.time.correct.datetype("2000-12-31", clv.t = clv.t),
+  #       user.estimation.end = "2001-01-10",
+  #       user.observation.end = "2001-01-31")
+  #   )
+  # })
 
   test_that("observation.end only moves holdout.end (if estimation.split is before)",{
     clv.t.no.obsend <- clv.time.set.sample.periods(
-      clv.time = clv.time.weeks("ymd"),
-      tp.first.transaction = ymd("2000-01-01"),
-      tp.last.transaction = ymd("2000-12-31"),
+      clv.time = clv.t,
+      tp.first.transaction = fct.helper.clv.time.correct.datetype("2000-01-01", clv.t = clv.t),
+      tp.last.transaction = fct.helper.clv.time.correct.datetype("2000-12-31", clv.t = clv.t),
       user.estimation.end = "2000-06-15",
       user.observation.end = NULL)
 
     clv.t.with.obsend <- clv.time.set.sample.periods(
-      clv.time = clv.time.weeks("ymd"),
-      tp.first.transaction = ymd("2000-01-01"),
-      tp.last.transaction = ymd("2000-12-31"),
+      clv.time = clv.t,
+      tp.first.transaction = fct.helper.clv.time.correct.datetype("2000-01-01", clv.t=clv.t),
+      tp.last.transaction = fct.helper.clv.time.correct.datetype("2000-12-31", clv.t=clv.t),
       user.estimation.end = "2000-06-15",
       user.observation.end = "2001-02-28")
 
@@ -511,26 +520,30 @@ fct.testthat.correctness.clvtime.set.sample.periods.observation.end <- function(
   })
 
 
+
   test_that("Manually check if yields correct timepoints", {
 
-    # With holdout + split after last transaction
-    clv.holdout <- clv.time.set.sample.periods(
-      clv.time = clv.time.weeks("ymd"),
-      tp.first.transaction = ymd("2000-01-01"),
-      tp.last.transaction = ymd("2000-05-28"),
-      user.estimation.end = "2000-06-15",
-      user.observation.end = "2000-12-31")
 
-    expect_true(clv.holdout@timepoint.estimation.start == "2000-01-01")
-    expect_true(clv.holdout@timepoint.estimation.end == "2000-06-15")
-    expect_true(clv.holdout@timepoint.holdout.start == "2000-06-16")
-    expect_true(clv.holdout@timepoint.holdout.end == "2000-12-31")
+    # Not possible anymore since requiring estimation.split to be before last
+    # transaction and observation.end after last transaction
+    # # With holdout + split after last transaction
+    # clv.holdout <- clv.time.set.sample.periods(
+    #   clv.time = clv.t,
+    #   tp.first.transaction = fct.helper.clv.time.correct.datetype("2000-01-01", clv.t = clv.t),
+    #   tp.last.transaction = fct.helper.clv.time.correct.datetype("2000-05-28", clv.t = clv.t),
+    #   user.estimation.end = "2000-06-15",
+    #   user.observation.end = "2000-12-31")
+    #
+    # expect_true(clv.holdout@timepoint.estimation.start == "2000-01-01")
+    # expect_true(clv.holdout@timepoint.estimation.end == "2000-06-15")
+    # expect_true(clv.holdout@timepoint.holdout.start == "2000-06-16")
+    # expect_true(clv.holdout@timepoint.holdout.end == "2000-12-31")
 
 
     clv.no.holdout <- clv.time.set.sample.periods(
-      clv.time = clv.time.weeks("ymd"),
-      tp.first.transaction = ymd("2000-01-01"),
-      tp.last.transaction = ymd("2000-12-28"),
+      clv.time = clv.t,
+      tp.first.transaction = fct.helper.clv.time.correct.datetype("2000-01-01", clv.t = clv.t),
+      tp.last.transaction = fct.helper.clv.time.correct.datetype("2000-12-28", clv.t=clv.t),
       user.estimation.end = NULL,
       user.observation.end = "2000-12-31")
 
