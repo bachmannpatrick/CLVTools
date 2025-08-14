@@ -524,20 +524,18 @@ fct.testthat.correctness.clvtime.set.sample.periods.observation.end <- function(
   test_that("Manually check if yields correct timepoints", {
 
 
-    # Not possible anymore since requiring estimation.split to be before last
-    # transaction and observation.end after last transaction
     # # With holdout + split after last transaction
-    # clv.holdout <- clv.time.set.sample.periods(
-    #   clv.time = clv.t,
-    #   tp.first.transaction = fct.helper.clv.time.correct.datetype("2000-01-01", clv.t = clv.t),
-    #   tp.last.transaction = fct.helper.clv.time.correct.datetype("2000-05-28", clv.t = clv.t),
-    #   user.estimation.end = "2000-06-15",
-    #   user.observation.end = "2000-12-31")
-    #
-    # expect_true(clv.holdout@timepoint.estimation.start == "2000-01-01")
-    # expect_true(clv.holdout@timepoint.estimation.end == "2000-06-15")
-    # expect_true(clv.holdout@timepoint.holdout.start == "2000-06-16")
-    # expect_true(clv.holdout@timepoint.holdout.end == "2000-12-31")
+    clv.holdout <- clv.time.set.sample.periods(
+      clv.time = clv.t,
+      tp.first.transaction = fct.helper.clv.time.correct.datetype("2000-01-01", clv.t = clv.t),
+      tp.last.transaction = fct.helper.clv.time.correct.datetype("2000-06-15", clv.t = clv.t),
+      user.estimation.end = "2000-04-04",
+      user.observation.end = "2000-12-31")
+
+    expect_true(clv.holdout@timepoint.estimation.start == "2000-01-01")
+    expect_true(clv.holdout@timepoint.estimation.end == "2000-04-04")
+    expect_true(clv.holdout@timepoint.holdout.start == "2000-04-05")
+    expect_true(clv.holdout@timepoint.holdout.end == "2000-12-31")
 
 
     clv.no.holdout <- clv.time.set.sample.periods(
