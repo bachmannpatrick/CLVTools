@@ -249,3 +249,40 @@ test_that("Works when called from as.clv.data()", {
   expect_silent(as.clv.data(as.data.frame(cdnow)))
   expect_silent(as.clv.data(as.data.table(cdnow)))
 })
+
+# observation.end ----------------------------------------------------------------
+
+test_that("Works with observation.end with and without holdout",{
+  skip_on_cran()
+  l.args <- list(
+    observation.end = "2000-01-01",
+    data.transactions = cdnow,
+    time.unit = "w",
+    date.format = "ymd"
+  )
+
+  l.args["estimation.split"] <- list(NULL)
+  expect_silent(do.call(clvdata, l.args))
+
+  l.args$estimation.split <- 37
+  expect_silent(do.call(clvdata, l.args))
+})
+
+test_that("Works with observation.end and time.units hours, days, years", {
+  l.args <- list(
+    data.transactions = cdnow,
+    observation.end = "2000-01-01",
+    estimation.split = NULL,
+    date.format = "ymd"
+  )
+
+  l.args$time.unit <- "days"
+  expect_silent(do.call(clvdata, l.args))
+
+  l.args$time.unit <- "year"
+  expect_silent(do.call(clvdata, l.args))
+
+  l.args$time.unit <- "hours"
+  expect_silent(do.call(clvdata, l.args))
+})
+

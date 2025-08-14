@@ -25,9 +25,11 @@ fct.helper.test.runability.clv.data.summary <- function(clv.data){
     # warning if inexistent ids
     expect_warning(summary(clv.data, ids=c(ids, "abczxy")), regexp = "Not all given ids were found")
 
-    # id with trans in holdout
-    expect_silent(id.with.holdout <- clv.data@data.transactions[Date>=clv.data@clv.time@timepoint.holdout.start, head(Id,n=1)])
-    expect_silent(summary(clv.data, ids=id.with.holdout))
+    if(clv.data.has.holdout(clv.data)){
+      # id with trans in holdout
+      expect_silent(id.with.holdout <- clv.data@data.transactions[Date>=clv.data@clv.time@timepoint.holdout.start, head(Id,n=1)])
+      expect_silent(summary(clv.data, ids=id.with.holdout))
+    }
 
     # id without trans in holdout
     #   any zero-repeater
@@ -270,20 +272,6 @@ fct.helper.test.runability.clv.data.others3 <- function(clv.data){
 }
 
 
-
-
-# Create all combos: {w/, w/o} holdout, {w/, w/o}  {static, dynamic} covs
-
-apparel.holdout    <- fct.helper.create.clvdata.apparel.nocov()
-apparel.no.holdout <- fct.helper.create.clvdata.apparel.nocov(estimation.split = NULL)
-
-apparel.holdout.static.cov <- fct.helper.create.clvdata.apparel.staticcov()
-apparel.no.holdout.static.cov <- fct.helper.create.clvdata.apparel.staticcov(estimation.split = NULL)
-
-apparel.holdout.dyn.cov <- fct.helper.create.clvdata.apparel.dyncov()
-apparel.no.holdout.dyn.cov <- fct.helper.create.clvdata.apparel.dyncov(estimation.split = NULL)
-
-
 fct.helper.test.runability.clv.data.runall <- function(clv.data){
   fct.helper.test.runability.clv.data.trackingplot(clv.data)
   fct.helper.test.runability.clv.data.plotfrequency(clv.data)
@@ -295,10 +283,25 @@ fct.helper.test.runability.clv.data.runall <- function(clv.data){
 }
 
 
-fct.helper.test.runability.clv.data.runall(apparel.holdout)
-fct.helper.test.runability.clv.data.runall(apparel.no.holdout)
-fct.helper.test.runability.clv.data.runall(apparel.holdout.static.cov)
-fct.helper.test.runability.clv.data.runall(apparel.no.holdout.static.cov)
-fct.helper.test.runability.clv.data.runall(apparel.holdout.dyn.cov)
-fct.helper.test.runability.clv.data.runall(apparel.no.holdout.dyn.cov)
+
+for(fn in list(
+  fct.helper.create.clvdata.apparel.nocov,
+  fct.helper.create.clvdata.apparel.staticcov
+)){
+  # With holdout
+  fct.helper.test.runability.clv.data.runall(fn())
+  # . with observation.end
+  fct.helper.test.runability.clv.data.runall(fn(observation.end="2011-01-31"))
+
+  # Without holdout
+  fct.helper.test.runability.clv.data.runall(fn(estimation.split=NULL))
+  # . with observation.end
+  fct.helper.test.runability.clv.data.runall(fn(estimation.split=NULL, observation.end="2011-01-31"))
+
+}
+
+# observation.end would require to prepare transaction data (cut before cov end)
+# But dyncovs are not used for any of the s3 methods, therefore skip testing with observation.end for dyncov
+fct.helper.test.runability.clv.data.runall(fct.helper.create.clvdata.apparel.dyncov())
+fct.helper.test.runability.clv.data.runall(fct.helper.create.clvdata.apparel.dyncov(estimation.split = NULL))
 
