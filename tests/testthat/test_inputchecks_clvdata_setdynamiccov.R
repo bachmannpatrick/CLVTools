@@ -13,22 +13,32 @@ fct.expect.error.setdyncov <- function(
     names.cov.trans=c("High.Season", "Gender", "Channel"),
     name.id = "Id",
     name.date = "Cov.Date",
+    make.missing = NULL,
     regexp=NULL){
+
+  if(!is.null(make.missing)){
+    e <- environment()
+    # e[[make.missing]] <- NULL
+    rm(list=make.missing, envir = e)
+  }
 
   expect_error(SetDynamicCovariates(
     clv.data = clv.data,
     data.cov.life  = data.cov.life,
     names.cov.life = names.cov.life,
     data.cov.trans = data.cov.trans,
-    names.cov.trans = names.cov.trans
-  ))
+    names.cov.trans = names.cov.trans,
+    name.id = name.id,
+    name.date = name.date
+  ),
+  regexp = regexp)
 }
 
 
 # Parameter clv.data ---------------------------------------------------------------------------------------
 test_that("Fails if not clv.data input", {
   # missing/NA/NULL
-  fct.expect.error.setdyncov(clv.data = )
+  fct.expect.error.setdyncov(make.missing = "clv.data")
   fct.expect.error.setdyncov(clv.data = NULL)
   fct.expect.error.setdyncov(clv.data = NA_real_)
 
@@ -52,14 +62,14 @@ test_that("Fails if already has covariates", {
 test_that("Fails if is wrong type ", {
 
   # data.cov.life
-  fct.expect.error.setdyncov(data.cov.life  = , regexp = "missing")
+  fct.expect.error.setdyncov(make.missing="data.cov.life", regexp = "not found")
   fct.expect.error.setdyncov(data.cov.life  = NULL, regexp = "type data.frame or data.table")
   fct.expect.error.setdyncov(data.cov.life  = NA, regexp = "type data.frame or data.table")
   fct.expect.error.setdyncov(data.cov.life  = as.list(apparelDynCov), regexp = "type data.frame or data.table")
 
 
   # data.cov.trans
-  fct.expect.error.setdyncov(data.cov.trans  = , regexp = "missing")
+  fct.expect.error.setdyncov(make.missing = "data.cov.trans", regexp = "not found")
   fct.expect.error.setdyncov(data.cov.trans  = NULL, regexp = "type data.frame or data.table")
   fct.expect.error.setdyncov(data.cov.trans  = NA, regexp = "type data.frame or data.table")
   fct.expect.error.setdyncov(data.cov.trans  = as.list(apparelDynCov), regexp = "type data.frame or data.table")
@@ -214,13 +224,13 @@ test_that("Fails for variable with single category", {
 
 test_that("Fails if missing/NULL/NA/empty",{
   # names.cov.life
-  fct.expect.error.setdyncov(names.cov.life = , regexp = "missing")
+  fct.expect.error.setdyncov(make.missing = "names.cov.life", regexp = "not found")
   fct.expect.error.setdyncov(names.cov.life = NULL, regexp = "may not be NULL")
   fct.expect.error.setdyncov(names.cov.life = NA_character_, regexp = "any NA")
   fct.expect.error.setdyncov(names.cov.life = "", regexp = "could not be found")
 
   # names.cov.trans
-  fct.expect.error.setdyncov(names.cov.trans = , regexp = "missing")
+  fct.expect.error.setdyncov(make.missing = "names.cov.trans", regexp = "not found")
   fct.expect.error.setdyncov(names.cov.trans = NULL, regexp = "may not be NULL")
   fct.expect.error.setdyncov(names.cov.trans = NA_character_, regexp = "any NA")
   fct.expect.error.setdyncov(names.cov.trans = "", regexp = "could not be found")
@@ -313,7 +323,7 @@ test_that("Has default argument Id",{
 # Parameter name.date ---------------------------------------------------------------------------------------
 test_that("Fails if NA/NULL", {
 
-  fct.expect.error.setdyncov(name.date = "id", regexp = "NULL")
+  fct.expect.error.setdyncov(name.date = "id", regexp = "could not be found")
   fct.expect.error.setdyncov(name.date = NA_character_, regexp = "any NA")
   fct.expect.error.setdyncov(name.date = character(0), regexp = "exactly 1 element")
 })
