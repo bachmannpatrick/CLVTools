@@ -67,12 +67,14 @@ and hence all formats it accepts in argument \code{orders} can be used. For exam
 
 \code{observation.end} The point in time at which the observation period ends.
 The observation period is the total time frame in which customers were observed and is the combined estimation and holdout periods.
-Useful when the last recorded transaction does not constitute the end of the observation period.
+Useful when the last transaction does not constitute the end of the observation period.
 For example, when the last transaction was on "2000-12-29" but customers where actually observed until "2000-12-31".
 Required to be after the last recorded transaction.
 
 \code{estimation.split} May be specified as either the number of periods since the first transaction or the timepoint
-(either as character, Date, or POSIXct) at which the estimation period ends. The indicated timepoint itself will be part of the estimation sample.
+(either as character, Date, or POSIXct) at which the estimation period ends.
+Required to be before the last transaction.
+The indicated timepoint itself will be part of the estimation sample.
 If no value is provided or set to \code{NULL}, the whole dataset will used for fitting the model (no holdout sample).
 
 \subsection{Aggregation of Transactions}{
