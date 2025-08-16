@@ -30,6 +30,11 @@ setGeneric("clv.controlflow.estimate.process.post.estimation", def=function(clv.
   standardGeneric("clv.controlflow.estimate.process.post.estimation"))
 
 
+# .. Get LL ----------------------------------------------------------
+setGeneric("clv.fitted.get.LL", def = function(clv.fitted)
+  standardGeneric("clv.fitted.get.LL"))
+
+
 # . Predict -----------------------------------------------------------------------------------------------
 setGeneric("clv.controlflow.predict.check.inputs", def = function(clv.fitted, verbose, uncertainty, num.boots, level, ...)
   standardGeneric("clv.controlflow.predict.check.inputs"))
