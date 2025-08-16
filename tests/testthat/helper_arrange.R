@@ -203,6 +203,7 @@ fit.apparel.static <- function(
 fit.apparel.dyncov <- function(
     data.apparelTrans = NULL,
     data.apparelDynCov = NULL,
+    observation.end = NULL,
     estimation.split = 104,
     names.cov.life = c("High.Season", "Gender", "Channel"),
     names.cov.trans = c("High.Season", "Gender", "Channel"),
@@ -214,6 +215,7 @@ fit.apparel.dyncov <- function(
     data.apparelTrans = data.apparelTrans,
     data.apparelDynCov = data.apparelDynCov,
     estimation.split = estimation.split,
+    observation.end = observation.end,
     names.cov.life = names.cov.life,
     names.cov.trans = names.cov.trans
   )
