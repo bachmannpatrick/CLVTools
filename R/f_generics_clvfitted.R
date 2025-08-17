@@ -45,7 +45,7 @@ setGeneric("clv.fitted.get.LL", signature = "clv.fitted", def = function(clv.fit
   # is not trivial as there are plenty of options.
   # To reproduce it, the exact steps of the estimation are repeated here.
 
-  # Start parameters are not really required, they are just stored as parameter
+  # Start parameters are not really required, they are just stored as item
   # `par` for `optimx()`
   final.coefs <- drop(tail(coef(clv.fitted@optimx.estimation.output), n=1))
 
@@ -69,28 +69,30 @@ setGeneric("clv.fitted.get.LL", signature = "clv.fitted", def = function(clv.fit
   names.optimx.args <- setdiff(formalArgs(optimx), "...")
   call.args <- prepared.optimx.args[!(names(prepared.optimx.args) %in% names.optimx.args)]
 
-  # Save memory as the returned method is a closure and has the environment in
-  # which is was defined attached. Hence all variables in this method here.
-  # rm(prepared.optimx.args)
-  fn.LL.entrypoint <- prepared.optimx.args$fn
-  # rm(final.coefs)
-  # rm(clv.fitted)
-  # rm()
+  # Could save memory as the returned method is a closure and has the environment
+  # in which is was defined attached. Hence all variables in this method here
+  # which may be large. However, it can also be useful to have these objects.
 
+  # Wrapper to call the LL with the original args.
+  # It is preferred to return a method rather than calling it immediately
+  # because generating the call args may take time.
   LL <- function(params){
     req.names <- call.args$LL.param.names.to.optimx
 
     # Ensure named same as original
     if(!(identical(sort(names(params)), sort(req.names)))){
-      check_err_msg(paste0("'params' has to be named ", paste(req.names, collapse = ", "),"."))
+      check_err_msg(paste0(
+        "'params' has to be named ",
+        paste(req.names, collapse = ", "),
+        ". Often, `drop(coef(model@optimx.estimation.output))` is useful."))
     }
 
     # Ensure name and position are the same as original order. This is required as
     # any param input will be re-named by slapping `LL.param.names.to.optimx` on
     # them (using names() <- ) in the first interlayer and then further accessed
-    # by name
+    # by name.
     call.args$LL.params <- params[req.names] # bring to correct order
-    return(do.call(what = fn.LL.entrypoint, args = call.args))
+    return(do.call(what = prepared.optimx.args$fn, args = call.args))
   }
 
   return(LL)
