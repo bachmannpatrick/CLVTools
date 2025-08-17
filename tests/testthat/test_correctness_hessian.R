@@ -30,23 +30,40 @@ test_that("hessian() produces same result - no cov", {
 test_that("hessian() produces same result - static cov", {
   skip_on_cran()
 
-  for(m in list(pnbd, bgnbd, ggomnbd, gg)){
+  for(m in list(pnbd, bgnbd, ggomnbd)){
+    # Default specification
     fn.compare.hessian(
       fit.apparel.static(model=m, optimx.args = optimx.args)
     )
 
     # With constrained covs
-    if(!identical(m, gg)){
-      fn.compare.hessian(
-        fit.apparel.static(
-          model=m,
-          names.cov.constr = "Gender",
-          optimx.args = optimx.args)
-      )
-    }
+    fn.compare.hessian(
+      fit.apparel.static(
+        model=m,
+        names.cov.constr = "Gender",
+        optimx.args = optimx.args)
+    )
+
+    # With regularization
+    fn.compare.hessian(
+      fit.apparel.static(
+        model=m,
+        reg.lambdas = c(life = 10, trans=5),
+        optimx.args = optimx.args)
+    )
+
+    # With constrained covs & regularization
+    fn.compare.hessian(
+      fit.apparel.static(
+        model=m,
+        names.cov.constr = "Channel",
+        reg.lambdas = c(life = 10, trans=5),
+        optimx.args = optimx.args)
+    )
   }
 
-  # With cor
+
+  # PNBD only: With cor
   fn.compare.hessian(
     fit.apparel.static(model = pnbd, use.cor=TRUE, optimx.args = optimx.args)
   )
@@ -56,7 +73,7 @@ test_that("hessian() produces same result - static cov", {
 test_that("hessian() produces same result - dyn cov", {
   skip_on_cran()
 
-  # No cor
+  # Default
   fn.compare.hessian(
     fit.apparel.dyncov(model = pnbd, optimx.args = optimx.args)
   )
@@ -65,10 +82,17 @@ test_that("hessian() produces same result - dyn cov", {
   fn.compare.hessian(
     fit.apparel.dyncov(model = pnbd, use.cor=TRUE, optimx.args = optimx.args)
   )
+
   # With constrained covs
   fn.compare.hessian(
     fit.apparel.dyncov(model = pnbd, names.cov.constr = "Gender", optimx.args = optimx.args)
   )
+
+  # With regularization
+  fn.compare.hessian(
+    fit.apparel.dyncov(model = pnbd, reg.lambdas = c(trans=10, life=5), optimx.args = optimx.args)
+  )
+
 })
 
 
