@@ -34,6 +34,16 @@ test_that("hessian() produces same result - static cov", {
     fn.compare.hessian(
       fit.apparel.static(model=m, optimx.args = optimx.args)
     )
+
+    # With constrained covs
+    if(!identical(m, gg)){
+      fn.compare.hessian(
+        fit.apparel.static(
+          model=m,
+          names.cov.constr = "Gender",
+          optimx.args = optimx.args)
+      )
+    }
   }
 
   # With cor
@@ -54,6 +64,10 @@ test_that("hessian() produces same result - dyn cov", {
   # With cor
   fn.compare.hessian(
     fit.apparel.dyncov(model = pnbd, use.cor=TRUE, optimx.args = optimx.args)
+  )
+  # With constrained covs
+  fn.compare.hessian(
+    fit.apparel.dyncov(model = pnbd, names.cov.constr = "Gender", optimx.args = optimx.args)
   )
 })
 
