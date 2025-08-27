@@ -296,6 +296,28 @@ fct.testthat.correctness.clvfittedtransactions.staticcov.predict.newcustomer.0.f
   })
 }
 
+fct.testthat.correctness.clvfittedtransactions.observation.end.moves.prediction.period <- function(method){
+
+  test_that("Using observation.end moves prediction period",{
+    # Only valid for no holdout data
+    skip_on_cran()
+
+    fitted <- fit.cdnow(
+      model = method,
+      estimation.split = NULL,
+      observation.end = "1998-07-15"
+    )
+
+    dt.pred <- predict(fitted, prediction.end = "1998-07-30")
+
+    # Prediction period starts first `eps` after observation.end
+    expect_true(dt.pred[1, "period.first"] == "1998-07-16")
+    # Nothing else changed
+    expect_true(dt.pred[1, "period.last"] == "1998-07-30")
+  })
+
+}
+
 fct.testthat.correctness.clvfittedtransactions <- function(name.model, method,
                                                            correct.start.params.model, correct.params.nocov.coef, correct.LL.nocov,
                                                            kkt2.true){
@@ -326,6 +348,8 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method,
 
   # predict(newdata=newcustomer): no cov
   fct.testthat.correctness.clvfittedtransactions.nocov.predict.newcustomer.0.for.num.periods.eq.0(obj.fitted)
+  # observation.end moves start of prediction period
+  fct.testthat.correctness.clvfittedtransactions.observation.end.moves.prediction.period(method = method)
 
   # Static cov data --------------------------------------------------------------------------------------------
   # why 100 and not 104???????
