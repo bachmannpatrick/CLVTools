@@ -151,7 +151,10 @@ test_that("Fit, plot, predict work with partially empty estimation/holdout perio
     full.names=names.params
   )
 
-  expect_silent(predict(fitted.dyncov.holdout.obsE, prediction.end=10, verbose=FALSE))
-  expect_silent(plot(fitted.dyncov.holdout.obsE, prediction.end = 10, verbose=FALSE))
+  expect_silent(predict(fitted.dyncov.holdout.obsE, prediction.end=5, verbose=FALSE))
+  expect_warning(
+    plot(fitted.dyncov.holdout.obsE, prediction.end = 5, verbose=FALSE),
+    regexp = "Not plotting full holdout period"
+  )
 
 })
