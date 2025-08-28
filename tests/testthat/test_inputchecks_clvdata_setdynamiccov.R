@@ -100,11 +100,11 @@ test_that("Fails if covariate data is to short for all customers",{
   fct.expect.error.setdyncov(data.cov.trans = apparelDynCov.tooshort, regexp = "covariate data exactly from")
 })
 
-test_that("Fails if covariate data ends before observation.end", {
+test_that("Fails if covariate data ends before data.end", {
 
   clv.data.apparel.obsE <- fct.helper.create.clvdata.apparel.nocov(
     estimation.split = NULL,
-    observation.end = "2012-12-31")
+    data.end = "2012-12-31")
 
   fct.expect.error.setdyncov(
     clv.data = clv.data.apparel.obsE,

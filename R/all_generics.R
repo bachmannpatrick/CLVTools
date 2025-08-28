@@ -248,7 +248,7 @@ as.clv.data <- function(x,
                         date.format="ymd",
                         time.unit="weeks",
                         estimation.split = NULL,
-                        observation.end = NULL,
+                        data.end = NULL,
                         name.id="Id", name.date="Date", name.price="Price",
                         ...){
   UseMethod("as.clv.data", x)

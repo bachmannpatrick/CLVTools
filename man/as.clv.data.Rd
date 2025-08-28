@@ -11,7 +11,7 @@ as.clv.data(
   date.format = "ymd",
   time.unit = "weeks",
   estimation.split = NULL,
-  observation.end = NULL,
+  data.end = NULL,
   name.id = "Id",
   name.date = "Date",
   name.price = "Price",
@@ -23,7 +23,7 @@ as.clv.data(
   date.format = "ymd",
   time.unit = "weeks",
   estimation.split = NULL,
-  observation.end = NULL,
+  data.end = NULL,
   name.id = "Id",
   name.date = "Date",
   name.price = "Price",
@@ -35,7 +35,7 @@ as.clv.data(
   date.format = "ymd",
   time.unit = "weeks",
   estimation.split = NULL,
-  observation.end = NULL,
+  data.end = NULL,
   name.id = "Id",
   name.date = "Date",
   name.price = "Price",
@@ -51,7 +51,7 @@ as.clv.data(
 
 \item{estimation.split}{Indicates the length of the estimation period. See details.}
 
-\item{observation.end}{The end of the observation period, beyond the last recorded transaction in \code{x}. See details.}
+\item{data.end}{The fictional end of the data, after the last recorded transaction in \code{x}. See details.}
 
 \item{name.id}{Column name of the customer id in \code{x}.}
 

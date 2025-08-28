@@ -95,7 +95,7 @@ test_that("Dyncov works with additional model specifications", {
 })
 
 
-# With observation.end ---------------------------------------------------------
+# With data.end ---------------------------------------------------------
 
 test_that("Fit, plot, predict work with partially empty estimation/holdout period", {
 
@@ -121,7 +121,7 @@ test_that("Fit, plot, predict work with partially empty estimation/holdout perio
   expect_silent(fitted.dyncov.noholdout.obsE <- fit.apparel.dyncov(
     data.apparelTrans = apparelTrans.cut.obsE,
     estimation.split = NULL,
-    observation.end = date.original.trans.max,
+    data.end = date.original.trans.max,
     names.cov.life = covs.life,
     names.cov.trans = covs.trans,
     optimx.args=fct.helper.dyncov.get.optimxargs.quickfit(hessian=TRUE)
@@ -140,7 +140,7 @@ test_that("Fit, plot, predict work with partially empty estimation/holdout perio
   expect_silent(fitted.dyncov.holdout.obsE <- fit.apparel.dyncov(
     data.apparelTrans = apparelTrans.cut.obsE,
     estimation.split = 104,
-    observation.end = date.original.trans.max,
+    data.end = date.original.trans.max,
     names.cov.life = covs.life,
     names.cov.trans = covs.trans,
     optimx.args=fct.helper.dyncov.get.optimxargs.quickfit(hessian=TRUE)

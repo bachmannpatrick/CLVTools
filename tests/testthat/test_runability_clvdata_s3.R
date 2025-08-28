@@ -290,18 +290,18 @@ for(fn in list(
 )){
   # With holdout
   fct.helper.test.runability.clv.data.runall(fn())
-  # . with observation.end
-  fct.helper.test.runability.clv.data.runall(fn(observation.end="2011-01-31"))
+  # . with data.end
+  fct.helper.test.runability.clv.data.runall(fn(data.end="2011-01-31"))
 
   # Without holdout
   fct.helper.test.runability.clv.data.runall(fn(estimation.split=NULL))
-  # . with observation.end
-  fct.helper.test.runability.clv.data.runall(fn(estimation.split=NULL, observation.end="2011-01-31"))
+  # . with data.end
+  fct.helper.test.runability.clv.data.runall(fn(estimation.split=NULL, data.end="2011-01-31"))
 
 }
 
-# observation.end would require to prepare transaction data (cut before cov end)
-# But dyncovs are not used for any of the s3 methods, therefore skip testing with observation.end for dyncov
+# data.end would require to prepare transaction data (cut before cov end)
+# But dyncovs are not used for any of the s3 methods, therefore skip testing with data.end for dyncov
 fct.helper.test.runability.clv.data.runall(fct.helper.create.clvdata.apparel.dyncov())
 fct.helper.test.runability.clv.data.runall(fct.helper.create.clvdata.apparel.dyncov(estimation.split = NULL))
 
