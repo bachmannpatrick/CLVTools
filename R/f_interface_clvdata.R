@@ -93,7 +93,9 @@
 #'                           time.unit = "w",
 #'                           estimation.split = "1997-10-15")
 #'
-#' # Extend observation period until 31th Dec 1998
+#' # Extend data fictionally until 31th Dec 1998
+#' # In this case, this only moves the holdout period and has no effect on the
+#' # estimation.
 #' clv.data.cdnow <- clvdata(data.transactions = cdnow,
 #'                           date.format="ymd",
 #'                           time.unit = "w",
