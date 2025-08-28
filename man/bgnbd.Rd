@@ -130,7 +130,10 @@ apparel.bgnbd <- bgnbd(clv.data.apparel,
 # estimated coefs
 coef(apparel.bgnbd)
 
-# summary of the fitted model
+# summary of the fitted model.
+# Note that the significance indicators are set to NA on purpose because all
+# model parameters are by definition strictly positive. A hypothesis test
+# relative to a null of 0 therefore does not make sense.
 summary(apparel.bgnbd)
 
 # predict CLV etc for holdout period

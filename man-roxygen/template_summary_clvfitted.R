@@ -14,6 +14,11 @@
 #' (for example if specified in parameter \code{optimx.args}), all information here refers to
 #' the last method/row of the resulting \code{optimx} object.
 #'
+#' Note that for the main model coefficients (all coefs not for covariates),
+#' the significance indicators \code{z-val} and p-values are set to \code{NA} because they are by definition always
+#' strictly positive and hypothesis test relative to a null of 0 does not make sense.
+#'
+#'
 #' @return This function computes and returns a list of summary information of the fitted model
 #' given in \code{object}. It returns a list of class \code{summary.clv.no.covariates} that contains the
 #' following components:
