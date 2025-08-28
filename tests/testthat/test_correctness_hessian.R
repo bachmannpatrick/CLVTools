@@ -98,8 +98,37 @@ test_that("hessian() produces same result - dyn cov", {
 
 
 test_that("hessian() fails if parameters are non-finite",{
+  skip_on_cran()
+
   p.cdnow <- fit.cdnow(optimx.args=optimx.args)
   p.cdnow@optimx.estimation.output[1, "log.r"] <- NA_real_
 
   expect_error(hessian(p.cdnow), regexp = "Cannot proceed")
+})
+
+test_that("Internal clv.fitted.get.LL: Params position and order checked", {
+  # Indirectly tested for correctness by being used in hessian()
+  skip_on_cran()
+
+  p.reg.constr <- fit.apparel.static(
+    model = pnbd,
+    reg.lambdas = c(trans = 4, life = 9),
+    names.cov.constr = "Gender",
+    optimx.args= optimx.args)
+
+  LL.reg.constr <- clv.fitted.get.LL(p.reg.constr)
+  final.coefs <- drop(coef(p.reg.constr@optimx.estimation.output))
+
+  # Have to be named
+  expect_error(LL.reg.constr(setNames(final.coefs, NULL)), regexp = "has to be named")
+
+  # Does not work with extra coefs
+  expect_error(LL.reg.constr(coef(p.reg.constr)), regexp = "has to be named")
+
+  # Results are independent of order
+  expect_identical(
+    LL.reg.constr(sort(final.coefs, decreasing = FALSE)),
+    LL.reg.constr(sort(final.coefs, decreasing = TRUE))
+  )
+
 })
