@@ -25,52 +25,29 @@ hessian.clv.fitted <- function(object, method.args = list()){
   # Register for dispatch on a method defined in another package by using
   # @exportS3Method which adds `S3method(numDeriv::hessian,clv.fitted)` to NAMESPACE
 
-  # To calculate the Hessian, the LL needs to be called with the final parameters
-  # Calling the LL with the exact same inputs/specification as when the fitting
-  # is however not trivial as there are plenty of options.
-  # To reproduce it, the exact steps of the estimation are repeated here.
-
+  # Get final parameters
   # To get coefficients at the same scale (log-transformed) and names as when
-  # estimating the model, get them from the optimx results.
+  # estimating the model, get them directly from the optimx output.
   # Cannot use coef() as the reported parameters are transformed back and named
-  # differently
+  # differently.
   final.coefs <- drop(tail(coef(object@optimx.estimation.output), n=1))
 
   if(anyNA(final.coefs)){
     check_err_msg("Cannot proceed because there are NAs in the estimated coefficients!")
   }
 
-  prepared.optimx.args <- clv.controlflow.estimate.prepare.optimx.args(
-    clv.fitted=object,
-    start.params.all=final.coefs)
+  # Get LL
+  fn.LL <- clv.fitted.get.LL(object)
 
-  prepared.optimx.args <- clv.model.prepare.optimx.args(
-    clv.model=object@clv.model,
-    clv.fitted=object,
-    prepared.optimx.args=prepared.optimx.args)
-
-  prepared.optimx.args[["LL.param.names.to.optimx"]] <- names(prepared.optimx.args$par)
-
-  # In the estimation procedure, the user can also supply custom `optimx.args`
-  # which override `prepared.optimx.args` here. Because optimx is not called
-  # here, there is no need to add `optimx.args` here.
-
-  # The generated args also contain parameters for optimx. These are not required
-  # for the LL and need to be removed.
-  names.optimx.args <- setdiff(formalArgs(optimx), "...")
-  call.args <- prepared.optimx.args[!(names(prepared.optimx.args) %in% names.optimx.args)]
-
-
-  # Wrapper to call the LL with the original args and `par` given by numDeriv
-  fn.with.call.args <- function(par){
-    call.args$LL.params <- par
-    return(do.call(prepared.optimx.args$fn, call.args))
-  }
+  # fn.call.LL.named <- function(par){
+  #   names(par) <- names(final.coefs)
+  #   return(fn.LL(par))
+  # }
 
   # Have to refer to `numDeriv` namespace directly (`::`) as `hessian()` would
   # dispatch to `CLVTools::hessian` and fail if `numDeriv` is not attached
   H <- numDeriv::hessian(
-    func=fn.with.call.args,
+    func=fn.LL,
     x=final.coefs,
     method="Richardson",
     method.args = method.args)

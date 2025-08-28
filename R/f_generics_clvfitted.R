@@ -35,3 +35,4 @@ setMethod("clv.fitted.estimate.same.specification.on.new.data", signature = "clv
   new.fitted@call <- cl
   return(new.fitted)
 })
+
