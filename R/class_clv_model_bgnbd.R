@@ -16,7 +16,17 @@ clv.model.bgnbd.no.cov <- function(){
              fn.model.generic = bgnbd,
              names.original.params.model = c(r="r", alpha="alpha", a="a", b="b"),
              names.prefixed.params.model = c("log.r", "log.alpha", "log.a", "log.b"),
-             start.params.model = c(r=1, alpha = 3, a = 1, b = 3)))
+             start.params.model = c(r=1, alpha = 3, a = 1, b = 3),
+             optimx.defaults = list(
+               method = "L-BFGS-B",
+               itnmax  = 5000,
+               control = list(
+                 kkt = TRUE,
+                 save.failures = TRUE,
+                 # Do not perform start tests because it checks the scales with max(logpar)-min(logpar)
+                 #   but all standard start parameters are <= 0, hence there are no logpars what
+                 #   produces a warning
+                 starttests = FALSE))))
 }
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------
