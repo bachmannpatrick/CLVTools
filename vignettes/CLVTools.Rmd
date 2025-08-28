@@ -1,5 +1,11 @@
 ---
 title: "Walkthrough for the CLVTools Package"
+author:
+  - "Patrick Bachmann"
+  - "Patrik Schilter"
+  - "Jeffrey Näf"
+  - "Markus Meierer"
+date: September 15, 2024
 output:
   pdf_document:
     latex_engine: xelatex
