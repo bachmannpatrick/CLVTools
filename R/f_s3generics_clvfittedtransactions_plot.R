@@ -78,7 +78,7 @@
 #' \item{period.until}{The timepoint that marks the end (up until and including) of the period to which the data in this row refers.}
 #' \item{variable}{Type of variable that 'value' refers to. Either "model name" or "Actual" (if \code{transactions=TRUE}).}
 #' \item{value}{Depending on variable either (Actual) the actual number of repeat transactions in the period that ends at \code{period.until},
-#' or the unconditional expectation for the period that ends on \code{period.until} ("model name").}
+#' or the unconditional expectation for the period that ends on \code{period.until} ("model name"). Actuals may be \code{NA} if no transaction was recorded.}
 #'
 #' For the PMF plot:
 #' \item{num.transactions}{The number of repeat transactions in the estimation period (as ordered factor).}
@@ -241,7 +241,7 @@ clv.controlflow.plot.tracking.base <- function(dt.plot, clv.data, color.mapping,
   # Plotting order
   dt.plot[, variable := factor(variable, levels=names(color.mapping), ordered = TRUE)]
 
-  p <- ggplot(data = dt.plot, aes(x=period.until, y=value, colour=variable)) + geom_line()
+  p <- ggplot(data = dt.plot, aes(x=period.until, y=value, colour=variable)) + geom_line(na.rm = TRUE)
 
   # Add holdout line if there is a holdout period
   if(clv.data.has.holdout(clv.data)){
@@ -382,7 +382,13 @@ clv.fitted.transactions.plot.tracking.get.data <- function(x, prediction.end, cu
   dt.plot <- melt(dt.dates.expectation, id.vars='period.until')
 
   # last period often has NA as it marks the full span of the period
-  dt.plot <- dt.plot[!is.na(value)]
+  # The last period usually was NA because of explanations it was a partial
+  # period. See explanations in `clv.data.plot.tracking`.
+  # dt.plot <- dt.plot[!is.na(value)]
+  # Since introducing `data.end`, many periods can be NA. The NAs are now removed
+  # during plotting (`geom_line(na.rm=T)`). For consistency with plot(clvdata),
+  # the returned data also keeps the NA.
+
   return(dt.plot)
 }
 

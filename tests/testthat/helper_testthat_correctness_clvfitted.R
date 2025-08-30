@@ -14,7 +14,8 @@ fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box <- function(m
 
     expect_false(fct.DT.any.non.finite(predict(fitted, verbose = FALSE)))
     if(is(fitted, "clv.fitted.transactions")){
-      expect_false(fct.DT.any.non.finite(plot(fitted, plot = FALSE, verbose = FALSE)))
+      # No NAs, except last period may have (partial period that is set to NA on purpose)
+      expect_false(fct.DT.any.non.finite(plot(fitted, plot = FALSE, verbose = FALSE)[period.until != max(period.until)]))
     }
     # KKTs both true
     expect_true(res.sum$kkt1)

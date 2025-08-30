@@ -81,7 +81,7 @@ excluding customers with no repeat-transactions.}
 \item{variable}{"tracking": The number of actual repeat transactions in the period that ends at \code{period.until}.\cr
                 "timings": Coordinate (x or y) for which to use the value in this row for.}
 \item{value}{"timings":  Date or numeric (stored as string) \cr
-             "tracking": numeric}
+             "tracking": numeric, may be \code{NA} if no repeat-transactions were recorded in this period}
 }
 \description{
 Depending on the value of parameter \code{which}, one of the following plots will be produced.

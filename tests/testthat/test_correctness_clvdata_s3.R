@@ -268,6 +268,36 @@ test_that("Always returns a copy of the data", {
 
 
 # plot ---------------------------------------------------------------------
+# . tracking ---------------------------------------------------------------
+test_that("tracking plot - without data.end: Last period is NA and plots without warnings", {
+  skip_on_cran()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow()
+
+  # Last period is NA in cdnow (on purpose because its a partial period and no longer dropped)
+  dt.plot <- plot(clv.cdnow, which = "tracking", verbose = FALSE, plot=FALSE)
+  expect_true(dt.plot[period.until==max(period.until), is.na(value)])
+
+  # Plots without warnings although data contains NA
+  expect_silent(plot(clv.cdnow, which="tracking", verbose=FALSE, plot=TRUE))
+})
+
+test_that("tracking plot - with data.end: NA after last transaction until data.end and plots w/o warning", {
+  skip_on_cran()
+  clv.cdnow <- fct.helper.create.clvdata.cdnow(data.end="1998-12-31")
+
+  # All periods after last transaction are NA
+  dt.plot <- plot(clv.cdnow, which = "tracking", verbose = FALSE, plot=FALSE)
+  dt.plot.empty <- dt.plot[period.until > "1998-06-30"]
+  # Data until at least data.end
+  expect_true(dt.plot.empty[, max(period.until)] >= "1998-12-31")
+  # They are all NA
+  expect_true(dt.plot.empty[, all(is.na(value))])
+
+  # Plots without warnings although data contains NA
+  expect_silent(plot(clv.cdnow, which="tracking", verbose=FALSE, plot=TRUE))
+})
+
+
 
 # . frequency ---------------------------------------------------------------
 test_that("frequency plot - actual trans has no 0", {

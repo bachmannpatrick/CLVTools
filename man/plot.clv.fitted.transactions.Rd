@@ -82,7 +82,7 @@ For the Tracking plot:
 \item{period.until}{The timepoint that marks the end (up until and including) of the period to which the data in this row refers.}
 \item{variable}{Type of variable that 'value' refers to. Either "model name" or "Actual" (if \code{transactions=TRUE}).}
 \item{value}{Depending on variable either (Actual) the actual number of repeat transactions in the period that ends at \code{period.until},
-or the unconditional expectation for the period that ends on \code{period.until} ("model name").}
+or the unconditional expectation for the period that ends on \code{period.until} ("model name"). Actuals may be \code{NA} if no transaction was recorded.}
 
 For the PMF plot:
 \item{num.transactions}{The number of repeat transactions in the estimation period (as ordered factor).}
