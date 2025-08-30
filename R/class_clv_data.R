@@ -253,7 +253,21 @@ clv.data.make.descriptives <- function(clv.data, ids){
     dt.interp <- clv.data.mean.interpurchase.times(clv.data=clv.data, dt.transactions = dt.data)
     dt.num.trans.by.cust <- dt.data[, .N, by="Id"]
 
+    tp.period.start <- switch(
+      sample.name,
+      Estimation=clv.time@timepoint.estimation.start,
+      Holdout=clv.time@timepoint.holdout.start,
+      Total=clv.time@timepoint.estimation.start)
+
+    tp.period.end <- switch(
+      sample.name,
+      Estimation=clv.time@timepoint.estimation.end,
+      Holdout=clv.time@timepoint.holdout.end,
+      Total=clv.time@timepoint.holdout.end)
+
     l.desc <- list(
+      "Period Start"                  = clv.time.format.timepoint(clv.time=clv.time, timepoint=tp.period.start),
+      "Period End"                    = clv.time.format.timepoint(clv.time=clv.time, timepoint=tp.period.end),
       "Number of customers"           = if(sample.name=="Total"){nrow(dt.num.trans.by.cust)}else{"-"},
       "First Transaction in period"   = clv.time.format.timepoint(clv.time=clv.time, timepoint=dt.data[, min(Date)]),
       "Last Transaction in period"    = clv.time.format.timepoint(clv.time=clv.time, timepoint=dt.data[, max(Date)]),

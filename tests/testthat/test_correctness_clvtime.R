@@ -11,6 +11,7 @@ for(clv.t in c(fct.helper.clv.time.create.test.objects(with.holdout = FALSE),
 
 
 # set.sample.periods --------------------------------------------------------------------------------
+# . no data.end -----------------------------------------------------------------------------
 for(clv.t in list(clv.time.hours(time.format="ymd HMS"),
                   clv.time.days( time.format="ymd"),
                   clv.time.weeks(time.format="ymd"),
@@ -32,6 +33,12 @@ fct.testthat.correctness.clvtime.set.sample.periods.stop.holdout.length.less.2.p
                                                                                       clv.t.days  = clv.time.days(time.format="ymd"),
                                                                                       clv.t.weeks = clv.time.weeks(time.format="ymd"),
                                                                                       clv.t.years = clv.time.years(time.format="ymd"))
+
+# . with data.end --------------------------------------------------------------------------
+fct.testthat.correctness.clvtime.set.sample.periods.data.end()
+
+
+
 
 # convert.user.input.to.timepoint --------------------------------------------------------------------------------
 for(clv.t in c(fct.helper.clv.time.create.test.objects(with.holdout = FALSE),

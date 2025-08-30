@@ -32,8 +32,17 @@
 #' (i.e., "2010-06-17") is indicated with \code{"ymd"}. Other combinations such as \code{"dmy"}, \code{"dym"},
 #' \code{"ymd HMS"}, or \code{"HMS dmy"} are possible as well.
 #'
+#' \code{data.end} A point in time beyond the last purchase at which the data should fictionally end.
+#' It defines the total time frame in which customers could be observed: The combined estimation and holdout periods.
+#' For example, when the last recorded transaction was on "2000-12-29" but customers were actually observed until "2000-12-31".
+#' Using \code{data.end="2000-12-31"} without holdout period,
+#' the estimation period will be until "2000-12-31" and the prediction period will start on "2001-01-01".
+#' Required to be after the last recorded transaction.
+#'
 #' \code{estimation.split} May be specified as either the number of periods since the first transaction or the timepoint
-#' (either as character, Date, or POSIXct) at which the estimation period ends. The indicated timepoint itself will be part of the estimation sample.
+#' (either as character, Date, or POSIXct) at which the estimation period ends.
+#' Required to be before the last transaction.
+#' The indicated timepoint itself will be part of the estimation sample.
 #' If no value is provided or set to \code{NULL}, the whole dataset will used for fitting the model (no holdout sample).
 #'
 #' @details ## Aggregation of Transactions
@@ -84,6 +93,15 @@
 #'                           time.unit = "w",
 #'                           estimation.split = "1997-10-15")
 #'
+#' # Extend data fictionally until 31th Dec 1998
+#' # In this case, this only moves the holdout period and has no effect on the
+#' # estimation.
+#' clv.data.cdnow <- clvdata(data.transactions = cdnow,
+#'                           date.format="ymd",
+#'                           time.unit = "w",
+#'                           data.end = "1998-12-31",
+#'                           estimation.split = "1997-10-15")
+#'
 #' # summary of the transaction data
 #' summary(clv.data.cdnow)
 #'
@@ -112,7 +130,7 @@
 #'
 #'
 #' @export
-clvdata <- function(data.transactions, date.format, time.unit, estimation.split=NULL, name.id="Id", name.date="Date", name.price="Price"){
+clvdata <- function(data.transactions, date.format, time.unit, estimation.split=NULL, data.end=NULL, name.id="Id", name.date="Date", name.price="Price"){
   # silence CRAN notes
   Date <- Price <- Id <- x <- previous <- date.first.actual.trans <- NULL
 
@@ -136,6 +154,7 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
 
   err.msg <- c(err.msg, .check_userinput_charactervec(char=date.format, var.name = "date.format", n=1))
   err.msg <- c(err.msg, check_userinput_datanocov_estimationsplit(estimation.split=estimation.split, date.format=date.format))
+  err.msg <- c(err.msg, check_userinput_datanocov_dataend(data.end=data.end, date.format=date.format))
   check_err_msg(err.msg)
 
 
@@ -208,13 +227,8 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
   clv.t <- clv.time.set.sample.periods(clv.time = clv.t,
                                        tp.first.transaction = tp.first.transaction,
                                        tp.last.transaction  = tp.last.transaction,
+                                       user.data.end = data.end,
                                        user.estimation.end  = estimation.split)
-
-  if(clv.t@timepoint.estimation.end > dt.trans[, max(Date)])
-    stop("Parameter estimation.split needs to indicate a point in the data!", call. = FALSE)
-
-  if(clv.t@estimation.period.in.tu < 1)
-    stop("Parameter estimation.split needs to be at least 1 time.unit after the start!", call. = FALSE)
 
 
   # Check if the estimation.split is valid ----------------------------------------
@@ -229,7 +243,7 @@ clvdata <- function(data.transactions, date.format, time.unit, estimation.split=
   everyones.first.trans <- dt.trans[, list(date.first.actual.trans = min(Date)), by="Id"]
   date.last.first.trans <- everyones.first.trans[, max(date.first.actual.trans)]
   if(clv.t@timepoint.estimation.end < date.last.first.trans)
-    stop("The estimation split is too short! Not all customers of this cohort had their first actual transaction until the specified estimation.split!", call. = F)
+    stop("The estimation period is too short! Not all customers had their first transaction until the end of the estimation period!", call. = FALSE)
 
 
 

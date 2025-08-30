@@ -16,6 +16,8 @@
 #' be limited to a subset of customers.
 #' \describe{
 #' \item{\code{Number of customers}}{Count of individual customers.}
+#' \item{\code{Period Start}}{Start of the indicated period.}
+#' \item{\code{Period End}}{End of indicated period.}
 #' \item{\code{First Transaction in period}}{Time point of the first transaction occurring in the indicated period.}
 #' \item{\code{Last Transaction in period}}{Time point of the last transaction occurring in the indicated period.}
 #' \item{\code{Total # Transactions}}{Count of transactions occurring in the indicated period.}

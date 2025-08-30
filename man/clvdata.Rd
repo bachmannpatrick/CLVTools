@@ -9,6 +9,7 @@ clvdata(
   date.format,
   time.unit,
   estimation.split = NULL,
+  data.end = NULL,
   name.id = "Id",
   name.date = "Date",
   name.price = "Price"
@@ -22,6 +23,8 @@ clvdata(
 \item{time.unit}{What time unit defines a period. May be abbreviated, capitalization is ignored. See details.}
 
 \item{estimation.split}{Indicates the length of the estimation period. See details.}
+
+\item{data.end}{The fictional end of the data, after the last recorded transaction in \code{data.transactions}. See details.}
 
 \item{name.id}{Column name of the customer id in \code{data.transactions}.}
 
@@ -62,8 +65,17 @@ and hence all formats it accepts in argument \code{orders} can be used. For exam
 (i.e., "2010-06-17") is indicated with \code{"ymd"}. Other combinations such as \code{"dmy"}, \code{"dym"},
 \code{"ymd HMS"}, or \code{"HMS dmy"} are possible as well.
 
+\code{data.end} A point in time beyond the last purchase at which the data should fictionally end.
+It defines the total time frame in which customers could be observed: The combined estimation and holdout periods.
+For example, when the last recorded transaction was on "2000-12-29" but customers were actually observed until "2000-12-31".
+Using \code{data.end="2000-12-31"} without holdout period,
+the estimation period will be until "2000-12-31" and the prediction period will start on "2001-01-01".
+Required to be after the last recorded transaction.
+
 \code{estimation.split} May be specified as either the number of periods since the first transaction or the timepoint
-(either as character, Date, or POSIXct) at which the estimation period ends. The indicated timepoint itself will be part of the estimation sample.
+(either as character, Date, or POSIXct) at which the estimation period ends.
+Required to be before the last transaction.
+The indicated timepoint itself will be part of the estimation sample.
 If no value is provided or set to \code{NULL}, the whole dataset will used for fitting the model (no holdout sample).
 
 \subsection{Aggregation of Transactions}{
@@ -99,6 +111,15 @@ clv.data.cdnow <- clvdata(data.transactions = cdnow,
 clv.data.cdnow <- clvdata(data.transactions = cdnow,
                           date.format="ymd",
                           time.unit = "w",
+                          estimation.split = "1997-10-15")
+
+# Extend data fictionally until 31th Dec 1998
+# In this case, this only moves the holdout period and has no effect on the
+# estimation.
+clv.data.cdnow <- clvdata(data.transactions = cdnow,
+                          date.format="ymd",
+                          time.unit = "w",
+                          data.end = "1998-12-31",
                           estimation.split = "1997-10-15")
 
 # summary of the transaction data

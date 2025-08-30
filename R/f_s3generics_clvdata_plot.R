@@ -95,7 +95,7 @@
 #' \item{variable}{"tracking": The number of actual repeat transactions in the period that ends at \code{period.until}.\cr
 #'                 "timings": Coordinate (x or y) for which to use the value in this row for.}
 #' \item{value}{"timings":  Date or numeric (stored as string) \cr
-#'              "tracking": numeric}
+#'              "tracking": numeric, may be \code{NA} if no repeat-transactions were recorded in this period}
 #'
 #'
 #' @examples
@@ -310,10 +310,26 @@ clv.data.plot.tracking <- function(x, prediction.end, cumulative, plot, verbose,
   dt.dates.expectation[dt.repeat.trans, (label.transactions) := get(label.transactions), on="period.until"]
   dt.plot <- melt(dt.dates.expectation, id.vars="period.until")
 
-  # last period often has NA as it marks the full span of the period
-  dt.plot <- dt.plot[!is.na(value)]
+  # The last period usually is set to NA because the data does not reach to the end of it.
+  # The last period has to be a full period because of the expectation plot.
+  # At the same time, the transaction data often ends before the last period (is only a partial period).
+  # This leads to a much lower number of transactions recorded in the last period
+  # and a noticeable, hard-to-explain drop at the end.
+  # Periods for which there are no transactions contain 0 not NA. Only the last
+  # period may contain NA.
+  # We remove it to not have it in the data and not raise a warning when plotting.
+  #
+  # Since introducing `data.end`, we no loner remove NAs as now there can be many
+  # periods without transactions and these should be shown (plotted) and known (returned data).
+  # Instead `geom_line(na.rm=T)` is used to remove them during plotting.
+  # Returning them helps users who want to create their own plots to plot the
+  # correct range (total time span of data).
+  # Alternative: Drop NA but set x-axis scale until holdout.end using
+  # `+ xlim(c(x@clv.time@timepoint.estimation.start, x@clv.time@timepoint.holdout.end))`
+  #
+  # dt.plot <- dt.plot[!is.na(value)]
 
-  # data.table does not print when returned because it is returned directly after last [:=]
+  #  # data.table does not print when returned because it is returned directly after last [:=]
   # " if a := is used inside a function with no DT[] before the end of the function, then the next
   #   time DT or print(DT) is typed at the prompt, nothing will be printed. A repeated DT or print(DT)
   #   will print. To avoid this: include a DT[] after the last := in your function."
