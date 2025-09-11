@@ -1,0 +1,10 @@
+%\VignetteIndexEntry{Advanced and Very Advanced Modeling Techniques in CLVTools}
+%\VignetteEngine{R.rsp::asis}
+%\VignetteEncoding{UTF-8}
+%\VignetteKeyword{regularization}
+%\VignetteKeyword{correlation}
+%\VignetteKeyword{equality constraints}
+%\VignetteKeyword{endogenous covariates}
+%\VignetteKeyword{hessian}
+%\VignetteKeyword{bootstrapping}
+%\VignetteKeyword{parameter bootstrapping}
