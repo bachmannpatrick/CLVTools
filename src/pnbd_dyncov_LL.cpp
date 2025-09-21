@@ -1,7 +1,7 @@
 #include "pnbd_dyncov_LL.h"
 
 void Customer::set_real_walk_life(const arma::vec& adj_covdata_real_life, const arma::rowvec& walkinfo_real_life){
-  if(arma::is_finite(walkinfo_real_life(0)) && arma::is_finite(walkinfo_real_life(1))){
+  if(std::isfinite(walkinfo_real_life(0)) && std::isfinite(walkinfo_real_life(1))){
     this->real_walk_life = LifetimeWalk(adj_covdata_real_life, walkinfo_real_life);
   }else{
     this->real_walk_life = EmptyLifetimeWalk();
@@ -570,7 +570,7 @@ double pnbd_dyncov_LL_i_F2_3(const double r, const double alpha_0, const double 
     }
 
     // abort immediately, do not waste more loops
-    if(!arma::is_finite(F2_3)){
+    if(!std::isfinite(F2_3)){
       return(F2_3);
     }
   }
@@ -666,7 +666,7 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
                                               a1, b1,
                                               A1T, C1T);
     intermediate_results(9) = F2_1;
-    if(!arma::is_finite(F2_1)){
+    if(!std::isfinite(F2_1)){
       return(F2_1);
     }
 
@@ -676,7 +676,7 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
                                               aT, bT,
                                               AkT, CkT);
     intermediate_results(10) = F2_2;
-    if(!arma::is_finite(F2_2)){
+    if(!std::isfinite(F2_2)){
       return(F2_2);
     }
 
@@ -820,7 +820,7 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
   //    advantage of the much simpler case F2==0 because also very small abs(F2) are really relevant for correct results!
   //
   double LL = 0;
-  if(!arma::is_finite(F2)){
+  if(!std::isfinite(F2)){
     LL = F2;
   }else{
 
@@ -1001,7 +1001,7 @@ Rcpp::NumericMatrix pnbd_dyncov_LL_ind(const arma::vec& params,
 
     // Check whether customer has real trans walks
     //   Could also check x==0, but saver to look at actual content
-    if(arma::is_finite(walkinfo_trans_real_from(i))){
+    if(std::isfinite(walkinfo_trans_real_from(i))){
 
       // Repeat customer (with real trans walks)
       arma::uword wi_real_trans_from = static_cast<arma::uword>(walkinfo_trans_real_from(i)) - 1;
