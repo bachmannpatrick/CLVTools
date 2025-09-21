@@ -1,3 +1,18 @@
+# CLVTools 0.12.0
+
+### NEW FEATURES
+* `clvdata(data.end)`: Add parameter `data.end` to specify a data end beyond the last actual transaction
+* `summary()`: Always set `zval` and `pval` to NA for the main model parameters
+* `hessian()`: Add method to calculate hessian matrix for already fitted models
+* Add 3 new vignettes covering: Advanced modelling techniques, model intuition, and the internal class system
+
+### BUG FIXES
+* Fix CRAN notes: Replace `arma::is_finite()` -> `std::isfinite()`
+* Dyncov PNBD: Rename `predicted.CLV` -> `predicted.period.CLV`
+* `predict()`: Rename `{predicted, actual}.total.spending` -> `{predicted, actual}.period.spending`
+
+
+
 # CLVTools 0.11.2
 
 ### NEW FEATURES
