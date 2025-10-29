@@ -91,7 +91,8 @@ setMethod(f = "clv.controlflow.predict.new.customer", signature = signature(clv.
 
   check_err_msg(check_user_data_predict_newcustomer_staticcov(clv.fitted=clv.fitted, clv.newcustomer=clv.newcustomer))
 
-  return(drop(clv.model.predict.new.customer(
+  # 1+: Include initial order
+  return(1 + drop(clv.model.predict.new.customer(
     clv.model = clv.fitted@clv.model,
     clv.fitted = clv.fitted,
     clv.newcustomer=clv.newcustomer)))
