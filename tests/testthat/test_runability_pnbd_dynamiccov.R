@@ -93,3 +93,68 @@ test_that("Dyncov works with additional model specifications", {
     names.cov.constr = "Gender",
     reg.lambda = c(trans=10, life=10))
 })
+
+
+# With data.end ---------------------------------------------------------
+
+test_that("Fit, plot, predict work with partially empty estimation/holdout period", {
+
+  covs.life <- c("High.Season", "Gender")
+  covs.trans <- c("High.Season", "Gender", "Channel")
+
+  apparelTrans.cut.obsE <- apparelTrans[Date < "2010-12-01"]
+  date.original.trans.max <- apparelTrans[, max(Date)]
+
+
+  # fct.helper.runability.dyncov.all.downstream requires holdout
+
+  names.params <- c(
+    'r', 'alpha', 's', 'beta',
+    paste0('life.', covs.life),
+    paste0('trans.', covs.trans))
+
+
+  # Create object with no transactions in December 2010 but with the observation
+  # period as originally (2010-12-20)
+
+  # No holdout
+  expect_silent(fitted.dyncov.noholdout.obsE <- fit.apparel.dyncov(
+    data.apparelTrans = apparelTrans.cut.obsE,
+    estimation.split = NULL,
+    data.end = date.original.trans.max,
+    names.cov.life = covs.life,
+    names.cov.trans = covs.trans,
+    optimx.args=fct.helper.dyncov.get.optimxargs.quickfit(hessian=TRUE)
+  ))
+
+  .fct.helper.clvfitted.all.s3.except.plot.and.predict(
+    clv.fitted=fitted.dyncov.noholdout.obsE,
+    full.names=names.params
+  )
+
+  expect_silent(predict(fitted.dyncov.noholdout.obsE, prediction.end=1, verbose=FALSE))
+  expect_silent(plot(fitted.dyncov.noholdout.obsE, prediction.end = NULL, verbose=FALSE))
+
+
+  # With holdout
+  expect_silent(fitted.dyncov.holdout.obsE <- fit.apparel.dyncov(
+    data.apparelTrans = apparelTrans.cut.obsE,
+    estimation.split = 104,
+    data.end = date.original.trans.max,
+    names.cov.life = covs.life,
+    names.cov.trans = covs.trans,
+    optimx.args=fct.helper.dyncov.get.optimxargs.quickfit(hessian=TRUE)
+  ))
+
+  .fct.helper.clvfitted.all.s3.except.plot.and.predict(
+    clv.fitted=fitted.dyncov.holdout.obsE,
+    full.names=names.params
+  )
+
+  expect_silent(predict(fitted.dyncov.holdout.obsE, prediction.end=5, verbose=FALSE))
+  expect_warning(
+    plot(fitted.dyncov.holdout.obsE, prediction.end = 5, verbose=FALSE),
+    regexp = "Not plotting full holdout period"
+  )
+
+})

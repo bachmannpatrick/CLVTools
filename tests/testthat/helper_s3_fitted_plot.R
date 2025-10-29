@@ -120,10 +120,12 @@ fct.testthat.runability.clvfittedtransactions.plot.tracking <- function(clv.fitt
   test_that("Works with newdata", {
     skip_on_cran()
     expect_silent(dt.plot <- plot(clv.fitted, newdata = clv.newdata.nohold, prediction.end=3, plot=FALSE, verbose=FALSE))
-    expect_false(anyNA(dt.plot))
+    # Since introducing data.end: Actuals after last transaction are kept and contain NA. Only check model
+    expect_false(anyNA(dt.plot[variable != "Actual"]))
 
     expect_warning(dt.plot <- plot(clv.fitted, newdata = clv.newdata.withhold, prediction.end=3, plot=FALSE, verbose=FALSE), regexp = "full holdout")
-    expect_false(anyNA(dt.plot))
+    # Since introducing data.end: Actuals after last transaction are kept and contain NA. Only check model
+    expect_false(anyNA(dt.plot[variable != "Actual"]))
   })
 
   test_that("Works for prediction.end in different formats, after holdout", {

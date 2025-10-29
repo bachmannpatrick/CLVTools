@@ -1,8 +1,8 @@
 fct.helper.dyncov.create.longer.dyncov.data <- function(num.additional, data.apparelDynCov){
 
   # Add additional <num.additional> weeks of fake cov data for all Ids
-  dt.additional.cov <- expand.grid(Id = unique(apparelDynCov$Id),
-                                   Cov.Date = seq(from=apparelDynCov[, max(Cov.Date)]+lubridate::weeks(1),
+  dt.additional.cov <- expand.grid(Id = unique(data.apparelDynCov$Id),
+                                   Cov.Date = seq(from=data.apparelDynCov[, max(Cov.Date)]+lubridate::weeks(1),
                                                   length.out = num.additional, by = "week"), stringsAsFactors = FALSE)
   setDT(dt.additional.cov)
   dt.additional.cov[, High.Season := rep(c(0,1,1,0),.N/4)]

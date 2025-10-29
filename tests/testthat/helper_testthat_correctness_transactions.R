@@ -296,6 +296,69 @@ fct.testthat.correctness.clvfittedtransactions.staticcov.predict.newcustomer.0.f
   })
 }
 
+fct.testthat.correctness.clvfittedtransactions.data.end.moves.prediction.period <- function(method){
+
+  test_that("Using data.end moves prediction period",{
+    # Only valid for no holdout data
+    skip_on_cran()
+
+    fitted <- fit.cdnow(
+      model = method,
+      estimation.split = NULL,
+      data.end = "1998-07-15"
+    )
+
+    dt.pred <- predict(fitted, prediction.end = "1998-07-30")
+
+    # Prediction period starts first `eps` after data.end
+    expect_true(dt.pred[1, "period.first"] == "1998-07-16")
+    # Nothing else changed
+    expect_true(dt.pred[1, "period.last"] == "1998-07-30")
+  })
+
+}
+
+fct.testthat.correctness.clvfittedtransactions.nocov.plot.until.data.end <- function(method){
+  test_that("Plotting until data.end",{
+
+    expect_warning(fitted <- fit.cdnow(
+      model = method,
+      estimation.split = NULL,
+      data.end = "1998-12-31",
+      # PNBD requires NM
+      optimx.args = list(method="Nelder-Mead", hessian=FALSE, control=list(kkt=FALSE))),
+      regexp = "Hessian could not be derived")
+    clv.time <- fitted@clv.data@clv.time
+
+    # Data
+    expect_silent(dt.plot <- plot(fitted, verbose=FALSE, plot=FALSE))
+    dt.after <- dt.plot[period.until > "1998-06-30"]
+
+    # Actuals and expectation are for the same dates (none lost for either (mostly Actual))
+    expect_true(all(
+      dt.plot[variable == "Actual", "period.until"] == dt.plot[variable != "Actual", "period.until"]))
+
+    # Actuals are NA after last transaction but model not
+    expect_true(dt.after[variable == "Actual", all(is.na(value))])
+    expect_false(dt.after[variable != "Actual", any(is.na(value))])
+
+    # Actuals and expectation are until data.end
+    expect_true(dt.after[, max(period.until)] >= clv.time@timepoint.holdout.end)
+
+
+    # Plotting
+    # Plots without warnings
+    expect_silent(p <- plot(fitted, verbose = FALSE, plot = TRUE))
+
+    # Plot has x-axis limits until data.end
+    #   $x.range: What is really rendered
+    #   $limits: The user set limits
+    p.xlim <- ggplot2::ggplot_build(p)$layout$panel_params[[1]]$x$limits
+    expect_true(min(p.xlim) <= clv.time@timepoint.estimation.start)
+    expect_true(max(p.xlim) >= clv.time@timepoint.holdout.end)
+  })
+}
+
 fct.testthat.correctness.clvfittedtransactions <- function(name.model, method,
                                                            correct.start.params.model, correct.params.nocov.coef, correct.LL.nocov,
                                                            kkt2.true){
@@ -317,6 +380,8 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method,
   fct.testthat.correctness.clvfittedtransactions.nocov.newdata.fitting.sample.predicting.full.data.equal(method = method, clv.cdnow = clv.cdnow)
   fct.testhat.correctness.clvfittedtransactions.same.spending.as.independent.spending.model(method = method, clv.data = clv.cdnow)
 
+  fct.testthat.correctness.clvfittedtransactions.nocov.plot.until.data.end(method=method)
+
   if(fct.helper.has.pmf(obj.fitted)){
     fct.testthat.correctness.clvfittedtransactions.pmf.more.x.more.p(clv.fitted = obj.fitted)
     fct.testthat.correctness.clvfittedtransactions.pmf.valid.values(clv.fitted = obj.fitted)
@@ -326,6 +391,8 @@ fct.testthat.correctness.clvfittedtransactions <- function(name.model, method,
 
   # predict(newdata=newcustomer): no cov
   fct.testthat.correctness.clvfittedtransactions.nocov.predict.newcustomer.0.for.num.periods.eq.0(obj.fitted)
+  # data.end moves start of prediction period
+  fct.testthat.correctness.clvfittedtransactions.data.end.moves.prediction.period(method = method)
 
   # Static cov data --------------------------------------------------------------------------------------------
   # why 100 and not 104???????

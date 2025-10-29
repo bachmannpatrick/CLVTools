@@ -1,9 +1,14 @@
 # Comment from the authors
-This is version 0.11.2 of the CLVTools package. 
+This is version 0.12.0 of the CLVTools package. 
 The most relevant changes in this version are: 
 
-* `newcustomer.spending()`: Predict average spending per transaction for customers without order history
-* Improved optimizer defaults
+* Add 3 new vignettes covering: Advanced modelling techniques, model intuition, and the internal class system
+* Add method `hessian()` to calculate hessian matrix for already fitted models
+* Correct significance indicators NA in `summary()`
+* Add new parameter to data preparation method
+* Renaming prediction output columns
+* Fix CRAN notes
+
 
 
  

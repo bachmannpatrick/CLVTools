@@ -3,15 +3,19 @@ fct.testthat.correctness.clvfitted.flawless.results.out.of.the.box <- function(m
     skip_on_cran()
     expect_silent(fitted <- do.call(what = method, args = list(clv.data, verbose = FALSE)))
     expect_silent(res.sum <- summary(fitted))
-    # No NAs anywhere
-    expect_false(any(!is.finite(coef(res.sum)))) # vcov and coef together
+
+    # No NAs in the parameter estimates and SE (checks vcov and coef together)
+    # There are however NAs in zval and pval as they are on purpose set to NA for the main model params
+    expect_false(any(!is.finite(coef(res.sum)[, c("Estimate", "Std. Error")])))
+
     fct.DT.any.non.finite <- function(DT){
       return(DT[, any(sapply(.SD, function(x){any(!is.finite(x))})), .SDcols = DT[, sapply(.SD, is.numeric)]])
     }
 
     expect_false(fct.DT.any.non.finite(predict(fitted, verbose = FALSE)))
     if(is(fitted, "clv.fitted.transactions")){
-      expect_false(fct.DT.any.non.finite(plot(fitted, plot = FALSE, verbose = FALSE)))
+      # No NAs, except last period may have (partial period that is set to NA on purpose)
+      expect_false(fct.DT.any.non.finite(plot(fitted, plot = FALSE, verbose = FALSE)[period.until != max(period.until)]))
     }
     # KKTs both true
     expect_true(res.sum$kkt1)

@@ -245,8 +245,10 @@ setGeneric("clv.data.create.bootstrapping.data", def = function(clv.data, ids){
 #'
 #' @export
 as.clv.data <- function(x,
-                        date.format="ymd", time.unit="weeks",
+                        date.format="ymd",
+                        time.unit="weeks",
                         estimation.split = NULL,
+                        data.end = NULL,
                         name.id="Id", name.date="Date", name.price="Price",
                         ...){
   UseMethod("as.clv.data", x)

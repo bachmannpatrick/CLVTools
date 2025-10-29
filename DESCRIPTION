@@ -1,7 +1,7 @@
 Package: CLVTools
 Title: Tools for Customer Lifetime Value Estimation
-Version: 0.11.2
-Date: 2024-12-01
+Version: 0.12.0
+Date: 2025-09-22
 Authors@R: c(
     person(given="Patrick", family="Bachmann",    email = "pbachma@ethz.ch", role = c("cre","aut")),
     person(given="Niels",   family="Kuebler",     email = "niels.kuebler@uzh.ch", role = "aut"),
@@ -50,7 +50,8 @@ Suggests:
     rmarkdown,
     xml2,
     testthat (>= 3.0.0),
-    lmtest
+    lmtest, 
+    R.rsp
 License: GPL-3
 URL: https://github.com/bachmannpatrick/CLVTools
 BugReports: https://github.com/bachmannpatrick/CLVTools/issues
@@ -122,6 +123,7 @@ Collate:
     'f_interface_clvdata.R'
     'f_interface_gg.R'
     'f_interface_ggomnbd.R'
+    'f_interface_hessian.R'
     'f_interface_latentattrition.R'
     'f_interface_lrtest.R'
     'f_interface_newcustomer.R'
@@ -155,6 +157,6 @@ Collate:
     'pnbd_dyncov_expectation.R'
     'pnbd_dyncov_palive.R'
 RoxygenNote: 7.3.2
-VignetteBuilder: knitr
+VignetteBuilder: knitr, R.rsp
 Config/testthat/parallel: false
 Config/testthat/edition: 3

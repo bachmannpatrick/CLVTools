@@ -69,6 +69,10 @@ Summary method for fitted CLV models that provides statistics about the estimate
 and information about the optimization process. If multiple optimization methods were used
 (for example if specified in parameter \code{optimx.args}), all information here refers to
 the last method/row of the resulting \code{optimx} object.
+
+Note that for the main model coefficients (all coefs not for covariates),
+the significance indicators \code{z-val} and p-values are set to \code{NA} because they are by definition always
+strictly positive and hypothesis test relative to a null of 0 does not make sense.
 }
 \examples{
 \donttest{
