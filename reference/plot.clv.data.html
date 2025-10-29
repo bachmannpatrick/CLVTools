@@ -57,7 +57,7 @@ Plot the transaction timings of selected or sampled customers on their respectiv
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.0</span>
       </span>
     </div>
 
@@ -68,16 +68,6 @@ Plot the transaction timings of selected or sampled customers on their respectiv
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
-    </li>
-  </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -274,7 +264,7 @@ excluding customers with no repeat-transactions.</p></dd>
 
 <dt>value</dt>
 <dd><p>"timings":  Date or numeric (stored as string) <br>
-             "tracking": numeric</p></dd>
+             "tracking": numeric, may be <code>NA</code> if no repeat-transactions were recorded in this period</p></dd>
 
 </dl></div>
     <div id="details">
@@ -317,15 +307,21 @@ for possible arguments to <code>...</code></p>
 <span class="r-in"><span><span class="co"># Plot the actual repeat transactions</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">clv.cdnow</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Plotting from 1997-01-01 until 1998-07-05.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>A <span style="color: #0000BB;">&lt;numeric&gt;</span> value was passed to a <span style="color: #00BB00;">Date</span> scale.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The value was converted to a &lt;Date&gt; object.</span>
 <span class="r-plt img"><img src="plot.clv.data-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># same, explicitly</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">clv.cdnow</span>, which<span class="op">=</span><span class="st">"tracking"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Plotting from 1997-01-01 until 1998-07-05.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>A <span style="color: #0000BB;">&lt;numeric&gt;</span> value was passed to a <span style="color: #00BB00;">Date</span> scale.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The value was converted to a &lt;Date&gt; object.</span>
 <span class="r-plt img"><img src="plot.clv.data-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># plot cumulative repeat transactions</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">clv.cdnow</span>, cumulative<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Plotting from 1997-01-01 until 1998-07-05.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>A <span style="color: #0000BB;">&lt;numeric&gt;</span> value was passed to a <span style="color: #00BB00;">Date</span> scale.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The value was converted to a &lt;Date&gt; object.</span>
 <span class="r-plt img"><img src="plot.clv.data-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Dont automatically plot but tweak further</span></span></span>
@@ -334,6 +330,8 @@ for possible arguments to <code>...</code></p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Plotting from 1997-01-01 until 1998-07-05.</span>
 <span class="r-in"><span><span class="co"># change Title</span></span></span>
 <span class="r-in"><span><span class="va">gg.cdnow</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"CDnow repeat transactions"</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>A <span style="color: #0000BB;">&lt;numeric&gt;</span> value was passed to a <span style="color: #00BB00;">Date</span> scale.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The value was converted to a &lt;Date&gt; object.</span>
 <span class="r-plt img"><img src="plot.clv.data-4.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Dont return a plot but only the data from</span></span></span>
@@ -403,7 +401,7 @@ for possible arguments to <code>...</code></p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
       </footer></div>

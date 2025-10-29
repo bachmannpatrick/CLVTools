@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.0</span>
       </span>
     </div>
 
@@ -34,16 +34,6 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
-    </li>
-  </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -217,7 +207,7 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         r      alpha          b          s       beta  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1.308e+00  4.633e+01  5.250e-06  4.811e-01  3.706e-04  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1.309e+00  4.634e+01  1.187e-04  4.750e-01  8.248e-03  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: FALSE </span>
 <span class="r-in"><span></span></span>
@@ -307,8 +297,8 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ufn</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function (par) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> fn(par, ...)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x11dce02d8&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x13ace59d8&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x141ed5458&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x153b0f760&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $have.bounds</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
@@ -558,7 +548,7 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $xtimes</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> user.self </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     0.147 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      0.18 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Assemble the answers</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimation finished!</span>
@@ -568,7 +558,10 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            r        alpha            b            s         beta </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  1.302405809 46.193794125  0.002745788  0.420720023  0.174407964 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># summary of the fitted model</span></span></span>
+<span class="r-in"><span><span class="co"># summary of the fitted model.</span></span></span>
+<span class="r-in"><span><span class="co"># Note that the significance indicators are set to NA on purpose because all</span></span></span>
+<span class="r-in"><span><span class="co"># model parameters are by definition strictly positive. A hypothesis test</span></span></span>
+<span class="r-in"><span><span class="co"># relative to a null of 0 therefore does not make sense.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">apparel.ggomnbd</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GGompertz/NBD Standard  Model </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -582,14 +575,12 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Estimation length 52.0000 Weeks</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        Estimate Std. Error z-val Pr(&gt;|z|)    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> r      1.302406   0.229943 5.664 1.48e-08 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> alpha 46.193794   7.513529 6.148 7.84e-10 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> b      0.002746   0.028817 0.095    0.924    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> s      0.420720   1.184962 0.355    0.723    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> beta   0.174408   1.572658 0.111    0.912    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ---</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        Estimate Std. Error z-val Pr(&gt;|z|)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> r      1.302406   0.229943    NA       NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alpha 46.193794   7.513529    NA       NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> b      0.002746   0.028817    NA       NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> s      0.420720   1.184962    NA       NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> beta   0.174408   1.572658    NA       NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization info:                  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> LL     -3481.9877 </span>
@@ -620,19 +611,19 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 598:     97   2006-01-02  2010-12-20      259.1429        0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 599:     98   2006-01-02  2010-12-20      259.1429        0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 600:     99   2006-01-02  2010-12-20      259.1429        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      actual.total.spending predicted.mean.spending predicted.total.spending</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                      &lt;num&gt;                   &lt;num&gt;                    &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                524.10                63.77959                249.79933</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                 63.31                38.10316                136.91419</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                333.35                37.12434                 59.28538</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                  0.00                33.08404                126.47710</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                  0.00                37.12434                 59.28538</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                                       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 596:                113.80                28.29614                113.74903</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 597:                253.61                37.12434                 59.28538</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 598:                  0.00                37.12434                 59.28538</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 599:                  0.00                34.87739                144.08847</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 600:                 13.99                16.11315                 92.74449</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      actual.period.spending predicted.mean.spending predicted.period.spending</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                       &lt;num&gt;                   &lt;num&gt;                     &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                 524.10                63.77959                 249.79933</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                  63.31                38.10316                 136.91419</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                 333.35                37.12434                  59.28538</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                   0.00                33.08404                 126.47710</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                   0.00                37.12434                  59.28538</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:                 113.80                28.29614                 113.74903</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:                 253.61                37.12434                  59.28538</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:                   0.00                37.12434                  59.28538</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:                   0.00                34.87739                 144.08847</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:                  13.99                16.11315                  92.74449</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           CET    PAlive</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         &lt;num&gt;     &lt;num&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1: 3.916603 0.9143792</span>
@@ -667,19 +658,19 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 598:     97   2006-01-02  2006-04-16            15        0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 599:     98   2006-01-02  2006-04-16            15        0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 600:     99   2006-01-02  2006-04-16            15        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      actual.total.spending predicted.mean.spending predicted.total.spending</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                      &lt;num&gt;                   &lt;num&gt;                    &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                 217.5                63.77959                19.918293</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                   0.0                38.10316                10.917150</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                   0.0                37.12434                 4.727249</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                   0.0                33.08404                10.084926</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                   0.0                37.12434                 4.727249</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                                       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 596:                   0.0                28.29614                 9.070027</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 597:                   0.0                37.12434                 4.727249</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 598:                   0.0                37.12434                 4.727249</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 599:                   0.0                34.87739                11.489208</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 600:                   0.0                16.11315                 7.395184</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      actual.period.spending predicted.mean.spending predicted.period.spending</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                       &lt;num&gt;                   &lt;num&gt;                     &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:                  217.5                63.77959                 19.918293</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:                    0.0                38.10316                 10.917150</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:                    0.0                37.12434                  4.727249</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:                    0.0                33.08404                 10.084926</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:                    0.0                37.12434                  4.727249</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 596:                    0.0                28.29614                  9.070027</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 597:                    0.0                37.12434                  4.727249</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 598:                    0.0                37.12434                  4.727249</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 599:                    0.0                34.87739                 11.489208</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 600:                    0.0                16.11315                  7.395184</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            CET    PAlive</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          &lt;num&gt;     &lt;num&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1: 0.3122988 0.9143792</span>
@@ -716,9 +707,9 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             r          alpha              b              s           beta  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     1.648e+00      1.039e+02      2.168e-05      3.770e-01      6.581e-03  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     1.649e+00      1.039e+02      8.969e-05      3.738e-01      2.661e-02  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   life.Gender   life.Channel   trans.Gender  trans.Channel  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    -2.025e-02      2.743e+00      4.700e-01      7.367e-01  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    -2.227e-02      2.733e+00      4.696e-01      7.360e-01  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: FALSE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Constraints:     FALSE </span>
@@ -737,11 +728,11 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             r          alpha              b              s           beta  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     1.646e+00      1.037e+02      3.938e-05      3.792e-01      1.187e-02  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      1.643552     103.793189       0.004312       0.329045       1.299324  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   life.Gender   life.Channel   trans.Gender  trans.Channel  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    -1.991e-02      2.726e+00      4.696e-01      7.360e-01  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     -0.017505       2.875669       0.470102       0.737475  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: FALSE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Constraints:     FALSE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Regularization:  FALSE </span>
 <span class="r-in"><span></span></span>
@@ -757,9 +748,9 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             r          alpha              b              s           beta  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     1.303e+00      4.659e+01      1.457e-02      2.320e-01      5.241e-01  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     1.307e+00      4.668e+01      1.468e-02      2.306e-01      5.200e-01  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   life.Gender   life.Channel   trans.Gender  trans.Channel  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    -6.463e-04     -5.911e-05      6.165e-03      6.661e-03  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    -6.485e-04     -6.156e-05      6.162e-03      6.700e-03  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Constraints:     FALSE </span>
@@ -778,9 +769,9 @@ to add static covariates to an existing clv data object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             r          alpha              b              s           beta  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     1.615e+00      1.040e+02      3.463e-03      3.232e-01      1.899e+00  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     1.615e+00      1.041e+02      3.428e-03      3.229e-01      1.891e+00  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  life.Channel  trans.Channel  constr.Gender  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     3.172e+00      7.326e-01      4.923e-01  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     3.178e+00      7.327e-01      4.923e-01  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT1: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KKT2: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Constraints:     TRUE </span>
@@ -820,7 +811,7 @@ to add static covariates to an existing clv data object.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
       </footer></div>

@@ -45,7 +45,7 @@ Note that if trans.bins is changed, label.remaining needs to be adapted as well.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.0</span>
       </span>
     </div>
 
@@ -56,16 +56,6 @@ Note that if trans.bins is changed, label.remaining needs to be adapted as well.
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
-    </li>
-  </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -231,7 +221,7 @@ following columns:</p>
 
 <dt>value</dt>
 <dd><p>Depending on variable either (Actual) the actual number of repeat transactions in the period that ends at <code>period.until</code>,
-or the unconditional expectation for the period that ends on <code>period.until</code> ("model name").</p></dd>
+or the unconditional expectation for the period that ends on <code>period.until</code> ("model name"). Actuals may be <code>NA</code> if no transaction was recorded.</p></dd>
 
 
 </dl><p>For the PMF plot:</p>
@@ -305,28 +295,38 @@ but the start of the first time unit after <code>prediction.end</code>.</p>
 <span class="r-in"><span><span class="co">#  expected repeat transactions as by the fitted model</span></span></span>
 <span class="r-in"><span><span class="fu">plot</span><span class="op">(</span><span class="va">pnbd.cdnow</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Plotting from 1997-01-01 until 1998-07-05.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>A <span style="color: #0000BB;">&lt;numeric&gt;</span> value was passed to a <span style="color: #00BB00;">Date</span> scale.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The value was converted to a &lt;Date&gt; object.</span>
 <span class="r-plt img"><img src="plot.clv.fitted.transactions-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot cumulative expected transactions of only the model</span></span></span>
 <span class="r-in"><span><span class="fu">plot</span><span class="op">(</span><span class="va">pnbd.cdnow</span>, cumulative<span class="op">=</span><span class="cn">TRUE</span>, transactions<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Plotting from 1997-01-01 until 1998-07-05.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>A <span style="color: #0000BB;">&lt;numeric&gt;</span> value was passed to a <span style="color: #00BB00;">Date</span> scale.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The value was converted to a &lt;Date&gt; object.</span>
 <span class="r-plt img"><img src="plot.clv.fitted.transactions-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot until 2001-10-21</span></span></span>
 <span class="r-in"><span><span class="fu">plot</span><span class="op">(</span><span class="va">pnbd.cdnow</span>, prediction.end <span class="op">=</span> <span class="st">"2001-10-21"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Plotting from 1997-01-01 until 2001-10-21.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>A <span style="color: #0000BB;">&lt;numeric&gt;</span> value was passed to a <span style="color: #00BB00;">Date</span> scale.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The value was converted to a &lt;Date&gt; object.</span>
 <span class="r-plt img"><img src="plot.clv.fitted.transactions-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot until 2001-10-21, as date</span></span></span>
 <span class="r-in"><span><span class="fu">plot</span><span class="op">(</span><span class="va">pnbd.cdnow</span>,</span></span>
 <span class="r-in"><span>     prediction.end <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd.html" class="external-link">dym</a></span><span class="op">(</span><span class="st">"21-2001-10"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Plotting from 1997-01-01 until 2001-10-21.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>A <span style="color: #0000BB;">&lt;numeric&gt;</span> value was passed to a <span style="color: #00BB00;">Date</span> scale.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The value was converted to a &lt;Date&gt; object.</span>
 <span class="r-plt img"><img src="plot.clv.fitted.transactions-4.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot 15 time units after end of estimation period</span></span></span>
 <span class="r-in"><span><span class="fu">plot</span><span class="op">(</span><span class="va">pnbd.cdnow</span>, prediction.end <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Plotting from 1997-01-01 until 1998-01-04.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Not plotting full holdout period.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>A <span style="color: #0000BB;">&lt;numeric&gt;</span> value was passed to a <span style="color: #00BB00;">Date</span> scale.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The value was converted to a &lt;Date&gt; object.</span>
 <span class="r-plt img"><img src="plot.clv.fitted.transactions-5.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Save the data generated for plotting</span></span></span>
@@ -340,6 +340,8 @@ but the start of the first time unit after <code>prediction.end</code>.</p>
 <span class="r-in"><span><span class="va">gg.pnbd.cdnow</span> <span class="op">&lt;-</span> <span class="fu">plot</span><span class="op">(</span><span class="va">pnbd.cdnow</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Plotting from 1997-01-01 until 1998-07-05.</span>
 <span class="r-in"><span><span class="va">gg.pnbd.cdnow</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"PNBD on CDnow"</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>A <span style="color: #0000BB;">&lt;numeric&gt;</span> value was passed to a <span style="color: #00BB00;">Date</span> scale.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The value was converted to a &lt;Date&gt; object.</span>
 <span class="r-plt img"><img src="plot.clv.fitted.transactions-6.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
@@ -375,6 +377,8 @@ but the start of the first time unit after <code>prediction.end</code>.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Plotting from 1997-01-01 until 1998-07-05.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Plotting from 1997-01-01 until 1998-07-05.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Plotting from 1997-01-01 until 1998-07-05.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>A <span style="color: #0000BB;">&lt;numeric&gt;</span> value was passed to a <span style="color: #00BB00;">Date</span> scale.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The value was converted to a &lt;Date&gt; object.</span>
 <span class="r-plt img"><img src="plot.clv.fitted.transactions-10.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># specify names as label, using standard colors</span></span></span>
@@ -399,7 +403,7 @@ but the start of the first time unit after <code>prediction.end</code>.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
       </footer></div>

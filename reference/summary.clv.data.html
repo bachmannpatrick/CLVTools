@@ -24,7 +24,7 @@ possible holdout sample, and descriptive statistics of the transaction data."><!
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.0</span>
       </span>
     </div>
 
@@ -35,16 +35,6 @@ possible holdout sample, and descriptive statistics of the transaction data."><!
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
-    </li>
-  </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -153,6 +143,12 @@ for the overall time period (estimation + holdout). By using the <code>ids</code
 be limited to a subset of customers.</p><dl><dt><code>Number of customers</code></dt>
 <dd><p>Count of individual customers.</p></dd>
 
+<dt><code>Period Start</code></dt>
+<dd><p>Start of the indicated period.</p></dd>
+
+<dt><code>Period End</code></dt>
+<dd><p>End of indicated period.</p></dd>
+
 <dt><code>First Transaction in period</code></dt>
 <dd><p>Time point of the first transaction occurring in the indicated period.</p></dd>
 
@@ -213,6 +209,8 @@ including standard deviation (SD).</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Transaction Data Summary </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                    Estimation      Holdout         Total     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Period Start                       2005-01-02      2006-01-02      2005-01-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Period End                         2006-01-01      2010-12-20      2010-12-20</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of customers                -               -               600       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> First Transaction in period        2005-01-02      2006-01-02      2005-01-02</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Last Transaction in period         2006-01-01      2010-12-20      2010-12-20</span>
@@ -236,20 +234,22 @@ including standard deviation (SD).</p></dd>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to min; returning Inf</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Transaction Data Summary for Given Customers (n=1)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                    Estimation      Holdout      Total</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of customers                -               -            0    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> First Transaction in period        Inf             -            Inf  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Last Transaction in period         -Inf            -            -Inf </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Total # Transactions               0               -            0    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Mean # Transactions per cust       NaN             -            NaN  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               -               -            -    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Mean Spending per Transaction      NaN             -            NaN  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               -               -            -    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Total Spending                     0.000           -            0.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Total # zero repeaters             0               -            -    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Percentage of zero repeaters       NaN             -            -    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Mean Interpurchase time            -               -            -    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               -               -            -    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                    Estimation      Holdout      Total     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Period Start                       2005-01-02      -            2005-01-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Period End                         2006-01-01      -            2010-12-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of customers                -               -            0         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> First Transaction in period        Inf             -            Inf       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Last Transaction in period         -Inf            -            -Inf      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total # Transactions               0               -            0         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mean # Transactions per cust       NaN             -            NaN       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               -               -            -         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mean Spending per Transaction      NaN             -            NaN       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               -               -            -         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total Spending                     0.000           -            0.000     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total # zero repeaters             0               -            -         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Percentage of zero repeaters       NaN             -            -         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mean Interpurchase time            -               -            -         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (SD)                               -               -            -         </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># transaction summary of customers "1", "10", "100", and "1000"</span></span></span>
@@ -257,6 +257,8 @@ including standard deviation (SD).</p></dd>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Not all given ids were found in the transaction data.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Transaction Data Summary for Given Customers (n=4)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                    Estimation      Holdout         Total     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Period Start                       2005-01-02      2006-01-02      2005-01-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Period End                         2006-01-01      2010-12-20      2010-12-20</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of customers                -               -               3         </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> First Transaction in period        2005-01-02      2006-01-18      2005-01-02</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Last Transaction in period         2005-09-06      2010-06-08      2010-06-08</span>
@@ -291,6 +293,8 @@ including standard deviation (SD).</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Transaction Data Summary </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                    Estimation      Holdout         Total     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Period Start                       2005-01-02      2006-01-02      2005-01-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Period End                         2006-01-01      2010-12-20      2010-12-20</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of customers                -               -               600       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> First Transaction in period        2005-01-02      2006-01-02      2005-01-02</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Last Transaction in period         2006-01-01      2010-12-20      2010-12-20</span>
@@ -327,7 +331,7 @@ including standard deviation (SD).</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
       </footer></div>

@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.0</span>
       </span>
     </div>
 
@@ -34,16 +34,6 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/internal_docu/internal_docu.html">Internal Package Documentation</a>
-    </li>
-  </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -66,6 +56,29 @@
       <small>Source: <a href="https://github.com/bachmannpatrick/CLVTools/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.12.0" id="clvtools-0120">CLVTools 0.12.0<small>2025-09-22</small><a class="anchor" aria-label="anchor" href="#clvtools-0120"></a></h2>
+<div class="section level4">
+<h4 id="new-features-0-12-0">NEW FEATURES<a class="anchor" aria-label="anchor" href="#new-features-0-12-0"></a></h4>
+<ul><li>
+<code>clvdata(data.end)</code>: Add parameter <code>data.end</code> to specify a data end beyond the last actual transaction</li>
+<li>
+<code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>: Always set <code>zval</code> and <code>pval</code> to NA for the main model parameters</li>
+<li>
+<code><a href="../reference/hessian.html">hessian()</a></code>: Add method to calculate hessian matrix for already fitted models</li>
+<li>Add 3 new vignettes covering: Advanced modelling techniques, model intuition, and the internal class system</li>
+</ul></div>
+<div class="section level4">
+<h4 id="bug-fixes-0-12-0">BUG FIXES<a class="anchor" aria-label="anchor" href="#bug-fixes-0-12-0"></a></h4>
+<ul><li>Fix CRAN notes: Replace <code>arma::is_finite()</code> -&gt; <code>std::isfinite()</code>
+</li>
+<li>Dyncov PNBD: Rename <code>predicted.CLV</code> -&gt; <code>predicted.period.CLV</code>
+</li>
+<li>
+<code><a href="../reference/predict.clv.fitted.transactions.html">predict()</a></code>: Rename <code>{predicted, actual}.total.spending</code> -&gt; <code>{predicted, actual}.period.spending</code>
+</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.11.2" id="clvtools-0112">CLVTools 0.11.2<small>2024-12-02</small><a class="anchor" aria-label="anchor" href="#clvtools-0112"></a></h2>
 <div class="section level4">
@@ -108,7 +121,7 @@
 <li>GGomNBD: Improve numerical stability and runtime of LL integral</li>
 <li>GGomNBD: Implement PMF as derived by Jost Adler</li>
 <li>lrtest(): Likelihood ratio testing for latent attrition models</li>
-<li>Accept <code><a href="https://rdrr.io/pkg/data.table/man/IDateTime.html" class="external-link">data.table::IDate</a></code> as data inputs to <code>clvdata</code>
+<li>Accept <code><a href="https://rdatatable.gitlab.io/data.table/reference/IDateTime.html" class="external-link">data.table::IDate</a></code> as data inputs to <code>clvdata</code>
 </li>
 <li>
 <code>summary.clv.data</code>:Much faster by improving the calculation of the mean inter-purchase time</li>
@@ -215,7 +228,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
       </footer></div>
