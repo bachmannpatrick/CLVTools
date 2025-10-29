@@ -21,13 +21,13 @@ newcustomer.dynamic(
 newcustomer.spending()
 }
 \arguments{
-\item{num.periods}{A positive, numeric scalar indicating the number of periods to predict.}
+\item{num.periods}{A positive, numeric scalar indicating the number of periods to predict from the initial transaction.}
 
 \item{data.cov.life}{Numeric-only covariate data for the lifetime process for a single customer, \code{data.table} or \code{data.frame}. See details.}
 
 \item{data.cov.trans}{Numeric-only covariate data for the transaction process for a single customer, \code{data.table} or \code{data.frame}. See details.}
 
-\item{first.transaction}{For dynamic covariate models only: The time point of the first transaction of the customer ("coming alive") for which a prediction is made.
+\item{first.transaction}{For dynamic covariate models only: The time point of the first transaction of the customer ("coming alive").
 Has to be within the time range of the covariate data.}
 }
 \value{
@@ -39,11 +39,10 @@ Has to be within the time range of the covariate data.}
 \description{
 The methods documented here are to be used together with
 \link[CLVTools:predict.clv.fitted.transactions]{predict (transactions)} to obtain
-the expected number of transactions of an average newly alive customer and
+the expected number of transactions of an average, yet-to-be acquired customer and
 with \link[CLVTools:predict.clv.fitted.spending]{predict (spending)} to obtain
-the expected spending of an average newly alive customer.
-This prediction is only sensible for (fictional) customers without order history:
-Customers which just came alive and have not had the chance to reveal any more of their behavior.
+the expected spending of an average yet-to-be acquired customer.
+See the \code{Method} subsection in Details for more explanations.
 
 The methods described here produce the data required as input to
 \code{predict(newdata=)} to make this new customer prediction.
@@ -51,11 +50,13 @@ This is mostly covariate data for static and dynamic covariate models.
 See details for the required format.
 
 \code{newcustomer()}, \code{newcustomer.static()}, \code{newcustomer.dynamic()}:
-To predict the number of transactions a single, fictional, average new customer is expected to make in
-the \code{num.periods} periods since making the first transaction ("coming alive").
+To predict the number of transactions a single, fictional, average, yet-to-be acquired
+customer is expected to make in the first \code{num.periods} periods.
 
-\code{newcustomer.spending()}: To estimate how much a single, fictional, average
-new customer is expected to spend on average per transaction.
+\code{newcustomer.spending()}: To estimate how much a single, fictional, average,
+yet-to-be acquired customer is expected to spend on average per transaction.
+Note that the spending model should be fit with \code{remove.first.transaction=FALSE}
+because the spending predictions are also used for the first orders.
 }
 \details{
 The covariate data has to contain one column for every covariate parameter in the fitted model. Only numeric values are allowed, no factors or characters.
@@ -77,6 +78,17 @@ See examples.
 For models with dynamic covariates, the time point of the first purchase (\code{first.transaction}) is
 additionally required because the exact covariates that are active during the prediction period have
 to be known.
+
+
+\subsection{Method}{
+These predictions are for average, prospective customers: Yet-to-be acquired
+customers which still have to place their first order.
+Therefore, the predicted number of expected orders also includes the initial purchase (1+).
+The subsequent orders in the first \code{t} periods are then predicted using the unconditional expectation.
+In case of the Pareto/NBD this is
+
+\deqn{1 + E[X(t)]= 1 + \frac{r \beta}{\alpha (s-1)} \left[  1- \left (\frac{\beta}{\beta+t} \right)^{s-1}  \right].}
+}
 }
 \examples{
 \donttest{
@@ -114,7 +126,9 @@ predict(
 
 
 # Spending model
-gg.apparel <- gg(clv.data.apparel)
+# Note: remove.first.transaction=FALSE as the predicted spending will be multiplied
+# with the total number of orders that also includes the initial purchase
+gg.apparel <- gg(clv.data.apparel, remove.first.transaction=FALSE)
 predict(gg.apparel, newdata = newcustomer.spending())
 
 
