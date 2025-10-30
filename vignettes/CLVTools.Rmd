@@ -11,12 +11,27 @@ output:
     latex_engine: xelatex
     toc: true
     number_sections: yes
+papersize: A4
 bibliography: bibliography.bib
 vignette: >
   %\VignetteIndexEntry{The CLVTools Package} 
   %\VignetteEncoding{UTF-8} 
   %\VignetteEngine{knitr::rmarkdown}
+abstract: |
+  This vignette is a hands-on guide to the R package `CLVTools` for modeling and forecasting
+  customer base dynamics. It shows how to construct `clv.data` objects, estimate latent
+  attrition models (Pareto/NBD, BG/NBD, GGom/NBD), and generate individual-level forecasts:
+  conditional expected transactions (CET), probability of being alive (PAlive), and discounted
+  expected residual (or finite-horizon) transactions (DERT/DECT). We demonstrate the use of
+  time-invariant and time-varying covariates, optional purchase–attrition correlation via a
+  Sarmanov specification, and regularization and equality constraints for covariate effects.
+  The vignette also covers the Gamma/Gamma spending model for predicting mean spend and
+  computing CLV, and provides reproducible code for summaries, diagnostics, and plots.
+  Guidance on data preparation, estimation/holdout splitting, optimizer settings, and result
+  interpretation is included throughout.
 ---
+
+\newpage
 
 
 ```{r setup, include = FALSE}

@@ -20,6 +20,12 @@ CLVs in continuous non-contractual business settings such as retailers,
 probabilistic customer attrition models are the preferred choice in
 literature and practice.
 
+Below, we provide broad overview on the functionalites of CLVTools and a quickstart tutorial. More detailed information is provided in the following documents:
+- For more information on the terminology and general modeling challenges when assessing customers' future value look at the vignette ["Probabilistic Models for Analyzing Customer Purchase Behavior: A Primer"](https://cran.r-project.org/web/packages/CLVTools/vignettes/CLVTools_intuitive_explanations.pdf).
+- For a comprehensive case study with CLVTools look at the vignette: ["Walkthrough for the CLVTools Package"](https://cran.r-project.org/web/packages/CLVTools/vignettes/CLVTools.pdf).
+- For advanced modeling techniques look a the vignette ["Advanced and Very Advanced Modeling Techniques in CLVTools"](https://cran.r-project.org/web/packages/CLVTools/vignettes/CLVTools_advanced_techniques.pdf).
+- To understand the internal object-oriented architecture of CLVToools look at the vignette ["Classes in CLVTools"](https://cran.r-project.org/web/packages/CLVTools/vignettes/CLVTools_classes.pdf). 
+
 The R package `CLVTools` provides an efficient and easy to use
 implementation framework for probabilistic customer attrition models in
 non-contractual settings. Building up on the learnings of other
