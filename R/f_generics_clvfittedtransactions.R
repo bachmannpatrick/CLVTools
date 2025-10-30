@@ -335,7 +335,8 @@ setMethod("clv.controlflow.predict.new.customer", signature = signature(clv.fitt
     check_err_msg("Parameter newdata has to be output from calling `newcustomer()`!")
   }
 
-  return(drop(clv.model.predict.new.customer(
+  # 1+: Include initial order
+  return(1 + drop(clv.model.predict.new.customer(
     clv.model = clv.fitted@clv.model,
     clv.fitted = clv.fitted,
     clv.newcustomer=clv.newcustomer)))
