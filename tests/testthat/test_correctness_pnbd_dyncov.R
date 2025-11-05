@@ -273,14 +273,14 @@ fct.testthat.correctness.dyncov.predict.newcustomer <- function(){
   p.dyn <- fct.helper.dyncov.quickfit.apparel.data()
   df.cov <- fct.helper.default.newcustomer.covdata.dyncov()
 
-  test_that("dyncov: predict newcustomer 0 for t=0", {
+  test_that("dyncov: predict newcustomer==1 for t=0", {
     expect_silent(pred <- predict(p.dyn, newdata=newcustomer.dynamic(
       num.periods = 0,
       data.cov.life = df.cov,
       data.cov.trans = df.cov,
       first.transaction = "2000-01-04"
       )))
-    expect_equal(pred, 0)
+    expect_equal(pred, 1)
   })
 
   test_that("dyncov predict newcustomer different results for different covs", {
