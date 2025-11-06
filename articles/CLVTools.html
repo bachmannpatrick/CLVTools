@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CLVTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.1</span>
       </span>
     </div>
 
@@ -92,7 +92,27 @@ Meierer</h4>
     </div>
 
     
+        <div class="abstract">
+      <p class="abstract">Abstract</p>
+      <p>This vignette is a hands-on guide to the R package
+      <code>CLVTools</code> for modeling and forecasting customer base
+      dynamics. It shows how to construct <code>clv.data</code> objects,
+      estimate latent attrition models (Pareto/NBD, BG/NBD, GGom/NBD),
+      and generate individual-level forecasts: conditional expected
+      transactions (CET), probability of being alive (PAlive), and
+      discounted expected residual (or finite-horizon) transactions
+      (DERT/DECT). We demonstrate the use of time-invariant and
+      time-varying covariates, optional purchase–attrition correlation
+      via a Sarmanov specification, and regularization and equality
+      constraints for covariate effects. The vignette also covers the
+      Gamma/Gamma spending model for predicting mean spend and computing
+      CLV, and provides reproducible code for summaries, diagnostics,
+      and plots. Guidance on data preparation, estimation/holdout
+      splitting, optimizer settings, and result interpretation is
+      included throughout.</p>
+    </div>
     
+<div style="page-break-after: always;"></div>
 <div class="section level2">
 <h2 id="prerequisites-setup-the-r-environment">Prerequisites: Setup the R environment<a class="anchor" aria-label="anchor" href="#prerequisites-setup-the-r-environment"></a>
 </h2>
@@ -476,9 +496,9 @@ access the confidence intervals for all parameters
 <span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint</a></span><span class="op">(</span><span class="va">est.pnbd</span><span class="op">)</span></span>
 <span><span class="co">#&gt;              2.5 %     97.5 %</span></span>
 <span><span class="co">#&gt; r       0.97186638   1.926087</span></span>
-<span><span class="co">#&gt; alpha  33.95755821  63.314611</span></span>
+<span><span class="co">#&gt; alpha  33.95755823  63.314611</span></span>
 <span><span class="co">#&gt; s       0.03001563   1.092504</span></span>
-<span><span class="co">#&gt; beta  -22.91272122 116.681448</span></span></code></pre></div>
+<span><span class="co">#&gt; beta  -22.91272141 116.681448</span></span></code></pre></div>
 <p>In order to get the Likelihood value and the corresponding
 Variance-Covariance Matrix we use the following commands:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
@@ -490,9 +510,9 @@ Variance-Covariance Matrix we use the following commands:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">est.pnbd</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                 r       alpha           s        beta</span></span>
 <span><span class="co">#&gt; r      0.05925727   1.7049763 -0.01786467   -3.472617</span></span>
-<span><span class="co">#&gt; alpha  1.70497628  56.0878419 -0.43375973  -82.963757</span></span>
+<span><span class="co">#&gt; alpha  1.70497627  56.0878417 -0.43375973  -82.963758</span></span>
 <span><span class="co">#&gt; s     -0.01786467  -0.4337597  0.07346698    9.366245</span></span>
-<span><span class="co">#&gt; beta  -3.47261650 -82.9637573  9.36624538 1268.172650</span></span></code></pre></div>
+<span><span class="co">#&gt; beta  -3.47261652 -82.9637580  9.36624544 1268.172657</span></span></code></pre></div>
 <p>As an alternative to the Pareto/NBD model <code>CLVTools</code>
 features the BG/NBD model <span class="citation">(Fader, Hardie, and Lee
 2005a)</span> and the GGomp/NBD <span class="citation">(Bemmaor and
@@ -728,11 +748,11 @@ repeat transactions</p>
 <span><span class="co">#&gt; Plotting from 2005-01-02 until 2010-12-26.</span></span>
 <span><span class="co">#&gt; Warning in scale_x_date(): A <span style="color: #0000BB;">&lt;numeric&gt;</span> value was passed to a <span style="color: #00BB00;">Date</span> scale.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The value was converted to a &lt;Date&gt; object.</span></span></code></pre></div>
-<p><img src="CLVTools_files/figure-html/plot-actual-1.png" width="100%">
+<p><img src="CLVTools_files/figure-html/plot-actual-1.png" class="r-plt" width="100%">
 To plot customers mean interpurchase time, we use:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">clv.apparel</span>, which<span class="op">=</span><span class="st">"interpurchasetime"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="CLVTools_files/figure-html/plot-interpurchase-1.png" width="100%">
+<p><img src="CLVTools_files/figure-html/plot-interpurchase-1.png" class="r-plt" width="100%">
 When the <code><a href="../reference/plot.clv.fitted.transactions.html">plot()</a></code> command is applied to an object with the an
 estimated model (i.e. <code>est.pnbd</code>), the following plots can be
 selected using the <code>which</code> option of:</p>
@@ -767,7 +787,7 @@ needs to be adapted as well.</li>
 <span><span class="co">#&gt; Plotting from 2005-01-02 until 2010-12-26.</span></span>
 <span><span class="co">#&gt; Warning in scale_x_date(): A <span style="color: #0000BB;">&lt;numeric&gt;</span> value was passed to a <span style="color: #00BB00;">Date</span> scale.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The value was converted to a &lt;Date&gt; object.</span></span></code></pre></div>
-<p><img src="CLVTools_files/figure-html/plot-model-1.png" width="100%"></p>
+<p><img src="CLVTools_files/figure-html/plot-model-1.png" class="r-plt" width="100%"></p>
 <p>To plot the <em>cumulative</em> expected transactions 30 time units
 (30 weeks in this example) ahead of the end of the estimation plot, we
 use:</p>
@@ -987,7 +1007,7 @@ alternative starting values.</p>
 <span><span class="co">#&gt; r               1.8387     0.3457     NA       NA    </span></span>
 <span><span class="co">#&gt; alpha          92.9435    16.9749     NA       NA    </span></span>
 <span><span class="co">#&gt; s               0.5913     0.2603     NA       NA    </span></span>
-<span><span class="co">#&gt; beta           49.5052    36.1446     NA       NA    </span></span>
+<span><span class="co">#&gt; beta           49.5048    36.1444     NA       NA    </span></span>
 <span><span class="co">#&gt; life.Gender    -0.6428     0.2956 -2.175  0.02965 *  </span></span>
 <span><span class="co">#&gt; life.Channel    0.7902     0.3058  2.584  0.00978 ** </span></span>
 <span><span class="co">#&gt; trans.Gender    0.2860     0.1041  2.746  0.00603 ** </span></span>
@@ -1320,7 +1340,7 @@ argument <code>plot.interpolation.points</code> allows to adjust the
 number of interpolation points in density graph.</p>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">est.gg</span><span class="op">)</span></span></code></pre></div>
-<p><img src="CLVTools_files/figure-html/spending-plot-model4-1.png" width="100%"></p>
+<p><img src="CLVTools_files/figure-html/spending-plot-model4-1.png" class="r-plt" width="100%"></p>
 <div class="section level4">
 <h4 class="unnumbered" id="literature">Literature<a class="anchor" aria-label="anchor" href="#literature"></a>
 </h4>
@@ -1415,7 +1435,7 @@ Tools to Make Developing r Packages Easier</em>. <a href="https://CRAN.R-project
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>
