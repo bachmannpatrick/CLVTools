@@ -1,3 +1,10 @@
+# CLVTools 0.12.1
+
+### NEW FEATURES
+* `newcustomer()` prediction: Include the initial transaction in the predicted number of orders
+
+
+
 # CLVTools 0.12.0
 
 ### NEW FEATURES

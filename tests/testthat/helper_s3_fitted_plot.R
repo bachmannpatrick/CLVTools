@@ -313,6 +313,6 @@ fct.testthat.runability.clvfittedspending.plot <- function(fitted.spending){
     skip_on_cran()
     expect_silent(res.plot.10 <- plot(fitted.spending, n = 10, verbose=FALSE))
     expect_silent(res.plot.20 <- plot(fitted.spending, n = 20, verbose=FALSE))
-    expect_false(isTRUE(all.equal(res.plot.10, res.plot.20)))
+    expect_false(isTRUE(all.equal(res.plot.10@layers, res.plot.20@layers)))
   })
 }
