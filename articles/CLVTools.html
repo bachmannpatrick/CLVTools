@@ -120,8 +120,8 @@ Meierer</h4>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"CLVTools"</span><span class="op">)</span></span></code></pre></div>
 <p>Install the development version from GitHub (using the
-<code>devtools</code> package <span class="citation">(Wickham, Hester,
-and Chang 2019)</span>):</p>
+<code>devtools</code> package <span class="citation">(Wickham et al.
+2019)</span>):</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"bachmannpatrick/CLVTools"</span>, ref <span class="op">=</span> <span class="st">"development"</span><span class="op">)</span></span></code></pre></div>
@@ -170,12 +170,11 @@ of the workﬂow.</p>
 history. Every transaction record consists of a purchase date and
 customer ID. Optionally, the price of the transaction may be included to
 allow for prediction of future customer spending using an additional
-Gamma/Gamma model<span class="citation">(Fader, Hardie, and Lee 2005b;
-Colombo and Jiang 1999)</span>. Using the full history of transaction
-data allows for comprehensive plots and summary statistics, which allow
-the identification of possible issues prior to model estimation. Data
-may be provided as <code>data.frame</code> or <code>data.table</code>
-<span class="citation">(Dowle and Srinivasan 2019)</span>.</p>
+Gamma/Gamma model<span class="citation">(Fader et al. 2005b; Colombo and
+Jiang 1999)</span>. Using the full history of transaction data allows
+for comprehensive plots and summary statistics, which allow the
+identification of possible issues prior to model estimation. Data may be
+provided as <code>data.frame</code> or <code>data.table</code> <span class="citation">(Dowle and Srinivasan 2019)</span>.</p>
 <p>It is common practice to split time series data into two parts, an
 estimation and a holdout period. The model is estimated based on the
 data from the estimation period while the data from the holdout period
@@ -339,11 +338,11 @@ not return to the store after their first purchase.</p>
 </h3>
 <p>After initializing the object, we can start estimating the first
 probabilistic latent attrition model. We start with the standard
-Pareto/NBD model <span class="citation">(Schmittlein, Morrison, and
-Colombo 1987)</span> and therefore use the command <code><a href="../reference/pnbd.html">pnbd()</a></code>
-to fit the model and estimate model parameters. <code>clv.data</code>
-specifies the initialized object prepared in the last step. Optionally,
-starting values for the model parameters and control settings for the
+Pareto/NBD model <span class="citation">(Schmittlein et al. 1987)</span>
+and therefore use the command <code><a href="../reference/pnbd.html">pnbd()</a></code> to fit the model and
+estimate model parameters. <code>clv.data</code> specifies the
+initialized object prepared in the last step. Optionally, starting
+values for the model parameters and control settings for the
 optimization algorithm may be provided: The argument
 <code>start.params.model</code> allows to assign a vector
 (e.g. <code>c(alpha=1, beta=2, s=1, beta=2)</code> in the case of the
@@ -496,9 +495,9 @@ access the confidence intervals for all parameters
 <span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint</a></span><span class="op">(</span><span class="va">est.pnbd</span><span class="op">)</span></span>
 <span><span class="co">#&gt;              2.5 %     97.5 %</span></span>
 <span><span class="co">#&gt; r       0.97186638   1.926087</span></span>
-<span><span class="co">#&gt; alpha  33.95755823  63.314611</span></span>
+<span><span class="co">#&gt; alpha  33.95755821  63.314611</span></span>
 <span><span class="co">#&gt; s       0.03001563   1.092504</span></span>
-<span><span class="co">#&gt; beta  -22.91272141 116.681448</span></span></code></pre></div>
+<span><span class="co">#&gt; beta  -22.91272122 116.681448</span></span></code></pre></div>
 <p>In order to get the Likelihood value and the corresponding
 Variance-Covariance Matrix we use the following commands:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
@@ -510,11 +509,11 @@ Variance-Covariance Matrix we use the following commands:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">est.pnbd</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                 r       alpha           s        beta</span></span>
 <span><span class="co">#&gt; r      0.05925727   1.7049763 -0.01786467   -3.472617</span></span>
-<span><span class="co">#&gt; alpha  1.70497627  56.0878417 -0.43375973  -82.963758</span></span>
+<span><span class="co">#&gt; alpha  1.70497628  56.0878419 -0.43375973  -82.963757</span></span>
 <span><span class="co">#&gt; s     -0.01786467  -0.4337597  0.07346698    9.366245</span></span>
-<span><span class="co">#&gt; beta  -3.47261652 -82.9637580  9.36624544 1268.172657</span></span></code></pre></div>
+<span><span class="co">#&gt; beta  -3.47261650 -82.9637573  9.36624538 1268.172650</span></span></code></pre></div>
 <p>As an alternative to the Pareto/NBD model <code>CLVTools</code>
-features the BG/NBD model <span class="citation">(Fader, Hardie, and Lee
+features the BG/NBD model <span class="citation">(Fader et al.
 2005a)</span> and the GGomp/NBD <span class="citation">(Bemmaor and
 Glady 2012)</span>. To use the alternative models replace
 <code><a href="../reference/pnbd.html">pnbd()</a></code> by the corresponding model-command. Note that he
@@ -522,9 +521,9 @@ naming and number of model parameters is dependent on the model. Consult
 the manual for more details on the individual models. Beside
 probabilistic latent attrition models, <code>CLVTools</code> also
 features the Gamma/Gamma model <span class="citation">(Colombo and Jiang
-1999; Fader, Hardie, and Lee 2005a)</span> which is used to predict
-customer spending. See section <a href="#spending">Customer Spending</a>
-for details on the spending model.</p>
+1999; Fader et al. 2005a)</span> which is used to predict customer
+spending. See section <a href="#spending">Customer Spending</a> for
+details on the spending model.</p>
 <table class="table">
 <colgroup>
 <col width="20%">
@@ -638,8 +637,8 @@ period.</li>
 <code>clvdata</code>-object, <code>CLVTools</code> provides prediction
 for</p>
 <ul>
-<li>predicted mean spending estimated by a Gamma/Gamma model <span class="citation">(Colombo and Jiang 1999; Fader, Hardie, and Lee
-2005a)</span> and</li>
+<li>predicted mean spending estimated by a Gamma/Gamma model <span class="citation">(Colombo and Jiang 1999; Fader et al. 2005a)</span>
+and</li>
 <li>the customer lifetime value (CLV). CLV is calculated as the product
 of DERT and predicted spending.</li>
 </ul>
@@ -748,11 +747,11 @@ repeat transactions</p>
 <span><span class="co">#&gt; Plotting from 2005-01-02 until 2010-12-26.</span></span>
 <span><span class="co">#&gt; Warning in scale_x_date(): A <span style="color: #0000BB;">&lt;numeric&gt;</span> value was passed to a <span style="color: #00BB00;">Date</span> scale.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The value was converted to a &lt;Date&gt; object.</span></span></code></pre></div>
-<p><img src="CLVTools_files/figure-html/plot-actual-1.png" class="r-plt" width="100%">
+<p><img src="CLVTools_files/figure-html/plot-actual-1.png" class="r-plt" alt="" width="100%">
 To plot customers mean interpurchase time, we use:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">clv.apparel</span>, which<span class="op">=</span><span class="st">"interpurchasetime"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="CLVTools_files/figure-html/plot-interpurchase-1.png" class="r-plt" width="100%">
+<p><img src="CLVTools_files/figure-html/plot-interpurchase-1.png" class="r-plt" alt="" width="100%">
 When the <code><a href="../reference/plot.clv.fitted.transactions.html">plot()</a></code> command is applied to an object with the an
 estimated model (i.e. <code>est.pnbd</code>), the following plots can be
 selected using the <code>which</code> option of:</p>
@@ -787,7 +786,7 @@ needs to be adapted as well.</li>
 <span><span class="co">#&gt; Plotting from 2005-01-02 until 2010-12-26.</span></span>
 <span><span class="co">#&gt; Warning in scale_x_date(): A <span style="color: #0000BB;">&lt;numeric&gt;</span> value was passed to a <span style="color: #00BB00;">Date</span> scale.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The value was converted to a &lt;Date&gt; object.</span></span></code></pre></div>
-<p><img src="CLVTools_files/figure-html/plot-model-1.png" class="r-plt" width="100%"></p>
+<p><img src="CLVTools_files/figure-html/plot-model-1.png" class="r-plt" alt="" width="100%"></p>
 <p>To plot the <em>cumulative</em> expected transactions 30 time units
 (30 weeks in this example) ahead of the end of the estimation plot, we
 use:</p>
@@ -1007,7 +1006,7 @@ alternative starting values.</p>
 <span><span class="co">#&gt; r               1.8387     0.3457     NA       NA    </span></span>
 <span><span class="co">#&gt; alpha          92.9435    16.9749     NA       NA    </span></span>
 <span><span class="co">#&gt; s               0.5913     0.2603     NA       NA    </span></span>
-<span><span class="co">#&gt; beta           49.5048    36.1444     NA       NA    </span></span>
+<span><span class="co">#&gt; beta           49.5052    36.1446     NA       NA    </span></span>
 <span><span class="co">#&gt; life.Gender    -0.6428     0.2956 -2.175  0.02965 *  </span></span>
 <span><span class="co">#&gt; life.Channel    0.7902     0.3058  2.584  0.00978 ** </span></span>
 <span><span class="co">#&gt; trans.Gender    0.2860     0.1041  2.746  0.00603 ** </span></span>
@@ -1162,10 +1161,10 @@ behaviour (i.e. probability of being alive) and the monetary value.
 While probabilistic latent attrition models provide metrics for the
 first two components, they do not predict customer spending. To predict
 customer spending an additional model is required. The
-<code>CLVTools</code>package features the Gamma/Gamma (G/G) <span class="citation">(Fader, Hardie, and Lee 2005b; Colombo and Jiang
-1999)</span> model for predicting customer spending. For convenience,
-the <code><a href="../reference/predict.clv.fitted.transactions.html">predict()</a></code> command allows to automatically predict
-customer spending for all latent attrition models using the option
+<code>CLVTools</code>package features the Gamma/Gamma (G/G) <span class="citation">(Fader et al. 2005b; Colombo and Jiang 1999)</span>
+model for predicting customer spending. For convenience, the
+<code><a href="../reference/predict.clv.fitted.transactions.html">predict()</a></code> command allows to automatically predict customer
+spending for all latent attrition models using the option
 <code>predict.spending=TRUE</code> (see section <a href="#spending">Customer Spending</a>). However, to provide more
 options and more granular insights the Gamma/Gamma model can be
 estimated independently. In the following, we discuss how to estimate a
@@ -1340,11 +1339,11 @@ argument <code>plot.interpolation.points</code> allows to adjust the
 number of interpolation points in density graph.</p>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot.clv.fitted.transactions.html">plot</a></span><span class="op">(</span><span class="va">est.gg</span><span class="op">)</span></span></code></pre></div>
-<p><img src="CLVTools_files/figure-html/spending-plot-model4-1.png" class="r-plt" width="100%"></p>
+<p><img src="CLVTools_files/figure-html/spending-plot-model4-1.png" class="r-plt" alt="" width="100%"></p>
 <div class="section level4">
 <h4 class="unnumbered" id="literature">Literature<a class="anchor" aria-label="anchor" href="#literature"></a>
 </h4>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Bemmaor2012a" class="csl-entry">
 Bemmaor, Albert. C., and Nicolas Glady. 2012. <span>“<span class="nocase">Modeling Purchasing Behavior with Sudden "Death": A
 Flexible Customer Lifetime Model</span>.”</span> <em>Management
@@ -1354,7 +1353,7 @@ Science</em> 58 (5): 1012–21.
 Byrd, Richard H, Peihuang Lu, Jorge Nocedal, and Ciyou Zhu. 1995.
 <span>“A Limited Memory Algorithm for Bound Constrained
 Optimization.”</span> <em>SIAM Journal on Scientific Computing</em> 16
-(5): 1190–1208.
+(5): 1190–208.
 </div>
 <div id="ref-Colombo1999" class="csl-entry">
 Colombo, Richard, and Weina Jiang. 1999. <span>“<a href="https://www.ncbi.nlm.nih.gov/pubmed/20518988" class="external-link"><span class="nocase">A stochastic RFM model</span></a>.”</span> <em>Journal of
@@ -1370,9 +1369,9 @@ the Pareto/NBD Model</span>.”</span> <em>Marketing Science</em> 24 (2):
 275–84.
 </div>
 <div id="ref-Fader2005b" class="csl-entry">
-———. 2005b. <span>“<span class="nocase">RFM and CLV: Using Iso-Value
-Curves for Customer Base Analysis</span>.”</span> <em>Journal of
-Marketing Research</em> 42 (4): 415–30.
+Fader, Peter S., Bruce G. S. Hardie, and KL Lee. 2005b. <span>“<span class="nocase">RFM and CLV: Using Iso-Value Curves for Customer Base
+Analysis</span>.”</span> <em>Journal of Marketing Research</em> 42 (4):
+415–30.
 </div>
 <div id="ref-lubridate" class="csl-entry">
 Grolemund, Garrett, and Hadley Wickham. 2011. <span>“Dates and Times
@@ -1387,7 +1386,7 @@ Interpurchase Time with Time-Dependent Covariates</span>.”</span>
 <div id="ref-KKT" class="csl-entry">
 Kuhn, H. W., and A. W. Tucker. 1951. <span>“Nonlinear
 Programming.”</span> In <em>Second Berkeley Symposium on Mathematical
-Statistics and Probability</em>, edited by J. Neyman, 481–92.
+Statistics and Probability</em>, edited by J. Neyman.
 </div>
 <div id="ref-optimx2" class="csl-entry">
 Nash, John C. 2014. <span>“On Best Practice Optimization Methods in
@@ -1435,7 +1434,7 @@ Tools to Make Developing r Packages Easier</em>. <a href="https://CRAN.R-project
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
       </footer>
