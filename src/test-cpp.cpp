@@ -308,3 +308,44 @@ context("PNBD dyncov hyp2F1 terms close to z = 1") {
   }
 
 }
+
+
+// hyp2F1 terms of the dyncov LL for customers with many transactions ---------------------------------
+
+bool log_equal(const SignedLog& x, double log_y, double maxabsdiff=1e-9){
+  return(x.sgn == 1.0 && std::fabs(x.lg - log_y) < maxabsdiff);
+}
+
+context("PNBD dyncov hyp2F1 terms smaller than the smallest double") {
+
+  // log(hyp(z1) - hyp(z2)) against reference values computed with 120 digits (mpmath).
+  // The terms are of the order alpha^-(r+s+x). On the linear scale they are below the smallest double for customers
+  // with many transactions, lose precision in the subnormal range and then are 0. F2 used to be 0 for these customers
+  // (as if they could not have churned) and the log-likelihood had small jumps in the parameters.
+
+  test_that("beta > alpha"){
+    // GSL value is finite, hyp ~ 1e-484
+    expect_true(log_equal(pnbd_dyncov_LL_i_hyp_beta_g_alpha_log(0.9355, 0.3, 300.0, 40.0, 420.0, 41.0, 421.0), -1114.274929466984607));
+    // 2F1 itself is larger than the largest double (GSL returns Inf): rescaled series
+    expect_true(log_equal(pnbd_dyncov_LL_i_hyp_beta_g_alpha_log(0.9355, 0.3, 400.0, 10.0, 420.0, 11.0, 421.0), -928.73468391093306683));
+    // z > 0.995: transformation z -> 1-z
+    expect_true(log_equal(pnbd_dyncov_LL_i_hyp_beta_g_alpha_log(0.9355, 5.5, 250.0, 30.0, 7500.0, 31.0, 7501.0), -908.05195301670949973));
+    // subnormal range on the linear scale (1e-317)
+    expect_true(log_equal(pnbd_dyncov_LL_i_hyp_beta_g_alpha_log(0.9355, 0.3, 170.0, 70.0, 420.0, 71.0, 421.0), -729.90990909822542717));
+    // linear scale: 0, as before
+    expect_true(pnbd_dyncov_LL_i_hyp_beta_g_alpha(0.9355, 0.3, 300.0, 40.0, 420.0, 41.0, 421.0) == 0.0);
+  }
+
+  test_that("alpha >= beta"){
+    // z > 0.995
+    expect_true(log_equal(pnbd_dyncov_LL_i_hyp_alpha_ge_beta_log(0.62, 2.7, 400.0, 3000.0, 6.0, 3001.0, 7.0), -3208.4794221216461848));
+    // z < 0.995
+    expect_true(log_equal(pnbd_dyncov_LL_i_hyp_alpha_ge_beta_log(0.8, 0.5, 300.0, 60.0, 20.0, 61.0, 21.0), -1231.994482208007054));
+  }
+
+  test_that("previous values are unchanged"){
+    expect_true(log_equal(pnbd_dyncov_LL_i_hyp_beta_g_alpha_log(0.62, 7.98, 9.0, 12.142857, 2425.3, 13.142857, 2426.3), std::log(1.8256184985873479e-40), 1e-8));
+    expect_true(log_equal(pnbd_dyncov_LL_i_hyp_alpha_ge_beta_log(0.8, 2.0, 12.0, 5000.0, 4.0, 5001.0, 5.0), std::log(7.4834902869494363e-49), 1e-8));
+  }
+
+}

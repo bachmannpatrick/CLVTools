@@ -159,6 +159,94 @@ double LifetimeWalk::sum_from_to(const arma::uword from, const arma::uword to) c
 
 namespace {
 
+// Helpers for SignedLog (see pnbd_dyncov_LL.h): value = sgn * exp(lg). An invalid number has lg = NaN.
+inline SignedLog signedlog_zero(){
+  return(SignedLog{-arma::datum::inf, 0.0});
+}
+
+inline SignedLog signedlog_nan(){
+  return(SignedLog{arma::datum::nan, 1.0});
+}
+
+inline bool signedlog_isnan(const SignedLog& v){
+  return(std::isnan(v.lg) || std::isnan(v.sgn));
+}
+
+// v * exp(log_factor), for a positive factor
+inline SignedLog signedlog_scale(const SignedLog& v, const double log_factor){
+  if(signedlog_isnan(v) || std::isnan(log_factor)){
+    return(signedlog_nan());
+  }
+  if(v.sgn == 0.0){
+    return(v);
+  }
+  return(SignedLog{v.lg + log_factor, v.sgn});
+}
+
+// v1 + sgn2 * v2
+inline SignedLog signedlog_add(const SignedLog& v1, const SignedLog& v2, const double sgn2 = 1.0){
+  if(signedlog_isnan(v1) || signedlog_isnan(v2)){
+    return(signedlog_nan());
+  }
+  if(v2.sgn == 0.0){
+    return(v1);
+  }
+  if(v1.sgn == 0.0){
+    return(SignedLog{v2.lg, sgn2 * v2.sgn});
+  }
+  const double lg_max = std::fmax(v1.lg, v2.lg);
+  if(!std::isfinite(lg_max)){
+    return(signedlog_nan());
+  }
+  const double val = v1.sgn * std::exp(v1.lg - lg_max) + sgn2 * v2.sgn * std::exp(v2.lg - lg_max);
+  if(val == 0.0){
+    return(signedlog_zero());
+  }
+  return(SignedLog{lg_max + std::log(std::fabs(val)), (val > 0.0) ? 1.0 : -1.0});
+}
+
+// sgn * exp(lg) on the linear scale (may underflow to 0; only for the intermediate results that are returned)
+inline double signedlog_value(const SignedLog& v){
+  if(signedlog_isnan(v)){
+    return(arma::datum::nan);
+  }
+  if(v.sgn == 0.0){
+    return(0.0);
+  }
+  return(v.sgn * std::exp(v.lg));
+}
+
+// log 2F1(a, b; a+1; z) for a > 0, b > 0, 0 <= z < 1 by the Gauss series, whose terms are all positive.
+//   The partial sum is rescaled whenever it becomes large. The result is therefore also available where the function
+//   itself is larger than the largest double (large b and z close to 1: 2F1 grows like (1-z)^(1-b)) and where GSL
+//   stops after 30000 terms. Returns false if the series does not converge within the maximum number of terms.
+bool pnbd_dyncov_LL_i_hyp_series_log(const double a, const double b, const double z, double& log_res){
+  if(!(a > 0.0) || !(b > 0.0) || !(z >= 0.0) || !(z < 1.0)){
+    return(false);
+  }
+  const double big = 1e250;
+  const double log_big = std::log(big);
+  double term = 1.0;
+  double sum = 1.0;
+  double log_scale = 0.0;
+  for(int k = 0; k < 5000000; k++){
+    const double ratio = (a + k) * (b + k) / ((a + 1.0 + k) * (k + 1.0)) * z;
+    term *= ratio;
+    sum += term;
+    if(sum > big){
+      sum /= big;
+      term /= big;
+      log_scale += log_big;
+    }
+    // the terms first increase if b*z > 1: only stop once they decrease
+    if(ratio < 1.0 && term <= 1e-17 * sum){
+      log_res = std::log(sum) + log_scale;
+      return(std::isfinite(log_res));
+    }
+  }
+  return(false);
+}
+
 // Largest z for which gsl_sf_hyperg_2F1_e() is called directly.
 //   For 0 <= z < 0.995 and positive parameters, GSL sums the hypergeometric series, whose terms are all positive
 //   (gsl-2.7, specfunc/hyperg_2F1.c). This is accurate. From z = 0.995 on, GSL switches to other methods: it returns
@@ -179,10 +267,11 @@ const double pnbd_dyncov_hyp_z_direct_max = 0.995;
 //                         w^(1-b) / v_large^a = v_small^(1-b) * v_large^(b-1-a),
 // which is evaluated on the log scale. The series converges like w^n, i.e. within a few terms for z close to 1.
 // Both parts have a pole at integer b >= 1 which cancels in the sum; the caller keeps b away from the integers.
+// Both parts are computed on the log scale and the result is returned as sign and log of the absolute value.
 // Returns false if the value cannot be computed (the caller then uses its previous approximation).
 bool pnbd_dyncov_LL_i_hyp_z_to_1_raw(const double a, const double b,
                                      const double v_small, const double v_large,
-                                     double& res){
+                                     SignedLog& res){
   const double w = v_small / v_large;
   if(!(w > 0.0) || !(w < 1.0) || !(a > 0.0) || !(b > 0.0) || !(a + 1.0 - b > 0.0)){
     return(false);
@@ -216,14 +305,22 @@ bool pnbd_dyncov_LL_i_hyp_z_to_1_raw(const double a, const double b,
     return(false);
   }
 
-  const double part_series = a / (b - 1.0) *
-    std::exp((1.0 - b)*std::log(v_small) + (b - 1.0 - a)*std::log(v_large)) * sum;
+  // a/(b-1) * v_small^(1-b) * v_large^(b-1-a) * sum
+  const double fct_series = a / (b - 1.0) * sum;
+  if(!std::isfinite(fct_series) || fct_series == 0.0){
+    return(false);
+  }
+  const SignedLog part_series{
+    std::log(std::fabs(fct_series)) + (1.0 - b)*std::log(v_small) + (b - 1.0 - a)*std::log(v_large),
+    (fct_series > 0.0) ? 1.0 : -1.0};
 
-  const double part_gamma = sgn_1mb *
-    std::exp(std::lgamma(a + 1.0) + lg_1mb.val - std::lgamma(a + 1.0 - b) - a*std::log(v_large - v_small));
+  // Gamma(a+1) * Gamma(1-b) / Gamma(a+1-b) * (v_large - v_small)^(-a)
+  const SignedLog part_gamma{
+    std::lgamma(a + 1.0) + lg_1mb.val - std::lgamma(a + 1.0 - b) - a*std::log(v_large - v_small),
+    sgn_1mb};
 
-  res = part_series + part_gamma;
-  return(std::isfinite(res));
+  res = signedlog_add(part_series, part_gamma);
+  return(!signedlog_isnan(res) && res.sgn != 0.0 && std::isfinite(res.lg));
 }
 
 // Same as pnbd_dyncov_LL_i_hyp_z_to_1_raw() but also for b at or close to an integer >= 1 (integer r+x or integer s),
@@ -231,55 +328,62 @@ bool pnbd_dyncov_LL_i_hyp_z_to_1_raw(const double a, const double b,
 // interpolated there from four values at b -/+ h and b -/+ 2h (error of order h^4).
 bool pnbd_dyncov_LL_i_hyp_z_to_1(const double a, const double b,
                                  const double v_small, const double v_large,
-                                 double& res){
+                                 SignedLog& res){
   const double b_int = std::round(b);
   if(b_int < 1.0 || std::fabs(b - b_int) >= 1e-4){
     return(pnbd_dyncov_LL_i_hyp_z_to_1_raw(a, b, v_small, v_large, res));
   }
 
   const double h = 5e-4;
-  double f_m2, f_m1, f_p1, f_p2;
+  SignedLog f_m2, f_m1, f_p1, f_p2;
   if(!pnbd_dyncov_LL_i_hyp_z_to_1_raw(a, b - 2.0*h, v_small, v_large, f_m2) ||
      !pnbd_dyncov_LL_i_hyp_z_to_1_raw(a, b - h,     v_small, v_large, f_m1) ||
      !pnbd_dyncov_LL_i_hyp_z_to_1_raw(a, b + h,     v_small, v_large, f_p1) ||
      !pnbd_dyncov_LL_i_hyp_z_to_1_raw(a, b + 2.0*h, v_small, v_large, f_p2)){
     return(false);
   }
-  res = (-f_m2 + 4.0*f_m1 + 4.0*f_p1 - f_p2) / 6.0;
-  return(std::isfinite(res));
+  // (-f_m2 + 4*f_m1 + 4*f_p1 - f_p2) / 6
+  const double lg_max = std::fmax(std::fmax(f_m2.lg, f_m1.lg), std::fmax(f_p1.lg, f_p2.lg));
+  const double val = (-f_m2.sgn*std::exp(f_m2.lg - lg_max) + 4.0*f_m1.sgn*std::exp(f_m1.lg - lg_max)
+                      + 4.0*f_p1.sgn*std::exp(f_p1.lg - lg_max) - f_p2.sgn*std::exp(f_p2.lg - lg_max)) / 6.0;
+  if(!std::isfinite(val) || val == 0.0){
+    return(false);
+  }
+  res = SignedLog{lg_max + std::log(std::fabs(val)), (val > 0.0) ? 1.0 : -1.0};
+  return(std::isfinite(res.lg));
 }
 
-// 2F1(a, b; a+1; z) / v_large^a with z = 1 - v_small/v_large
-//   1. GSL for z < 0.995, if it reports success (unchanged results)
-//   2. transformation z -> 1-z otherwise
-//   3. `leading`, the leading term for z -> 1 that was used before, if neither is available
-double pnbd_dyncov_LL_i_hyp_term(const double a, const double b,
-                                 const double v_small, const double v_large,
-                                 const double leading){
+// 2F1(a, b; a+1; z) / v_large^a with z = 1 - v_small/v_large, as sign and log of the absolute value
+//   1. GSL for z < 0.995, if it reports success and a finite value
+//   2. for z < 0.995 otherwise (2F1 larger than the largest double, or more than 30000 terms): the same series, rescaled
+//   3. transformation z -> 1-z for z >= 0.995, or if the series does not converge
+//   4. `log_leading`, the log of the leading term for z -> 1 that was used before, if none of these is available
+SignedLog pnbd_dyncov_LL_i_hyp_term(const double a, const double b,
+                                    const double v_small, const double v_large,
+                                    const double log_leading){
   const double z = 1.0 - (v_small/v_large);
 
   if(z < pnbd_dyncov_hyp_z_direct_max){
     gsl_sf_result gsl_res;
     const int status = gsl_sf_hyperg_2F1_e(a, b, a + 1.0, z, &gsl_res);
-    if(status == GSL_SUCCESS && std::isfinite(gsl_res.val)){
-      const double denom = std::pow(v_large, a);
-      if(std::isfinite(denom)){
-        return(gsl_res.val / denom);
-      }
-      // v_large^a overflows for customers with very many transactions (the quotient used to be 0):
-      // divide on the log scale
-      if(gsl_res.val > 0.0){
-        return(std::exp(std::log(gsl_res.val) - a*std::log(v_large)));
-      }
+    if(status == GSL_SUCCESS && std::isfinite(gsl_res.val) && gsl_res.val > 0.0){
+      return(SignedLog{std::log(gsl_res.val) - a*std::log(v_large), 1.0});
+    }
+    double log_series;
+    if(pnbd_dyncov_LL_i_hyp_series_log(a, b, z, log_series)){
+      return(SignedLog{log_series - a*std::log(v_large), 1.0});
     }
   }
 
-  double res;
+  SignedLog res;
   if(z > 0.0 && pnbd_dyncov_LL_i_hyp_z_to_1(a, b, v_small, v_large, res)){
     return(res);
   }
 
-  return(leading);
+  if(std::isnan(log_leading)){
+    return(signedlog_nan());
+  }
+  return(SignedLog{log_leading, 1.0});
 }
 
 } // anonymous namespace
@@ -289,10 +393,10 @@ double pnbd_dyncov_LL_i_hyp_term(const double a, const double b,
 //     hyp2F1(r+s+x,s+1,r+s+x+1,(alpha_1-beta_1)/alpha_1) / (alpha_1^(r+s+x))
 //   - hyp2F1(r+s+x,s+1,r+s+x+1,(alpha_2-beta_2)/alpha_2) / (alpha_2^(r+s+x))
 // )
-double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
-                                          const double x,
-                                          const double alpha_1, const double beta_1,
-                                          const double alpha_2, const double beta_2){
+SignedLog pnbd_dyncov_LL_i_hyp_alpha_ge_beta_log(const double r, const double s,
+                                                 const double x,
+                                                 const double alpha_1, const double beta_1,
+                                                 const double alpha_2, const double beta_2){
   // Do not abort in case of error in gsl functions (hypergeoms)
   gsl_set_error_handler_off();
 
@@ -306,14 +410,14 @@ double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
 
   // Leading term for z -> 1, only used if the hypergeometric function cannot be computed otherwise:
   //  hyp.z := (1-z)^(r+x)*exp(log.C) / beta^(r+s+x), with z = 1 - beta/alpha
-  const double lead_z1 = std::pow(beta_1/alpha_1, r + x) * std::exp(log_C) / std::pow(beta_1, r + s + x);
-  const double lead_z2 = std::pow(beta_2/alpha_2, r + x) * std::exp(log_C) / std::pow(beta_2, r + s + x);
+  const double lead_z1 = (r + x)*std::log(beta_1/alpha_1) + log_C - (r + s + x)*std::log(beta_1);
+  const double lead_z2 = (r + x)*std::log(beta_2/alpha_2) + log_C - (r + s + x)*std::log(beta_2);
 
   // hyp.z := hyp2F1(r+s+x, s+1, r+s+x+1, 1 - beta/alpha) / (alpha^(r+s+x))
-  const double hyp_z1 = pnbd_dyncov_LL_i_hyp_term(r + s + x, s + 1.0, beta_1, alpha_1, lead_z1);
-  const double hyp_z2 = pnbd_dyncov_LL_i_hyp_term(r + s + x, s + 1.0, beta_2, alpha_2, lead_z2);
+  const SignedLog hyp_z1 = pnbd_dyncov_LL_i_hyp_term(r + s + x, s + 1.0, beta_1, alpha_1, lead_z1);
+  const SignedLog hyp_z2 = pnbd_dyncov_LL_i_hyp_term(r + s + x, s + 1.0, beta_2, alpha_2, lead_z2);
 
-  return(hyp_z1 - hyp_z2);
+  return(signedlog_add(hyp_z1, hyp_z2, -1.0));
 }
 
 
@@ -321,10 +425,10 @@ double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
 //     hyp2F1(r+s+x,r+x,r+s+x+1,(beta_1-alpha_1)/beta_1) / (beta_1^(r+s+x))
 //   - hyp2F1(r+s+x,r+x,r+s+x+1,(beta_2-alpha_2)/beta_2) / (beta_2^(r+s+x))
 // )
-double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
-                                         const double x,
-                                         const double alpha_1, const double beta_1,
-                                         const double alpha_2, const double beta_2){
+SignedLog pnbd_dyncov_LL_i_hyp_beta_g_alpha_log(const double r, const double s,
+                                                const double x,
+                                                const double alpha_1, const double beta_1,
+                                                const double alpha_2, const double beta_2){
 
   // Do not abort in case of error in gsl functions (hypergeoms)
   gsl_set_error_handler_off();
@@ -339,14 +443,14 @@ double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
 
   // Leading term for z -> 1, only used if the hypergeometric function cannot be computed otherwise:
   //  hyp.z := (1-z)^(s+1)*exp(log.C) / (alpha)^(r+s+x), with z = 1 - alpha/beta
-  const double lead_z1 = std::pow(alpha_1/beta_1, s + 1.0) * std::exp(log_C) / std::pow(alpha_1, r + s + x);
-  const double lead_z2 = std::pow(alpha_2/beta_2, s + 1.0) * std::exp(log_C) / std::pow(alpha_2, r + s + x);
+  const double lead_z1 = (s + 1.0)*std::log(alpha_1/beta_1) + log_C - (r + s + x)*std::log(alpha_1);
+  const double lead_z2 = (s + 1.0)*std::log(alpha_2/beta_2) + log_C - (r + s + x)*std::log(alpha_2);
 
   // hyp.z := hyp2F1(r+s+x, r+x, r+s+x+1, 1 - alpha/beta) / (beta^(r+s+x))
-  const double hyp_z1 = pnbd_dyncov_LL_i_hyp_term(r + s + x, r + x, alpha_1, beta_1, lead_z1);
-  const double hyp_z2 = pnbd_dyncov_LL_i_hyp_term(r + s + x, r + x, alpha_2, beta_2, lead_z2);
+  const SignedLog hyp_z1 = pnbd_dyncov_LL_i_hyp_term(r + s + x, r + x, alpha_1, beta_1, lead_z1);
+  const SignedLog hyp_z2 = pnbd_dyncov_LL_i_hyp_term(r + s + x, r + x, alpha_2, beta_2, lead_z2);
 
-  return(hyp_z1 - hyp_z2);
+  return(signedlog_add(hyp_z1, hyp_z2, -1.0));
 }
 
 /*
@@ -507,7 +611,36 @@ double pnbd_dyncov_LL_i_Di(const arma::uword i, const LifetimeWalk& real_walk,
 }
 
 
-double pnbd_dyncov_LL_i_F2_1(const double r, const double alpha_0, const double s, const double beta_0,
+// The same on the linear scale (underflows to 0 for customers with very many transactions)
+double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
+                                          const double x,
+                                          const double alpha_1, const double beta_1,
+                                          const double alpha_2, const double beta_2){
+  return(signedlog_value(pnbd_dyncov_LL_i_hyp_alpha_ge_beta_log(r, s, x, alpha_1, beta_1, alpha_2, beta_2)));
+}
+
+double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
+                                         const double x,
+                                         const double alpha_1, const double beta_1,
+                                         const double alpha_2, const double beta_2){
+  return(signedlog_value(pnbd_dyncov_LL_i_hyp_beta_g_alpha_log(r, s, x, alpha_1, beta_1, alpha_2, beta_2)));
+}
+
+// (A/C)^s * (hyp(z1) - hyp(z2)), with the branch that keeps z in [0, 1)
+SignedLog pnbd_dyncov_LL_i_F2_term(const double r, const double s, const double x,
+                                   const double A, const double C,
+                                   const double alpha_1, const double beta_1,
+                                   const double alpha_2, const double beta_2){
+  if(alpha_1 >= beta_1){
+    return(signedlog_scale(pnbd_dyncov_LL_i_hyp_alpha_ge_beta_log(r, s, x, alpha_1, beta_1, alpha_2, beta_2),
+                           s * std::log(A/C)));
+  }else{
+    return(signedlog_scale(pnbd_dyncov_LL_i_hyp_beta_g_alpha_log(r, s, x, alpha_1, beta_1, alpha_2, beta_2),
+                           s * std::log(A/C)));
+  }
+}
+
+SignedLog pnbd_dyncov_LL_i_F2_1(const double r, const double alpha_0, const double s, const double beta_0,
                              const int x, const double dT,
                              const double a1, const double b1,
                              const double A1T, const double C1T){
@@ -518,21 +651,10 @@ double pnbd_dyncov_LL_i_F2_1(const double r, const double alpha_0, const double 
   const double alpha_2 =  a1 + A1T + alpha_0;
   const double beta_2  = (b1 + C1T + beta_0)*A1T/C1T;
 
-  double F2_1 = 0;
-  if( alpha_1 >= beta_1){
-    F2_1 = std::pow(A1T/C1T, s) * pnbd_dyncov_LL_i_hyp_alpha_ge_beta(r, s, x,
-                    alpha_1, beta_1,
-                    alpha_2, beta_2);
-
-  }else{
-    F2_1 = std::pow(A1T/C1T, s) * pnbd_dyncov_LL_i_hyp_beta_g_alpha(r, s, x,
-                    alpha_1, beta_1,
-                    alpha_2, beta_2);
-  }
-  return(F2_1);
+  return(pnbd_dyncov_LL_i_F2_term(r, s, x, A1T, C1T, alpha_1, beta_1, alpha_2, beta_2));
 }
 
-double pnbd_dyncov_LL_i_F2_2(const double r, const double alpha_0, const double s, const double beta_0,
+SignedLog pnbd_dyncov_LL_i_F2_2(const double r, const double alpha_0, const double s, const double beta_0,
                              const int x,
                              const double akt, const double bkT,
                              const double aT, const double bT,
@@ -544,32 +666,22 @@ double pnbd_dyncov_LL_i_F2_2(const double r, const double alpha_0, const double 
   const double alpha_2 = (aT + alpha_0);
   const double beta_2 =  (bT + beta_0)*AkT/CkT;
 
-  double F2_2 = 0.0;
-  if(alpha_1 >= beta_1){
-    F2_2 = std::pow(AkT/CkT, s) * pnbd_dyncov_LL_i_hyp_alpha_ge_beta(r, s, x,
-                    alpha_1, beta_1,
-                    alpha_2, beta_2);
-  }else{
-    F2_2 = std::pow(AkT/CkT, s) * pnbd_dyncov_LL_i_hyp_beta_g_alpha(r, s, x,
-                    alpha_1, beta_1,
-                    alpha_2, beta_2);
-  }
-  return(F2_2);
+  return(pnbd_dyncov_LL_i_F2_term(r, s, x, AkT, CkT, alpha_1, beta_1, alpha_2, beta_2));
 }
 
-double pnbd_dyncov_LL_i_F2_3(const double r, const double alpha_0, const double s, const double beta_0,
+SignedLog pnbd_dyncov_LL_i_F2_3(const double r, const double alpha_0, const double s, const double beta_0,
                              const Customer& c,
                              const double Bjsum, const double dT){
 
   // Term does not exist for n_elem <= 2
   //  No middle sum if only 2 elems in walk (only F2_1 and F2_2)
   if(c.aux_walk_trans.n_elem() <= 2){
-    return(0.0);
+    return(signedlog_zero());
   }
 
   // Loop counts Walks, not element access indices. ie Walk_2, Walk_3, ...
   //    Loop until and including Walk_(n-1)
-  double F2_3 = 0.0;
+  SignedLog F2_3 = signedlog_zero();
   const arma::uword i_end = c.aux_walk_trans.n_elem() - 1;
   for(arma::uword i = 2; i <= i_end; i++){
 
@@ -589,18 +701,10 @@ double pnbd_dyncov_LL_i_F2_3(const double r, const double alpha_0, const double 
     double alpha_2 = ai + Ai + alpha_0;
     double beta_2 = (bi + Ci + beta_0)*Ai/Ci;
 
-    if(alpha_1 >= beta_1){
-      F2_3 += std::pow(Ai/Ci, s) * pnbd_dyncov_LL_i_hyp_alpha_ge_beta(r, s, c.x,
-                                                                      alpha_1, beta_1,
-                                                                      alpha_2, beta_2);
-    }else{
-      F2_3 += std::pow(Ai/Ci, s) * pnbd_dyncov_LL_i_hyp_beta_g_alpha(r, s, c.x,
-                                                                     alpha_1, beta_1,
-                                                                     alpha_2, beta_2);
-    }
+    F2_3 = signedlog_add(F2_3, pnbd_dyncov_LL_i_F2_term(r, s, c.x, Ai, Ci, alpha_1, beta_1, alpha_2, beta_2));
 
     // abort immediately, do not waste more loops
-    if(!std::isfinite(F2_3)){
+    if(signedlog_isnan(F2_3)){
       return(F2_3);
     }
   }
@@ -612,8 +716,8 @@ double pnbd_dyncov_LL_i_F2_3(const double r, const double alpha_0, const double 
  * Z = Y_1 + Y_kT + sum_{2}^{kT-1}{Y_i}
  *  Special case for k_T=1 (aux walk only has 1 element)
  */
-double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s, const double beta_0,
-                           const Customer& c,
+SignedLog pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s, const double beta_0,
+                              const Customer& c,
                            const double B1, const double D1,
                            const double BT, const double DT,
                            const double A1T, const double C1T,
@@ -640,16 +744,7 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
     const double alpha_2 =  a1T + alpha_0;
     const double beta_2  = (b1T  + beta_0)*A1T/C1T;
 
-    double F2 = 0.0;
-    if(alpha_1 >= beta_1){
-      F2 = std::pow(A1T/C1T, s) * pnbd_dyncov_LL_i_hyp_alpha_ge_beta(r, s, c.x,
-                    alpha_1, beta_1,
-                    alpha_2, beta_2);
-    }else{
-      F2 = std::pow(A1T/C1T, s) * pnbd_dyncov_LL_i_hyp_beta_g_alpha(r, s, c.x,
-                    alpha_1, beta_1,
-                    alpha_2, beta_2);
-    }
+    const SignedLog F2 = pnbd_dyncov_LL_i_F2_term(r, s, c.x, A1T, C1T, alpha_1, beta_1, alpha_2, beta_2);
 
     if(return_intermediate_results){
       intermediate_results(0) = dT;
@@ -691,31 +786,32 @@ double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s,
       intermediate_results(11) = arma::datum::nan;
     }
 
-    const double F2_1 = pnbd_dyncov_LL_i_F2_1(r, alpha_0, s, beta_0,
-                                              c.x, dT,
-                                              a1, b1,
-                                              A1T, C1T);
-    intermediate_results(9) = F2_1;
-    if(!std::isfinite(F2_1)){
+    // The intermediate results are on the linear scale (0 if they are too small to be represented)
+    const SignedLog F2_1 = pnbd_dyncov_LL_i_F2_1(r, alpha_0, s, beta_0,
+                                                 c.x, dT,
+                                                 a1, b1,
+                                                 A1T, C1T);
+    intermediate_results(9) = signedlog_value(F2_1);
+    if(signedlog_isnan(F2_1)){
       return(F2_1);
     }
 
-    const double F2_2 = pnbd_dyncov_LL_i_F2_2(r, alpha_0, s, beta_0,
-                                              c.x,
-                                              akt, bkT,
-                                              aT, bT,
-                                              AkT, CkT);
-    intermediate_results(10) = F2_2;
-    if(!std::isfinite(F2_2)){
+    const SignedLog F2_2 = pnbd_dyncov_LL_i_F2_2(r, alpha_0, s, beta_0,
+                                                 c.x,
+                                                 akt, bkT,
+                                                 aT, bT,
+                                                 AkT, CkT);
+    intermediate_results(10) = signedlog_value(F2_2);
+    if(signedlog_isnan(F2_2)){
       return(F2_2);
     }
 
-    const double F2_3 = pnbd_dyncov_LL_i_F2_3(r, alpha_0, s, beta_0,
-                                              c,
-                                              Bjsum, dT);
-    intermediate_results(11) = F2_3;
+    const SignedLog F2_3 = pnbd_dyncov_LL_i_F2_3(r, alpha_0, s, beta_0,
+                                                 c,
+                                                 Bjsum, dT);
+    intermediate_results(11) = signedlog_value(F2_3);
 
-    return(F2_1 + F2_2 + F2_3);
+    return(signedlog_add(signedlog_add(F2_1, F2_2), F2_3));
   }
 }
 
@@ -829,7 +925,8 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
   const double log_F1 = std::log(s) - std::log(r+s+c.x);
 
   arma::vec F2_intermediate_results = arma::vec(12);
-  double F2 = pnbd_dyncov_LL_i_F2(r, alpha_0,  s,  beta_0,
+  // F2 as sign and log of its absolute value: it is too small for a double for customers with many transactions
+  const SignedLog F2_log = pnbd_dyncov_LL_i_F2(r, alpha_0,  s,  beta_0,
                                   c,
                                   B1, D1,
                                   BT,  DT,
@@ -849,23 +946,23 @@ Rcpp::NumericVector pnbd_dyncov_LL_i(const double r, const double alpha_0, const
   //  Cannot set F2=0.0 when it is 'reasonably' small (<sqrt(machineeps)) in order to more often take
   //    advantage of the much simpler case F2==0 because also very small abs(F2) are really relevant for correct results!
   //
+  // F2 on the linear scale, only for the intermediate results
+  const double F2 = signedlog_value(F2_log);
+
   double LL = 0;
-  if(!std::isfinite(F2)){
-    LL = F2;
+  if(signedlog_isnan(F2_log)){
+    LL = arma::datum::nan;
   }else{
 
-    // Cannot: Set F2 to exact 0 if it is reasonably small. Wrong results :(
-    // if(std::fabs(F2 - 0.0) < std::sqrt(arma::datum::eps)){
-    //   F2 = 0.0;
-    // }
-
-    if(F2 < 0.0){
-      LL = log_F0 + log_F3 + std::log1p(std::exp(log_F1-log_F3) * F2);
+    if(F2_log.sgn < 0.0){
+      // log(F3) + log(1 + F1*F2/F3), with F1*F2/F3 = -exp(log.F1 + log|F2| - log.F3)
+      LL = log_F0 + log_F3 + std::log1p(-std::exp(log_F1 + F2_log.lg - log_F3));
     }else{
 
-      if(F2 > 0.0){
-        double max_AB = std::fmax(log_F1 + std::log(F2), log_F3);
-        LL = log_F0 + max_AB  + std::log(std::exp(log_F1 + std::log(F2) - max_AB) + std::exp(log_F3 - max_AB));
+      if(F2_log.sgn > 0.0){
+        const double log_A = log_F1 + F2_log.lg;
+        const double max_AB = std::fmax(log_A, log_F3);
+        LL = log_F0 + max_AB  + std::log(std::exp(log_A - max_AB) + std::exp(log_F3 - max_AB));
 
       }else{
         // F2 == 0
