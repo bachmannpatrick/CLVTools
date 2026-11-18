@@ -270,3 +270,41 @@ context("GGomNBD CET hyp2F1 integral representation") {
     }
   }
 }
+
+
+// hyp2F1 terms of the dyncov LL close to z = 1 ------------------------------------------------------
+
+bool rel_equal(double x, double y, double maxreldiff=1e-8){
+  return(std::fabs(x/y - 1.0) < maxreldiff);
+}
+
+context("PNBD dyncov hyp2F1 terms close to z = 1") {
+
+  // hyp(z1) - hyp(z2) as returned by pnbd_dyncov_LL_i_hyp_beta_g_alpha() and pnbd_dyncov_LL_i_hyp_alpha_ge_beta(),
+  // against reference values computed with 80 digits (mpmath).
+  // gsl_sf_hyperg_2F1_e() returns GSL_EUNIMPL with value 0 for z >= 0.995 if r+s+x >= 10. This value used to
+  // enter the likelihood as a valid 0, as did the quotient with beta^(r+s+x) once this power overflowed.
+
+  test_that("beta > alpha"){
+    // z1 just above 0.995, r+s+x >= 10 (GSL_EUNIMPL)
+    expect_true(rel_equal(pnbd_dyncov_LL_i_hyp_beta_g_alpha(0.62, 7.9914, 9.0, 12.142857, 2428.8, 13.142857, 2429.8), 1.6499615942489781e-40));
+    // same customer just below 0.995 (unchanged path)
+    expect_true(rel_equal(pnbd_dyncov_LL_i_hyp_beta_g_alpha(0.62, 7.98, 9.0, 12.142857, 2425.3, 13.142857, 2426.3), 1.8256184985873479e-40));
+    // r+s+x just above 10 at z1 > 0.995
+    expect_true(rel_equal(pnbd_dyncov_LL_i_hyp_beta_g_alpha(0.62, 7.4, 2.0, 7.142857, 2244.57, 8.142857, 2245.57), 3.4625647929773733e-30));
+    // integer r
+    expect_true(rel_equal(pnbd_dyncov_LL_i_hyp_beta_g_alpha(1.0, 2.0, 3.0, 6.0, 3000.0, 7.0, 3001.0), 1.2691916318764055e-13));
+    // many transactions (beta^(r+s+x) overflows)
+    expect_true(rel_equal(pnbd_dyncov_LL_i_hyp_beta_g_alpha(1.5, 2.7, 150.0, 40.0, 3000.0, 41.0, 3001.0), 1.0576591590990417e-254));
+    // z1 very close to 1
+    expect_true(rel_equal(pnbd_dyncov_LL_i_hyp_beta_g_alpha(0.62, 2.7, 1.0, 5.0, 2000000.0, 6.0, 2000001.0), 1.3330118544478058e-24));
+  }
+
+  test_that("alpha >= beta"){
+    // z1 = 0.998, r+s+x >= 10
+    expect_true(rel_equal(pnbd_dyncov_LL_i_hyp_alpha_ge_beta(0.62, 2.7, 9.0, 3000.0, 6.0, 3001.0, 7.0), 4.3627788723595939e-36));
+    // integer s
+    expect_true(rel_equal(pnbd_dyncov_LL_i_hyp_alpha_ge_beta(0.8, 2.0, 12.0, 5000.0, 4.0, 5001.0, 5.0), 7.4834902869494363e-49));
+  }
+
+}

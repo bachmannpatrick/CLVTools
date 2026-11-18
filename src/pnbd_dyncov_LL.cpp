@@ -157,6 +157,134 @@ double LifetimeWalk::sum_from_to(const arma::uword from, const arma::uword to) c
 }
 
 
+namespace {
+
+// Largest z for which gsl_sf_hyperg_2F1_e() is called directly.
+//   For 0 <= z < 0.995 and positive parameters, GSL sums the hypergeometric series, whose terms are all positive
+//   (gsl-2.7, specfunc/hyperg_2F1.c). This is accurate. From z = 0.995 on, GSL switches to other methods: it returns
+//   GSL_EUNIMPL with value 0 if one of the first two parameters is >= 10 (here: r+s+x >= 10), and its value can be
+//   inaccurate if c-a-b is an integer (here: integer r+x or integer s). Therefore z >= 0.995 is evaluated by
+//   pnbd_dyncov_LL_i_hyp_z_to_1() below.
+const double pnbd_dyncov_hyp_z_direct_max = 0.995;
+
+// 2F1(a, b; a+1; z) / v_large^a   with   z = 1 - v_small/v_large,   for 0 < v_small < v_large, a > 0, b > 0, a+1-b > 0
+//
+// Linear transformation z -> 1-z (Abramowitz & Stegun 15.3.6), with w = 1-z = v_small/v_large. Because c = a+1, one of
+// the two hypergeometric functions on the right-hand side is elementary, 2F1(a, b; b; w) = (1-w)^(-a):
+//
+//   2F1(a, b; a+1; z) =   Gamma(a+1) * Gamma(1-b) / Gamma(a+1-b) * z^(-a)
+//                       + a/(b-1) * w^(1-b) * sum_{n>=0} (a+1-b)_n / (2-b)_n * w^n
+//
+// Divided by v_large^a:   z^(-a) / v_large^a = (v_large - v_small)^(-a)   and
+//                         w^(1-b) / v_large^a = v_small^(1-b) * v_large^(b-1-a),
+// which is evaluated on the log scale. The series converges like w^n, i.e. within a few terms for z close to 1.
+// Both parts have a pole at integer b >= 1 which cancels in the sum; the caller keeps b away from the integers.
+// Returns false if the value cannot be computed (the caller then uses its previous approximation).
+bool pnbd_dyncov_LL_i_hyp_z_to_1_raw(const double a, const double b,
+                                     const double v_small, const double v_large,
+                                     double& res){
+  const double w = v_small / v_large;
+  if(!(w > 0.0) || !(w < 1.0) || !(a > 0.0) || !(b > 0.0) || !(a + 1.0 - b > 0.0)){
+    return(false);
+  }
+
+  // sum_n (a+1-b)_n / (2-b)_n * w^n
+  double term = 1.0;
+  double sum = 1.0;
+  bool converged = false;
+  for(int n = 0; n < 5000; n++){
+    const double ratio = (a + 1.0 - b + n) / (2.0 - b + n) * w;
+    term *= ratio;
+    sum += term;
+    if(!std::isfinite(sum)){
+      return(false);
+    }
+    // only stop behind the index at which the denominator (2-b+n) changes its sign, and when the terms decrease
+    if((2.0 - b + n) > 1.0 && std::fabs(ratio) < 1.0 && std::fabs(term) <= 1e-17 * std::fabs(sum)){
+      converged = true;
+      break;
+    }
+  }
+  if(!converged){
+    return(false);
+  }
+
+  // log|Gamma(1-b)| and the sign of Gamma(1-b)
+  gsl_sf_result lg_1mb;
+  double sgn_1mb;
+  if(gsl_sf_lngamma_sgn_e(1.0 - b, &lg_1mb, &sgn_1mb) != GSL_SUCCESS){
+    return(false);
+  }
+
+  const double part_series = a / (b - 1.0) *
+    std::exp((1.0 - b)*std::log(v_small) + (b - 1.0 - a)*std::log(v_large)) * sum;
+
+  const double part_gamma = sgn_1mb *
+    std::exp(std::lgamma(a + 1.0) + lg_1mb.val - std::lgamma(a + 1.0 - b) - a*std::log(v_large - v_small));
+
+  res = part_series + part_gamma;
+  return(std::isfinite(res));
+}
+
+// Same as pnbd_dyncov_LL_i_hyp_z_to_1_raw() but also for b at or close to an integer >= 1 (integer r+x or integer s),
+// where the two parts of the formula are both huge and cancel. The function is analytic in b, so that it is
+// interpolated there from four values at b -/+ h and b -/+ 2h (error of order h^4).
+bool pnbd_dyncov_LL_i_hyp_z_to_1(const double a, const double b,
+                                 const double v_small, const double v_large,
+                                 double& res){
+  const double b_int = std::round(b);
+  if(b_int < 1.0 || std::fabs(b - b_int) >= 1e-4){
+    return(pnbd_dyncov_LL_i_hyp_z_to_1_raw(a, b, v_small, v_large, res));
+  }
+
+  const double h = 5e-4;
+  double f_m2, f_m1, f_p1, f_p2;
+  if(!pnbd_dyncov_LL_i_hyp_z_to_1_raw(a, b - 2.0*h, v_small, v_large, f_m2) ||
+     !pnbd_dyncov_LL_i_hyp_z_to_1_raw(a, b - h,     v_small, v_large, f_m1) ||
+     !pnbd_dyncov_LL_i_hyp_z_to_1_raw(a, b + h,     v_small, v_large, f_p1) ||
+     !pnbd_dyncov_LL_i_hyp_z_to_1_raw(a, b + 2.0*h, v_small, v_large, f_p2)){
+    return(false);
+  }
+  res = (-f_m2 + 4.0*f_m1 + 4.0*f_p1 - f_p2) / 6.0;
+  return(std::isfinite(res));
+}
+
+// 2F1(a, b; a+1; z) / v_large^a with z = 1 - v_small/v_large
+//   1. GSL for z < 0.995, if it reports success (unchanged results)
+//   2. transformation z -> 1-z otherwise
+//   3. `leading`, the leading term for z -> 1 that was used before, if neither is available
+double pnbd_dyncov_LL_i_hyp_term(const double a, const double b,
+                                 const double v_small, const double v_large,
+                                 const double leading){
+  const double z = 1.0 - (v_small/v_large);
+
+  if(z < pnbd_dyncov_hyp_z_direct_max){
+    gsl_sf_result gsl_res;
+    const int status = gsl_sf_hyperg_2F1_e(a, b, a + 1.0, z, &gsl_res);
+    if(status == GSL_SUCCESS && std::isfinite(gsl_res.val)){
+      const double denom = std::pow(v_large, a);
+      if(std::isfinite(denom)){
+        return(gsl_res.val / denom);
+      }
+      // v_large^a overflows for customers with very many transactions (the quotient used to be 0):
+      // divide on the log scale
+      if(gsl_res.val > 0.0){
+        return(std::exp(std::log(gsl_res.val) - a*std::log(v_large)));
+      }
+    }
+  }
+
+  double res;
+  if(z > 0.0 && pnbd_dyncov_LL_i_hyp_z_to_1(a, b, v_small, v_large, res)){
+    return(res);
+  }
+
+  return(leading);
+}
+
+} // anonymous namespace
+
+
 // FACTOR * (
 //     hyp2F1(r+s+x,s+1,r+s+x+1,(alpha_1-beta_1)/alpha_1) / (alpha_1^(r+s+x))
 //   - hyp2F1(r+s+x,s+1,r+s+x+1,(alpha_2-beta_2)/alpha_2) / (alpha_2^(r+s+x))
@@ -168,9 +296,6 @@ double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
   // Do not abort in case of error in gsl functions (hypergeoms)
   gsl_set_error_handler_off();
 
-  const double z1 = 1.0 - (beta_1/alpha_1);
-  const double z2 = 1.0 - (beta_2/alpha_2);
-
   // c + <b-1> -a -b
   // cbs.z[,log.C :=  lgamma(r+s+x+1) + lgamma(s) - lgamma(r+s+x) - lgamma(s+1) ]
   const double log_C =
@@ -178,66 +303,15 @@ double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
     lgamma(s) -
     lgamma(r + s + x) -
     lgamma(s + 1.0);
-  // const double log_C = std::lgamma(r + s + x + 1.0) +
-  //   std::lgamma(s) +
-  //   std::lgamma(r + s + x) +
-  //   std::lgamma(s + 1.0);
 
-  gsl_sf_result gsl_res;
-  int status;
+  // Leading term for z -> 1, only used if the hypergeometric function cannot be computed otherwise:
+  //  hyp.z := (1-z)^(r+x)*exp(log.C) / beta^(r+s+x), with z = 1 - beta/alpha
+  const double lead_z1 = std::pow(beta_1/alpha_1, r + x) * std::exp(log_C) / std::pow(beta_1, r + s + x);
+  const double lead_z2 = std::pow(beta_2/alpha_2, r + x) * std::exp(log_C) / std::pow(beta_2, r + s + x);
 
-  // Z1
-  double hyp_z1;
-  // l.hyp.z1 <- vec_gsl_hyp2f1_e(r+s+cbs.z$x, cbs.z$splus1, r+s+cbs.z$x+1, cbs.z$z.1)
-  status = gsl_sf_hyperg_2F1_e(r + s + x,
-                               s + 1.0,
-                               r + s + x + 1.0,
-                               z1,
-                               &gsl_res);
-  // status = gsl_sf_hyperg_2F1_e(r + s + x,
-  //                              s + 1.0,
-  //                              r + s + x + 1.0,
-  //                              z1,
-  //                              &gsl_res);
-
-  if(status == GSL_EMAXITER || status == GSL_EDOM){
-    // Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_alpha_ge_beta, z1, status: "<<status <<std::endl;
-    // hyp.z1 := (1-z.1)^(r+x)*exp(log.C) / beta_1^(r+s+x)]
-    hyp_z1 = std::pow(1.0 - z1, r + x) * std::exp(log_C) / std::pow(beta_1, r + s + x);
-  }else{
-    // cbs.z[, hyp.z1 := l.hyp.z1$value / (alpha_1^(r+s+x))]
-    hyp_z1 = gsl_res.val / std::pow(alpha_1, r + s + x);
-  }
-
-  // Questions for JEFF:
-  //
-  // Stable:
-  //  is /pow(beta_1, r+s+x): beta_1 oder alpha_1? Because alpha_1 in non-stable version but then changes
-  //  is /pow(., r+s+x) = pow(., a) or fix pow(., r+s+x)
-  //  can hyp_z all positive terms such that can do exp(log(hyp_z))?
-
-
-  // Z2
-  double hyp_z2;
-  // l.hyp.z2 <- vec_gsl_hyp2f1_e(r+s+cbs.z$x, cbs.z$splus1, r+s+cbs.z$x+1, cbs.z$z.2)
-  status = gsl_sf_hyperg_2F1_e(r + s + x,
-                               s + 1.0,
-                               r + s + x + 1.0,
-                               z2,
-                               &gsl_res);
-  // status = gsl_sf_hyperg_2F1_e(r + s + x,
-  //                              s + 1.0,
-  //                              r + s + x + 1.0,
-  //                              z2,
-  //                              &gsl_res);
-  if(status == GSL_EMAXITER || status == GSL_EDOM){
-    // hyp.z2 := (1-z.2)^(r+x)*exp(log.C) / beta_2^(r+s+x)]
-    // Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_alpha_ge_beta, z2, status: "<<status <<std::endl;
-    hyp_z2 = std::pow(1.0 - z2, r + x) * std::exp(log_C) / std::pow(beta_2, r + s + x);
-  }else{
-    // cbs.z[, hyp.z2 := l.hyp.z2$value / (alpha_2^(r+s+x))]
-    hyp_z2 = gsl_res.val / std::pow(alpha_2, r + s + x);
-  }
+  // hyp.z := hyp2F1(r+s+x, s+1, r+s+x+1, 1 - beta/alpha) / (alpha^(r+s+x))
+  const double hyp_z1 = pnbd_dyncov_LL_i_hyp_term(r + s + x, s + 1.0, beta_1, alpha_1, lead_z1);
+  const double hyp_z2 = pnbd_dyncov_LL_i_hyp_term(r + s + x, s + 1.0, beta_2, alpha_2, lead_z2);
 
   return(hyp_z1 - hyp_z2);
 }
@@ -255,11 +329,6 @@ double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
   // Do not abort in case of error in gsl functions (hypergeoms)
   gsl_set_error_handler_off();
 
-  // cbs.z[,z.1 := (beta_1-alpha_1)/beta_1]
-  // cbs.z[,z.2 := (beta_2-alpha_2)/beta_2]
-  const double z1 = 1.0 - (alpha_1/beta_1);
-  const double z2 = 1.0 - (alpha_2/beta_2);
-
   // c + <b-1> -a -b
   // cbs.z[,log.C :=  lgamma(r+s+x+1) + lgamma(r+x-1) - lgamma(r+s+x) - lgamma(r+x) ]
   const double log_C =
@@ -267,56 +336,17 @@ double pnbd_dyncov_LL_i_hyp_beta_g_alpha(const double r, const double s,
     lgamma(r + x - 1.0) -
     lgamma(r + s + x) -
     lgamma(r + x);
-  // const double log_C = std::lgamma(r + s + x + 1.0) +
-  //   std::lgamma(s) +
-  //   std::lgamma(r + s + x) +
-  //   std::lgamma(s + 1.0);
 
-    gsl_sf_result gsl_res;
+  // Leading term for z -> 1, only used if the hypergeometric function cannot be computed otherwise:
+  //  hyp.z := (1-z)^(s+1)*exp(log.C) / (alpha)^(r+s+x), with z = 1 - alpha/beta
+  const double lead_z1 = std::pow(alpha_1/beta_1, s + 1.0) * std::exp(log_C) / std::pow(alpha_1, r + s + x);
+  const double lead_z2 = std::pow(alpha_2/beta_2, s + 1.0) * std::exp(log_C) / std::pow(alpha_2, r + s + x);
 
-    // Z1: l.hyp.z1 <- vec_gsl_hyp2f1_e(r+s+cbs.z$x,r+cbs.z$x,r+s+cbs.z$x+1, cbs.z$z.1)
-    double hyp_z1;
-    int status = gsl_sf_hyperg_2F1_e(r + s + x,
-                                     r + x,
-                                     r + s + x + 1.0,
-                                     z1,
-                                     &gsl_res);
-    // int status = gsl_sf_hyperg_2F1_e(r + s + x,
-    //                                  s + 1.0,
-    //                                  r + s + x + 1.0,
-    //                                  z1, &gsl_res);
-    if(status == GSL_EMAXITER || status == GSL_EDOM){
-      // Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_beta_g_alpha, z1, status: "<<status <<std::endl;
-      // hyp.z1 := (1-z.1)^(s+1)*exp(log.C) / (alpha_1)^(r+s+x)]
-      hyp_z1 = std::pow(1.0 - z1, s + 1.0) * std::exp(log_C) / std::pow(alpha_1, r + s + x);
-    }else{
-      // cbs.z[, hyp.z1 := l.hyp.z1$value / (beta_1^(r+s+x))]
-      hyp_z1 = gsl_res.val / std::pow(beta_1, r + s + x);
-    }
+  // hyp.z := hyp2F1(r+s+x, r+x, r+s+x+1, 1 - alpha/beta) / (beta^(r+s+x))
+  const double hyp_z1 = pnbd_dyncov_LL_i_hyp_term(r + s + x, r + x, alpha_1, beta_1, lead_z1);
+  const double hyp_z2 = pnbd_dyncov_LL_i_hyp_term(r + s + x, r + x, alpha_2, beta_2, lead_z2);
 
-
-    double hyp_z2;
-    // l.hyp.z2 <- vec_gsl_hyp2f1_e(r+s+cbs.z$x,r+cbs.z$x,r+s+cbs.z$x+1, cbs.z$z.2)
-    status = gsl_sf_hyperg_2F1_e(r + s + x,
-                                 r + x,
-                                 r + s + x + 1.0,
-                                 z2,
-                                 &gsl_res);
-    // status = gsl_sf_hyperg_2F1_e(r + s + x,
-    //                              s + 1.0,
-    //                              r + s + x + 1.0,
-    //                              z2, &gsl_res);
-
-    if(status == GSL_EMAXITER || status == GSL_EDOM){
-      // Rcpp::Rcout << "pnbd_dyncov_LL_i_hyp_beta_g_alpha, z2, status: "<<status <<std::endl;
-      // hyp.z2 := (1-z.2)^(s+1)*exp(log.C) / (alpha_2)^(r+s+x)]
-      hyp_z2 = std::pow(1.0 - z2, s + 1.0) * std::exp(log_C) / std::pow(alpha_2, r + s + x);
-    }else{
-      // cbs.z[, hyp.z2 := l.hyp.z2$value / (beta_2^(r+s+x))]
-      hyp_z2 = gsl_res.val / std::pow(beta_2, r + s + x);
-    }
-
-    return(hyp_z1 - hyp_z2);
+  return(hyp_z1 - hyp_z2);
 }
 
 /*
