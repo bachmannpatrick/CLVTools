@@ -115,6 +115,27 @@ private:
 
 
 
+// A number kept as sign and logarithm of its absolute value: value = sgn * exp(lg), with sgn in {-1, 0, +1}.
+//   The hypergeometric terms of F2 are of the order alpha^-(r+s+x). For customers with many transactions they are
+//   smaller than the smallest double (about 1e-308), although F2 relative to F3 is not small. On the linear scale
+//   they lose precision in the subnormal range and then become 0, which removes the part of the likelihood in which
+//   the customer has churned and makes the log-likelihood discontinuous in the parameters. Therefore F2 is
+//   accumulated on the log scale. An invalid number has lg = NaN.
+struct SignedLog{
+  double lg;
+  double sgn;
+};
+
+SignedLog pnbd_dyncov_LL_i_hyp_alpha_ge_beta_log(const double r, const double s,
+                                                 const double x,
+                                                 const double alpha_1, const double beta_1,
+                                                 const double alpha_2, const double beta_2);
+
+SignedLog pnbd_dyncov_LL_i_hyp_beta_g_alpha_log(const double r, const double s,
+                                                const double x,
+                                                const double alpha_1, const double beta_1,
+                                                const double alpha_2, const double beta_2);
+
 double pnbd_dyncov_LL_i_hyp_alpha_ge_beta(const double r, const double s,
                                           const double x,
                                           const double alpha_1, const double beta_1,
@@ -138,22 +159,22 @@ double pnbd_dyncov_LL_i_Di(const arma::uword i, const LifetimeWalk& real_walk_li
                            const LifetimeWalk& aux_walk_life, const double d_omega);
 
 
-double pnbd_dyncov_LL_i_F2_1(const double r, const double alpha_0, const double s, const double beta_0,
-                             const int x, const double dT,
-                             const double a1, const double b1,
-                             const double A1T, const double C1T);
+SignedLog pnbd_dyncov_LL_i_F2_1(const double r, const double alpha_0, const double s, const double beta_0,
+                                const int x, const double dT,
+                                const double a1, const double b1,
+                                const double A1T, const double C1T);
 
 
 
-double pnbd_dyncov_LL_i_F2_2(const double r, const double alpha_0, const double s, const double beta_0,
-                             const int x,
-                             const double akt, const double bkT,
-                             const double aT, const double bT,
-                             const double AkT, const double CkT);
+SignedLog pnbd_dyncov_LL_i_F2_2(const double r, const double alpha_0, const double s, const double beta_0,
+                                const int x,
+                                const double akt, const double bkT,
+                                const double aT, const double bT,
+                                const double AkT, const double CkT);
 
 
-double pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s, const double beta_0,
-                           const Customer& c,
+SignedLog pnbd_dyncov_LL_i_F2(const double r, const double alpha_0, const double s, const double beta_0,
+                              const Customer& c,
                            const double B1, const double D1,
                            const double BT, const double DT,
                            const double A1T, const double C1T,
