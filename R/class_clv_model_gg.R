@@ -17,17 +17,16 @@ clv.model.gg <- function(){
              names.original.params.model = c(p="p", q="q", gamma="gamma"),
              names.prefixed.params.model = c(log.p="log.p", log.q="log.q", log.gamma="log.gamma"),
              start.params.model          = c(p=1, q=1, gamma=1),
-             optimx.defaults = list(method = "L-BFGS-B",
-                                    itnmax  = 3000,
-                                    # upper  = c(log(10000),log(10000),log(10000)),
-                                    # lower  = c(log(0),log(0),log(0)),
-                                    control = list(
-                                      kkt = TRUE,
-                                      save.failures = TRUE,
-                                      # Do not perform starttests because it checks the scales with max(logpar)-min(logpar)
-                                      #   but all standard start parameters are <= 0, hence there are no logpars what
-                                      #   produces a warning
-                                      starttests = FALSE))))
+             optimx.defaults = list(
+               method = "L-BFGS-B",
+               itnmax  = 5000,
+               control = list(
+                 kkt = TRUE,
+                 save.failures = TRUE,
+                 # Do not perform start tests because it checks the scales with max(logpar)-min(logpar)
+                 #   but all standard start parameters are <= 0, hence there are no logpars what
+                 #   produces a warning
+                 starttests = FALSE))))
 }
 
 # Methods --------------------------------------------------------------------------------------------------------------------------------

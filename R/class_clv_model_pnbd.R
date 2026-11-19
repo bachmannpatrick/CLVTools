@@ -19,17 +19,16 @@ clv.model.pnbd.no.cov <- function(){
              names.original.params.model = c(r="r", alpha="alpha", s="s", beta="beta"),
              names.prefixed.params.model = c("log.r","log.alpha", "log.s", "log.beta"),
              start.params.model          = c(r=0.5, alpha=15, s=0.5, beta=10),
-             optimx.defaults = list(method = "L-BFGS-B",
-                                    # lower   = c(log(1*10^(-5)),log(1*10^(-5)),log(1*10^(-5)),log(1*10^(-5))),
-                                    # upper   = c(log(300),log(2000),log(300),log(2000)),
-                                    itnmax  = 3000,
-                                    control = list(
-                                      kkt = TRUE,
-                                      save.failures = TRUE,
-                                      # Do not perform starttests because it checks the scales with max(logpar)-min(logpar)
-                                      #   but all standard start parameters are <= 0, hence there are no logpars what
-                                      #   produces a warning
-                                      starttests = FALSE))))
+             optimx.defaults = list(
+               method = "L-BFGS-B",
+               itnmax  = 5000,
+               control = list(
+                 kkt = TRUE,
+                 save.failures = TRUE,
+                 # Do not perform start tests because it checks the scales with max(logpar)-min(logpar)
+                 #   but all standard start parameters are <= 0, hence there are no logpars what
+                 #   produces a warning
+                 starttests = FALSE))))
 }
 
 
